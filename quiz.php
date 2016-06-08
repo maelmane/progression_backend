@@ -1,8 +1,8 @@
 <html> <head>
   <link rel="stylesheet" type="text/css" href="/quiz/css/style.css">
-    <script src="/quiz/js/codemirror/lib/codemirror.js"></script>
-    <link rel="stylesheet" href="/quiz/js/codemirror/lib/codemirror.css">
-    <script  src="/quiz/js/codemirror/mode/python/python.js"></script>
+    <script src="/quiz/js/codemirror/lib/CodeMirror.js"></script>
+    <link rel="stylesheet" href="/quiz/js/CodeMirror/lib/codemirror.css">
+    <script  src="/quiz/js/CodeMirror/mode/python/python.js"></script>
   </head>
   <body>
 
