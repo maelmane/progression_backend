@@ -1,15 +1,31 @@
 <html> <head>
   <link rel="stylesheet" type="text/css" href="/quiz/css/style.css">
-    <script src="/quiz/js/codemirror/lib/CodeMirror.js"></script>
-    <link rel="stylesheet" href="/quiz/js/CodeMirror/lib/codemirror.css">
-    <script  src="/quiz/js/CodeMirror/mode/python/python.js"></script>
+    <script src="/quiz/CodeMirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="/quiz/CodeMirror/lib/codemirror.css">
+    <script  src="/quiz/CodeMirror/mode/python/python.js"></script>
+    <meta charset="utf-8">
   </head>
   <body>
 
     <?php
+       function resume($in, $lignes_max){
+       $lignes=explode("\n", $in);
+       $nb_lignes=count($lignes);
+       if ($nb_lignes<=$lignes_max){
+           return $in;
+	}
+	else{
+			$av=round(($lignes_max-1)/2);
+			$ap=floor(($lignes_max-1)/2);
+			return implode("\n", array_merge(array_slice($lignes,0,$av),array("..."),array_slice($lignes,-$ap)));
+	}		
+				    
+			}
+?>
+    
+    <?php
        $locale='fr_CA.UTF-8';
        setlocale(LC_ALL,$locale);
-       putenv('LC_ALL='.$locale);
 
        openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 
@@ -80,12 +96,28 @@ $code</textarea>
         //Compose le code à exécuter
         if ($pre_code != ""){ $pre_code = $pre_code . "\n"; }
         $code=$pre_exec. $pre_code .  $code . $post_code;
-	$temp_f=tempnam("/opt/pyjail/tmp/","");
-        chmod($temp_f, 644);
-	file_put_contents($temp_f, $code);
+	//$temp_f=tempnam("/opt/pyjail/tmp/","");
+        //chmod($temp_f, 644);
+	//file_put_contents($temp_f, $code);
 
+	//post le code à remotecompiler
+        $url_rc='http://172.17.0.1:12380/compile';
+        $data_rc=array('language' => '0', 'code' => $code, 'stdin' => '');
+        $options_rc=array('http'=> array(
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data_rc)));
+
+        $context  = stream_context_create($options_rc);
+        $output= file_get_contents($url_rc, false, $context);
+        if ($output=== FALSE) {
+             $output="Erreur interne";
+        } 
+        else{
+             $output=trim(json_decode($output, true)['output']);
+        }
         //exécution
-        $command = "2>&1 sudo -nu quiz /usr/bin/jailed-python " . substr($temp_f,11); //<<EOF\n$code\nEOF";
+        //$command = "2>&1 sudo -nu quiz /usr/bin/jailed-python " . substr($temp_f,11); //<<EOF\n$code\nEOF";
 
 //        //Affiche les avertissements
 //        file_put_contents("/tmp/test.py","$precode\n$code\n$post_code");
@@ -94,14 +126,14 @@ $code</textarea>
 //        echo "<br>Avertissements : <br><pre class='code-wrapper'><code>$output\n</code></pre><br></pre><br>";
                                                    
         //Affiche le résultat
-        $output = trim(shell_exec($command));
-	unlink($temp_f);
-        echo "<br>Résultat attendu : <br><pre class='code-wrapper'><code>" . $reponse . "</code></pre><br>";
-        echo "<br>Résultat observé : <br><pre class='code-wrapper'><code>" . $output . "</code></pre><br>";
+        //$output = trim(shell_exec($command));
+	//unlink($temp_f);
+        echo "<br>Résultat attendu : <br><pre class='code-wrapper'><code>" . resume($reponse,21) . "</code></pre><br>";
+        echo "<br>Résultat observé : <br><pre class='code-wrapper'><code>" . resume($output,21) . "</code></pre><br>";
 
         //Vérifie la réponse
         echo "<table width=100%><tr><td>";
-        if ($output==trim($reponse)){
+        if ($output==$reponse){
             echo "Bravo! " . ($flag=="" ? "":"La clé est «" . $flag . "»</td>");
             if ($suivante!=""){                                                             
                 echo "<td align=center><a href='$suivante'>Question suivante</a></td>";
@@ -114,6 +146,7 @@ $code</textarea>
         echo "<td align=right><a href='index.html'>Retour aux questions</a></td></tr></table>";
 
     echo '<script>
+
     function betterTab(cm) {
       if (cm.somethingSelected()) {
         cm.indentSelection("add");
