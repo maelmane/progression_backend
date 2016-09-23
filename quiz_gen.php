@@ -36,6 +36,11 @@
          $code=$in_code;
        }
 
+       //Récupère les paramètres de compilation
+       $e_args=$_POST['e_args'];
+
+       //Récupère les entrées à envoyer au programme
+       $stdin=$_POST['stdin'];
 
        //Fonctions de remplacement
 
@@ -51,12 +56,12 @@
 		<pre class='code-wrapper'><code><form method='post' action=''><table style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'> "; 
 
        if ($pre_code != ""){
-           echo " <tr><td>
+           echo " <tr><td colspan=2>
                             <textarea id='precode' rows='5' cols='80'>$pre_code</textarea>
                         </td>
                       </tr>";
        }
-       echo " <tr><td>
+       echo " <tr><td colspan=2>
                             <textarea id='incode' name = 'incode' rows='5' cols='80'>
 $code</textarea>
                         </td>
@@ -64,12 +69,25 @@ $code</textarea>
 
        if ($post_code != ""){
            echo " <tr>
-                        <td>
+                        <td colspan=2>
                             <textarea id='postcode' rows='5' cols='80'>$post_code</textarea>
                         </td>
                       </tr>";
        }
-       echo " </table>
+       echo "
+<tr>
+<td width=50%>
+<h3>Paramètres </h3>
+<textarea id='e_args' name = 'e_args' rows='1' style='width:100%'>$e_args</textarea>
+
+</td>
+<td width=50%>
+<h3>Entrées</h3>
+<textarea id='stdin' name = 'stdin' rows='1' style='width:100%'>$stdin</textarea>
+
+</td>
+</tr>
+ </table>
                     <input type=submit value='Soumettre'>
                     </form>
 
@@ -88,7 +106,7 @@ $code</textarea>
 
 	//post le code à remotecompiler
         $url_rc='http://localhost:12380/compile';
-        $data_rc=array('language' => $GLOBALS['lang_id'], 'code' => $code, 'stdin' => '');
+        $data_rc=array('language' => $GLOBALS['lang_id'], 'code' => $code, 'e_arguments' => $e_args, 'stdin' => $stdin);
         $options_rc=array('http'=> array(
         'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
         'method'  => 'POST',
