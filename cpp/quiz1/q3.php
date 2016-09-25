@@ -5,7 +5,7 @@ require('../quiz.php');
 $r=rand(0,100);
 $n=rand(2, 20);
 $rep=sprintf("%.5e",pow($r,$n));
-execute("Question 3", "Faites une fonction qui calcule et retourne la puissance n d'un nombre réel", $rep, 'oJOFTOFVIA', "
+execute("Question 3", "Faites une fonction qui calcule et retourne la puissance n d'un nombre réel", $rep, 'VClMMkh8t5', "
 #include <iostream>
 
 using namespace std;

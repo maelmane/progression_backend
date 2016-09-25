@@ -2,7 +2,7 @@
 
 require('../quiz.php');
 
-execute("Question 5", "Faites une fonction qui correspond à la déclaration donnée.", "Bravo les cocos!!!", 'oJOFTOFVIA', "
+execute("Question 5", "Faites une fonction qui correspond à la déclaration donnée.", "Bravo les cocos!!!", 'UxbRMDqr0c', "
 #include <iostream>
 #include <cstring>
 

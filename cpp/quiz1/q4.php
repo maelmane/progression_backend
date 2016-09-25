@@ -7,7 +7,7 @@ $n=array();
 $ns=rand(0,$r);
 for($a=0;$a<$r;$a++) $n[$a]=rand(0,1000);
 
-execute("Question 4", "Faites une fonction qui correspond à la déclaration donnée.", array_sum(array_slice($n,0,$ns)), 'oJOFTOFVIA', "
+execute("Question 4", "Faites une fonction qui correspond à la déclaration donnée.", array_sum(array_slice($n,0,$ns)), 'dtIgYoHdlo', "
 #include <iostream>
 
 using namespace std;
