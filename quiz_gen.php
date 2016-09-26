@@ -167,7 +167,6 @@ $code</textarea>
       firstLineNumber: " . strval(substr_count($pre_exec, "\n")+2)  . ",
       indentUnit: 4
       });    
-      preeditor.setSize(null,preeditor.getScrollInfo().height);
      ";}
 
      echo "
@@ -194,7 +193,6 @@ $code</textarea>
 
     editor.doc.on('change', function(instance, changeObj){
     posteditor.setOption('firstLineNumber', " . strval(substr_count($pre_exec, "\n") + substr_count($pre_code, "\n")) . "+editor.doc.lineCount()+2);     
-    editor.setSize(null, editor.getScrollInfo().height);
 
     });
       ";}
