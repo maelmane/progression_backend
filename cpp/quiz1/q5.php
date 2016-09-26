@@ -22,8 +22,8 @@ Retour :
 char *zipper(char *dest, const char *chaine1, const char *chaine2);
 
 int main(){
-    char secret_1[] = \"Baolsccs!\";
-    char secret_2[] = \"rv e oo!!\";
+    char secret_1[] = \"Baolsccs\";
+    char secret_2[] = \"rv e oo!!!\";
     char *resultat = new char[strlen(secret_1)+strlen(secret_2)];
 
     cout << zipper(resultat, secret_1, secret_2) << endl;
