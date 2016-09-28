@@ -5,7 +5,7 @@ require('../quiz.php');
 
 $l_ch=strlen($_POST['stdin']);
 
-execute("Question 5", "Implémentez la fonction encadrer qui retourne une chaîne encadrée par des astérisques en laissant un espace entre le texte et le cadre.<br><br>Remarque : la chaîne doit être saisie sans retour de chariot dans le champ «Entrée».", "**". str_repeat("*", $l_ch) ."**
+execute("Question 5", "Implémentez la fonction encadrer qui retourne une chaîne encadrée par des astérisques en laissant un espace entre le texte et le cadre.<br><br>Remarque : la chaîne doit être saisie sans retour de chariot dans le champ «Entrées».", "**". str_repeat("*", $l_ch) ."**
 * ". str_repeat(" ", $l_ch) ." *
 * " . $_POST['stdin'] . " *
 * ". str_repeat(" ", $l_ch) ." *
