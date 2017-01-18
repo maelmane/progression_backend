@@ -37,7 +37,7 @@
        }
 
        //Récupère les paramètres de compilation
-       $e_args=$_POST['e_args'];
+       $params=$_POST['params'];
 
        //Récupère les entrées à envoyer au programme
        $stdin=$_POST['stdin'];
@@ -78,7 +78,7 @@ $code</textarea>
 <tr>
 <td width=50%>
 <h3>Paramètres </h3>
-<textarea id='e_args' name = 'e_args' rows='1' style='width:100%'>$e_args</textarea>
+<textarea id='params' name = 'params' rows='1' style='width:100%'>$params</textarea>
 
 </td>
 <td width=50%>
@@ -106,7 +106,7 @@ $code</textarea>
 
 	//post le code à remotecompiler
         $url_rc='http://localhost:12380/compile';
-        $data_rc=array('language' => $GLOBALS['lang_id'], 'code' => $code, 'e_arguments' => $e_args, 'stdin' => $stdin);
+        $data_rc=array('language' => $GLOBALS['lang_id'], 'code' => $code, 'parameters' => $params, 'stdin' => $stdin);
         $options_rc=array('http'=> array(
         'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
         'method'  => 'POST',
