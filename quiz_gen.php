@@ -40,7 +40,7 @@
        $params=$_POST['params'];
 
        //Récupère les entrées à envoyer au programme
-       $stdin=$_POST['stdin'];
+       $stdin=trim($_POST['stdin']);
 
        //Fonctions de remplacement
 
@@ -62,7 +62,7 @@
                       </tr>";
        }
        echo " <tr><td colspan=2>
-                            <textarea id='incode' name = 'incode' rows='5' cols='80'>
+                            <textarea id='incode' name = 'incode' cols='80'>
 $code</textarea>
                         </td>
                       </tr>";
@@ -115,7 +115,7 @@ $code</textarea>
         $context  = stream_context_create($options_rc);
         $comp_resp= file_get_contents($url_rc, false, $context);
         if ($comp_resp === FALSE) {
-             $output="Erreur interne";
+             $output="Erreur interne: " . $comp_resp;
         } 
         else{
              $output=trim(json_decode($comp_resp, true)['output']);
@@ -147,7 +147,7 @@ $code</textarea>
         }
         echo "<td align=right><a href='index.html'>Retour aux questions</a></td></tr></table>";
 
-    echo '<script>
+    echo ' <script>
 
     function betterTab(cm) {
       if (cm.somethingSelected()) {
@@ -164,9 +164,10 @@ $code</textarea>
       var preeditor = CodeMirror.fromTextArea(document.getElementById('precode'),{
       readOnly: true,
       lineNumbers: true,
-      firstLineNumber: " . strval(substr_count($pre_exec, "\n")+2)  . ",
+      firstLineNumber: " . strval(substr_count($pre_exec, "\n") + 1)  . ",
       indentUnit: 4
       });    
+     preeditor.setSize(null,'100%');//preeditor.getScrollInfo().height);
      ";}
 
      echo "
@@ -174,7 +175,7 @@ $code</textarea>
       matchBrackets: true,
       lineNumbers: true,
       readOnly: false,
-      firstLineNumber: " . strval(substr_count($pre_exec, "\n") + substr_count($pre_code, "\n")+1) . ",
+      firstLineNumber: " . strval(substr_count($pre_exec, "\n") + substr_count($pre_code, "\n") + 1) . ",
       indentUnit: 4,
       extraKeys: { Tab: betterTab }
       });
@@ -192,8 +193,8 @@ $code</textarea>
      
 
     editor.doc.on('change', function(instance, changeObj){
-    posteditor.setOption('firstLineNumber', " . strval(substr_count($pre_exec, "\n") + substr_count($pre_code, "\n")) . "+editor.doc.lineCount()+2);     
-
+    posteditor.setOption('firstLineNumber', " . strval(substr_count($pre_exec, "\n") + substr_count($pre_code, "\n")) . "+editor.doc.lineCount());     
+    editor.setSize(null, editor.getScrollInfo().height);
     });
       ";}
 
