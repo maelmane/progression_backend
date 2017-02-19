@@ -13,6 +13,6 @@ for ($i=0;$i<3;$i++){
 }
 
 $rep="[$tab1]";
-execute("Question 9", "Faites afficher sous forme de tableau les 4 derniers éléments de <em>numeros</em>",$rep,'6LaCPQmcx7', "numeros=[$tab,  $tab1]",'',"");
+execute("Question 8", "Faites afficher sous forme de tableau les 4 derniers éléments de <em>numeros</em>",$rep,'', "numeros=[$tab,  $tab1]",'',"","", "3d57a52c4e.php");
 
 ?>

@@ -16,6 +16,6 @@ for ($i=0;$i<4;$i++){
 $rep=$rep . $tab1;
 
 $rep="[$rep]";
-execute("Question 11", "Insérez les nombres 17, 42 et 25 au milieu de <em>numeros</em> puis faites afficher tous ses éléments sous forme de tableau, sachant que le tableau <em>numeros</em> est le taille fixe.", $rep,'DifmmA6MZZ', "numeros=[$tab, $tab1]",'',"");
+execute("Question 10", "Insérez les nombres 17, 42 et 25 au milieu de <em>numeros</em> puis faites afficher tous ses éléments sous forme de tableau, sachant que le tableau <em>numeros</em> est le taille fixe.", $rep,'', "numeros=[$tab, $tab1]",'',"","","9f783bb86c.php");
 
 ?>

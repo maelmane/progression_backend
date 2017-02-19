@@ -19,6 +19,6 @@ for ($i=0;$i<$n;$i++){
 $rep=$rep . $tab1;
 
 $rep="[$rep]";
-execute("Question 12", "Insérez les nombres 17, 42 et 25 au milieu de <em>numeros</em> puis faites afficher tous ses éléments sous forme de tableau, sachant que le tableau <em>numeros</em> est le taille variable.", $rep,'EBYOEVTAtv', "numeros=[$tab, $tab1]",'',"");
+execute("Question 11", "Insérez les nombres 17, 42 et 25 au milieu de <em>numeros</em> puis faites afficher tous ses éléments sous forme de tableau, sachant que le tableau <em>numeros</em> est le taille variable.", $rep,'', "numeros=[$tab, $tab1]",'',"");
 
 ?>

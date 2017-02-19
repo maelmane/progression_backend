@@ -12,6 +12,6 @@ $tab=$tab . $tab1;
 for ($i=0;$i<10;$i++){
   $tab=$tab . ", " . rand(0,100);
 }
-execute("Question 8", "Faites afficher sous forme de tableau les éléments 1 à 8 de <em>numeros</em>",$rep,'HyDyhqlbwZ', "numeros=[$tab]",'', "");
+execute("Question 7", "Faites afficher sous forme de tableau les éléments 1 à 8 de <em>numeros</em>",$rep,'', "numeros=[$tab]",'', "","","1592cce4ca.php");
 
 ?>
