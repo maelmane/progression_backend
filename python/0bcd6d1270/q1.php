@@ -1,6 +1,6 @@
 <?php
 
-require('../../quiz.php');
+require('../quiz.php');
 
  
 execute("Question 1"," 
@@ -9,7 +9,7 @@ execute("Question 1","
 Vous désirez faire l'implémentation d'une classe Compteur. Cette classe simule une distributrice de billets. À chaque appel de la méthode <code>suivant</code>, le numéro retourné est incrémenté de 1. Terminez l'implémentation des méthodes <code>suivant</code> et <code>__str__</code> qui permet de faire afficher le traditionnel «On sert le x»
 <br>
 <br>
-Vous pourrez trouver l'ébauche de la class <code>Compteur</code> ici : <a href='compteur.py'>compteur.py</a>", "", "QxBLegtxb9", '
+Vous pourrez trouver l'ébauche de la class <code>Compteur</code> ici : <a href='q1/compteur.py'>compteur.py</a>", "", "QxBLegtxb9", '
 class Compteur:
     """
     Un compteur du genre "distributeur de billets"
@@ -65,6 +65,6 @@ class Compteur:
 ', 'if __name__ == "__main__":
     import doctest
     doctest.testmod()
-',"","/quiz/quiz7/q2/q2-nhziafccgo.php");
+',"","/quiz/quiz7/q2-nhziafccgo.php");
 
 ?>
