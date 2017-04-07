@@ -65,6 +65,6 @@ class Compteur:
 ', 'if __name__ == "__main__":
     import doctest
     doctest.testmod()
-',"","/quiz/quiz7/q2-nhziafccgo.php");
+',"","/python/0bcd6d1270/q2-nhziafccgo.php");
 
 ?>

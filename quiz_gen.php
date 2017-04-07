@@ -19,7 +19,7 @@
        openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 
        //Exécute un script Python et vérifie la réponse.
-       function execute( $titre, $question, $reponse, $flag="", $pre_code="", $in_code="", $post_code="", $pre_exec="", $suivante=""){
+       function execute( $titre, $question, $reponse="-----", $flag="", $pre_code="", $in_code="", $post_code="", $pre_exec="", $suivante=""){
 
        //Trouve la question suivante si elle existe
        if ($suivante==""){
@@ -133,7 +133,7 @@ $code</textarea>
 	}
         //Vérifie la réponse
         echo "<table width=100%><tr><td>";
-        if ($reponse!=""){
+        if ($reponse!="---"){
             if ($output==$reponse){
                 echo "Bravo! " . ($flag=="" ? "":"La clé est «" . $flag . "»</td>");
                 if ($suivante!=""){                                                             

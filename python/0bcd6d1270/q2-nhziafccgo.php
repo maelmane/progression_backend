@@ -33,7 +33,8 @@ class Compteur:
 
 
         """
-', '        pass','    def __str__(self):
+', '        pass','
+    def __str__(self):
         """
         Converti le Compteur en une chaîne de la forme «On sert le x» 
         où x est le numéro présentement servi.
@@ -81,6 +82,6 @@ class Compteur:
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-', "", "/quiz/quiz7/q3-wmomqpeksj.php");
+', "", "/python/0bcd6d1270/q3-wmomqpeksj.php");
 
 ?>
