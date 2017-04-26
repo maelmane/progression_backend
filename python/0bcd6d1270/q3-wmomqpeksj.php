@@ -1,6 +1,6 @@
 <?php
 
-require('../../quiz.php');
+require('../quiz.php');
 
 
 execute("Question 3", "
@@ -8,7 +8,7 @@ execute("Question 3", "
 Pour être utile, le compteur doit aussi pouvoir distribuer des billets aux clients. Puisque les numéros servis et distribués avancent rarement à la même vitesse, on doit ajouter un attribut <code>numéro_distribué</code> ainsi qu'une méthode <code>distribuer</code> retournant le numéro du billet distribué.
 <br>
 <br>
-Vous pourrez trouver l'ébauche de la class <code>Compteur</code> ici : <a href='compteur.py'>compteur.py</a>", "", "WqK4CAKF52", '
+Vous pourrez trouver l'ébauche de la class <code>Compteur</code> ici : <a href='q3-wmomqpeksj/compteur.py'>compteur.py</a>", "", "WqK4CAKF52", '
 class Compteur:
     """
     Un compteur du genre "distributeur de billets" 

@@ -9,7 +9,7 @@
   <body>
     <?php
 
-       $lang_id=0;
+       $lang_id=1;
 
        require("../../quiz_gen.php");
        ?>

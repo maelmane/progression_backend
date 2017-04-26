@@ -1,6 +1,6 @@
 <?php
 
-require('../../quiz.php');
+require('../quiz.php');
 
 
 execute("Question 2", "
@@ -8,7 +8,7 @@ execute("Question 2", "
 Votre classe Compteur pourrait être améliorée par l'ajout d'un constructeur paramétré. Ajoutez-lui un paramètre formel qui permette de choisir la valeur du premier numéro servi.
 <br>
 <br>
-Vous pourrez trouver l'ébauche de la class <code>Compteur</code> ici : <a href='compteur.py'>compteur.py</a>", "", "WqK4CAKF52", '
+Vous pourrez trouver l'ébauche de la class <code>Compteur</code> ici : <a href='q2-nhziafccgo/compteur.py'>compteur.py</a>", "", "WqK4CAKF52", '
 class Compteur:
     """
     Un compteur du genre "distributeur de billets" 
@@ -33,7 +33,8 @@ class Compteur:
 
 
         """
-', '        pass','    def __str__(self):
+', '        pass','
+    def __str__(self):
         """
         Converti le Compteur en une chaîne de la forme «On sert le x» 
         où x est le numéro présentement servi.
@@ -81,6 +82,6 @@ class Compteur:
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-', "", "/quiz/quiz7/q3/q3-wmomqpeksj.php");
+', "", "/python/0bcd6d1270/q3-wmomqpeksj.php");
 
 ?>
