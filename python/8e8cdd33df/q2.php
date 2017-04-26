@@ -5,8 +5,6 @@ require('../quiz.php');
 
 $r=rand(1000,9999);
 
-file_put_contents('/opt/pyjail/tmp/fichier_test.txt','Secret : '.$r."\nCe fichier ne contient rien d'autre.");
-
 $s=rand(1000,9999);
 
 execute("Question 2", "Ça fonctionne lorsque le fichier existe... mais sinon, le programme s'arrête avec un <em>stacktrace</em>. Il serait bien mieux d'afficher un message plus informatif, du genre «Erreur: Le fichier <em>nom de fichier</em> n'existe pas.».", "", "NrlGiS6BOs", '
@@ -32,6 +30,6 @@ def cat(nom_fichier):
     '','# --- Exécute les tests ---
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()', '', "q3.php");
+    doctest.testmod()', 'f_temp=open("/tmp/fichier_test.txt","w");f_temp.write("Secret : '.$r.'\nCe fichier ne contient rien d\'autre.\n");f_temp.close()', "q3.php");
 
 ?>

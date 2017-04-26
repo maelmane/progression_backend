@@ -39,6 +39,6 @@ def cat(nom_fichier):
     '','# --- Exécute les tests ---
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()', '', "q4.php");
+    doctest.testmod()', 'f_temp=open("/tmp/fichier_test.txt","w");f_temp.write("Secret : '.$r.'\nCe fichier ne contient rien d\'autre.\n");f_temp.close();f_temp=open("/tmp/fichier_inaccessible_'.$s.'.txt","w");import os;os.chmod("/tmp/fichier_inaccessible_'.$s.'.txt",0);', "q4.php");
 
 ?>

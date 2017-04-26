@@ -1,8 +1,10 @@
-<?php
+:q<?php
 
 require('../quiz.php');
 
 $r=rand(1000,9999);
+
+file_put_contents('/opt/pyjail/tmp/fichier_test.txt','Secret : '.$r."\nCe fichier ne contient rien d'autre.");
 
 execute("Question 1", "Vous désirez refaire la commande <code>cat</code> en python (pourquoi pas). Cette commande affiche le contenu du fichier passé en paramètre sur la ligne de commande.", "", "E5G9VM2pV4", '
 
@@ -23,6 +25,6 @@ def cat(nom_fichier):
     '','# --- Exécute les tests ---
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()', 'f_temp=open("/tmp/fichier_test.txt","w");f_temp.write("Secret : '.$r.'\nCe fichier ne contient rien d\'autre.\n");f_temp.close()', "q2.php");
+    doctest.testmod()', '', "q2.php");
 
 ?>
