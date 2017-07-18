@@ -7,6 +7,6 @@ else{
     if(preg_match('/[a-z]+/', $fichier) && file_exists("vues/$fichier.php"))
         require("vues/$fichier.php");
     else
-        header("Location: index.php");
+        echo "Bel essai...";
 }
 ?>
