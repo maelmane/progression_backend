@@ -23,6 +23,20 @@ setlocale(LC_ALL,$locale);
 
 openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 
+//Si un code a été soumis, l'insére dans la zone de texte, sinon utilise le code par défaut.
+if ($_POST['incode']!=''){
+    $code=$_POST['incode'];
+}
+else{
+    $code=$qst->incode;
+}
+
+//Récupère les paramètres de compilation
+$params=$_POST['params'];
+
+//Récupère les entrées à envoyer au programme
+$stdin=trim($_POST['stdin']);
+
 //Exécute le setup
 eval($qst->setup);
 
@@ -75,7 +89,7 @@ if ($qst->pre_code != ""){
 echo "
       <tr>
        <td colspan=2>
-        <textarea id='incode' name = 'incode' cols='80'>$qst->code</textarea>
+        <textarea id='incode' name = 'incode' cols='80'>$code</textarea>
        </td>
       </tr>";
 
@@ -108,23 +122,23 @@ echo "
 ";
 
 //Log le code soumis
-$com_log=$_SERVER['REMOTE_ADDR']." - " . $_SERVER["PHP_SELF"] . " : ". $qst->code;
+$com_log=$_SERVER['REMOTE_ADDR']." - " . $_SERVER["PHP_SELF"] . " : ". $qst->incode;
 syslog(LOG_INFO, $com_log);
 
 //Compose le code à exécuter
 if ($qst->pre_code != ""){ $qst->pre_code = $qst->pre_code . "\n"; }
-$qst->code=$qst->pre_exec. $qst->pre_code .  $qst->code . $qst->post_code;
+$code=$qst->pre_exec. $qst->pre_code .  $code . $qst->post_code;
 
 //post le code à remotecompiler
 $url_rc='http://localhost:12380/compile';
-$data_rc=array('language' => $GLOBALS['lang_id'], 'code' => $qst->code, 'parameters' => $qst->params, 'stdin' => $qst->stdin);
+$data_rc=array('language' => $GLOBALS['lang_id'], 'code' => $code, 'parameters' => $qst->params, 'stdin' => $qst->stdin);
 $options_rc=array('http'=> array(
     'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
     'method'  => 'POST',
     'content' => http_build_query($data_rc)));
 
 $context  = stream_context_create($options_rc);
-$comp_resp=""; # file_get_contents($url_rc, false, $context);
+$comp_resp=file_get_contents($url_rc, false, $context);
 if ($comp_resp === FALSE) {
     $output="Erreur interne: " . $comp_resp;
 } 
@@ -136,7 +150,7 @@ else{
 if( !is_null($qst->reponse)){
     echo "<br>Résultat attendu : <br><pre class='code-wrapper'><code>" . resume($qst->reponse,21) . "</code></pre><br>";
 }
-echo "<br>Résultat observé : <br><pre class='code-wrapper'><code>" . resume($qst->output,21) . "</code></pre><br>";
+echo "<br>Résultat observé : <br><pre class='code-wrapper'><code>" . resume($output,21) . "</code></pre><br>";
 
 $errors=json_decode($comp_resp,true)['errors'];
 if($errors!=""){

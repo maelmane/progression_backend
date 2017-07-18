@@ -48,7 +48,7 @@ CREATE TABLE `question` (
   `enonce`	text,
   `pre_exec`	text,
   `pre_code`	text,
-  `code`	text,
+  `incode`	text,
   `post_code`	text,
   `reponse`	text,
   `params`	varchar(255),

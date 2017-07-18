@@ -296,7 +296,7 @@ class Question extends EntiteBD{
     public $enonce;
     public $pre_exec;
     public $pre_code;
-    public $code;
+    public $incode;
     public $post_code;
     public $reponse;
     public $params;
@@ -317,11 +317,11 @@ class Question extends EntiteBD{
     }
 
     public function load_info(){
-        $query=$this->conn->prepare('SELECT question.nom=null, question.numero, question.titre, question.lang, theme.lang, question.description, setup, enonce, pre_exec, pre_code, code, post_code, reponse, params, stdin, points, question.serieID FROM question, serie, theme WHERE question.serieID=serie.serieID AND serie.themeID=theme.themeID AND questionID = ?');
+        $query=$this->conn->prepare('SELECT question.nom=null, question.numero, question.titre, question.lang, theme.lang, question.description, setup, enonce, pre_exec, pre_code, incode, post_code, reponse, params, stdin, points, question.serieID FROM question, serie, theme WHERE question.serieID=serie.serieID AND serie.themeID=theme.themeID AND questionID = ?');
 
         $query->bind_param( "i", $this->id);
         $query->execute();
-        $query->bind_result( $this->nom, $this->numero, $this->titre, $qlang, $tlang, $this->description, $this->setup, $this->enonce, $this->pre_exec, $this->pre_code, $this->code, $this->post_code, $this->reponse, $this->params, $this->stdin, $this->points, $this->serieID );
+        $query->bind_result( $this->nom, $this->numero, $this->titre, $qlang, $tlang, $this->description, $this->setup, $this->enonce, $this->pre_exec, $this->pre_code, $this->incode, $this->post_code, $this->reponse, $this->params, $this->stdin, $this->points, $this->serieID );
 
         $query->fetch();
         $query->close();

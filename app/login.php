@@ -13,8 +13,8 @@ else{
             $erreur="Nom d'utilisateur ou mot de passe invalide.";
         }
         else{
-            $username=$_POST[username];
-            $password=$_POST[passwd];
+            $username=$_POST["username"];
+            $password=$_POST["passwd"];
             
             $ldap = ldap_connect("localhost") or die("Impossible de se connecter au serveur d'authentification. Veuillez contacter l'administrateur");
             ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);   

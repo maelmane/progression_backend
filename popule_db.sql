@@ -5,7 +5,7 @@ insert into theme values (null, 7, "c_intro", "C : introduction", "Ces exercices
 
 insert into serie values(null, 1, 1, "entrees_sorties", "Les expressions et les entr_es/sorties", "3a2502b6a2", "Les expressions et les entr_es/sorties");
 
-insert into question (serieID, description, numero, nom, titre, lang, setup, enonce, pre_exec, pre_code, code, post_code, reponse, params, stdin, points)
+insert into question (serieID, description, numero, nom, titre, lang, setup, enonce, pre_exec, pre_code, incode, post_code, reponse, params, stdin, points)
 values(
 1,
 "Affichage avec variables",
