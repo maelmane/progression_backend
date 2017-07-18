@@ -1,9 +1,0 @@
-<?php
-
-require('../quiz.php');
-
-$lorem='suspendisse eleifend tempor mi non vestibulum sem viverra in mauris placerat facilisis faucibus sed gravida tempus malesuada.';
-
-execute("Question 3", "Faites afficher la phrase donnée avec le premier caractère en majuscules.",strtoupper($phrase),'', "phrase=\"$phrase\"",'',"","", "iCbAwa1oj5.php");
-
-?>
