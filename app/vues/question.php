@@ -27,10 +27,17 @@ openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 eval($qst->setup);
 
 //Exécute le pré-code
-$qst->pre_code=eval("return \"$qst->pre_code\";");
+if(!is_null($qst->pre_code))
+    $qst->pre_code=eval("return \"$qst->pre_code\";");
+
+//Exécute le post-code
+if(!is_null($qst->post_code))
+    $qst->post_code=eval("return \"$qst->post_code\";");
 
 //Exécute la réponse
-$qst->reponse=eval("return \"$qst->reponse\";");
+if(!is_null($qst->reponse))
+    $qst->reponse=eval("return \"$qst->reponse\";");
+
 $lang_id=$qst->lang;
 
 page_header();
@@ -126,7 +133,7 @@ else{
 }
                                                    
 //Affiche le résultat
-if( $qst->reponse!=""){
+if( !is_null($qst->reponse)){
     echo "<br>Résultat attendu : <br><pre class='code-wrapper'><code>" . resume($qst->reponse,21) . "</code></pre><br>";
 }
 echo "<br>Résultat observé : <br><pre class='code-wrapper'><code>" . resume($qst->output,21) . "</code></pre><br>";
