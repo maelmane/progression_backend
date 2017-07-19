@@ -246,7 +246,8 @@ class Serie extends EntiteBD{
                                      FROM question LEFT JOIN avancement ON (
                                      avancement.questionID = question.questionID) WHERE
                                      (avancement.userID IS NULL OR avancement.userID = ?) AND
-                                     question.serieID = ?');
+                                     question.serieID = ?
+                                     ORDER BY question.numero');
         $query->bind_param( "ii", $this->user_id, $this->id);
         $query->execute();
         $query->bind_result($id, $nom, $numero, $titre, $description, $points, $etat);

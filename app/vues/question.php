@@ -182,12 +182,11 @@ if ($qst->reponse!=""){
     }
                                                                                       
     else{
-        echo "raté!";
         if($avcmt->get_etat()==Question::ETAT_NONREUSSI){
             //Met la réponse à jour dans l'avancement
             $avcmt->set_reponse(Question::ETAT_NONREUSSI, $code);
         }
-        echo "Essayez encore</td>";
+        echo "Raté! Essayez encore</td>";
     }
 }
 
