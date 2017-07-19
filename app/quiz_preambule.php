@@ -5,7 +5,7 @@ require_once('modele.php');
 session_start();
 
 if(!isset($_SESSION["user_id"])){
-    header('Location: app/login.php');
+    header('Location: login.php');
 }
 
 $user=new User($_SESSION["username"]);

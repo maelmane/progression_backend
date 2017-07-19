@@ -26,4 +26,21 @@ $somme=$r+$s;
 "",
 "",
 0
-);
+),
+(
+1,
+"Bonjour le monde!",
+1,
+"affichage_101",
+"Bonjour le monde!",
+0,
+"$r=rand(0,1000);",
+"Faites afficher «Bonjour le monde!».",
+"",
+"",
+"print(42)",
+"",
+"Bonjour le monde!",
+"",
+"",
+0);

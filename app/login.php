@@ -23,8 +23,9 @@ else{
 
                 #Connexion à la BD
                 $user_info=new User($username);
-                if(is_null($user_info->id)){
-                    $erreur="Erreur interne 1. Veuillez contacter l'administrateur (erreur : ".$user_info->errno.")";
+                if(is_null($user_info->username)){
+                    //Crée l'utilisateur
+                    $user_info=User::creer_user($username);
                 }
                 else{
                     #Obtient les infos de l'utilisateur, les créant si nécessaire.
@@ -54,7 +55,7 @@ else{
          <form name="login" method="POST">
              <table style="margin-left:auto;margin-right:auto;">
              <tr>
-             <td>Nom d\'utilisateur</td><td><input name="username" type="text"></td>
+             <td>Courriel</td><td><input name="username" type="text">@dept-info.crosemont.quebec</td>
              </tr><tr>
              <td>Mot de passe</td><td><input name="passwd" type="password"></td>
              </tr><tr>

@@ -11,7 +11,7 @@ function db_init(){
     $GLOBALS["error"]=mysqli_connect_error(); 
 }
 
-function get_themes(){
+function get_themes($user_id){
     if(!isset($GLOBALS["conn"])) db_init();
     $conn=$GLOBALS["conn"];
 
@@ -19,7 +19,7 @@ function get_themes(){
     
     $res=array();
     while($theme=$themes->fetch_assoc()['themeID']){
-        $t=new Theme($theme);
+        $t=new Theme($theme, $user_id);
         $t->load_info();
         $res[] = $t;
     }
@@ -44,37 +44,25 @@ class User extends EntiteBD{
     public $actif;
 
     public function __construct($username){
-        $this->username=$username;
-
         parent::__construct();
-        $this->load_info();
+        $this->load_info($username);
     }
     
-    function load_info(){
-        $query= $this->conn->prepare( 'SELECT userID, actif FROM users WHERE username = ?');
-        $query->bind_param( "s", $this->username );
+    function load_info($username){
+        $query= $this->conn->prepare( 'SELECT username, userID, actif FROM users WHERE username = ?');
+        $query->bind_param( "s", $username );
         $query->execute();
-        $query->bind_result( $this->id, $this->actif );
+        $query->bind_result( $this->username, $this->id, $this->actif );
         $res=$query->fetch();
         $query->close();
     }    
 
-    function creer_user(){
-        $query=$this->conn->prepare('INSERT INTO users(username) VALUES (?)');
-        $query->bind_param( "s", $this->username);
+    static function creer_user($username){
+        $query=$GLOBALS["conn"]->prepare('INSERT INTO users(username) VALUES (?)');
+        $query->bind_param( "s", $username);
         $query->execute();
         $query->close();
-        return $this->get_user_info($this->username);
-    }
-
-    function get_ou_cree_user(){
-        $user_info=$this->get_user_info($this->username);
-    
-        if(!$user_info){
-            $user_info=$this->create_user($this->username);
-        }
-
-        return $user_info;
+        return new User($username);
     }
 
 }
@@ -86,11 +74,12 @@ class Theme extends EntiteBD{
     public $titre;
     public $description;
     
-    public function __construct($id, $nom=null, $titre=null, $description=null){
+    public function __construct($id, $user_id, $nom=null, $titre=null, $description=null){
         //$this->username=$username;
         parent::__construct();
         
         $this->id=$id;
+        $this->user_id=$user_id;
         $this->nom=$nom;
         $this->titre=$titre;
         $this->description=$description;
@@ -142,7 +131,7 @@ class Theme extends EntiteBD{
         
         $series=array();
         while($query->fetch()){
-            $series[] = new Serie($id, $nom, $numero, $titre, $description);
+            $series[] = new Serie($id, $this->user_id, $nom, $numero, $titre, $description);
         }
 
         $query->close();
@@ -175,13 +164,14 @@ class Theme extends EntiteBD{
     }
     
     function get_avancement(){
-        $query=$this->conn->prepare('SELECT count(question.questionID) FROM avancement, question, theme, serie WHERE 
+        $query=$this->conn->prepare('SELECT count(question.questionID) FROM avancement, question, serie WHERE 
                                      avancement.questionID=question.questionID AND 
+                                     avancement.userID= ? AND 
                                      question.serieID=serie.serieID AND 
                                      serie.themeID= ? AND
-                                     avancement.avancement = 1');
+                                     avancement.etat = 1');
         echo $this->conn->error;
-        $query->bind_param( "i", $this->id);
+        $query->bind_param( "ii", $this->user_id,$this->id);
         $query->execute();
         $query->bind_result($res);
         $query->fetch();
@@ -201,10 +191,11 @@ class Serie extends EntiteBD{
     public $description;
     public $themeID;
     
-    public function __construct($id, $nom=null, $numero=null, $titre=null, $description=null){
+    public function __construct($id, $user_id, $nom=null, $numero=null, $titre=null, $description=null){
         parent::__construct();
         
         $this->id=$id;
+        $this->user_id=$user_id;
         $this->nom=$nom;
         $this->numero=$numero;
         $this->titre=$titre;
@@ -251,16 +242,18 @@ class Serie extends EntiteBD{
    }
 
     function get_questions(){
-        $query=$this->conn->prepare('SELECT question.questionID, question.nom,question.numero,question.titre,question.description,question.points
-                                     FROM question WHERE
+        $query=$this->conn->prepare('SELECT question.questionID, question.nom,question.numero,question.titre,question.description,question.points, avancement.etat 
+                                     FROM question LEFT JOIN avancement ON (
+                                     avancement.questionID = question.questionID) WHERE
+                                     (avancement.userID IS NULL OR avancement.userID = ?) AND
                                      question.serieID = ?');
-        $query->bind_param( "i", $this->id);
+        $query->bind_param( "ii", $this->user_id, $this->id);
         $query->execute();
-        $query->bind_result($id, $nom, $numero, $titre, $description, $points);
+        $query->bind_result($id, $nom, $numero, $titre, $description, $points, $etat);
         
         $questions=array();
         while($query->fetch()){
-            $questions[] = new Question($id, $nom, $numero, $titre, $description, $points);
+            $questions[] = new QuestionInfo($id, $nom, $numero, $titre, $description, $points, $etat);
         }
         $query->close();                                     
 
@@ -269,12 +262,13 @@ class Serie extends EntiteBD{
 
     
     function get_avancement(){
-        $query=$this->conn->prepare('SELECT count(question.questionID) FROM avancement, question, serie WHERE 
+        $query=$this->conn->prepare('SELECT count(avancement.etat) FROM avancement, question WHERE 
                                      avancement.questionID=question.questionID AND 
+                                     avancement.userID= ? AND 
                                      question.serieID = ? AND
-                                     avancement.avancement=1');
+                                     avancement.etat=1');
 
-        $query->bind_param( "i", $serie);
+        $query->bind_param( "ii", $this->user_id, $this->id);
         $query->execute();
         $query->bind_result($res);
         $query->fetch();
@@ -284,8 +278,34 @@ class Serie extends EntiteBD{
     
 }
 
+class QuestionInfo{
+    //Données
+    public $id;
+    public $nom;
+    public $numero;
+    public $titre;
+    public $description;
+    public $points;
+    public $etat;
+
+    public function __construct($id, $nom, $numero, $titre, $description, $points, $etat){
+        $this->id=$id;
+        $this->nom=$nom;
+        $this->numero=$numero;
+        $this->titre=$titre;
+        $this->description=$description;
+        $this->points=$points;
+        $this->etat=$etat;
+    }
+}
+
 class Question extends EntiteBD{
 
+    //Constantes
+    const ETAT_CACHE=-1;
+    const ETAT_NONREUSSI=0;
+    const ETAT_REUSSI=1;
+    
     //Données
     public $nom;
     public $numero;
@@ -305,7 +325,6 @@ class Question extends EntiteBD{
     public $serieID;
     
     public function __construct($id, $nom=null, $numero=null, $titre=null, $description=null, $points=null){
-        //$this->username=$username;
         parent::__construct();
         
         $this->id=$id;
@@ -317,7 +336,7 @@ class Question extends EntiteBD{
     }
 
     public function load_info(){
-        $query=$this->conn->prepare('SELECT question.nom=null, question.numero, question.titre, question.lang, theme.lang, question.description, setup, enonce, pre_exec, pre_code, incode, post_code, reponse, params, stdin, points, question.serieID FROM question, serie, theme WHERE question.serieID=serie.serieID AND serie.themeID=theme.themeID AND questionID = ?');
+        $query=$this->conn->prepare('SELECT question.nom, question.numero, question.titre, question.lang, theme.lang, question.description, setup, enonce, pre_exec, pre_code, incode, post_code, reponse, params, stdin, points, question.serieID FROM question, serie, theme WHERE question.serieID=serie.serieID AND serie.themeID=theme.themeID AND questionID = ?');
 
         $query->bind_param( "i", $this->id);
         $query->execute();
@@ -331,6 +350,50 @@ class Question extends EntiteBD{
         else
             $this->lang=$qlang;
     }
+}
+
+class Avancement extends EntiteBD{
+
+    public $userID;
+    public $questionID;
+    private $etat;
+    public $reponse;
+
+    public function __construct($question_id, $user_id){
+        parent::__construct();
+
+        $this->questionID = $question_id;
+        $this->userID = $user_id;
+
+        $query=$this->conn->prepare('SELECT etat, reponse FROM avancement WHERE questionID = ? AND userID = ?');
+        $query->bind_param("ii", $this->questionID, $this->userID);
+        $query->execute();
+        $query->bind_result($this->etat, $this->reponse);
+        $query->fetch();
+
+        $query->close();
+    }
+
+    public function get_etat(){
+        if(is_null($this->etat)) return Question::ETAT_NONREUSSI;
+        return $this->etat;
+    }
+
+    public function set_reponse($etat, $reponse){
+        if(is_null($this->reponse)){
+            $query=$this->conn->prepare('INSERT INTO avancement SET etat = ?, reponse = ?, questionID = ?, userID = ?');
+            $query->bind_param("isii", $etat, $reponse, $this->questionID, $this->userID);
+            $query->execute();
+            $query->close();
+        }
+        else{
+            $query=$this->conn->prepare('UPDATE avancement SET etat = ?, reponse = ? WHERE questionID = ? AND userID = ?');
+            $query->bind_param("isii", $etat, $reponse, $this->questionID, $this->userID);
+            $query->execute();
+            $query->close();
+        }
+    }
+        
 }
 
 ?>

@@ -3,6 +3,11 @@
 require_once('quiz_preambule.php');
 $qst=new Question($_GET['id']);
 $qst->load_info();
+if(is_null($qst->nom)){
+        header('Location: index.php?p=accueil');
+}
+
+$avcmt=new Avancement($_GET['id'], $_SESSION['user_id']);
 
 function resume($in, $lignes_max){
     $lignes=explode("\n", $in);
@@ -24,12 +29,18 @@ setlocale(LC_ALL,$locale);
 openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 
 //Si un code a été soumis, l'insére dans la zone de texte, sinon utilise le code par défaut.
-if ($_POST['incode']!=''){
-    $code=$_POST['incode'];
+if ($_POST['incode']==''){
+    if($avcmt->reponse==''){
+        $code=$qst->incode;
+    }
+    else{
+        $code=$avcmt->reponse;
+    }
 }
 else{
-    $code=$qst->incode;
+    $code=$_POST['incode'];
 }
+
 
 //Récupère les paramètres de compilation
 $params=$_POST['params'];
@@ -127,11 +138,11 @@ syslog(LOG_INFO, $com_log);
 
 //Compose le code à exécuter
 if ($qst->pre_code != ""){ $qst->pre_code = $qst->pre_code . "\n"; }
-$code=$qst->pre_exec. $qst->pre_code .  $code . $qst->post_code;
+$code_exec=$qst->pre_exec. $qst->pre_code .  $code . $qst->post_code;
 
 //post le code à remotecompiler
 $url_rc='http://localhost:12380/compile';
-$data_rc=array('language' => $GLOBALS['lang_id'], 'code' => $code, 'parameters' => $qst->params, 'stdin' => $qst->stdin);
+$data_rc=array('language' => $GLOBALS['lang_id'], 'code' => $code_exec, 'parameters' => $qst->params, 'stdin' => $qst->stdin);
 $options_rc=array('http'=> array(
     'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
     'method'  => 'POST',
@@ -159,8 +170,11 @@ if($errors!=""){
 
 //Vérifie la réponse
 echo "<table width=100%><tr><td>";
-if ($qst->reponse!=""){
+if ($qst->reponse!=""){    
     if ($output==$qst->reponse){
+        //Met la réponse à jour dans l'avancement
+        $avcmt->set_reponse(Question::ETAT_REUSSI, $code);
+        
         echo "Bravo! " . ($qst->flag=="" ? "":"La clé est «" . $qst->flag . "»</td>");
         if ($suivante!=""){                                                             
             echo "<td align=center><a href='$qst->suivante'>Question suivante</a></td>";
@@ -168,6 +182,11 @@ if ($qst->reponse!=""){
     }
                                                                                       
     else{
+        echo "raté!";
+        if($avcmt->get_etat()==Question::ETAT_NONREUSSI){
+            //Met la réponse à jour dans l'avancement
+            $avcmt->set_reponse(Question::ETAT_NONREUSSI, $code);
+        }
         echo "Essayez encore</td>";
     }
 }

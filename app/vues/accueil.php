@@ -10,7 +10,7 @@ echo "
 		  <pre class='code-wrapper'><code>
 		      <table>";
 
-foreach(get_themes() as $theme){
+foreach(get_themes($_SESSION['user_id']) as $theme){
     echo "
 			<tr>
 			  <td><a href='?p=theme&ID=$theme->id'>$theme->titre (". $theme->get_avancement() ."/". $theme->get_nb_questions() . ") </a></td>

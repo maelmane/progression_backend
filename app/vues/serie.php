@@ -6,8 +6,12 @@ if(!isset($_GET['ID'])){
         header('Location: index.php?p=accueil');
 }
 
-$serie=new Serie($_GET['ID']);
+$serie=new Serie($_GET['ID'], $_SESSION['user_id']);
 $serie->load_info();
+
+if(is_null($serie->nom)){
+        header('Location: index.php?p=accueil');
+}
 
 page_header();
 
@@ -19,11 +23,15 @@ echo "
 ";
 
 foreach($serie->get_questions() as $question){
-    echo "
-          <tr>
-          <td><a href='?p=question&id=$question->id'>N°". $question->numero ." : ". $question->titre ."</a></td>
+    echo "<tr>";
+    if($question->etat == Question::ETAT_CACHE){
+        echo "<td style='color: #777;'>⚪ N°". $question->numero ." : ". $question->titre ."</a>";
+    }
+    else{
+        echo "<td><a href='?p=question&id=$question->id'>" . ($question->etat == Question::ETAT_REUSSI?"⚫":"⚪"). " N°". $question->numero ." : ". $question->titre ."</a>";
+    }
+    echo "</td>
           </tr>
-
          ";
 }
 

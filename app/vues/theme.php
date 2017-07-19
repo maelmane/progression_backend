@@ -2,7 +2,7 @@
 
 require_once('quiz_preambule.php');
 
-$theme=new Theme($_GET['ID']);
+$theme=new Theme($_GET['ID'], $_SESSION['user_id']);
 $theme->load_info();
 
 if(is_null($theme->nom)){

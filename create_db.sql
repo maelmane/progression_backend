@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE `users` (
   `userID` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL,
-  `courriel`    varchar(255) NOT NULL,
+  `courriel`    varchar(255),
   `actif`   int NOT NULL DEFAULT 1,
 
   PRIMARY KEY (`userID`)
@@ -58,9 +58,10 @@ CREATE TABLE `question` (
 );
 
 CREATE TABLE `avancement` (
-  `userID`     int(11) NOT NULL,
+  `userID`       int(11) NOT NULL,
   `questionID`   int(11) NOT NULL,
-  `avancement`	 int DEFAULT 0,
+  `etat`	 int DEFAULT 0,
+  `reponse`	 text,
   PRIMARY KEY (`userID`, `questionID`)
 );
 
