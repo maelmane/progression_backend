@@ -213,8 +213,8 @@ class Serie extends EntiteBD{
     function get_questions(){
         $query=$this->conn->prepare('SELECT question.questionID, question.numero,question.titre,question.description,question.points, avancement.etat 
                                      FROM question LEFT JOIN avancement ON (
-                                     avancement.questionID = question.questionID) WHERE
-                                     (avancement.userID IS NULL OR avancement.userID = ?) AND
+                                     avancement.questionID = question.questionID AND
+                                     avancement.userID = ?) WHERE
                                      question.serieID = ?
                                      ORDER BY question.numero');
         $query->bind_param( "ii", $this->user_id, $this->id);
