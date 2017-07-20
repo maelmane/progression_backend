@@ -5,7 +5,7 @@ require_once('quiz_preambule.php');
 page_header();
 
 echo "
-		  <h3>Quiz de programmation</h3>
+		  <h3>Exercices de programmation</h3>
 
 		  <pre class='code-wrapper'><code>
 		      <table>";
@@ -18,6 +18,13 @@ foreach(get_themes($_SESSION['user_id']) as $theme){
          ";
 }
 echo "    
+
+            <tr>
+              <td>
+                <br><br>
+                <a href='?p=pratique'>Zone de pratique libre</a></td>
+            </tr>
+
 		      </table>
     ";
 

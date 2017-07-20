@@ -5,7 +5,7 @@ require_once('quiz_preambule.php');
 $theme=new Theme($_GET['ID'], $_SESSION['user_id']);
 $theme->load_info();
 
-if(is_null($theme->nom)){
+if(is_null($theme->id)){
         header('Location: index.php?p=accueil');
 }
 
@@ -14,10 +14,17 @@ page_header();
 echo "
 
         <h3>$theme->titre</h3>
+        <br>
+        $theme->description
+        <br><br>
         <pre class='code-wrapper'><code>
             <table width=100%>
 ";
 
+//Description
+echo "<tr><td>$serie->description<td></tr>";
+
+//Séries
 foreach($theme->get_series() as $serie){
     echo "
           <tr>
@@ -30,9 +37,7 @@ foreach($theme->get_series() as $serie){
 echo "
 <td>
 <br>
-<br>
-<a href='pratique'>Zone de pratique libre
-</a></td>
+</td>
 <tr><td align=right><a href=index.php?p=accueil>Retour à l'accueil</a></td></tr>
 </tr>
 </table>
