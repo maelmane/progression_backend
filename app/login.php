@@ -25,15 +25,16 @@ else{
                 $user_info=new User($username);
                 if(is_null($user_info->username)){
                     //Crée l'utilisateur
-                    $user_info=User::creer_user($username);
+                    User::creer_user($username);
+                    $user_info->load_info($username);
                 }
-                else{
-                    #Obtient les infos de l'utilisateur, les créant si nécessaire.
-                    $_SESSION["user_id"]=$user_info->id;
-                    $_SESSION["username"]=$user_info->username;
-                    $_SESSION["active"]=$user_info->actif; 
-                    header('Location: index.php?p=accueil');
-                }
+
+                #Obtient les infos de l'utilisateur
+                $_SESSION["user_id"]=$user_info->id;
+                $_SESSION["username"]=$user_info->username;
+                $_SESSION["active"]=$user_info->actif; 
+                header('Location: index.php?p=accueil');
+
             } else {
                 $erreur="Nom d'utilisateur ou mot de passe invalide.";
             }

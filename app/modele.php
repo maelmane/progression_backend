@@ -63,7 +63,6 @@ class User extends EntiteBD{
         $query->bind_param( "s", $username);
         $query->execute();
         $query->close();
-        return new User($username);
     }
 
 }
