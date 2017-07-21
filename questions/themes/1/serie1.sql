@@ -9,7 +9,7 @@ values
 "Affichage avec variables",
 2,
 "Affichage avec variables",
-0,
+1,
 "$r=rand(0,1000);
 $s=rand(0,1000);
 $somme=$r+$s;
@@ -31,7 +31,7 @@ $somme=$r+$s;
 "Bonjour le monde!",
 1,
 "Bonjour le monde!",
-0,
+1,
 "$r=rand(0,1000);",
 "Faites afficher «Bonjour le monde!».",
 "",
