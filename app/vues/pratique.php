@@ -37,10 +37,10 @@ else{
 }
 
 
-//Récupère les paramètres de compilation
+//Récupère les paramètres de compilation. Les paramètres provenant de la BD ont préscéance.
 $params=$_POST['params'];
 
-//Récupère les entrées à envoyer au programme
+//Récupère les entrées à envoyer au programme. Les entrées provenant de la BD ont préscéance.
 $stdin=trim($_POST['stdin']);
 
 //Exécute le setup
@@ -103,12 +103,12 @@ echo"
       </tr>
       <td width=50%>
        <h3>Paramètres </h3>
-        <textarea id='params' name = 'params' rows='1' style='width:100%'>$qst->params</textarea>
+        <textarea id='params' name = 'params' rows='1' style='width:100%'>$params</textarea>
      
       </td>
       <td width=50%>
        <h3>Entrées</h3>
-        <textarea id='stdin' name = 'stdin' rows='1' style='width:100%'>$qst->stdin</textarea>
+        <textarea id='stdin' name = 'stdin' rows='1' style='width:100%'>$stdin</textarea>
      
       </td>
      </tr>
@@ -128,7 +128,7 @@ $code_exec=preg_replace('~\R~u', "\n", $code);
 
 //post le code à remotecompiler
 $url_rc='http://localhost:12380/compile';
-$data_rc=array('language' => $_POST["langid"], 'code' => $code_exec, 'parameters' => $qst->params, 'stdin' => $qst->stdin);
+$data_rc=array('language' => $_POST["langid"], 'code' => $code_exec, 'parameters' => "\"$params\"", 'stdin' => $stdin);
 $options_rc=array('http'=> array(
     'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
     'method'  => 'POST',
