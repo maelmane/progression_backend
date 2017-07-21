@@ -138,7 +138,7 @@ syslog(LOG_INFO, $com_log);
 
 //Compose le code à exécuter
 if ($qst->pre_code != ""){ $qst->pre_code = $qst->pre_code . "\n"; }
-$code_exec=$qst->pre_exec. $qst->pre_code .  $code . $qst->post_code;
+$code_exec=preg_replace('~\R~u', "\n", $qst->pre_exec. $qst->pre_code .  $code . $qst->post_code);
 
 //post le code à remotecompiler
 $url_rc='http://localhost:12380/compile';

@@ -83,9 +83,17 @@ echo"
      "; 
 
     echo " <tr>
-       <td>Langage : <select name='lang'> 
-                       <option value=0>Python 3</option>
-                       <option value=7>C++</option>
+       <td>Langage : <select id='langid' name='langid' > 
+                       <option value=13 ".($_POST['langid']==13?"selected":"") . ">Bash</option>
+                       <option value=9 ".($_POST['langid']==9?"selected":"") . ">C</option>
+                       <option value=8 ".($_POST['langid']==8?"selected":"") . ">C++</option>
+                       <option value=7 ".($_POST['langid']==7?"selected":"") . ">Go</option>
+                       <option value=10 ".($_POST['langid']==10?"selected":"") . ">Java</option>
+                       <option value=16 ".($_POST['langid']==16?"selected":"") . ">Perl</option>
+                       <option value=4 ".($_POST['langid']==4?"selected":"") . ">PHP</option>
+                       <option value=0 ".($_POST['langid']==0?"selected":"") . ">Python 2</option>
+                       <option value=1 ".(!isset($_POST['langid'])||$_POST['langid']==1?"selected":"") . ">Python 3</option>
+                       <option value=2 ".($_POST['langid']==2?"selected":"") . ">Ruby</option>
                      </select>
        </td>
        </tr><tr>
@@ -112,15 +120,15 @@ echo"
 ";
 
 //Log le code soumis
-$com_log=$_SERVER['REMOTE_ADDR']." - " . $_SERVER["PHP_SELF"] . " : ". $qst->incode;
+$com_log=$_SERVER['REMOTE_ADDR']." - " . $_SERVER["PHP_SELF"] . " : lang : " . $_POST["langid"] . " Code : ". $code;
 syslog(LOG_INFO, $com_log);
 
 //Compose le code à exécuter
-$code_exec=$code;
+$code_exec=preg_replace('~\R~u', "\n", $code);
 
 //post le code à remotecompiler
 $url_rc='http://localhost:12380/compile';
-$data_rc=array('language' => $_POST['lang_id'], 'code' => $code_exec, 'parameters' => $qst->params, 'stdin' => $qst->stdin);
+$data_rc=array('language' => $_POST["langid"], 'code' => $code_exec, 'parameters' => $qst->params, 'stdin' => $qst->stdin);
 $options_rc=array('http'=> array(
     'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
     'method'  => 'POST',
