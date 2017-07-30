@@ -32,8 +32,10 @@ foreach($serie->get_questions() as $question){
         echo "<td style='color: #777;'>⚪ N°". $question->numero ." : ". $question->titre ."</a>";
     }
     else{
-        echo "<td><a href='?p=question&ID=$question->id'>" . ($question->etat == Question::ETAT_REUSSI?"⚫":"⚪"). " N°". $question->numero ." : ". $question->titre ."</a>";
-    }
+        $page=$question->type == Question::TYPE_PROG?"question_prog":"question_sys";
+        echo "<td><a href='?p=$page&ID=$question->id'>" . ($question->etat == Question::ETAT_REUSSI?"⚫":"⚪"). " N°". $question->numero ." : ". $question->titre ."</a>";
+        }
+
     echo "</td>
           </tr>
          ";

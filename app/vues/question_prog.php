@@ -1,7 +1,7 @@
 <?php
 
 require_once('quiz_preambule.php');
-$qst=new Question($_GET['ID']);
+$qst=new QuestionProg($_GET['ID']);
 $qst->load_info();
 if(is_null($qst->id)){
         header('Location: index.php?p=accueil');
@@ -173,7 +173,8 @@ echo "<table width=100%><tr><td>";
 if ($qst->reponse!=""){    
     if ($output==$qst->reponse){
         //Met la réponse à jour dans l'avancement
-        $avcmt->set_reponse(Question::ETAT_REUSSI, $code);
+        $avcmt->set_reponse($code);
+        $avcmt->set_etat(Question::ETAT_REUSSI);
         
         echo "Bravo! " . ($qst->flag=="" ? "":"La clé est «" . $qst->flag . "»</td>");
         if ($suivante!=""){                                                             
@@ -184,7 +185,7 @@ if ($qst->reponse!=""){
     else{
         if($avcmt->get_etat()==Question::ETAT_NONREUSSI){
             //Met la réponse à jour dans l'avancement
-            $avcmt->set_reponse(Question::ETAT_NONREUSSI, $code);
+            $avcmt->set_reponse($code);
         }
         echo "Raté! Essayez encore</td>";
     }

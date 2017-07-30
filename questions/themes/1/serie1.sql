@@ -1,44 +1,43 @@
-use quiz
-
-insert into question (questionID, serieID, description, numero, titre, lang, setup, enonce, pre_exec, pre_code, incode, post_code, reponse, params, stdin, points)
-values
 /* Question 1 */
-(
+INSERT INTO question (questionID, type, serieID, description, numero, titre,  enonce)
+VALUES (
 1,
+0,
 1,
 "Affichage avec variables",
-2,
+1,
 "Affichage avec variables",
+"Faites afficher la somme des nombres alpha et beta.");
+INSERT INTO question_prog (questionID, setup, pre_exec, pre_code, incode, post_code, reponse)
+VALUES (
 1,
 "$r=rand(0,1000);
 $s=rand(0,1000);
 $somme=$r+$s;
 ",
-"Faites afficher la somme des nombres alpha et beta.",
 "",
 "alpha=$r\nbeta=$s",
 "print(42)",
 "",
-"$somme",
-"",
-"",
-0
-),
+"$somme"
+);
 /* Question 2 */
-(
+INSERT INTO question (questionID, type, serieID, description, numero, titre,  enonce)
+VALUES (
 2,
+0,
 1,
 "Bonjour le monde!",
-1,
+2,
 "Bonjour le monde!",
-1,
+"Faites afficher «Bonjour le monde!».");
+INSERT INTO question_prog (questionID, setup, pre_exec, pre_code, incode, post_code, reponse)
+VALUES (
+2,
 "$r=rand(0,1000);",
-"Faites afficher «Bonjour le monde!».",
 "",
 "",
 "print(42)",
 "",
-"Bonjour le monde!",
-"",
-"",
-0);
+"Bonjour le monde!"
+);

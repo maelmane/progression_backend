@@ -2,8 +2,6 @@
 
 require('quiz_preambule.php');
 
-$qst=new Question(-1); 
-
 function resume($in, $lignes_max){
     $lignes=explode("\n", $in);
     $nb_lignes=count($lignes);
@@ -26,7 +24,7 @@ openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 //Si un code a été soumis, l'insére dans la zone de texte, sinon utilise le code par défaut.
 if ($_POST['incode']==''){
     if($avcmt->reponse==''){
-        $code=$qst->incode;
+        $code='';
     }
     else{
         $code=$avcmt->reponse;
@@ -42,21 +40,6 @@ $params=$_POST['params'];
 
 //Récupère les entrées à envoyer au programme. Les entrées provenant de la BD ont préscéance.
 $stdin=trim($_POST['stdin']);
-
-//Exécute le setup
-eval($qst->setup);
-
-//Exécute le pré-code
-if(!is_null($qst->pre_code))
-    $qst->pre_code=eval("return \"$qst->pre_code\";");
-
-//Exécute le post-code
-if(!is_null($qst->post_code))
-    $qst->post_code=eval("return \"$qst->post_code\";");
-
-//Exécute la réponse
-if(!is_null($qst->reponse))
-    $qst->reponse=eval("return \"$qst->reponse\";");
 
 page_header();
 
@@ -84,7 +67,7 @@ echo"
 
     echo " <tr>
        <td>Langage : <select id='langid' name='langid' > 
-                       <option value=13 ".($_POST['langid']==13?"selected":"") . ">Bash</option>
+                       <option value=11 ".($_POST['langid']==11?"selected":"") . ">Bash</option>
                        <option value=9 ".($_POST['langid']==9?"selected":"") . ">C</option>
                        <option value=8 ".($_POST['langid']==8?"selected":"") . ">C++</option>
                        <option value=7 ".($_POST['langid']==7?"selected":"") . ">Go</option>
@@ -144,9 +127,6 @@ else{
 }
                                                    
 //Affiche le résultat
-if( !is_null($qst->reponse)){
-    echo "<br>Résultat attendu : <br><pre class='code-wrapper'><code>" . resume($qst->reponse,21) . "</code></pre><br>";
-}
 echo "<br>Résultat observé : <br><pre class='code-wrapper'><code>" . resume($output,21) . "</code></pre><br>";
 
 $errors=json_decode($comp_resp,true)['errors'];
@@ -172,7 +152,7 @@ echo "<td align=right><a href=index.php?p=accueil>Retour à l'accueil</a></td></
       matchBrackets: true,
       lineNumbers: true,
       readOnly: false,
-      firstLineNumber: " . strval(substr_count($qst->pre_exec, "\n") + substr_count($qst->pre_code, "\n") + 1) . ",
+      firstLineNumber: 1,
       indentUnit: 4,
       extraKeys: { Tab: betterTab }
       });

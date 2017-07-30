@@ -1,0 +1,634 @@
+/* browser/anyterm.css
+   This file is part of Anyterm; see http://anyterm.org/
+   (C) 2005-2017 Philip Endecott
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+
+/* These are the background colours: */
+.a { background-color: #000000; }  /* black   */
+.b { background-color: #cd0000; }  /* red     */  
+.c { background-color: #00cd00; }  /* green   */
+.d { background-color: #cdcd00; }  /* yellow  */
+.e { background-color: #0000cd; }  /* blue    */
+.f { background-color: #cd00cd; }  /* magenta */
+.g { background-color: #00cdcd; }  /* cyan    */
+.h { background-color: #e5e5e5; }  /* white   */
+
+/* These are the foreground colours used when bold mode is NOT enabled.
+   They're the same as the background colours. */
+.i { color: #000000; }  /* black   */
+.j { color: #cd0000; }  /* red     */  
+.k { color: #00cd00; }  /* green   */
+.l { color: #cdcd00; }  /* yellow  */
+.m { color: #0000cd; }  /* blue    */
+.n { color: #cd00cd; }  /* magenta */
+.o { color: #00cdcd; }  /* cyan    */
+.p { color: #e5e5e5; }  /* white   */
+
+/* These are the brighter foreground colours used when bold mode IS enabled.
+   The business with !important and .p .z is because the .p default is set
+   on the enclosing term element; I can't see a better way to get the desired
+   behaviour. */
+.z.i        { color: #4d4d4d !important; }  /* black   */
+.z.j        { color: #ff0000 !important; }  /* red     */
+.z.k        { color: #00ff00 !important; }  /* green   */
+.z.l        { color: #ffff00 !important; }  /* yellow  */
+.z.m        { color: #0000ff !important; }  /* blue    */
+.z.n        { color: #ff00ff !important; }  /* magenta */
+.z.o        { color: #00ffff !important; }  /* cyan    */
+.z.p, .p .z { color: #ffffff; }             /* white   */
+
+/* These are the xterm 256 color mode foreground colours. There are no bold versions. */
+.x16        { color: #000000; }
+.x17        { color: #00005f; }
+.x18        { color: #000087; }
+.x19        { color: #0000af; }
+.x20        { color: #0000d7; }
+.x21        { color: #0000ff; }
+.x22        { color: #005f00; }
+.x23        { color: #005f5f; }
+.x24        { color: #005f87; }
+.x25        { color: #005faf; }
+.x26        { color: #005fd7; }
+.x27        { color: #005fff; }
+.x28        { color: #008700; }
+.x29        { color: #00875f; }
+.x30        { color: #008787; }
+.x31        { color: #0087af; }
+.x32        { color: #0087d7; }
+.x33        { color: #0087ff; }
+.x34        { color: #00af00; }
+.x35        { color: #00af5f; }
+.x36        { color: #00af87; }
+.x37        { color: #00afaf; }
+.x38        { color: #00afd7; }
+.x39        { color: #00afff; }
+.x40        { color: #00d700; }
+.x41        { color: #00d75f; }
+.x42        { color: #00d787; }
+.x43        { color: #00d7af; }
+.x44        { color: #00d7d7; }
+.x45        { color: #00d7ff; }
+.x46        { color: #00ff00; }
+.x47        { color: #00ff5f; }
+.x48        { color: #00ff87; }
+.x49        { color: #00ffaf; }
+.x50        { color: #00ffd7; }
+.x51        { color: #00ffff; }
+.x52        { color: #5f0000; }
+.x53        { color: #5f005f; }
+.x54        { color: #5f0087; }
+.x55        { color: #5f00af; }
+.x56        { color: #5f00d7; }
+.x57        { color: #5f00ff; }
+.x58        { color: #5f5f00; }
+.x59        { color: #5f5f5f; }
+.x60        { color: #5f5f87; }
+.x61        { color: #5f5faf; }
+.x62        { color: #5f5fd7; }
+.x63        { color: #5f5fff; }
+.x64        { color: #5f8700; }
+.x65        { color: #5f875f; }
+.x66        { color: #5f8787; }
+.x67        { color: #5f87af; }
+.x68        { color: #5f87d7; }
+.x69        { color: #5f87ff; }
+.x70        { color: #5faf00; }
+.x71        { color: #5faf5f; }
+.x72        { color: #5faf87; }
+.x73        { color: #5fafaf; }
+.x74        { color: #5fafd7; }
+.x75        { color: #5fafff; }
+.x76        { color: #5fd700; }
+.x77        { color: #5fd75f; }
+.x78        { color: #5fd787; }
+.x79        { color: #5fd7af; }
+.x80        { color: #5fd7d7; }
+.x81        { color: #5fd7ff; }
+.x82        { color: #5fff00; }
+.x83        { color: #5fff5f; }
+.x84        { color: #5fff87; }
+.x85        { color: #5fffaf; }
+.x86        { color: #5fffd7; }
+.x87        { color: #5fffff; }
+.x88        { color: #870000; }
+.x89        { color: #87005f; }
+.x90        { color: #870087; }
+.x91        { color: #8700af; }
+.x92        { color: #8700d7; }
+.x93        { color: #8700ff; }
+.x94        { color: #875f00; }
+.x95        { color: #875f5f; }
+.x96        { color: #875f87; }
+.x97        { color: #875faf; }
+.x98        { color: #875fd7; }
+.x99        { color: #875fff; }
+.x100       { color: #878700; }
+.x101       { color: #87875f; }
+.x102       { color: #878787; }
+.x103       { color: #8787af; }
+.x104       { color: #8787d7; }
+.x105       { color: #8787ff; }
+.x106       { color: #87af00; }
+.x107       { color: #87af5f; }
+.x108       { color: #87af87; }
+.x109       { color: #87afaf; }
+.x110       { color: #87afd7; }
+.x111       { color: #87afff; }
+.x112       { color: #87d700; }
+.x113       { color: #87d75f; }
+.x114       { color: #87d787; }
+.x115       { color: #87d7af; }
+.x116       { color: #87d7d7; }
+.x117       { color: #87d7ff; }
+.x118       { color: #87ff00; }
+.x119       { color: #87ff5f; }
+.x120       { color: #87ff87; }
+.x121       { color: #87ffaf; }
+.x122       { color: #87ffd7; }
+.x123       { color: #87ffff; }
+.x124       { color: #af0000; }
+.x125       { color: #af005f; }
+.x126       { color: #af0087; }
+.x127       { color: #af00af; }
+.x128       { color: #af00d7; }
+.x129       { color: #af00ff; }
+.x130       { color: #af5f00; }
+.x131       { color: #af5f5f; }
+.x132       { color: #af5f87; }
+.x133       { color: #af5faf; }
+.x134       { color: #af5fd7; }
+.x135       { color: #af5fff; }
+.x136       { color: #af8700; }
+.x137       { color: #af875f; }
+.x138       { color: #af8787; }
+.x139       { color: #af87af; }
+.x140       { color: #af87d7; }
+.x141       { color: #af87ff; }
+.x142       { color: #afaf00; }
+.x143       { color: #afaf5f; }
+.x144       { color: #afaf87; }
+.x145       { color: #afafaf; }
+.x146       { color: #afafd7; }
+.x147       { color: #afafff; }
+.x148       { color: #afd700; }
+.x149       { color: #afd75f; }
+.x150       { color: #afd787; }
+.x151       { color: #afd7af; }
+.x152       { color: #afd7d7; }
+.x153       { color: #afd7ff; }
+.x154       { color: #afff00; }
+.x155       { color: #afff5f; }
+.x156       { color: #afff87; }
+.x157       { color: #afffaf; }
+.x158       { color: #afffd7; }
+.x159       { color: #afffff; }
+.x160       { color: #d70000; }
+.x161       { color: #d7005f; }
+.x162       { color: #d70087; }
+.x163       { color: #d700af; }
+.x164       { color: #d700d7; }
+.x165       { color: #d700ff; }
+.x166       { color: #d75f00; }
+.x167       { color: #d75f5f; }
+.x168       { color: #d75f87; }
+.x169       { color: #d75faf; }
+.x170       { color: #d75fd7; }
+.x171       { color: #d75fff; }
+.x172       { color: #d78700; }
+.x173       { color: #d7875f; }
+.x174       { color: #d78787; }
+.x175       { color: #d787af; }
+.x176       { color: #d787d7; }
+.x177       { color: #d787ff; }
+.x178       { color: #d7af00; }
+.x179       { color: #d7af5f; }
+.x180       { color: #d7af87; }
+.x181       { color: #d7afaf; }
+.x182       { color: #d7afd7; }
+.x183       { color: #d7afff; }
+.x184       { color: #d7d700; }
+.x185       { color: #d7d75f; }
+.x186       { color: #d7d787; }
+.x187       { color: #d7d7af; }
+.x188       { color: #d7d7d7; }
+.x189       { color: #d7d7ff; }
+.x190       { color: #d7ff00; }
+.x191       { color: #d7ff5f; }
+.x192       { color: #d7ff87; }
+.x193       { color: #d7ffaf; }
+.x194       { color: #d7ffd7; }
+.x195       { color: #d7ffff; }
+.x196       { color: #ff0000; }
+.x197       { color: #ff005f; }
+.x198       { color: #ff0087; }
+.x199       { color: #ff00af; }
+.x200       { color: #ff00d7; }
+.x201       { color: #ff00ff; }
+.x202       { color: #ff5f00; }
+.x203       { color: #ff5f5f; }
+.x204       { color: #ff5f87; }
+.x205       { color: #ff5faf; }
+.x206       { color: #ff5fd7; }
+.x207       { color: #ff5fff; }
+.x208       { color: #ff8700; }
+.x209       { color: #ff875f; }
+.x210       { color: #ff8787; }
+.x211       { color: #ff87af; }
+.x212       { color: #ff87d7; }
+.x213       { color: #ff87ff; }
+.x214       { color: #ffaf00; }
+.x215       { color: #ffaf5f; }
+.x216       { color: #ffaf87; }
+.x217       { color: #ffafaf; }
+.x218       { color: #ffafd7; }
+.x219       { color: #ffafff; }
+.x220       { color: #ffd700; }
+.x221       { color: #ffd75f; }
+.x222       { color: #ffd787; }
+.x223       { color: #ffd7af; }
+.x224       { color: #ffd7d7; }
+.x225       { color: #ffd7ff; }
+.x226       { color: #ffff00; }
+.x227       { color: #ffff5f; }
+.x228       { color: #ffff87; }
+.x229       { color: #ffffaf; }
+.x230       { color: #ffffd7; }
+.x231       { color: #ffffff; }
+.x232       { color: #080808; }
+.x233       { color: #121212; }
+.x234       { color: #1c1c1c; }
+.x235       { color: #262626; }
+.x236       { color: #303030; }
+.x237       { color: #3a3a3a; }
+.x238       { color: #444444; }
+.x239       { color: #4e4e4e; }
+.x240       { color: #585858; }
+.x241       { color: #626262; }
+.x242       { color: #6c6c6c; }
+.x243       { color: #767676; }
+.x244       { color: #808080; }
+.x245       { color: #8a8a8a; }
+.x246       { color: #949494; }
+.x247       { color: #9e9e9e; }
+.x248       { color: #a8a8a8; }
+.x249       { color: #b2b2b2; }
+.x250       { color: #bcbcbc; }
+.x251       { color: #c6c6c6; }
+.x252       { color: #d0d0d0; }
+.x253       { color: #dadada; }
+.x254       { color: #e4e4e4; }
+.x255       { color: #eeeeee; }
+
+/* These are the xterm 256 color mode background colours. They're the same as the
+   foreground colours. */
+.y16        { background-color: #000000; }
+.y17        { background-color: #00005f; }
+.y18        { background-color: #000087; }
+.y19        { background-color: #0000af; }
+.y20        { background-color: #0000d7; }
+.y21        { background-color: #0000ff; }
+.y22        { background-color: #005f00; }
+.y23        { background-color: #005f5f; }
+.y24        { background-color: #005f87; }
+.y25        { background-color: #005faf; }
+.y26        { background-color: #005fd7; }
+.y27        { background-color: #005fff; }
+.y28        { background-color: #008700; }
+.y29        { background-color: #00875f; }
+.y30        { background-color: #008787; }
+.y31        { background-color: #0087af; }
+.y32        { background-color: #0087d7; }
+.y33        { background-color: #0087ff; }
+.y34        { background-color: #00af00; }
+.y35        { background-color: #00af5f; }
+.y36        { background-color: #00af87; }
+.y37        { background-color: #00afaf; }
+.y38        { background-color: #00afd7; }
+.y39        { background-color: #00afff; }
+.y40        { background-color: #00d700; }
+.y41        { background-color: #00d75f; }
+.y42        { background-color: #00d787; }
+.y43        { background-color: #00d7af; }
+.y44        { background-color: #00d7d7; }
+.y45        { background-color: #00d7ff; }
+.y46        { background-color: #00ff00; }
+.y47        { background-color: #00ff5f; }
+.y48        { background-color: #00ff87; }
+.y49        { background-color: #00ffaf; }
+.y50        { background-color: #00ffd7; }
+.y51        { background-color: #00ffff; }
+.y52        { background-color: #5f0000; }
+.y53        { background-color: #5f005f; }
+.y54        { background-color: #5f0087; }
+.y55        { background-color: #5f00af; }
+.y56        { background-color: #5f00d7; }
+.y57        { background-color: #5f00ff; }
+.y58        { background-color: #5f5f00; }
+.y59        { background-color: #5f5f5f; }
+.y60        { background-color: #5f5f87; }
+.y61        { background-color: #5f5faf; }
+.y62        { background-color: #5f5fd7; }
+.y63        { background-color: #5f5fff; }
+.y64        { background-color: #5f8700; }
+.y65        { background-color: #5f875f; }
+.y66        { background-color: #5f8787; }
+.y67        { background-color: #5f87af; }
+.y68        { background-color: #5f87d7; }
+.y69        { background-color: #5f87ff; }
+.y70        { background-color: #5faf00; }
+.y71        { background-color: #5faf5f; }
+.y72        { background-color: #5faf87; }
+.y73        { background-color: #5fafaf; }
+.y74        { background-color: #5fafd7; }
+.y75        { background-color: #5fafff; }
+.y76        { background-color: #5fd700; }
+.y77        { background-color: #5fd75f; }
+.y78        { background-color: #5fd787; }
+.y79        { background-color: #5fd7af; }
+.y80        { background-color: #5fd7d7; }
+.y81        { background-color: #5fd7ff; }
+.y82        { background-color: #5fff00; }
+.y83        { background-color: #5fff5f; }
+.y84        { background-color: #5fff87; }
+.y85        { background-color: #5fffaf; }
+.y86        { background-color: #5fffd7; }
+.y87        { background-color: #5fffff; }
+.y88        { background-color: #870000; }
+.y89        { background-color: #87005f; }
+.y90        { background-color: #870087; }
+.y91        { background-color: #8700af; }
+.y92        { background-color: #8700d7; }
+.y93        { background-color: #8700ff; }
+.y94        { background-color: #875f00; }
+.y95        { background-color: #875f5f; }
+.y96        { background-color: #875f87; }
+.y97        { background-color: #875faf; }
+.y98        { background-color: #875fd7; }
+.y99        { background-color: #875fff; }
+.y100       { background-color: #878700; }
+.y101       { background-color: #87875f; }
+.y102       { background-color: #878787; }
+.y103       { background-color: #8787af; }
+.y104       { background-color: #8787d7; }
+.y105       { background-color: #8787ff; }
+.y106       { background-color: #87af00; }
+.y107       { background-color: #87af5f; }
+.y108       { background-color: #87af87; }
+.y109       { background-color: #87afaf; }
+.y110       { background-color: #87afd7; }
+.y111       { background-color: #87afff; }
+.y112       { background-color: #87d700; }
+.y113       { background-color: #87d75f; }
+.y114       { background-color: #87d787; }
+.y115       { background-color: #87d7af; }
+.y116       { background-color: #87d7d7; }
+.y117       { background-color: #87d7ff; }
+.y118       { background-color: #87ff00; }
+.y119       { background-color: #87ff5f; }
+.y120       { background-color: #87ff87; }
+.y121       { background-color: #87ffaf; }
+.y122       { background-color: #87ffd7; }
+.y123       { background-color: #87ffff; }
+.y124       { background-color: #af0000; }
+.y125       { background-color: #af005f; }
+.y126       { background-color: #af0087; }
+.y127       { background-color: #af00af; }
+.y128       { background-color: #af00d7; }
+.y129       { background-color: #af00ff; }
+.y130       { background-color: #af5f00; }
+.y131       { background-color: #af5f5f; }
+.y132       { background-color: #af5f87; }
+.y133       { background-color: #af5faf; }
+.y134       { background-color: #af5fd7; }
+.y135       { background-color: #af5fff; }
+.y136       { background-color: #af8700; }
+.y137       { background-color: #af875f; }
+.y138       { background-color: #af8787; }
+.y139       { background-color: #af87af; }
+.y140       { background-color: #af87d7; }
+.y141       { background-color: #af87ff; }
+.y142       { background-color: #afaf00; }
+.y143       { background-color: #afaf5f; }
+.y144       { background-color: #afaf87; }
+.y145       { background-color: #afafaf; }
+.y146       { background-color: #afafd7; }
+.y147       { background-color: #afafff; }
+.y148       { background-color: #afd700; }
+.y149       { background-color: #afd75f; }
+.y150       { background-color: #afd787; }
+.y151       { background-color: #afd7af; }
+.y152       { background-color: #afd7d7; }
+.y153       { background-color: #afd7ff; }
+.y154       { background-color: #afff00; }
+.y155       { background-color: #afff5f; }
+.y156       { background-color: #afff87; }
+.y157       { background-color: #afffaf; }
+.y158       { background-color: #afffd7; }
+.y159       { background-color: #afffff; }
+.y160       { background-color: #d70000; }
+.y161       { background-color: #d7005f; }
+.y162       { background-color: #d70087; }
+.y163       { background-color: #d700af; }
+.y164       { background-color: #d700d7; }
+.y165       { background-color: #d700ff; }
+.y166       { background-color: #d75f00; }
+.y167       { background-color: #d75f5f; }
+.y168       { background-color: #d75f87; }
+.y169       { background-color: #d75faf; }
+.y170       { background-color: #d75fd7; }
+.y171       { background-color: #d75fff; }
+.y172       { background-color: #d78700; }
+.y173       { background-color: #d7875f; }
+.y174       { background-color: #d78787; }
+.y175       { background-color: #d787af; }
+.y176       { background-color: #d787d7; }
+.y177       { background-color: #d787ff; }
+.y178       { background-color: #d7af00; }
+.y179       { background-color: #d7af5f; }
+.y180       { background-color: #d7af87; }
+.y181       { background-color: #d7afaf; }
+.y182       { background-color: #d7afd7; }
+.y183       { background-color: #d7afff; }
+.y184       { background-color: #d7d700; }
+.y185       { background-color: #d7d75f; }
+.y186       { background-color: #d7d787; }
+.y187       { background-color: #d7d7af; }
+.y188       { background-color: #d7d7d7; }
+.y189       { background-color: #d7d7ff; }
+.y190       { background-color: #d7ff00; }
+.y191       { background-color: #d7ff5f; }
+.y192       { background-color: #d7ff87; }
+.y193       { background-color: #d7ffaf; }
+.y194       { background-color: #d7ffd7; }
+.y195       { background-color: #d7ffff; }
+.y196       { background-color: #ff0000; }
+.y197       { background-color: #ff005f; }
+.y198       { background-color: #ff0087; }
+.y199       { background-color: #ff00af; }
+.y200       { background-color: #ff00d7; }
+.y201       { background-color: #ff00ff; }
+.y202       { background-color: #ff5f00; }
+.y203       { background-color: #ff5f5f; }
+.y204       { background-color: #ff5f87; }
+.y205       { background-color: #ff5faf; }
+.y206       { background-color: #ff5fd7; }
+.y207       { background-color: #ff5fff; }
+.y208       { background-color: #ff8700; }
+.y209       { background-color: #ff875f; }
+.y210       { background-color: #ff8787; }
+.y211       { background-color: #ff87af; }
+.y212       { background-color: #ff87d7; }
+.y213       { background-color: #ff87ff; }
+.y214       { background-color: #ffaf00; }
+.y215       { background-color: #ffaf5f; }
+.y216       { background-color: #ffaf87; }
+.y217       { background-color: #ffafaf; }
+.y218       { background-color: #ffafd7; }
+.y219       { background-color: #ffafff; }
+.y220       { background-color: #ffd700; }
+.y221       { background-color: #ffd75f; }
+.y222       { background-color: #ffd787; }
+.y223       { background-color: #ffd7af; }
+.y224       { background-color: #ffd7d7; }
+.y225       { background-color: #ffd7ff; }
+.y226       { background-color: #ffff00; }
+.y227       { background-color: #ffff5f; }
+.y228       { background-color: #ffff87; }
+.y229       { background-color: #ffffaf; }
+.y230       { background-color: #ffffd7; }
+.y231       { background-color: #ffffff; }
+.y232       { background-color: #080808; }
+.y233       { background-color: #121212; }
+.y234       { background-color: #1c1c1c; }
+.y235       { background-color: #262626; }
+.y236       { background-color: #303030; }
+.y237       { background-color: #3a3a3a; }
+.y238       { background-color: #444444; }
+.y239       { background-color: #4e4e4e; }
+.y240       { background-color: #585858; }
+.y241       { background-color: #626262; }
+.y242       { background-color: #6c6c6c; }
+.y243       { background-color: #767676; }
+.y244       { background-color: #808080; }
+.y245       { background-color: #8a8a8a; }
+.y246       { background-color: #949494; }
+.y247       { background-color: #9e9e9e; }
+.y248       { background-color: #a8a8a8; }
+.y249       { background-color: #b2b2b2; }
+.y250       { background-color: #bcbcbc; }
+.y251       { background-color: #c6c6c6; }
+.y252       { background-color: #d0d0d0; }
+.y253       { background-color: #dadada; }
+.y254       { background-color: #e4e4e4; }
+.y255       { background-color: #eeeeee; }
+
+/* If you want a black-on-white colour scheme like xterm, rather than the
+   default white-on-black, you need to change the lines for black and white
+   above to something like the following:
+   .a { background-color: #ffffff; }
+   .h { background-color: #000000; }
+   .i { color: #e5e5e5; }
+   .p { color: #000000; }
+   .z.i        { color: #ffffff !important; }
+   .z.p, .p .z { color: #000000; }
+*/
+
+/* If the following rule is enabled, bold mode will actually use a bold font.
+   This is not a good idea in general as the bold font will probably be wider
+   than the normal font, messing up the layout, at least for some subset of
+   the character set.  So it's commented out; bold characters will be 
+   distinguished only by their brighter colours (above) */
+/* .z { font-weight: bold; } */
+
+/* The cursor.  You can make it blink if you really want to (on some browsers). */
+.cursor {
+  border: 1px solid red;
+  margin: -1px;
+/*text-decoration: blink;*/
+}
+
+
+/* Properties for the page outside the terminal: */
+
+body {
+  background-color: white;
+  /* Don't like the white background?  How about this:
+     background-color: #222222;
+  */
+}
+
+noscript {
+  /* This is for the message that users see if they don't have Javascript
+     enabled.  We want it to be visible whatever the page background colour
+     (above) is set to, so we give it its own background colour. */
+  color: black;
+  background-color: white;
+}
+
+
+/* The remaining definitions determine the appearance of the frame around the
+   terminal, its title bar, and buttons: */
+
+.termframe {
+  float: left;
+  position: relative;  /* So that resizer's position is relative to this. */
+  background-color: rgb(63,63,161);
+  padding: 0.4ex;
+}
+
+.termframe p {
+  margin: 0;
+  color: white;
+  font-weight: bold;
+  font-family: sans-serif;
+}
+
+.termframe a {
+  cursor: pointer;
+}
+
+img.button { 
+  margin: 0 3px;
+  cursor: pointer;
+  vertical-align: top;
+}
+
+.boxed {
+  padding: 0 3px;
+  border: solid white 1px;
+}
+
+.right {
+  position: absolute;
+  right: 5px;
+}
+
+.term {
+  margin: 0.4ex 0 0 0;
+  padding: 1px;
+
+  overflow: auto;
+  overflow-x: visible;
+}
+
+.resizer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  cursor: nwse-resize;
+}
