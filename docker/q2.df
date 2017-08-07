@@ -1,6 +1,6 @@
 FROM qsystem
 
 RUN mkdir /home/krusty/bart
-RUN echo die Bart die > /home/krusty/bart/idées_de_tatouages
+RUN echo Ouahahahahahaaaaaa!!! > /home/krusty/bart/pensées.txt
 RUN chown krusty:krusty -R /home/krusty/bart
 

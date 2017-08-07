@@ -39,6 +39,7 @@ $comp_resp=file_get_contents($url_rc, false, $context);
 
 $cont_id=trim(json_decode($comp_resp, true)['cont_id']);
 $cont_ip=trim(json_decode($comp_resp, true)['add_ip']);
+$cont_port=trim(json_decode($comp_resp, true)['add_port']);
 $res_validation=trim(json_decode($comp_resp, true)['resultat']);
 
 $avcmt->set_reponse($cont_id);
@@ -49,22 +50,6 @@ echo"
 
   <html> 
 
-       <script type='text/javascript' src='browser/anyterm.js'>
-       </script>
-       <script type='text/javascript'>
-         // To create the terminal, just call create_term.  The paramters are:
-         //  - The id of a <div> element that will become the terminal.
-         //  - The title.  %h and %v expand to the hostname and Anyterm version.
-         //  - The number of rows and columns.
-         //  - An optional parameter which is substituted for %p in the command string.
-         //  - An optional character set.
-         //  - An option number of lines of scrollback (default 0).
-       
-         // So the following creates an 80x25 terminal with 50 lines of scrollback:
-
-         window.onload=function() {create_term('term','',25,100,'$cont_ip','',50);};
-         windew.onunload=null;
-       </script>
 
 
    <head>
@@ -81,24 +66,27 @@ echo"
            <br>
            <br>
         <pre class='code-wrapper'><code><form method='post' action=''>
-        <table style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'> 
+        <table width=100%> 
      "; 
 
     echo " <tr>
-       <td colspan=2>
-          <div id='term'></div>
+       <td>
+         <div>
+         <iframe id=tty width=100% height=350 src='http://$_SERVER[SERVER_NAME]:$cont_port'></iframe>
+         </div>
        </td>
+       <tr><td align=right><a href='http://$_SERVER[SERVER_NAME]:$cont_port' target=_blank>plein écran</a></td></tr>
        </tr></table>";
 if(!is_null($qst->reponse)){
     echo"
    <table style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'>
    <tr><td>
    Réponse: <input type=text name=reponse value='$avcmt->reponse'>
-   <input type=submit value='Soumettre' >";
+   <input type=submit value='Soumettre'>";
 }
 else{
     echo"
-   <input type=submit value='Valider' >";
+   <input type=submit value='Valider'>";
 }
 
 echo "</td></tr></table>
@@ -116,13 +104,16 @@ if(!is_null($qst->reponse)){
             echo "Mauvaise réponse!";
         }
 }
-else{
-    if($res_validation=="1"){
+elseif($res_validation!=""){
+    if($res_validation=="valide"){
         echo "Bonne réponse!";
         $avcmt->set_etat(Question::ETAT_REUSSI);
     }
-    else{
+    elseif($res_validation=="invalide"){
         echo "Mauvaise réponse!";
+    }
+    else{
+        echo "$res_validation</td></tr><tr></td>" ;
     }
 }
 

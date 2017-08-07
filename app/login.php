@@ -32,19 +32,22 @@ else{
                 #Obtient les infos de l'utilisateur
                 $_SESSION["user_id"]=$user_info->id;
                 $_SESSION["username"]=$user_info->username;
-                $_SESSION["active"]=$user_info->actif; 
-                header('Location: index.php?p=accueil');
+                $_SESSION["active"]=$user_info->actif;
+                if(!isset($_GET["p"]))
+                    header("Location: index.php?p=accueil");
+                else
+                    header("Location: index.php?p=$_GET[p]&ID=$_GET[ID]");    
 
             } else {
                 $erreur="Nom d'utilisateur ou mot de passe invalide.";
             }
         }
     }
-
-    if($erreur){
-        echo $erreur;
-    }
-    echo '
+    else{
+        if($erreur){
+            echo $erreur;
+        }
+        echo '
 	  <html>
         <head>
               <meta charset="utf-8">
@@ -65,11 +68,11 @@ else{
          </form>
          ';
 
-    echo"
+        echo"
                </div>
              </section>
     	    </body>
 	    </html>
         ";
-
+    }
 }
