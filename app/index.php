@@ -1,6 +1,6 @@
 <?php
 
-$whitelist='/accueil|theme|serie|question|pratique|systeme/';
+$whitelist='/accueil|theme|serie|question|pratique|systeme|admin/';
 
 session_start();
 

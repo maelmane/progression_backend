@@ -28,11 +28,20 @@ openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 
 //Crée le conteneur
 $url_rc='http://localhost:12380/compile';
-$data_rc=array('language' => 15, 'code' => $qst->verification, 'vm_name' => $qst->image, 'parameters' => $avcmt->reponse, 'stdin' => '');
-$options_rc=array('http'=> array(
-    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-    'method'  => 'POST',
-    'content' => http_build_query($data_rc)));
+if($_POST['reset']=='Réinitialiser'){
+    $data_rc=array('language' => 15, 'code' => 'reset', 'vm_name' => $qst->image, 'parameters' => $avcmt->reponse, 'stdin' => '');
+    $options_rc=array('http'=> array(
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data_rc)));
+}
+else{
+    $data_rc=array('language' => 15, 'code' => $qst->verification, 'vm_name' => $qst->image, 'parameters' => $avcmt->reponse, 'stdin' => '');
+    $options_rc=array('http'=> array(
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data_rc)));
+}
 
 $context  = stream_context_create($options_rc);
 $comp_resp=file_get_contents($url_rc, false, $context);
@@ -65,28 +74,30 @@ echo"
            $qst->enonce
            <br>
            <br>
-        <pre class='code-wrapper'><code><form method='post' action=''>
+        <pre class='code-wrapper'><code><form id='form1' method='post' action=''>
         <table width=100%> 
      "; 
 
     echo " <tr>
-       <td>
+       <tr><td align=right colspan=2><a href='http://$_SERVER[SERVER_NAME]:$cont_port' target=_blank>plein écran <img width=16 src='images/fs.jpg'></a></td></tr>
+       <td colspan=2>
          <div>
          <iframe id=tty width=100% height=350 src='http://$_SERVER[SERVER_NAME]:$cont_port'></iframe>
          </div>
        </td>
-       <tr><td align=right><a href='http://$_SERVER[SERVER_NAME]:$cont_port' target=_blank>plein écran</a></td></tr>
-       </tr></table>";
+       </tr>";
 if(!is_null($qst->reponse)){
     echo"
-   <table style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'>
+   </table><table style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'>
    <tr><td>
    Réponse: <input type=text name=reponse value='$avcmt->reponse'>
    <input type=submit value='Soumettre'>";
 }
 else{
     echo"
-   <input type=submit value='Valider'>";
+   <tr><td>
+   <input type=submit name='submit' value='Valider'></td>
+   <td  align=right><input type=submit name='reset' value='Réinitialiser' onclick='return confirm(\"Voulez-vous vraiment réinitialiser votre session?\");'>";
 }
 
 echo "</td></tr></table>

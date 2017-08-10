@@ -66,18 +66,7 @@ echo"
      "; 
 
     echo " <tr>
-       <td>Langage : <select id='langid' name='langid' > 
-                       <option value=11 ".($_POST['langid']==11?"selected":"") . ">Bash</option>
-                       <option value=9 ".($_POST['langid']==9?"selected":"") . ">C</option>
-                       <option value=8 ".($_POST['langid']==8?"selected":"") . ">C++</option>
-                       <option value=7 ".($_POST['langid']==7?"selected":"") . ">Go</option>
-                       <option value=10 ".($_POST['langid']==10?"selected":"") . ">Java</option>
-                       <option value=16 ".($_POST['langid']==16?"selected":"") . ">Perl</option>
-                       <option value=4 ".($_POST['langid']==4?"selected":"") . ">PHP</option>
-                       <option value=0 ".($_POST['langid']==0?"selected":"") . ">Python 2</option>
-                       <option value=1 ".(!isset($_POST['langid'])||$_POST['langid']==1?"selected":"") . ">Python 3</option>
-                       <option value=2 ".($_POST['langid']==2?"selected":"") . ">Ruby</option>
-                     </select>
+       <td>Langage : ".menu_lang($_POST['langid'])."
        </td>
        </tr><tr>
        <td colspan=2>

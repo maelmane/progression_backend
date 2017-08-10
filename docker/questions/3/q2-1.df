@@ -1,0 +1,8 @@
+FROM vim
+
+RUN touch /tmp/canari
+RUN chown krusty:krusty /tmp/canari
+RUN echo vim\&\&rm -f /tmp/canari >> /home/krusty/.bashrc
+
+
+

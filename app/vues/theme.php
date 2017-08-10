@@ -19,6 +19,7 @@ echo "
         <br><br>
         <pre class='code-wrapper'><code>
             <table width=100%>
+              <th align=left width=10%>N°</th><th align=left>Sujet</th><th align=center>Complété</th>
 ";
 
 //Description
@@ -28,7 +29,7 @@ echo "<tr><td>$serie->description<td></tr>";
 foreach($theme->get_series() as $serie){
     echo "
           <tr>
-          <td><a href='?p=serie&ID=$serie->id'>Série ". $serie->numero ." : ". $serie->titre ."(".$serie->get_avancement()."/".$serie->get_nb_questions().")</a></td>
+          <td>". $serie->numero ."</td><td><a href='?p=serie&ID=$serie->id'>". $serie->titre ."</a></td><td align=center>".floor($serie->get_avancement()/$serie->get_nb_questions()*100) ."%</a></td>
           </tr>
 
          ";
@@ -38,7 +39,7 @@ echo "
 <td>
 <br>
 </td>
-<tr><td align=right><a href=index.php?p=accueil>Retour à l'accueil</a></td></tr>
+<tr><td colspan=3 align=right><a href=index.php?p=accueil>Retour à l'accueil</a></td></tr>
 </tr>
 </table>
 ";

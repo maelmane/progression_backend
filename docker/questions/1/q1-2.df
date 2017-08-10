@@ -1,4 +1,4 @@
-FROM qsystem
+FROM system
 
 RUN mkdir /home/krusty/bart
 RUN echo Ouahahahahahaaaaaa!!! > /home/krusty/bart/pensées.txt

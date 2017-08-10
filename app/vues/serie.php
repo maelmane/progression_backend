@@ -1,4 +1,4 @@
-<?php
+l<?php
 
 require_once('quiz_preambule.php');
 
@@ -23,6 +23,7 @@ echo "
         <br><br>
         <pre class='code-wrapper'><code>
             <table width=100%>
+              <th align=left width=10%>N°</th><th align=left>Titre</th><th align=center>Réussi</th>
 ";
 
 //Questions
@@ -33,7 +34,7 @@ foreach($serie->get_questions() as $question){
     }
     else{
         $page=$question->type == Question::TYPE_PROG?"question_prog":"question_sys";
-        echo "<td><a href='?p=$page&ID=$question->id'>" . ($question->etat == Question::ETAT_REUSSI?"⚫":"⚪"). " N°". $question->numero ." : ". $question->titre ."</a>";
+        echo "<td>" . $question->numero ."</td><td><a href='?p=$page&ID=$question->id'>". $question->titre ."</a></td><td align=center>".($question->etat == Question::ETAT_REUSSI?"✓":" ")."</td>";
         }
 
     echo "</td>
@@ -43,7 +44,7 @@ foreach($serie->get_questions() as $question){
 
 echo "
 <tr>
-<td align=right><a href=index.php?p=theme&ID=$serie->themeID >Retour à la liste des sujets</a></td>
+<td colspan=3 align=right><a href=index.php?p=theme&ID=$serie->themeID >Retour à la liste des sujets</a></td>
 </tr>
 </tr>
 </table>

@@ -8,12 +8,14 @@ echo "
 		  <h3>Exercices de programmation</h3>
 
 		  <pre class='code-wrapper'><code>
-		      <table>";
+		      <table width=100%> 
+              <th align=left  width=70%>Thème</th><th align=center width=30%>Complété</th>
+";
 
 foreach(get_themes($_SESSION['user_id']) as $theme){
-    echo "
+    echo " 
 			<tr>
-			  <td><a href='?p=theme&ID=$theme->id'>$theme->titre (". $theme->get_avancement() ."/". $theme->get_nb_questions() . ") </a></td>
+			  <td><a href='?p=theme&ID=$theme->id'>$theme->titre</td><td align=center>". floor($theme->get_avancement()/$theme->get_nb_questions()*100) . "% </a></td>
 			</tr>
          ";
 }

@@ -157,7 +157,6 @@ class Theme extends EntiteBD{
                                      question.serieID=serie.serieID AND 
                                      serie.themeID= ? AND
                                      avancement.etat = 1');
-        echo $this->conn->error;
         $query->bind_param( "ii", $this->user_id,$this->id);
         $query->execute();
         $query->bind_result($res);
@@ -228,7 +227,7 @@ class Serie extends EntiteBD{
         
         $questions=array();
         while($query->fetch()){
-            $questions[] = new Question($id, $type, $numero, $titre, $description, $points, $etat);
+            $questions[] = new Question($id, $this->id, $type, $numero, $titre, $description, $points, $etat);
         }
         $query->close();                                     
 
@@ -273,10 +272,11 @@ class Question extends EntiteBD{
     public $points;
     public $etat;
     
-    public function __construct($id, $type, $numero=null, $titre=null, $description=null, $points=null, $etat=null){
+    public function __construct($id, $type, $serieID=null, $numero=null, $titre=null, $description=null, $points=null, $etat=null){
         parent::__construct();
         
         $this->id=$id;
+        $this->serieID=$serieID;
         $this->type=$type;
         $this->numero=$numero;
         $this->titre=$titre;
@@ -287,6 +287,7 @@ class Question extends EntiteBD{
 
     public function load_info(){
         $query=$this->conn->prepare('SELECT question.questionID,
+                                            question.type,
                                             question.serieID,
                                             question.numero,
                                             question.titre,
@@ -297,15 +298,33 @@ class Question extends EntiteBD{
                                      FROM question LEFT JOIN avancement ON (
                                           avancement.questionID = question.questionID 
                                           AND avancement.userID = ?) 
-                                     WHERE question.serieID = ?
+                                     WHERE question.questionID = ?
                                      ORDER BY question.numero');
         $query->bind_param( "ii", $this->user_id, $this->id);
         $query->execute();
-        $query->bind_result( $this->id, $this->serieID, $this->numero, $this->titre, $this->description, $this->enonce, $this->points, $this->etat);
+        $query->bind_result( $this->id, $this->type, $this->serieID, $this->numero, $this->titre, $this->description, $this->enonce, $this->points, $this->etat);
         if(is_null($query->fetch()))
            $this->id=null;
         $query->close();
     }
+
+    public function save(){
+        $query=$this->conn->prepare("INSERT INTO question(type, serieID, titre, description, numero, enonce, points) 
+                                     VALUES( ?, ?, ?, ?, ?, ?, ?)");
+
+        $query->bind_param( "iissisi", $this->type, $this->serieID, $this->titre, $this->description, $this->numero, $this->enonce, $this->points );
+        $query->execute();
+        $query->close();
+
+        $query=$this->conn->prepare("SELECT max(questionID) FROM question");
+        $query->execute();
+        $query->bind_result( $qid );
+        $query->fetch();
+        $query->close();
+        
+        return $qid;
+    }
+
 }
 
 class QuestionProg extends Question{
@@ -320,13 +339,24 @@ class QuestionProg extends Question{
     public $params;
     public $stdin;
     
-    public function __construct($id, $numero=null, $titre=null, $description=null, $points=null){
+    public function __construct($id, $serieID=null, $numero=null, $titre=null, $description=null, $points=null, $lang=null, $setup=null, $pre_exec=null, $pre_code=null, $incode=null, $post_code=null, $params=null, $stdin=null){
         parent::__construct($id, Question::TYPE_PROG);
         
+        $this->serieID=$serieID;
         $this->numero=$numero;
         $this->titre=$titre;
         $this->description=$description;
         $this->points=$points;
+
+        $this->lang=$lang;                          
+        $this->setup=$setup;                         
+        $this->pre_exec=$pre_exec;                      
+        $this->pre_code=$pre_code;                      
+        $this->incode=$incode;                        
+        $this->post_code=$post_code;                     
+        $this->params=$params;                        
+        $this->stdin=$stdin;                         
+                                        
     }
 
     public function load_info(){
@@ -340,7 +370,7 @@ class QuestionProg extends Question{
                                             setup, 
                                             pre_exec, 
                                             pre_code, 
-                                            incode, 
+                                            in_code, 
                                             post_code, 
                                             question_prog.reponse, 
                                             params, 
@@ -383,6 +413,24 @@ class QuestionProg extends Question{
         else
             $this->lang=$qlang;
         $query->close();
+    }
+
+    public function save(){
+        $qid=parent::save();
+        $query=$this->conn->prepare("INSERT INTO question_prog(questionID, lang, setup, pre_exec, pre_code, in_code, post_code, reponse, params, stdin)
+                                     VALUES( $qid, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $query->bind_param( "issssssss", $this->lang, $this->setup,
+                             $this->pre_exec,
+                             $this->pre_code,
+                             $this->incode,
+                             $this->post_code,
+                             $this->reponse,
+                             $this->params,
+                            $this->stdin);
+        $query->execute();
+        $query->close();
+
+        return $qid;
     }
 }
 

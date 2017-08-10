@@ -45,23 +45,31 @@ else{
 //Récupère les paramètres de compilation. Les paramètres provenant de la BD ont préscéance.
 $params=($qst->params!=""?$qst->params:$_POST['params']);
 
-//Récupère les entrées à envoyer au programme. Les entrées provenant de la BD ont préscéance.
-$stdin=($qst->stdin!=""?$qst->stdin:trim($_POST['stdin']));
-
 //Exécute le setup
 eval($qst->setup);
 
+//Récupère les entrées à envoyer au programme. Les entrées provenant de la BD ont préscéance.
+$stdin=($qst->stdin!=""?$qst->stdin:trim($_POST['stdin']));
+
+//Exécute l'énoncé
+if(!is_null($qst->enonce))
+    $qst->enonce=eval("return \"$qst->enonce\";");
+
+//Exécute le code pré-exécution
+if(!is_null($qst->pre_exec))
+    $qst->pre_exec=eval("return $qst->pre_exec;");
+
 //Exécute le pré-code
 if(!is_null($qst->pre_code))
-    $qst->pre_code=eval("return \"$qst->pre_code\";");
+    $qst->pre_code=eval("return $qst->pre_code;");
 
 //Exécute le post-code
 if(!is_null($qst->post_code))
-    $qst->post_code=eval("return \"$qst->post_code\";");
+    $qst->post_code=eval("return $qst->post_code;");
 
 //Exécute la réponse
 if(!is_null($qst->reponse))
-    $qst->reponse=eval("return \"$qst->reponse\";");
+    $qst->reponse=eval("return $qst->reponse;");
 
 $lang_id=$qst->lang;
 
@@ -138,7 +146,7 @@ syslog(LOG_INFO, $com_log);
 
 //Compose le code à exécuter
 if ($qst->pre_code != ""){ $qst->pre_code = $qst->pre_code . "\n"; }
-$code_exec=preg_replace('~\R~u', "\n", $qst->pre_exec. $qst->pre_code .  $code . $qst->post_code);
+$code_exec="# coding=utf-8\n\n" . preg_replace('~\R~u', "\n", $qst->pre_exec. $qst->pre_code .  $code . $qst->post_code);
 
 //post le code à remotecompiler
 $url_rc='http://localhost:12380/compile';

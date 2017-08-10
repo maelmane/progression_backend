@@ -52,7 +52,7 @@ CREATE TABLE `question_prog` (
   `setup`	text,
   `pre_exec`	text,
   `pre_code`	text,
-  `incode`	text,
+  `in_code`	text,
   `post_code`	text,
   `reponse`	text,
   `params`	varchar(255),
