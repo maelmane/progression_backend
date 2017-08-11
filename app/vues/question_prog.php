@@ -166,7 +166,7 @@ else{
 }
                                                    
 //Affiche le résultat
-if( !is_null($qst->reponse)){
+if($qst->reponse!="null"){ //en PHP, "" == NULL (arg!!!)
     echo "<br>Résultat attendu : <br><pre class='code-wrapper'><code>" . resume($qst->reponse,21) . "</code></pre><br>";
 }
 echo "<br>Résultat observé : <br><pre class='code-wrapper'><code>" . resume($output,21) . "</code></pre><br>";
@@ -178,7 +178,7 @@ if($errors!=""){
 
 //Vérifie la réponse
 echo "<table width=100%><tr><td>";
-if ($qst->reponse!=""){    
+if($qst->reponse!="null"){ //en PHP, "" == NULL (arg!!!)
     if ($output==$qst->reponse){
         //Met la réponse à jour dans l'avancement
         $avcmt->set_reponse($code);

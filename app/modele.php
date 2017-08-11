@@ -227,7 +227,7 @@ class Serie extends EntiteBD{
         
         $questions=array();
         while($query->fetch()){
-            $questions[] = new Question($id, $this->id, $type, $numero, $titre, $description, $points, $etat);
+            $questions[] = new Question($id, $type, $this->id, $numero, $titre, $description, $points, $etat);
         }
         $query->close();                                     
 
