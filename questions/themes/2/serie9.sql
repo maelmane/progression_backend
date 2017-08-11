@@ -1,5 +1,5 @@
 INSERT INTO serie (themeID, serieID, numero, titre, description)
-VALUES (2, 9, 1, "La distributrice de billets", "Cette section propose comme projet l'implémentation d'une classe simulant une distributrice de billet.");    
+VALUES (2, 9, 2, "La distributrice de billets", "Cette section propose comme projet l'implémentation d'une classe simulant une distributrice de billet.");    
     
     
     

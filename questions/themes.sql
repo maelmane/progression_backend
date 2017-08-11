@@ -8,5 +8,5 @@ VALUES (2, 0, 1, "La programation orientée-objet en Python", "Ces exercices por
 INSERT INTO theme (themeID, lang, ordre, titre, description)
 VALUES (3, 0, 3, "Système d\'exploitation (Linux)", "Ces exercices portent sur l\'utilisation du système d\'exploitation Linux");
 
-INSERT INTO theme (themeID, lang, ordre, titre, description)
-VALUES (4, 7, 2, "C : introduction", "Ces exercices portent sur les concepts de base du langage C");
+/* INSERT INTO theme (themeID, lang, ordre, titre, description)
+VALUES (4, 7, 2, "C : introduction", "Ces exercices portent sur les concepts de base du langage C"); */

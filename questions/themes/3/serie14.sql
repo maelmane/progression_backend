@@ -14,7 +14,7 @@ VALUES (
 INSERT INTO question_systeme (questionID, image, user, verification, reponse)
 VALUES (
 (SELECT max(questionID) FROM question),
-"qsystem",
+"system",
 "krusty",
 "-d /home/krusty/burger",
 null);
