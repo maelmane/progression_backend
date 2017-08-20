@@ -32,7 +32,7 @@ ENV SIAB_USERCSS="Reverse:+/etc/shellinabox/options-enabled/00+Black-on-White.cs
   SIAB_TIMEOUT=0 \
   SIAB_SCRIPT=none
 
-EXPOSE 4200
+#EXPOSE 4200
 
 ADD assets/entrypoint.sh /usr/local/sbin/
 

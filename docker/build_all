@@ -1,0 +1,13 @@
+build(){
+    FILENAME=$1
+    NAME=$(basename $FILENAME|sed 's/\.\/\(.*\)\.df/\1/')
+    echo -n "Construction de $FILENAME..."
+    docker build -t $NAME -f $FILENAME $(dirname $FILENAME) >/dev/null && echo "ok" || echo "ERREUR"  
+}
+
+export -f build
+
+build bases/shellinabox/siab.df
+
+find bases -name '*.df' -exec bash -c 'build "$0"' {} \;
+find questions -name '*.df' -exec bash -c 'build "$0"' {} \;
