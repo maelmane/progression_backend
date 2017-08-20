@@ -9,8 +9,9 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE `users` (
   `userID`   int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL UNIQUE,
   `courriel` varchar(255),
+  `password` varchar(64) NOT NULL,
   `actif`    int NOT NULL DEFAULT 1,
 
   PRIMARY KEY (`userID`)
@@ -78,3 +79,5 @@ CREATE TABLE `avancement` (
   PRIMARY KEY (`userID`, `questionID`)
 );
 
+/*Admin*/
+INSERT INTO users (userID, username, password) VALUES (99999, 'admin', 'd73a4dfa2169f4f87e698585ff132e0d131d00940800e7554479562fd420dc3a');

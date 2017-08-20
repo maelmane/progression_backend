@@ -14,7 +14,7 @@ if(!isset($_SESSION["user_id"])){
 }
 else{
     if(!isset($_GET["p"])){
-        require("vues/accueil.php");
+        header("Location: login.php?p=accueil");
     }
     else{
         $fichier=$_GET["p"];

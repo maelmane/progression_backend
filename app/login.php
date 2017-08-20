@@ -10,44 +10,40 @@ else{
     
     if(isset($_POST["submit"])){
         if(empty($_POST["username"]) || empty($_POST["passwd"])){
-            $erreur="Nom d'utilisateur ou mot de passe invalide.";
+            $erreur="Le nom d'utilisateur ou le mot de passe ne peuvent être vides.";
         }
-        else{
+        else
+        {
             $username=$_POST["username"];
             $password=$_POST["passwd"];
             
-            $ldap = ldap_connect("localhost") or die("Impossible de se connecter au serveur d'authentification. Veuillez contacter l'administrateur");
-            ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);   
-            $bind = @ldap_bind($ldap, "cn=$username,dc=local", "$password");
-            if($bind) {
+            #            $ldap = ldap_connect("localhost") or die("Impossible de se connecter au serveur d'authentification. Veuillez contacter l'administrateur");
+            #            ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);   
+            #            $bind = @ldap_bind($ldap, "cn=$username,dc=local", "$password");
+            #            if($bind) {
 
-                #Connexion à la BD
-                $user_info=new User($username);
-                if(is_null($user_info->username)){
-                    //Crée l'utilisateur
-                    User::creer_user($username);
-                    $user_info->load_info($username);
-                }
+            #Connexion à la BD
+            $user_info=new User();
+            if($user_info->load_info($username, $password)){
+            #Obtient les infos de l'utilisateur
+            $_SESSION["user_id"]=$user_info->id;
+            $_SESSION["username"]=$user_info->username;
+            $_SESSION["active"]=$user_info->actif;
+            if(!isset($_GET["p"]))
+                header("Location: index.php?p=accueil");
+            else
+                header("Location: index.php?p=$_GET[p]&ID=$_GET[ID]");    
 
-                #Obtient les infos de l'utilisateur
-                $_SESSION["user_id"]=$user_info->id;
-                $_SESSION["username"]=$user_info->username;
-                $_SESSION["active"]=$user_info->actif;
-                if(!isset($_GET["p"]))
-                    header("Location: index.php?p=accueil");
-                else
-                    header("Location: index.php?p=$_GET[p]&ID=$_GET[ID]");    
-
-            } else {
-                $erreur="Nom d'utilisateur ou mot de passe invalide.";
-            }
         }
-    }
-    else{
-        if($erreur){
+            else {
+            $erreur="Nom d'utilisateur ou mot de passe invalide.";
+        }
+        }
+        }
+            if($erreur){
             echo $erreur;
         }
-        echo '
+            echo '
 	  <html>
         <head>
               <meta charset="utf-8">
@@ -59,20 +55,17 @@ else{
          <form name="login" method="POST">
              <table style="margin-left:auto;margin-right:auto;">
              <tr>
-             <td>Courriel</td><td><input name="username" type="text">@dept-info.crosemont.quebec</td>
+             <td>Nom d\'utilisateur</td><td><input name="username" type="text"></td>
              </tr><tr>
              <td>Mot de passe</td><td><input name="passwd" type="password"></td>
+             <tr><td></td><td><a href="inscription.php">s\'inscrire</a></td></tr>
              </tr><tr>
              <td></td><td><input name="submit" type="submit" value="Connexion"></td>
              </tr>
          </form>
-         ';
-
-        echo"
                </div>
              </section>
     	    </body>
 	    </html>
-        ";
-    }
-}
+        ';
+        }

@@ -3,9 +3,9 @@
 require_once('modele.php');
 
 function menu_lang($langid=1){
-    return '
-          <select id="$langid" name="$langid" > 
-             <option value=null ".(is_null($langid)?"selected":"") . ">défaut</option>
+    return "
+          <select id='langid' name='langid' > 
+             <option value=-1 ".(is_null($langid)?"selected":"") . ">défaut</option>
              <option value=11 ".($langid==11?"selected":"") . ">Bash</option>
              <option value=9 ".($langid==9?"selected":"") . ">C</option>
              <option value=8 ".($langid==8?"selected":"") . ">C++</option>
@@ -17,19 +17,12 @@ function menu_lang($langid=1){
              <option value=1 ".($langid==1?"selected":"") . ">Python 3</option>
              <option value=2 ".($langid==2?"selected":"") . ">Ruby</option>
            </select>
-';
+";
 }
 session_start();
 
 if(!isset($_SESSION["user_id"])){
     header("Location: login.php?p=$_GET[p]&ID=$_GET[ID]");
-}
-
-$user=new User($_SESSION["username"]);
-if(is_null($user->id))
-{
-    echo "Erreur interne : " . $db->errorno;
-    die;
 }
 
 function page_header(){
@@ -43,7 +36,7 @@ function page_header(){
           <section class='main'>
 		   <div class='example-wrapper clearfix'>
 
-          <table width=100%><tr><td width=75% style='text-align:right;'><h1>" . $_SESSION["username"] . "</h1>(<a href='logout.php'>déconnexion</a>)</td></tr></table>
+          <table width=100%><tr><td width=75% style='text-align:right;'><h1>" . ($_SESSION["username"]=="admin"?"<a href='?p=admin'>admin</a>":$_SESSION["username"]) . "</h1>(<a href='logout.php'>déconnexion</a>)</td></tr></table>
 
      ";
 }

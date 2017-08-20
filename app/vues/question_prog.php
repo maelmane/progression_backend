@@ -1,7 +1,13 @@
 <?php
 
 require_once('quiz_preambule.php');
+
+if(!isset($_GET['ID'])){
+        header('Location: index.php?p=accueil');
+}
+
 $qst=new QuestionProg($_GET['ID']);
+
 $qst->load_info();
 if(is_null($qst->id)){
         header('Location: index.php?p=accueil');

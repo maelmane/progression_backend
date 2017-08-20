@@ -1,6 +1,4 @@
 /* Thèmes */
-INSERT INTO users (userID, username) VALUES (99999, 'admin');
-
 INSERT INTO theme (themeID, lang, ordre, titre, description)
 VALUES (1, 0, 0, "Python : introduction", "Ces exercices portent sur les concepts de base de la programmation structurée, en utilisant le langage Python");
 INSERT INTO theme (themeID, lang, ordre, titre, description)

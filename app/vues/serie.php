@@ -1,4 +1,4 @@
-l<?php
+<?php
 
 require_once('quiz_preambule.php');
 
