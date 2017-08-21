@@ -29,14 +29,14 @@ openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 //Crée le conteneur
 $url_rc='http://localhost:12380/compile';
 if($_POST['reset']=='Réinitialiser'){
-    $data_rc=array('language' => 15, 'code' => 'reset', 'vm_name' => $qst->image, 'parameters' => $avcmt->reponse, 'stdin' => '');
+    $data_rc=array('language' => 13, 'code' => 'reset', 'vm_name' => $qst->image, 'parameters' => $avcmt->reponse, 'stdin' => '');
     $options_rc=array('http'=> array(
         'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
         'method'  => 'POST',
         'content' => http_build_query($data_rc)));
 }
 else{
-    $data_rc=array('language' => 15, 'code' => $qst->verification, 'vm_name' => $qst->image, 'parameters' => $avcmt->reponse, 'stdin' => '');
+    $data_rc=array('language' => 13, 'code' => $qst->verification, 'vm_name' => $qst->image, 'parameters' => $avcmt->reponse, 'stdin' => '');
     $options_rc=array('http'=> array(
         'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
         'method'  => 'POST',
@@ -79,7 +79,7 @@ echo"
      "; 
 
     echo " <tr>
-       <tr><td align=right colspan=2><a href='http://$_SERVER[SERVER_NAME]:$cont_port' target=_blank>plein écran <img width=16 src='images/fs.jpg'></a></td></tr>
+       <tr><td align=right colspan=2><a href='http://$_SERVER[SERVER_NAME]:$cont_port' target=_blank>plein écran <img width=16 src='images/fs.png'></a></td></tr>
        <td colspan=2>
          <div>
          <iframe id=tty width=100% height=350 src='http://$_SERVER[SERVER_NAME]:$cont_port'></iframe>
