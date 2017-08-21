@@ -30,7 +30,7 @@ VALUES (
 INSERT INTO question_systeme (questionID, image, user, verification, reponse)
 VALUES (
 (SELECT max(questionID) FROM question),
-"q2",
+"q1-2",
 "krusty",
 "! -d /home/krusty/bart",
 null);
