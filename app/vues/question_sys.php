@@ -78,10 +78,10 @@ echo"
      "; 
 
     echo " <tr>
-       <tr><td align=right colspan=2><a href='http://$_SERVER[SERVER_NAME]:$cont_port' target=_blank>plein écran <img width=16 src='images/fs.png'></a></td></tr>
+       <tr><td align=right colspan=2><a href='https://$_SERVER[SERVER_NAME]:$cont_port' target=_blank>plein écran <img width=16 src='images/fs.png'></a></td></tr>
        <td colspan=2>
          <div>
-         <iframe id=tty width=100% height=350 src='http://$_SERVER[SERVER_NAME]:$cont_port'></iframe>
+         <iframe id=tty width=100% height=350 src='https://$_SERVER[SERVER_NAME]:$cont_port'></iframe>
          </div>
        </td>
        </tr>";

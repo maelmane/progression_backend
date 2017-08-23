@@ -1,11 +1,11 @@
 FROM ubuntu:xenial
 
-ENV SIAB_VERSION=2.19 
+RUN apt-get update && apt-get install -y libssl1.0.0 libpam0g openssl curl openssh-client sudo locales screen
 
-RUN apt-get update && apt-get install -y openssl curl openssh-client sudo locales screen \
-      shellinabox=${SIAB_VERSION} && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+COPY shellinabox_2.20_amd64.deb /tmp
+RUN dpkg -i /tmp/shellinabox_2.20_amd64.deb && rm /tmp/shellinabox_2.20_amd64.deb
+
+RUN  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   ln -sf '/etc/shellinabox/options-enabled/00+Black on White.css' \
     /etc/shellinabox/options-enabled/00+Black-on-White.css && \
   ln -sf '/etc/shellinabox/options-enabled/00_White On Black.css' \
@@ -14,6 +14,14 @@ RUN apt-get update && apt-get install -y openssl curl openssh-client sudo locale
     /etc/shellinabox/options-enabled/01+Color-Terminal.css
 
 RUN locale-gen fr_CA.UTF-8
+
+#Installe le certificat SSL
+RUN mkdir /etc/shellinabox/certs
+COPY certs/certificate-quiz.dept-info.crosemont.quebec.pem /etc/shellinabox/certs
+RUN cp /etc/shellinabox/certs/certificate-quiz.dept-info.crosemont.quebec.pem /etc/shellinabox/certs/certificate.pem
+RUN chown -R shellinabox:shellinabox /etc/shellinabox/certs
+RUN chmod 600 -R /etc/shellinabox/certs/*
+RUN chmod 700 /etc/shellinabox/certs
 
 ENV SIAB_USERCSS="Reverse:+/etc/shellinabox/options-enabled/00+Black-on-White.css,Normal:-/etc/shellinabox/options-enabled/00_White-On-Black.css;Colors:+/etc/shellinabox/options-enabled/01+Color-Terminal.css,Monochrome:-/etc/shellinabox/options-enabled/01_Monochrome.css" \
   SIAB_PORT=4200 \
@@ -26,7 +34,7 @@ ENV SIAB_USERCSS="Reverse:+/etc/shellinabox/options-enabled/00+Black-on-White.cs
   SIAB_SHELL=/bin/bash \
   SIAB_HOME=/home/guest \
   SIAB_SUDO=false \
-  SIAB_SSL=false \
+  SIAB_SSL=true \
   SIAB_SERVICE=/:LOGIN \
   SIAB_PKGS=none \
   SIAB_TIMEOUT=0 \
