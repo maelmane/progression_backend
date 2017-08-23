@@ -2,10 +2,14 @@
 
 require_once('modele.php');
 
-function menu_lang($langid=1){
-    return "
-          <select id='langid' name='langid' > 
-             <option value=-1 ".(is_null($langid)?"selected":"") . ">défaut</option>
+function menu_lang($langid=1, $defaut=false){
+    $ret= "<select id='langid' name='langid' > ";
+        
+    if($defaut){
+        $ret=$ret . "<option value=-1 ".(is_null($langid)?"selected":"") . ">défaut</option>";
+    }
+
+    $ret=$ret . "
              <option value=11 ".($langid==11?"selected":"") . ">Bash</option>
              <option value=9 ".($langid==9?"selected":"") . ">C</option>
              <option value=8 ".($langid==8?"selected":"") . ">C++</option>
@@ -18,6 +22,8 @@ function menu_lang($langid=1){
              <option value=2 ".($langid==2?"selected":"") . ">Ruby</option>
            </select>
 ";
+
+    return $ret;
 }
 session_start();
 

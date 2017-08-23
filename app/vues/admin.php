@@ -162,7 +162,7 @@ Description<br>
 <table>
 <tr>
 <td>
-Langage<br>".menu_lang($question->lang)."
+Langage<br>".menu_lang($question->lang, true)."
 </td>
 </tr>
 

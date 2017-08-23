@@ -66,7 +66,7 @@ echo"
      "; 
 
     echo " <tr>
-       <td>Langage : ".menu_lang($_POST['langid'])."
+       <td>Langage : ".menu_lang($_POST['langid'], false)."
        </td>
        </tr><tr>
        <td colspan=2>
