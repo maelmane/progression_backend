@@ -5,7 +5,7 @@
 function db_init(){
     if(!isset($GLOBALS["conn"]))
     {    
-    $cfg=parse_ini_file("db.conf");
+    $cfg=parse_ini_file("../db.conf");
     $GLOBALS["config"]=$cfg;
                           
     $GLOBALS["conn"] = new mysqli($cfg["servername"], $cfg["username"], $cfg["password"], $cfg["dbname"]);
