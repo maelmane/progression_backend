@@ -380,7 +380,7 @@ class QuestionProg extends Question{
     public $params;
     public $stdin;
     
-    public function __construct($id, $serieID=null, $numero=null, $titre=null, $description=null, $enonce=null, $reponse=null, $points=null, $lang=null, $setup=null, $pre_exec=null, $pre_code=null, $incode=null, $post_code=null, $params=null, $stdin=null){
+    public function __construct($id, $serieID=null, $numero=null, $titre=null, $description=null, $enonce=null, $reponse=null, $points=null, $lang=-1, $setup=null, $pre_exec=null, $pre_code=null, $incode=null, $post_code=null, $params=null, $stdin=null){
         parent::__construct($id, Question::TYPE_PROG, $serieID, $numero, $titre, $description, $enonce, $points);
 
         $this->lang=$lang;                          

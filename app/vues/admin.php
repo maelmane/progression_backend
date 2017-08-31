@@ -99,8 +99,8 @@ if(isset($_GET['question'])){
     //Lien "visualiser"
     echo "<td><a href='index.php?p=".($question->type==Question::TYPE_PROG?"question_prog":"question_sys")."&ID=$_GET[question]' target='_blank'>visualiser</a></td>";
     
-    $question=new Question($_GET['question']);
     if($_GET['question']!=-1){
+        $question=new Question($_GET['question']);
         $question->load_info();
 
         if($question->type==Question::TYPE_PROG){
@@ -111,6 +111,9 @@ if(isset($_GET['question'])){
             $question=new QuestionSysteme($_GET['question']);
             $question->load_info();
         }
+    }
+    else{
+        $question=new QuestionProg(-1);
     }
 }
 

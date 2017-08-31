@@ -2,7 +2,7 @@
 
 require_once('modele.php');
 
-function menu_lang($langid=1, $defaut=false){
+function menu_lang($langid=-1, $defaut=false){
     $ret= "<select id='langid' name='langid' > ";
         
     if($defaut){
