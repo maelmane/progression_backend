@@ -10,7 +10,7 @@ Vous désirez faire l\'implémentation d\'une classe Compteur. Cette classe simu
 <br>
 <br>
 Vous pourrez trouver l\'ébauche de la class <code>Compteur</code> ici : <a href=\'q1/compteur.py\'>compteur.py</a>');
-INSERT INTO question_prog (questionID, reponse, pre_exec, pre_code, in_code, post_code) VALUES ((SELECT max(questionID) FROM question), '', '', '"class Compteur:
+INSERT INTO question_prog (questionID, reponse, pre_exec, pre_code, in_code, post_code) VALUES ((SELECT max(questionID) FROM question), 'null', '', '"class Compteur:
     \\"\\"\\"
     Un compteur du genre \\"distributeur de billets\\"
 
@@ -74,7 +74,7 @@ Votre classe Compteur pourrait être améliorée par l\'ajout d\'un constructeur
 <br>
 <br>
 Vous pourrez trouver l\'ébauche de la class <code>Compteur</code> ici : <a href=\'q2-nhziafccgo/compteur.py\'>compteur.py</a>');
-INSERT INTO question_prog (questionID, reponse, pre_exec, pre_code, in_code, post_code) VALUES ((SELECT max(questionID) FROM question), '', '', '
+INSERT INTO question_prog (questionID, reponse, pre_exec, pre_code, in_code, post_code) VALUES ((SELECT max(questionID) FROM question), 'null', '', '
 "class Compteur:
     \\"\\"\\"
     Un compteur du genre \\"distributeur de billets\\" 
@@ -157,7 +157,7 @@ Pour être utile, le compteur doit aussi pouvoir distribuer des billets aux clie
 <br>
 <br>
 Vous pourrez trouver l\'ébauche de la class <code>Compteur</code> ici : <a href=\'q3-wmomqpeksj/compteur.py\'>compteur.py</a>');
-INSERT INTO question_prog (questionID, reponse, pre_exec, pre_code, in_code, post_code) VALUES ((SELECT max(questionID) FROM question), '', '', '
+INSERT INTO question_prog (questionID, reponse, pre_exec, pre_code, in_code, post_code) VALUES ((SELECT max(questionID) FROM question), 'null', '', '
 "class Compteur:
     \\"\\"\\"
     Un compteur du genre \\"distributeur de billets\\" 

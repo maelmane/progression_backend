@@ -211,7 +211,7 @@ Réponse <img width=16 src='images/interrogation.png' title='expression PHP donn
 
 <tr>
 <td>
-Stdin <img width=16 src='images/interrogation.png' title='chaîne de caractères passé à l&#39;entrée standard lors de l&#39;exécution du code soumis'><br>
+Stdin <img width=16 src='images/interrogation.png' title='expression PHP donnant une chaîne de caractères passée à l&#39;entrée standard lors de l&#39;exécution du code soumis'><br>
 <input type=text id='stdin' name='stdin'  value='".str_replace("'", "&#39;", $question->stdin)."'>
 </td>
 </tr>

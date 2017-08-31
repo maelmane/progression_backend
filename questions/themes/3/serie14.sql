@@ -10,7 +10,7 @@ VALUES (
 "Création d'un répertoire",
 1,
 "Création d'un répertoire",
-"Créez un répertoire nommé <em>burger</em> dans le répertoire personnel de <em>krusty</em>");
+"Créez un répertoire nommé <em>burger</em> dans le répertoire personnel de <em>krusty</em>.  Lorsque vous avez terminé, cliquez sur le bouton «Valider» pour valider votre réponse.");
 INSERT INTO question_systeme (questionID, image, user, verification, reponse)
 VALUES (
 (SELECT max(questionID) FROM question),

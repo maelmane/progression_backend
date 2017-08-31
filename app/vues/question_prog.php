@@ -54,8 +54,10 @@ $params=($qst->params!=""?$qst->params:$_POST['params']);
 //Exécute le setup
 eval($qst->setup);
 
-//Récupère les entrées à envoyer au programme. Les entrées provenant de la BD ont préscéance.
-$stdin=($qst->stdin!=""?$qst->stdin:trim($_POST['stdin']));
+//Récupère et exécute les entrées à envoyer au programme. Les entrées provenant de la BD ont préscéance.
+$qst->stdin=($qst->stdin!=""?$qst->stdin:trim($_POST['stdin']));
+if(!is_null($qst->stdin))
+    $qst->stdin=eval("return $qst->stdin;");
 
 //Exécute l'énoncé
 if(!is_null($qst->enonce))
@@ -75,7 +77,7 @@ if(!is_null($qst->post_code))
 
 //Exécute la réponse
 if(!is_null($qst->reponse))
-    $qst->reponse=eval("return $qst->reponse;");
+    $qst->reponse=str_replace("\r","",eval("return $qst->reponse;"));
 
 $lang_id=$qst->lang;
 
@@ -135,7 +137,7 @@ echo "
       </td>
       <td width=50%>
        <h3>Entrées</h3>
-        <textarea id='stdin' name = 'stdin' rows='1' style='width:100%'>$stdin</textarea>
+        <textarea id='stdin' name = 'stdin' rows='1' style='width:100%'>$qst->stdin</textarea>
      
       </td>
      </tr>
@@ -152,11 +154,11 @@ syslog(LOG_INFO, $com_log);
 
 //Compose le code à exécuter
 if ($qst->pre_code != ""){ $qst->pre_code = $qst->pre_code . "\n"; }
-$code_exec="# coding=utf-8\n\n" . preg_replace('~\R~u', "\n", $qst->pre_exec. $qst->pre_code .  $code . $qst->post_code);
+$code_exec=preg_replace('~\R~u', "\n", $qst->pre_exec. $qst->pre_code .  $code . $qst->post_code);
 
 //post le code à remotecompiler
 $url_rc='http://localhost:12380/compile';
-$data_rc=array('language' => $GLOBALS['lang_id'], 'code' => $code_exec, 'parameters' => "\"$params\"", 'stdin' => $stdin);
+$data_rc=array('language' => $GLOBALS['lang_id'], 'code' => $code_exec, 'parameters' => "\"$params\"", 'stdin' => $qst->stdin);
 $options_rc=array('http'=> array(
     'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
     'method'  => 'POST',
@@ -168,7 +170,7 @@ if ($comp_resp === FALSE) {
     $output="Erreur interne: " . $comp_resp;
 } 
 else{
-    $output=trim(json_decode($comp_resp, true)['output']);
+    $output=str_replace("\r", "", json_decode($comp_resp, true)['output']);
 }
                                                    
 //Affiche le résultat
