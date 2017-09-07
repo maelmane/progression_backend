@@ -50,7 +50,21 @@ echo"
     <link rel='stylesheet' type='text/css' href='css/style.css'>
     <script src='/CodeMirror/lib/codemirror.js'></script>
     <link rel='stylesheet' href='/CodeMirror/lib/codemirror.css'>
+";
+
+if($_POST['langid']<=QuestionProg::PYTHON3){
+    echo"
     <script  src='/CodeMirror/mode/python/python.js'></script>
+    ";
+}
+elseif($_POST['langid']==QuestionProg::CPP){
+    echo"
+    <script  src='/CodeMirror/mode/clike/clike.js'></script>
+    ";
+}
+
+echo "
+
     <meta charset='utf-8'>
    </head>
    <body>
@@ -66,7 +80,7 @@ echo"
      "; 
 
     echo " <tr>
-       <td>Langage : ".menu_lang($_POST['langid'], false)."
+       <td>Langage : ".menu_lang((isset($_POST['langid'])?$_POST['langid']:1), false)."
        </td>
        </tr><tr>
        <td colspan=2>

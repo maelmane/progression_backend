@@ -368,6 +368,9 @@ class Question extends EntiteBD{
 }
 
 class QuestionProg extends Question{
+ 
+    const PYTHON3=1;
+    const CPP=8;
 
     //Données
     public $lang;

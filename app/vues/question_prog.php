@@ -90,7 +90,20 @@ echo"
     <link rel='stylesheet' type='text/css' href='css/style.css'>
     <script src='/CodeMirror/lib/codemirror.js'></script>
     <link rel='stylesheet' href='/CodeMirror/lib/codemirror.css'>
+";
+
+if($qst->lang==QuestionProg::PYTHON3){
+    echo"
     <script  src='/CodeMirror/mode/python/python.js'></script>
+    ";
+}
+elseif($qst->lang==QuestionProg::CPP){
+    echo"
+    <script  src='/CodeMirror/mode/clike/clike.js'></script>
+    ";
+}
+
+echo "
     <meta charset='utf-8'>
    </head>
    <body>
@@ -116,7 +129,7 @@ if ($qst->pre_code != ""){
 echo "
       <tr>
        <td colspan=2>
-        <textarea id='incode' name = 'incode' cols='80'>$code</textarea>
+        <textarea id='incode' name = 'incode' rows=10 cols='80'>$code</textarea>
        </td>
       </tr>";
 
@@ -239,7 +252,7 @@ echo "
       indentUnit: 4,
       extraKeys: { Tab: betterTab }
       });
-      editor.setSize(700);
+      editor.setSize(700,100);
      ";
 
 if ($qst->post_code !=""){
