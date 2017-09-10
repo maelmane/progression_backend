@@ -32,6 +32,22 @@ function get_themes($user_id){
     
 }
 
+function get_users(){
+    if(!isset($GLOBALS["conn"])) db_init();
+    $conn=$GLOBALS["conn"];
+
+    $users=$conn->query('SELECT username, userID FROM users WHERE actif=1 ORDER BY username');
+
+    $user=$users->fetch_assoc();
+    $res=array();
+    while(!is_null($user)){
+        $res[] = new User($user['userID'],$user['username']);
+        $user=$users->fetch_assoc();
+    }
+
+    return $res;
+}
+
 class EntiteBD{
     //Données
     public $id;
@@ -48,8 +64,10 @@ class User extends EntiteBD{
     public $actif;
     public $id;    
 
-    public function __construct(){
+    public function __construct($id=null, $username=null){
         parent::__construct();
+        $this->id=$id;
+        $this->username=$username;
     }
 
     static function exist($username){
