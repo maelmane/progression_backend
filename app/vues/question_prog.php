@@ -252,7 +252,8 @@ echo "
       indentUnit: 4,
       extraKeys: { Tab: betterTab }
       });
-      editor.setSize(700,100);
+      editor.setSize(700, 0);
+      editor.setSize(700, editor.getScrollInfo().height);
      ";
 
 if ($qst->post_code !=""){
