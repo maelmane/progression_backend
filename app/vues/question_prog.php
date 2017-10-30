@@ -212,9 +212,10 @@ if($qst->reponse!="null"){ //en PHP, "" == NULL (arg!!!)
     }
                                                                                       
     else{
-        if($avcmt->get_etat()==Question::ETAT_NONREUSSI){
+        if($avcmt->get_etat()!=Question::ETAT_REUSSI){
             //Met la réponse à jour dans l'avancement
             $avcmt->set_reponse($code);
+	    $avcmt->set_etat(Question::ETAT_NONREUSSI);
         }
         echo "Raté! Essayez encore</td>";
     }

@@ -28,15 +28,15 @@ openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 
 //Crée le conteneur
 $url_rc='http://localhost:12380/compile';
-if($_POST['reset']=='Réinitialiser'){
-    $data_rc=array('language' => 13, 'code' => 'reset', 'vm_name' => $qst->image, 'parameters' => $avcmt->reponse, 'stdin' => '');
+if(isset($_POST['reset']) && $_POST['reset']=='Réinitialiser'){
+    $data_rc=array('language' => 13, 'code' => 'reset', 'vm_name' => $qst->image, 'parameters' => $avcmt->conteneur, 'stdin' => '');
     $options_rc=array('http'=> array(
         'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
         'method'  => 'POST',
         'content' => http_build_query($data_rc)));
 }
 else{
-    $data_rc=array('language' => 13, 'code' => $qst->verification, 'vm_name' => $qst->image, 'parameters' => $avcmt->reponse, 'stdin' => '');
+    $data_rc=array('language' => 13, 'code' => $qst->verification, 'vm_name' => $qst->image, 'parameters' => $avcmt->conteneur, 'stdin' => '');
     $options_rc=array('http'=> array(
         'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
         'method'  => 'POST',
@@ -51,7 +51,7 @@ $cont_ip=trim(json_decode($comp_resp, true)['add_ip']);
 $cont_port=trim(json_decode($comp_resp, true)['add_port']);
 $res_validation=trim(json_decode($comp_resp, true)['resultat']);
 
-$avcmt->set_reponse($cont_id);
+$avcmt->set_conteneur($cont_id);
 
 page_header();
 
@@ -85,7 +85,7 @@ echo"
          </div>
        </td>
        </tr>";
-if(!is_null($qst->reponse)){
+if(!is_null($qst->reponse) && $qst->reponse!="" ){
     echo"
    </table><table style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'>
    <tr><td>
@@ -104,7 +104,7 @@ echo "</td></tr></table>
       <tr><td>";
 
 //Vérifie la réponse
-if(!is_null($qst->reponse)){
+if(!is_null($qst->reponse) && $qst->reponse!=""){
     if($_POST['reponse']!='')
         if($_POST['reponse']==$qst->reponse){
             echo "Bonne réponse!";

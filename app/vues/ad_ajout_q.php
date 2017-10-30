@@ -7,15 +7,17 @@ if($_SESSION['username']!='admin'){
 }
 
 
+page_header();
+
 //Sauvegarde
-if(isset($_POST['question'])){
-    if($_POST['type']==Question::TYPE_PROG){
+if(isset($_POST['typeprogsys'])){
+    if($_POST['typeprogsys']==Question::TYPE_PROG){
         $qst=new QuestionProg($_POST['question'], $_GET['serie'], $_POST['numero'], $_POST['titre'], $_POST['description'], $_POST['enonce'], $_POST['reponse_prog'], $_POST['points'], $_POST['langid'], $_POST['setup'], $_POST['pre_exec'], $_POST['pre_code'], $_POST['incode'], $_POST['post_code'], $_POST['params'], $_POST['stdin']);
 
         $qid=$qst->save();
         header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
     }
-    if($_POST['type']==Question::TYPE_SYS){
+    if($_POST['typeprogsys']==Question::TYPE_SYS){
         $qst=new QuestionSysteme($_POST['question'], $_GET['serie'], $_POST['numero'], $_POST['titre'], $_POST['description'], $_POST['enonce'], $_POST['reponse_sys'], $_POST['points'], $_POST['image'], $_POST['username'], $_POST['verification']);
 
         $qid=$qst->save();
@@ -24,7 +26,6 @@ if(isset($_POST['question'])){
 }
     
     
-page_header();
 
 echo "
 
@@ -48,7 +49,7 @@ function load_question(){
 </script>
 
 
-<form method='post'>
+<form method='post' id='fquestion'>
 <table border=0>
 <th>Thème</th><th>Série</th><th>Question</th>
 <tr>
@@ -130,7 +131,7 @@ Numéro<br>
 </td>
 <td>
 Type<br>
-<select id='type' name='type'  onchange='toggletype()'> 
+<select id='type' name='typeprogsys'  onchange='toggletype()' > 
 <option value=0 ".($question->type==Question::TYPE_PROG?"selected":"").">Programmation</option>
 <option value=1 ".($question->type==Question::TYPE_SYS?"selected":"").">Terminal interactif</option>
 </select>
