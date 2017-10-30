@@ -614,7 +614,7 @@ class Avancement extends EntiteBD{
     }
 
     public function get_etat(){
-        if(is_null($this->etat)) return QuestionInfo::ETAT_NONREUSSI;
+        if(is_null($this->etat)) return Question::ETAT_NONREUSSI;
         return $this->etat;
     }
 

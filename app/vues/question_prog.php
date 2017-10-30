@@ -250,10 +250,11 @@ echo "
       readOnly: false,
       firstLineNumber: " . strval(substr_count($qst->pre_exec, "\n") + substr_count($qst->pre_code, "\n") + 1) . ",
       indentUnit: 4,
+      scrollbarStyle: null,
       extraKeys: { Tab: betterTab }
       });
-      editor.setSize(700, 0);
-      editor.setSize(700, editor.getScrollInfo().height);
+      editor.setSize(0,0);
+      editor.setSize(Math.max(700, editor.getScrollInfo().width), Math.max(100, editor.getScrollInfo().height));
      ";
 
 if ($qst->post_code !=""){
@@ -264,11 +265,14 @@ if ($qst->post_code !=""){
       firstLineNumber: " . strval(substr_count($qst->pre_exec, "\n") + substr_count($qst->pre_code, "\n")) . "+editor.doc.lineCount()+1,      
       indentUnit: 4
       });
+      posteditor.setSize(null,'100%');
      
 
     editor.doc.on('change', function(instance, changeObj){
     posteditor.setOption('firstLineNumber', " . strval(substr_count($qst->pre_exec, "\n") + substr_count($qst->pre_code, "\n")) . "+editor.doc.lineCount());     
-    editor.setSize(null, editor.getScrollInfo().height);
+    //editor.setSize(null, editor.getScrollInfo().height);
+    editor.setSize(Math.max(700, editor.getScrollInfo().width), Math.max(100, editor.getScrollInfo().height));
+
     });
       ";}
 
