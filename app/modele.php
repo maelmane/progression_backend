@@ -84,6 +84,8 @@ class User extends EntiteBD{
     function load_info($username, $password){
         $this->username=null;
         $this->id=null;
+	if 
+	
         $query= $this->conn->prepare( 'SELECT count(*) FROM users WHERE username = ? AND password = ?');
         $query->bind_param( "ss", $username, hash('sha256', $password) );
         $query->execute();
@@ -105,8 +107,9 @@ class User extends EntiteBD{
 
     static function creer_user($username, $password){
         db_init();
-        $query=$GLOBALS["conn"]->prepare('INSERT INTO users(username, password) VALUES (?, ?)');
-        $query->bind_param( "ss", $username, hash('sha256', $password) );
+        $query=$GLOBALS["conn"]->prepare('INSERT INTO users(username, password) VALUES (?,?)');
+	
+	$query->bind_param( "sss", $username,$mot_de_passe, hash('sha256', $password.$mot_de_passe) );
         $query->execute();
         $query->close();
     }
@@ -121,8 +124,7 @@ class Theme extends EntiteBD{
     
     public function __construct($id, $user_id, $titre=null, $description=null){
         //$this->username=$username;
-        parent::__construct();
-        
+        parent::__construct();        
         $this->id=$id;
         $this->user_id=$user_id;
         $this->titre=$titre;
