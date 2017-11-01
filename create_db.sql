@@ -70,6 +70,7 @@ CREATE TABLE `question_systeme` (
 CREATE TABLE `avancement` (
   `userID`       int(11) NOT NULL,
   `questionID`   int(11) NOT NULL,
+  `conteneur`    varchar(64),
   `etat`	 int DEFAULT 0,
   `reponse`	 text,
   PRIMARY KEY (`userID`, `questionID`)

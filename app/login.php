@@ -40,7 +40,7 @@ else{
         }
         }
         }
-            if($erreur){
+            if(isset($erreur)){
             echo $erreur;
         }
             echo '

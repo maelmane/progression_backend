@@ -30,7 +30,9 @@ function valid_signin(){
     return "";
     
 }
-             
+
+$erreur="";
+
 if(isset($_SESSION["user_id"])){
     header('Location: index.php?p=accueil');
 }
