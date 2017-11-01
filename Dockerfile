@@ -1,6 +1,6 @@
 FROM greyltc/lamp
 
-RUN pacman -Suy --noconfirm
+RUN pacman -Sy --noconfirm
 RUN pacman -S --noprogressbar --noconfirm --needed unzip wget
 
 COPY build_db.sh /tmp
