@@ -301,8 +301,9 @@ class Serie extends EntiteBD{
 class Question extends EntiteBD{
     //Constantes d'état
     const ETAT_CACHE=-1;
-    const ETAT_NONREUSSI=0;
-    const ETAT_REUSSI=1;
+    const ETAT_DEBUT=0;
+    const ETAT_NONREUSSI=1;
+    const ETAT_REUSSI=2;
 
     //Constantes de type
     const TYPE_PROG=0;
@@ -565,7 +566,7 @@ class QuestionSysteme extends Question{
         if($this->id==-1){
             $query=$this->conn->prepare("INSERT INTO question_systeme (questionID, image, user, verification, reponse)
                                      VALUES( $qid, ?, ?, ?, ?)");
-            $query->bind_param( "issss",
+            $query->bind_param( "ssss",
                                 $this->image,
                                 $this->user,
                                 $this->verification,
@@ -597,6 +598,7 @@ class Avancement extends EntiteBD{
     public $questionID;
     private $etat;
     public $reponse;
+    public $conteneur;
 
     public function __construct($question_id, $user_id){
         parent::__construct();
@@ -604,17 +606,17 @@ class Avancement extends EntiteBD{
         $this->questionID = $question_id;
         $this->userID = $user_id;
 
-        $query=$this->conn->prepare('SELECT etat, reponse FROM avancement WHERE questionID = ? AND userID = ?');
+        $query=$this->conn->prepare('SELECT etat, reponse, conteneur FROM avancement WHERE questionID = ? AND userID = ?');
         $query->bind_param("ii", $this->questionID, $this->userID);
         $query->execute();
-        $query->bind_result($this->etat, $this->reponse);
+        $query->bind_result($this->etat, $this->reponse, $this->conteneur);
         $query->fetch();
 
         $query->close();
     }
 
     public function get_etat(){
-        if(is_null($this->etat)) return QuestionInfo::ETAT_NONREUSSI;
+        if(is_null($this->etat)) return Question::ETAT_DEBUT;
         return $this->etat;
     }
 
@@ -626,7 +628,7 @@ class Avancement extends EntiteBD{
     }
 
     public function set_reponse($reponse){
-        if(is_null($this->reponse)){
+        if($this->etat==Question::ETAT_DEBUT){
             $query=$this->conn->prepare('INSERT INTO avancement SET reponse = ?, questionID = ?, userID = ?');
             $query->bind_param("sii", $reponse, $this->questionID, $this->userID);
             $query->execute();
@@ -639,7 +641,20 @@ class Avancement extends EntiteBD{
             $query->close();
         }
     }
-        
+    public function set_conteneur($conteneur){
+        if($this->etat==Question::ETAT_DEBUT){
+            $query=$this->conn->prepare('INSERT INTO avancement SET conteneur = ?, questionID = ?, userID = ?');
+            $query->bind_param("sii", $conteneur, $this->questionID, $this->userID);
+            $query->execute();
+            $query->close();
+        }
+        else{
+            $query=$this->conn->prepare('UPDATE avancement SET conteneur = ? WHERE questionID = ? AND userID = ?');
+            $query->bind_param("sii", $conteneur, $this->questionID, $this->userID);
+            $query->execute();
+            $query->close();
+        }
+    }        
 }
 
 ?>
