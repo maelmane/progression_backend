@@ -51,6 +51,9 @@ $cont_ip=trim(json_decode($comp_resp, true)['add_ip']);
 $cont_port=trim(json_decode($comp_resp, true)['add_port']);
 $res_validation=trim(json_decode($comp_resp, true)['resultat']);
 
+if($avcmt->get_etat()==Question::ETAT_DEBUT){
+    $avcmt->set_etat(Question::ETAT_NONREUSSI);
+}
 $avcmt->set_conteneur($cont_id);
 
 page_header();
