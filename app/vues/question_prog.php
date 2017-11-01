@@ -81,7 +81,9 @@ if(!is_null($qst->reponse))
 
 $lang_id=$qst->lang;
 
-page_header();
+$titre = $_GET['titreTheme'];
+
+page_header_avecTitre($titre);
 
 echo"
 
@@ -170,7 +172,7 @@ if ($qst->pre_code != ""){ $qst->pre_code = $qst->pre_code . "\n"; }
 $code_exec=preg_replace('~\R~u', "\n", $qst->pre_exec. $qst->pre_code .  $code . $qst->post_code);
 
 //post le code à remotecompiler
-$url_rc='http://localhost:12380/compile';
+$url_rc='http://172.17.0.1:12380/compile';
 $data_rc=array('language' => $GLOBALS['lang_id'], 'code' => $code_exec, 'parameters' => "\"$params\"", 'stdin' => $qst->stdin);
 $options_rc=array('http'=> array(
     'header'  => "Content-type: application/x-www-form-urlencoded\r\n",

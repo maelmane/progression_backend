@@ -13,7 +13,9 @@ if(is_null($serie->id)){
         header('Location: index.php?p=accueil');
 }
 
-page_header();
+$titre = $_GET['titreTheme'];
+
+page_header_avecTitre($titre);
 
 echo "
 
@@ -34,7 +36,7 @@ foreach($serie->get_questions() as $question){
     }
     else{
         $page=$question->type == Question::TYPE_PROG?"question_prog":"question_sys";
-        echo "<td>" . $question->numero ."</td><td><a href='?p=$page&ID=$question->id'>". $question->titre ."</a></td><td align=center>".($question->etat == Question::ETAT_REUSSI?"✓":" ")."</td>";
+        echo "<td>" . $question->numero ."</td><td><a href='?p=$page&ID=$question->id&titreTheme=$titre'>". $question->titre ."</a></td><td align=center>".($question->etat == Question::ETAT_REUSSI?"✓":" ")."</td>";
         }
 
     echo "</td>

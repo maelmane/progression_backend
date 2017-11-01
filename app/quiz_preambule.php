@@ -32,12 +32,15 @@ if(!isset($_SESSION["user_id"])){
 }
 
 function page_header(){
-    echo "
-	  <html>
-        <head>
+
+    $titre = "Quiz python";
+
+    echo "  <html>
+            <head>
               <meta charset='utf-8'>
 	      <link rel='stylesheet' type='text/css' href='css/style.css'>
-	    </head>
+            <title>$titre</title>
+            </head>
 	    <body>
           <section class='main'>
 		   <div class='example-wrapper clearfix'>
@@ -46,6 +49,32 @@ function page_header(){
 
      ";
 }
+
+function page_header_avecTitre($var){
+
+    if(!empty($var))
+        $titre = $var;
+    
+    else{
+        $titre = "Quiz python";
+    }
+
+    echo "  <html>
+            <head>
+              <meta charset='utf-8'>
+	      <link rel='stylesheet' type='text/css' href='css/style.css'>
+            <title>$titre</title>
+            </head>
+	    <body>
+          <section class='main'>
+		   <div class='example-wrapper clearfix'>
+
+          <table width=100%><tr><td width=75% style='text-align:right;'><h1>" . ($_SESSION["username"]=="admin"?"<a href='?p=admin'>admin</a>":$_SESSION["username"]) . "</h1>(<a href='logout.php'>déconnexion</a>)</td></tr></table>
+
+     ";
+}
+
+
 
 function page_footer(){
     echo"
