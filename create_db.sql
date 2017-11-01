@@ -1,4 +1,4 @@
-CREATE USER quiz@localhost IDENTIFIED BY 'password'; 
+CREATE USER quiz@localhost IDENTIFIED BY 'password';
 CREATE DATABASE quiz;
 
 USE quiz;
