@@ -483,6 +483,14 @@ table.center {
   margin-right:auto;
 }
 
+#inscription{
+    color: white;
+}
+
+#imageBackground{
+    background-image: url('/images/fond.jpg');
+}
+
 #login{
   background-image: url("/images/fondLogin.jpg");
 }
