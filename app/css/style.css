@@ -482,3 +482,11 @@ table.center {
   margin-left:auto; 
   margin-right:auto;
 }
+
+#inscription{
+    color: white;
+}
+
+#imageBackground{
+    background-image: url('/images/fond.jpg');
+}
