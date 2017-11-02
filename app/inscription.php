@@ -30,7 +30,9 @@ function valid_signin(){
     return "";
     
 }
-             
+
+$erreur="";
+
 if(isset($_SESSION["user_id"])){
     header('Location: index.php?p=accueil');
 }
@@ -44,11 +46,18 @@ else{
 }
 echo'
    	  <html>
-        <head>
-              <meta charset="utf-8">
+        <head>         
+            <meta charset="utf-8">
 	      <link rel="stylesheet" type="text/css" href="css/style.css">
+              
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">     
+            
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    
+            
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>             
+              
 	    </head>
-	    <body>
+	    <body id="imageBackground">
           <script>
             function valid_pw(){
               username=document.getElementById(\'username\').value;
@@ -64,20 +73,40 @@ echo'
           <section class="main">
 		   <div class="example-wrapper clearfix">
          ' . $erreur .'
+        <h1 id="inscription" align="center">Inscription</h1> 
+        <div class="container" id="center">         
+            <div class ="col-sm-offset-2">
+                <form class="form-horizontal" id="signin" name="signin" method="POST">
 
-         <form id="signin" name="signin" method="POST">
+                   <div class="form-group">             
+                       <label id="inscription" class="control-label col-sm-2" for="username">Nom d\'utilisateur</label>
+                     <div class="col-sm-3">
+                       <input id="username" name="username" type="text" class="form-control" oninput="submit.disabled=!valid_pw();">
+                     </div>
+                   </div>
 
-             <table style="margin-left:auto;margin-right:auto;">
-             <tr>
-             <td>Nom d\'utilisateur</td><td><input name="username"  id="username" type="text"  oninput="submit.disabled=!valid_pw();"></td>
-             </tr><tr>
-             <td>Mot de passe</td><td><input id="passwd" name="passwd" type="password"  oninput="submit.disabled=!valid_pw();"></td>
-             </tr><tr>
-             <td>Confirmation</td><td><input id="passwd2" name="passwd2" type="password"  oninput="submit.disabled=!valid_pw();"></td>
-             </tr><tr>
-             <td></td><td><input name="submit" type="submit" disabled value="S\'inscrire"></td>
-             </tr>
-         </form>
+                   <div class="form-group">
+                       <label id="inscription" class="control-label col-sm-2" for="passwd">Mot de passe</label>
+                     <div class="col-sm-3">
+                       <input id="passwd" name="passwd" type="password" class="form-control" oninput="submit.disabled=!valid_pw();">
+                     </div>
+                   </div>
+
+                   <div class="form-group">
+                       <label id="inscription" class="control-label col-sm-2" for="passwd2">Confirmation</label>
+                     <div class="col-sm-3">
+                       <input id="passwd2" name="passwd2" type="password" class="form-control"  oninput="submit.disabled=!valid_pw();">
+                     </div>
+                   </div>
+
+                   <div class="form-group">
+                     <div class="col-sm-offset-2 col-sm-10">
+                       <input name="submit" type="submit" class="btn btn-primary" disabled value="S\'inscrire">
+                     </div>
+                   </div>
+                </form>
+            </div>
+         </div>
                </div>
              </section>
     	    </body>

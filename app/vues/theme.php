@@ -23,7 +23,7 @@ echo "
 ";
 
 //Description
-echo "<tr><td>$serie->description<td></tr>";
+echo "<tr><td>$theme->description<td></tr>";
 
 //Séries
 foreach($theme->get_series() as $serie){
