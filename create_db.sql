@@ -8,7 +8,7 @@ CREATE TABLE `users` (
   `username` varchar(191) NOT NULL UNIQUE,
   `courriel` varchar(255),
   `password` varchar(64) NOT NULL,
-`description` varchar(255) NOT NULL,
+  `sel`      varchar(10) NOT NULL,
   `actif`    int NOT NULL DEFAULT 1,
 
   PRIMARY KEY (`userID`)

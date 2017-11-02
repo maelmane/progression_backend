@@ -85,34 +85,28 @@ class User extends EntiteBD{
         $this->username=null;
         $this->id=null;
 	
-        $query= $this->conn->prepare( 'SELECT password,description FROM users WHERE username = ? ');
+        $query= $this->conn->prepare( 'SELECT password, sel, userID, actif FROM users WHERE username = ? ');
         $query->bind_param( "s", $username);
         $query->execute();
-	$motpass=null;
-	$description=null;
+        $motpass=null;
+        $sel=null;
 	
-        $query->bind_result( $this->motpass, $this->description );
-        $res=$query->fetch();
-	$query->close();
-	if ( hash('sha256', $password.$description) !=$motpass) return false;
-
-        $query= $this->conn->prepare( 'SELECT username, userID, actif FROM users WHERE username = ?');
-        $query->bind_param( "s", $username  );
-        $query->execute();
-        $query->bind_result( $this->username, $this->id, $this->actif );
+        $query->bind_result( $motpass, $sel, $this->id, $this->actif );
         $res=$query->fetch();
         $query->close();
+        if ( hash('sha256', $password.$sel) !=$motpass) return false;
 
+        $this->username=$username;
         return true;
     }    
 
     static function creer_user($username, $password){
         db_init();
-        $query=$GLOBALS["conn"]->prepare('INSERT INTO users(username,description, password) VALUES (?,?,?)');
-	$char = 'abcdefghijklmnopqrstuvwxyz0123456789';
-	$mot_de_passe = str_shuffle($char);
-	$mot_de_passe = substr($mot_de_passe‚ 0‚ 10);
-	$query->bind_param( "sss", $username,$mot_de_passe, hash('sha256', $password.$mot_de_passe) );
+        $query=$GLOBALS["conn"]->prepare('INSERT INTO users(username, sel, password) VALUES (?,?,?)');
+        $char = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        $sel = str_shuffle($char);
+        $sel = substr($sel, 0, 10);
+        $query->bind_param( "sss", $username,$sel, hash('sha256', $password.$sel) );
         $query->execute();
         $query->close();
     }
