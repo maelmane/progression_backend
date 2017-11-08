@@ -85,7 +85,8 @@ class User extends EntiteBD{
         $this->username=null;
         $this->id=null;
         $query= $this->conn->prepare( 'SELECT count(*) FROM users WHERE username = ? AND password = ?');
-        $query->bind_param( "ss", $username, hash('sha256', $password) );
+	$hash=hash('sha256', $password);
+        $query->bind_param( "ss", $username, $hash );
         $query->execute();
         $query->bind_result( $count );
         $res=$query->fetch();

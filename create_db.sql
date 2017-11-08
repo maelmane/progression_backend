@@ -1,15 +1,11 @@
-DROP TABLE IF EXISTS avancement;
-DROP TABLE IF EXISTS serie;
-DROP TABLE IF EXISTS theme;
-DROP TABLE IF EXISTS question;
-DROP TABLE IF EXISTS question_prog;
-DROP TABLE IF EXISTS question_systeme;
-DROP TABLE IF EXISTS users;
+CREATE USER quiz@localhost IDENTIFIED BY 'password'; 
+CREATE DATABASE quiz;
 
+USE quiz;
 
 CREATE TABLE `users` (
   `userID`   int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL UNIQUE,
+  `username` varchar(191) NOT NULL UNIQUE,
   `courriel` varchar(255),
   `password` varchar(64) NOT NULL,
   `actif`    int NOT NULL DEFAULT 1,
@@ -74,10 +70,16 @@ CREATE TABLE `question_systeme` (
 CREATE TABLE `avancement` (
   `userID`       int(11) NOT NULL,
   `questionID`   int(11) NOT NULL,
+  `conteneur`    varchar(64),
   `etat`	 int DEFAULT 0,
   `reponse`	 text,
   PRIMARY KEY (`userID`, `questionID`)
 );
 
 /*Admin*/
-INSERT INTO users (userID, username, password) VALUES (99999, 'admin', 'd73a4dfa2169f4f87e698585ff132e0d131d00940800e7554479562fd420dc3a');
+
+
+GRANT ALL PRIVILEGES ON quiz.* TO quiz@localhost;
+
+/*admin/admin*/
+INSERT INTO users (userID, username, password) VALUES (99999, 'admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918');

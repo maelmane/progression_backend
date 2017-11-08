@@ -1,0 +1,11 @@
+#DROP TABLE IF EXISTS avancement;
+#DROP TABLE IF EXISTS serie;
+#DROP TABLE IF EXISTS theme;
+#DROP TABLE IF EXISTS question;
+#DROP TABLE IF EXISTS question_prog;
+#DROP TABLE IF EXISTS question_systeme;
+#DROP TABLE IF EXISTS users;
+
+
+DROP DATABASE IF EXISTS quiz;
+DROP USER 'quiz';
