@@ -1,5 +1,7 @@
 FROM greyltc/lamp
 
+# Mise a jour de la liste de package
+RUN pacman -Suy --noconfirm
 RUN pacman -S --noprogressbar --noconfirm --needed unzip wget
 
 COPY build_db.sh /tmp
