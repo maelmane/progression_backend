@@ -483,6 +483,10 @@ table.center {
   margin-right:auto;
 }
 
+.questionNonReussie{
+    font-weight: bold;
+}    
+    
 #inscription{
     color: white;
 }
