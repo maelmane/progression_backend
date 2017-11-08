@@ -9,7 +9,7 @@ if(is_null($theme->id)){
         header('Location: index.php?p=accueil');
 }
 
-page_header_avecTitre($theme->titre);
+page_header($theme->titre);
 
 echo "
 
@@ -29,7 +29,7 @@ echo "<tr><td>$serie->description<td></tr>";
 foreach($theme->get_series() as $serie){
     echo "
           <tr>
-          <td>". $serie->numero ."</td><td><a href='?p=serie&ID=$serie->id&titreTheme=$theme->titre'>". $serie->titre ."</a></td><td align=center>".floor($serie->get_avancement()/$serie->get_nb_questions()*100) ."%</a></td>
+          <td>". $serie->numero ."</td><td><a href='?p=serie&ID=$serie->id&themeID=$theme->id'>". $serie->titre ."</a></td><td align=center>".floor($serie->get_avancement()/$serie->get_nb_questions()*100) ."%</a></td>
           </tr>
 
          ";

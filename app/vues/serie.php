@@ -9,13 +9,17 @@ if(!isset($_GET['ID'])){
 $serie=new Serie($_GET['ID'], $_SESSION['user_id']);
 $serie->load_info();
 
+
+
 if(is_null($serie->id)){
         header('Location: index.php?p=accueil');
 }
 
-$titre = $_GET['titreTheme'];
+$theme=new Theme($_GET['themeID'], $_SESSION['user_id']);
+$theme->load_info();
 
-page_header_avecTitre($titre);
+
+page_header($theme->titre);
 
 echo "
 
@@ -36,7 +40,7 @@ foreach($serie->get_questions() as $question){
     }
     else{
         $page=$question->type == Question::TYPE_PROG?"question_prog":"question_sys";
-        echo "<td>" . $question->numero ."</td><td><a href='?p=$page&ID=$question->id&titreTheme=$titre'>". $question->titre ."</a></td><td align=center>".($question->etat == Question::ETAT_REUSSI?"✓":" ")."</td>";
+        echo "<td>" . $question->numero ."</td><td><a href='?p=$page&ID=$question->id&themeID=$theme->id'>". $question->titre ."</a></td><td align=center>".($question->etat == Question::ETAT_REUSSI?"✓":" ")."</td>";
         }
 
     echo "</td>

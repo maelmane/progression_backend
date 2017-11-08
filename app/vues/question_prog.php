@@ -81,9 +81,10 @@ if(!is_null($qst->reponse))
 
 $lang_id=$qst->lang;
 
-$titre = $_GET['titreTheme'];
+$theme=new Theme($_GET['themeID'], $_SESSION['user_id']);
+$theme->load_info();
 
-page_header_avecTitre($titre);
+page_header($theme->titre);
 
 echo"
 
