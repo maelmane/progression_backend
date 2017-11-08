@@ -201,7 +201,7 @@ class Theme extends EntiteBD{
                                      avancement.userID= ? AND 
                                      question.serieID=serie.serieID AND 
                                      serie.themeID= ? AND
-                                     avancement.etat = 1');
+                                     avancement.etat = '.Question::ETAT_REUSSI);
         $query->bind_param( "ii", $this->user_id,$this->id);
         $query->execute();
         $query->bind_result($res);
@@ -285,7 +285,7 @@ class Serie extends EntiteBD{
                                      avancement.questionID=question.questionID AND 
                                      avancement.userID= ? AND 
                                      question.serieID = ? AND
-                                     avancement.etat=1');
+                                     avancement.etat='.Question::ETAT_REUSSI);
 
         $query->bind_param( "ii", $this->user_id, $this->id);
         $query->execute();
