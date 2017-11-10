@@ -93,14 +93,14 @@ if(!is_null($qst->reponse) && $qst->reponse!="" ){
    </table><table style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'>
    <tr><td>
    Réponse: <input type=text name=reponse value='$avcmt->reponse'>
-   <input type=submit value='Soumettre'>";
+   <input type=submit value='Soumettre'></td>";
 }
 else{
     echo"
    <tr><td>
-   <input type=submit name='submit' value='Valider'></td>
-   <td  align=right><input type=submit name='reset' value='Réinitialiser' onclick='return confirm(\"Voulez-vous vraiment réinitialiser votre session?\");'>";
+   <input type=submit name='submit' value='Valider'></td>";
 }
+echo " <td  align=right><input type=submit name='reset' value='Réinitialiser' onclick='return confirm(\"Voulez-vous vraiment réinitialiser votre session?\");'>";
 
 echo "</td></tr></table>
       <table width=100%>
@@ -110,7 +110,7 @@ echo "</td></tr></table>
 if(!is_null($qst->reponse) && $qst->reponse!=""){
     if($_POST['reponse']!='')
         if($_POST['reponse']==$qst->reponse){
-            echo "Bonne réponse!";
+            echo "Bonne réponse!" . ((!is_null($qst->code_validation))?"</td><td>Code de validation : $qst->code_validation":"");
             $avcmt->set_etat(Question::ETAT_REUSSI);            
         }
         else{
@@ -119,7 +119,7 @@ if(!is_null($qst->reponse) && $qst->reponse!=""){
 }
 elseif($res_validation!=""){
     if($res_validation=="valide"){
-        echo "Bonne réponse!";
+        echo "Bonne réponse!" . ((!is_null($qst->code_validation))?"</td><td>Code de validation : $qst->code_validation":"");
         $avcmt->set_etat(Question::ETAT_REUSSI);
     }
     elseif($res_validation=="invalide"){
