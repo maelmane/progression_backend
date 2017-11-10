@@ -23,7 +23,7 @@ echo "
         <br><br>
         <pre class='code-wrapper'><code>
             <table width=100%>
-              <th align=left width=10%>N°</th><th align=left>Titre</th><th align=center>Réussi</th>
+              
 ";
 
 //Questions
@@ -34,7 +34,7 @@ foreach($serie->get_questions() as $question){
     }
     else{
         $page=$question->type == Question::TYPE_PROG?"question_prog":"question_sys";
-        echo "<td>" . $question->numero ."</td><td><a href='?p=$page&ID=$question->id'>". $question->titre ."</a></td><td align=center>".($question->etat == Question::ETAT_REUSSI?"✓":" ")."</td>";
+        echo "<td".($question->etat != Question::ETAT_REUSSI?" class='questionNonReussie' ":"").">" . $question->numero ."</td><td><a".($question->etat != Question::ETAT_REUSSI?" class='questionNonReussie' ":"")." href='?p=$page&ID=$question->id'>". $question->titre ."</a></td>";
         }
 
     echo "</td>

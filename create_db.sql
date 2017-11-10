@@ -1,4 +1,4 @@
-CREATE USER quiz@localhost IDENTIFIED BY 'password'; 
+CREATE USER quiz@localhost IDENTIFIED BY 'password';
 CREATE DATABASE quiz;
 
 USE quiz;
@@ -8,6 +8,7 @@ CREATE TABLE `users` (
   `username` varchar(191) NOT NULL UNIQUE,
   `courriel` varchar(255),
   `password` varchar(64) NOT NULL,
+  `sel`      varchar(10) NOT NULL,
   `actif`    int NOT NULL DEFAULT 1,
 
   PRIMARY KEY (`userID`)
@@ -70,6 +71,7 @@ CREATE TABLE `question_systeme` (
 CREATE TABLE `avancement` (
   `userID`       int(11) NOT NULL,
   `questionID`   int(11) NOT NULL,
+  `conteneur`    varchar(64),
   `etat`	 int DEFAULT 0,
   `reponse`	 text,
   PRIMARY KEY (`userID`, `questionID`)

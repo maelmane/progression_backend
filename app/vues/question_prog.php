@@ -170,7 +170,7 @@ if ($qst->pre_code != ""){ $qst->pre_code = $qst->pre_code . "\n"; }
 $code_exec=preg_replace('~\R~u', "\n", $qst->pre_exec. $qst->pre_code .  $code . $qst->post_code);
 
 //post le code à remotecompiler
-$url_rc='http://localhost:12380/compile';
+$url_rc='http://172.17.0.1:12380/compile';
 $data_rc=array('language' => $GLOBALS['lang_id'], 'code' => $code_exec, 'parameters' => "\"$params\"", 'stdin' => $qst->stdin);
 $options_rc=array('http'=> array(
     'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
@@ -212,9 +212,10 @@ if($qst->reponse!="null"){ //en PHP, "" == NULL (arg!!!)
     }
                                                                                       
     else{
-        if($avcmt->get_etat()==Question::ETAT_NONREUSSI){
+        if($avcmt->get_etat()!=Question::ETAT_REUSSI){
             //Met la réponse à jour dans l'avancement
             $avcmt->set_reponse($code);
+	    $avcmt->set_etat(Question::ETAT_NONREUSSI);
         }
         echo "Raté! Essayez encore</td>";
     }
@@ -250,10 +251,11 @@ echo "
       readOnly: false,
       firstLineNumber: " . strval(substr_count($qst->pre_exec, "\n") + substr_count($qst->pre_code, "\n") + 1) . ",
       indentUnit: 4,
+      scrollbarStyle: null,
       extraKeys: { Tab: betterTab }
       });
-      editor.setSize(700, 0);
-      editor.setSize(700, editor.getScrollInfo().height);
+      editor.setSize(0,0);
+      editor.setSize(Math.max(700, editor.getScrollInfo().width), Math.max(100, editor.getScrollInfo().height));
      ";
 
 if ($qst->post_code !=""){
@@ -264,11 +266,14 @@ if ($qst->post_code !=""){
       firstLineNumber: " . strval(substr_count($qst->pre_exec, "\n") + substr_count($qst->pre_code, "\n")) . "+editor.doc.lineCount()+1,      
       indentUnit: 4
       });
+      posteditor.setSize(null,'100%');
      
 
     editor.doc.on('change', function(instance, changeObj){
     posteditor.setOption('firstLineNumber', " . strval(substr_count($qst->pre_exec, "\n") + substr_count($qst->pre_code, "\n")) . "+editor.doc.lineCount());     
-    editor.setSize(null, editor.getScrollInfo().height);
+    //editor.setSize(null, editor.getScrollInfo().height);
+    editor.setSize(Math.max(700, editor.getScrollInfo().width), Math.max(100, editor.getScrollInfo().height));
+
     });
       ";}
 
