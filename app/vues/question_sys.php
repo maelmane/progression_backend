@@ -53,7 +53,10 @@ $res_validation=trim(json_decode($comp_resp, true)['resultat']);
 
 $avcmt->set_reponse($cont_id);
 
-page_header();
+$serie=new Serie($qst->serieID, $_SESSION['user_id']);
+$serie->load_info();
+
+page_header($serie->titre);
 
 echo"
 

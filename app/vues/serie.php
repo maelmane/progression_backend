@@ -15,7 +15,7 @@ if(is_null($serie->id)){
         header('Location: index.php?p=accueil');
 }
 
-$theme=new Theme($_GET['themeID'], $_SESSION['user_id']);
+$theme=new Theme($serie->themeID, $_SESSION['user_id']);
 $theme->load_info();
 
 
@@ -40,7 +40,7 @@ foreach($serie->get_questions() as $question){
     }
     else{
         $page=$question->type == Question::TYPE_PROG?"question_prog":"question_sys";
-        echo "<td>" . $question->numero ."</td><td><a href='?p=$page&ID=$question->id&themeID=$theme->id'>". $question->titre ."</a></td><td align=center>".($question->etat == Question::ETAT_REUSSI?"✓":" ")."</td>";
+        echo "<td>" . $question->numero ."</td><td><a href='?p=$page&ID=$question->id'>". $question->titre ."</a></td><td align=center>".($question->etat == Question::ETAT_REUSSI?"✓":" ")."</td>";
         }
 
     echo "</td>

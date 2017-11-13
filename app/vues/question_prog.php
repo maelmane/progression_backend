@@ -81,10 +81,10 @@ if(!is_null($qst->reponse))
 
 $lang_id=$qst->lang;
 
-$theme=new Theme($_GET['themeID'], $_SESSION['user_id']);
-$theme->load_info();
+$serie=new Serie($qst->serieID, $_SESSION['user_id']);
+$serie->load_info();
 
-page_header($theme->titre);
+page_header($serie->titre);
 
 echo"
 
