@@ -56,7 +56,10 @@ if($avcmt->get_etat()==Question::ETAT_DEBUT){
 }
 $avcmt->set_conteneur($cont_id);
 
-page_header();
+$serie=new Serie($qst->serieID, $_SESSION['user_id']);
+$serie->load_info();
+
+page_header($serie->titre);
 
 echo"
 

@@ -9,7 +9,7 @@ if(is_null($theme->id)){
         header('Location: index.php?p=accueil');
 }
 
-page_header();
+page_header($theme->titre);
 
 echo "
 

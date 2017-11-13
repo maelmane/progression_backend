@@ -31,13 +31,17 @@ if(!isset($_SESSION["user_id"])){
     header("Location: login.php?p=$_GET[p]&ID=$_GET[ID]");
 }
 
-function page_header(){
-    echo "
-	  <html>
-        <head>
+function page_header($titre=null){
+
+    if(is_null($titre))
+        $titre = "Quiz python";
+
+    echo "  <html>
+            <head>
               <meta charset='utf-8'>
 	      <link rel='stylesheet' type='text/css' href='css/style.css'>
-	    </head>
+            <title>$titre</title>
+            </head>
 	    <body>
           <section class='main'>
 		   <div class='example-wrapper clearfix'>
@@ -46,6 +50,7 @@ function page_header(){
 
      ";
 }
+
 
 function page_footer(){
     echo"

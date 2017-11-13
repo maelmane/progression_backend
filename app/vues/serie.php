@@ -9,11 +9,17 @@ if(!isset($_GET['ID'])){
 $serie=new Serie($_GET['ID'], $_SESSION['user_id']);
 $serie->load_info();
 
+
+
 if(is_null($serie->id)){
         header('Location: index.php?p=accueil');
 }
 
-page_header();
+$theme=new Theme($serie->themeID, $_SESSION['user_id']);
+$theme->load_info();
+
+
+page_header($theme->titre);
 
 echo "
 
