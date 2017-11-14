@@ -1,6 +1,6 @@
 FROM siab
 
-RUN apt-get update && apt-get install -y bash-completion language-pack-fr && \
+RUN apt-get update && apt-get install -y man-db manpages-fr manpages-fr-extra bash-completion language-pack-fr && \
   apt-get clean
 
 RUN printf "fr_CA.UTF-8 UTF-8\nfr_CA ISO-8859-1" >> /etc/locale.gen

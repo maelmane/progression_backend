@@ -1,0 +1,12 @@
+FROM q4-4
+
+RUN mkdir /home/krusty/Images/Marge
+RUN mv /tmp/* /home/krusty/Images/Marge
+
+RUN echo À faire : changer les piles de mon pacemaker > ~krusty/Images/todo.txt
+RUN echo QnJhdm8hIHZvdXMgYXZleiB0cm91dsOpIGxlIG1lc3NhZ2UgY2FjaMOpCg== > ~krusty/Images/secret.txt
+
+RUN sed -i -e :a -e '$d;N;2,2ba' -e 'P;D' ~krusty/.bashrc
+RUN echo cd Images >> ~krusty/.bashrc
+RUN echo alias cd=\'echo \\\(utilisez les raccourcis . .. ou ~\\\)\' >> /home/krusty/.bashrc
+
