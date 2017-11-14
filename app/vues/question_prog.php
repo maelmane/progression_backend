@@ -255,7 +255,7 @@ echo "
       extraKeys: { Tab: betterTab }
       });
       editor.setSize(0,0);
-      editor.setSize(Math.max(700, editor.getScrollInfo().width), Math.max(100, editor.getScrollInfo().height));
+      editor.setSize(Math.max(700, editor.getScrollInfo().width), '100%');
      ";
 
 if ($qst->post_code !=""){
@@ -272,7 +272,7 @@ if ($qst->post_code !=""){
     editor.doc.on('change', function(instance, changeObj){
     posteditor.setOption('firstLineNumber', " . strval(substr_count($qst->pre_exec, "\n") + substr_count($qst->pre_code, "\n")) . "+editor.doc.lineCount());     
     //editor.setSize(null, editor.getScrollInfo().height);
-    editor.setSize(Math.max(700, editor.getScrollInfo().width), Math.max(100, editor.getScrollInfo().height));
+    editor.setSize(Math.max(700, editor.getScrollInfo().width), '100%');
 
     });
       ";}
