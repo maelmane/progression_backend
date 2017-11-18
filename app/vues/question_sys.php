@@ -110,7 +110,7 @@ echo "</td></tr></table>
 if(!is_null($qst->reponse) && $qst->reponse!=""){
     if($_POST['reponse']!='')
         if($_POST['reponse']==$qst->reponse){
-            echo "Bonne réponse!" . ((!is_null($qst->code_validation))?"</td><td>Code de validation : $qst->code_validation":"");
+            echo "Bonne réponse!" . ((!is_null($qst->code_validation)&&trim($qst->code_validation!=""))?"</td><td>Code de validation : $qst->code_validation":"");
             $avcmt->set_etat(Question::ETAT_REUSSI);            
         }
         else{
@@ -119,7 +119,7 @@ if(!is_null($qst->reponse) && $qst->reponse!=""){
 }
 elseif($res_validation!=""){
     if($res_validation=="valide"){
-        echo "Bonne réponse!" . ((!is_null($qst->code_validation))?"</td><td>Code de validation : $qst->code_validation":"");
+        echo "Bonne réponse!" . ((!is_null($qst->code_validation)&&trim($qst->code_validation!=""))?"</td><td>Code de validation : $qst->code_validation":"");
         $avcmt->set_etat(Question::ETAT_REUSSI);
     }
     elseif($res_validation=="invalide"){
