@@ -1,0 +1,8 @@
+FROM system
+
+RUN useradd -s /bin/bash -m bobby && yes mcgee | passwd bobby 
+RUN echo Mon mot de passe : mcgee > /home/bobby/mdp.txt
+RUN echo H0nOn\!J3su1sDém4sQuÉ\! > /home/bobby/secret.txt
+RUN chown bobby:bobby /home/bobby/secret.txt /home/bobby/mdp.txt
+RUN chmod 600 /home/bobby/secret.txt
+
