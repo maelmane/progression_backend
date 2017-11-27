@@ -89,7 +89,7 @@ if(isset($_GET['serie'])){
        ";
 
     foreach($serie->get_questions() as $question){
-        echo "<option value = $question->id ".($_GET['question']==$question->id?'selected':'').">".$question->titre."</option>";
+        echo "<option value = $question->id ".($_GET['question']==$question->id?'selected':'').">".$question->numero." " .$question->titre."</option>";
     }
     echo "
        <option value=-1 ".($_GET['question']==-1?'selected':'').">Nouvelle question</option></select></td>
