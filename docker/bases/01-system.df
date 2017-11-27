@@ -19,4 +19,5 @@ RUN printf "export LC_ALL=fr_CA.utf8\nexport LANG=fr_CA.utf8\nexport LANGUAGE=fr
 
 RUN useradd -s /bin/bash -m krusty && yes motdepasse | passwd krusty
 
+RUN dpkg-reconfigure locales
 
