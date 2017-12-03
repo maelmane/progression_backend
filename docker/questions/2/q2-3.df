@@ -1,0 +1,5 @@
+FROM vim
+
+COPY lorem /home/krusty/réponse
+RUN echo \\n\\n La réponse est : \<G=FIN,gg=DÉBUT\> >> /home/krusty/réponse
+RUN chown krusty:krusty /home/krusty/réponse

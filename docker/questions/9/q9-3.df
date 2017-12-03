@@ -1,0 +1,6 @@
+FROM q9-2
+
+RUN chmod 750 /home/krusty/privé
+RUN mkdir /home/krusty/commentaires
+RUN chown krusty:krusty /home/krusty/commentaires
+
