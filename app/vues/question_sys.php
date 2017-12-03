@@ -29,14 +29,14 @@ openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 //Crée le conteneur
 $url_rc='http://localhost:12380/compile';
 if(isset($_POST['reset']) && $_POST['reset']=='Réinitialiser'){
-    $data_rc=array('language' => 13, 'code' => 'reset', 'vm_name' => $qst->image, 'parameters' => $avcmt->conteneur, 'stdin' => '');
+    $data_rc=array('language' => 13, 'code' => 'reset', 'vm_name' => $qst->image, 'parameters' => $avcmt->conteneur, 'stdin' => '','user'=>$qst->user);
     $options_rc=array('http'=> array(
         'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
         'method'  => 'POST',
         'content' => http_build_query($data_rc)));
 }
 else{
-    $data_rc=array('language' => 13, 'code' => $qst->verification, 'vm_name' => $qst->image, 'parameters' => $avcmt->conteneur, 'stdin' => '');
+    $data_rc=array('language' => 13, 'code' => $qst->verification, 'vm_name' => $qst->image, 'parameters' => $avcmt->conteneur, 'stdin' => '','user'=>$qst->user);
     $options_rc=array('http'=> array(
         'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
         'method'  => 'POST',
