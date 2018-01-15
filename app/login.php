@@ -7,7 +7,8 @@ if(isset($_SESSION["user_id"])){
     header('Location: index.php?p=accueil');
 }
 else{
-
+    load_config();
+    
     if(isset($_POST["submit"])){
         if(empty($_POST["username"]) || empty($_POST["passwd"])){
             $erreur="Le nom d'utilisateur ou le mot de passe ne peuvent être vides.";
@@ -17,33 +18,41 @@ else{
             $username=$_POST["username"];
             $password=$_POST["passwd"];
 
-            #            $ldap = ldap_connect("localhost") or die("Impossible de se connecter au serveur d'authentification. Veuillez contacter l'administrateur");
-            #            ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
-            #            $bind = @ldap_bind($ldap, "cn=$username,dc=local", "$password");
-            #            if($bind) {
+            #Tentative de connexion à AD
+            $ldap = ldap_connect("ldaps://$GLOBALS['config']['hote_ad']",$GLOBALS['config']['port_ad']) or die("Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site.";
+            ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+            ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
+            $bind = @ldap_bind($ldap, $username."@$GLOBALS['config']['domaine_ad']", $password);
+            if(!$bind) {
+                $erreur="Nom d'utilisateur ou mot de passe invalide.";
+            }
+            else{
+                #Connexion à la BD
+                $user_info=new User();
+                if($user_info->load_info($username, $password)){
+                    #Obtient les infos de l'utilisateur
+                    $_SESSION["user_id"]=$user_info->id;
+                    $_SESSION["username"]=$user_info->username;
+                    $_SESSION["active"]=$user_info->actif;
+                    if(!isset($_GET["p"])){
+                        header("Location: index.php?p=accueil");
+                    }
+                    else{
+                        header("Location: index.php?p=$_GET[p]&ID=$_GET[ID]");
+                    }
 
-            #Connexion à la BD
-            $user_info=new User();
-            if($user_info->load_info($username, $password)){
-            #Obtient les infos de l'utilisateur
-            $_SESSION["user_id"]=$user_info->id;
-            $_SESSION["username"]=$user_info->username;
-            $_SESSION["active"]=$user_info->actif;
-            if(!isset($_GET["p"]))
-                header("Location: index.php?p=accueil");
-            else
-                header("Location: index.php?p=$_GET[p]&ID=$_GET[ID]");
-
+                }
+                else {
+                    $erreur="Nom d'utilisateur ou mot de passe invalide.";
+                }
+            }
         }
-            else {
-            $erreur="Nom d'utilisateur ou mot de passe invalide.";
-        }
-        }
-        }
-            if(isset($erreur)){
-            echo $erreur;
-        }
-            echo '
+    }
+                
+    if(isset($erreur)){
+        echo $erreur;
+    }
+    echo '
 	  <html>
         <head>
               <meta charset="utf-8">

@@ -2,16 +2,21 @@
 
 #error_reporting(0);
 
+function load_config(){
+    if(!isset($GLOBALS["config"])){
+        $cfg=parse_ini_file("../db.conf");
+        $GLOBALS["config"]=$cfg;
+    }
+}
+
 function db_init(){
     if(!isset($GLOBALS["conn"]))
-    {    
-    $cfg=parse_ini_file("../db.conf");
-    $GLOBALS["config"]=$cfg;
-                          
-    $GLOBALS["conn"] = new mysqli($cfg["servername"], $cfg["username"], $cfg["password"], $cfg["dbname"]);
-    $GLOBALS["conn"]->set_charset("utf8");
-    $GLOBALS["errno"]=mysqli_connect_errno();
-    $GLOBALS["error"]=mysqli_connect_error();
+    {
+        load_config();
+        $GLOBALS["conn"] = new mysqli($cfg["servername"], $cfg["username"], $cfg["password"], $cfg["dbname"]);
+        $GLOBALS["conn"]->set_charset("utf8");
+        $GLOBALS["errno"]=mysqli_connect_errno();
+        $GLOBALS["error"]=mysqli_connect_error();
     }
 }
 
