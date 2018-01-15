@@ -21,8 +21,12 @@ setlocale(LC_ALL,$locale);
 
 openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 
+//Langage par défaut
+$langid=QuestionProg::PYTHON3;
+
 //Si un code a été soumis, l'insére dans la zone de texte, sinon utilise le code par défaut.
-if ($_POST['incode']==''){
+if (!isset($_POST['incode']) || $_POST['incode']==''){
+    if (isset($_POST['langid'])&&$_POST['langid']!="") $langid=$_POST['langid'];
     if($avcmt->reponse==''){
         $code='';
     }
@@ -33,7 +37,6 @@ if ($_POST['incode']==''){
 else{
     $code=$_POST['incode'];
 }
-
 
 //Récupère les paramètres de compilation. Les paramètres provenant de la BD ont préscéance.
 $params=$_POST['params'];
@@ -52,12 +55,12 @@ echo"
     <link rel='stylesheet' href='/CodeMirror/lib/codemirror.css'>
 ";
 
-if($_POST['langid']<=QuestionProg::PYTHON3){
+if($langid<=QuestionProg::PYTHON3){
     echo"
     <script  src='/CodeMirror/mode/python/python.js'></script>
     ";
 }
-elseif($_POST['langid']==QuestionProg::CPP){
+elseif($langid==QuestionProg::CPP){
     echo"
     <script  src='/CodeMirror/mode/clike/clike.js'></script>
     ";
@@ -80,7 +83,7 @@ echo "
      "; 
 
     echo " <tr>
-       <td>Langage : ".menu_lang((isset($_POST['langid'])?$_POST['langid']:1), false)."
+       <td>Langage : ".menu_lang(langid>=0?$langid:1, false)."
        </td>
        </tr><tr>
        <td colspan=2>
@@ -106,7 +109,7 @@ echo "
 ";
 
 //Log le code soumis
-$com_log=$_SERVER['REMOTE_ADDR']." - " . $_SERVER["PHP_SELF"] . " : lang : " . $_POST["langid"] . " Code : ". $code;
+$com_log=$_SERVER['REMOTE_ADDR']." - " . $_SERVER["PHP_SELF"] . " : lang : " . $langid . " Code : ". $code;
 syslog(LOG_INFO, $com_log);
 
 //Compose le code à exécuter
@@ -114,7 +117,7 @@ $code_exec=preg_replace('~\R~u', "\n", $code);
 
 //post le code à remotecompiler
 $url_rc='http://localhost:12380/compile';
-$data_rc=array('language' => $_POST["langid"], 'code' => $code_exec, 'parameters' => "\"$params\"", 'stdin' => $stdin);
+$data_rc=array('language' => $langid, 'code' => $code_exec, 'parameters' => "\"$params\"", 'stdin' => $stdin);
 $options_rc=array('http'=> array(
     'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
     'method'  => 'POST',

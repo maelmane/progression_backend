@@ -1,0 +1,8 @@
+FROM q1-4
+
+RUN mkdir /home/krusty/Documents && mv /home/krusty/mes_notes /home/krusty/Documents
+RUN cp /home/krusty/Documents/mes_notes/famous_lines.txt /home/krusty/Documents/mes_notes/famous_lines.txt~
+RUN echo bananes\nlait 2%\n1kg de steak haché\nPetits pois\nbacon > /home/krusty/liste_epicerie.txt~
+RUN touch /home/krusty/Documents/test.txt~
+RUN chown krusty:krusty -R /home/krusty/
+

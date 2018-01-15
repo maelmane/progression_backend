@@ -1,0 +1,7 @@
+FROM system
+
+COPY bottin.txt /tmp/
+RUN chmod 400 /tmp/bottin.txt
+COPY bottin_poly.txt /home/krusty
+RUN chown krusty:krusty /home/krusty/*
+

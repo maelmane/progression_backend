@@ -81,10 +81,7 @@ if(!is_null($qst->reponse))
 
 $lang_id=$qst->lang;
 
-$serie=new Serie($qst->serieID, $_SESSION['user_id']);
-$serie->load_info();
-
-page_header($serie->titre);
+page_header();
 
 echo"
 
@@ -118,13 +115,13 @@ echo "
            $qst->enonce
            <br>
            <br>
-        <pre class='code-wrapper'><code><form method='post' action=''><table style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'> 
+        <pre class='code-wrapper'><code><form method='post' action=''><table width='100%' style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'> 
      "; 
 
 if ($qst->pre_code != ""){
     echo " <tr>
             <td colspan=2>
-              <textarea id='precode' rows='5' cols='80'>$qst->pre_code</textarea>
+              <textarea id='precode' rows='5' >$qst->pre_code</textarea>
              </td>
            </tr>";
 }
@@ -132,14 +129,14 @@ if ($qst->pre_code != ""){
 echo "
       <tr>
        <td colspan=2>
-        <textarea id='incode' name = 'incode' rows=10 cols='80'>$code</textarea>
+        <textarea id='incode' name = 'incode' rows=10 >$code</textarea>
        </td>
       </tr>";
 
 if ($qst->post_code != ""){
     echo " <tr> 
             <td colspan=2>
-             <textarea id='postcode' rows='5' cols='80'>$qst->post_code</textarea>
+             <textarea id='postcode' rows='5' >$qst->post_code</textarea>
             </td>
            </tr>";
 }
@@ -258,7 +255,7 @@ echo "
       extraKeys: { Tab: betterTab }
       });
       editor.setSize(0,0);
-      editor.setSize(Math.max(700, editor.getScrollInfo().width), '100%');
+      editor.setSize('100%', Math.max(100, editor.getScrollInfo().height));
      ";
 
 if ($qst->post_code !=""){
@@ -275,7 +272,7 @@ if ($qst->post_code !=""){
     editor.doc.on('change', function(instance, changeObj){
     posteditor.setOption('firstLineNumber', " . strval(substr_count($qst->pre_exec, "\n") + substr_count($qst->pre_code, "\n")) . "+editor.doc.lineCount());     
     //editor.setSize(null, editor.getScrollInfo().height);
-    editor.setSize(Math.max(700, editor.getScrollInfo().width), '100%');
+    editor.setSize('100%', Math.max(100, editor.getScrollInfo().height));
 
     });
       ";}

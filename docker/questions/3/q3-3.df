@@ -1,4 +1,3 @@
 FROM installation
 
-RUN apt-get install -y man-db manpages-fr manpages-de
-
+RUN apt install manpages-de
