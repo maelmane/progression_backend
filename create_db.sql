@@ -41,6 +41,7 @@ CREATE TABLE `question` (
   `numero`	int NOT NULL,
   `enonce`	text,
   `points`	int DEFAULT 0,
+  `code_validation`varchar(64),
   PRIMARY KEY (`questionID`)
 );
 

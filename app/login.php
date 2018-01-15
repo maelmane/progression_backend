@@ -77,9 +77,9 @@ else{
             <form name="login" method="POST" class="form-horizontal">
 
               <div class="form-group">
-                  <label id="loginTxt" class="control-label col-sm-3">Nom d\'utilisateur : </label>
+                  <label id="loginTxt" class="control-label col-sm-3">Courriel : </label>
                   <div class="col-sm-3">
-                    <input class="form-control" type="text" name="username"/>
+                    <input class="form-control" type="text" name="username"/>@$GLOBALS['config']['domaine_ad']
                   </div>
              </div>
              <div class="form-group">
@@ -89,10 +89,13 @@ else{
                   </div>
               </div>
 
+<!-- Désactivé l\'autoinscription
               <div class="col-sm-offset-3">
                 <input name="submit" type="submit" class="btn btn-primary" value="Connexion">
                 <a href="inscription.php">s\'inscrire</a>
               </div>
+-->
+
             </form>
             </div>
           </div>
