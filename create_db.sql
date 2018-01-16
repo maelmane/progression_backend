@@ -1,7 +1,7 @@
 DROP DATABASE IF EXISTS quiz;
--- DROP USER IF EXISTS quiz@localhost;
+DROP USER IF EXISTS quiz@localhost;
 
--- CREATE USER quiz@localhost IDENTIFIED BY 'password';
+CREATE USER quiz@localhost IDENTIFIED BY 'password';
 CREATE DATABASE quiz;
 
 USE quiz;
