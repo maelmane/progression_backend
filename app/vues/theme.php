@@ -29,7 +29,7 @@ echo "
 foreach($theme->get_series() as $serie){
     echo "
           <tr>
-          <td>". $serie->numero ."</td><td><a href='?p=serie&ID=$serie->id'>". $serie->titre ."</a></td><td align=center>".floor($serie->get_avancement()/$serie->get_nb_questions()*100) ."%</a></td>
+          <td>". $serie->numero ."</td><td><a href='?p=serie&ID=$serie->id'>". $serie->titre ."</a></td><td align=center>".($serie->get_nb_questions()>0?floor($serie->get_avancement()/$serie->get_nb_questions()*100):"--") ."%</a></td>
           </tr>
 
          ";

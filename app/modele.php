@@ -13,7 +13,7 @@ function db_init(){
     if(!isset($GLOBALS["conn"]))
     {
         load_config();
-        $GLOBALS["conn"] = new mysqli($cfg["servername"], $cfg["username"], $cfg["password"], $cfg["dbname"]);
+        $GLOBALS["conn"] = new mysqli($GLOBALS["config"]["servername"], $GLOBALS["config"]["username"], $GLOBALS["config"]["password"], $GLOBALS["config"]["dbname"]);
         $GLOBALS["conn"]->set_charset("utf8");
         $GLOBALS["errno"]=mysqli_connect_errno();
         $GLOBALS["error"]=mysqli_connect_error();
@@ -75,10 +75,10 @@ class User extends EntiteBD{
         $this->username=$username;
     }
 
-    static function exist($username){
+    function exist(){
         db_init();
         $query=$GLOBALS["conn"]->prepare( 'SELECT count(*) FROM users WHERE username = ?');
-        $query->bind_param( "s", $username );
+        $query->bind_param( "s", $this->username );
         $query->execute();
         $query->bind_result( $count );
         $res=$query->fetch();
@@ -86,12 +86,13 @@ class User extends EntiteBD{
         return $count;
     }
     
-    function load_info($username, $password){
-        $this->username=null;
-        $this->id=null;
-	
+    function load_info($password){
+        if(!$this->exist()){
+            $this->creer_user($password);
+        }
+        
         $query= $this->conn->prepare( 'SELECT password, sel, userID, actif FROM users WHERE username = ? ');
-        $query->bind_param( "s", $username);
+        $query->bind_param( "s", $this->username);
         $query->execute();
         $motpass=null;
         $sel=null;
@@ -101,17 +102,16 @@ class User extends EntiteBD{
         $query->close();
         if ( hash('sha256', $password.$sel) !=$motpass) return false;
 
-        $this->username=$username;
         return true;
     }    
 
-    static function creer_user($username, $password){
+    function creer_user($password){
         db_init();
         $query=$GLOBALS["conn"]->prepare('INSERT INTO users(username, sel, password) VALUES (?,?,?)');
         $char = 'abcdefghijklmnopqrstuvwxyz0123456789';
         $sel = str_shuffle($char);
         $sel = substr($sel, 0, 10);
-        $query->bind_param( "sss", $username,$sel, hash('sha256', $password.$sel) );
+        $query->bind_param( "sss", $this->username,$sel, hash('sha256', $password.$sel) );
         $query->execute();
         $query->close();
     }

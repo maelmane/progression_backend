@@ -19,17 +19,20 @@ else{
             $password=$_POST["passwd"];
 
             #Tentative de connexion à AD
-            $ldap = ldap_connect("ldaps://$GLOBALS['config']['hote_ad']",$GLOBALS['config']['port_ad']) or die("Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site.";
+            define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
+            
+            $ldap = ldap_connect("ldap://".$GLOBALS['config']['hote_ad'],$GLOBALS['config']['port_ad']) or die("Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site.");
             ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
             ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-            $bind = @ldap_bind($ldap, $username."@$GLOBALS['config']['domaine_ad']", $password);
+            $bind = @ldap_bind($ldap, "cn=$username,dc=local", $password);
             if(!$bind) {
-                $erreur="Nom d'utilisateur ou mot de passe invalide.";
+                ldap_get_option($ldap, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
+                $erreur="Nom d'utilisateur ou mot de passe invalide".$extended_error;
             }
             else{
                 #Connexion à la BD
-                $user_info=new User();
-                if($user_info->load_info($username, $password)){
+                $user_info=new User(null, $username);
+                if($user_info->load_info($password)){
                     #Obtient les infos de l'utilisateur
                     $_SESSION["user_id"]=$user_info->id;
                     $_SESSION["username"]=$user_info->username;
@@ -77,9 +80,9 @@ else{
             <form name="login" method="POST" class="form-horizontal">
 
               <div class="form-group">
-                  <label id="loginTxt" class="control-label col-sm-3">Nom d\'utilisateur : </label>
+                  <label id="loginTxt" class="control-label col-sm-3">Courriel : </label>
                   <div class="col-sm-3">
-                    <input class="form-control" type="text" name="username"/>
+                    <input class="form-control" type="text" name="username"/>@'.$GLOBALS['config']['domaine_ad'].'
                   </div>
              </div>
              <div class="form-group">
@@ -91,8 +94,11 @@ else{
 
               <div class="col-sm-offset-3">
                 <input name="submit" type="submit" class="btn btn-primary" value="Connexion">
+<!-- Désactivé l\'autoinscription
                 <a href="inscription.php">s\'inscrire</a>
+-->
               </div>
+
             </form>
             </div>
           </div>
