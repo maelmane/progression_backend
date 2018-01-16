@@ -1,0 +1,5 @@
+FROM tuyauterie
+
+RUN head -n 10 /etc/passwd|tail -n 6 > /tmp/réponse
+RUN chmod 400 /tmp/réponse
+
