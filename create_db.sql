@@ -1,4 +1,7 @@
-CREATE USER quiz@localhost IDENTIFIED BY 'password';
+DROP DATABASE IF EXISTS quiz;
+-- DROP USER IF EXISTS quiz@localhost;
+
+-- CREATE USER quiz@localhost IDENTIFIED BY 'password';
 CREATE DATABASE quiz;
 
 USE quiz;
@@ -83,5 +86,3 @@ CREATE TABLE `avancement` (
 
 GRANT ALL PRIVILEGES ON quiz.* TO quiz@localhost;
 
-/*admin/admin*/
-INSERT INTO users (userID, username, password) VALUES (99999, 'admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918');
