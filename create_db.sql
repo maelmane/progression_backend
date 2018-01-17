@@ -1,7 +1,7 @@
 DROP DATABASE IF EXISTS quiz;
 DROP USER IF EXISTS quiz@localhost;
 
-CREATE USER quiz@localhost IDENTIFIED BY 'password';
+CREATE USER 'quiz'@'%' IDENTIFIED BY 'Wa65LMaDBV';
 CREATE DATABASE quiz;
 
 USE quiz;
@@ -11,7 +11,7 @@ CREATE TABLE `users` (
   `username` varchar(191) NOT NULL UNIQUE,
   `courriel` varchar(255),
   `password` varchar(64) NOT NULL,
-  `sel`      varchar(10) NOT NULL,
+  `sel`      varchar(10) DEFAULT NULL,
   `actif`    int NOT NULL DEFAULT 1,
 
   PRIMARY KEY (`userID`)

@@ -24,23 +24,21 @@ UNLOCK TABLES;
 
 LOCK TABLES `theme` WRITE;
 /*!40000 ALTER TABLE `theme` DISABLE KEYS */;
-INSERT INTO `theme` VALUES (0,0,'Quiz',0,'Quiz'),(1,1,'Python 1 : Introduction',0,'Ces exercices portent sur les concepts de base de la programmation structurée, en utilisant le langage Python'),(2,1,'Python 2 : La programmation orientée-objet',1,'Ces exercices portent sur les concepts de la programmation orientée-objet, en utilisant le langage Python'),(3,0,'Système d\'exploitation (Linux)',5,'Ces exercices portent sur l\'utilisation du système d\'exploitation Linux'),(4,8,'C++ : Introduction',2,'Ces exercices portent sur les concepts de base du langage C++'),(5,8,'C++ : La programmation orientée-objet',3,'Ces exercices portent sur la programmation orientée-objet en C++'),(6,8,'C++ : La STL',4,'Ces exercices portent sur l\'utilisation des patrons de classe de la STL en C++');
+
+INSERT INTO `theme`(themeID, lang, titre, ordre, description) VALUES
+-- (0,0,'Quiz',0,'Quiz'),
+(1,1,'Python 1 : Introduction',0,'Ces exercices portent sur les concepts de base de la programmation structurée, en utilisant le langage Python'),
+(2,1,'Python 2 : La programmation orientée-objet',1,'Ces exercices portent sur les concepts de la programmation orientée-objet, en utilisant le langage Python'),
+(3,0,'Système d\'exploitation (Linux)',5,'Ces exercices portent sur l\'utilisation du système d\'exploitation Linux'),
+(4,8,'C++ : Introduction',2,'Ces exercices portent sur les concepts de base du langage C++'),
+(5,8,'C++ : La programmation orientée-objet',3,'Ces exercices portent sur la programmation orientée-objet en C++'),
+(6,8,'C++ : La STL',4,'Ces exercices portent sur l\'utilisation des patrons de classe de la STL en C++');
 /*!40000 ALTER TABLE `theme` ENABLE KEYS */;
 UNLOCK TABLES;
 
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+LOCK TABLES `users` WRITE;
 INSERT INTO users (userID, username, password) VALUES (99999, 'admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2018-01-15 23:09:59

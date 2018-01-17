@@ -10,6 +10,7 @@ else{
     load_config();
     
     if(isset($_POST["submit"])){
+	$erreur="";
         if(empty($_POST["username"]) || empty($_POST["passwd"])){
             $erreur="Le nom d'utilisateur ou le mot de passe ne peuvent être vides.";
         }
@@ -21,15 +22,17 @@ else{
             #Tentative de connexion à AD
             define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
             
-            $ldap = ldap_connect("ldap://".$GLOBALS['config']['hote_ad'],$GLOBALS['config']['port_ad']) or die("Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site.");
+            $ldap = ldap_connect("ldaps://".$GLOBALS['config']['hote_ad'],$GLOBALS['config']['port_ad']) or die("Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site.");
             ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
             ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-            $bind = @ldap_bind($ldap, "cn=$username,dc=local", $password);
+            $bind = @ldap_bind($ldap, $GLOBALS['config']['dn_bind'], $GLOBALS['config']['pw_bind']);
             if(!$bind) {
                 ldap_get_option($ldap, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
-                $erreur="Nom d'utilisateur ou mot de passe invalide".$extended_error;
+                $erreur="Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extender_error";
             }
-            else{
+            $result=ldap_search($ldap, $GLOBALS['config']['domaine_ldap'], "(sAMAccountName=$username)", array('dn',1));
+	    $user=ldap_get_entries($ldap, $result);
+            if($user['count']>0 && @ldap_bind($ldap, $user[0]['dn'], $password)){
                 #Connexion à la BD
                 $user_info=new User(null, $username);
                 if($user_info->load_info($password)){
@@ -49,11 +52,14 @@ else{
                     $erreur="Nom d'utilisateur ou mot de passe invalide.";
                 }
             }
+            else {
+                $erreur="Nom d'utilisateur ou mot de passe invalide.";
+            }
         }
     }
                 
     if(isset($erreur)){
-        echo $erreur;
+        echo "<div class='alert alert-danger'> $erreur </div>";
     }
     echo '
 	  <html>
@@ -82,7 +88,10 @@ else{
               <div class="form-group">
                   <label id="loginTxt" class="control-label col-sm-3">Courriel : </label>
                   <div class="col-sm-3">
-                    <input class="form-control" type="text" name="username"/>@'.$GLOBALS['config']['domaine_ad'].'
+                    <input class="form-control" type="text" name="username" />
+                  </div>
+                  <div class="col-sm-3">
+                    <label style="text-align:left;color:#888;">@'.$GLOBALS['config']['domaine_mail'].'</label>
                   </div>
              </div>
              <div class="form-group">
