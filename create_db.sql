@@ -10,8 +10,6 @@ CREATE TABLE `users` (
   `userID`   int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(191) NOT NULL UNIQUE,
   `courriel` varchar(255),
-  `password` varchar(64) NOT NULL,
-  `sel`      varchar(10) DEFAULT NULL,
   `actif`    int NOT NULL DEFAULT 1,
 
   PRIMARY KEY (`userID`)

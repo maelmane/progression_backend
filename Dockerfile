@@ -14,13 +14,12 @@ RUN wget http://codemirror.net/codemirror.zip
 RUN unzip -d /srv/http/ codemirror.zip
 RUN mv /srv/http/codemirror* /srv/http/CodeMirror
 
-COPY db.conf /srv/
-RUN chown -R http:http /srv/db.conf
-COPY app/ /srv/http/
-
 RUN mkdir /etc/ldap
 COPY ldap.conf /etc/ldap
 COPY certs/ad_cert.cer /etc/ssl/certs/
 RUN c_rehash
 
-RUN echo 205.237.24.200 watson.dept-info.crosemont.quebec >> /etc/hosts
+COPY db.conf /srv/
+RUN chown -R http:http /srv/db.conf
+COPY app/ /srv/http/
+

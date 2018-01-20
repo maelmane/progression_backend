@@ -30,13 +30,14 @@ else{
                 ldap_get_option($ldap, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
                 $erreur="Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extender_error";
             }
-            $result=ldap_search($ldap, $GLOBALS['config']['domaine_ldap'], "(sAMAccountName=$username)", array('dn',1));
+            $result=ldap_search($ldap, $GLOBALS['config']['domaine_ldap'], "(sAMAccountName=$username)", array('dn','cn',1));
 	    $user=ldap_get_entries($ldap, $result);
             if($user['count']>0 && @ldap_bind($ldap, $user[0]['dn'], $password)){
                 #Connexion à la BD
                 $user_info=new User(null, $username);
-                if($user_info->load_info($password)){
+                if($user_info->load_info()){
                     #Obtient les infos de l'utilisateur
+		    $_SESSION["nom"]=$user[0]['cn'][0];
                     $_SESSION["user_id"]=$user_info->id;
                     $_SESSION["username"]=$user_info->username;
                     $_SESSION["active"]=$user_info->actif;

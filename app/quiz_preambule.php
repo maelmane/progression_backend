@@ -46,7 +46,7 @@ function page_header($titre=null){
           <section class='main'>
 		   <div class='example-wrapper clearfix'>
 
-          <table width=100%><tr><td width=75% style='text-align:right;'><h1>" . ($_SESSION["username"]=="admin"?"<a href='?p=admin'>admin</a>":$_SESSION["username"]) . "</h1>(<a href='logout.php'>déconnexion</a>)</td></tr></table>
+          <table width=100%><tr><td width=75% style='text-align:right;'><h1>" . ($_SESSION["username"]=="adminquiz"?"<a href='?p=admin'>Admin</a>":$_SESSION["nom"]) . "</h1>(<a href='logout.php'>déconnexion</a>)</td></tr></table>
 
      ";
 }

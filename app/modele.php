@@ -86,32 +86,28 @@ class User extends EntiteBD{
         return $count;
     }
     
-    function load_info($password){
+    function load_info(){
         if(!$this->exist()){
-            $this->creer_user($password);
+            $this->creer_user();
         }
         
-        $query= $this->conn->prepare( 'SELECT password, sel, userID, actif FROM users WHERE username = ? ');
+        $query= $this->conn->prepare( 'SELECT userID, actif FROM users WHERE username = ? ');
         $query->bind_param( "s", $this->username);
         $query->execute();
         $motpass=null;
         $sel=null;
 	
-        $query->bind_result( $motpass, $sel, $this->id, $this->actif );
+        $query->bind_result( $this->id, $this->actif );
         $res=$query->fetch();
         $query->close();
-        if ( hash('sha256', $password.$sel) !=$motpass) return false;
 
         return true;
     }    
 
-    function creer_user($password){
+    function creer_user(){
         db_init();
-        $query=$GLOBALS["conn"]->prepare('INSERT INTO users(username, sel, password) VALUES (?,?,?)');
-        $char = 'abcdefghijklmnopqrstuvwxyz0123456789';
-        $sel = str_shuffle($char);
-        $sel = substr($sel, 0, 10);
-        $query->bind_param( "sss", $this->username,$sel, hash('sha256', $password.$sel) );
+        $query=$GLOBALS["conn"]->prepare('INSERT INTO users(username) VALUES (?)');
+        $query->bind_param( "s", $this->username);
         $query->execute();
         $query->close();
     }
