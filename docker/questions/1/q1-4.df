@@ -1,0 +1,4 @@
+FROM q1-2
+
+RUN mv /home/krusty/documents_volés /home/krusty/mes_notes
+

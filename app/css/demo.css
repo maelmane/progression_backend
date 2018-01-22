@@ -22,7 +22,7 @@ html { height: 100%; }
 
 body {
     font-family: "Lato", Calibri, Arial, sans-serif;
-    background: #ddd url(../images/bg.jpg) repeat top left;
+    background: #fff url(../images/bg.jpg) repeat top left;
     font-weight: 700;
     font-size: 16px;
     color: #333;

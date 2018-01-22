@@ -2,7 +2,7 @@
 
 require_once('quiz_preambule.php');
 
-if($_SESSION['username']!='admin'){
+if($_SESSION['username']!='adminquiz'){
     header("Location: login.php");
 }
 
@@ -12,13 +12,13 @@ page_header();
 //Sauvegarde
 if(isset($_POST['typeprogsys'])){
     if($_POST['typeprogsys']==Question::TYPE_PROG){
-        $qst=new QuestionProg($_POST['question'], $_GET['serie'], $_POST['numero'], $_POST['titre'], $_POST['description'], $_POST['enonce'], $_POST['reponse_prog'], $_POST['points'], $_POST['langid'], $_POST['setup'], $_POST['pre_exec'], $_POST['pre_code'], $_POST['incode'], $_POST['post_code'], $_POST['params'], $_POST['stdin']);
+        $qst=new QuestionProg($_POST['question'], $_GET['serie'], $_POST['numero'], $_POST['titre'], $_POST['description'], $_POST['enonce'], $_POST['reponse_prog'], $_POST['points'], $_POST['code_validation'], $_POST['langid'], $_POST['setup'], $_POST['pre_exec'], $_POST['pre_code'], $_POST['incode'], $_POST['post_code'], $_POST['params'], $_POST['stdin']);
 
         $qid=$qst->save();
         header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
     }
     if($_POST['typeprogsys']==Question::TYPE_SYS){
-        $qst=new QuestionSysteme($_POST['question'], $_GET['serie'], $_POST['numero'], $_POST['titre'], $_POST['description'], $_POST['enonce'], $_POST['reponse_sys'], $_POST['points'], $_POST['image'], $_POST['username'], $_POST['verification']);
+        $qst=new QuestionSysteme($_POST['question'], $_GET['serie'], $_POST['numero'], $_POST['titre'], $_POST['description'], $_POST['enonce'], $_POST['reponse_sys'], $_POST['points'], $_POST['code_validation'], $_POST['image'], $_POST['username'], $_POST['verification']);
 
         $qid=$qst->save();
         header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
@@ -89,7 +89,7 @@ if(isset($_GET['serie'])){
        ";
 
     foreach($serie->get_questions() as $question){
-        echo "<option value = $question->id ".($_GET['question']==$question->id?'selected':'').">".$question->titre."</option>";
+        echo "<option value = $question->id ".($_GET['question']==$question->id?'selected':'').">".$question->numero." " .$question->titre."</option>";
     }
     echo "
        <option value=-1 ".($_GET['question']==-1?'selected':'').">Nouvelle question</option></select></td>
@@ -157,6 +157,13 @@ Description<br>
 <td>
 Énoncé (chaîne de caractères)<br>
 <textarea cols=80 id='enonce' name='enonce' >".$question->enonce."</textarea>
+</td>
+</tr>
+
+<tr>
+<td>
+Code de validation<br>
+<input type=text id='code_validation' name='code_validation'   value='".str_replace("'", "&#39;", $question->code_validation)."'>
 </td>
 </tr>
 </table>
@@ -261,6 +268,7 @@ Validation<br>
 <input type=text id='verification' name='verification'   value='".str_replace("'", "&#39;", $question->verification)."'>
 </td>
 </tr>
+
 ";
 }
 

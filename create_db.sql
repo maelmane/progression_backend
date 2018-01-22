@@ -1,4 +1,7 @@
-CREATE USER quiz@localhost IDENTIFIED BY 'password';
+DROP DATABASE IF EXISTS quiz;
+DROP USER IF EXISTS quiz@localhost;
+
+CREATE USER 'quiz'@'%' IDENTIFIED BY 'Wa65LMaDBV';
 CREATE DATABASE quiz;
 
 USE quiz;
@@ -7,8 +10,6 @@ CREATE TABLE `users` (
   `userID`   int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(191) NOT NULL UNIQUE,
   `courriel` varchar(255),
-  `password` varchar(64) NOT NULL,
-  `sel`      varchar(10) NOT NULL,
   `actif`    int NOT NULL DEFAULT 1,
 
   PRIMARY KEY (`userID`)
@@ -41,6 +42,7 @@ CREATE TABLE `question` (
   `numero`	int NOT NULL,
   `enonce`	text,
   `points`	int DEFAULT 0,
+  `code_validation`varchar(64),
   PRIMARY KEY (`questionID`)
 );
 
@@ -82,5 +84,3 @@ CREATE TABLE `avancement` (
 
 GRANT ALL PRIVILEGES ON quiz.* TO quiz@localhost;
 
-/*admin/admin*/
-INSERT INTO users (userID, username, password) VALUES (99999, 'admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918');

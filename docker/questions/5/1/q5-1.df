@@ -1,0 +1,7 @@
+FROM system
+
+RUN apt install -y less
+RUN mkdir /home/krusty/Documents
+COPY docs/* /home/krusty/Documents/
+RUN chown -R krusty:krusty /home/krusty/*
+
