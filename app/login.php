@@ -82,7 +82,7 @@ else{
 
           <section class="main">
 		      <div class="example-wrapper clearfix">
-          <h1 id="loginTxt" style="text-align:center"> Bienvenue sur le site Quiz-Python </h1>
+          <div style="align:center"><img src="images/logo.png"></div>
           <div class="container" id="centre">
             <form name="login" method="POST" class="form-horizontal">
 

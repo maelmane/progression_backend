@@ -34,7 +34,7 @@ if(!isset($_SESSION["user_id"])){
 function page_header($titre=null){
 
     if(is_null($titre))
-        $titre = "Quiz python";
+        $titre = "Progression";
 
     echo "  <html>
             <head>
