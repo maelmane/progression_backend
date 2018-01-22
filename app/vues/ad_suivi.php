@@ -2,6 +2,10 @@
 
 require_once('quiz_preambule.php');
 
+if($_SESSION['username']!='adminquiz'){
+    header("Location: login.php");
+}
+
 page_header();
 
 
