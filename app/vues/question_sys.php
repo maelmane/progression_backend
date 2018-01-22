@@ -27,7 +27,7 @@ setlocale(LC_ALL,$locale);
 openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 
 //Crée le conteneur
-$url_rc='http://localhost:12380/compile';
+$url_rc="http://".$GLOBALS['config']['compilebox_hote'].":".$GLOBALS['config']['compilebox_port']."/compile";
 if(isset($_POST['reset']) && $_POST['reset']=='Réinitialiser'){
     $data_rc=array('language' => 13, 'code' => 'reset', 'vm_name' => $qst->image, 'parameters' => $avcmt->conteneur, 'stdin' => '', 'user' => $qst->user );
     $options_rc=array('http'=> array(
