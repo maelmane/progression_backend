@@ -16,4 +16,4 @@ fi
 #Build puis run le container
 docker build -t quiz .
 
-docker run -d --name quiz -p 443:443 quiz
+start_quiz

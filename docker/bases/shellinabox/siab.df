@@ -17,10 +17,10 @@ RUN locale-gen fr_CA.UTF-8
 
 #Installe le certificat SSL
 RUN mkdir /etc/shellinabox/certs
-#COPY certs/certificate-quiz.dept-info.crosemont.quebec.pem /etc/shellinabox/certs 
+#COPY certs/certificate-progression.dept-info.crosemont.quebec.pem /etc/shellinabox/certs 
 COPY certs/privkey.pem certs/cert.pem /etc/shellinabox/certs/
-RUN cat /etc/shellinabox/certs/privkey.pem /etc/shellinabox/certs/cert.pem > /etc/shellinabox/certs/certificate-quiz.dept-info.crosemont.quebec.pem
-RUN cp /etc/shellinabox/certs/certificate-quiz.dept-info.crosemont.quebec.pem /etc/shellinabox/certs/certificate.pem
+RUN cat /etc/shellinabox/certs/privkey.pem /etc/shellinabox/certs/cert.pem > /etc/shellinabox/certs/certificate-progression.dept-info.crosemont.quebec.pem
+RUN cp /etc/shellinabox/certs/certificate-progression.dept-info.crosemont.quebec.pem /etc/shellinabox/certs/certificate.pem
 RUN rm /etc/shellinabox/certs/cert.pem /etc/shellinabox/certs/privkey.pem
 RUN chown -R shellinabox:shellinabox /etc/shellinabox/certs
 RUN chmod 600 -R /etc/shellinabox/certs/*

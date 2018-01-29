@@ -14,6 +14,9 @@ build_rep(){
 }
 export -f build_rep
 
+#cp /etc/letsencrypt/live/git.dept-info.crosemont.quebec/fullchain.pem bases/shellinabox/certs/
+#cp /etc/letsencrypt/live/git.dept-info.crosemont.quebec/privkey.pem bases/shellinabox/certs/
+
 build "bases/shellinabox/siab.df"
 build_rep "bases"
  
