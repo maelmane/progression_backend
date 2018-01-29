@@ -1,0 +1,21 @@
+tabase]
+
+servername = "localhost"
+username = "quiz"
+dbname = "quiz"
+password = "password"
+
+[ldap]
+
+hote_ad = "ldap.exemple.com"
+port_ad = 636
+domaine_ldap= "dc=exemple,dc=com"
+domaine_mail= "exemple.com"
+dn_bind = "cn=Usager,ou=Admin,ou=Users,dc=exemple,dc=com"
+pw_bind = "password"
+
+[compilebox]
+
+compilebox_hote = localhost
+compilebox_port = 12380
+
