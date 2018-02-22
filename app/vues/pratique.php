@@ -25,8 +25,8 @@ openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 $langid=QuestionProg::PYTHON3;
 
 //Si un code a été soumis, l'insére dans la zone de texte, sinon utilise le code par défaut.
+if (isset($_POST['langid'])&&$_POST['langid']!="") $langid=$_POST['langid'];
 if (!isset($_POST['incode']) || $_POST['incode']==''){
-    if (isset($_POST['langid'])&&$_POST['langid']!="") $langid=$_POST['langid'];
     if($avcmt->reponse==''){
         $code='';
     }
@@ -116,7 +116,7 @@ syslog(LOG_INFO, $com_log);
 $code_exec=preg_replace('~\R~u', "\n", $code);
 
 //post le code à remotecompiler
-$url_rc='http://localhost:12380/compile';
+$url_rc='http://' . $GLOBALS['config']['compilebox_hote'] . ':' . $GLOBALS['config']['compilebox_port'] .'/compile';
 $data_rc=array('language' => $langid, 'code' => $code_exec, 'parameters' => "\"$params\"", 'stdin' => $stdin);
 $options_rc=array('http'=> array(
     'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
