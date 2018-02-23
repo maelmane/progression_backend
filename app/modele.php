@@ -273,7 +273,7 @@ class Serie extends EntiteBD{
         $questions=array();
 
         while($query->fetch()){
-            $questions[] = new Question($id, $type, $this->id, $numero, $titre, $description, null, $points, null, $etat);
+            $questions[] = new Question($id, $type, $this->id, $numero, null, $titre, $description, null, $points, null, $etat);
         }
         $query->close();                                     
 
@@ -319,13 +319,14 @@ class Question extends EntiteBD{
     public $etat;
     public $code_validation;
     
-    public function __construct($id, $type=null, $serieID=null, $numero=null, $titre=null, $description=null, $enonce=null, $points=null, $code_validation=null, $etat=null  ){
+    public function __construct($id, $type=null, $serieID=null, $numero=null, $suivante=null, $titre=null, $description=null, $enonce=null, $points=null, $code_validation=null, $etat=null  ){
         parent::__construct();
         
         $this->id=$id;
         $this->serieID=$serieID;
         $this->type=$type;
         $this->numero=$numero;
+        $this->suivante=$suivante;
         $this->titre=$titre;
         $this->description=$description;
         $this->enonce=$enonce;
@@ -337,8 +338,9 @@ class Question extends EntiteBD{
     public function load_info(){
         $query=$this->conn->prepare('SELECT question.questionID,
                                             question.type,
-                                            question.serieID,
-                                            question.numero,
+                                            question.serieID as s,
+                                            question.numero as n,
+                                            (select questionID from question where serieID=s and numero=n+1) as suivante,
                                             question.titre,
                                             question.description,
                                             question.enonce,
@@ -352,7 +354,7 @@ class Question extends EntiteBD{
                                      ORDER BY question.numero');
         $query->bind_param( "ii", $this->user_id, $this->id);
         $query->execute();
-        $query->bind_result( $this->id, $this->type, $this->serieID, $this->numero, $this->titre, $this->description, $this->enonce, $this->points, $this->code_validation, $this->etat);
+        $query->bind_result( $this->id, $this->type, $this->serieID, $this->numero, $this->suivante, $this->titre, $this->description, $this->enonce, $this->points, $this->code_validation, $this->etat);
         if(is_null($query->fetch()))
            $this->id=null;
         $query->close();
@@ -406,7 +408,7 @@ class QuestionProg extends Question{
     public $stdin;
     
     public function __construct($id, $serieID=null, $numero=null, $titre=null, $description=null, $enonce=null, $reponse=null, $points=null, $code_validation=null, $lang=-1, $setup=null, $pre_exec=null, $pre_code=null, $incode=null, $post_code=null, $params=null, $stdin=null){
-        parent::__construct($id, Question::TYPE_PROG, $serieID, $numero, $titre, $description, $enonce, $points, $code_validation);
+        parent::__construct($id, Question::TYPE_PROG, $serieID, $numero, null, $titre, $description, $enonce, $points, $code_validation);
 
         $this->lang=$lang;                          
         $this->setup=$setup;                         
@@ -421,8 +423,10 @@ class QuestionProg extends Question{
     }
 
     public function load_info(){
-        $query=$this->conn->prepare('SELECT question.questionID, 
-                                            question.numero, 
+	    $query=$this->conn->prepare('SELECT question.questionID,
+		                            question.serieID as s, 
+                                            question.numero as n, 
+                                            (select questionID from question where serieID=s and numero=n+1) as suivante,
                                             question.titre, 
                                             question.enonce, 
                                             question_prog.lang, 
@@ -437,8 +441,7 @@ class QuestionProg extends Question{
                                             question_prog.params, 
                                             question_prog.stdin, 
                                             question.points, 
-                                            question.code_validation,
-                                            question.serieID
+                                            question.code_validation
                                      FROM question 
                                           JOIN question_prog ON
                                           question.questionID=question_prog.questionID 
@@ -451,7 +454,9 @@ class QuestionProg extends Question{
         $query->bind_param( "i", $this->id);
         $query->execute();
         $query->bind_result( $this->id,
+                             $this->serieID,
                              $this->numero,
+			     $this->suivante,
                              $this->titre,
                              $this->enonce,
                              $qlang,
@@ -466,8 +471,7 @@ class QuestionProg extends Question{
                              $this->params,
                              $this->stdin,
                              $this->points,
-                             $this->code_validation,
-                             $this->serieID
+                             $this->code_validation
                              );
         if(is_null($query->fetch()))
             $this->id=null;
@@ -628,6 +632,7 @@ class Avancement extends EntiteBD{
     }
 
     public function set_etat($etat){
+	$this->etat=$etat;
         $query=$this->conn->prepare('UPDATE avancement SET etat = ? WHERE questionID = ? AND userID = ?');
         $query->bind_param("isi", $etat, $this->questionID, $this->userID);
         $query->execute();

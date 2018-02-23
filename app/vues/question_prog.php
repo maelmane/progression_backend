@@ -221,7 +221,14 @@ if($qst->reponse!="null"){ //en PHP, "" == NULL (arg!!!)
     }
 }
 
-echo "<td align=right><a href=index.php?p=serie&ID=$qst->serieID>Retour à la liste de questions</a></td></tr></table>
+if($avcmt->get_etat()==Question::ETAT_REUSSI and !is_null($qst->suivante)){
+    echo "<td align=right><a href=index.php?p=question_prog&ID=$qst->suivante>Question suivante</a></td></tr></table>";
+}
+else{
+    echo "<td align=right><a href=index.php?p=serie&ID=$qst->serieID>Retour à la liste de questions</a></td></tr></table>";
+}
+
+echo "
  <script>
     function betterTab(cm) {
       if (cm.somethingSelected()) {
