@@ -197,17 +197,19 @@ if($errors!=""){
     echo "<br>Erreurs et avertissements : <br><pre class='code-wrapper'><code>$errors</code></pre><br>";
 }
 
+echo "<table width=100%><tr>";
+echo "<td align=left width=25%><a href=index.php?p=serie&ID=$qst->serieID>Retour à la liste de questions</a></td>";
+echo "<td width=50% align=center>";
 //Vérifie la réponse
-echo "<table width=100%><tr><td>";
 if($qst->reponse!="null"){ //en PHP, "" == NULL (arg!!!)
     if ($output==$qst->reponse){
         //Met la réponse à jour dans l'avancement
         $avcmt->set_reponse($code);
         $avcmt->set_etat(Question::ETAT_REUSSI);
         
-        echo "Bravo! " . ($qst->flag=="" ? "":"La clé est «" . $qst->flag . "»</td>");
+        echo "Bravo! " . ($qst->flag=="" ? "":"La clé est «" . $qst->fg . "»");
         if ($suivante!=""){                                                             
-            echo "<td align=center><a href='$qst->suivante'>Question suivante</a></td>";
+            echo "<a href='$qst->suivante'>Question suivante</a>";
         }
     }
                                                                                       
@@ -217,18 +219,19 @@ if($qst->reponse!="null"){ //en PHP, "" == NULL (arg!!!)
             $avcmt->set_reponse($code);
 	    $avcmt->set_etat(Question::ETAT_NONREUSSI);
         }
-        echo "Raté! Essayez encore</td>";
+        echo "Raté! Essayez encore";
     }
 }
 
+
+echo "</td><td align=right width=25%>";
 if($avcmt->get_etat()==Question::ETAT_REUSSI and !is_null($qst->suivante)){
-    echo "<td align=right><a href=index.php?p=question_prog&ID=$qst->suivante>Question suivante</a></td></tr></table>";
-}
-else{
-    echo "<td align=right><a href=index.php?p=serie&ID=$qst->serieID>Retour à la liste de questions</a></td></tr></table>";
+    echo "<a href=index.php?p=question_prog&ID=$qst->suivante>Question suivante</a>";
 }
 
 echo "
+</td>
+ </tr></table>
  <script>
     function betterTab(cm) {
       if (cm.somethingSelected()) {
