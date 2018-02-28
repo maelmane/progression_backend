@@ -19,6 +19,7 @@ else{
             $username=$_POST["username"];
             $password=$_POST["passwd"];
 
+/*
             #Tentative de connexion à AD
             define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
             
@@ -31,13 +32,13 @@ else{
                 $erreur="Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extender_error";
             }
             $result=ldap_search($ldap, $GLOBALS['config']['domaine_ldap'], "(sAMAccountName=$username)", array('dn','cn',1));
-	    $user=ldap_get_entries($ldap, $result);
+	           $user=ldap_get_entries($ldap, $result);
             if($user['count']>0 && @ldap_bind($ldap, $user[0]['dn'], $password)){
                 #Connexion à la BD
                 $user_info=new User(null, $username);
                 if($user_info->load_info()){
                     #Obtient les infos de l'utilisateur
-		    $_SESSION["nom"]=$user[0]['cn'][0];
+		                $_SESSION["nom"]=$user[0]['cn'][0];
                     $_SESSION["user_id"]=$user_info->id;
                     $_SESSION["username"]=$user_info->username;
                     $_SESSION["active"]=$user_info->actif;
@@ -52,10 +53,30 @@ else{
                 else {
                     $erreur="Nom d'utilisateur ou mot de passe invalide.";
                 }
-            }
-            else {
+            }*/
+            #Connexion à la BD
+                $user_info=new User(null, $username);
+                if($user_info->load_info()){
+                    #Obtient les infos de l'utilisateur
+                    $_SESSION["nom"]=$user[0]['cn'][0];
+                    $_SESSION["user_id"]=$user_info->id;
+                    $_SESSION["username"]=$user_info->username;
+                    $_SESSION["active"]=$user_info->actif;
+                    if(!isset($_GET["p"])){
+                        header("Location: index.php?p=accueil");
+                    }
+                    else{
+                        header("Location: index.php?p=$_GET[p]&ID=$_GET[ID]");
+                    }
+
+                }
+                else {
+                    $erreur="Nom d'utilisateur ou mot de passe invalide.";
+                }
+
+            /*else {
                 $erreur="Nom d'utilisateur ou mot de passe invalide.";
-            }
+            }*/
         }
     }
                 

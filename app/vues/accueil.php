@@ -2,7 +2,7 @@
 
 require_once('quiz_preambule.php');
 
-page_header();
+page_header("Accueil");
 
 echo "
 		  <h3>Exercices de programmation</h3>
