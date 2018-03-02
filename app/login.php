@@ -10,7 +10,7 @@ else{
     load_config();
     
     if(isset($_POST["submit"])){
-	$erreur="";
+	   $erreur="";
         if(empty($_POST["username"]) || empty($_POST["passwd"])){
             $erreur="Le nom d'utilisateur ou le mot de passe ne peuvent être vides.";
         }
@@ -19,7 +19,6 @@ else{
             $username=$_POST["username"];
             $password=$_POST["passwd"];
 
-/*
             #Tentative de connexion à AD
             define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
             
@@ -53,7 +52,7 @@ else{
                 else {
                     $erreur="Nom d'utilisateur ou mot de passe invalide.";
                 }
-            }*/
+            }
             #Connexion à la BD
                 $user_info=new User(null, $username);
                 if($user_info->load_info()){
