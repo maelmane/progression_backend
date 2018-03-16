@@ -51,18 +51,18 @@ echo"
   <html> 
    <head>
     <link rel='stylesheet' type='text/css' href='css/style.css'>
-    <script src='/CodeMirror/lib/codemirror.js'></script>
-    <link rel='stylesheet' href='/CodeMirror/lib/codemirror.css'>
+    <script src='./CodeMirror/lib/codemirror.js'></script>
+    <link rel='stylesheet' href='./CodeMirror/lib/codemirror.css'>
 ";
 
 if($langid<=QuestionProg::PYTHON3){
     echo"
-    <script  src='/CodeMirror/mode/python/python.js'></script>
+    <script  src='./CodeMirror/mode/python/python.js'></script>
     ";
 }
 elseif($langid==QuestionProg::CPP){
     echo"
-    <script  src='/CodeMirror/mode/clike/clike.js'></script>
+    <script  src='./CodeMirror/mode/clike/clike.js'></script>
     ";
 }
 
@@ -116,7 +116,7 @@ syslog(LOG_INFO, $com_log);
 $code_exec=preg_replace('~\R~u', "\n", $code);
 
 //post le code à remotecompiler
-$url_rc='http://localhost:12380/compile';
+$url_rc='http://172.17.0.1:12380/compile';
 $data_rc=array('language' => $langid, 'code' => $code_exec, 'parameters' => "\"$params\"", 'stdin' => $stdin);
 $options_rc=array('http'=> array(
     'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
