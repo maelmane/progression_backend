@@ -19,22 +19,22 @@ $themes = get_themes($_SESSION['user_id']);
     <link rel='stylesheet' type='text/css' href='css/newstyle.css'>
   </head>
   <body>
-    <div uk-grid style="background-color:#FFE9DF;">
+    <div uk-grid style="background-color:#f4f4f5;">
 
       <!-- Logo -->
-      <div class="uk-width-1-3" id="main-logo">
+      <div class="uk-width-1-1@s uk-width-1-3@m" id="main-logo">
         <a href='index.php'>
           <h1>Prog<span>ression</span></h1>
         </a>
       </div>
 
       <!-- Page main subject / exercise -->
-      <div class="uk-width-1-3">
+      <div class="uk-width-1-1@s uk-width-1-3@m">
         <h3 class="subtitle"><?php echo $titre; ?></h3>
       </div>
 
       <!-- Menu bar -->
-      <div class="uk-width-1-3">
+      <div class="uk-width-1-1@s uk-width-1-3@m">
 
         <!-- Bouton Menu Offcanvas -->
         <a class="menu-button" ahref="#offcanvas-slide" uk-toggle="target: #offcanvas-slide; animation: uk-animation-fade; queued: true" uk-toggle></a>
@@ -55,9 +55,10 @@ $themes = get_themes($_SESSION['user_id']);
               <li <?php if($titre == "Tableau de bord") echo 'class="uk-active"' ?>><a href='?p=dashboard'>Tableau de bord</a></li>
               <!-- Liste de tout les thèmes -->
               <?php foreach($themes as $theme) { echo "<li " . ($theme->titre == $titre ? 'class=uk-active' : '') . "><a href='?p=theme&ID=$theme->id'>$theme->titre</a></li>";} ?>
-              <div class="uk-position-bottom-left">
-                <a href="logout.php" class="uk-margin-small-left uk-margin-small uk-icon-button" style="width:75px;height:75px;" uk-icon="icon: sign-out; ratio: 2.5">Se déconnecter</a>
-                <a href="index.php?p=pratique"><img class="uk-margin-small-left uk-margin-small" style="height:75px;" src="./images/Zone-TEST.png"></a>
+              <div class="uk-position-bottom-left uk-width-1-1 uk-text-center">
+                <a href="logout.php" class="uk-margin-small-left uk-margin-small uk-icon-button" style="width:75px;height:75px;" uk-icon="icon: sign-out; ratio: 2.5" title="Se déconnecter"></a>
+                <span style="display: inline-block;width: 20px;"></span>
+                <a class="zone-pratique" href="index.php?p=pratique" title="Zone de pratique"><img class="uk-margin-small-left uk-margin-small" style="height:75px;" src="./images/zone-pratique_bleu.png"></a>
               </div>
             </ul>
           </div>

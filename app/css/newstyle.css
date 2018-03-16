@@ -26,7 +26,7 @@
 	font-weight: 200;
 	color: #62b2d4;
 	line-height: 75px;
-	margin: 0;
+	margin: 0;.uk-offcanvas-bar .uk-nav-default > li > a:hover
 	display: inline;
 }
 .subtitle {
@@ -42,4 +42,17 @@
 	font-family: 'Lato Light', sans-serif;
 	font-weight: 200;
 	color:#8c8c8c;	
+}
+.uk-offcanvas-bar .uk-nav-default > li:not(.uk-active) > a:hover {
+    color: #62b2d4;
+}
+.zone-pratique:hover {
+	filter: brightness(1.125);
+}
+@media (min-width:640px) {
+	.name-user h2 {font-size:1em;}
+	.uk-offcanvas-bar {width: 350px;}
+}
+@media (min-width:1200px) {
+	.name-user h2 {font-size:2em;}
 }
