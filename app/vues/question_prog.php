@@ -1,6 +1,7 @@
 <?php
 
 require_once('quiz_preambule.php');
+require_once('vues/helpers.php');
 
 if(!isset($_GET['ID'])){
         header('Location: index.php?p=accueil');

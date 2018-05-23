@@ -1,6 +1,7 @@
 <?php
 
 require('quiz_preambule.php');
+db_init();
 
 function resume($in, $lignes_max){
     $lignes=explode("\n", $in);
