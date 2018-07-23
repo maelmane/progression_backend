@@ -1,7 +1,7 @@
 DROP DATABASE IF EXISTS quiz;
 DROP USER IF EXISTS quiz@localhost;
 
-CREATE USER 'quiz'@'localhost' IDENTIFIED BY 'Wa65LMaDBV';
+CREATE USER 'quiz'@'%' IDENTIFIED BY 'Wa65LMaDBV';
 CREATE DATABASE quiz;
 
 USE quiz;
@@ -14,7 +14,6 @@ CREATE TABLE `users` (
 
   PRIMARY KEY (`userID`)
 );
-INSERT INTO `users` (`userID`,`username`,`courriel`,`actif`) VALUES (100, "admin", "admin@test.com", 1);
 
 CREATE TABLE `theme` (
   `themeID`     int(11) NOT NULL AUTO_INCREMENT,
