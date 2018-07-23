@@ -52,18 +52,18 @@ echo"
   <html> 
    <head>
     <link rel='stylesheet' type='text/css' href='css/style.css'>
-    <script src='/CodeMirror/lib/codemirror.js'></script>
-    <link rel='stylesheet' href='/CodeMirror/lib/codemirror.css'>
+    <script src='./CodeMirror/lib/codemirror.js'></script>
+    <link rel='stylesheet' href='./CodeMirror/lib/codemirror.css'>
 ";
 
 if($langid<=QuestionProg::PYTHON3){
     echo"
-    <script  src='/CodeMirror/mode/python/python.js'></script>
+    <script  src='./CodeMirror/mode/python/python.js'></script>
     ";
 }
 elseif($langid==QuestionProg::CPP){
     echo"
-    <script  src='/CodeMirror/mode/clike/clike.js'></script>
+    <script  src='./CodeMirror/mode/clike/clike.js'></script>
     ";
 }
 
@@ -132,9 +132,6 @@ if ($comp_resp === FALSE) {
 else{
     $output=trim(json_decode($comp_resp, true)['output']);
 }
-                                                   
-//Affiche le résultat
-echo "<br>Résultat observé : <br><pre class='code-wrapper'><code>" . resume($output,21) . "</code></pre><br>";
 
 $errors=json_decode($comp_resp,true)['errors'];
 if($errors!=""){

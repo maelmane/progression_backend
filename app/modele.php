@@ -31,6 +31,7 @@ function get_themes($user_id){
         $t=new Theme($theme, $user_id);
         $t->load_info();
         $res[] = $t;
+
     }
 
     return $res;

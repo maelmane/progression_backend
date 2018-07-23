@@ -25,7 +25,7 @@ function menu_lang($langid=-1, $defaut=false){
 
     return $ret;
 }
-session_start();
+//session_start(); DOUBLON / déja sur page d'accueil.
 
 if(!isset($_SESSION["user_id"])){
     header("Location: login.php?p=$_GET[p]&ID=$_GET[ID]");
@@ -34,31 +34,15 @@ if(!isset($_SESSION["user_id"])){
 function page_header($titre=null){
 
     if(is_null($titre))
-        $titre = "Progression";
+        $titre = "";
 
-    echo "  <html>
-            <head>
-              <meta charset='utf-8'>
-	      <link rel='stylesheet' type='text/css' href='css/style.css'>
-            <title>$titre</title>
-            </head>
-	    <body>
-          <section class='main'>
-		   <div class='example-wrapper clearfix'>
+    include 'modeles/header.php';
 
-          <table width=100%><tr><td width=25%><a href='index.php'><img src='images/logo.png' width=50% height=50%></td><td width=75% style='text-align:right;'></a><h1>" . ($_SESSION["username"]=="adminquiz"?"<a href='?p=admin'>Admin</a>":$_SESSION["nom"]) . "</h1>(<a href='logout.php'>déconnexion</a>)</td></tr></table>
-
-     ";
 }
 
 
 function page_footer(){
-    echo"
-               </div>
-             </section>
-    	    </body>
-	    </html>
-        ";
+    include 'modeles/footer.php';
 
 
 }
