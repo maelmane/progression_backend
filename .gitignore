@@ -1,4 +1,5 @@
 *~
 \#*#
 docker/bases/shellinabox/certs/*
+db.conf
 *.sublime*

@@ -36,13 +36,13 @@ function page_header($titre=null){
     if(is_null($titre))
         $titre = "";
 
-    include 'modeles/header.php';
+    include 'templates/header.php';
 
 }
 
 
 function page_footer(){
-    include 'modeles/footer.php';
+    include 'templates/footer.php';
 
 
 }
