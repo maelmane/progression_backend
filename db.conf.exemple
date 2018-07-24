@@ -5,6 +5,9 @@ username = "quiz"
 dbname = "quiz"
 password = "password"
 
+[auth]
+type = ldap | local | no
+
 [ldap]
 
 hote_ad = "ldap.exemple.com"
