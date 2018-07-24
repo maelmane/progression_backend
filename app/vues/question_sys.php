@@ -106,8 +106,9 @@ else{
 echo " <td  align=right><input type=submit name='reset' value='Réinitialiser' onclick='return confirm(\"Voulez-vous vraiment réinitialiser votre session?\");'>";
 
 echo "</td></tr></table>
-      <table width=100%>
-      <tr><td>";
+      <table width=100%>";
+
+echo "<td align=left width=25%><a href=index.php?p=serie&ID=$qst->serieID>Retour à la liste de questions</a></td><td align=center width=50%>";
 
 //Vérifie la réponse
 if(!is_null($qst->reponse) && $qst->reponse!=""){
@@ -129,11 +130,17 @@ elseif($res_validation!=""){
         echo "Mauvaise réponse!";
     }
     else{
-        echo "$res_validation</td></tr><tr></td>" ;
+        echo "$res_validation" ;
     }
 }
 
-echo "<td align=right><a href=index.php?p=serie&ID=$qst->serieID>Retour à la liste de questions</a></td></tr></table>
+echo "</td><td width=25% align=center>";
+if ($avcmt->get_etat()==Question::ETAT_REUSSI){
+        if ($qst->suivante!=""){                                                             
+            echo "<a href='index.php?p=question_sys&ID=$qst->suivante'>Question suivante</a>";
+        }
+}
+echo "</tr></table>
     </div>
   </body>
 </html>

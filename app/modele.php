@@ -537,34 +537,17 @@ class QuestionSysteme extends Question{
     }
 
     public function load_info(){
-        $query=$this->conn->prepare('SELECT question.questionID, 
-                                            question.numero, 
-                                            question.titre, 
-                                            question.description, 
-                                            question.enonce, 
-                                            question.points, 
-                                            question.code_validation,
-                                            question.serieID,
-                                            question_systeme.reponse,
+	parent::load_info();
+        $query=$this->conn->prepare('SELECT question_systeme.reponse,
                                             question_systeme.image,
                                             question_systeme.user,
                                             question_systeme.verification
-                                     FROM   question
-                                     JOIN   question_systeme
-                                     ON     question.questionID=question_systeme.questionID
-                                     WHERE  question.questionID = ?');
+                                     FROM   question_systeme
+                                     WHERE  question_systeme.questionID = ?');
 
         $query->bind_param( "i", $this->id);
         $query->execute();
-        $query->bind_result( $this->id,
-                             $this->numero,
-                             $this->titre,
-                             $this->description,
-                             $this->enonce,
-                             $this->points,
-                             $this->code_validation,
-                             $this->serieID,
-                             $this->reponse,
+        $query->bind_result( $this->reponse,
                              $this->image,
                              $this->user,
                              $this->verification );
