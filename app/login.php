@@ -37,8 +37,8 @@ if(isset($_SESSION["user_id"])){
             $user=ldap_get_entries($ldap, $result);
             if($user['count']>0 && @ldap_bind($ldap, $user[0]['dn'], $password)){
                 #Connexion à la BD
-                $user_info=new User(null, $username);
-                if($user_info->load_info()){
+                $user_info=new User($username);
+                if($user_info->id){
                     #Obtient les infos de l'utilisateur
                     $_SESSION["nom"]=$user[0]['cn'][0];
                     $_SESSION["user_id"]=$user_info->id;
@@ -60,9 +60,8 @@ if(isset($_SESSION["user_id"])){
         elseif($GLOBALS['config']['auth_type']=="no"){
             $username=$_POST["username"];
             #Connexion à la BD
-            $user_info=new User(null, $username);
-            $id=$user_info->load_info();
-            if($id){
+            $user_info=new User($username);
+            if($user_info->id){
                 #Obtient les infos de l'utilisateur
                 $_SESSION["nom"]=$user_info->username;
                 $_SESSION["user_id"]=$user_info->id;
@@ -75,7 +74,7 @@ if(isset($_SESSION["user_id"])){
                     header("Location: index.php?p=$_GET[p]&ID=$_GET[ID]");
                 }
             }else {
-                $erreur="Nom d'utilisateur ou mot de passe invalide.";
+                $erreur="Nom d'utilisateur invalide.";
             }
         }
     }

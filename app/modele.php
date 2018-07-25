@@ -2,6 +2,17 @@
 
 #error_reporting(0);
 
+db_init();
+
+function db_init(){
+    if(!isset($GLOBALS["conn"]))
+    {
+        load_config();
+        create_connection();
+        set_errors();
+    }
+}
+
 function load_config(){
     if(!isset($GLOBALS["config"])){
         $cfg=parse_ini_file("../quiz.conf");
@@ -9,22 +20,21 @@ function load_config(){
     }
 }
 
-function db_init(){
-    if(!isset($GLOBALS["conn"]))
-    {
-        load_config();
-        $GLOBALS["conn"] = new mysqli($GLOBALS["config"]["servername"], $GLOBALS["config"]["username"], $GLOBALS["config"]["password"], $GLOBALS["config"]["dbname"]);
-        $GLOBALS["conn"]->set_charset("utf8");
-        $GLOBALS["errno"]=mysqli_connect_errno();
-        $GLOBALS["error"]=mysqli_connect_error();
-    }
+function create_connection(){
+    $GLOBALS["conn"] = new mysqli($GLOBALS["config"]["servername"],
+                                  $GLOBALS["config"]["username"],
+                                  $GLOBALS["config"]["password"],
+                                  $GLOBALS["config"]["dbname"]);
+    $GLOBALS["conn"]->set_charset("utf8");
+}
+
+function set_errors(){
+    $GLOBALS["errno"]=mysqli_connect_errno();
+    $GLOBALS["error"]=mysqli_connect_error();
 }
 
 function get_themes($user_id){
-    if(!isset($GLOBALS["conn"])) db_init();
-    $conn=$GLOBALS["conn"];
-
-    $themes=$conn->query('SELECT themeID FROM theme WHERE themeID>0 ORDER BY ordre');
+    $themes=$GLOBALS["conn"]->query('SELECT themeID FROM theme WHERE themeID>0 ORDER BY ordre');
     
     $res=array();
     while($theme=$themes->fetch_assoc()['themeID']){
@@ -39,15 +49,12 @@ function get_themes($user_id){
 }
 
 function get_users(){
-    if(!isset($GLOBALS["conn"])) db_init();
-    $conn=$GLOBALS["conn"];
+    $users=$GLOBALS["conn"]->query('SELECT username FROM users WHERE actif=1 ORDER BY username');
 
-    $users=$conn->query('SELECT username, userID FROM users WHERE actif=1 ORDER BY username');
-
-    $user=$users->fetch_assoc();
     $res=array();
+    $user=$users->fetch_assoc();
     while(!is_null($user)){
-        $res[] = new User($user['userID'],$user['username']);
+        $res[] = new User($user['username']);
         $user=$users->fetch_assoc();
     }
 
@@ -70,18 +77,19 @@ class User extends EntiteBD{
     public $actif;
     public $id;    
 
-    public function __construct($id=null, $username=null){
+    public function __construct($username=null){
         parent::__construct();
-        $this->id=$id;
+        $this->id=null;
         $this->username=$username;
+        if(!$this->existe($username)){
+            $this->creer_user();
+        }
+        $this->load_info();
     }
 
-    function exist(){
-        db_init();
-        if (is_null($this->id)) return false;
-        
+    private static function existe($username){
         $query=$GLOBALS["conn"]->prepare( 'SELECT count(*) FROM users WHERE username = ?');
-        $query->bind_param( "s", $this->username );
+        $query->bind_param( "s", $username );
         $query->execute();
         $query->bind_result( $count );
         $res=$query->fetch();
@@ -89,11 +97,7 @@ class User extends EntiteBD{
         return $count;
     }
     
-    function load_info(){
-        if(!$this->exist()){
-            $this->creer_user();
-        }
-        
+    private function load_info(){
         $query= $this->conn->prepare( 'SELECT userID, actif FROM users WHERE username = ? ');
         $query->bind_param( "s", $this->username);
         $query->execute();
@@ -105,13 +109,13 @@ class User extends EntiteBD{
         return $this->id;
     }    
 
-    function creer_user(){
-        db_init();
+    private function creer_user(){
         $query=$GLOBALS["conn"]->prepare('INSERT INTO users(username) VALUES (?)');
         $query->bind_param( "s", $this->username);
         $query->execute();
         $query->close();
     }
+
 
 }
 
