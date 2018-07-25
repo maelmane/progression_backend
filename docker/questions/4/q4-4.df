@@ -1,8 +1,8 @@
 FROM q4-3
 
-COPY Marge.png /tmp/
-COPY marge-simpson.jpg /tmp/
-COPY playmarge.jpg /tmp
+COPY q4-4/Marge.png /tmp/
+COPY q4-4/marge-simpson.jpg /tmp/
+COPY q4-4/playmarge.jpg /tmp
 RUN chown krusty:krusty /tmp/*
 
 RUN echo cd /tmp >> /home/krusty/.bashrc

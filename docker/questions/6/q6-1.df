@@ -6,9 +6,9 @@ RUN ln -s /home/krusty/Documents/à_faire2.txt /var/backups/choses_à_faire && c
 RUN rm /home/krusty/Documents/à_faire2.txt
 
 RUN mkdir /home/krusty/Images
-COPY Marge.png /home/krusty/Images/
-COPY marge-simpson.jpg /home/krusty/Images/
-COPY playmarge.jpg /var/
+COPY q6-1/Marge.png /home/krusty/Images/
+COPY q6-1/marge-simpson.jpg /home/krusty/Images/
+COPY q6-1/playmarge.jpg /var/
 
 RUN ln -s /var/playmarge.jpg /home/krusty/Images/
 RUN chown krusty:krusty /home/krusty/*

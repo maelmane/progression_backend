@@ -1,3 +1,0 @@
-FROM q4-1
-COPY *jpg *png *gif  /home/krusty/
-RUN chown krusty:krusty /home/krusty/*

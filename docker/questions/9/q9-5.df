@@ -4,6 +4,6 @@ RUN chgrp krusty /home/krusty/collaborations
 RUN chmod g+rw,o= /home/krusty/collaborations
 
 RUN mkdir /home/krusty/Documents
-COPY docs/* /home/krusty/Documents/
+COPY q9-5/docs/* /home/krusty/Documents/
 RUN chown -R krusty:krusty /home/krusty/Documents
 RUN chmod 777 -R /home/krusty/Documents

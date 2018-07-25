@@ -1,4 +1,4 @@
 FROM q6-2
 
-COPY dl.sh /usr/local/bin
+COPY q6-4/dl.sh /usr/local/bin
 RUN echo 'nohup /usr/local/bin/dl.sh 2>/dev/null &' >> /home/krusty/.bashrc

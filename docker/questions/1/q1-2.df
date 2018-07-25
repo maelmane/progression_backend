@@ -1,6 +1,6 @@
 FROM system
 
 RUN mkdir /home/krusty/documents_volés/
-COPY famous_lines.txt /home/krusty/documents_volés/
+COPY q1-2/famous_lines.txt /home/krusty/documents_volés/
 RUN chown krusty:krusty -R /home/krusty/documents_volés
 
