@@ -1,5 +1,4 @@
 *~
 \#*#
-docker/bases/shellinabox/certs/*
-db.conf
+quiz.conf
 *.sublime*
