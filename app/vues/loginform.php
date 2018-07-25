@@ -26,12 +26,14 @@
                 <label style="text-align:left;color:#888;"><?php echo $GLOBALS['config']['domaine_mail'] ?></label>
               </div>
             </div>
+            <?php if($GLOBALS['config']['auth_type']!="no"){ echo '
             <div class="form-group">
               <label id="loginTxt"  class="control-label col-sm-3">Mot de passe : </label>
               <div class="col-sm-3">
                 <input class="form-control" name="passwd" type="password"/>
               </div>
             </div>
+            ';} ?>
             <div class="col-sm-offset-3 uk-margin">
               <input name="submit" type="submit" class="btn btn-primary" value="Connexion">
             </div>

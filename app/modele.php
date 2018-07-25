@@ -4,7 +4,7 @@
 
 function load_config(){
     if(!isset($GLOBALS["config"])){
-        $cfg=parse_ini_file("../db.conf");
+        $cfg=parse_ini_file("../quiz.conf");
         $GLOBALS["config"]=$cfg;
     }
 }
@@ -78,6 +78,8 @@ class User extends EntiteBD{
 
     function exist(){
         db_init();
+        if (is_null($this->id)) return false;
+        
         $query=$GLOBALS["conn"]->prepare( 'SELECT count(*) FROM users WHERE username = ?');
         $query->bind_param( "s", $this->username );
         $query->execute();
@@ -95,14 +97,12 @@ class User extends EntiteBD{
         $query= $this->conn->prepare( 'SELECT userID, actif FROM users WHERE username = ? ');
         $query->bind_param( "s", $this->username);
         $query->execute();
-        $motpass=null;
-        $sel=null;
 	
         $query->bind_result( $this->id, $this->actif );
         $res=$query->fetch();
         $query->close();
 
-        return true;
+        return $this->id;
     }    
 
     function creer_user(){

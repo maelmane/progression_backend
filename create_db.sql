@@ -1,7 +1,7 @@
 DROP DATABASE IF EXISTS quiz;
 DROP USER IF EXISTS quiz@localhost;
 
-CREATE USER 'quiz'@'%' IDENTIFIED BY 'pass';
+CREATE USER 'quiz'@'localhost' IDENTIFIED BY 'password';
 CREATE DATABASE quiz;
 
 USE quiz;
@@ -82,5 +82,5 @@ CREATE TABLE `avancement` (
 /*Admin*/
 
 
-GRANT ALL PRIVILEGES ON quiz.* TO quiz@localhost;
+GRANT ALL PRIVILEGES ON quiz.* TO quiz@'localhost';
 

@@ -7,14 +7,17 @@ if(isset($_SESSION["user_id"])){
     header('Location: index.php?p=accueil');
 } else {
     load_config();
-    
     if(isset($_POST["submit"])){
         
         $erreur="";
         
-        if(empty($_POST["username"]) || empty($_POST["passwd"])){
+        if(empty($_POST["username"]) || empty($_POST["passwd"]) && $GLOBALS['config']['auth_type']!="no"){
             $erreur="Le nom d'utilisateur ou le mot de passe ne peuvent être vides.";
-        } else {
+        }
+        elseif($GLOBALS['config']['auth_type']=="local"){
+            $erreur="L'authentification locale n'est pas implémentée.";
+        }
+        elseif($GLOBALS['config']['auth_type']=="ldap") {
             $username=$_POST["username"];
             $password=$_POST["passwd"];
 
@@ -31,13 +34,13 @@ if(isset($_SESSION["user_id"])){
                 $erreur="Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extender_error";
             }
             $result=ldap_search($ldap, $GLOBALS['config']['domaine_ldap'], "(sAMAccountName=$username)", array('dn','cn',1));
-	           $user=ldap_get_entries($ldap, $result);
+            $user=ldap_get_entries($ldap, $result);
             if($user['count']>0 && @ldap_bind($ldap, $user[0]['dn'], $password)){
                 #Connexion à la BD
                 $user_info=new User(null, $username);
                 if($user_info->load_info()){
                     #Obtient les infos de l'utilisateur
-		                $_SESSION["nom"]=$user[0]['cn'][0];
+                    $_SESSION["nom"]=$user[0]['cn'][0];
                     $_SESSION["user_id"]=$user_info->id;
                     $_SESSION["username"]=$user_info->username;
                     $_SESSION["active"]=$user_info->actif;
@@ -53,11 +56,15 @@ if(isset($_SESSION["user_id"])){
                     $erreur="Nom d'utilisateur ou mot de passe invalide.";
                 }
             }
+        }
+        elseif($GLOBALS['config']['auth_type']=="no"){
+            $username=$_POST["username"];
             #Connexion à la BD
             $user_info=new User(null, $username);
-            if($user_info->load_info()){
+            $id=$user_info->load_info();
+            if($id){
                 #Obtient les infos de l'utilisateur
-                $_SESSION["nom"]=$user[0]['cn'][0];
+                $_SESSION["nom"]=$user_info->username;
                 $_SESSION["user_id"]=$user_info->id;
                 $_SESSION["username"]=$user_info->username;
                 $_SESSION["active"]=$user_info->actif;
@@ -72,6 +79,5 @@ if(isset($_SESSION["user_id"])){
             }
         }
     }
-
-    include 'vues/loginform.php';
+    include('vues/loginform.php');
 }
