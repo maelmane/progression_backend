@@ -1,7 +1,6 @@
 <?php
 
 require('quiz_preambule.php');
-db_init();
 
 function resume($in, $lignes_max){
     $lignes=explode("\n", $in);
@@ -24,26 +23,26 @@ openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 
 //Langage par défaut
 $langid=QuestionProg::PYTHON3;
-
+$code="";
 //Si un code a été soumis, l'insére dans la zone de texte, sinon utilise le code par défaut.
 if (isset($_POST['langid'])&&$_POST['langid']!="") $langid=$_POST['langid'];
-if (!isset($_POST['incode']) || $_POST['incode']==''){
-    if($avcmt->reponse==''){
-        $code='';
-    }
-    else{
-        $code=$avcmt->reponse;
-    }
+if (isset($_POST['incode'])&&$_POST['incode']!="") $code=$_POST['incode'];
+
+//Récupère les paramètres de compilation.
+if(isset($_POST['params'])){
+    $params=$_POST['params'];
 }
 else{
-    $code=$_POST['incode'];
+    $params="";
 }
 
-//Récupère les paramètres de compilation. Les paramètres provenant de la BD ont préscéance.
-$params=$_POST['params'];
-
-//Récupère les entrées à envoyer au programme. Les entrées provenant de la BD ont préscéance.
-$stdin=trim($_POST['stdin']);
+//Récupère et exécute les entrées à envoyer au programme.
+if(isset($_POST['stdin'])){
+    $stdin=trim($_POST['stdin']);
+}
+else{
+    $stdin="";
+}
 
 page_header();
 
@@ -84,7 +83,7 @@ echo "
      "; 
 
     echo " <tr>
-       <td>Langage : ".menu_lang(langid>=0?$langid:1, false)."
+       <td>Langage : ".menu_lang($langid>=0?$langid:1, false)."
        </td>
        </tr><tr>
        <td colspan=2>
@@ -133,13 +132,15 @@ else{
     $output=trim(json_decode($comp_resp, true)['output']);
 }
 
+echo "<br>Sortie standard : <br><pre class='code-wrapper'><code>" . resume($output,21) . "</code></pre><br>";
+
 $errors=json_decode($comp_resp,true)['errors'];
 if($errors!=""){
-    echo "<br>Erreurs et avertissements : <br><pre class='code-wrapper'><code>$errors</code></pre><br>";
+    echo "<br>Sortie d'erreur : <br><pre class='code-wrapper'><code>$errors</code></pre><br>";
 }
+?>
 
-
-echo "<td align=right><a href=index.php?p=accueil>Retour à l'accueil</a></td></tr></table>
+<td align=right><a href=index.php?p=accueil>Retour à l'accueil</a></td></tr></table>
  <script>
     function betterTab(cm) {
       if (cm.somethingSelected()) {
@@ -149,9 +150,6 @@ echo "<td align=right><a href=index.php?p=accueil>Retour à l'accueil</a></td></
           Array(cm.getOption('indentUnit') + 1).join(' '), 'end', '+input');
       }
     }
-    ";
-
-    echo " 
       var editor = CodeMirror.fromTextArea(document.getElementById('incode'),{
       matchBrackets: true,
       lineNumbers: true,
@@ -161,14 +159,8 @@ echo "<td align=right><a href=index.php?p=accueil>Retour à l'accueil</a></td></
       extraKeys: { Tab: betterTab }
       });
       editor.setSize(700);
-      ";
 
-//Affiche le pied de la question
-echo "
     </script>
     </div>
   </body>
 </html>
-";
-
-?>

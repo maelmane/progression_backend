@@ -112,7 +112,7 @@ echo "<td align=left width=25%><a href=index.php?p=serie&ID=$qst->serieID>Retour
 
 //Vérifie la réponse
 if(!is_null($qst->reponse) && $qst->reponse!=""){
-    if($_POST['reponse']!='')
+    if(isset($_POST['reponse']) && $_POST['reponse']!='')
         if($_POST['reponse']==$qst->reponse){
             echo "Bonne réponse!" . ((!is_null($qst->code_validation)&&trim($qst->code_validation!=""))?"</td><td>Code de validation : $qst->code_validation":"");
             $avcmt->set_etat(Question::ETAT_REUSSI);            

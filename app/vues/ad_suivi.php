@@ -22,7 +22,7 @@ if(!isset($_GET['u'])){
 }
 
 elseif(!isset($_GET['t'])){
-    $themes=get_themes($_GET['u']);
+    $themes=get_themes();
 
     echo "
            <pre class='code-wrapper'><code>
@@ -30,19 +30,19 @@ elseif(!isset($_GET['t'])){
               <th align=left  width=70%>Thème</th><th align=center width=30%>Complété</th>";
 
 
-    foreach ($themes as $theme){
-        echo "
+        foreach ($themes as $theme){
+            echo "
               <tr>
-                 <td><a href='?p=ad_suivi&u=" . $_GET['u'] . "&t=$theme->id'>$theme->titre</td><td align=center>". floor($theme->get_avancement()/$theme->get_nb_questions()*100) . "% </a></td>
+                 <td><a href='?p=ad_suivi&u=" . $_GET['u'] . "&t=$theme->id'>$theme->titre</td><td align=center>". floor($theme->get_avancement($_GET['u'])/$theme->get_nb_questions()*100) . "% </a></td>
               </tr>";
-    }
+        }
 
-    echo "</table>";
+        echo "</table>";
 }
 
 elseif(!isset($_GET['s'])){
-$theme=new Theme($_GET['t'], $_GET['u']);
-$theme->load_info();
+    $theme=new Theme($_GET['t']);
+    $theme->load_info();
 
     echo "
 
@@ -53,20 +53,20 @@ $theme->load_info();
               <th align=left width=10%>N°</th><th align=left>Sujet</th><th align=center>Complété</th>
 ";
 
-//Description
-echo "<tr><td>$serie->titre<td></tr>";
+    //Description
+    echo "<tr><td>$serie->titre<td></tr>";
 
-//Séries
-foreach($theme->get_series() as $serie){
-    echo "
+    //Séries
+    foreach($theme->get_series() as $serie){
+        echo "
           <tr>
           <td>". $serie->numero ."</td><td>". $serie->titre ."</a></td><td align=center>".floor($serie->get_avancement()/$serie->get_nb_questions()*100) ."%</td>
           </tr>
 
          ";
-}
+    }
 
-echo "
+    echo "
 <td>
 <br>
 </td>

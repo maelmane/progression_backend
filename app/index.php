@@ -9,7 +9,7 @@ if(!isset($_SESSION["user_id"])){
         header("Location: login.php");
     }
     else{
-        header("Location: login.php?p=$_GET[p]&ID=$_GET[ID]");
+        header("Location: login.php?p=$_GET[p]" . (isset($_GET['ID'])?("&ID=".$_GET['ID']):""));
     }
 }
 else{

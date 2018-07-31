@@ -23,7 +23,7 @@
                 <input class="form-control" type="text" name="username" />
               </div>
               <div class="col-sm-3">
-                <label style="text-align:left;color:#888;"><?php echo $GLOBALS['config']['domaine_mail'] ?></label>
+                        <label style="text-align:left;color:#888;"><?php if(isset($GLOBALS['config']['domaine_mail'])) echo $GLOBALS['config']['domaine_mail'] ?></label>
               </div>
             </div>
             <?php if($GLOBALS['config']['auth_type']!="no"){ echo '

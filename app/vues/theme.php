@@ -26,7 +26,7 @@ echo "
 //echo "<tr><td>$theme->description<td></tr>";
 
 //Séries
-foreach($theme->get_series() as $serie){
+foreach(get_series($theme->id) as $serie){
     echo "
           <tr>
           <td>". $serie->numero ."</td><td><a href='?p=serie&ID=$serie->id'>". $serie->titre ."</a></td><td align=center>".($serie->get_nb_questions()>0?floor($serie->get_avancement()/$serie->get_nb_questions()*100):"--") ."%</a></td>

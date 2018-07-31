@@ -36,7 +36,7 @@ setlocale(LC_ALL,$locale);
 openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 
 //Si un code a été soumis, l'insére dans la zone de texte, sinon utilise le code par défaut.
-if ($_POST['incode']==''){
+if (!isset($_POST['incode']) || $_POST['incode']==''){
     if($avcmt->reponse==''){
         $code=$qst->incode;
     }
@@ -50,13 +50,24 @@ else{
 
 
 //Récupère les paramètres de compilation. Les paramètres provenant de la BD ont préscéance.
-$params=($qst->params!=""?$qst->params:$_POST['params']);
+if(isset($_POST['params'])){
+    $params=($qst->params!=""?$qst->params:$_POST['params']);
+}
+else{
+    $params=$qst->params;
+}
 
 //Exécute le setup
 eval($qst->setup);
 
 //Récupère et exécute les entrées à envoyer au programme. Les entrées provenant de la BD ont préscéance.
-$qst->stdin=($qst->stdin!=""?$qst->stdin:trim($_POST['stdin']));
+if(isset($_POST['stdin'])){
+    $qst->stdin=($qst->stdin!=""?$qst->stdin:trim($_POST['stdin']));
+}
+else{
+    $qst->stdin=$qst->stdin;
+}
+    
 if(!is_null($qst->stdin))
     $qst->stdin=eval("return $qst->stdin;");
 
@@ -208,10 +219,7 @@ if($qst->reponse!="null"){ //en PHP, "" == NULL (arg!!!)
         $avcmt->set_reponse($code);
         $avcmt->set_etat(Question::ETAT_REUSSI);
         
-        echo "Bravo! " . ($qst->flag=="" ? "":"La clé est «" . $qst->fg . "»");
-        if ($suivante!=""){                                                             
-            echo "<a href='$qst->suivante'>Question suivante</a>";
-        }
+        echo "Bonne réponse!" . ((!is_null($qst->code_validation)&&trim($qst->code_validation!=""))?"</td><td>Code de validation : $qst->code_validation":"");
     }
                                                                                       
     else{

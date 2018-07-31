@@ -12,10 +12,10 @@ echo "
               <th align=left  width=70%>Thème</th><th align=center width=30%>Complété</th>
 ";
 
-foreach(get_themes($_SESSION['user_id']) as $theme){
+foreach(get_themes() as $theme){
     echo "
 			<tr>
-			  <td><a href='?p=theme&ID=$theme->id'>$theme->titre</td><td align=center>". floor($theme->get_avancement()/$theme->get_nb_questions()*100) . "% </a></td>
+			  <td><a href='?p=theme&ID=$theme->id'>$theme->titre</td><td align=center>". floor($theme->get_avancement($_SESSION['user_id'])/$theme->get_nb_questions()*100) . "% </a></td>
 			</tr>
          ";
 }
