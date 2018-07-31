@@ -275,7 +275,7 @@ class Serie extends Entite{
         return $res;        
     }
 
-    function get_avancement(){
+    function get_avancement($user_id){
         $query=$this->conn->prepare('SELECT count(avancement.etat) FROM avancement, question WHERE 
                                      avancement.questionID=question.questionID AND 
                                      avancement.userID= ? AND 
@@ -312,6 +312,7 @@ class Question extends Entite{
     public $points;
     public $etat;
     public $code_validation;
+    public $avancement;
     
     public function __construct($id){
         $this->id=$id;
@@ -409,7 +410,9 @@ class Question extends Entite{
     }
 
     public function get_avancement($user_id){
-        return new Avancement($this->id, $user_id);
+        if (is_null($this->avancement))
+            $this->avancement=new Avancement($this->id, $user_id);
+        return $this->avancement;
     }
     
 }

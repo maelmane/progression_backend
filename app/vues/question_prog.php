@@ -210,7 +210,7 @@ if($errors!=""){
 }
 
 echo "<table width=100%><tr>";
-echo "<td align=left width=25%><a href=index.php?p=serie&ID=$qst->serieID>Retour à la liste de questions</a></td>";
+echo "<td align=left width=25%><a href=index.php?p=serie&ID=$qst->serieID>↩ Retour à la liste de questions</a></td>";
 echo "<td width=50% align=center>";
 //Vérifie la réponse
 if($qst->reponse!="null"){ //en PHP, "" == NULL (arg!!!)
@@ -235,7 +235,7 @@ if($qst->reponse!="null"){ //en PHP, "" == NULL (arg!!!)
 
 echo "</td><td align=right width=25%>";
 if($avcmt->get_etat()==Question::ETAT_REUSSI and !is_null($qst->suivante)){
-    echo "<a href=index.php?p=question_prog&ID=$qst->suivante>Question suivante</a>";
+    echo "<a href=index.php?p=question_prog&ID=$qst->suivante>Question suivante →</a>";
 }
 
 echo "

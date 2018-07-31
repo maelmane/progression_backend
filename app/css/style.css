@@ -482,6 +482,10 @@ table.center {
   margin-right:auto;
 }
 
+.questionReussie{
+    font-weight: normal;
+}    
+
 .questionNonReussie{
     font-weight: bold;
 }    

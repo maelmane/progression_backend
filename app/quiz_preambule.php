@@ -25,7 +25,6 @@ function menu_lang($langid=-1, $defaut=false){
 
     return $ret;
 }
-//session_start(); DOUBLON / déja sur page d'accueil.
 
 if(!isset($_SESSION["user_id"])){
     header("Location: login.php?p=$_GET[p]&ID=$_GET[ID]");
@@ -39,7 +38,6 @@ function page_header($titre=null){
     include 'templates/header.php';
 
 }
-
 
 function page_footer(){
     include 'templates/footer.php';
