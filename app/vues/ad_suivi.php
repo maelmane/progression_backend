@@ -53,11 +53,8 @@ elseif(!isset($_GET['s'])){
               <th align=left width=10%>N°</th><th align=left>Sujet</th><th align=center>Complété</th>
 ";
 
-    //Description
-    echo "<tr><td>$serie->titre<td></tr>";
-
     //Séries
-    foreach($theme->get_series() as $serie){
+    foreach(get_series($theme->id) as $serie){
         echo "
           <tr>
           <td>". $serie->numero ."</td><td>". $serie->titre ."</a></td><td align=center>".floor($serie->get_avancement()/$serie->get_nb_questions()*100) ."%</td>

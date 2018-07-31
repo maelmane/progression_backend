@@ -71,7 +71,7 @@ if(isset($_SESSION["user_id"])){
                     header("Location: index.php?p=accueil");
                 }
                 else{
-                    header("Location: index.php?p=$_GET[p]&ID=$_GET[ID]");
+                    header("Location: login.php?p=$_GET[p]" . (isset($_GET['ID'])?("&ID=".$_GET['ID']):""));
                 }
             }else {
                 $erreur="Nom d'utilisateur invalide.";

@@ -57,7 +57,7 @@ function load_question(){
 <option value = 0 >Thème</option>
 ";
 
-foreach(get_themes($_SESSION['user_id']) as $theme){
+foreach(get_themes() as $theme){
     echo "<option value = $theme->id ".(isset($_GET['theme']) && $_GET['theme']==$theme->id?'selected':'').">$theme->titre</option>";
 }
 
@@ -72,7 +72,7 @@ if(isset($_GET['theme'])){
     $theme=new Theme($_GET['theme'], $_SESSION['user_id']);
     $theme->load_info();
 
-    foreach($theme->get_series() as $serie){
+    foreach(get_series($theme->id) as $serie){
         echo "<option value = $serie->id ".(isset($_GET['serie']) && $_GET['serie']==$serie->id?'selected':'').">$serie->titre</option>";
     }
 
@@ -88,11 +88,11 @@ if(isset($_GET['serie'])){
        <option value = 0 >Question</option>
        ";
 
-    foreach($serie->get_questions() as $question){
+    foreach(get_questions($serie->id) as $question){
         echo "<option value = $question->id ".(isset($_GET['question']) && $_GET['question']==$question->id?'selected':'').">".$question->numero." " .$question->titre."</option>";
     }
     echo "
-       <option value=-1 ".($_GET['question']==-1?'selected':'').">Nouvelle question</option></select></td>
+       <option value=-1 ".((isset($_GET['question']) && $_GET['question']==-1)?'selected':'').">Nouvelle question</option></select></td>
     ";
 }
 
