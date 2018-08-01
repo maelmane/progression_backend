@@ -29,7 +29,6 @@ function load_theme_or_quit($serie){
 function page_content($serie){
     display_serie_header($serie);
     display_serie_content($serie);
-    display_serie_footer($serie);
 }
 
 function display_serie_header($serie){
@@ -40,7 +39,7 @@ function display_serie_header($serie){
 }
  
 function display_serie_content($serie){
-    $ids=get_questions($serie->id);
+    $ids=$serie->get_questions();
     question_header();
     foreach($ids as $question){
         question_row($question);

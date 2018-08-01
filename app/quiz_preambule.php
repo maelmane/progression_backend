@@ -1,6 +1,8 @@
 <?php
 
 require_once('modele.php');
+set_locale();
+openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 
 function menu_lang($langid=-1, $defaut=false){
     $ret= "<select id='langid' name='langid' > ";
@@ -31,17 +33,18 @@ if(!isset($_SESSION["user_id"])){
 }
 
 function page_header($titre=null){
-
     if(is_null($titre))
         $titre = "";
-
     include 'templates/header.php';
-
 }
 
 function page_footer(){
     include 'templates/footer.php';
-
-
 }
+
+function set_locale(){
+    $locale=isset($GLOBALS['config']['locale'])?$GLOBALS['config']['locale']:'fr_CA.UTF-8';
+    setlocale(LC_ALL,$locale);
+}
+
 ?>

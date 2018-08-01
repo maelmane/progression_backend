@@ -21,7 +21,6 @@ function display_header(){
 }
 
 function display_themes(){
-    
     foreach(get_themes() as $theme){
         echo         "<tr>
                           <td><a href='?p=theme&ID=$theme->id'>$theme->titre</td>
@@ -32,7 +31,8 @@ function display_themes(){
 }
 
 function display_zone_pratique(){
-    echo             "<tr>
+    echo             "<tr><td><br></td></tr>
+                      <tr>
                           <td><a href='?p=pratique'>Zone de pratique libre</a></td>
                       </tr>";
 }

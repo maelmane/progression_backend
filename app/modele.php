@@ -47,50 +47,6 @@ function get_themes(){
     
 }
 
-function get_series($theme_id){
-    $query=$GLOBALS["conn"]->prepare('SELECT serieID FROM serie WHERE themeID = ? ORDER BY numero');
-    $query->bind_param("i", $theme_id);
-    $query->execute();
-    $query->bind_result($serie_id);
-    
-    $ids=array();
-    while($query->fetch()){
-        $ids[]=$serie_id;
-    }
-    $query->close();
-
-    $series=array();
-    foreach ($ids as $id){
-        $series[] = new Serie($id);
-    }
-
-    return $series;
-}
- 
-function get_questions($question_id){
-    $query=$GLOBALS["conn"]->prepare('SELECT question.questionID
-                                     FROM question WHERE
-                                     question.serieID = ?
-                                     ORDER BY question.numero');
-    
-    $query->bind_param( "i", $question_id);
-    $query->execute();
-    $query->bind_result($q_id);
-
-    $ids=array();
-    while($query->fetch()){
-        $ids[]=$q_id;
-    }
-    $query->close();
-
-    $questions=array();
-    foreach($ids as $id){
-        $questions[] = new Question($id);
-    }
-
-    return $questions;
-}
-
 function get_users(){
     $users=$GLOBALS["conn"]->query('SELECT username FROM users WHERE actif=1 ORDER BY username');
 
@@ -196,16 +152,27 @@ class Theme extends Entite{
         return $res;        
     }
 
+    function get_series(){
+        $ids=$this->get_series_id();
+        
+        $series=array();
+        foreach ($ids as $id){
+            $series[] = new Serie($id);
+        }
+
+        return $series;
+    }
+   
     function get_series_id(){
         $query=$this->conn->prepare('SELECT serieID FROM serie WHERE
-                                     themeID= ? ');
+                                     themeID= ? ORDER BY numero');
         $query->bind_param( "i", $this->id);
         $query->execute();
-        $query->bind_result($ids);
-        $query->fetch();
-        $res=[];
-        foreach($query->fetch_all() as $v){
-            $res->append($v);
+        $query->bind_result($s_id);
+
+        $res=array();
+        while($query->fetch()){
+            $res[]=$s_id;
         }
         $query->close();
 
@@ -275,6 +242,36 @@ class Serie extends Entite{
         return $res;        
     }
 
+    function get_questions(){
+        $ids=$this->get_questions_ids();
+        
+        $questions=array();
+        foreach($ids as $id){
+            $questions[] = new Question($id);
+        }
+
+        return $questions;
+    }
+
+    function get_questions_ids(){
+        $query=$GLOBALS["conn"]->prepare('SELECT question.questionID
+                                     FROM question WHERE
+                                     question.serieID = ?
+                                     ORDER BY question.numero');
+    
+        $query->bind_param( "i", $this->id);
+        $query->execute();
+        $query->bind_result($q_id);
+
+        $res=array();
+        while($query->fetch()){
+            $res[]=$q_id;
+        }
+        $query->close();
+
+        return $res;
+    }
+
     function get_avancement($user_id){
         $query=$this->conn->prepare('SELECT count(avancement.etat) FROM avancement, question WHERE 
                                      avancement.questionID=question.questionID AND 
@@ -282,7 +279,7 @@ class Serie extends Entite{
                                      question.serieID = ? AND
                                      avancement.etat='.Question::ETAT_REUSSI);
 
-        $query->bind_param( "ii", $this->user_id, $this->id);
+        $query->bind_param( "ii", $user_id, $this->id);
         $query->execute();
         $query->bind_result($res);
         $query->fetch();
@@ -421,6 +418,7 @@ class QuestionProg extends Question{
  
     const PYTHON3=1;
     const CPP=8;
+    const JAVA=10;    
 
     //Données
     public $lang;

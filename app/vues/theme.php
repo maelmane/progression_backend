@@ -35,7 +35,7 @@ function display_theme_header($theme){
 
 function display_theme_content($theme){
     series_header();
-    foreach(get_series($theme->id) as $serie){
+    foreach($theme->get_series() as $serie){
         series_row($serie);
     }
     series_footer();
@@ -53,7 +53,7 @@ function series_row($serie){
     echo         "<tr>
                       <td>". $serie->numero ."</td>
                       <td><a href='?p=serie&ID=$serie->id'>". $serie->titre ."</a></td>
-                      <td align=center>".($serie->get_nb_questions()==0?"--":calculer_pourcentage_avancement($serie)) ."%</a></td>
+                      <td align=center>".($serie->get_nb_questions()==0?"--":calculer_pourcentage_avancement($serie))."%</td>
                   </tr>";
 }
 
