@@ -1,16 +1,13 @@
 <?php
 
 require_once('modele.php');
-vérifier_paramètres();
+vérifier_user_id();
 set_locale();
 openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 
-function vérifier_paramètres(){
-    if(!isset($_GET['ID'])){
-        header('Location: index.php?p=accueil');
-    }
-    elseif(!isset($_SESSION["user_id"])){
-        header("Location: login.php?p=$_GET[p]&ID=$_GET[ID]");
+function vérifier_user_id(){
+    if(!isset($_SESSION["user_id"])){
+        header("Location: login.php".(isset($_GET[p])?"?p=$_GET[p]&ID=$_GET[ID]":"").(isset($_GET['ID'])?("&ID=".$_GET['ID']):""));
     }
 }
 

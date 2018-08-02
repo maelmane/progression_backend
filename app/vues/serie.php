@@ -2,28 +2,34 @@
 
 require_once('quiz_preambule.php');
 
-$serie = load_serie_or_quit();
-$theme = load_theme_or_quit($serie);
+$serie=charger_serie_ou_terminer();
+$theme=charger_theme_ou_terminer($serie);
 
 page_header($theme->titre);
 page_content($serie);
 page_footer();
 
 
-function load_serie_or_quit(){
-    if(!isset($_GET['ID'])){
-        header('Location: index.php?p=accueil');
-    }
-
-    return new Serie($_GET['ID']);
-}
-
-function load_theme_or_quit($serie){
+function charger_serie_ou_terminer(){
+    $serie=new Serie($_GET['ID']);
+    
     if(is_null($serie->id)){
         header('Location: index.php?p=accueil');
     }
 
-    return new Theme($serie->themeID);
+    return $serie;
+    
+}
+
+function charger_theme_ou_terminer($serie){
+    $theme=new Theme($serie->themeID);
+
+    if(is_null($theme->id)){
+        header('Location: index.php?p=accueil');
+    }
+
+    return $theme;
+    
 }
 
 function page_content($serie){

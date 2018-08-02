@@ -3,8 +3,8 @@
 require_once('quiz_preambule.php');
 require_once('prog.php');
 
-$question=new QuestionProg($_GET['ID']);
-$avancement=new Avancement($_GET['ID'], $_SESSION['user_id']);
+$question=charger_question_ou_terminer();
+$avancement=charger_avancement();
 
 //infos contient tout ce qui a été envoyé pour compilation/exécution
 $infos=évaluer_composantes($question, $avancement);
@@ -14,6 +14,22 @@ prog_header($infos['langid']); //Attention! deuxième section <head>
 prog_contenu($infos, $avancement, $question);
 prog_footer($infos);
 page_footer();
+
+function charger_question_ou_terminer(){
+    $question=new QuestionProg($_GET['ID']);
+
+    if(is_null($question->id)){
+        header('Location: index.php?p=accueil');
+    }
+
+    return $question;
+}
+
+function charger_avancement(){
+    $avancement=new Avancement($_GET['ID'], $_SESSION['user_id']);
+
+    return $avancement;
+}
 
 function évaluer_composantes($question, $avancement){
     require_once('helpers.php');
@@ -31,7 +47,7 @@ function évaluer_composantes($question, $avancement){
                  "reponse"=>str_replace("\r","",eval("return $question->reponse;")),
                  "lang_id"=>$question->lang);
     
-    return $infos
+    return $infos;
 }
 
 function prog_contenu($infos, $avancement, $question){

@@ -90,11 +90,11 @@ function prog_header($langid){
 
 function prog_footer($infos){
     scripts_ajustement_éditeurs_header();
-    scripts_ajustement_éditeurs();    
+    scripts_ajustement_éditeurs($infos);    
     scripts_ajustement_éditeurs_footer();
 }
 
-function scripts_ajustement_éditeurs(){
+function scripts_ajustement_éditeurs($infos){
      if (isset($infos['pre_code']) && $infos['pre_code'] != ""){
          prog_footer_precode($infos);
      }
@@ -117,7 +117,7 @@ function exécuter_code($infos){
     $post_code=$infos["post_code"];    
     $params=$infos["params"];
     $stdin=$infos["stdin"];
-.
+
     //Compose le code à exécuter
     $code_exec=preg_replace('~\R~u', "\n", $pre_exec. $pre_code . "\n" . $code . "\n" . $post_code);
 
@@ -161,7 +161,7 @@ function extraire_sortie_erreur($sorties){
 
 function afficher_résultats($sortie_standard, $infos, $avancement, $question){
     afficher_résultats_header();
-    $url_retour="index.php?p=serie&ID=$question->serie_id";
+    $url_retour="index.php?p=serie&ID=$question->serieID";
     $titre_retour="la liste de questions";
     afficher_résultats_retour_arrière($url_retour, $titre_retour);
     
@@ -207,8 +207,7 @@ function resume($in, $lignes_max){
         $av=round(($lignes_max-1)/2);
         $ap=floor(($lignes_max-1)/2);
         return implode("\n", array_merge(array_slice($lignes,0,$av),array("..."),array_slice($lignes,-$ap)));
-    }		
-				    
+    } 
 }
 
 function prog_header_ouverture(){

@@ -2,7 +2,7 @@
 <?php
 require_once('quiz_preambule.php');
 
-$theme=load_theme_or_quit();
+$theme=charger_theme_ou_terminer();
 
 page_header($theme->titre);
 page_content($theme);
@@ -14,7 +14,7 @@ function page_content($theme){
     display_theme_content($theme);
 }
 
-function load_theme_or_quit(){
+function charger_theme_ou_terminer(){
     $theme=new Theme($_GET['ID'], $_SESSION['user_id']);
 
     if(is_null($theme->id)){
