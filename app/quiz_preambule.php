@@ -41,9 +41,4 @@ function page_header($titre=null){
     include 'templates/header.php';
 }
 
-function page_footer(){
-    include 'templates/footer.php';
-}
-
-
 ?>

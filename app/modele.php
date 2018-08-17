@@ -290,6 +290,10 @@ class Serie extends Entite{
         $query->close();
         return $res;
     }
+
+    function get_pourcentage_avancement($user_id){
+        return floor($this->get_avancement($user_id)/$this->get_nb_questions()*100);
+    }
     
 }
 

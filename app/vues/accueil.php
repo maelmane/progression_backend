@@ -4,7 +4,6 @@ require_once('quiz_preambule.php');
 
 page_header("Tableau de bord");
 page_content();
-page_footer();
 
 function page_content(){
     $themes=get_themes();

@@ -6,13 +6,6 @@ $theme=charger_theme_ou_terminer();
 
 page_header($theme->titre);
 page_content($theme);
-page_footer();
-
-
-function page_content($theme){
-    display_theme_header($theme);
-    display_theme_content($theme);
-}
 
 function charger_theme_ou_terminer(){
     $theme=new Theme($_GET['ID'], $_SESSION['user_id']);
@@ -24,51 +17,21 @@ function charger_theme_ou_terminer(){
     return $theme;
 }
 
-function display_theme_header($theme){
-    echo"
-         <h3>$theme->titre</h3>
-         <br>
-         $theme->description
-         <br><br>
-         ";
+function page_content($theme){
+    $series=$theme->get_series();
+    calculer_avancement($series, $_SESSION['user_id']);
+    render_page($theme, $series);
 }
 
-function display_theme_content($theme){
-    series_header();
-    foreach($theme->get_series() as $serie){
-        series_row($serie);
+function calculer_avancement($series, $user_id){
+    foreach($series as $serie){
+        $serie->avancement=$serie->get_pourcentage_avancement($user_id);
     }
-    series_footer();
 }
 
-
-function series_header(){
-    echo "<div class='code-wrapper'>
-              <table width=100%>
-                  <th align=left width=10%>N°</th><th align=left>Sujet</th><th align=center>Complété</th>
-         ";   
-}    
-
-function series_row($serie){
-    echo         "<tr>
-                      <td>". $serie->numero ."</td>
-                      <td><a href='?p=serie&ID=$serie->id'>". $serie->titre ."</a></td>
-                      <td align=center>".($serie->get_nb_questions()==0?"--":calculer_pourcentage_avancement($serie))."%</td>
-                  </tr>";
+function render_page($theme, $series){
+    $template=$GLOBALS['mustache']->loadTemplate("theme");
+    echo $template->render(array('theme'=>$theme, 'series'=>$series));
 }
 
-function series_footer(){
-    echo         "<tr>
-                      <td> </td>
-                  </tr>
-                  <tr>
-                      <td colspan=3 align=left><a href=index.php?p=accueil>↩ Retour à l'accueil</a></td></tr>
-                  </tr>
-              </table>
-          </div>";
-}
-
-function calculer_pourcentage_avancement($serie){
-    return floor($serie->get_avancement($_SESSION['user_id'])/$serie->get_nb_questions()*100);
-}
 ?>
