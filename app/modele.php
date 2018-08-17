@@ -207,6 +207,10 @@ class Theme extends Entite{
 
         return $res;
     }
+    
+    function get_pourcentage_avancement($user_id){
+        return floor($this->get_avancement($user_id)/$this->get_nb_questions()*100);
+    }
 }
 
 class Serie extends Entite{

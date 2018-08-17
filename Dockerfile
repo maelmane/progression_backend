@@ -8,7 +8,7 @@ RUN rm /srv/http/info.php
 
 # Mise a jour de la liste de package
 RUN pacman -Suy --noconfirm
-RUN pacman -S --noprogressbar --noconfirm --needed unzip wget
+RUN pacman -S --noprogressbar --noconfirm --needed unzip wget composer
 RUN echo extension=gmp.so >> /etc/php/php.ini
 
 RUN wget http://codemirror.net/codemirror.zip
@@ -27,7 +27,10 @@ COPY questions /tmp/questions
 COPY *.sql /tmp/
 RUN start-servers& sleep 5 && cd /tmp && ./build_db.sh
 
+#Installation des composantes PHP
+COPY app/composer.json /srv/http/
+RUN cd /srv/http/ && composer install
+
 COPY quiz.conf /srv/
 RUN chown -R http:http /srv/quiz.conf
 COPY app/ /srv/http/
-

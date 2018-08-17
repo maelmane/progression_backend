@@ -331,7 +331,7 @@ function afficher_résultats_header(){
 function afficher_résultats_retour_arrière($url_retour, $titre_retour){
     echo "               <tr>
                              <td align=left width=25%>
-                                 <a href='url_retour'>↩ Retour à $titre_retour</a>
+                                 <a href='$url_retour'>↩ Retour à $titre_retour</a>
                              </td>";
 }
 
