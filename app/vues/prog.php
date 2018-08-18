@@ -236,16 +236,10 @@ function prog_header_fermeture(){
 }
 
 function afficher_intro($titre, $énoncé){
-    echo "<body>
-             <section class='main'>
-                 <div class='example-wrapper clearfix'>
-                     <h3>$titre</h3>
-                     <br>
-                     $énoncé
-                     <br>
-                     <br>";
+    $template=$GLOBALS['mustache']->loadTemplate("prog/intro");
+    echo $template->render(array($titre, $énoncé));
 }
-                             
+
 function afficher_formulaire_header(){
     echo "           <pre class='code-wrapper'>
                          <code>

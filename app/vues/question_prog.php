@@ -13,7 +13,6 @@ page_header();
 prog_header($infos['langid']); //Attention! deuxième section <head>
 prog_contenu($infos, $avancement, $question);
 prog_footer($infos);
-page_footer();
 
 function charger_question_ou_terminer(){
     $question=new QuestionProg($_GET['ID']);
