@@ -1,5 +1,18 @@
 <?php
 
+$LANG_NOMS=array("Python 2",
+                 "Python 3",
+                 "Ruby",
+                 "",
+                 "PHP",
+                 "","",
+                 "Go",
+                 "C++",
+                 "C",
+                 "Java",
+                 "Bash",
+                 "Perl");
+
 function get_langage(){
     if (isset($_POST['langid'])&&$_POST['langid']!=""){
         $langid=$_POST['langid'];
@@ -81,6 +94,15 @@ function menu_lang($langid=-1, $defaut=false){
     return $ret;
 }
 
+function get_mode($langid){
+    if($langid<=QuestionProg::PYTHON3){
+        return "python/python.js";
+    }
+    elseif($langid==QuestionProg::CPP || $langid==QuestionProg::JAVA){
+        return "clike/clike.js";
+    }
+}
+
 function prog_header($langid){
     prog_header_ouverture();
     prog_header_inclusions_codemiror();
@@ -134,6 +156,19 @@ function exécuter_code($infos){
     return $comp_resp;
 }
 
+function calculer_sorties($sorties, $infos){
+    if ($sorties === FALSE) {
+        $output="Erreur interne. ";
+    }
+    else{
+        $output=extraire_sortie_standard($sorties);
+        $erreurs=extraire_sortie_erreur($sorties);
+    }
+
+    return array("output"=>resume($output,21),
+                 "erreurs"=>$erreurs);
+}
+
 function loguer_code($infos){
     $com_log=$_SERVER['REMOTE_ADDR']." - " . $_SERVER["PHP_SELF"] . " : lang : " . $infos['langid'] . " Code : ". $infos['code'];
     syslog(LOG_INFO, $com_log);
@@ -157,44 +192,6 @@ function extraire_sortie_standard($sorties){
 
 function extraire_sortie_erreur($sorties){
     return json_decode($sorties, true)['errors'];
-}
-
-function afficher_résultats($sortie_standard, $infos, $avancement, $question){
-    afficher_résultats_header();
-    $url_retour="index.php?p=serie&ID=$question->serieID";
-    $titre_retour="la liste de questions";
-    afficher_résultats_retour_arrière($url_retour, $titre_retour);
-    
-    $réussi=valider_résultats($sortie_standard, $infos['reponse']);
-    if($réussi){
-        sauvegarder_état_réussi($avancement, $infos['code']);
-        afficher_réussite($question->code_validation);
-    }
-    else{
-        sauvegarder_état_échec($avancement, $infos['code']);
-        afficher_échec();
-    }
-    
-    afficher_question_suivante($avancement, $question);
-    afficher_résultats_footer();
-}
-
-function valider_résultats($output, $reponse){
-    return $reponse!="null" && $output==$reponse; //en PHP, "" == NULL (arg!!!)
-}
-
-function sauvegarder_état_réussi($avancement, $code){
-    $avancement->set_reponse($code);
-    $avancement->set_etat(Question::ETAT_REUSSI);
-}
-
-function sauvegarder_état_échec($avancement, $code){
-    //Met la réponse à jour dans l'avancement seulement
-    //si la question n'avait pas déjà été réussie
-    if($avancement->get_etat()!=Question::ETAT_REUSSI){
-        $avancement->set_reponse($code);
-        $avancement->set_etat(Question::ETAT_NONREUSSI);
-    }
 }
 
 function resume($in, $lignes_max){

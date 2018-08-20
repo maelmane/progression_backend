@@ -3,16 +3,20 @@
 require_once('quiz_preambule.php');
 require_once('prog.php');
 
-$question=charger_question_ou_terminer();
-$avancement=charger_avancement();
-
-//infos contient tout ce qui a été envoyé pour compilation/exécution
-$infos=évaluer_composantes($question, $avancement);
-
 page_header();
-prog_header($infos['langid']); //Attention! deuxième section <head>
-prog_contenu($infos, $avancement, $question);
-prog_footer($infos);
+page_contenu();
+
+function page_contenu(){
+    $question=charger_question_ou_terminer();
+    $avancement=charger_avancement();
+
+    $infos=récupérer_paramètres($question, $avancement);
+    $sorties=exécuter_code($infos);
+    $infos=array_merge($infos, calculer_sorties($sorties, $infos));
+    $infos=array_merge($infos, traiter_résultats(extraire_sortie_standard($sorties), $infos, $avancement, $question));
+    render_page($infos);
+    
+}
 
 function charger_question_ou_terminer(){
     $question=new QuestionProg($_GET['ID']);
@@ -30,41 +34,97 @@ function charger_avancement(){
     return $avancement;
 }
 
-function évaluer_composantes($question, $avancement){
+function récupérer_paramètres($question, $avancement){
     require_once('helpers.php');
+    global $LANG_NOMS;
     
     eval($question->setup);
-    $infos=array("langid"=>get_langage(),
+    
+    $langid=get_langage();
+    $pre_exec=str_replace("\r","",eval("return $question->pre_exec;"));
+    $pre_code=str_replace("\r","",eval("return $question->pre_code;"));
+    $post_code=str_replace("\r","",eval("return $question->post_code;"));
+
+    $infos=array("titre"=>$question->titre,
+                 "langid"=>$langid,
                  "code"=>get_code($question, $avancement),
+                 "énoncé"=>str_replace("\r","",eval("return \"$question->enonce\";")),
+                 "pre_exec"=>$pre_exec,
+                 "pre_code"=>$pre_code,
+                 "post_code"=>$post_code,
+                 "première_ligne_éditeur_precode"=>compter_lignes($pre_exec)+1,
+                 "première_ligne_éditeur_incode"=>compter_lignes($pre_exec)+compter_lignes($pre_code)+1,
                  "params"=>get_params($question),
                  //Évalue seulement si stdin provient de la BD
                  "stdin"=>($question->stdin==""?get_stdin($question):str_replace("\r","",eval("return ".get_stdin($question).";"))),
-                 "enonce"=>str_replace("\r","",eval("return \"$question->enonce\";")),
-                 "pre_exec"=>str_replace("\r","",eval("return $question->pre_exec;")),
-                 "pre_code"=>str_replace("\r","",eval("return $question->pre_code;")),
-                 "post_code"=>str_replace("\r","",eval("return $question->post_code;")),
                  "reponse"=>str_replace("\r","",eval("return $question->reponse;")),
-                 "lang_id"=>$question->lang);
+                 "lang_id"=>$question->lang,
+                 "url_retour"=>"index.php?p=serie&ID=".$question->serieID,
+                 "titre_retour"=>"la liste de questions",
+                 "suivante"=>$question->suivante,
+                 "état_réussi"=>$avancement->get_etat()==Question::ETAT_REUSSI,
+                 "validation"=>$question->code_validation,
+                 "mode"=>get_mode($langid),
+                 "lang_nom"=>$LANG_NOMS[$langid]
+    );
     
     return $infos;
 }
 
-function prog_contenu($infos, $avancement, $question){
-    afficher_intro($question->titre, $infos['enonce']);
-    afficher_formulaires($infos);
-    $sorties=exécuter_code($infos);
-    afficher_sorties($sorties);
-    $sortie_standard=extraire_sortie_standard($sorties);
-    afficher_résultats($sortie_standard, $infos, $avancement, $question); 
+function compter_lignes($texte){
+    if($texte==""){
+        return 0;
+    }
+    else{
+        return count(preg_split('/\n/',$texte));
+    }
 }
 
-function afficher_formulaires($infos){
-    afficher_formulaire_header();
-    afficher_formulaire_éditeur_precode($infos);
-    afficher_formulaire_éditeur_code($infos);
-    afficher_formulaire_éditeur_postcode($infos);
-    afficher_formulaire_champs_params_stdin($infos);
-    afficher_formulaire_footer();
+function traiter_résultats($sortie_standard, $infos, $avancement, $question){
+    $résultats=array();
+
+    if($_POST['submit']=='Soumettre'){
+        $résultats["essayé"]="true";
+        if(valider_résultats($sortie_standard, $infos['reponse'])){
+            sauvegarder_état_réussi($avancement, $infos['code']);
+            $résultats["réussi"]="true";
+        }
+        else{
+            sauvegarder_état_échec($avancement, $infos['code']);
+            $résultats["nonréussi"]="true";
+        }
+    }
+    $résultats["état_réussi"]=$avancement->get_etat()==Question::ETAT_REUSSI;
+
+    return $résultats;
 }
+
+function valider_résultats($output, $reponse){
+    return $reponse!="null" && $output==$reponse; //en PHP, "" == NULL (arg!!!)
+}
+
+function sauvegarder_état_réussi($avancement, $code){
+    $avancement->set_reponse($code);
+    $avancement->set_etat(Question::ETAT_REUSSI);
+}
+
+function sauvegarder_état_échec($avancement, $code){
+    //Met la réponse à jour dans l'avancement seulement
+    //si la question n'avait pas déjà été réussie
+    if($avancement->get_etat()!=Question::ETAT_REUSSI){
+        $avancement->set_reponse($code);
+        $avancement->set_etat(Question::ETAT_NONREUSSI);
+    }
+}
+
+function sauvegarder_état_non_réussi($avancement, $code){
+    $avancement->set_etat(Question::ETAT_NONREUSSI);
+}
+
+function render_page($infos){
+    $template=$GLOBALS['mustache']->loadTemplate("question_prog");
+    echo $template->render($infos);
+}
+
 
 ?>

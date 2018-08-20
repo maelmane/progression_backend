@@ -30,28 +30,6 @@ function récupérer_paramètres(){
     return $infos;
 }
 
-function get_mode($langid){
-    if($langid<=QuestionProg::PYTHON3){
-        return "python/python.js";
-    }
-    elseif($langid==QuestionProg::CPP || $langid==QuestionProg::JAVA){
-        return "clike/clike.js";
-    }
-}
-
-function calculer_sorties($sorties, $infos){
-    if ($sorties === FALSE) {
-        $output="Erreur interne. ";
-    }
-    else{
-        $output=extraire_sortie_standard($sorties);
-        $erreurs=extraire_sortie_erreur($sorties);
-    }
-
-    return array("output"=>resume($output,21),
-                 "erreurs"=>$erreurs);
-}
-
 function render_page($infos){
     $template=$GLOBALS['mustache']->loadTemplate("pratique");
     echo $template->render($infos);
