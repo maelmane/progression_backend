@@ -36,11 +36,11 @@ function charger_avancement(){
 
 function récupérer_paramètres($question, $avancement){
     require_once('helpers.php');
-    global $LANG_NOMS;
-    
-    eval($question->setup);
     
     $langid=get_langage();
+
+    eval($question->setup);
+    
     $pre_exec=str_replace("\r","",eval("return $question->pre_exec;"));
     $pre_code=str_replace("\r","",eval("return $question->pre_code;"));
     $post_code=str_replace("\r","",eval("return $question->post_code;"));
@@ -65,7 +65,7 @@ function récupérer_paramètres($question, $avancement){
                  "état_réussi"=>$avancement->get_etat()==Question::ETAT_REUSSI,
                  "validation"=>$question->code_validation,
                  "mode"=>get_mode($langid),
-                 "lang_nom"=>$LANG_NOMS[$langid]
+                 "lang_nom"=>LANG_NOMS[$langid]
     );
     
     return $infos;

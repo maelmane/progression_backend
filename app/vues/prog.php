@@ -1,17 +1,18 @@
 <?php
 
-$LANG_NOMS=array("Python 2",
-                 "Python 3",
-                 "Ruby",
-                 "",
-                 "PHP",
-                 "","",
-                 "Go",
-                 "C++",
-                 "C",
-                 "Java",
-                 "Bash",
-                 "Perl");
+const LANG_NOMS=array("Python 2",
+                      "Python 3",
+                      "Ruby",
+                      "",
+                      "PHP",
+                      "","",
+                      "Go",
+                      "C++",
+                      "C",
+                      "Java",
+                      "Bash",
+                      "Perl");
+
 
 function get_langage(){
     if (isset($_POST['langid'])&&$_POST['langid']!=""){
