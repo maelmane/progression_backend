@@ -21,16 +21,14 @@ COPY ldap.conf /etc/ldap
 COPY certs/* /etc/ssl/certs/
 RUN c_rehash
 
-#Pour une BD à même le conteneur
-COPY build_db.sh /tmp
-COPY questions /tmp/questions
-COPY *.sql /tmp/
-RUN start-servers& sleep 5 && cd /tmp && ./build_db.sh
-
 #Installation des composantes PHP
 COPY app/composer.json /srv/http/
+RUN chown http:http -R /srv/http/
 RUN cd /srv/http/ && composer install
 
 COPY quiz.conf /srv/
 RUN chown -R http:http /srv/quiz.conf
 COPY app/ /srv/http/
+
+RUN echo AddDefaultCharset utf-8 >> /etc/httpd/conf/httpd.conf
+
