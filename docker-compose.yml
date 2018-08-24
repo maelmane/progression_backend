@@ -1,0 +1,23 @@
+version: "3"
+services:
+
+  progression_db:
+    build: db/ 
+    container_name: progression_db
+    volumes:
+      - "./data:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    restart: on-failure
+
+  progression:
+    build: progression/
+    container_name: progression
+    ports:
+      - "443:443"
+    extra_hosts:
+      - "watson:205.237.24.200"
+    restart: on-failure
+    depends_on: 
+      - progression_db
+
