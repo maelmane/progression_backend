@@ -31,7 +31,7 @@ if(isset($_SESSION["user_id"])){
 
             if(!$bind) {
                 ldap_get_option($ldap, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
-                $erreur="Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extender_error";
+                $erreur="Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extended_error";
             }
             $result=ldap_search($ldap, $GLOBALS['config']['domaine_ldap'], "(sAMAccountName=$username)", array('dn','cn',1));
             $user=ldap_get_entries($ldap, $result);
