@@ -3,9 +3,11 @@
 {{/serie}}
      <div class='code-wrapper'>
          <table width=100%>
+             <th align=left width=10%>N°</th><th align=left>Question</th>
 	      {{#questions}}
              <tr>
-                 <td class='{{css}}'><a href='?p={{page}}&ID={{id}}'>{{titre}}</a></td>
+                 <td>{{numero}}</td>
+		 <td class='{{css}}'><a href='?p={{page}}&ID={{id}}'>{{titre}}</a></td>
              </tr>
 	      {{/questions}}
              <tr>

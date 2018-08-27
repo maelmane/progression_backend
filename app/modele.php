@@ -621,21 +621,28 @@ class Avancement extends Entite{
     }
 
     public function get_etat(){
-        if(is_null($this->etat)) return Question::ETAT_DEBUT;
-        return $this->etat;
+        return is_null($this->etat) ? Question::ETAT_DEBUT :  $this->etat;
     }
 
     public function set_etat($etat){
-        $this->etat=$etat;
-        $query=$this->conn->prepare('UPDATE avancement SET etat = ? WHERE questionID = ? AND userID = ?');
-        $query->bind_param("isi", $etat, $this->questionID, $this->userID);
-        $query->execute();
-        $query->close();
+        if($this->get_etat()==Question::ETAT_DEBUT){
+            $query=$this->conn->prepare('INSERT INTO avancement SET etat = ?, questionID = ?, userID = ?');
+            $query->bind_param("sii", $etat, $this->questionID, $this->userID);
+            $query->execute();
+            $query->close();
+        }
+        else{
+            $query=$this->conn->prepare('UPDATE avancement SET etat = ? WHERE questionID = ? AND userID = ?');
+            $query->bind_param("isi", $etat, $this->questionID, $this->userID);
+            $query->execute();
+            $query->close();
+        }
+	$this->etat=$etat;
     }
 
     public function set_reponse($reponse){
-        if($this->etat==Question::ETAT_DEBUT){
-            $query=$this->conn->prepare('INSERT INTO avancement SET reponse = ?, questionID = ?, userID = ?');
+        if($this->get_etat()==Question::ETAT_DEBUT){
+            $query=$this->conn->prepare('INSERT INTO avancement SET etat = ' . strval(Question::ETAT_NONREUSSI) . ', reponse = ?, questionID = ?, userID = ?');
             $query->bind_param("sii", $reponse, $this->questionID, $this->userID);
             $query->execute();
             $query->close();
@@ -648,8 +655,8 @@ class Avancement extends Entite{
         }
     }
     public function set_conteneur($conteneur){
-        if($this->etat==Question::ETAT_DEBUT){
-            $query=$this->conn->prepare('INSERT INTO avancement SET conteneur = ?, questionID = ?, userID = ?');
+        if($this->get_etat()==Question::ETAT_DEBUT){
+            $query=$this->conn->prepare('INSERT INTO avancement SET etat = ' . strval(Question::ETAT_NONREUSSI) . ', conteneur = ?, questionID = ?, userID = ?');
             $query->bind_param("sii", $conteneur, $this->questionID, $this->userID);
             $query->execute();
             $query->close();

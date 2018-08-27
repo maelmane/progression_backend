@@ -83,7 +83,7 @@ function compter_lignes($texte){
 function traiter_résultats($sortie_standard, $infos, $avancement, $question){
     $résultats=array();
 
-    if($_POST['submit']=='Soumettre'){
+    if(isset($_POST['submit'])){
         $résultats["essayé"]="true";
         if(valider_résultats($sortie_standard, $infos['reponse'])){
             sauvegarder_état_réussi($avancement, $infos['code']);
