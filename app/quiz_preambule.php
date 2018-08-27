@@ -38,7 +38,7 @@ function instancier_engine_mustache(){
 function page_header($titre=null){
     if(is_null($titre))
         $titre = "";
-    include 'templates/header.php';
+    include 'vues/header.php';
 }
 
 ?>
