@@ -36,8 +36,8 @@ function charger_avancement(){
 
 function récupérer_paramètres($question, $avancement){
     require_once('helpers.php');
-    
-    $langid=get_langage();
+
+    $langid=$question->lang;
 
     eval($question->setup);
     
@@ -58,7 +58,6 @@ function récupérer_paramètres($question, $avancement){
                  //Évalue seulement si stdin provient de la BD
                  "stdin"=>($question->stdin==""?get_stdin($question):str_replace("\r","",eval("return ".get_stdin($question).";"))),
                  "reponse"=>str_replace("\r","",eval("return $question->reponse;")),
-                 "lang_id"=>$question->lang,
                  "url_retour"=>"index.php?p=serie&ID=".$question->serieID,
                  "titre_retour"=>"la liste de questions",
                  "suivante"=>$question->suivante,
