@@ -2,148 +2,151 @@
 
 require('quiz_preambule.php');
 
-function resume($in, $lignes_max){
-    $lignes=explode("\n", $in);
-    $nb_lignes=count($lignes);
-    if ($nb_lignes<=$lignes_max){
-        return $in;
+page_header();
+page_contenu();
+
+function page_contenu(){
+    $infos=get_infos();
+    
+    $réponse_serveur=connexion_conteneur($infos);
+    $infos=array_merge($infos, décoder_réponse($réponse_serveur));
+    
+    if(isset($_POST['submit'])){
+        $infos['essayé']="true";
+        $infos=array_merge($infos, vérifier_réussite($infos));
     }
-    else{
-        $av=round(($lignes_max-1)/2);
-        $ap=floor(($lignes_max-1)/2);
-        return implode("\n", array_merge(array_slice($lignes,0,$av),array("..."),array_slice($lignes,-$ap)));
-    }		
-				    
+
+    sauvegarder_conteneur($infos);
+    
+    render_page($infos);
 }
 
-$qst=new QuestionSysteme($_GET['ID']);
-$qst->load_info();
+function get_infos(){
+    $question=charger_question_ou_terminer();
+    $avancement=charger_avancement();
 
-$avcmt=new Avancement($_GET['ID'], $_SESSION['user_id']);
+    $infos=array("réponse"=>get_réponse_utilisateur(),
+                 "question"=>$question,
+                 "avancement"=>$avancement,
+                 "nom_serveur"=>$_SERVER["SERVER_NAME"],
+                 "url_retour"=>"index.php?p=serie&ID=".$question->serieID,
+                 "titre_retour"=>"la liste de questions");
 
-$locale='fr_CA.UTF-8';
-setlocale(LC_ALL,$locale);
+    return $infos;
+}
 
-openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
+function charger_question_ou_terminer(){
+    $question=new QuestionSysteme($_GET['ID']);
 
-//Crée le conteneur
-$url_rc="http://".$GLOBALS['config']['compilebox_hote'].":".$GLOBALS['config']['compilebox_port']."/compile";
-if(isset($_POST['reset']) && $_POST['reset']=='Réinitialiser'){
-    $data_rc=array('language' => 13, 'code' => 'reset', 'vm_name' => $qst->image, 'parameters' => $avcmt->conteneur, 'stdin' => '', 'user' => $qst->user );
+    if(is_null($question->id)){
+        header('Location: index.php?p=accueil');
+    }
+
+    return $question;
+}
+
+function charger_avancement(){
+    $avancement=new Avancement($_GET['ID'], $_SESSION['user_id']);
+
+    return $avancement;
+}
+
+function get_réponse_utilisateur(){
+    return isset($_POST['reponse'])?$_POST['reponse']:"";
+}
+
+function connexion_conteneur($infos){
+    $url_rc=get_url_compilebox();
+    $options_rc=get_options_compilebox($infos["question"], $infos["avancement"]);
+
+    $context=stream_context_create($options_rc);
+    $comp_resp=file_get_contents($url_rc, false, $context);
+
+    return $comp_resp;
+}
+
+function get_url_compilebox(){
+    return "http://".$GLOBALS['config']['compilebox_hote'].":".$GLOBALS['config']['compilebox_port']."/compile";
+}
+
+function get_options_compilebox($question, $avancement){
+    if(isset($_POST['reset']) && $_POST['reset']=='Réinitialiser'){
+        $data_rc=get_data_nouveau_conteneur($question, $avancement);
+    }
+    else{
+        $data_rc=get_data_conteneur($question, $avancement);
+    }
+    
     $options_rc=array('http'=> array(
         'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
         'method'  => 'POST',
         'content' => http_build_query($data_rc)));
-}
-else{
-    $data_rc=array('language' => 13, 'code' => $qst->verification, 'vm_name' => $qst->image, 'parameters' => $avcmt->conteneur, 'stdin' => '', 'user' => $qst->user);
-    $options_rc=array('http'=> array(
-        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-        'method'  => 'POST',
-        'content' => http_build_query($data_rc)));
+
+    return $options_rc;
 }
 
-$context  = stream_context_create($options_rc);
-$comp_resp=file_get_contents($url_rc, false, $context);
-
-$cont_id=trim(json_decode($comp_resp, true)['cont_id']);
-$cont_ip=trim(json_decode($comp_resp, true)['add_ip']);
-$cont_port=trim(json_decode($comp_resp, true)['add_port']);
-$res_validation=trim(json_decode($comp_resp, true)['resultat']);
-
-$avcmt->set_conteneur($cont_id);
-if($avcmt->get_etat()==Question::ETAT_DEBUT){
-    $avcmt->set_etat(Question::ETAT_NONREUSSI);
+function get_data_nouveau_conteneur($question, $avancement){
+    return array('language' => 13, 'code' => 'reset', 'vm_name' => $question->image, 'parameters' => $avancement->conteneur, 'stdin' => '', 'user' => $question->user );
 }
 
-$serie=new Serie($qst->serieID, $_SESSION['user_id']);
-$serie->load_info();
-
-page_header($serie->titre);
-
-echo"
-
-  <html> 
-
-
-
-   <head>
-    <meta charset='utf-8'>
-   </head>
-   <body>
-
-     <section class='main'>
-      <div class='example-wrapper clearfix'>
-       <h3>$qst->titre</h3>
-           <br>
-           $qst->enonce
-           <br>
-           <br>
-        <pre class='code-wrapper'><code><form id='form1' method='post' action=''>
-        <table width=100%> 
-     "; 
-
-    echo " <tr>
-       <tr><td align=right colspan=2><a href='https://$_SERVER[SERVER_NAME]:$cont_port' target=_blank>plein écran <img width=16 src='images/fs.png'></a></td></tr>
-       <td colspan=2>
-         <div>
-         <iframe id=tty width=100% height=350 src='https://$_SERVER[SERVER_NAME]:$cont_port'></iframe>
-         </div>
-       </td>
-       </tr>";
-if(!is_null($qst->reponse) && $qst->reponse!="" ){
-    echo"
-   </table><table style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'>
-   <tr><td>
-   Réponse: <input type=text name=reponse value='$avcmt->reponse'>
-   <input type=submit value='Soumettre'></td>";
+function get_data_conteneur($question, $avancement){
+    return array('language' => 13, 'code' => $question->verification, 'vm_name' => $question->image, 'parameters' => $avancement->conteneur, 'stdin' => '', 'user' => $question->user);
 }
-else{
-    echo"
-   <tr><td>
-   <input type=submit name='submit' value='Valider'></td>";
+
+function décoder_réponse($réponse){
+    $infos_réponse=array();
+    
+    $infos_réponse["cont_id"]=trim(json_decode($réponse, true)['cont_id']);
+    $infos_réponse["cont_ip"]=trim(json_decode($réponse, true)['add_ip']);
+    $infos_réponse["cont_port"]=trim(json_decode($réponse, true)['add_port']);
+    $infos_réponse["res_validation"]=trim(json_decode($réponse, true)['resultat']);
+
+    return $infos_réponse;
 }
-echo " <td  align=right><input type=submit name='reset' value='Réinitialiser' onclick='return confirm(\"Voulez-vous vraiment réinitialiser votre session?\");'>";
 
-echo "</td></tr></table>
-      <table width=100%>";
-
-echo "<td align=left width=25%><a href=index.php?p=serie&ID=$qst->serieID>Retour à la liste de questions</a></td><td align=center width=50%>";
-
-//Vérifie la réponse
-if(!is_null($qst->reponse) && $qst->reponse!=""){
-    if(isset($_POST['reponse']) && $_POST['reponse']!='')
-        if($_POST['reponse']==$qst->reponse){
-            echo "Bonne réponse!" . ((!is_null($qst->code_validation)&&trim($qst->code_validation!=""))?"</td><td>Code de validation : $qst->code_validation":"");
-            $avcmt->set_etat(Question::ETAT_REUSSI);            
-        }
-        else{
-            echo "Mauvaise réponse!";
-        }
-}
-elseif($res_validation!=""){
-    if($res_validation=="valide"){
-        echo "Bonne réponse!" . ((!is_null($qst->code_validation)&&trim($qst->code_validation!=""))?"</td><td>Code de validation : $qst->code_validation":"");
-        $avcmt->set_etat(Question::ETAT_REUSSI);
+function vérifier_réussite($infos){
+    $réussite=array();
+    
+    $réussi=vérifier_réponse($infos);
+    if($réussi){
+        $réussite["réussi"]="true";
+        $infos["avancement"]->set_etat(Question::ETAT_REUSSI);
     }
-    elseif($res_validation=="invalide"){
-        echo "Mauvaise réponse!";
+
+    //récupère l'état d'avancement
+    if($infos["avancement"]->get_etat()==Question::ETAT_REUSSI){
+        $réussite["état_réussi"]="true";
     }
     else{
-        echo "$res_validation" ;
+        $réussite["état_réussi"]="";
     }
+    
+    return $réussite;
 }
 
-echo "</td><td width=25% align=center>";
-if ($avcmt->get_etat()==Question::ETAT_REUSSI){
-        if ($qst->suivante!=""){                                                             
-            echo "<a href='index.php?p=question_sys&ID=$qst->suivante'>Question suivante</a>";
-        }
+function sauvegarder_conteneur($infos){
+    $infos["avancement"]->set_conteneur($infos["cont_id"]);
 }
-echo "</tr></table>
-    </div>
-  </body>
-</html>
-";
+
+function vérifier_réponse($infos){
+    $réussi=false;
+    
+    //Vérifie la réponse
+    if(!is_null($infos["question"]->reponse) && $infos["question"]->reponse!=""){
+        if($infos['réponse']!='')
+            if($infos['réponse']==$infos["question"]->reponse){
+                $réussi=true;
+            }
+    }
+    elseif($infos['res_validation']!="" && $infos['res_validation']=="valide"){
+            $réussi=true;            
+    }
+    return $réussi;
+}
+
+function render_page($infos){
+    $template=$GLOBALS['mustache']->loadTemplate("question_sys");
+    echo $template->render($infos);
+}
 
 ?>
