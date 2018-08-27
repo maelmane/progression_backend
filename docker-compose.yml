@@ -16,7 +16,7 @@ services:
     ports:
       - "443:443"
     extra_hosts:
-      - "watson:205.237.24.200"
+      - "watson.dept-info.crosemont.quebec:205.237.24.200"
     restart: on-failure
     depends_on: 
       - progression_db
