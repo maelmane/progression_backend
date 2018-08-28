@@ -1,13 +1,10 @@
-#Quiz Python
+#Version : 1.2
 
-Par Patrick Lafrance, Daniel Gailloux et le groupe du cours 420-303-RO Soutiens technique et formation des utilisateurs
+Ce site web créé à des fins pédagogiques permet à des étudiants en programmation de pratiquer, tester et améliorer leurs compétences en programmation à l'aide de quiz élaborés dans de nombreux langages de programmation.
 
-##Objectif
+# Contributeurs
 
-ce projet consiste à créer un site web à des fins éducationnelles permettant à des étudiants en programmation de pratiquer, tester et améliorer leurs compétences en programmation à l'aide de quiz, exercices et Zones de pratiques dans de nombreux langages de programmation différents
-
-## Utilisation UIKit
-
-Voir la doc pour l'utilisation du framework UIKit
-
-https://getuikit.com/docs/introduction
+Patrick Lafrance
+Daniel Gailloux
+Mikaël Nadeau
+Les étudiants du cours 420-303-RO Soutiens technique et formation des utilisateurs
