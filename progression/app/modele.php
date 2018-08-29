@@ -635,7 +635,8 @@ class Avancement extends Entite{
 
     public function set_reponse($reponse){
         if($this->get_etat()==Question::ETAT_DEBUT){
-            $query=$this->conn->prepare('INSERT INTO avancement SET etat = ' . strval(Question::ETAT_NONREUSSI) . ', reponse = ?, questionID = ?, userID = ?');
+            //État par défaut = ETAT_NONREUSSI
+            $query=$this->conn->prepare('INSERT INTO avancement SET etat = 1, reponse = ?, questionID = ?, userID = ?');
             $query->bind_param("sii", $reponse, $this->questionID, $this->userID);
             $query->execute();
             $query->close();
@@ -649,7 +650,8 @@ class Avancement extends Entite{
     }
     public function set_conteneur($conteneur){
         if($this->get_etat()==Question::ETAT_DEBUT){
-            $query=$this->conn->prepare('INSERT INTO avancement SET etat = ' . strval(Question::ETAT_NONREUSSI) . ', conteneur = ?, questionID = ?, userID = ?');
+            //État par défaut = ETAT_NONREUSSI
+            $query=$this->conn->prepare('INSERT INTO avancement SET etat = 1, conteneur = ?, questionID = ?, userID = ?');
             $query->bind_param("sii", $conteneur, $this->questionID, $this->userID);
             $query->execute();
             $query->close();
