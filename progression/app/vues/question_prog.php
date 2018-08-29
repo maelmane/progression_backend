@@ -1,6 +1,5 @@
 <?php
 
-require_once('quiz_preambule.php');
 require_once('prog.php');
 
 page_header();

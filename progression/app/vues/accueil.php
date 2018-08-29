@@ -1,7 +1,5 @@
 <?php
 
-require_once('quiz_preambule.php');
-
 page_header("Tableau de bord");
 page_content();
 

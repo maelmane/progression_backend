@@ -2,21 +2,14 @@
 
 #error_reporting(0);
 
+require_once(__DIR__."/config.php");
 db_init();
 
 function db_init(){
     if(!isset($GLOBALS["conn"]))
     {
-        load_config();
         create_connection();
         set_errors();
-    }
-}
-
-function load_config(){
-    if(!isset($GLOBALS["config"])){
-        $cfg=parse_ini_file("../quiz.conf");
-        $GLOBALS["config"]=$cfg;
     }
 }
 

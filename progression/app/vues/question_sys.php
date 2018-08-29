@@ -1,7 +1,5 @@
 <?php
 
-require('quiz_preambule.php');
-
 page_header();
 page_contenu();
 
