@@ -4,6 +4,9 @@ services:
   progression_db:
     build: db/ 
     container_name: progression_db
+    networks:
+      progressionnet:
+        ipv4_address: 172.20.0.2
     volumes:
       - "./data:/var/lib/mysql"
     environment:
@@ -13,6 +16,9 @@ services:
   progression:
     build: progression/
     container_name: progression
+    networks:
+      progressionnet:
+        ipv4_address: 172.20.0.3
     ports:
       - "443:443"
     extra_hosts:
@@ -21,3 +27,8 @@ services:
     depends_on: 
       - progression_db
 
+networks:
+  progressionnet:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24

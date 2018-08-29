@@ -1,5 +1,5 @@
 # Configuration de la base de données
-servername = "localhost"
+servername = "172.20.0.2"
 dbname = "quiz"
 username = "quiz"
 password = "password"
