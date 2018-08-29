@@ -1,21 +1,13 @@
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
-require_once('modele.php');
-vérifier_user_id();
-set_locale();
-openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
+load_config();
 instancier_engine_mustache();
 
-function vérifier_user_id(){
-    if(!isset($_SESSION["user_id"])){
-        header("Location: login.php".(isset($_GET[p])?"?p=$_GET[p]&ID=$_GET[ID]":"").(isset($_GET['ID'])?("&ID=".$_GET['ID']):""));
+function load_config(){
+    if(!isset($GLOBALS["config"])){
+        $cfg=parse_ini_file(dirname(__FILE__)."/../quiz.conf");
+        $GLOBALS["config"]=$cfg;
     }
-}
-
-function set_locale(){
-    $locale=isset($GLOBALS['config']['locale'])?$GLOBALS['config']['locale']:'fr_CA.UTF-8';
-    setlocale(LC_ALL,$locale);
 }
 
 function instancier_engine_mustache(){
@@ -33,12 +25,6 @@ function instancier_engine_mustache(){
         'strict_callables' => true,
         'pragmas' => [Mustache_Engine::PRAGMA_FILTERS],
     ));
-}
-
-function page_header($titre=null){
-    if(is_null($titre))
-        $titre = "";
-    include 'vues/header.php';
 }
 
 ?>

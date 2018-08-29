@@ -1,6 +1,5 @@
 
 <?php
-require_once('quiz_preambule.php');
 
 $theme=charger_theme_ou_terminer();
 

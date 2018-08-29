@@ -1,15 +1,17 @@
 <?php
 
-require_once('modele.php');
+require __DIR__ . '/vendor/autoload.php';
+require_once(__DIR__.'/config.php');
+require_once(__DIR__.'/modele.php');
 session_start();
 
+$erreur="";
+
 if(isset($_SESSION["user_id"])){
-    header('Location: index.php?p=accueil');
+    header('Location: /index.php?p=accueil');
 } else {
     load_config();
     if(isset($_POST["submit"])){
-        
-        $erreur="";
         
         if(empty($_POST["username"]) || empty($_POST["passwd"]) && $GLOBALS['config']['auth_type']!="no"){
             $erreur="Le nom d'utilisateur ou le mot de passe ne peuvent être vides.";
@@ -45,10 +47,10 @@ if(isset($_SESSION["user_id"])){
                     $_SESSION["username"]=$user_info->username;
                     $_SESSION["active"]=$user_info->actif;
                     if(!isset($_GET["p"])){
-                        header("Location: index.php?p=accueil");
+                        header("Location: /index.php?p=accueil");
                     }
                     else{
-                        header("Location: index.php?p=$_GET[p]&ID=$_GET[ID]");
+                        header("Location: /index.php?p=$_GET[p]&ID=$_GET[ID]");
                     }
 
                 }
@@ -68,7 +70,7 @@ if(isset($_SESSION["user_id"])){
                 $_SESSION["username"]=$user_info->username;
                 $_SESSION["active"]=$user_info->actif;
                 if(!isset($_GET["p"])){
-                    header("Location: index.php?p=accueil");
+                    header("Location: /index.php?p=accueil");
                 }
                 else{
                     header("Location: login.php?p=$_GET[p]" . (isset($_GET['ID'])?("&ID=".$_GET['ID']):""));
@@ -78,5 +80,15 @@ if(isset($_SESSION["user_id"])){
             }
         }
     }
-    include('vues/loginform.php');
+
+    $infos=array("erreur"=>$erreur,
+                 "domaine_mail"=>$GLOBALS['config']['domaine_mail'],
+                 "password"=>$GLOBALS['config']['auth_type']!="no"?"true":"");
+
+    render_page($infos);
+}
+
+function render_page($infos){
+    $template=$GLOBALS['mustache']->loadTemplate("login");
+    echo $template->render($infos);
 }

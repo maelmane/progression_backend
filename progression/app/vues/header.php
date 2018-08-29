@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__.'/../modele.php');
+
 $themes = get_themes($_SESSION['user_id']);
 $username = $_SESSION['nom'];
 $est_admin = $username=="admin"?"true":"";

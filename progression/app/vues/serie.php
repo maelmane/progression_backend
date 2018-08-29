@@ -1,7 +1,5 @@
 <?php
 
-require_once('quiz_preambule.php');
-
 $serie=charger_serie_ou_terminer();
 $theme=charger_theme_ou_terminer($serie);
 
