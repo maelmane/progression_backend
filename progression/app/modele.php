@@ -623,14 +623,15 @@ class Avancement extends Entite{
             $query->bind_param("sii", $etat, $this->questionID, $this->userID);
             $query->execute();
             $query->close();
+            $this->load_info();
         }
         else{
             $query=$this->conn->prepare('UPDATE avancement SET etat = ? WHERE questionID = ? AND userID = ?');
             $query->bind_param("isi", $etat, $this->questionID, $this->userID);
             $query->execute();
             $query->close();
+            $this->etat=$etat;
         }
-	$this->etat=$etat;
     }
 
     public function set_reponse($reponse){
@@ -640,12 +641,14 @@ class Avancement extends Entite{
             $query->bind_param("sii", $reponse, $this->questionID, $this->userID);
             $query->execute();
             $query->close();
+            $this->load_info();
         }
         else{
             $query=$this->conn->prepare('UPDATE avancement SET reponse = ? WHERE questionID = ? AND userID = ?');
             $query->bind_param("sii", $reponse, $this->questionID, $this->userID);
             $query->execute();
             $query->close();
+            $this->reponse=$reponse;
         }
     }
     public function set_conteneur($conteneur){
@@ -655,12 +658,14 @@ class Avancement extends Entite{
             $query->bind_param("sii", $conteneur, $this->questionID, $this->userID);
             $query->execute();
             $query->close();
+            $this->load_info();
         }
         else{
             $query=$this->conn->prepare('UPDATE avancement SET conteneur = ? WHERE questionID = ? AND userID = ?');
             $query->bind_param("sii", $conteneur, $this->questionID, $this->userID);
             $query->execute();
             $query->close();
+            $this->conteneur=$conteneur;
         }
     }        
 }
