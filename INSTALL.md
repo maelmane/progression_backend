@@ -20,4 +20,4 @@ L'application est accessible via :
  * utilisateur/mdp : admin/admin
  
 Pour obtenir les questions système, dépendantes de conteneurs propres,
- * cd conteneurs_sys && ./build_all
+ * cd progression/conteneurs_sys && ./build_all
