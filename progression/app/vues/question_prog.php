@@ -12,9 +12,13 @@ function page_contenu(){
     $infos=récupérer_paramètres($question, $avancement);
     $sorties=exécuter_code($infos);
     $infos=array_merge($infos, calculer_sorties($sorties, $infos));
-    $infos=array_merge($infos, traiter_résultats(extraire_sortie_standard($sorties), $infos, $avancement, $question));
+    $infos=array_merge($infos, traiter_résultats($sorties, $infos, $avancement, $question));
+
+    $infos["output"]=resume($infos["output"], 21);
+    $infos["reponse"]=resume($infos["reponse"], 21);
+
     render_page($infos);
-    
+
 }
 
 function charger_question_ou_terminer(){
@@ -39,7 +43,7 @@ function récupérer_paramètres($question, $avancement){
     $langid=$question->lang;
 
     eval($question->setup);
-    
+
     $pre_exec=str_replace("\r","",eval("return $question->pre_exec;"));
     $pre_code=str_replace("\r","",eval("return $question->pre_code;"));
     $post_code=str_replace("\r","",eval("return $question->post_code;"));
@@ -65,7 +69,7 @@ function récupérer_paramètres($question, $avancement){
                  "mode"=>get_mode($langid),
                  "lang_nom"=>LANG_NOMS[$langid]
     );
-    
+
     return $infos;
 }
 
@@ -78,12 +82,12 @@ function compter_lignes($texte){
     }
 }
 
-function traiter_résultats($sortie_standard, $infos, $avancement, $question){
+function traiter_résultats($sorties, $infos, $avancement, $question){
     $résultats=array();
 
     if(isset($_POST['submit'])){
         $résultats["essayé"]="true";
-        if(valider_résultats($sortie_standard, $infos['reponse'])){
+        if(valider_résultats($sorties, $infos['reponse'])){
             sauvegarder_état_réussi($avancement, $infos['code']);
             $résultats["réussi"]="true";
         }
@@ -97,8 +101,15 @@ function traiter_résultats($sortie_standard, $infos, $avancement, $question){
     return $résultats;
 }
 
-function valider_résultats($output, $reponse){
-    return $reponse!="null" && $output==$reponse; //en PHP, "" == NULL (arg!!!)
+function valider_résultats($sorties, $reponse){
+    $sortie_standard=extraire_sortie_standard($sorties);
+    $sortie_erreur=extraire_sortie_erreur($sorties);
+
+    if(!is_null($sortie_erreur) && $sortie_erreur!="")
+        return false;
+    else
+        //en PHP, "" == NULL (arg!!!)
+        return $reponse!="null" && $sortie_standard==$reponse;
 }
 
 function sauvegarder_état_réussi($avancement, $code){
@@ -123,6 +134,5 @@ function render_page($infos){
     $template=$GLOBALS['mustache']->loadTemplate("question_prog");
     echo $template->render($infos);
 }
-
 
 ?>

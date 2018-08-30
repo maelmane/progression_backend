@@ -59,13 +59,19 @@
         </code>
       </pre>  
 
-      {{#essayé}}
-      <br>Sortie standard : <br><pre class='code-wrapper'><code>{{output}}</code></pre><br>
-      {{#erreurs}}
-      <br>Sortie d'erreur : <br><pre class='code-wrapper'><code>{{erreurs}}</code></pre><br>
-      {{/erreurs}}
-      {{/essayé}}
-      
+      <table width=100%>
+        {{#essayé}}
+        {{#erreurs}}
+	<tr>
+          <td colspan=2><br>Sortie d'erreur : <br><pre class='code-wrapper'><code>{{erreurs}}</code></pre><br></td>
+        </tr>
+	<tr>
+          {{/erreurs}}
+          {{/essayé}}
+          <td witdh=100% valign=top><br>Sortie attendue : <br><pre class='code-wrapper'><code>{{reponse}}</code></pre><br>
+          <td width=50%  valign=top><br>Sortie standard : <br><pre class='code-wrapper'><code>{{output}}</code></pre><br></td>
+        </tr>
+      </table>
       <table width=100%>
         <tr>
           <td align=left width=25%>
@@ -117,7 +123,6 @@
             firstLineNumber: {{première_ligne_éditeur_precode}},
             indentUnit: 4
         });
-	preeditor.theme('darcula');
         preeditor.setSize(null,'100%');//preeditor.getScrollInfo().height);
 	
         var editor = CodeMirror.fromTextArea(document.getElementById('incode'),{
