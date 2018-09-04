@@ -66,18 +66,24 @@ class Entite{
 }    
 
 class User extends Entite{
+    const ROLE_NORMAL=0;
+    const ROLE_ADMIN=1;    
+    
     public $username;
     public $actif;
+    public $role;
     public $id;    
 
     public function __construct($username=null){
         $this->id=null;
         parent::__construct();
         $this->username=$username;
-        if(!$this->existe($username)){
-            $this->creer_user();
+        if(!is_null($this->username)){
+            if(!$this->existe($username)){
+                $this->creer_user();
+            }
+            $this->load_info();
         }
-        $this->load_info();
     }
 
     private static function existe($username){
@@ -91,11 +97,11 @@ class User extends Entite{
     }
     
     private function load_info(){
-        $query= $this->conn->prepare( 'SELECT userID, actif FROM users WHERE username = ? ');
+        $query= $this->conn->prepare( 'SELECT userID, actif, role FROM users WHERE username = ? ');
         $query->bind_param( "s", $this->username);
         $query->execute();
 	
-        $query->bind_result( $this->id, $this->actif );
+        $query->bind_result( $this->id, $this->actif, $this->role );
         $res=$query->fetch();
         $query->close();
 

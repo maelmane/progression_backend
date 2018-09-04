@@ -14,6 +14,7 @@ CREATE TABLE `users` (
   `username` varchar(191) NOT NULL UNIQUE,
   `courriel` varchar(255),
   `actif`    int NOT NULL DEFAULT 1,
+  `role`     int NOT NULL DEFAULT 0,
 
   PRIMARY KEY (`userID`)
 );
