@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 require_once(__DIR__.'/config.php');
 require_once(__DIR__.'/modele.php');
 session_start();
