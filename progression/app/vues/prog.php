@@ -159,7 +159,8 @@ function exécuter_code($infos){
 
 function calculer_sorties($sorties, $infos){
     if ($sorties === FALSE) {
-        $output="Erreur interne. ";
+        $output="";
+        $erreurs="Erreur interne. ";        
     }
     else{
         $output=extraire_sortie_standard($sorties);

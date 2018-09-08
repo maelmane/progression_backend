@@ -10,12 +10,15 @@ function page_contenu(){
     $avancement=charger_avancement();
 
     $infos=récupérer_paramètres($question, $avancement);
-    $sorties=exécuter_code($infos);
-    $infos=array_merge($infos, calculer_sorties($sorties, $infos));
-    $infos=array_merge($infos, traiter_résultats($sorties, $infos, $avancement, $question));
 
-    $infos["output"]=resume($infos["output"], 21);
-    $infos["reponse"]=resume($infos["reponse"], 21);
+    if(isset($_POST['submit'])){
+        $sorties=exécuter_code($infos);
+        $infos=array_merge($infos, calculer_sorties($sorties, $infos));
+        $infos=array_merge($infos, traiter_résultats($sorties, $infos, $avancement, $question));
+
+        $infos["output"]=resume($infos["output"], 21);
+        $infos["reponse"]=resume($infos["reponse"], 21);
+    }
 
     render_page($infos);
 
@@ -85,17 +88,16 @@ function compter_lignes($texte){
 function traiter_résultats($sorties, $infos, $avancement, $question){
     $résultats=array();
 
-    if(isset($_POST['submit'])){
-        $résultats["essayé"]="true";
-        if(valider_résultats($sorties, $infos['reponse'])){
-            sauvegarder_état_réussi($avancement, $infos['code']);
-            $résultats["réussi"]="true";
-        }
-        else{
-            sauvegarder_état_échec($avancement, $infos['code']);
-            $résultats["nonréussi"]="true";
-        }
+    $résultats["essayé"]="true";
+    if(valider_résultats($sorties, $infos['reponse'])){
+        sauvegarder_état_réussi($avancement, $infos['code']);
+        $résultats["réussi"]="true";
     }
+    else{
+        sauvegarder_état_échec($avancement, $infos['code']);
+        $résultats["nonréussi"]="true";
+    }
+
     $résultats["état_réussi"]=$avancement->get_etat()==Question::ETAT_REUSSI;
 
     return $résultats;
