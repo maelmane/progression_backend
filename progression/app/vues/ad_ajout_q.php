@@ -1,16 +1,31 @@
 <?php
 
-if($_SESSION['username']!='adminquiz'){
-    header("Location: login.php");
+require_once('prog.php');
+include('admin.php');
+
+function render_page(){
 }
-
-
-page_header();
 
 //Sauvegarde
 if(isset($_POST['typeprogsys'])){
     if($_POST['typeprogsys']==Question::TYPE_PROG){
-        $qst=new QuestionProg($_POST['question'], $_GET['serie'], $_POST['numero'], $_POST['titre'], $_POST['description'], $_POST['enonce'], $_POST['reponse_prog'], $_POST['points'], $_POST['code_validation'], $_POST['langid'], $_POST['setup'], $_POST['pre_exec'], $_POST['pre_code'], $_POST['incode'], $_POST['post_code'], $_POST['params'], $_POST['stdin']);
+        $qst=new QuestionProg($_POST['question']);
+        $qst->serie =$_GET['serie'];
+        $qst->numero =$_POST['numero'];
+        $qst->titre =$_POST['titre'];
+        $qst->description =$_POST['description'];
+        $qst->enonce =$_POST['enonce'];
+        $qst->reponse =$_POST['reponse_prog'];
+        $qst->points =$_POST['points'];
+        $qst->code_validation =$_POST['code_validation'];
+        $qst->langid =$_POST['langid'];
+        $qst->setup =$_POST['setup'];
+        $qst->pre_exec =$_POST['pre_exec'];
+        $qst->pre_code =$_POST['pre_code'];
+        $qst->code =$_POST['incode'];
+        $qst->post_code =$_POST['post_code'];
+        $qst->params =$_POST['params'];
+        $qst->stdin =$_POST['stdin'];
 
         $qid=$qst->save();
         header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
@@ -70,7 +85,7 @@ if(isset($_GET['theme'])){
     $theme=new Theme($_GET['theme'], $_SESSION['user_id']);
     $theme->load_info();
 
-    foreach(get_series($theme->id) as $serie){
+    foreach($theme->get_series() as $serie){
         echo "<option value = $serie->id ".(isset($_GET['serie']) && $_GET['serie']==$serie->id?'selected':'').">$serie->titre</option>";
     }
 
@@ -86,7 +101,7 @@ if(isset($_GET['serie'])){
        <option value = 0 >Question</option>
        ";
 
-    foreach(get_questions($serie->id) as $question){
+    foreach($serie->get_questions() as $question){
         echo "<option value = $question->id ".(isset($_GET['question']) && $_GET['question']==$question->id?'selected':'').">".$question->numero." " .$question->titre."</option>";
     }
     echo "

@@ -39,13 +39,20 @@ if(isset($_SESSION["user_id"])){
             $user=ldap_get_entries($ldap, $result);
             if($user['count']>0 && @ldap_bind($ldap, $user[0]['dn'], $password)){
                 #Connexion à la BD
-                $user_info=new User($username);
+                if(User::existe($username)){
+                    $id=User::get_user_id($username);
+                }
+                else{
+                    $id=User::creer_user($username);
+                }
+                $user_info=new User($id);
                 if($user_info->id){
                     #Obtient les infos de l'utilisateur
                     $_SESSION["nom"]=$user[0]['cn'][0];
                     $_SESSION["user_id"]=$user_info->id;
                     $_SESSION["username"]=$user_info->username;
-                    $_SESSION["active"]=$user_info->actif;
+                    $_SESSION["actif"]=$user_info->actif;
+                    $_SESSION["role"]=$user_info->role;
                     if(!isset($_GET["p"])){
                         header("Location: /index.php?p=accueil");
                     }
@@ -54,21 +61,29 @@ if(isset($_SESSION["user_id"])){
                     }
 
                 }
-                else {
-                    $erreur="Nom d'utilisateur ou mot de passe invalide.";
-                }
+            }
+            else {
+                $erreur="Nom d'utilisateur ou mot de passe invalide.";
             }
         }
         elseif($GLOBALS['config']['auth_type']=="no"){
             $username=$_POST["username"];
             #Connexion à la BD
-            $user_info=new User($username);
+            if(User::existe($username)){
+                $id=User::get_user_id($username);
+            }
+            else{
+                $id=User::creer_user($username);
+            }
+                
+            $user_info=new User($id);
             if($user_info->id){
                 #Obtient les infos de l'utilisateur
                 $_SESSION["nom"]=$user_info->username;
                 $_SESSION["user_id"]=$user_info->id;
                 $_SESSION["username"]=$user_info->username;
-                $_SESSION["active"]=$user_info->actif;
+                $_SESSION["actif"]=$user_info->actif;
+                $_SESSION["role"]=$user_info->role;
                 if(!isset($_GET["p"])){
                     header("Location: /index.php?p=accueil");
                 }
