@@ -59,54 +59,56 @@ class Entite{
     public $conn;
     
     public function __construct(){
-        db_init();
         $this->conn=$GLOBALS["conn"];
         if(!is_null($this->id)) $this->load_info();
     }
 }    
 
 class User extends Entite{
+    const ROLE_NORMAL=0;
+    const ROLE_ADMIN=1;    
+    
     public $username;
     public $actif;
+    public $role;
     public $id;    
 
-    public function __construct($username=null){
-        $this->id=null;
+    public function __construct($id){
+        $this->id=$id;
         parent::__construct();
-        $this->username=$username;
-        if(!$this->existe($username)){
-            $this->creer_user();
-        }
-        $this->load_info();
-    }
-
-    private static function existe($username){
-        $query=$GLOBALS["conn"]->prepare( 'SELECT count(*) FROM users WHERE username = ?');
-        $query->bind_param( "s", $username );
-        $query->execute();
-        $query->bind_result( $count );
-        $res=$query->fetch();
-        $query->close();
-        return $count;
     }
     
-    private function load_info(){
-        $query= $this->conn->prepare( 'SELECT userID, actif FROM users WHERE username = ? ');
-        $query->bind_param( "s", $this->username);
+    public static function existe($username){
+        return !is_null(User::get_user_id($username));
+    }
+
+    public static function get_user_id($username){
+        $query=$GLOBALS["conn"]->prepare( 'SELECT userID FROM users WHERE username = ?');
+        $query->bind_param( "s", $username );
         $query->execute();
-	
-        $query->bind_result( $this->id, $this->actif );
+        $query->bind_result( $id );
         $res=$query->fetch();
         $query->close();
+        return $id;
+    }
 
-        return $this->id;
+    public function load_info(){
+        $query=$this->conn->prepare( 'SELECT userID, username, actif, role FROM users WHERE userID = ? ');
+        $query->bind_param( "i", $this->id);
+        $query->execute();
+	
+        $query->bind_result( $this->id, $this->username, $this->actif, $this->role );
+        $res=$query->fetch();
+        $query->close();
     }    
 
-    private function creer_user(){
-        $query=$this->conn->prepare('INSERT INTO users(username) VALUES (?)');
-        $query->bind_param( "s", $this->username);
+    public static function creer_user($username){
+        $query=$GLOBALS["conn"]->prepare('INSERT INTO users(username) VALUES (?)');
+        $query->bind_param( "s", $username);
         $query->execute();
         $query->close();
+
+        return User::get_user_id($username);
     }
 
 

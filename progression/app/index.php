@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 require_once(__DIR__.'/config.php');
 require_once(__DIR__.'/modele.php');
 
@@ -52,7 +52,7 @@ function inclusion_page(){
 
 function est_admissible($fichier){
     #Hardcodé, à mettre dans un fichier de config.
-    $whitelist='/accueil|theme|serie|question|pratique|systeme|admin|ad_ajout_t|ad_ajout_s|ad_ajout_q|ad_suivi/';
+    $whitelist='/accueil|theme|serie|question|pratique|systeme|ad_menu|ad_ajout_t|ad_ajout_s|ad_ajout_q|ad_suivi/';
 
     return preg_match($whitelist, $fichier) && file_exists("vues/$fichier.php");
 }

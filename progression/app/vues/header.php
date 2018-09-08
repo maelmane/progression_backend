@@ -2,19 +2,17 @@
 
 require_once(__DIR__.'/../modele.php');
 
-$themes = get_themes($_SESSION['user_id']);
-$username = $_SESSION['nom'];
-$est_admin = $username=="admin"?"true":"";
-$dashboard_actif = $titre=="Tableau de bord"?"true":"";
+$themes=get_themes($_SESSION['user_id']);
+$user=new User($_SESSION['user_id']);
 foreach($themes as $theme){
     if($titre==$theme->titre) $theme->actif="true";
 }
 
 $infos=array("titre"=>$titre,
-             "username"=>$username,
+             "username"=>$user->username,
              "themes"=>$themes,
-             "est_admin"=>$est_admin,
-             "dashboard_actif"=>$dashboard_actif);
+             "est_admin"=>$user->role == User::ROLE_ADMIN,
+             "dashboard_actif"=>$titre=="Tableau de bord"?"true":"");
 
 $template=$GLOBALS['mustache']->loadTemplate("header");
 echo $template->render($infos);
