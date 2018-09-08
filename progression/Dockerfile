@@ -22,13 +22,13 @@ COPY certs/* /etc/ssl/certs/
 RUN c_rehash
 
 #Installation des composantes PHP
-COPY app/composer.json /srv/http/
-RUN chown http:http -R /srv/http/
-RUN cd /srv/http/ && composer install
+COPY app/composer.json /srv/
+RUN cd /srv/ && composer install
 
 COPY quiz.conf /srv/
-RUN chown -R http:http /srv/quiz.conf
 COPY app/ /srv/http/
+
+RUN chown -R http:http /srv/
 
 RUN echo AddDefaultCharset utf-8 >> /etc/httpd/conf/httpd.conf
 

@@ -10,10 +10,15 @@ Configuration :
  * Pour une installation minimale, le type d'authentification peut être sélectionné à "no".
 
 Compilation des images docker :
- * docker-compose build
+ * docker-compose build (l'avertissement «Do not run Composer as root/super user! » est normal)
 
 Démarrage des conteneurs :
  * docker-compose up -d
+
+Création (ou réinitialisation) de la base de données:
+ * docker exec -it progression_db bash
+ * cd /tmp/ && build_db.sh
+ * Ctrl-D
 
 L'application est accessible via :
  * https://localhost

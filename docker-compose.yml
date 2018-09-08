@@ -19,6 +19,9 @@ services:
     networks:
       progressionnet:
         ipv4_address: 172.20.0.3
+    #En développement, monte les source directement dans le conteneur
+    #volumes:
+    #  - "./progression/app/:/srv/http/"
     ports:
       - "443:443"
     extra_hosts:
