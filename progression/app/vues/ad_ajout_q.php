@@ -10,7 +10,7 @@ function render_page(){
 if(isset($_POST['typeprogsys'])){
     if($_POST['typeprogsys']==Question::TYPE_PROG){
         $qst=new QuestionProg($_POST['question']);
-        $qst->serie =$_GET['serie'];
+        $qst->serieID =$_GET['serie'];
         $qst->numero =$_POST['numero'];
         $qst->titre =$_POST['titre'];
         $qst->description =$_POST['description'];
@@ -37,9 +37,6 @@ if(isset($_POST['typeprogsys'])){
         header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
     }
 }
-    
-    
-
 echo "
 
 <script>
