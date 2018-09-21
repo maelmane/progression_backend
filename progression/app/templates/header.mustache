@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <link rel='stylesheet' type='text/css' href='css/style.css'>
+    <title>{{titre}}&nbsp;-&nbsp;Progression</title>
+    <!-- Ajouté UIKit et JQuery Voir doc UIKit : https://getuikit.com/docs/introduction -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/uikit.min.css" />
+    <script src="js/uikit.min.js"></script>
+    <script src="js/uikit-icons.min.js"></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel='stylesheet' type='text/css' href='css/newstyle.css'>
+  </head>
+  <body>
+    <div uk-grid style="background-color:#f4f4f5;" data-uk-sticky>
+
+      <!-- Logo -->
+      <div class="uk-width-1-1 uk-width-1-3@s uk-width-1-3@m" id="main-logo">
+        <a href='index.php'>
+          <h1>Prog<span>ression</span></h1>
+        </a>
+      </div>
+
+      <!-- Page main subject / exercise -->
+      <div class="uk-width-1-2 uk-width-1-3@s uk-width-1-3@m uk-margin-remove-top">
+        <h3 class="subtitle">{{titre}}</h3>
+      </div>
+
+      <!-- Menu bar -->
+      <div class="uk-width-1-2 uk-width-1-3@s uk-width-1-3@m uk-margin-remove-top">
+
+        <!-- Bouton Menu Offcanvas -->
+        <a class="menu-button" ahref="#offcanvas-slide" uk-toggle="target: #offcanvas-slide; animation: uk-animation-fade; queued: true" uk-toggle></a>
+
+        <!-- Nom utilisateur -->
+        <div class="name-user">
+          <h2>
+	    {{#est_admin}}
+	        <a href='?p=ad_menu'>
+	    {{/est_admin}}
+	        {{username}}
+	    {{#est_admin}}
+	        </a>
+	    {{/est_admin}}
+	  </h2>
+        </div>
+
+        <!-- OffCanvas Menu -->
+        <div id="offcanvas-slide" style="position:fixed" uk-offcanvas="overlay: true;flip: true;mode: slide">
+          <div class="uk-offcanvas-bar">
+            
+            <button class="uk-offcanvas-close uk-close-large" type="button" uk-close></button>
+
+            <ul class="uk-nav uk-nav-default">
+
+              <li {{#dashboard_actif}}class="uk-active"{{/dashboard_actif}}><a href='?p=dashboard'>Tableau de bord</a></li>
+              <!-- Liste de tout les thèmes -->
+	      {{#themes}}
+	      <li {{#actif}}class=uk-active{{/actif}}><a href='?p=theme&ID={{id}}'>{{titre}}</a></li>
+	      {{/themes}}
+              <div class="uk-position-bottom-left uk-width-1-1 uk-text-center">
+                <a href="logout.php" class="uk-margin-small-left uk-margin-small uk-icon-button" style="width:75px;height:75px;" uk-icon="icon: sign-out; ratio: 2.5" title="Se déconnecter"></a>
+                <span style="display: inline-block;width: 20px;"></span>
+                <a class="zone-pratique" href="index.php?p=pratique" title="Zone de pratique"><img class="uk-margin-small-left uk-margin-small" style="height:75px;" src="../images/zone-pratique_bleu.png"></a>
+              </div>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+

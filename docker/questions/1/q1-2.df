@@ -1,6 +1,0 @@
-FROM system
-
-RUN mkdir /home/krusty/bart
-RUN echo Ouahahahahahaaaaaa!!! > /home/krusty/bart/pensées.txt
-RUN chown krusty:krusty -R /home/krusty/bart
-

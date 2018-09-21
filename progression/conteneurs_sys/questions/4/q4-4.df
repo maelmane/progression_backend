@@ -1,0 +1,9 @@
+FROM q4-3
+
+COPY q4-4/Marge.png /tmp/
+COPY q4-4/marge-simpson.jpg /tmp/
+COPY q4-4/playmarge.jpg /tmp
+RUN chown krusty:krusty /tmp/*
+
+RUN echo cd /tmp >> /home/krusty/.bashrc
+RUN echo alias cd=\'echo \\\(utilisez les raccourcis . .. ou ~\\\)\' >> /home/krusty/.bashrc

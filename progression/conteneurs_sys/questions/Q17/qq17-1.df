@@ -1,0 +1,4 @@
+FROM system
+
+RUN addgroup beatles
+RUN addgroup krusty beatles

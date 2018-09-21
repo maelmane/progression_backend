@@ -1,0 +1,24 @@
+# Configuration de la base de données
+servername = "172.20.0.2"
+dbname = "quiz"
+username = "quiz"
+password = "password"
+
+# Type d'authentification
+# ldap : Connexion à un serveur d'authentification via LDAP
+# local : Authentification via la base de données
+# no : Aucune authentification nécessaire
+auth_type = "ldap" | "local" | "no"
+
+#Configuration du serveur LDAP pour l'authentification
+hote_ad = "ldap.exemple.com"
+port_ad = 636
+domaine_ldap= "dc=exemple,dc=com"
+domaine_mail= "exemple.com"
+dn_bind = "cn=Usager,ou=Admin,ou=Users,dc=exemple,dc=com"
+pw_bind = "password"
+
+#Configuration Compilebox.
+compilebox_hote = localhost
+compilebox_port = 12380
+

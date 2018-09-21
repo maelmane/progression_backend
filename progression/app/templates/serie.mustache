@@ -1,0 +1,21 @@
+{{#serie}}
+    {{>titre}}
+{{/serie}}
+     <div class='code-wrapper'>
+         <table width=100%>
+             <th align=left width=10%>N°</th><th align=left>Question</th>
+	      {{#questions}}
+             <tr>
+                 <td>{{numero}}</td>
+		 <td class='{{css}}'><a href='?p={{page}}&ID={{id}}'>{{titre}}</a></td>
+             </tr>
+	      {{/questions}}
+             <tr>
+                 <td> </td>
+             </tr>
+                 <td colspan=3 align=left><a href=index.php?p=theme&ID={{serie.themeID}} >↩ Retour à la liste des sujets</a></td>
+            </tr>
+        </table>
+    </div>
+	 
+{{>footer}}

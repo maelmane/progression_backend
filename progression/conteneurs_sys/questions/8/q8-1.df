@@ -1,0 +1,4 @@
+FROM system
+
+RUN apt update && apt install -y adduser whois
+RUN echo krusty ALL=NOPASSWD: /usr/sbin/adduser sideshow*, /usr/sbin/addgroup sideshows >> /etc/sudoers

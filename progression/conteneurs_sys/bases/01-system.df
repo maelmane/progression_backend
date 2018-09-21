@@ -1,0 +1,23 @@
+FROM siab
+
+RUN apt-get update && apt-get install -y man-db manpages-fr manpages-fr-extra bash-completion language-pack-fr && \
+  apt-get clean
+
+RUN printf "fr_CA.UTF-8 UTF-8\nfr_CA ISO-8859-1" >> /etc/locale.gen
+RUN locale-gen
+RUN printf "export LC_ALL=fr_CA.utf8\nexport LANG=fr_CA.utf8\nexport LANGUAGE=fr_CA.utf8" >> /root/.bashrc
+
+#Timeout inconditionnellement après 10m
+ENV SIAB_SERVICE=/:krusty:krusty:HOME:SHELL \
+    SIAB_TIMEOUT=600
+
+#Timeout après 10m d'inactivité
+#RUN echo export TMOUT=600 >> /etc/bash.bashrc
+
+#Sélectionne la langue par défaut
+RUN printf "export LC_ALL=fr_CA.utf8\nexport LANG=fr_CA.utf8\nexport LANGUAGE=fr_CA.utf8\n\n" >> /etc/bash.bashrc
+
+RUN useradd -s /bin/bash -m krusty && yes motdepasse | passwd krusty
+
+RUN dpkg-reconfigure locales
+

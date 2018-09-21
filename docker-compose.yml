@@ -1,0 +1,35 @@
+version: "3"
+services:
+
+  progression_db:
+    build: db/ 
+    container_name: progression_db
+    networks:
+      progressionnet:
+        ipv4_address: 172.20.0.2
+    volumes:
+      - "./db/data:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    restart: on-failure
+
+  progression:
+    build: progression/
+    container_name: progression
+    networks:
+      progressionnet:
+        ipv4_address: 172.20.0.3
+    #En développement, monte les source directement dans le conteneur
+    #volumes:
+    #  - "./progression/app/:/srv/http/"
+    extra_hosts:
+      - "watson.dept-info.crosemont.quebec:205.237.24.200"
+    restart: on-failure
+    depends_on: 
+      - progression_db
+
+networks:
+  progressionnet:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24

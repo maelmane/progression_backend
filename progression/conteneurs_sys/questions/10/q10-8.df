@@ -1,0 +1,5 @@
+FROM q10-0
+
+RUN cat /etc/passwd|grep -v /bin/bash|cut -d ':' -f 1|sort > /tmp/réponse
+RUN chmod 400 /tmp/réponse
+

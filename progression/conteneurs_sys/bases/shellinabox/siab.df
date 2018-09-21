@@ -1,0 +1,55 @@
+FROM ubuntu:xenial
+
+RUN apt-get update && apt-get install -y libssl1.0.0 libpam0g openssl curl openssh-client sudo locales screen
+
+COPY shellinabox_2.20_amd64.deb /tmp
+RUN dpkg -i /tmp/shellinabox_2.20_amd64.deb && rm /tmp/shellinabox_2.20_amd64.deb
+
+RUN  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+  ln -sf '/etc/shellinabox/options-enabled/00+Black on White.css' \
+    /etc/shellinabox/options-enabled/00+Black-on-White.css && \
+  ln -sf '/etc/shellinabox/options-enabled/00_White On Black.css' \
+    /etc/shellinabox/options-enabled/00_White-On-Black.css && \
+  ln -sf '/etc/shellinabox/options-enabled/01+Color Terminal.css' \
+    /etc/shellinabox/options-enabled/01+Color-Terminal.css
+
+RUN locale-gen fr_CA.UTF-8
+
+#Installe le certificat SSL
+RUN mkdir /etc/shellinabox/certs
+#COPY certs/certificate-progression.dept-info.crosemont.quebec.pem /etc/shellinabox/certs 
+COPY certs/privkey.pem certs/cert.pem /etc/shellinabox/certs/
+RUN cat /etc/shellinabox/certs/privkey.pem /etc/shellinabox/certs/cert.pem > /etc/shellinabox/certs/certificate-progression.dept-info.crosemont.quebec.pem
+RUN cp /etc/shellinabox/certs/certificate-progression.dept-info.crosemont.quebec.pem /etc/shellinabox/certs/certificate.pem
+RUN rm /etc/shellinabox/certs/cert.pem /etc/shellinabox/certs/privkey.pem
+RUN chown -R shellinabox:shellinabox /etc/shellinabox/certs
+RUN chmod 600 -R /etc/shellinabox/certs/*
+RUN chmod 700 /etc/shellinabox/certs
+
+ENV SIAB_USERCSS="Reverse:-/etc/shellinabox/options-enabled/00+Black-on-White.css,Normal:+/etc/shellinabox/options-enabled/00_White-On-Black.css;Colors:+/etc/shellinabox/options-enabled/01+Color-Terminal.css,Monochrome:-/etc/shellinabox/options-enabled/01_Monochrome.css" \
+  SIAB_PORT=4200 \
+  SIAB_ADDUSER=false \
+  SIAB_USER=guest \
+  SIAB_USERID=1000 \
+  SIAB_GROUP=guest \
+  SIAB_GROUPID=1000 \
+  SIAB_PASSWORD=guest \
+  SIAB_SHELL=/bin/bash \
+  SIAB_HOME=/home/guest \
+  SIAB_SUDO=false \
+  SIAB_SSL=true \
+  SIAB_SERVICE=/:LOGIN \
+  SIAB_PKGS=none \
+  SIAB_TIMEOUT=0 \
+  SIAB_SCRIPT=none
+
+#EXPOSE 4200
+
+ADD assets/entrypoint.sh /usr/local/sbin/
+
+#Enlève la confirmation de quitter la page
+RUN sed -i 's/beforeunload/bbbbbbunload/' /usr/bin/shellinaboxd
+
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["shellinabox"]
+

@@ -1,0 +1,5 @@
+FROM q10-0
+
+RUN sort /etc/passwd|head -n 5 > /tmp/réponse
+RUN chmod 400 /tmp/réponse
+
