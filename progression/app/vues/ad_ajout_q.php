@@ -10,7 +10,8 @@ function render_page(){
 if(isset($_POST['typeprogsys'])){
     if($_POST['typeprogsys']==Question::TYPE_PROG){
         $qst=new QuestionProg($_POST['question']);
-        $qst->serie =$_GET['serie'];
+	$qst->type=Question::TYPE_PROG;
+        $qst->serieID =$_GET['serie'];
         $qst->numero =$_POST['numero'];
         $qst->titre =$_POST['titre'];
         $qst->description =$_POST['description'];
@@ -26,7 +27,6 @@ if(isset($_POST['typeprogsys'])){
         $qst->post_code =$_POST['post_code'];
         $qst->params =$_POST['params'];
         $qst->stdin =$_POST['stdin'];
-
         $qid=$qst->save();
         header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
     }
@@ -37,9 +37,6 @@ if(isset($_POST['typeprogsys'])){
         header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
     }
 }
-    
-    
-
 echo "
 
 <script>
@@ -82,8 +79,7 @@ if(isset($_GET['theme'])){
        <option value = 0 >Série</option>
        ";
 
-    $theme=new Theme($_GET['theme'], $_SESSION['user_id']);
-    $theme->load_info();
+    $theme=new Theme($_GET['theme']);
 
     foreach($theme->get_series() as $serie){
         echo "<option value = $serie->id ".(isset($_GET['serie']) && $_GET['serie']==$serie->id?'selected':'').">$serie->titre</option>";
@@ -93,8 +89,7 @@ if(isset($_GET['theme'])){
 }
 
 if(isset($_GET['serie'])){
-    $serie=new Serie($_GET['serie'], $_SESSION['user_id']);
-    $serie->load_info();
+    $serie=new Serie($_GET['serie']);
 
     echo "
        <td><select id='question' name='question' onchange='load_question()'>
