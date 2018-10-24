@@ -4,40 +4,43 @@ require_once('prog.php');
 include('admin.php');
 
 function render_page(){
-}
-
-//Sauvegarde
-if(isset($_POST['typeprogsys'])){
-    if($_POST['typeprogsys']==Question::TYPE_PROG){
-        $qst=new QuestionProg($_POST['question']);
-        $qst->serie =$_GET['serie'];
-        $qst->numero =$_POST['numero'];
-        $qst->titre =$_POST['titre'];
-        $qst->description =$_POST['description'];
-        $qst->enonce =$_POST['enonce'];
-        $qst->reponse =$_POST['reponse_prog'];
-        $qst->points =$_POST['points'];
-        $qst->code_validation =$_POST['code_validation'];
-        $qst->langid =$_POST['langid'];
-        $qst->setup =$_POST['setup'];
-        $qst->pre_exec =$_POST['pre_exec'];
-        $qst->pre_code =$_POST['pre_code'];
-        $qst->code =$_POST['incode'];
-        $qst->post_code =$_POST['post_code'];
-        $qst->params =$_POST['params'];
-        $qst->stdin =$_POST['stdin'];
-
-        $qid=$qst->save();
-        header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
-    }
-    if($_POST['typeprogsys']==Question::TYPE_SYS){
-        $qst=new QuestionSysteme($_POST['question'], $_GET['serie'], $_POST['numero'], $_POST['titre'], $_POST['description'], $_POST['enonce'], $_POST['reponse_sys'], $_POST['points'], $_POST['code_validation'], $_POST['image'], $_POST['username'], $_POST['verification']);
-
-        $qid=$qst->save();
-        header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
+    if(isset($_POST['submit'])){
+        sauvegarder();
     }
 }
-    
+
+function sauvegarder(){
+    if(isset($_POST['type_question'])){
+        if($_POST['type_question']==Question::TYPE_PROG){
+            $qst=new QuestionProg($_POST['question']);
+            $qst->serie =$_GET['serie'];
+            $qst->numero =$_POST['numero'];
+            $qst->titre =$_POST['titre'];
+            $qst->description =$_POST['description'];
+            $qst->enonce =$_POST['enonce'];
+            $qst->reponse =$_POST['reponse_prog'];
+            $qst->points =$_POST['points'];
+            $qst->code_validation =$_POST['code_validation'];
+            $qst->langid =$_POST['langid'];
+            $qst->setup =$_POST['setup'];
+            $qst->pre_exec =$_POST['pre_exec'];
+            $qst->pre_code =$_POST['pre_code'];
+            $qst->code =$_POST['incode'];
+            $qst->post_code =$_POST['post_code'];
+            $qst->params =$_POST['params'];
+            $qst->stdin =$_POST['stdin'];
+
+            $qid=$qst->save();
+            header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
+        }
+        if($_POST['type_question']==Question::TYPE_SYS){
+            $qst=new QuestionSysteme($_POST['question'], $_GET['serie'], $_POST['numero'], $_POST['titre'], $_POST['description'], $_POST['enonce'], $_POST['reponse_sys'], $_POST['points'], $_POST['code_validation'], $_POST['image'], $_POST['username'], $_POST['verification']);
+
+            $qid=$qst->save();
+            header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
+        }
+    }
+}    
     
 
 echo "
@@ -82,8 +85,7 @@ if(isset($_GET['theme'])){
        <option value = 0 >Série</option>
        ";
 
-    $theme=new Theme($_GET['theme'], $_SESSION['user_id']);
-    $theme->load_info();
+    $theme=new Theme($_GET['theme']);
 
     foreach($theme->get_series() as $serie){
         echo "<option value = $serie->id ".(isset($_GET['serie']) && $_GET['serie']==$serie->id?'selected':'').">$serie->titre</option>";
@@ -93,8 +95,7 @@ if(isset($_GET['theme'])){
 }
 
 if(isset($_GET['serie'])){
-    $serie=new Serie($_GET['serie'], $_SESSION['user_id']);
-    $serie->load_info();
+    $serie=new Serie($_GET['serie']);
 
     echo "
        <td><select id='question' name='question' onchange='load_question()'>
@@ -144,7 +145,7 @@ Numéro<br>
 </td>
 <td>
 Type<br>
-<select id='type' name='typeprogsys'  onchange='toggletype()' > 
+<select id='type' name='type_question'  onchange='toggletype()' > 
 <option value=0 ".($question->type==Question::TYPE_PROG?"selected":"").">Programmation</option>
 <option value=1 ".($question->type==Question::TYPE_SYS?"selected":"").">Terminal interactif</option>
 </select>
@@ -290,7 +291,7 @@ echo"
 
 </table>
 </div>
-<input type=submit value='Enregistrer'>
+<input type=submit name='submit' value='Enregistrer'>
 </form>
 ";
 
