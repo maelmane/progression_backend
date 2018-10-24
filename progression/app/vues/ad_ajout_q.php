@@ -13,6 +13,7 @@ function sauvegarder(){
     if(isset($_POST['type_question'])){
         if($_POST['type_question']==Question::TYPE_PROG){
             $qst=new QuestionProg($_POST['question']);
+	    $qst->type=Question::TYPE_PROG;
             $qst->serie =$_GET['serie'];
             $qst->numero =$_POST['numero'];
             $qst->titre =$_POST['titre'];
@@ -35,14 +36,11 @@ function sauvegarder(){
         }
         if($_POST['type_question']==Question::TYPE_SYS){
             $qst=new QuestionSysteme($_POST['question'], $_GET['serie'], $_POST['numero'], $_POST['titre'], $_POST['description'], $_POST['enonce'], $_POST['reponse_sys'], $_POST['points'], $_POST['code_validation'], $_POST['image'], $_POST['username'], $_POST['verification']);
-
             $qid=$qst->save();
             header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
         }
     }
-}    
-    
-
+}
 echo "
 
 <script>

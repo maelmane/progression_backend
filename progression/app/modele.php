@@ -344,13 +344,15 @@ class Question extends Entite{
                              $this->enonce,
                              $this->points,
                              $this->code_validation);
-        if(is_null($query->fetch()))
+        if(is_null($query->fetch())){
+	    error_log($query->error);
             $this->id=null;
+	}
         $query->close();
     }
 
     public function save(){
-        if($this->id==-1){
+        if(!$this->id){
             $query=$this->conn->prepare("INSERT INTO question(type,
                                                               serieID,
                                                               titre,
@@ -372,10 +374,9 @@ class Question extends Entite{
                                 $this->code_validation );
             $query->execute();
             $query->close();
-
             $query=$this->conn->prepare("SELECT max(questionID) FROM question");
             $query->execute();
-            $query->bind_result( $qid );
+            $query->bind_result( $this->id );
             $query->fetch();
             $query->close();
 
@@ -406,7 +407,7 @@ class Question extends Entite{
             $qid=$this->id;
         }
         
-        return $qid;
+        return $this->id;
     }
 
     public function get_avancement($user_id){
@@ -478,8 +479,8 @@ class QuestionProg extends Question{
     }
 
     public function save(){
-        $qid=parent::save();
-        if($this->id==-1){
+        if(!$this->id){
+            $qid=parent::save();
             $query=$this->conn->prepare("INSERT INTO question_prog(questionID,
                                                                    lang,
                                                                    setup,
@@ -505,6 +506,7 @@ class QuestionProg extends Question{
             $query->close();
         }
         else{
+            $qid=parent::save();
             $query=$this->conn->prepare("UPDATE question_prog SET lang=?,
                                                                   setup=?,
                                                                   pre_exec=?,
@@ -514,7 +516,7 @@ class QuestionProg extends Question{
                                                                   reponse=?,
                                                                   params=?,
                                                                   stdin=? 
-                                         WHERE questionID=$this->id");
+                                         WHERE questionID=$qid");
             $query->bind_param( "issssssss",
                                 $this->lang,
                                 $this->setup,
