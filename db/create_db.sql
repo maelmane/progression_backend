@@ -21,6 +21,7 @@ CREATE TABLE `users` (
 
 CREATE TABLE `theme` (
   `themeID`     int(11) NOT NULL AUTO_INCREMENT,
+  `actif`       int NOT NULL DEFAULT 1,
   `lang`	int,
   `titre`       varchar(255) NOT NULL,
   `ordre`       int,
@@ -31,6 +32,7 @@ CREATE TABLE `theme` (
 CREATE TABLE `serie` (
   `serieID`     int(11) NOT NULL AUTO_INCREMENT,
   `themeID`	int(11) NOT NULL,
+  `actif`       int NOT NULL DEFAULT 1,
   `numero`	int NOT NULL,
   `titre`       varchar(255) NOT NULL,
   `description` text,
@@ -39,8 +41,9 @@ CREATE TABLE `serie` (
 
 CREATE TABLE `question` (
   `questionID`	int(11) NOT NULL AUTO_INCREMENT,
-  `type`        int NOT NULL,
   `serieID`	int(11) NOT NULL,
+  `actif`       int NOT NULL DEFAULT 1,
+  `type`        int NOT NULL,
   `titre`       varchar(255) NOT NULL,
   `description`	text,
   `numero`	int NOT NULL,
