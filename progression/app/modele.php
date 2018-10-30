@@ -92,7 +92,7 @@ class User extends Entite{
         return $id;
     }
 
-    public function load_info(){
+    protected function load_info(){
         $query=$this->conn->prepare( 'SELECT userID, username, actif, role FROM users WHERE userID = ? ');
         $query->bind_param( "i", $this->id);
         $query->execute();
@@ -125,7 +125,7 @@ class Theme extends Entite{
         parent::__construct();        
     }
 
-    public function load_info(){
+    protected function load_info(){
         $query=$this->conn->prepare('SELECT themeID, titre, description FROM theme WHERE themeID = ?');
         $query->bind_param( "i", $this->id);
         $query->execute();
@@ -219,7 +219,7 @@ class Serie extends Entite{
         parent::__construct();
     }
 
-    public function load_info(){
+    protected function load_info(){
         $query=$this->conn->prepare('SELECT serieID, numero, titre, description, themeID FROM serie WHERE serieID = ?');
         $query->bind_param( "i", $this->id);
         $query->execute();
@@ -319,7 +319,7 @@ class Question extends Entite{
         parent::__construct();
     }
 
-    public function load_info(){
+    protected function load_info(){
         $query=$this->conn->prepare('SELECT question.questionID,
                                             question.type,
                                             question.serieID as s,
@@ -435,7 +435,7 @@ class QuestionProg extends Question{
     public $params;
     public $stdin;
     
-    public function load_info(){
+    protected function load_info(){
         parent::load_info();
 	    $query=$this->conn->prepare('SELECT question_prog.lang, 
                                             theme.lang, 
@@ -542,7 +542,7 @@ class QuestionSysteme extends Question{
     public $user;
     public $verification;
     
-    public function load_info(){
+    protected function load_info(){
         parent::load_info();
         $query=$this->conn->prepare('SELECT question_systeme.reponse,
                                             question_systeme.image,
@@ -607,7 +607,7 @@ class Avancement extends Entite{
         $this->load_info();
     }
     
-    private function load_info(){
+    protected function load_info(){
         $query=$this->conn->prepare('SELECT etat, reponse, conteneur FROM avancement WHERE questionID = ? AND userID = ?');
         $query->bind_param("ii", $this->questionID, $this->userID);
         $query->execute();
