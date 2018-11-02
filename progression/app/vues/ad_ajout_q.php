@@ -28,11 +28,25 @@ if(isset($_POST['typeprogsys'])){
         $qst->post_code =$_POST['post_code'];
         $qst->params =$_POST['params'];
         $qst->stdin =$_POST['stdin'];
+        
         $qid=$qst->save();
         header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
     }
     if($_POST['typeprogsys']==Question::TYPE_SYS){
-        $qst=new QuestionSysteme($_POST['question'], $_GET['serie'], $_POST['numero'], $_POST['titre'], $_POST['description'], $_POST['enonce'], $_POST['reponse_sys'], $_POST['points'], $_POST['code_validation'], $_POST['image'], $_POST['username'], $_POST['verification']);
+        $qst=new QuestionSysteme($_POST['question']);
+        $qst->actif=$_POST['actif'];
+        $qst->type=Question::TYPE_SYS;
+        $qst->serieID = $_GET['serie'];
+        $qst->numero=$_POST['numero'];
+        $qst->titre=$_POST['titre'];
+        $qst->description=$_POST['description'];
+        $qst->enonce=$_POST['enonce'];
+        $qst->reponse=$_POST['reponse_sys'];
+        $qst->points=$_POST['points'];
+        $qst->code_validation=$_POST['code_validation'];
+        $qst->image=$_POST['image'];
+        $qst->user=$_POST['username'];
+        $qst->verification=$_POST['verification'];
 
         $qid=$qst->save();
         header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");

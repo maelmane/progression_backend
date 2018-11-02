@@ -384,7 +384,7 @@ class Question extends Entite{
                                                               enonce,
                                                               points,
                                                               code_validation) 
-                                     VALUES( ?, ?, ?, ?, ?, ?, ?, ?)");
+                                     VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             $query->bind_param( "iiissisis",
                                 $this->serieID,
@@ -590,10 +590,10 @@ class QuestionSysteme extends Question{
     }
 
     public function save(){
-        $qid=parent::save();
-        if($this->id==-1){
+        if(!$this->id){
+            $qid=parent::save();
             $query=$this->conn->prepare("INSERT INTO question_systeme (questionID, image, user, verification, reponse)
-                                     VALUES( $qid, ?, ?, ?, ?)");
+                                         VALUES( $qid, ?, ?, ?, ?)");
             $query->bind_param( "ssss",
                                 $this->image,
                                 $this->user,
@@ -603,6 +603,7 @@ class QuestionSysteme extends Question{
             $query->close();
         }
         else{
+            $qid=parent::save();
             $query=$this->conn->prepare("UPDATE question_systeme SET image=?, user=?, verification=?, reponse=? WHERE questionID=$this->id");
             $query->bind_param( "ssss",
                                 $this->image,
