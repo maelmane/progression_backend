@@ -121,8 +121,11 @@ class User extends Entite{
         $query->bind_param( "s", $username);
         $query->execute();
         $query->close();
+        
+        $this->id=User::get_user_id($username);
+        $this->load_info();
 
-        return User::get_user_id($username);
+        return $this->id;
     }
 }
 
@@ -231,7 +234,7 @@ class Serie extends Entite{
     }
 
     protected function load_info(){
-        $query=$this->conn->prepare('SELECT serieID, numero, titre, description, themeID FROM serie WHERE serieID = ?');
+        $query=$this->conn->prepare('SELECT serieID, actif, numero, titre, description, themeID FROM serie WHERE serieID = ?');
         $query->bind_param( "i", $this->id);
         $query->execute();
         $query->bind_result( $this->id, $this->actif, $this->numero, $this->titre, $this->description, $this->themeID );
