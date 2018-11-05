@@ -48,10 +48,10 @@ function login_local(){
 function login_ldap(){
     vérifier_champs_valides();
     $user=get_utilisateur_ldap();
-    if($user['count']!=1){
-        throw new ConnexionException("Nom d'utilisateur ou mot de passe invalide.");
-    }
-    return get_user($user['sAMAccountName']);
+    $user_info=get_user($_POST["username"]);
+    $user_info->nom=$user['cn'][0];
+
+    return $user_info;
 }
 
 function vérifier_champs_valides(){
@@ -80,11 +80,10 @@ function get_utilisateur_ldap(){
     $result=ldap_search($ldap, $GLOBALS['config']['domaine_ldap'], "(sAMAccountName=$username)", array('dn','cn',1));
     $user=ldap_get_entries($ldap, $result);
 
-    return $user;
-}
-
-function vérifier_mdp_ldap(){
-    return @ldap_bind($ldap, $user[0]['dn'], $password);
+    if(!@ldap_bind($ldap, $user[0]['dn'], $password)){
+        throw new ConnexionException("Nom d'utilisateur ou mot de passe invalide.");
+    }
+    return $user[0];
 }
 
 function get_user($username){
@@ -102,7 +101,7 @@ function get_user($username){
 
 function get_infos_session($user_info){
     #Obtient les infos de l'utilisateur
-    $_SESSION["nom"]=$user[0]['cn'][0];
+    $_SESSION["nom"]=$user_info->nom;
     $_SESSION["user_id"]=$user_info->id;
     $_SESSION["username"]=$user_info->username;
     $_SESSION["actif"]=$user_info->actif;

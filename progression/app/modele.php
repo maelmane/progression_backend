@@ -122,10 +122,7 @@ class User extends Entite{
         $query->execute();
         $query->close();
         
-        $this->id=User::get_user_id($username);
-        $this->load_info();
-
-        return $this->id;
+        return User::get_user_id($username); 
     }
 }
 

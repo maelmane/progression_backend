@@ -31,7 +31,7 @@ function afficher_page(){
             foreach ($themes as $theme){
                 echo "
               <tr>
-                 <td><a href='?p=ad_suivi&u=" . $_GET['u'] . "&t=$theme->id'>$theme->titre</td><td align=center>". strval($theme->get_pourcentage_avancement($user->userID)) . "% </a></td>
+                 <td><a href='?p=ad_suivi&u=" . $_GET['u'] . "&t=$theme->id'>$theme->titre</td><td align=center>". strval($theme->get_pourcentage_avancement($_GET['u'])) . "% </a></td>
               </tr>";
             }
 
@@ -54,7 +54,7 @@ function afficher_page(){
         foreach($theme->get_series() as $serie){
             echo "
           <tr>
-          <td>". $serie->numero ."</td><td>". $serie->titre ."</a></td><td align=center>". strval($serie->get_pourcentage_avancement($user->userID)) ."%</td>
+          <td>". $serie->numero ."</td><td>". $serie->titre ."</a></td><td align=center>". strval($serie->get_pourcentage_avancement($_GET['u'])) ."%</td>
           </tr>
 
          ";
