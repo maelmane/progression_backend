@@ -26,8 +26,15 @@ function set_errors(){
     $GLOBALS["error"]=mysqli_connect_error();
 }
 
-function get_themes(){
-    $themes=$GLOBALS["conn"]->query('SELECT themeID FROM theme WHERE themeID>0 ORDER BY ordre');
+function get_themes($inactif=false){
+    if($inactif){
+        $themes=$GLOBALS["conn"]->query('SELECT themeID FROM theme WHERE themeID>0 ORDER BY ordre');
+    }
+    else{
+        $themes=$GLOBALS["conn"]->query('SELECT themeID FROM theme WHERE 
+                                         actif = 1 AND
+                                         themeID>0 ORDER BY ordre');
+    }
     
     $res=array();
     while($theme_id=$themes->fetch_assoc()['themeID']){
@@ -40,8 +47,15 @@ function get_themes(){
     
 }
 
-function get_users(){
-    $users=$GLOBALS["conn"]->query('SELECT username FROM users WHERE actif=1 ORDER BY username');
+function get_users($inactif=false){
+    if($inactif){
+        $users=$GLOBALS["conn"]->query('SELECT username FROM users ORDER BY username');
+    }
+    else{
+        $users=$GLOBALS["conn"]->query('SELECT username FROM users 
+                                        WHERE actif=1 
+                                        ORDER BY username');
+    }
 
     $res=array();
     $user=$users->fetch_assoc();
@@ -57,6 +71,7 @@ function get_users(){
 class Entite{
     public $id;
     public $conn;
+    public $actif;
     
     public function __construct(){
         $this->conn=$GLOBALS["conn"];
@@ -69,7 +84,6 @@ class User extends Entite{
     const ROLE_ADMIN=1;    
     
     public $username;
-    public $actif;
     public $role;
     public $id;    
 
@@ -110,8 +124,6 @@ class User extends Entite{
 
         return User::get_user_id($username);
     }
-
-
 }
 
 class Theme extends Entite{
@@ -126,29 +138,17 @@ class Theme extends Entite{
     }
 
     protected function load_info(){
-        $query=$this->conn->prepare('SELECT themeID, titre, description FROM theme WHERE themeID = ?');
+        $query=$this->conn->prepare('SELECT themeID, actif, titre, description FROM theme WHERE themeID = ?');
         $query->bind_param( "i", $this->id);
         $query->execute();
-        $query->bind_result( $this->id, $this->titre, $this->description );
+        $query->bind_result( $this->id, $this->actif, $this->titre, $this->description );
         if(is_null($query->fetch()))
             $this->id=null;
         $query->close();
     }
-    
-    function get_nb_series(){
-        $query=$this->conn->prepare('SELECT count(serie.serieID) FROM serie WHERE 
-                                     serie.themeID= ?');
-        $query->bind_param( "i", $this->id);
-        $query->execute();
-        $query->bind_result($res);
-        $query->fetch();
-        $query->close();
 
-        return $res;        
-    }
-
-    function get_series(){
-        $ids=$this->get_series_id();
+    function get_series($inactif=false){
+        $ids=$this->get_series_id($inactif);
         
         $series=array();
         foreach ($ids as $id){
@@ -158,9 +158,16 @@ class Theme extends Entite{
         return $series;
     }
    
-    function get_series_id(){
-        $query=$this->conn->prepare('SELECT serieID FROM serie WHERE
-                                     themeID= ? ORDER BY numero');
+    function get_series_id($inactif){
+        if($inactif){
+            $query=$this->conn->prepare('SELECT serieID FROM serie WHERE
+                                         themeID= ? ORDER BY numero');
+        }
+        else{
+            $query=$this->conn->prepare('SELECT serieID FROM serie WHERE
+                                         serie.actif = 1 AND
+                                         themeID= ? ORDER BY numero');
+        }
         $query->bind_param( "i", $this->id);
         $query->execute();
         $query->bind_result($s_id);
@@ -174,9 +181,11 @@ class Theme extends Entite{
         return $res;
     }
 
-    function get_nb_questions(){
+    function get_nb_questions_actives(){
         $query=$this->conn->prepare('SELECT count(question.questionID) FROM question, serie WHERE 
                                      question.serieID = serie.serieID AND
+                                     question.actif = 1 AND
+                                     serie.actif = 1 AND
                                      serie.themeID = ?');
         $query->bind_param( "i", $this->id);
         $query->execute();
@@ -193,6 +202,8 @@ class Theme extends Entite{
                                      avancement.userID= ? AND 
                                      question.serieID=serie.serieID AND 
                                      serie.themeID= ? AND
+                                     question.actif = 1 AND
+                                     serie.actif = 1 AND
                                      avancement.etat = '.Question::ETAT_REUSSI);
         $query->bind_param( "ii", $user_id,$this->id);
         $query->execute();
@@ -204,7 +215,7 @@ class Theme extends Entite{
     }
     
     function get_pourcentage_avancement($user_id){
-        return floor($this->get_avancement($user_id)/$this->get_nb_questions()*100);
+        return floor($this->get_avancement($user_id)/$this->get_nb_questions_actives()*100);
     }
 }
 
@@ -223,14 +234,15 @@ class Serie extends Entite{
         $query=$this->conn->prepare('SELECT serieID, numero, titre, description, themeID FROM serie WHERE serieID = ?');
         $query->bind_param( "i", $this->id);
         $query->execute();
-        $query->bind_result( $this->id, $this->numero, $this->titre, $this->description, $this->themeID );
+        $query->bind_result( $this->id, $this->actif, $this->numero, $this->titre, $this->description, $this->themeID );
         if(is_null($query->fetch()))
             $this->id=null;
         $query->close();
     }
     
-    function get_nb_questions(){
+    function get_nb_questions_actives(){
         $query=$this->conn->prepare('SELECT count(question.questionID) FROM question WHERE 
+                                     question.actif = 1 AND
                                      question.serieID = ?');
         $query->bind_param( "i", $this->id);
         $query->execute();
@@ -241,8 +253,8 @@ class Serie extends Entite{
         return $res;        
     }
 
-    function get_questions(){
-        $ids=$this->get_questions_ids();
+    function get_questions($inactif=false){
+        $ids=$this->get_questions_ids($inactif);
         
         $questions=array();
         foreach($ids as $id){
@@ -252,12 +264,18 @@ class Serie extends Entite{
         return $questions;
     }
 
-    function get_questions_ids(){
-        $query=$GLOBALS["conn"]->prepare('SELECT question.questionID
-                                     FROM question WHERE
-                                     question.serieID = ?
-                                     ORDER BY question.numero');
-    
+    function get_questions_ids($inactif){
+        if($inactif){
+            $query=$GLOBALS["conn"]->prepare('SELECT question.questionID FROM question
+                                              WHERE question.serieID = ?
+                                              ORDER BY question.numero');
+        }
+        else{
+            $query=$GLOBALS["conn"]->prepare('SELECT question.questionID FROM question
+                                              WHERE question.serieID = ? AND
+                                              question.actif = 1
+                                              ORDER BY question.numero');
+        }
         $query->bind_param( "i", $this->id);
         $query->execute();
         $query->bind_result($q_id);
@@ -276,6 +294,7 @@ class Serie extends Entite{
                                      avancement.questionID=question.questionID AND 
                                      avancement.userID= ? AND 
                                      question.serieID = ? AND
+                                     question.actif = 1 AND
                                      avancement.etat='.Question::ETAT_REUSSI);
 
         $query->bind_param( "ii", $user_id, $this->id);
@@ -287,7 +306,7 @@ class Serie extends Entite{
     }
 
     function get_pourcentage_avancement($user_id){
-        return floor($this->get_avancement($user_id)/$this->get_nb_questions()*100);
+        return floor($this->get_avancement($user_id)/$this->get_nb_questions_actives()*100);
     }
     
 }
@@ -305,6 +324,7 @@ class Question extends Entite{
     
     //Données
     public $serieID;
+    public $actif;
     public $numero;
     public $titre;
     public $description;
@@ -321,6 +341,7 @@ class Question extends Entite{
 
     protected function load_info(){
         $query=$this->conn->prepare('SELECT question.questionID,
+                                            question.actif,
                                             question.type,
                                             question.serieID as s,
                                             question.numero as n,
@@ -335,6 +356,7 @@ class Question extends Entite{
         $query->bind_param( "i", $this->id);
         $query->execute();
         $query->bind_result( $this->id,
+                             $this->actif,
                              $this->type,
                              $this->serieID,
                              $this->numero,
@@ -353,19 +375,21 @@ class Question extends Entite{
 
     public function save(){
         if(!$this->id){
-            $query=$this->conn->prepare("INSERT INTO question(type,
-                                                              serieID,
+            $query=$this->conn->prepare("INSERT INTO question(serieID,
+                                                              actif,
+                                                              type,
                                                               titre,
                                                               description,
                                                               numero,
                                                               enonce,
                                                               points,
                                                               code_validation) 
-                                     VALUES( ?, ?, ?, ?, ?, ?, ?, ?)");
+                                     VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-            $query->bind_param( "iissisis",
-                                $this->type,
+            $query->bind_param( "iiissisis",
                                 $this->serieID,
+                                $this->actif,
+                                $this->type,
                                 $this->titre,
                                 $this->description,
                                 $this->numero,
@@ -382,8 +406,10 @@ class Question extends Entite{
 
         }
         else{
-            $query=$this->conn->prepare("UPDATE question set type=?,
+            $query=$this->conn->prepare("UPDATE question set 
                                                 serieID=?,
+                                                actif=?,
+                                                type=?,
                                                 titre=?,
                                                 description=?,
                                                 numero=?,
@@ -391,9 +417,10 @@ class Question extends Entite{
                                                 points=?,
                                                 code_validation=? WHERE questionID = ?");
 
-            $query->bind_param( "iissisisi",
-                                $this->type,
+            $query->bind_param( "iiissisisi",
                                 $this->serieID,
+                                $this->actif,                                
+                                $this->type,
                                 $this->titre,
                                 $this->description,
                                 $this->numero,
@@ -563,10 +590,10 @@ class QuestionSysteme extends Question{
     }
 
     public function save(){
-        $qid=parent::save();
-        if($this->id==-1){
+        if(!$this->id){
+            $qid=parent::save();
             $query=$this->conn->prepare("INSERT INTO question_systeme (questionID, image, user, verification, reponse)
-                                     VALUES( $qid, ?, ?, ?, ?)");
+                                         VALUES( $qid, ?, ?, ?, ?)");
             $query->bind_param( "ssss",
                                 $this->image,
                                 $this->user,
@@ -576,6 +603,7 @@ class QuestionSysteme extends Question{
             $query->close();
         }
         else{
+            $qid=parent::save();
             $query=$this->conn->prepare("UPDATE question_systeme SET image=?, user=?, verification=?, reponse=? WHERE questionID=$this->id");
             $query->bind_param( "ssss",
                                 $this->image,
