@@ -49,10 +49,10 @@ function get_themes($inactif=false){
 
 function get_users($inactif=false){
     if($inactif){
-        $users=$GLOBALS["conn"]->query('SELECT username FROM users ORDER BY username');
+        $users=$GLOBALS["conn"]->query('SELECT userID FROM users ORDER BY username');
     }
     else{
-        $users=$GLOBALS["conn"]->query('SELECT username FROM users 
+        $users=$GLOBALS["conn"]->query('SELECT userID FROM users 
                                         WHERE actif=1 
                                         ORDER BY username');
     }
@@ -60,7 +60,7 @@ function get_users($inactif=false){
     $res=array();
     $user=$users->fetch_assoc();
     while(!is_null($user)){
-        $res[] = new User($user['username']);
+        $res[] = new User($user['userID']);
         $user=$users->fetch_assoc();
     }
 
