@@ -4,11 +4,15 @@ require_once('prog.php');
 include('admin.php');
 
 function render_page(){
+    if(isset($_POST['submit'])){
+        sauvegarder();
+    }
+    afficher_champs();
 }
 
-//Sauvegarde
-if(isset($_POST['typeprogsys'])){
-    if($_POST['typeprogsys']==Question::TYPE_PROG){
+function sauvegarder(){
+    //Sauvegarde
+    if($_POST['type']==Question::TYPE_PROG){
         $qst=new QuestionProg($_POST['question']);
         $qst->actif=$_POST['actif'];
         $qst->type=Question::TYPE_PROG;
@@ -24,7 +28,7 @@ if(isset($_POST['typeprogsys'])){
         $qst->setup =$_POST['setup'];
         $qst->pre_exec =$_POST['pre_exec'];
         $qst->pre_code =$_POST['pre_code'];
-        $qst->code =$_POST['incode'];
+        $qst->incode =$_POST['incode'];
         $qst->post_code =$_POST['post_code'];
         $qst->params =$_POST['params'];
         $qst->stdin =$_POST['stdin'];
@@ -32,7 +36,7 @@ if(isset($_POST['typeprogsys'])){
         $qid=$qst->save();
         header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
     }
-    if($_POST['typeprogsys']==Question::TYPE_SYS){
+    if($_POST['type']==Question::TYPE_SYS){
         $qst=new QuestionSysteme($_POST['question']);
         $qst->actif=$_POST['actif'];
         $qst->type=Question::TYPE_SYS;
@@ -47,12 +51,14 @@ if(isset($_POST['typeprogsys'])){
         $qst->image=$_POST['image'];
         $qst->user=$_POST['username'];
         $qst->verification=$_POST['verification'];
-
+        
         $qid=$qst->save();
         header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
     }
 }
-echo "
+
+function afficher_champs(){
+    echo "
 
 <script>
 function toggletype(){
@@ -82,70 +88,67 @@ function load_question(){
 <option value = 0 >Thème</option>
 ";
 
-foreach(get_themes(true) as $theme){
-    echo "<option value = $theme->id ".(isset($_GET['theme']) && $_GET['theme']==$theme->id?'selected':'').">$theme->titre</option>";
-}
+    foreach(get_themes(true) as $theme){
+        echo "<option value = $theme->id ".(isset($_GET['theme']) && $_GET['theme']==$theme->id?'selected':'').">$theme->titre</option>";
+    }
 
-echo "</select></td>";
+    echo "</select></td>";
 
-if(isset($_GET['theme'])){
-    echo "</td>
+    if(isset($_GET['theme'])){
+        echo "</td>
        <td><select id='serie' name='serie' onchange='load_serie()'>
        <option value = 0 >Série</option>
        ";
 
-    $theme=new Theme($_GET['theme']);
+        $theme=new Theme($_GET['theme']);
 
-    foreach($theme->get_series(true) as $serie){
-        echo "<option value = $serie->id ".(isset($_GET['serie']) && $_GET['serie']==$serie->id?'selected':'').">$serie->titre</option>";
+        foreach($theme->get_series(true) as $serie){
+            echo "<option value = $serie->id ".(isset($_GET['serie']) && $_GET['serie']==$serie->id?'selected':'').">$serie->titre</option>";
+        }
+
+        echo "</select></td>";
     }
 
-    echo "</select></td>";
-}
+    if(isset($_GET['serie'])){
+        $serie=new Serie($_GET['serie']);
 
-if(isset($_GET['serie'])){
-    $serie=new Serie($_GET['serie']);
-
-    echo "
+        echo "
        <td><select id='question' name='question' onchange='load_question()'>
        <option value = 0 >Question</option>
        ";
 
-    foreach($serie->get_questions(true) as $question){
-        echo "<option value = $question->id ".(isset($_GET['question']) && $_GET['question']==$question->id?'selected':'').">".$question->numero." " .$question->titre."</option>";
-    }
-    echo "
+        foreach($serie->get_questions(true) as $question){
+            echo "<option value = $question->id ".(isset($_GET['question']) && $_GET['question']==$question->id?'selected':'').">".$question->numero." " .$question->titre."</option>";
+        }
+        echo "
        <option value=-1 ".((isset($_GET['question']) && $_GET['question']==-1)?'selected':'').">Nouvelle question</option></select></td>
     ";
-}
+    }
 
-if(isset($_GET['question'])){
-    //Lien "visualiser"
-    echo "<td><a href='index.php?p=".($question->type==Question::TYPE_PROG?"question_prog":"question_sys")."&ID=$_GET[question]' target='_blank'>visualiser</a></td>";
+    if(isset($_GET['question'])){
+        //Lien "visualiser"
+        echo "<td><a href='index.php?p=".($question->type==Question::TYPE_PROG?"question_prog":"question_sys")."&ID=$_GET[question]' target='_blank'>visualiser</a></td>";
     
-    if($_GET['question']!=-1){
-        $question=new Question($_GET['question']);
-        $question->load_info();
+        if($_GET['question']!=-1){
+            $question=new Question($_GET['question']);
 
-        if($question->type==Question::TYPE_PROG){
-            $question=new QuestionProg($_GET['question']);
-            $question->load_info();
+            if($question->type==Question::TYPE_PROG){
+                $question=new QuestionProg($_GET['question']);
+            }
+            elseif($question->type==Question::TYPE_SYS){
+                $question=new QuestionSysteme($_GET['question']);
+            }
         }
-        elseif($question->type==Question::TYPE_SYS){
-            $question=new QuestionSysteme($_GET['question']);
-            $question->load_info();
+        else{
+            $question=new QuestionProg(-1);
         }
     }
-    else{
-        $question=new QuestionProg(-1);
-    }
-}
 
-echo"
+    echo"
 </tr></table>";
 
-if(isset($_GET['question'])){
-    echo "
+    if(isset($_GET['question'])){
+        echo "
 <table>
 <tr>
 <td>
@@ -154,7 +157,7 @@ Numéro<br>
 </td>
 <td>
 Type<br>
-<select id='type' name='typeprogsys'  onchange='toggletype()' > 
+<select id='type' name='type_question'  onchange='toggletype()' > 
 <option value=0 ".($question->type==Question::TYPE_PROG?"selected":"").">Programmation</option>
 <option value=1 ".($question->type==Question::TYPE_SYS?"selected":"").">Terminal interactif</option>
 </select>
@@ -300,15 +303,15 @@ Validation<br>
 </tr>
 
 ";
-}
+    }
 
-echo"
+    echo"
 
 
 </table>
 </div>
-<input type=submit value='Enregistrer'>
+<input type=submit name='submit' value='Enregistrer'>
 </form>
 ";
-
+}
 ?>

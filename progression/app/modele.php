@@ -49,10 +49,10 @@ function get_themes($inactif=false){
 
 function get_users($inactif=false){
     if($inactif){
-        $users=$GLOBALS["conn"]->query('SELECT username FROM users ORDER BY username');
+        $users=$GLOBALS["conn"]->query('SELECT userID FROM users ORDER BY username');
     }
     else{
-        $users=$GLOBALS["conn"]->query('SELECT username FROM users 
+        $users=$GLOBALS["conn"]->query('SELECT userID FROM users 
                                         WHERE actif=1 
                                         ORDER BY username');
     }
@@ -60,7 +60,7 @@ function get_users($inactif=false){
     $res=array();
     $user=$users->fetch_assoc();
     while(!is_null($user)){
-        $res[] = new User($user['username']);
+        $res[] = new User($user['userID']);
         $user=$users->fetch_assoc();
     }
 
@@ -106,7 +106,7 @@ class User extends Entite{
         return $id;
     }
 
-    public function load_info(){
+    protected function load_info(){
         $query=$this->conn->prepare( 'SELECT userID, username, actif, role FROM users WHERE userID = ? ');
         $query->bind_param( "i", $this->id);
         $query->execute();
@@ -121,8 +121,11 @@ class User extends Entite{
         $query->bind_param( "s", $username);
         $query->execute();
         $query->close();
+        
+        $this->id=User::get_user_id($username);
+        $this->load_info();
 
-        return User::get_user_id($username);
+        return $this->id;
     }
 }
 
@@ -137,7 +140,7 @@ class Theme extends Entite{
         parent::__construct();        
     }
 
-    public function load_info(){
+    protected function load_info(){
         $query=$this->conn->prepare('SELECT themeID, actif, titre, description FROM theme WHERE themeID = ?');
         $query->bind_param( "i", $this->id);
         $query->execute();
@@ -230,7 +233,7 @@ class Serie extends Entite{
         parent::__construct();
     }
 
-    public function load_info(){
+    protected function load_info(){
         $query=$this->conn->prepare('SELECT serieID, actif, numero, titre, description, themeID FROM serie WHERE serieID = ?');
         $query->bind_param( "i", $this->id);
         $query->execute();
@@ -339,7 +342,7 @@ class Question extends Entite{
         parent::__construct();
     }
 
-    public function load_info(){
+    protected function load_info(){
         $query=$this->conn->prepare('SELECT question.questionID,
                                             question.actif,
                                             question.type,
@@ -462,7 +465,7 @@ class QuestionProg extends Question{
     public $params;
     public $stdin;
     
-    public function load_info(){
+    protected function load_info(){
         parent::load_info();
 	    $query=$this->conn->prepare('SELECT question_prog.lang, 
                                             theme.lang, 
@@ -569,7 +572,7 @@ class QuestionSysteme extends Question{
     public $user;
     public $verification;
     
-    public function load_info(){
+    protected function load_info(){
         parent::load_info();
         $query=$this->conn->prepare('SELECT question_systeme.reponse,
                                             question_systeme.image,
@@ -635,7 +638,7 @@ class Avancement extends Entite{
         $this->load_info();
     }
     
-    private function load_info(){
+    protected function load_info(){
         $query=$this->conn->prepare('SELECT etat, reponse, conteneur FROM avancement WHERE questionID = ? AND userID = ?');
         $query->bind_param("ii", $this->questionID, $this->userID);
         $query->execute();

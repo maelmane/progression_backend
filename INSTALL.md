@@ -17,7 +17,7 @@ Démarrage des conteneurs :
 
 Création (ou réinitialisation) de la base de données:
  * docker exec -it progression_db bash
- * cd /tmp/ && build_db.sh
+ * cd /tmp/ && ./build_db.sh
  * Ctrl-D
 
 L'application est accessible via :
