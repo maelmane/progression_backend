@@ -11,7 +11,6 @@ function charger_user_ou_terminer(){
     if(is_null($user->id)){
         header('Location: index.php?p=accueil');
     }
-    $user->load_info();
 
     return $user;
 }
