@@ -1,0 +1,9 @@
+FROM system
+
+RUN useradd -s /bin/bash -m petitpoucet
+RUN mkdir /home/petitpoucet/maison/miettes -p
+RUN for i in $(seq 0 13); do echo $i > ~petitpoucet/maison/miettes/miettes$i; done
+RUN chown petitpoucet:petitpoucet /home/petitpoucet/ -R
+ENV SIAB_SERVICE=/:petitpoucet:petitpoucet:HOME:SHELL \
+    SIAB_TIMEOUT=600
+
