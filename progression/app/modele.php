@@ -382,7 +382,7 @@ class Question extends Entite{
                                                               code_validation) 
                                      VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-            $query->bind_param( "iiissisis",
+            $query->bind_param( "iiississ",
                                 $this->serieID,
                                 $this->actif,
                                 $this->type,
@@ -411,7 +411,7 @@ class Question extends Entite{
                                                 enonce=?,
                                                 code_validation=? WHERE questionID = ?");
 
-            $query->bind_param( "iiissisisi",
+            $query->bind_param( "iiississi",
                                 $this->serieID,
                                 $this->actif,                                
                                 $this->type,
