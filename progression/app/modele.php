@@ -329,7 +329,6 @@ class Question extends Entite{
     public $titre;
     public $description;
     public $enonce;
-    public $points;
     public $etat;
     public $code_validation;
     public $avancement;
@@ -349,7 +348,6 @@ class Question extends Entite{
                                             question.titre,
                                             question.description,
                                             question.enonce,
-                                            question.points,
                                             question.code_validation
                                      FROM question
                                      WHERE question.questionID = ?');
@@ -364,7 +362,6 @@ class Question extends Entite{
                              $this->titre,
                              $this->description,
                              $this->enonce,
-                             $this->points,
                              $this->code_validation);
         if(is_null($query->fetch())){
 	    error_log($query->error);
@@ -382,7 +379,6 @@ class Question extends Entite{
                                                               description,
                                                               numero,
                                                               enonce,
-                                                              points,
                                                               code_validation) 
                                      VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
@@ -394,7 +390,6 @@ class Question extends Entite{
                                 $this->description,
                                 $this->numero,
                                 $this->enonce,
-                                $this->points,
                                 $this->code_validation );
             $query->execute();
             $query->close();
@@ -414,7 +409,6 @@ class Question extends Entite{
                                                 description=?,
                                                 numero=?,
                                                 enonce=?,
-                                                points=?,
                                                 code_validation=? WHERE questionID = ?");
 
             $query->bind_param( "iiissisisi",
@@ -425,7 +419,6 @@ class Question extends Entite{
                                 $this->description,
                                 $this->numero,
                                 $this->enonce,
-                                $this->points,
                                 $this->code_validation,
                                 $this->id );
             $query->execute();

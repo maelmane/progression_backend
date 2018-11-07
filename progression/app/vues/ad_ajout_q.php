@@ -22,7 +22,6 @@ function sauvegarder(){
         $qst->description =$_POST['description'];
         $qst->enonce =$_POST['enonce'];
         $qst->reponse =$_POST['reponse_prog'];
-        $qst->points =$_POST['points'];
         $qst->code_validation =$_POST['code_validation'];
         $qst->langid =$_POST['langid'];
         $qst->setup =$_POST['setup'];
@@ -46,7 +45,6 @@ function sauvegarder(){
         $qst->description=$_POST['description'];
         $qst->enonce=$_POST['enonce'];
         $qst->reponse=$_POST['reponse_sys'];
-        $qst->points=$_POST['points'];
         $qst->code_validation=$_POST['code_validation'];
         $qst->image=$_POST['image'];
         $qst->user=$_POST['username'];
@@ -157,7 +155,7 @@ Numéro<br>
 </td>
 <td>
 Type<br>
-<select id='type' name='type_question'  onchange='toggletype()' > 
+<select id='type' name='type'  onchange='toggletype()' > 
 <option value=0 ".($question->type==Question::TYPE_PROG?"selected":"").">Programmation</option>
 <option value=1 ".($question->type==Question::TYPE_SYS?"selected":"").">Terminal interactif</option>
 </select>
