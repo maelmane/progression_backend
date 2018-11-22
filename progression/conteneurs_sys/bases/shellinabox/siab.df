@@ -49,6 +49,8 @@ ADD assets/entrypoint.sh /usr/local/sbin/
 
 #Enlève la confirmation de quitter la page
 RUN sed -i 's/beforeunload/bbbbbbunload/' /usr/bin/shellinaboxd
+#Corrige le bogue qui déplace la console sur un clic
+RUN sed -i 's/  this.input.focus();/ this.input.select();/' /usr/bin/shellinaboxd
 
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["shellinabox"]
