@@ -380,7 +380,7 @@ class Question extends Entite{
                                                               numero,
                                                               enonce,
                                                               code_validation) 
-                                     VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                     VALUES( ?, ?, ?, ?, ?, ?, ?, ?)");
 
             $query->bind_param( "iiississ",
                                 $this->serieID,
