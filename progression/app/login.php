@@ -80,7 +80,7 @@ function get_utilisateur_ldap(){
     $result=ldap_search($ldap, $GLOBALS['config']['domaine_ldap'], "(sAMAccountName=$username)", array('dn','cn',1));
     $user=ldap_get_entries($ldap, $result);
 
-    if(!@ldap_bind($ldap, $user[0]['dn'], $password)){
+    if(!$user[0] || !@ldap_bind($ldap, $user[0]['dn'], $password)){
         throw new ConnexionException("Nom d'utilisateur ou mot de passe invalide.");
     }
     return $user[0];
