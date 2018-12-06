@@ -1,0 +1,7 @@
+FROM vim
+
+COPY lettre.txt /home/krusty/
+RUN chown krusty:krusty /home/krusty/lettre.txt
+COPY reponse.txt /tmp/
+RUN chmod 400 /tmp/reponse.txt
+

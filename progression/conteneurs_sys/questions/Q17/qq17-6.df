@@ -1,0 +1,11 @@
+FROM qq17-2
+
+RUN rm /home/bobby/mdp.txt
+RUN yes tfdYrYJv1GuCCYD | passwd bobby
+
+RUN mkdir /home/bobby/secrets/
+RUN chown bobby:bobby /home/bobby/secrets
+RUN chmod 751 /home/bobby/secrets
+
+RUN echo Mon mot de passe est : tfdYrYJv1GuCCYD > /home/bobby/secrets/motdepasse
+RUN chown bobby:bobby /home/bobby/secrets/motdepasse
