@@ -107,11 +107,8 @@ function valider_résultats($sorties, $reponse){
     $sortie_standard=extraire_sortie_standard($sorties);
     $sortie_erreur=extraire_sortie_erreur($sorties);
 
-    if(!is_null($sortie_erreur) && $sortie_erreur!="")
-        return false;
-    else
-        //en PHP, "" == NULL (arg!!!)
-        return $reponse!="null" && $sortie_standard==$reponse;
+    //en PHP, "" == NULL (arg!!!)
+    return $reponse!="null" && $sortie_standard==$reponse;
 }
 
 function sauvegarder_état_réussi($avancement, $code){
