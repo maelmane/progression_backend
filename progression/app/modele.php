@@ -609,6 +609,10 @@ class QuestionSysteme extends Question{
         }
         return $qid;
     }
+
+    public function répondable(){
+        return $this->reponse || strpos($this->verification, "{reponse}");
+    }
 }
 
 class Avancement extends Entite{
