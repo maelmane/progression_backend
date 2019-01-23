@@ -157,7 +157,7 @@ class Theme extends Entite{
 
         return $series;
     }
-   
+    
     function get_series_id($inactif){
         if($inactif){
             $query=$this->conn->prepare('SELECT serieID FROM serie WHERE
@@ -321,6 +321,7 @@ class Question extends Entite{
     //Constantes de type
     const TYPE_PROG=0;
     const TYPE_SYS=1;
+    const TYPE_BD=2;
     
     //Données
     public $serieID;
@@ -439,7 +440,7 @@ class Question extends Entite{
 }
 
 class QuestionProg extends Question{
- 
+    
     const PYTHON3=1;
     const CPP=8;
     const JAVA=10;    
@@ -457,7 +458,7 @@ class QuestionProg extends Question{
     
     protected function load_info(){
         parent::load_info();
-	    $query=$this->conn->prepare('SELECT question_prog.lang, 
+	$query=$this->conn->prepare('SELECT question_prog.lang, 
                                             theme.lang, 
                                             question_prog.setup, 
                                             question_prog.pre_exec, 
@@ -553,6 +554,62 @@ class QuestionProg extends Question{
         }
         return $qid;
     }
+}
+
+class QuestionBD extends QuestionProg{
+    //Données
+    public $image;
+    public $user;
+    public $verification;
+    
+    protected function load_info(){
+        parent::load_info();
+        $query=$this->conn->prepare('SELECT question_systeme.reponse,
+                                            question_systeme.image,
+                                            question_systeme.user,
+                                            question_systeme.verification
+                                     FROM   question_systeme
+                                     WHERE  question_systeme.questionID = ?');
+
+        $query->bind_param( "i", $this->id);
+        $query->execute();
+        $query->bind_result( $this->reponse,
+                             $this->image,
+                             $this->user,
+                             $this->verification );
+        if(is_null($query->fetch()))
+            $this->id=null;
+        $query->close();
+    }
+
+    public function save(){
+        if(!$this->id){
+            $qid=parent::save();
+            $query=$this->conn->prepare("INSERT INTO question_systeme (questionID, image, user, verification, reponse)
+                                         VALUES( $qid, ?, ?, ?, ?)");
+            $query->bind_param( "ssss",
+                                $this->image,
+                                $this->user,
+                                $this->verification,
+                                $this->reponse);
+            $query->execute();
+            $query->close();
+        }
+        else{
+            $qid=parent::save();
+            $query=$this->conn->prepare("UPDATE question_systeme SET image=?, user=?, verification=?, reponse=? WHERE questionID=$this->id");
+            $query->bind_param( "ssss",
+                                $this->image,
+                                $this->user,
+                                $this->verification,
+                                $this->reponse);
+            $query->execute();
+            $query->close();
+            
+        }
+        return $qid;
+    }
+
 }
 
 class QuestionSysteme extends Question{

@@ -11,7 +11,9 @@ const LANG_NOMS=array("Python 2",
                       "C",
                       "Java",
                       "Bash",
-                      "Perl");
+                      "Perl",
+                      "SSH",
+                      "MySQL");
 
 
 function get_langage(){
@@ -73,7 +75,7 @@ function get_stdin($question=null){
 
 function menu_lang($langid=-1, $defaut=false){
     $ret= "<select id='langid' name='langid' > ";
-        
+    
     if($defaut){
         $ret=$ret . "<option value=-1 ".(is_null($langid)?"selected":"") . ">défaut</option>";
     }
@@ -89,8 +91,9 @@ function menu_lang($langid=-1, $defaut=false){
              <option value=10 ".($langid==10?"selected":"") . ">Java</option>
              <option value=11 ".($langid==11?"selected":"") . ">Bash</option>
              <option value=12 ".($langid==12?"selected":"") . ">Perl</option>
+             <option value=14 ".($langid==14?"selected":"") . ">MySQL</option>
            </select>
-";
+             ";
 
     return $ret;
 }
@@ -118,15 +121,15 @@ function prog_footer($infos){
 }
 
 function scripts_ajustement_éditeurs($infos){
-     if (isset($infos['pre_code']) && $infos['pre_code'] != ""){
-         prog_footer_precode($infos);
-     }
-     
-     prog_footer_code($infos);
-     
-     if (isset($infos['post_code']) && $infos['post_code'] != ""){
-         prog_footer_postcode($infos);
-     }
+    if (isset($infos['pre_code']) && $infos['pre_code'] != ""){
+        prog_footer_precode($infos);
+    }
+    
+    prog_footer_code($infos);
+    
+    if (isset($infos['post_code']) && $infos['post_code'] != ""){
+        prog_footer_postcode($infos);
+    }
 }
 
 function exécuter_code($infos){
