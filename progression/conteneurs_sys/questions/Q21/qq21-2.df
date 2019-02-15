@@ -1,6 +1,0 @@
-FROM system
-
-RUN apt update && apt install -y python3 vim
-COPY 'qq21-2/monbeausapin.py' /home/krusty/
-RUN chown krusty:krusty /home/krusty/*
-RUN chmod +x '/home/krusty/monbeausapin.py'

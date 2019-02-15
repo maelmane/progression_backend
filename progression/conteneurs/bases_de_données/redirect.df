@@ -1,0 +1,12 @@
+FROM ubuntu
+
+#RUN echo 1 > /proc/sys/net/ipv4/ip_forward
+
+RUN iptables -F
+RUN iptables -t nat -F
+RUN iptables -X
+
+RUN iptables -t nat -A PREROUTING -p tcp --dport 3306 -j DNAT --to-destination 172.17.0.2:3306
+RUN iptables -t nat -A POSTROUTING -p tcp -d 172.17.0.2 --dport 3306 -j SNAT --to-source 0.0.0.0
+
+CMD while true; do sleep 3600; done

@@ -68,7 +68,7 @@ function get_url_compilebox(){
 }
 
 function get_options_compilebox($question, $avancement){
-    if(isset($_POST['reset']) && $_POST['reset']=='Réinitialiser'){
+    if($avancement->get_etat()==Question::ETAT_DEBUT || isset($_POST['reset']) && $_POST['reset']=='Réinitialiser'){
         $data_rc=get_data_nouveau_conteneur($question, $avancement);
     }
     else{
@@ -88,7 +88,11 @@ function get_data_nouveau_conteneur($question, $avancement){
 }
 
 function get_data_conteneur($question, $avancement){
-    return array('language' => 13, 'code' => $question->verification, 'vm_name' => $question->image, 'parameters' => $avancement->conteneur, 'stdin' => '', 'user' => $question->user);
+    return array('language' => 13, 'code' => construire_validation($question), 'vm_name' => $question->image, 'parameters' => $avancement->conteneur, 'stdin' => '', 'user' => $question->user);
+}
+
+function construire_validation($question){
+    return str_replace("{reponse}", get_réponse_utilisateur(), $question->verification);
 }
 
 function décoder_réponse($réponse){
@@ -129,15 +133,16 @@ function sauvegarder_conteneur($infos){
 function vérifier_réponse($infos){
     $réussi=false;
     
-    //Vérifie la réponse
-    if(!is_null($infos["question"]->reponse) && $infos["question"]->reponse!=""){
+    //validation exécutée
+    if($infos['res_validation']!="" && $infos['res_validation']=="valide"){
+        $réussi=true;            
+    }
+    //réponse textuelle
+    elseif(!is_null($infos["question"]->solution_courte) && $infos["question"]->solution_courte!=""){
         if($infos['réponse']!='')
-            if($infos['réponse']==$infos["question"]->reponse){
+            if($infos['réponse']==$infos["question"]->solution_courte){
                 $réussi=true;
             }
-    }
-    elseif($infos['res_validation']!="" && $infos['res_validation']=="valide"){
-            $réussi=true;            
     }
     return $réussi;
 }

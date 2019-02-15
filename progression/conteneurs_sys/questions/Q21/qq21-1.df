@@ -1,4 +1,0 @@
-FROM system
-
-COPY qq21-1/'exécutez-moi!.sh' /home/krusty/
-

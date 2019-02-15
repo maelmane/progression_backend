@@ -157,7 +157,7 @@ class Theme extends Entite{
 
         return $series;
     }
-   
+    
     function get_series_id($inactif){
         if($inactif){
             $query=$this->conn->prepare('SELECT serieID FROM serie WHERE
@@ -321,6 +321,7 @@ class Question extends Entite{
     //Constantes de type
     const TYPE_PROG=0;
     const TYPE_SYS=1;
+    const TYPE_BD=2;
     
     //Données
     public $serieID;
@@ -439,7 +440,7 @@ class Question extends Entite{
 }
 
 class QuestionProg extends Question{
- 
+    
     const PYTHON3=1;
     const CPP=8;
     const JAVA=10;    
@@ -451,20 +452,20 @@ class QuestionProg extends Question{
     public $pre_code;
     public $incode;
     public $post_code;
-    public $reponse;
+    public $solution;
     public $params;
     public $stdin;
     
     protected function load_info(){
         parent::load_info();
-	    $query=$this->conn->prepare('SELECT question_prog.lang, 
+	$query=$this->conn->prepare('SELECT question_prog.lang, 
                                             theme.lang, 
                                             question_prog.setup, 
                                             question_prog.pre_exec, 
                                             question_prog.pre_code, 
                                             question_prog.in_code, 
                                             question_prog.post_code, 
-                                            question_prog.reponse, 
+                                            question_prog.solution, 
                                             question_prog.params, 
                                             question_prog.stdin
                                      FROM question 
@@ -485,7 +486,7 @@ class QuestionProg extends Question{
                              $this->pre_code,
                              $this->incode,
                              $this->post_code,
-                             $this->reponse,
+                             $this->solution,
                              $this->params,
                              $this->stdin
         );
@@ -508,7 +509,7 @@ class QuestionProg extends Question{
                                                                    pre_code,
                                                                    in_code,
                                                                    post_code,
-                                                                   reponse,
+                                                                   solution,
                                                                    params,
                                                                    stdin)
                                      VALUES( $qid, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -519,7 +520,7 @@ class QuestionProg extends Question{
                                 $this->pre_code,
                                 $this->incode,
                                 $this->post_code,
-                                $this->reponse,
+                                $this->solution,
                                 $this->params,
                                 $this->stdin);
             $query->execute();
@@ -533,7 +534,7 @@ class QuestionProg extends Question{
                                                                   pre_code=?,
                                                                   in_code=?,
                                                                   post_code=?,
-                                                                  reponse=?,
+                                                                  solution=?,
                                                                   params=?,
                                                                   stdin=? 
                                          WHERE questionID=$qid");
@@ -544,7 +545,7 @@ class QuestionProg extends Question{
                                 $this->pre_code,
                                 $this->incode,
                                 $this->post_code,
-                                $this->reponse,
+                                $this->solution,
                                 $this->params,
                                 $this->stdin);
             $query->execute();
@@ -555,16 +556,16 @@ class QuestionProg extends Question{
     }
 }
 
-class QuestionSysteme extends Question{
-
+class QuestionBD extends QuestionProg{
     //Données
     public $image;
     public $user;
     public $verification;
+    public $solution_courte;
     
     protected function load_info(){
         parent::load_info();
-        $query=$this->conn->prepare('SELECT question_systeme.reponse,
+        $query=$this->conn->prepare('SELECT question_systeme.solution_courte,
                                             question_systeme.image,
                                             question_systeme.user,
                                             question_systeme.verification
@@ -573,7 +574,7 @@ class QuestionSysteme extends Question{
 
         $query->bind_param( "i", $this->id);
         $query->execute();
-        $query->bind_result( $this->reponse,
+        $query->bind_result( $this->solution_courte,
                              $this->image,
                              $this->user,
                              $this->verification );
@@ -585,29 +586,94 @@ class QuestionSysteme extends Question{
     public function save(){
         if(!$this->id){
             $qid=parent::save();
-            $query=$this->conn->prepare("INSERT INTO question_systeme (questionID, image, user, verification, reponse)
+            $query=$this->conn->prepare("INSERT INTO question_systeme (questionID, image, user, verification, solution_courte)
                                          VALUES( $qid, ?, ?, ?, ?)");
             $query->bind_param( "ssss",
                                 $this->image,
                                 $this->user,
                                 $this->verification,
-                                $this->reponse);
+                                $this->solution_courte);
             $query->execute();
             $query->close();
         }
         else{
             $qid=parent::save();
-            $query=$this->conn->prepare("UPDATE question_systeme SET image=?, user=?, verification=?, reponse=? WHERE questionID=$this->id");
+            $query=$this->conn->prepare("UPDATE question_systeme SET image=?, user=?, verification=?, solution_courte=? WHERE questionID=$this->id");
             $query->bind_param( "ssss",
                                 $this->image,
                                 $this->user,
                                 $this->verification,
-                                $this->reponse);
+                                $this->solution_courte);
             $query->execute();
             $query->close();
             
         }
         return $qid;
+    }
+
+    public function répondable(){
+        return $this->solution_courte || strpos($this->verification, "{reponse}");
+    }
+}
+
+class QuestionSysteme extends Question{
+
+    //Données
+    public $image;
+    public $user;
+    public $verification;
+    public $solution_courte;
+    
+    protected function load_info(){
+        parent::load_info();
+        $query=$this->conn->prepare('SELECT question_systeme.solution_courte,
+                                            question_systeme.image,
+                                            question_systeme.user,
+                                            question_systeme.verification
+                                     FROM   question_systeme
+                                     WHERE  question_systeme.questionID = ?');
+
+        $query->bind_param( "i", $this->id);
+        $query->execute();
+        $query->bind_result( $this->solution_courte,
+                             $this->image,
+                             $this->user,
+                             $this->verification );
+        if(is_null($query->fetch()))
+            $this->id=null;
+        $query->close();
+    }
+
+    public function save(){
+        if(!$this->id){
+            $qid=parent::save();
+            $query=$this->conn->prepare("INSERT INTO question_systeme (questionID, image, user, verification, solution_courte)
+                                         VALUES( $qid, ?, ?, ?, ?)");
+            $query->bind_param( "ssss",
+                                $this->image,
+                                $this->user,
+                                $this->verification,
+                                $this->solution_courte);
+            $query->execute();
+            $query->close();
+        }
+        else{
+            $qid=parent::save();
+            $query=$this->conn->prepare("UPDATE question_systeme SET image=?, user=?, verification=?, solution_courte=? WHERE questionID=$this->id");
+            $query->bind_param( "ssss",
+                                $this->image,
+                                $this->user,
+                                $this->verification,
+                                $this->solution_courte);
+            $query->execute();
+            $query->close();
+            
+        }
+        return $qid;
+    }
+
+    public function répondable(){
+        return $this->solution_courte || strpos($this->verification, "{reponse}");
     }
 }
 
@@ -616,6 +682,7 @@ class Avancement extends Entite{
     public $userID;
     public $questionID;
     private $etat;
+    public $code;
     public $reponse;
     public $conteneur;
 
@@ -629,10 +696,10 @@ class Avancement extends Entite{
     }
     
     protected function load_info(){
-        $query=$this->conn->prepare('SELECT etat, reponse, conteneur FROM avancement WHERE questionID = ? AND userID = ?');
+        $query=$this->conn->prepare('SELECT etat, code, reponse, conteneur FROM avancement WHERE questionID = ? AND userID = ?');
         $query->bind_param("ii", $this->questionID, $this->userID);
         $query->execute();
-        $query->bind_result($this->etat, $this->reponse, $this->conteneur);
+        $query->bind_result($this->etat, $this->code, $this->reponse, $this->conteneur);
         $query->fetch();
 
         $query->close();
@@ -676,6 +743,25 @@ class Avancement extends Entite{
             $this->reponse=$reponse;
         }
     }
+
+    public function set_code($code){
+        if($this->get_etat()==Question::ETAT_DEBUT){
+            //État par défaut = ETAT_NONREUSSI
+            $query=$this->conn->prepare('INSERT INTO avancement SET etat = 1, code = ?, questionID = ?, userID = ?');
+            $query->bind_param("sii", $code, $this->questionID, $this->userID);
+            $query->execute();
+            $query->close();
+            $this->load_info();
+        }
+        else{
+            $query=$this->conn->prepare('UPDATE avancement SET code = ? WHERE questionID = ? AND userID = ?');
+            $query->bind_param("sii", $code, $this->questionID, $this->userID);
+            $query->execute();
+            $query->close();
+            $this->code=$code;
+        }
+    }
+    
     public function set_conteneur($conteneur){
         if($this->get_etat()==Question::ETAT_DEBUT){
             //État par défaut = ETAT_NONREUSSI

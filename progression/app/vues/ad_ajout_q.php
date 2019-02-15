@@ -21,7 +21,7 @@ function sauvegarder(){
         $qst->titre =$_POST['titre'];
         $qst->description =$_POST['description'];
         $qst->enonce =$_POST['enonce'];
-        $qst->reponse =$_POST['reponse_prog'];
+        $qst->solution =$_POST['solution'];
         $qst->code_validation =$_POST['code_validation'];
         $qst->langid =$_POST['langid'];
         $qst->setup =$_POST['setup'];
@@ -44,7 +44,7 @@ function sauvegarder(){
         $qst->titre=$_POST['titre'];
         $qst->description=$_POST['description'];
         $qst->enonce=$_POST['enonce'];
-        $qst->reponse=$_POST['reponse_sys'];
+        $qst->solution_courte=$_POST['solution_courte'];
         $qst->code_validation=$_POST['code_validation'];
         $qst->image=$_POST['image'];
         $qst->user=$_POST['username'];
@@ -53,15 +53,44 @@ function sauvegarder(){
         $qid=$qst->save();
         header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
     }
-}
 
+    if($_POST['type']==Question::TYPE_BD){
+        
+        $qst=new QuestionBD($_POST['question']);
+        $qst->actif=$_POST['actif'];
+        $qst->type=Question::TYPE_BD;
+        $qst->serieID =$_GET['serie'];
+        $qst->numero =$_POST['numero'];
+        $qst->titre =$_POST['titre'];
+        $qst->description =$_POST['description'];
+        $qst->enonce =$_POST['enonce'];
+        $qst->solution =$_POST['solution'];
+        $qst->solution_courte =$_POST['solution_courte'];        
+        $qst->code_validation =$_POST['code_validation'];
+        $qst->langid =$_POST['langid'];
+        $qst->setup =$_POST['setup'];
+        $qst->pre_exec =$_POST['pre_exec'];
+        $qst->pre_code =$_POST['pre_code'];
+        $qst->incode =$_POST['incode'];
+        $qst->post_code =$_POST['post_code'];
+        $qst->params =$_POST['params'];
+        $qst->stdin =$_POST['stdin'];
+
+        $qst->image=$_POST['image'];
+        $qst->user=$_POST['username'];
+        $qst->verification=$_POST['verification'];
+        
+        $qid=$qst->save();
+        header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
+    }
+}
 function afficher_champs(){
     echo "
 
 <script>
 function toggletype(){
-            document.getElementById('prog').style.display=(document.getElementById('type').value==0?'block':'none');
-            document.getElementById('sys').style.display=(document.getElementById('type').value==1?'block':'none');
+            document.getElementById('prog').style.display=(document.getElementById('type').value!=1?'block':'none');
+            document.getElementById('sys').style.display=(document.getElementById('type').value!=0?'block':'none');
          }
 
 function load_theme(){
@@ -84,7 +113,7 @@ function load_question(){
 <tr>
 <td><select id='theme' name='theme' onchange='load_theme()'>
 <option value = 0 >Thème</option>
-";
+    ";
 
     foreach(get_themes(true) as $theme){
         echo "<option value = $theme->id ".(isset($_GET['theme']) && $_GET['theme']==$theme->id?'selected':'').">$theme->titre</option>";
@@ -96,7 +125,7 @@ function load_question(){
         echo "</td>
        <td><select id='serie' name='serie' onchange='load_serie()'>
        <option value = 0 >Série</option>
-       ";
+        ";
 
         $theme=new Theme($_GET['theme']);
 
@@ -113,20 +142,27 @@ function load_question(){
         echo "
        <td><select id='question' name='question' onchange='load_question()'>
        <option value = 0 >Question</option>
-       ";
+        ";
 
         foreach($serie->get_questions(true) as $question){
             echo "<option value = $question->id ".(isset($_GET['question']) && $_GET['question']==$question->id?'selected':'').">".$question->numero." " .$question->titre."</option>";
         }
         echo "
        <option value=-1 ".((isset($_GET['question']) && $_GET['question']==-1)?'selected':'').">Nouvelle question</option></select></td>
-    ";
+       ";
     }
 
     if(isset($_GET['question'])){
         //Lien "visualiser"
-        echo "<td><a href='index.php?p=".($question->type==Question::TYPE_PROG?"question_prog":"question_sys")."&ID=$_GET[question]' target='_blank'>visualiser</a></td>";
-    
+        if($question->type==Question::TYPE_PROG)
+            echo "<td><a href='index.php?p=question_prog";
+        else if($question->type==Question::TYPE_SYS)
+            echo "<td><a href='index.php?p=question_sys";
+        else if($question->type==Question::TYPE_BD)
+            echo "<td><a href='index.php?p=question_bd";
+
+        echo "&ID=$_GET[question]' target='_blank'>visualiser</a></td>";
+        
         if($_GET['question']!=-1){
             $question=new Question($_GET['question']);
 
@@ -136,15 +172,17 @@ function load_question(){
             elseif($question->type==Question::TYPE_SYS){
                 $question=new QuestionSysteme($_GET['question']);
             }
+            elseif($question->type==Question::TYPE_BD){
+                $question=new QuestionBD($_GET['question']);
+            }
+            else{
+                $question=new QuestionProg(-1);
+            }
         }
-        else{
-            $question=new QuestionProg(-1);
-        }
-    }
 
-    echo"
+        echo"
 </tr></table>";
-
+    }
     if(isset($_GET['question'])){
         echo "
 <table>
@@ -158,6 +196,7 @@ Type<br>
 <select id='type' name='type'  onchange='toggletype()' > 
 <option value=0 ".($question->type==Question::TYPE_PROG?"selected":"").">Programmation</option>
 <option value=1 ".($question->type==Question::TYPE_SYS?"selected":"").">Terminal interactif</option>
+<option value=2 ".($question->type==Question::TYPE_BD?"selected":"").">Base de données</option>
 </select>
 </td>
 <td>
@@ -199,7 +238,7 @@ Code de validation<br>
 </tr>
 </table>
 
-<div id='prog' name='prog' style='display:".($question->type==Question::TYPE_PROG?"block":"none")." '>
+<div id='prog' name='prog' style='display:".(($question->type==Question::TYPE_PROG || $question->type==Question::TYPE_BD)?"block":"none")." '>
 
 <table>
 <tr>
@@ -247,7 +286,7 @@ Post code <img width=16 src='images/interrogation.png' title='expression PHP  fo
 <tr>
 <td>
 Réponse <img width=16 src='images/interrogation.png' title='expression PHP donnant la réponse ou «null» si la réponse doit être une chaîne vide'><br>
-<textarea cols=80 id='reponse_prog' name='reponse_prog' >".$question->reponse."</textarea>
+<textarea cols=80 id='solution' name='solution' >".$question->solution."</textarea>
 </td>
 </tr>
 
@@ -268,7 +307,7 @@ Paramètres <img width=16 src='images/interrogation.png' title='chaîne de carac
 </table>
 </div>
 
-<div id='sys' name='sys'  style='display:".($question->type==Question::TYPE_SYS?"block":"none")." '>
+<div id='sys' name='sys'  style='display:".(($question->type==Question::TYPE_SYS || $question->type==Question::TYPE_BD)?"block":"none")." '>
 
 <table>
 
@@ -289,7 +328,7 @@ Nom d'utilisateur<br>
 <tr>
 <td>
 Réponse<br>
-<input type=text id='reponse_sys' name='reponse_sys'   value='".str_replace("'", "&#39;", $question->reponse)."'>
+<input type=text id='solution_courte' name='solution_courte'   value='".str_replace("'", "&#39;", $question->solution_courte)."'>
 </td>
 </tr>
 
@@ -310,6 +349,6 @@ Validation<br>
 </div>
 <input type=submit name='submit' value='Enregistrer'>
 </form>
-";
+    ";
 }
 ?>
