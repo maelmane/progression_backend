@@ -1,5 +1,5 @@
 FROM system
 
 RUN mkdir /home/krusty/Mes\ Documents
-COPY ["*.txt","/home/krusty/Mes Documents/"]
+COPY ["q14-1/*.txt","/home/krusty/Mes Documents/"]
 RUN chown krusty:krusty -R /home/krusty/*

@@ -1,7 +1,7 @@
 FROM system
 
-COPY bottin.txt /tmp/
+COPY qq19-1/bottin.txt /tmp/
 RUN chmod 400 /tmp/bottin.txt
-COPY bottin_poly.txt /home/krusty
+COPY qq19-1/bottin_poly.txt /home/krusty
 RUN chown krusty:krusty /home/krusty/*
 

@@ -1,7 +1,7 @@
 FROM system
 
 RUN mkdir /home/krusty/inclassables
-COPY fichiers/* /home/krusty/inclassables/
+COPY q12-4/fichiers/* /home/krusty/inclassables/
 RUN mkdir /home/krusty/KrustY
 RUN mv /home/krusty/inclassables/*k*y* /home/krusty/KrustY
 RUN chown krusty:krusty /home/krusty/inclassables -R
