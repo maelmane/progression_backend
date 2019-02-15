@@ -5,7 +5,8 @@ const LANG_NOMS=array("Python 2",
                       "Ruby",
                       "",
                       "PHP",
-                      "","",
+                      "",
+                      "",
                       "Go",
                       "C++",
                       "C",
@@ -33,8 +34,8 @@ function get_code($question=null, $avancement=null){
         $code=$_POST['incode'];
     }
     else{
-        if(!is_null($avancement) && $avancement->reponse!=''){
-            $code=$avancement->reponse;
+        if(!is_null($avancement) && $avancement->code!=''){
+            $code=$avancement->code;
         }
         else{
             if(!is_null($question)){
@@ -149,7 +150,7 @@ function exécuter_code($infos){
 
     //post le code à remotecompiler
     $url_rc='http://' . $GLOBALS['config']['compilebox_hote'] . ':' . $GLOBALS['config']['compilebox_port'] .'/compile';
-    $data_rc=array('language' => $langid, 'code' => $code_exec, 'parameters' => "\"$params\"", 'stdin' => $stdin);
+    $data_rc=array('language' => $langid, 'code' => $code_exec, 'parameters' => "\"$params\"", 'stdin' => $stdin, 'vm_name' => 'remotecompiler');
     $options_rc=array('http'=> array(
         'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
         'method'  => 'POST',

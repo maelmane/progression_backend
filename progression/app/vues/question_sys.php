@@ -68,7 +68,7 @@ function get_url_compilebox(){
 }
 
 function get_options_compilebox($question, $avancement){
-    if(isset($_POST['reset']) && $_POST['reset']=='Réinitialiser'){
+    if($avancement->get_etat()==Question::ETAT_DEBUT || isset($_POST['reset']) && $_POST['reset']=='Réinitialiser'){
         $data_rc=get_data_nouveau_conteneur($question, $avancement);
     }
     else{
@@ -138,9 +138,9 @@ function vérifier_réponse($infos){
         $réussi=true;            
     }
     //réponse textuelle
-    elseif(!is_null($infos["question"]->reponse) && $infos["question"]->reponse!=""){
+    elseif(!is_null($infos["question"]->solution_courte) && $infos["question"]->solution_courte!=""){
         if($infos['réponse']!='')
-            if($infos['réponse']==$infos["question"]->reponse){
+            if($infos['réponse']==$infos["question"]->solution_courte){
                 $réussi=true;
             }
     }

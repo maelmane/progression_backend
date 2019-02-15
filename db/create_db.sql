@@ -60,7 +60,7 @@ CREATE TABLE `question_prog` (
   `pre_code`	text,
   `in_code`	text,
   `post_code`	text,
-  `reponse`	text,
+  `solution`	text,
   `params`	varchar(255),
   `stdin`	varchar(255),
   PRIMARY KEY (`questionID`)
@@ -71,7 +71,7 @@ CREATE TABLE `question_systeme` (
   `image`         varchar(255),
   `user`          varchar(32),
   `verification`  text,
-  `reponse`       varchar(255),
+  `solution_courte`       varchar(255),
   PRIMARY KEY (`questionID`)
 );
 
@@ -81,7 +81,8 @@ CREATE TABLE `avancement` (
   `questionID`   int(11) NOT NULL,
   `conteneur`    varchar(64),
   `etat`	 int DEFAULT 1,
-  `reponse`	 text,
+  `code`	 text,
+  `reponse`      varchar(255),
   PRIMARY KEY (`userID`, `questionID`)
 );
 
