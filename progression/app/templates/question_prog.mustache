@@ -16,6 +16,26 @@
       {{{énoncé}}}
       <br>
       <br>
+      {{#essayé}}
+        <table class='metro' width=100%><tr>
+          {{#réussi}}
+          <td width=50% align=center>
+            Bonne réponse!
+          </td>
+          {{#validation}}
+          <td>
+            Code de validation : {{validation}}
+          </td>
+          {{/validation}}
+          {{/réussi}}
+          {{#nonréussi}}    
+          <td width=50% align=center>
+            Raté! Essayez encore
+          </td>
+          {{/nonréussi}}
+        </table>
+      {{/essayé}}
+      </table>
       <pre class='code-wrapper'>
         <code>
             <form method='post' action=''>
@@ -77,27 +97,6 @@
           <td align=left width=25%>
             <a href={{{url_retour}}}>↩ Retour à {{titre_retour}}</a>
           </td>
-	  {{#essayé}}
-	  {{#réussi}}
-          <td width=50% align=center>
-            Bonne réponse!
-          </td>
-	  {{#validation}}
-          <td>
-            Code de validation : {{validation}}
-          </td>
-	  {{/validation}}
-	  {{/réussi}}
-	  {{#nonréussi}}    
-          <td width=50% align=center>
-            Raté! Essayez encore
-          </td>
-	  {{/nonréussi}}
-	  {{/essayé}}
-	  {{^essayé}}
-	  <td/>
-	  {{/essayé}}
-
           <td align=right width=25%>
 	    {{#état_réussi}}
 	    {{#suivante}}

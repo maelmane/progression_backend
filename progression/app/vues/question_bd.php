@@ -18,8 +18,8 @@ function page_contenu(){
     if(isset($_POST['submit'])){
         $infos=array_merge($infos, traiter_résultats($sorties, $infos, $avancement, $question));
 
-        $infos["output"]=resume($infos["output"], 21);
-        $infos["solution"]=resume($infos["solution"], 21);
+        $infos["output"]=$infos["output"];
+        $infos["solution"]=$infos["solution"];
     }
 
     render_page($infos);
@@ -65,7 +65,7 @@ function décoder_réponse($réponse){
     $infos_réponse["cont_port"]=trim(json_decode($réponse, true)['add_port']);
     $infos_réponse["res_validation"]=trim(json_decode($réponse, true)['resultat']);
     $infos_réponse["output"]=trim(json_decode($réponse, true)['output']);
-    $infos_réponse["errors"]=trim(json_decode($réponse, true)['errors']);
+    $infos_réponse["erreurs"]=trim(json_decode($réponse, true)['errors']);
 
     return $infos_réponse;
 }
@@ -109,7 +109,7 @@ function construire_validation($question, $avancement){
         return str_replace("{reponse}", get_réponse_utilisateur(), $question->verification);
     }
     else{
-        return get_code($question, $avancement);
+        return $question->pre_exec . $question->pre_code . get_code($question, $avancement) . $question->post_code;
     }
 }
 
@@ -130,7 +130,10 @@ function récupérer_paramètres($question, $avancement){
         "titre"=>$question->titre,
         "langid"=>$langid,
         "params"=>"-u root -ppassword",
+	"pre_exec"=>$question->pre_exec,
+	"pre_code"=>$question->pre_code,
         "code"=>get_code($question, $avancement),
+	"post_code"=>$question->post_code,
         "reponse"=>get_réponse_utilisateur(),
         "énoncé"=>str_replace("\r","",eval("return \"$question->enonce\";")),
         "solution"=>str_replace("\r","",eval("return $question->solution;")),
@@ -189,9 +192,9 @@ function traiter_résultats($sorties, $infos, $avancement, $question){
     }
 
     if(isset($résultats["réussi"]))
-        sauvegarder_état_réussi($avancement, $infos['code'], $infos['reponse']);
+        sauvegarder_état_réussi($avancement, get_code($question, $avancement), $infos['reponse']);
     else
-        sauvegarder_état_échec($avancement, $infos['code'], $infos['reponse']);
+        sauvegarder_état_échec($avancement, get_code($question, $avancement), $infos['reponse']);
     
     $résultats["état_réussi"]=$avancement->get_etat()==Question::ETAT_REUSSI;
 

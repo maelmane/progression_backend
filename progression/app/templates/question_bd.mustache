@@ -16,10 +16,29 @@
             {{{énoncé}}}
             <br>
             <br>
+            {{#essayé}}   
+            <table class='metro' width=100%><tr>
+	                {{#réussi}}
+                            <td width=50% align=center>
+                                Bonne réponse!
+                            </td>
+	                    {{#validation}}
+                                <td>
+                                    Code de validation : {{validation}}
+                                </td>
+	                    {{/validation}}
+	                {{/réussi}}
+	                {{#nonréussi}}    
+                            <td width=50% align=center>
+                                Raté! Essayez encore
+                            </td>
+	                {{/nonréussi}}
+            </tr></table>
+	    {{/essayé}}
             <pre class='code-wrapper'>
                 <code>
                     <form method='post' action=''>
-                        <table width=100% height=500 style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'>
+                        <table width=100% style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'>
                             <tr>
                                 <td>
                                     Langage : {{lang_nom}}
@@ -68,8 +87,7 @@
                     </form>
                 </code>
             </pre>  
-
-            <table width=100%>
+		<table width=100%>
                 {{#essayé}}
                     {{#erreurs}}
 	                <tr>
@@ -87,36 +105,15 @@
                     <td align=left width=25%>
                         <a href={{{url_retour}}}>↩ Retour à {{titre_retour}}</a>
                     </td>
-	            {{#essayé}}
-	                {{#réussi}}
-                            <td width=50% align=center>
-                                Bonne réponse!
-                            </td>
-	                    {{#validation}}
-                                <td>
-                                    Code de validation : {{validation}}
-                                </td>
-	                    {{/validation}}
-	                {{/réussi}}
-	                {{#nonréussi}}    
-                            <td width=50% align=center>
-                                Raté! Essayez encore
-                            </td>
-	                {{/nonréussi}}
-	            {{/essayé}}
-	            {{^essayé}}
-	                <td/>
-	            {{/essayé}}
-
                     <td align=right width=25%>
 	                {{#état_réussi}}
 	                    {{#suivante}}
-                                <a href=index.php?p=question_prog&ID={{.}}>Question suivante →</a>
+                                <a href=index.php?p=question_bd&ID={{.}}>Question suivante →</a>
 	                    {{/suivante}}
 	                {{/état_réussi}}
                     </td>
                 </tr>
-            </table>
+		</table>
             <script>
              function betterTab(cm) {                         
                  if (cm.somethingSelected()) {
@@ -130,7 +127,7 @@
              var preeditor = CodeMirror.fromTextArea(document.getElementById('precode'),{
                  readOnly: true,
                  lineNumbers: true,
-                 firstLineNumber: {{première_ligne_éditeur_precode}},
+                 //firstLineNumber: {{première_ligne_éditeur_precode}},
                  indentUnit: 4
              });
              preeditor.setSize(null,'100%');//preeditor.getScrollInfo().height);
@@ -138,7 +135,7 @@
              var editor = CodeMirror.fromTextArea(document.getElementById('incode'),{
                  matchBrackets: true,
                  lineNumbers: true,
-                 firstLineNumber: {{première_ligne_éditeur_incode}},
+                 //firstLineNumber: {{première_ligne_éditeur_incode}},
                  readOnly: false,
                  indentUnit: 4,
                  scrollbarStyle: null,
@@ -149,7 +146,7 @@
              var posteditor = CodeMirror.fromTextArea(document.getElementById('postcode'),{
                  readOnly: true,
                  lineNumbers: true,
-                 firstLineNumber: {{première_ligne_éditeur_incode}}+editor.doc.lineCount(),
+                 //firstLineNumber: {{première_ligne_éditeur_incode}}+editor.doc.lineCount(),
                  indentUnit: 4
              });
              posteditor.setSize(null,'100%');
