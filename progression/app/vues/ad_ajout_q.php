@@ -175,10 +175,10 @@ function load_question(){
             elseif($question->type==Question::TYPE_BD){
                 $question=new QuestionBD($_GET['question']);
             }
-            else{
-                $question=new QuestionProg(-1);
-            }
-        }
+	}
+	else{
+		$question=new QuestionProg(-1);
+	}
 
         echo"
 </tr></table>";
@@ -226,7 +226,7 @@ Description<br>
 <tr>
 <td>
 Énoncé (chaîne de caractères)<br>
-<textarea cols=80 id='enonce' name='enonce' >".$question->enonce."</textarea>
+<textarea cols=80 rows=20 id='enonce' name='enonce' >".$question->enonce."</textarea>
 </td>
 </tr>
 
