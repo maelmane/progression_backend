@@ -49,7 +49,7 @@ function sauvegarder_conteneur($infos){
 
 function connexion_conteneur($infos){
     $url_rc=get_url_compilebox();
-    $options_rc=get_options_compilebox($infos["question"], $infos["avancement"]);
+    $options_rc=get_options_compilebox($infos);
 
     $context=stream_context_create($options_rc);
     $comp_resp=file_get_contents($url_rc, false, $context);
@@ -74,12 +74,12 @@ function get_url_compilebox(){
     return "http://".$GLOBALS['config']['compilebox_hote'].":".$GLOBALS['config']['compilebox_port']."/compile";
 }
 
-function get_options_compilebox($question, $avancement){
-    if($avancement->get_etat()==Question::ETAT_DEBUT || isset($_POST['reset']) && $_POST['reset']=='Réinitialiser'){
-        $data_rc=get_data_nouveau_conteneur($question, $avancement);
+function get_options_compilebox($infos){
+    if($infos['avancement']->get_etat()==Question::ETAT_DEBUT || isset($_POST['reset']) && $_POST['reset']=='Réinitialiser'){
+        $data_rc=get_data_nouveau_conteneur($infos);
     }
     else{
-        $data_rc=get_data_conteneur($question, $avancement);
+        $data_rc=get_data_conteneur($infos);
     }
     
     $options_rc=array('http'=> array(
@@ -90,16 +90,36 @@ function get_options_compilebox($question, $avancement){
     return $options_rc;
 }
 
-function get_data_nouveau_conteneur($question, $avancement){
-    return array('language' => 14, 'code' => 'reset', 'vm_name' => $question->image, 'parameters' => $avancement->conteneur, 'stdin' => '', 'user' => $question->user );
+function get_data_nouveau_conteneur($infos){
+    return array('language' => 14,
+                 'code' => 'reset',
+                 'vm_name' => $infos['question']->image,
+                 'parameters' => $infos['avancement']->conteneur,
+                 'params_conteneur' => $infos['params_conteneur'],
+                 'stdin' => '',
+                 'user' => $infos['question']->user );
 }
 
-function get_data_conteneur($question, $avancement){
-    if(is_null($question->verification) || $question->verification==""){
-        return array('language' => 14, 'code' => construire_validation($question, $avancement), 'vm_name' => 'remotecompiler', 'parameters' => $avancement->conteneur, 'stdin' => '', 'user' => $question->user);
+function get_data_conteneur($infos){
+    if(is_null($infos['question']->verification) || $infos['question']->verification==""){
+        return array('language' => 14,
+                     'code' => construire_validation($infos['question'],
+                                                     $infos['$avancement']),
+                     'vm_name' => 'remotecompiler',
+                     'parameters' => $infos['avancement']->conteneur,
+                     'params_conteneur' => $infos['params_conteneur'],
+                     'stdin' => '',
+                     'user' => $infos['question']->user);
     }
     else{
-        return array('language' => 14, 'code' => construire_validation($question, $avancement), 'vm_name' => $question->image, 'parameters' => $avancement->conteneur, 'stdin' => '', 'user' => $question->user);
+        return array('language' => 14,
+                     'code' => construire_validation($infos['question'],
+                                                     $infos['avancement']),
+                     'vm_name' => $infos['question']->image,
+                     'parameters' => $infos['avancement']->conteneur,
+                     'params_conteneur' => $infos['params_conteneur'],
+                     'stdin' => '',
+                     'user' => $infos['question']->user);
     }
 }
 
@@ -129,7 +149,8 @@ function récupérer_paramètres($question, $avancement){
         "avancement"=>$avancement,
         "titre"=>$question->titre,
         "langid"=>$langid,
-        "params"=>"-u root -ppassword",
+        "params"=>$question->user,
+        "params_conteneur"=>"-e MYSQL_ALLOW_EMPTY_PASSWORD=yes",
         "code"=>get_code($question, $avancement),
         "reponse"=>get_réponse_utilisateur(),
         "énoncé"=>str_replace("\r","",eval("return \"$question->enonce\";")),

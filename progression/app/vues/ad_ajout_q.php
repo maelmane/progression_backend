@@ -175,9 +175,9 @@ function load_question(){
             elseif($question->type==Question::TYPE_BD){
                 $question=new QuestionBD($_GET['question']);
             }
-            else{
-                $question=new QuestionProg(-1);
-            }
+        }
+        else{
+            $question=new QuestionProg(-1);
         }
 
         echo"
