@@ -5,7 +5,6 @@ page_contenu();
 
 function page_contenu(){
     $infos=get_infos();
-    
     $réponse_serveur=connexion_conteneur($infos);
     $infos=array_merge($infos, décoder_réponse($réponse_serveur));
     
@@ -28,7 +27,8 @@ function get_infos(){
                  "avancement"=>$avancement,
                  "nom_serveur"=>$_SERVER["SERVER_NAME"],
                  "url_retour"=>"index.php?p=serie&ID=".$question->serieID,
-                 "titre_retour"=>"la liste de questions");
+                 "titre_retour"=>"la liste de questions",
+                 "params_conteneur"=>"-e SIAB_SERVICE=/:" . $question->user . ":" . $question->user . ":HOME:SHELL");
 
     return $infos;
 }
@@ -55,7 +55,7 @@ function get_réponse_utilisateur(){
 
 function connexion_conteneur($infos){
     $url_rc=get_url_compilebox();
-    $options_rc=get_options_compilebox($infos["question"], $infos["avancement"]);
+    $options_rc=get_options_compilebox($infos["question"], $infos["avancement"], $infos);
 
     $context=stream_context_create($options_rc);
     $comp_resp=file_get_contents($url_rc, false, $context);
@@ -67,12 +67,12 @@ function get_url_compilebox(){
     return "http://".$GLOBALS['config']['compilebox_hote'].":".$GLOBALS['config']['compilebox_port']."/compile";
 }
 
-function get_options_compilebox($question, $avancement){
+function get_options_compilebox($question, $avancement, $infos){
     if($avancement->get_etat()==Question::ETAT_DEBUT || isset($_POST['reset']) && $_POST['reset']=='Réinitialiser'){
-        $data_rc=get_data_nouveau_conteneur($question, $avancement);
+        $data_rc=get_data_nouveau_conteneur($infos);
     }
     else{
-        $data_rc=get_data_conteneur($question, $avancement);
+        $data_rc=get_data_conteneur($infos);
     }
     
     $options_rc=array('http'=> array(
@@ -83,12 +83,24 @@ function get_options_compilebox($question, $avancement){
     return $options_rc;
 }
 
-function get_data_nouveau_conteneur($question, $avancement){
-    return array('language' => 13, 'code' => 'reset', 'vm_name' => $question->image, 'parameters' => $avancement->conteneur, 'stdin' => '', 'user' => $question->user );
+function get_data_nouveau_conteneur($infos){
+    return array('language' => 13,
+                 'code' => 'reset',
+                 'vm_name' => $infos['question']->image,
+                 'parameters' => $infos['avancement']->conteneur,
+                 'params_conteneur' => $infos['params_conteneur'],
+                 'stdin' => '',
+                 'user' => $infos['question']->user );
 }
 
-function get_data_conteneur($question, $avancement){
-    return array('language' => 13, 'code' => construire_validation($question), 'vm_name' => $question->image, 'parameters' => $avancement->conteneur, 'stdin' => '', 'user' => $question->user);
+function get_data_conteneur($infos){
+    return array('language' => 13,
+                 'code' => construire_validation($infos['question']),
+                 'vm_name' => $infos['question']->image,
+                 'parameters' => $infos['avancement']->conteneur,
+                 'params_conteneur' => $infos['params_conteneur'],
+                 'stdin' => '',
+                 'user' => $infos['question']->user);
 }
 
 function construire_validation($question){
