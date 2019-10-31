@@ -1,0 +1,5 @@
+FROM mariadb
+
+ENV MYSQL_ALLOW_EMPTY_PASSWORD=yes
+COPY médecins_1.sql /docker-entrypoint-initdb.d/
+

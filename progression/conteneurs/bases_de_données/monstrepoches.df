@@ -1,5 +1,5 @@
 FROM mariadb
 
-ENV MYSQL_ROOT_PASSWORD=password
-COPY monstrepoches.sql /tmp/
-#RUN mysql -u root -ppassword < /tmp/monstrepoches.sql
+ENV MYSQL_ALLOW_EMPTY_PASSWORD=yes
+COPY monstrepoches.sql /docker-entrypoint-initdb.d/
+

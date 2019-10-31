@@ -8,8 +8,8 @@ RUN apt update && apt install -y iptables && apt clean
 #iptables -t nat -F
 #iptables -X
 #
-#iptables -t nat -A PREROUTING -p tcp -d $(hostname -i) --dport 3306 -j DNAT --to 172.17.0.2
-#iptables -t nat -A POSTROUTING -p tcp -d 172.17.0.2 --dport 3306 -j SNAT --to $(hostname -i)
+#iptables -t nat -A PREROUTING -p tcp -d $(hostname -i) --dport 3306 -j DNAT --to 172.17.0.3
+#iptables -t nat -A POSTROUTING -p tcp -d 172.17.0.3 --dport 3306 -j SNAT --to $(hostname -i)
 
 COPY start.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/start.sh
