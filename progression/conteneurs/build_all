@@ -24,5 +24,3 @@ for f in bases_de_données sys
 do
   find $f -type d -exec bash -c 'build_rep "$0"' {} \;
 done
-
-#find sys -type d -exec bash -c 'build_rep "$0"' {} \;
