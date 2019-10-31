@@ -20,5 +20,9 @@ export -f build_rep
 build "bases/shellinabox/siab.df"
 build_rep "bases"
  
-find bases_de_données -type d -exec bash -c 'build_rep "$0"' {} \;
+for f in bases_de_données sys
+do
+  find $f -type d -exec bash -c 'build_rep "$0"' {} \;
+done
+
 #find sys -type d -exec bash -c 'build_rep "$0"' {} \;

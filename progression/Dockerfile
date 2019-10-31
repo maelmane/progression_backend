@@ -26,7 +26,7 @@ COPY app/composer.json /srv/
 RUN cd /srv/ && composer install
 
 COPY quiz.conf /srv/
-COPY app/ /srv/http/
+COPY app /srv/http/
 
 RUN chown -R http:http /srv/
 

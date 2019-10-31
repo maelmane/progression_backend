@@ -130,7 +130,7 @@ function construire_validation($question, $avancement){
         return str_replace("{reponse}", get_réponse_utilisateur(), $question->verification);
     }
     else{
-        return $question->pre_exec . $question->pre_code . get_code($question, $avancement) . $question->post_code;
+        return $question->pre_exec ."\n". $question->pre_code ."\n". get_code($question, $avancement) ."\n". $question->post_code;
     }
 }
 
@@ -153,7 +153,7 @@ function récupérer_paramètres($question, $avancement){
 	"pre_exec"=>$question->pre_exec,
 	"pre_code"=>$question->pre_code,
         "params"=>$question->user,
-        "params_conteneur"=>"-e MYSQL_ALLOW_EMPTY_PASSWORD=yes",
+        "params_conteneur"=>"-e MYSQL_ALLOW_EMPTY_PASSWORD=yes --tmpfs /var/lib/mysql:rw",
         "code"=>get_code($question, $avancement),
 	"post_code"=>$question->post_code,
         "reponse"=>get_réponse_utilisateur(),
