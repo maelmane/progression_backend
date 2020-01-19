@@ -15,7 +15,7 @@ function page_contenu(){
     $infos=array_merge($infos, décoder_réponse($sorties));
     sauvegarder_conteneur($infos);
     
-    if(isset($_POST['submit'])){
+    if(isset($_POST['submit']) && $infos['reponse']!=""){
         $infos=array_merge($infos, traiter_résultats($sorties, $infos, $avancement, $question));
 
         $infos["output"]=$infos["output"];
