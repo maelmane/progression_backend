@@ -15,11 +15,8 @@ function page_contenu(){
     $infos=array_merge($infos, décoder_réponse($sorties));
     sauvegarder_conteneur($infos);
     
-    if(isset($_POST['submit']) && $infos['reponse']!=""){
+    if(isset($_POST['submit'])){
         $infos=array_merge($infos, traiter_résultats($sorties, $infos, $avancement, $question));
-
-        $infos["output"]=$infos["output"];
-        $infos["solution"]=$infos["solution"];
     }
 
     render_page($infos);
@@ -150,12 +147,12 @@ function récupérer_paramètres($question, $avancement){
         "avancement"=>$avancement,
         "titre"=>$question->titre,
         "langid"=>$langid,
-	"pre_exec"=>$question->pre_exec,
-	"pre_code"=>$question->pre_code,
+		"pre_exec"=>$question->pre_exec,
+		"pre_code"=>$question->pre_code,
         "params"=>$question->user,
         "params_conteneur"=>"-e MYSQL_ALLOW_EMPTY_PASSWORD=yes --tmpfs /var/lib/mysql:rw",
         "code"=>get_code($question, $avancement),
-	"post_code"=>$question->post_code,
+		"post_code"=>$question->post_code,
         "reponse"=>get_réponse_utilisateur(),
         "énoncé"=>str_replace("\r","",eval("return \"$question->enonce\";")),
         "solution"=>str_replace("\r","",eval("return $question->solution;")),
@@ -185,6 +182,8 @@ function compter_lignes($texte){
 }
 
 function traiter_résultats($sorties, $infos, $avancement, $question){
+	if($_POST["submit"]=="" || ($infos["solution_courte"]!="" && $infos["reponse"]=="")) return array();
+
     $résultats=array();
     $résultats["essayé"]="true";
     
