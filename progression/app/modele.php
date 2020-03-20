@@ -262,13 +262,14 @@ class Serie extends Entite{
     public function save(){
         if(!$this->id){
 
-			$query=$this->conn->prepare("SELECT MAX(numero)+1 as numero FROM serie WHERE themeID=?");
+			$query=$this->conn->prepare("SELECT MAX(numero) as numero FROM serie WHERE themeID=?");
 			$query->bind_param("i", $this->themeID);
 			$query->execute();
-			$query->bind_result($numero_suivant);
+			$query->bind_result($numero_max);
 			$query->fetch();
 			$query->close();
-			if(is_null($numero_suivant)) $numero_suivant=0;
+			if(is_null($numero_max)) $numero_max=0;
+			$numero_suivant=$numero_max+1;
 			
 			$query=$this->conn->prepare("INSERT INTO serie( numero, 
                                                             titre,
@@ -277,7 +278,7 @@ class Serie extends Entite{
                                          VALUES( ?, ?, ?, ?)");
 
 			$query->bind_param( "issi",
-								$numero_suivant,
+								$numero_max,
 								$this->titre,
 								$this->description,
 								$this->themeID);
@@ -424,6 +425,15 @@ class Question extends Entite{
 
 	public function save(){
 		if(!$this->id){
+			$query=$this->conn->prepare("SELECT MAX(numero) as numero FROM question WHERE serieID=?");
+			$query->bind_param("i", $this->serieID);
+			$query->execute();
+			$query->bind_result($numero_max);
+			$query->fetch();
+			$query->close();
+			if(is_null($numero_max)) $numero_max=0;
+			$numero_suivant=$numero_max+1;
+
 			$query=$this->conn->prepare("INSERT INTO question(serieID,
                                                               actif,
                                                               type,
@@ -440,7 +450,7 @@ class Question extends Entite{
 								$this->type,
 								$this->titre,
 								$this->description,
-								$this->numero,
+								$numero_suivant,
 								$this->enonce,
 								$this->code_validation );
 			$query->execute();

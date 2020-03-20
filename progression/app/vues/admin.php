@@ -4,7 +4,7 @@ page_header();
 
 $user=charger_user_ou_terminer();
 rôle_admin_ou_terminer($user);
-render_page();
+page_contenu();
 
 function charger_user_ou_terminer(){
     $user=new User($_SESSION['user_id']);

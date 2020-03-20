@@ -2,7 +2,7 @@
 
 include('admin.php');
 
-function render_page(){
+function page_contenu(){
     afficher_page();
 }
 
