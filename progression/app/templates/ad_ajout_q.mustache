@@ -1,240 +1,300 @@
-<script>
- function toggletype(){
-	 document.getElementById('prog').style.display=(document.getElementById('type').value!=1?'block':'none');
-	 document.getElementById('sys').style.display=(document.getElementById('type').value!=0?'block':'none');
- }
+<head>
 
- function load_theme(){
-	 window.location='?p=ad_ajout_q&theme='+document.getElementById('theme').value;
- }
+	<link rel='stylesheet' type='text/css' href='css/style.css'>
+	<script src='./CodeMirror/lib/codemirror.js'></script>
+	<link rel='stylesheet' href='./CodeMirror/lib/codemirror.css'>
 
- function load_serie(){
-	 window.location='?p=ad_ajout_q&theme='+document.getElementById('theme').value+'&serie='+document.getElementById('serie').value;
- }
+	<script src='./CodeMirror/mode/{{mode}}'></script>
 
- function load_question(){
-	 window.location='?p=ad_ajout_q&theme='+document.getElementById('theme').value+'&serie='+document.getElementById('serie').value+'&question='+document.getElementById('question').value;}
+	<meta charset='utf-8'>
 
-</script>
+	<script>
+	 function toggletype(){
+		 document.getElementById('prog').style.display=(document.getElementById('type').value!=1?'block':'none');
+		 document.getElementById('sys').style.display=(document.getElementById('type').value!=0?'block':'none');
+	 }
 
+	 function load_theme(){
+		 window.location='?p=ad_ajout_q&theme='+document.getElementById('theme').value;
+	 }
 
-<form method='post' id='fquestion'>
-	<table border=0>
-		<tr>
-			<th>Thème</th><th>Série</th><th>Question</th>
+	 function load_serie(){
+		 window.location='?p=ad_ajout_q&theme='+document.getElementById('theme').value+'&serie='+document.getElementById('serie').value;
+	 }
+
+	 function load_question(){
+		 window.location='?p=ad_ajout_q&theme='+document.getElementById('theme').value+'&serie='+document.getElementById('serie').value+'&question='+document.getElementById('question').value;}
+
+	</script>
+</head>
+
+<body>
+
+	<form method='post' id='fquestion'>
+		<table border=0>
 			<tr>
-				<td><select id='theme' name='theme' onchange='load_theme()'>
-					<option value = 0 >Nouveau thème</option>
+				<th>Thème</th><th>Série</th><th>Question</th>
+				<tr>
+					<td><select id='theme' name='theme' onchange='load_theme()'>
+						<option value = 0 >Nouveau thème</option>
 
-					{{# thèmes }}
-						<option value = '{{ id }}' {{# sélectionné }}selected{{/ sélectionné }} > {{ titre }} </option>
-					{{/ thèmes }}
+						{{# thèmes }}
+							<option value = '{{ id }}' {{# sélectionné }}selected{{/ sélectionné }} > {{ titre }} </option>
+						{{/ thèmes }}
 
-				</select></td>
-
-				{{# nouveau_thème }}
-			</tr><tr><td><input placeholder='titre du thème' name='theme_titre'></td>
-				{{/ nouveau_thème }}
-
-				{{^ nouveau_thème }}
-					<td><select id='serie' name='serie' onchange='load_serie()'>
-						<option value = 0 >Nouvelle série</option>
-
-						{{# séries }}
-							<option value = '{{ id }}' {{# sélectionnée }}selected{{/ sélectionnée }}> {{ titre }} </option>
-						{{/ séries }}
-						
 					</select></td>
-					
-					{{# nouvelle_série }}
-			</tr><tr><td><td><input placeholder='titre de la série' name='serie_titre'></td>
-					{{/ nouvelle_série }}
-					
-					{{^ nouvelle_série }}
-						<td><select id='question' name='question' onchange='load_question()'>
-							<option value = 0 >Nouvelle question</option>
-							
-							{{# questions }}
-								<option value = '{{ id }}' {{# sélectionnée }}selected{{/ sélectionnée }}> {{ numero }} {{ titre }} </option>
-							{{/ questions }}
+
+					{{# nouveau_thème }}
+				</tr><tr><td><input placeholder='titre du thème' name='theme_titre'></td>
+					{{/ nouveau_thème }}
+
+					{{^ nouveau_thème }}
+						<td><select id='serie' name='serie' onchange='load_serie()'>
+							<option value = 0 >Nouvelle série</option>
+
+							{{# séries }}
+								<option value = '{{ id }}' {{# sélectionnée }}selected{{/ sélectionnée }}> {{ titre }} </option>
+							{{/ séries }}
 							
 						</select></td>
 						
-					{{/ nouvelle_série }}
+						{{# nouvelle_série }}
+				</tr><tr><td><td><input placeholder='titre de la série' name='serie_titre'></td>
+						{{/ nouvelle_série }}
+						
+						{{^ nouvelle_série }}
+							<td><select id='question' name='question' onchange='load_question()'>
+								<option value = 0 >Nouvelle question</option>
+								
+								{{# questions }}
+									<option value = '{{ id }}' {{# sélectionnée }}selected{{/ sélectionnée }}> {{ numero }} {{ titre }} </option>
+								{{/ questions }}
+								
+							</select></td>
+							
+						{{/ nouvelle_série }}
 
-				{{/ nouveau_thème }}
-			</tr></table>
-
-	<table>
-		<tr>		
-			{{# question }}
-				<tr>
-					<td>
-						Numéro<br>
-						<input type=text id='numero' name='numero'  value='{{ numero }}' readonly>
-					</td>
-					<td>
-						Type<br>
-						<select id='type' name='type'  onchange='toggletype()' > 
-							<option value=0 {{# type_prog }}selected{{/ type_prog }}>Programmation</option>
-							<option value=1 {{# type_sys }}selected{{/ type_sys }}>Terminal interactif</option>
-							<option value=2 {{# type_bd }}selected{{/ type_bd }}>Base de données</option>
-						</select>
-					</td>
-					<td>
-						Actif<br>
-						<select id='actif' name='actif'  onchange='toggletype()' > 
-							<option value=0 {{^ actif }}selected{{/ actif }}>Inactive</option>
-							<option value=1 {{# actif }}selected{{/ actif }}>Active</option>
-						</select>
-					</td>
-					{{# type_prog }}
-						<td><a href='index.php?p=question_prog&ID={{ id }}' target='_blank'>visualiser</a></td>
-					{{/ type_prog }}
-					{{# type_sys }}
-						<td><a href='index.php?p=question_sys&ID={{ id }}' target='_blank'>visualiser</a></td>
-					{{/ type_sys }}
-					{{# type_bd }}
-						<td><a href='index.php?p=question_bd&ID={{ id }}' target='_blank'>visualiser</a></td>
-					{{/ type_bd }}
-					
-				</tr>
-
-				<tr>
-					<td>
-						Titre<br>
-						<input type=text id='titre' name='titre'   value='{{ titre }}'>
-					</td>
-				</tr>
-
-				<tr>
-					<td>
-						Description<br>
-						<input type=text id='description' name='description' value='{{ description }}'>
-					</td>
-				</tr>
-
-
-				<tr>
-					<td>
-						Énoncé (chaîne de caractères)<br>
-						<textarea cols=80 rows=20 id='enonce' name='enonce' >{{ enonce }}</textarea>
-					</td>
-				</tr>
-
-				<tr>
-					<td>
-						Code de validation<br>
-						<input type=text id='code_validation' name='code_validation' value='{{ code_validation }}'>
-					</td>
-				</tr>
-	</table>
-
-	<div id='prog' name='prog' style='display:{{# type_sys }}none{{/ type_sys }} {{^ type_sys }}block{{/ type_sys}}'>
+					{{/ nouveau_thème }}
+				</tr></table>
 
 		<table>
-			<tr>
-				<td>
-					{{> menu_langages }}
-					<script> document.getElementById('langid').value={{ lang }};</script>
-				</td>
-			</tr>
+			<tr>		
+				{{# question }}
+					<tr>
+						<td>
+							Numéro<br>
+							<input type=text id='numero' name='numero'  value='{{ numero }}' readonly>
+						</td>
+						<td>
+							Type<br>
+							<select id='type' name='type'  onchange='toggletype()' > 
+								<option value=0 {{# type_prog }}selected{{/ type_prog }}>Programmation</option>
+								<option value=1 {{# type_sys }}selected{{/ type_sys }}>Terminal interactif</option>
+								<option value=2 {{# type_bd }}selected{{/ type_bd }}>Base de données</option>
+							</select>
+						</td>
+						<td>
+							Actif<br>
+							<select id='actif' name='actif'  onchange='toggletype()' > 
+								<option value=0 {{^ actif }}selected{{/ actif }}>Inactive</option>
+								<option value=1 {{# actif }}selected{{/ actif }}>Active</option>
+							</select>
+						</td>
+						{{# type_prog }}
+							<td><a href='index.php?p=question_prog&ID={{ id }}' target='_blank'>visualiser</a></td>
+						{{/ type_prog }}
+						{{# type_sys }}
+							<td><a href='index.php?p=question_sys&ID={{ id }}' target='_blank'>visualiser</a></td>
+						{{/ type_sys }}
+						{{# type_bd }}
+							<td><a href='index.php?p=question_bd&ID={{ id }}' target='_blank'>visualiser</a></td>
+						{{/ type_bd }}
+						
+					</tr>
+
+					<tr>
+						<td>
+							Titre<br>
+							<input type=text id='titre' name='titre'   value='{{ titre }}'>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							Description<br>
+							<input type=text id='description' name='description' value='{{ description }}'>
+						</td>
+					</tr>
 
 
-			<tr>
-				<td>
-					Setup <img width=16 src='images/interrogation.png' title='script PHP exécuté avant le code soumis'><br>
-					<textarea cols=80 id='setup' name='setup' >{{ setup }}</textarea>
-				</td>
-			</tr>
+					<tr>
+						<td>
+							Énoncé (chaîne de caractères)<br>
+							<textarea cols=80 rows=20 id='enonce' name='enonce' >{{ enonce }}</textarea>
+						</td>
+					</tr>
 
-			<tr>
-				<td>
-					Pré exécution <img width=16 src='images/interrogation.png' title='expression PHP fournissant un code invisible à être exécuté au début code soumis'><br>
-					<textarea cols=80 id='pre_exec' name='pre_exec' >{{ pre_exec }}</textarea>
-				</td>
-			</tr>
-
-			<tr>
-				<td>
-					Pré code <img width=16 src='images/interrogation.png' title='expression PHP fournissant un code visible à être exécuté au début code soumis'><br>
-					<textarea cols=80 id='pre_code' name='pre_code' >{{ pre_code }}</textarea>
-				</td>
-			</tr>
-
-			<tr>
-				<td>
-					Code de base <img width=16 src='images/interrogation.png' title='chaîne de caractères placée dans la zone modifiable de la question'><br>
-					<textarea cols=80 id='incode' name='incode' >{{ incode }}</textarea>
-				</td>
-			</tr>
-
-			<tr>
-				<td>
-					Post code <img width=16 src='images/interrogation.png' title='expression PHP  fournissant un code visible à être exécuté à la fin du code soumis'><br>
-					<textarea cols=80 id='post_code' name='post_code' >{{ post_code }}</textarea>
-				</td>
-			</tr>
-
-			<tr>
-				<td>
-					Réponse <img width=16 src='images/interrogation.png' title='expression PHP donnant la réponse ou «null» si la réponse doit être une chaîne vide'><br>
-					<textarea cols=80 id='solution' name='solution' >{{ solution }}</textarea>
-				</td>
-			</tr>
-
-			<tr>
-				<td>
-					Stdin <img width=16 src='images/interrogation.png' title='expression PHP donnant une chaîne de caractères passée à l&#39;entrée standard lors de l&#39;exécution du code soumis'><br>
-					<input type=text id='stdin' name='stdin'  value='{{ stdin }}'>
-				</td>
-			</tr>
-
-			<tr>
-				<td>
-					Paramètres <img width=16 src='images/interrogation.png' title='chaîne de caractères passé en paramètres sur la ligne de commande lors de l&#39;exécution du code soumis'><br>
-					<input type=text id='params' name='params'  value='{{ params }}'>
-				</td>
-			</tr>
-
+					<tr>
+						<td>
+							Code de validation<br>
+							<input type=text id='code_validation' name='code_validation' value='{{ code_validation }}'>
+						</td>
+					</tr>
 		</table>
-	</div>
 
-	<div id='sys' name='sys'  style='display:{{# type_prog }}none{{/ type_prog }} {{^ type_prog }}block{{/ type_prog}}'>
+		<div id='prog' name='prog' style='display:{{# type_sys }}none{{/ type_sys }} {{^ type_sys }}block{{/ type_sys}}'>
 
-		<table>
+			<table>
+				<tr>
+					<td>
+						{{> menu_langages }}
+						<script> document.getElementById('langid').value={{ lang }};</script>
+					</td>
+				</tr>
 
-			<tr>
-				<td>
-					Image<br>
-					<input type=text id='image' name='image'  value='{{ image }}'>
-				</td>
-			</tr>
 
-			<tr>
-				<td>
-					Nom d'utilisateur<br>
-					<input type=text id='username' name='username'  value='{{ user }}'>
-				</td>
-			</tr>
+				<tr>
+					<td>
+						Setup <img width=16 src='images/interrogation.png' title='script PHP exécuté avant le code soumis'><br>
+						<textarea cols=80 id='setup' name='setup' >{{ setup }}</textarea>
+					</td>
+				</tr>
 
-			<tr>
-				<td>
-					Réponse<br>
-					<input type=text id='solution_courte' name='solution_courte'   value='{{ solution_courte }}'>
-				</td>
-			</tr>
+				<tr>
+					<td>
+						Pré exécution <img width=16 src='images/interrogation.png' title='expression PHP fournissant un code invisible à être exécuté au début code soumis'><br>
+						<textarea cols=80 id='pre_exec' name='pre_exec' >{{ pre_exec }}</textarea>
+					</td>
+				</tr>
 
-			<tr>
-				<td>
-					Validation<br>
-					<input type=text id='verification' name='verification'   value='{{ verification }}'>
-				</td>
-			</tr>
+				<tr>
+					<td>
+						Pré code <img width=16 src='images/interrogation.png' title='expression PHP fournissant un code visible à être exécuté au début code soumis'><br>
+						<textarea cols=80 id='precode' name='pre_code' >{{ pre_code }}</textarea>
+					</td>
+				</tr>
 
-		</table>
-	</div>
+				<tr>
+					<td>
+						Code de base <img width=16 src='images/interrogation.png' title='chaîne de caractères placée dans la zone modifiable de la question'><br>
+						<textarea cols=80 id='incode' name='incode' >{{ incode }}</textarea>
+					</td>
+				</tr>
 
-			{{/ question }}
-			<input type=submit name='submit' value='Enregistrer'>
-</form>
+				<tr>
+					<td>
+						Post code <img width=16 src='images/interrogation.png' title='expression PHP  fournissant un code visible à être exécuté à la fin du code soumis'><br>
+						<textarea cols=80 id='postcode' name='post_code' >{{ post_code }}</textarea>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						Réponse <img width=16 src='images/interrogation.png' title='expression PHP donnant la réponse ou «null» si la réponse doit être une chaîne vide'><br>
+						<textarea cols=80 id='solution' name='solution' >{{ solution }}</textarea>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						Stdin <img width=16 src='images/interrogation.png' title='expression PHP donnant une chaîne de caractères passée à l&#39;entrée standard lors de l&#39;exécution du code soumis'><br>
+						<input type=text id='stdin' name='stdin'  value='{{ stdin }}'>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						Paramètres <img width=16 src='images/interrogation.png' title='chaîne de caractères passé en paramètres sur la ligne de commande lors de l&#39;exécution du code soumis'><br>
+						<input type=text id='params' name='params'  value='{{ params }}'>
+					</td>
+				</tr>
+
+			</table>
+		</div>
+
+		<div id='sys' name='sys'  style='display:{{# type_prog }}none{{/ type_prog }} {{^ type_prog }}block{{/ type_prog}}'>
+
+			<table>
+
+				<tr>
+					<td>
+						Image<br>
+						<input type=text id='image' name='image'  value='{{ image }}'>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						Nom d'utilisateur<br>
+						<input type=text id='username' name='username'  value='{{ user }}'>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						Réponse<br>
+						<input type=text id='solution_courte' name='solution_courte'   value='{{ solution_courte }}'>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						Validation<br>
+						<input type=text id='verification' name='verification'   value='{{ verification }}'>
+					</td>
+				</tr>
+
+			</table>
+
+			<script>
+			 function betterTab(cm) {                         
+				 if (cm.somethingSelected()) {
+					 cm.indentSelection('add');
+				 } else {
+					 cm.replaceSelection(cm.getOption('indentWithTabs')? '\t':
+										 Array(cm.getOption('indentUnit') + 1).join(' '), 'end', '+input');
+				 }
+			 }
+
+			 var preeditor = CodeMirror.fromTextArea(document.getElementById('precode'),{
+				 lineNumbers: true,
+				 firstLineNumber: {{première_ligne_éditeur_precode}},
+				 indentUnit: 4
+			 });
+			 preeditor.setSize(null,'100%');//preeditor.getScrollInfo().height);
+			 
+			 var editor = CodeMirror.fromTextArea(document.getElementById('incode'),{
+				 matchBrackets: true,
+				 lineNumbers: true,
+				 firstLineNumber: {{première_ligne_éditeur_incode}},
+				 readOnly: false,
+				 indentUnit: 4,
+				 scrollbarStyle: null,
+				 extraKeys: { Tab: betterTab }
+			 });
+			 editor.setSize('100%', '100%');
+
+			 var posteditor = CodeMirror.fromTextArea(document.getElementById('postcode'),{
+				 lineNumbers: true,
+				 firstLineNumber: {{première_ligne_éditeur_incode}}+editor.doc.lineCount(),
+				 indentUnit: 4
+			 });
+			 posteditor.setSize(null,'100%');
+			 preeditor.doc.on('change', function(instance, changeObj){
+			     editor.setOption('firstLineNumber', {{première_ligne_éditeur_precode}}+preeditor.doc.lineCount());
+			     posteditor.setOption('firstLineNumber', {{première_ligne_éditeur_precode}}+preeditor.doc.lineCount()+editor.doc.lineCount());
+			 });
+			 editor.doc.on('change', function(instance, changeObj){
+			     posteditor.setOption('firstLineNumber', {{première_ligne_éditeur_precode}}+preeditor.doc.lineCount()+editor.doc.lineCount());
+			 });
+
+			</script>
+  
+		</div>
+
+				{{/ question }}
+				<input type=submit name='submit' value='Enregistrer'>
+	</form>
+
+	{{>footer}}
+	

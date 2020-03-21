@@ -61,6 +61,7 @@ function récupérer_questions($série, $id_question){
 	$infos["questions"]=$série->get_questions();
 	foreach($infos["questions"] as $question){
 		$question->sélectionnée=$question->id==$id_question;
+		$infos["mode"]=get_mode($question->lang);
 	}
 	if($id_question==0){
 		$infos["nouvelle_question"]=true;
@@ -85,6 +86,9 @@ function récupérer_question_sélectionnée($question, $id_question){
 		$question=new QuestionSysteme($question->id);
 		$question->type_sys=true;
 	}
+
+	$question->première_ligne_éditeur_precode=compter_lignes($question->pre_exec)+1;
+    $question->première_ligne_éditeur_incode=compter_lignes($question->pre_exec)+compter_lignes($question->pre_code)+1;
 
 	return array("question"=>$question);
 }
@@ -179,6 +183,15 @@ function sauvegarder(){
 			header("Location: index.php?p=ad_ajout_q&theme=$_GET[theme]&serie=$_GET[serie]&question=$qid");
 		}
 	}
+}
+
+function compter_lignes($texte){
+    if($texte==""){
+        return 0;
+    }
+    else{
+        return count(preg_split('/\n/',$texte));
+    }
 }
 
 function render_page($infos){
