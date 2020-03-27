@@ -1,4 +1,4 @@
-FROM ubuntu:xenial
+FROM ubuntu:bionic
 
 RUN apt-get update && apt-get install -y libssl1.0.0 libpam0g openssl curl openssh-client sudo locales screen
 
@@ -20,6 +20,7 @@ RUN mkdir /etc/shellinabox/certs
 #COPY certs/certificate-progression.dept-info.crosemont.quebec.pem /etc/shellinabox/certs 
 COPY certs/privkey.pem certs/cert.pem /etc/shellinabox/certs/
 RUN cat /etc/shellinabox/certs/privkey.pem /etc/shellinabox/certs/cert.pem > /etc/shellinabox/certs/certificate-progression.dept-info.crosemont.quebec.pem
+RUN cat /etc/shellinabox/certs/privkey.pem /etc/shellinabox/certs/cert.pem > /etc/shellinabox/certs/certificate-progression.dti.crosemont.quebec.pem
 RUN cp /etc/shellinabox/certs/certificate-progression.dept-info.crosemont.quebec.pem /etc/shellinabox/certs/certificate.pem
 RUN rm /etc/shellinabox/certs/cert.pem /etc/shellinabox/certs/privkey.pem
 RUN chown -R shellinabox:shellinabox /etc/shellinabox/certs

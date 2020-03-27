@@ -17,7 +17,7 @@ function page_contenu(){
         $infos=array_merge($infos, traiter_résultats($sorties, $infos, $avancement, $question));
 
         $infos["output"]=resume($infos["output"], 21);
-        $infos["reponse"]=resume($infos["reponse"], 21);
+        $infos["solution"]=resume($infos["solution"], 21);
     }
 
     render_page($infos);
@@ -63,7 +63,7 @@ function récupérer_paramètres($question, $avancement){
                  "params"=>get_params($question),
                  //Évalue seulement si stdin provient de la BD
                  "stdin"=>($question->stdin==""?get_stdin($question):str_replace("\r","",eval("return ".get_stdin($question).";"))),
-                 "reponse"=>str_replace("\r","",eval("return $question->reponse;")),
+                 "solution"=>str_replace("\r","",eval("return $question->solution;")),
                  "url_retour"=>"index.php?p=serie&ID=".$question->serieID,
                  "titre_retour"=>"la liste de questions",
                  "suivante"=>$question->suivante,
@@ -89,7 +89,7 @@ function traiter_résultats($sorties, $infos, $avancement, $question){
     $résultats=array();
 
     $résultats["essayé"]="true";
-    if(valider_résultats($sorties, $infos['reponse'])){
+    if(vérifier_solution($sorties, $infos['solution'])){
         sauvegarder_état_réussi($avancement, $infos['code']);
         $résultats["réussi"]="true";
     }
@@ -103,16 +103,16 @@ function traiter_résultats($sorties, $infos, $avancement, $question){
     return $résultats;
 }
 
-function valider_résultats($sorties, $reponse){
+function vérifier_solution($sorties, $solution){
     $sortie_standard=extraire_sortie_standard($sorties);
     $sortie_erreur=extraire_sortie_erreur($sorties);
 
     //en PHP, "" == NULL (arg!!!)
-    return $reponse!="null" && $sortie_standard==$reponse;
+    return $solution!="null" && $sortie_standard==$solution;
 }
 
 function sauvegarder_état_réussi($avancement, $code){
-    $avancement->set_reponse($code);
+    $avancement->set_code($code);
     $avancement->set_etat(Question::ETAT_REUSSI);
 }
 
@@ -120,7 +120,7 @@ function sauvegarder_état_échec($avancement, $code){
     //Met la réponse à jour dans l'avancement seulement
     //si la question n'avait pas déjà été réussie
     if($avancement->get_etat()!=Question::ETAT_REUSSI){
-        $avancement->set_reponse($code);
+        $avancement->set_code($code);
         $avancement->set_etat(Question::ETAT_NONREUSSI);
     }
 }
