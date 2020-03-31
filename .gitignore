@@ -3,3 +3,6 @@
 quiz.conf
 *.sublime*
 data/
+
+progression/app/tmp/
+progression/app/CodeMirror/

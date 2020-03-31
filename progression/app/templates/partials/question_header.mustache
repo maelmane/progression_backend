@@ -1,0 +1,29 @@
+<section class='main'>
+	<div class='example-wrapper clearfix'>
+		<h3>{{question.titre}}</h3>
+		<br>
+		{{{question.enonce}}}
+		<br>
+		<br>
+		{{#essayé}}
+			<table class='metro' width=100%><tr>
+				{{#réussi}}
+					<td width=50% align=center>
+						Bonne réponse!
+					</td>
+					{{#question.code_validation}}
+						<td>
+							Code de validation : {{question.code_validation}}
+						</td>
+					{{/question.code_validation}}
+				{{/réussi}}
+				{{#nonréussi}}    
+					<td width=50% align=center>
+						Raté! Essayez encore
+					</td>
+				{{/nonréussi}}
+			</tr></table>
+		{{/essayé}}
+			</table>
+
+

@@ -1,0 +1,54 @@
+<table width=100%>
+	{{#essayé}}
+		{{#erreurs}}
+			<tr>
+				<td colspan=2><br>Sortie d'erreur : <br><pre class='code-wrapper'><code>{{erreurs}}</code></pre><br></td>
+			</tr>
+			<tr>
+		{{/erreurs}}
+	{{/essayé}}
+	<td witdh=100% valign=top><br>Sortie attendue : <br><pre class='code-wrapper'><code>{{solution}}</code></pre><br>
+		<td width=50%  valign=top><br>Sortie standard : <br><pre class='code-wrapper'><code>{{output}}</code></pre><br></td>
+			</tr>
+</table>
+
+<script>
+ function betterTab(cm) {                         
+	 if (cm.somethingSelected()) {
+		 cm.indentSelection('add');
+	 } else {
+		 cm.replaceSelection(cm.getOption('indentWithTabs')? '\t':
+							 Array(cm.getOption('indentUnit') + 1).join(' '), 'end', '+input');
+	 }
+ }
+
+ var preeditor = CodeMirror.fromTextArea(document.getElementById('precode'),{
+	 readOnly: true,
+	 lineNumbers: true,
+	 firstLineNumber: {{première_ligne_éditeur_precode}},
+	 indentUnit: 4
+ });
+ preeditor.setSize(null,'100%');//preeditor.getScrollInfo().height);
+ 
+ var editor = CodeMirror.fromTextArea(document.getElementById('incode'),{
+	 matchBrackets: true,
+	 lineNumbers: true,
+	 firstLineNumber: {{première_ligne_éditeur_incode}},
+	 readOnly: false,
+	 indentUnit: 4,
+	 scrollbarStyle: null,
+	 extraKeys: { Tab: betterTab }
+ });
+ editor.setSize('100%', '100%');
+
+ var posteditor = CodeMirror.fromTextArea(document.getElementById('postcode'),{
+	 readOnly: true,
+	 lineNumbers: true,
+	 firstLineNumber: {{première_ligne_éditeur_incode}}+editor.doc.lineCount(),
+	 indentUnit: 4
+ });
+ posteditor.setSize(null,'100%');
+ editor.doc.on('change', function(instance, changeObj){
+	 posteditor.setOption('firstLineNumber', {{première_ligne_éditeur_incode}}+editor.doc.lineCount());
+ });
+</script>
