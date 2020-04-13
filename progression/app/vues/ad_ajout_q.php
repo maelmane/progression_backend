@@ -58,7 +58,7 @@ function récupérer_séries($thème, $id_série){
 function récupérer_questions($série, $id_question){
 	$infos=array();
 	
-	$infos["questions"]=$série->get_questions();
+	$infos["questions"]=$série->get_questions(true);
 	foreach($infos["questions"] as $question){
 		$question->sélectionnée=$question->id==$id_question;
 		$infos["mode"]=get_mode($question->lang);

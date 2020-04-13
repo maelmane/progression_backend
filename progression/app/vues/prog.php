@@ -106,6 +106,9 @@ function get_mode($langid){
     elseif($langid==QuestionProg::CPP || $langid==QuestionProg::JAVA){
         return "clike/clike.js";
     }
+	elseif($langid==QuestionProg::SQL){
+		return "sql/sql.js";
+	}
 }
 
 function prog_header($langid){

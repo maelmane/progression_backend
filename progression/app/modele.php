@@ -504,7 +504,8 @@ class QuestionProg extends Question{
 	
 	const PYTHON3=1;
 	const CPP=8;
-	const JAVA=10;    
+	const JAVA=10;
+	const SQL=14;
 
 	//Données
 	public $lang;
