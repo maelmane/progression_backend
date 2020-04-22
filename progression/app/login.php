@@ -77,10 +77,10 @@ function get_utilisateur_ldap(){
         ldap_get_option($ldap, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
         throw new ConnexionException("Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extended_error");
     }
-    $result=ldap_search($ldap, $GLOBALS['config']['domaine_ldap'], "(sAMAccountName=$username)", array('dn','cn',1));
+    $result=ldap_search($ldap, $GLOBALS['config']['domaine_ldap'], "(sAMAccountName=$username)", array('dn','cn'));
     $user=ldap_get_entries($ldap, $result);
 
-    if(!$user || count(!$user)<1 || !@ldap_bind($ldap, $user[0]['dn'], $password)){
+    if(!i$user || $user["count"]<1 || !@ldap_bind($ldap, $user[0]['dn'], $password)){
         throw new ConnexionException("Nom d'utilisateur ou mot de passe invalide.");
     }
     return $user[0];
