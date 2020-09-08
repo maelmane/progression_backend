@@ -4,7 +4,7 @@ Ce site web créé à des fins pédagogiques permet à des étudiants en program
 
 # Contributeurs
 
-Patrick Lafrance
-Daniel Gailloux
-Mikaël Nadeau
-Les étudiants du cours 420-303-RO Soutiens technique et formation des utilisateurs
+- Patrick Lafrance
+- Daniel Gailloux
+- Mikaël Nadeau
+- plusieurs autres
