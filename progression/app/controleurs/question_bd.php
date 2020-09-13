@@ -6,10 +6,9 @@ require_once('controleur_prog.php');
 class ControleurQuestionBD extends ControleurProg {
 
 	function get_page_infos(){
-		$this->question=$this->charger_question();
-		$this->avancement=$this->charger_avancement();
+		$infos=array("template"=>"question_bd");
 
-		$infos=$this->récupérer_paramètres($this->question, $this->avancement);
+		$infos=array_merge($infos, $this->récupérer_paramètres());
 
 		if($this->à_exécuter || $this->à_valider){
 			$sorties=$this->connexion_conteneur($infos);
@@ -17,28 +16,16 @@ class ControleurQuestionBD extends ControleurProg {
 			$this->sauvegarder_conteneur($infos);
 		}
 		if($this->à_valider){			
-			$infos=array_merge($infos, $this->traiter_résultats($sorties, $infos, $this->avancement, $this->question));
+			$infos=array_merge($infos, $this->traiter_résultats($sorties, $infos));
 		}
 
 		return $infos;
 
 	}
 
-	function charger_question(){
-		$question=new QuestionBD($this->id);
-
-		return $question;
-	}
-
-	function charger_avancement(){
-		$avancement=new Avancement($this->id, $this->user_id);
-
-		return $avancement;
-	}
-
 	function sauvegarder_conteneur($infos){
 		if($infos["cont_id"]!="")
-			$infos["avancement"]->set_conteneur($infos["cont_id"]);
+			$this->avancement->set_conteneur($infos["cont_id"]);
 	}
 
 	function connexion_conteneur($infos){
@@ -69,7 +56,7 @@ class ControleurQuestionBD extends ControleurProg {
 	}
 
 	function get_options_compilebox($infos){
-		if($infos['avancement']->get_etat()==Question::ETAT_DEBUT || $this->reset){
+		if($this->avancement->get_etat()==Question::ETAT_DEBUT || $this->reset){
 			$data_rc=$this->get_data_nouveau_conteneur($infos);
 		}
 		else{
@@ -87,44 +74,42 @@ class ControleurQuestionBD extends ControleurProg {
 	function get_data_nouveau_conteneur($infos){
 		return array('language' => 14,
 					 'code' => 'reset',
-					 'vm_name' => $infos['question']->image,
-					 'parameters' => $infos['avancement']->conteneur,
+					 'vm_name' => $this->question->image,
+					 'parameters' => $this->avancement->conteneur,
 					 'params_conteneur' => $infos['params_conteneur'],
 					 'stdin' => '',
-					 'user' => $infos['question']->user );
+					 'user' => $this->question->user );
 	}
 
 	function get_data_conteneur($infos){
 		//Inutile?
-		if(is_null($infos['question']->verification) || $infos['question']->verification==""){
+		if(is_null($this->question->verification) || $this->question->verification==""){
 			return array('language' => 14,
-						 'code' => $this->construire_validation($infos['question'],
-																$infos['avancement']),
-						 'vm_name' => $infos['question']->image,
-						 'parameters' => $infos['avancement']->conteneur,
+						 'code' => $this->construire_validation(),
+						 'vm_name' => $this->question->image,
+						 'parameters' => $this->avancement->conteneur,
 						 'params_conteneur' => $infos['params_conteneur'],
 						 'stdin' => '',
-						 'user' => $infos['question']->user);
+						 'user' => $this->question->user);
 		}
 		else{
 			return array('language' => 14,
-						 'code' => $this->construire_validation($infos['question'],
-																$infos['avancement']),
-						 'vm_name' => $infos['question']->image,
-						 'parameters' => $infos['avancement']->conteneur,
+						 'code' => $this->construire_validation(),
+						 'vm_name' => $this->question->image,
+						 'parameters' => $this->avancement->conteneur,
 						 'params_conteneur' => $infos['params_conteneur'],
 						 'stdin' => '',
-						 'user' => $infos['question']->user);
+						 'user' => $this->question->user);
 		}
 	}
 
-	function construire_validation($question, $avancement){
-		echo $question->verification;
-		if(!is_null($question->verification) && $question->verification!=""){
-			return str_replace("{reponse}", $this->get_réponse_utilisateur(), $question->verification);
+	function construire_validation(){
+		echo $this->question->verification;
+		if(!is_null($this->question->verification) && $this->question->verification!=""){
+			return str_replace("{reponse}", $this->get_réponse_utilisateur(), $this->question->verification);
 		}
 		else{
-			return $question->pre_exec ."\n". $question->pre_code ."\n". $this->get_code($question, $avancement) ."\n". $question->post_code;
+			return $question->pre_exec ."\n". $this->question->pre_code ."\n". $this->get_code() ."\n". $this->question->post_code;
 		}
 	}
 
@@ -132,30 +117,29 @@ class ControleurQuestionBD extends ControleurProg {
 		return $this->reponse!=null ? $this->reponse : "";
 	}
 
-	function récupérer_paramètres($question, $avancement){
-		$langid=$question->lang;
+	function récupérer_paramètres(){
+		$langid=$this->question->lang;
 
-		eval($question->setup);
+		eval($this->question->setup);
 
 
-		$question->énoncé=str_replace("\r","",eval("return \"$question->enonce\";"));
-		$question->solution=str_replace("\r","",eval("return $question->solution;"));
+		$this->question->énoncé=str_replace("\r","",eval("return \"$this->question->enonce\";"));
+		$this->question->solution=str_replace("\r","",eval("return $this->question->solution;"));
 		
 		$infos=array(
-			"template"=>"question_bd",
-			"question"=>$question,
-			"avancement"=>$avancement,
-			"params"=>$question->user,
+			"question"=>$this->question,
+			"avancement"=>$this->avancement,
+			"params"=>$this->question->user,
 			"params_conteneur"=>"-e MYSQL_ALLOW_EMPTY_PASSWORD=yes --tmpfs /var/lib/mysql:rw",
-			"code"=>$this->get_code($question, $avancement),
+			"code"=>$this->get_code($this->question, $this->avancement),
 			"reponse"=>$this->get_réponse_utilisateur(),
-			"url_retour"=>"index.php?p=serie&ID=" . $question->serieID,
+			"url_retour"=>"index.php?p=serie&ID=" . $this->question->serieID,
 			"titre_retour"=>"la liste de questions",
-			"état_réussi"=>$avancement->get_etat()==Question::ETAT_REUSSI,
+			"état_réussi"=>$this->avancement->get_etat()==Question::ETAT_REUSSI,
 			"mode"=>$this->get_mode($langid),
 			"lang_nom"=>ControleurProg::LANG_NOMS[$langid],
 			"nom_serveur"=>$_SERVER["SERVER_NAME"],  //TODO à changer ?
-			"url_retour"=>"index.php?p=serie&ID=" . $question->serieID,
+			"url_retour"=>"index.php?p=serie&ID=" . $this->question->serieID,
 			"titre_retour"=>"la liste de questions");
 		
 
@@ -171,11 +155,11 @@ class ControleurQuestionBD extends ControleurProg {
 		}
 	}
 
-	function traiter_résultats($sorties, $infos, $avancement, $question){
+	function traiter_résultats($sorties, $infos){
 		$résultats=array();
 		$résultats["essayé"]="true";
 		
-		if(!is_null($question->verification) && $question->verification!=""){
+		if(!is_null($this->question->verification) && $this->question->verification!=""){
 			if($this->vérifier_validation($infos)){
 				$résultats["réussi"]="true";
 			}
@@ -183,7 +167,7 @@ class ControleurQuestionBD extends ControleurProg {
 				$résultats["nonréussi"]="true";
 			}
 		}
-		else if(!is_null($question->solution_courte) && $question->solution_courte!=""){
+		else if(!is_null($this->question->solution_courte) && $this->question->solution_courte!=""){
 			if($this->vérifier_solution_courte($infos)){
 				$résultats["réussi"]="true";
 			}
@@ -192,7 +176,7 @@ class ControleurQuestionBD extends ControleurProg {
 			}
 		}
 		else{
-			if($this->vérifier_solution($sorties, $infos['question']->solution)){
+			if($this->vérifier_solution($sorties, $this->question->solution)){
 				$résultats["réussi"]="true";
 			}
 			else{
@@ -201,11 +185,11 @@ class ControleurQuestionBD extends ControleurProg {
 		}
 
 		if(isset($résultats["réussi"]))
-			$this->sauvegarder_état_réussi($avancement, $this->get_code($question, $avancement), $infos['reponse']);
+			$this->sauvegarder_état_réussi($this->get_code(), $infos['reponse']);
 		else
-			$this->sauvegarder_état_échec($avancement, $this->get_code($question, $avancement), $infos['reponse']);
+			$this->sauvegarder_état_échec($this->get_code(), $infos['reponse']);
 		
-		$résultats["état_réussi"]=$avancement->get_etat()==Question::ETAT_REUSSI;
+		$résultats["état_réussi"]=$this->avancement->get_etat()==Question::ETAT_REUSSI;
 
 		return $résultats;
 	}
@@ -231,33 +215,33 @@ class ControleurQuestionBD extends ControleurProg {
 
 	function vérifier_solution_courte($infos){    
 		//réponse textuelle
-		if(!is_null($infos["question"]->solution_courte) &&
-		   $infos["question"]->solution_courte!="" &&
+		if(!is_null($this->question->solution_courte) &&
+		   $this->question->solution_courte!="" &&
 		   $infos['reponse']!="" &&
-		   $infos['reponse']==$infos["question"]->solution_courte){
+		   $infos['reponse']==$this->question->solution_courte){
 			return true;
 		}
 		return false;
 	}
 
-	function sauvegarder_état_réussi($avancement, $code, $reponse){
-		$avancement->set_code($code);
-		$avancement->set_reponse($reponse);
-		$avancement->set_etat(Question::ETAT_REUSSI);
+	function sauvegarder_état_réussi($code, $reponse){
+		$this->avancement->set_code($code);
+		$this->avancement->set_reponse($reponse);
+		$this->avancement->set_etat(Question::ETAT_REUSSI);
 	}
 
-	function sauvegarder_état_échec($avancement, $code, $reponse){
+	function sauvegarder_état_échec($code, $reponse){
 		//Met la réponse à jour dans l'avancement seulement
 		//si la question n'avait pas déjà été réussie
-		if($avancement->get_etat()!=Question::ETAT_REUSSI){
-			$avancement->set_code($code);        
-			$avancement->set_reponse($reponse);
-			$avancement->set_etat(Question::ETAT_NONREUSSI);
+		if($this->avancement->get_etat()!=Question::ETAT_REUSSI){
+			$this->avancement->set_code($code);        
+			$this->avancement->set_reponse($reponse);
+			$this->avancement->set_etat(Question::ETAT_NONREUSSI);
 		}
 	}
 
-	function sauvegarder_état_non_réussi($avancement, $code){
-		$avancement->set_etat(Question::ETAT_NONREUSSI);
+	function sauvegarder_état_non_réussi($code){
+		$this->avancement->set_etat(Question::ETAT_NONREUSSI);
 	}
 
 

@@ -23,40 +23,42 @@ class ControleurProg extends Controleur {
 	function __construct($id, $user_id, $réponse_utilisateur){
 		parent::__construct($id, $user_id);
 
-		$this->à_valider=$réponse_utilisateur["à_valider"];
-		$this->à_exécuter=$réponse_utilisateur["à_exécuter"];		
-		$this->reponse=$réponse_utilisateur["reponse"];
-		$this->reset=$réponse_utilisateur["reset"];
+		$this->à_valider=isset($réponse_utilisateur["à_valider"])?$réponse_utilisateur["à_valider"]:null;
+		$this->à_exécuter=isset($réponse_utilisateur["à_exécuter"])?$réponse_utilisateur["à_exécuter"]:null;
+		$this->reponse=isset($réponse_utilisateur["reponse"])?$réponse_utilisateur["reponse"]:null;
+		$this->reset=isset($réponse_utilisateur["reset"])?$réponse_utilisateur["reset"]:null;
+		$this->langid=isset($réponse_utilisateur["langid"])?$réponse_utilisateur["langid"]:null;
+		$this->incode=isset($réponse_utilisateur["incode"])?$réponse_utilisateur["incode"]:null;
+		$this->params=isset($réponse_utilisateur["params"])?$réponse_utilisateur["params"]:null;
+		$this->stdin=isset($réponse_utilisateur["stdin"])?$réponse_utilisateur["stdin"]:null;
 
-		$this->langid=$réponse_utilisateur["langid"];
-		$this->incode=$réponse_utilisateur["incode"];
-		$this->params=$réponse_utilisateur["params"];
-		$this->stdin=$réponse_utilisateur["stdin"];
+		$this->question=new QuestionProg($this->id);
+		$this->avancement=new Avancement($this->question->id, $this->user_id);
 	}
-	
-	function get_code($question=null, $avancement=null){
+
+	function get_code(){
 		$code="";
 		
 		if ($this->incode!=null){
 			$code=$this->incode;
 		}
 		else{
-			if(!is_null($avancement) && $avancement->code!=''){
-				$code=$avancement->code;
+			if(!is_null($this->avancement) && $this->avancement->code!=''){
+				$code=$this->avancement->code;
 			}
-			elseif(!is_null($question)){
-				$code=$question->incode;
+			elseif(!is_null($this->question)){
+				$code=$this->question->incode;
 			}
 		}
 		
 		return $code;
 	}
 
-	function get_params($question=null){
+	function get_params(){
 		$params="";
 		
-		if(!is_null($question) && $question->params!=""){
-			$params=$question->params;
+		if(!is_null($this->question) && $this->question->params!=""){
+			$params=$this->question->params;
 		}
 		elseif($this->params!=null){
 			$params=$this->params;
@@ -65,10 +67,10 @@ class ControleurProg extends Controleur {
 		return $params;
 	}
 
-	function get_stdin($question=null){
+	function get_stdin(){
 		$stdin="";
-		if(!is_null($question) && $question->stdin!=""){
-			$stdin=$question->stdin;
+		if(!is_null($this->question) && $this->question->stdin!=""){
+			$stdin=$this->question->stdin;
 		}
 		elseif($this->stdin!=null){
 			$stdin=$this->stdin;

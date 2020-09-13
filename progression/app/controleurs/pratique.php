@@ -1,36 +1,31 @@
 <?php
 
-require_once('prog.php');
+require_once('controleur_prog.php');
 
-page_header();
-page_contenu();
+class ControleurPratique extends ControleurProg {
 
-function page_contenu(){
-    $infos=récupérer_paramètres();
-    $sorties=exécuter_code($infos);
-    $infos=array_merge($infos, calculer_sorties($sorties, $infos));
-    render_page($infos);
-}
+	function get_page_infos(){
+		$infos=$this->récupérer_paramètres();
+		$sorties=$this->exécuter_code($infos);
+		$infos=array_merge($infos, $this->calculer_sorties($sorties, $infos));
+		return $infos;
+	}
 
-function récupérer_paramètres(){
-    $langid=get_langage();
-    $infos= array("titre"=>"Zone de pratique libre",
-                  "énoncé"=>"Cette zone permet d'exécuter vos programmes dans le langage de votre choix. 
+	function récupérer_paramètres(){
+		$infos= array("template"=>"pratique",
+					  "question.titre"=>"Zone de pratique libre",
+					  "question.enonce"=>"Cette zone permet d'exécuter vos programmes dans le langage de votre choix. 
                             <br>
                             <em>Attention, vos programmes entrés ici ne seront pas sauvegardés.</em>",
-                  "langid"=>$langid,
-                  "code"=>get_code(),
-                  "params"=>get_params(),
-                  "stdin"=>get_stdin(),
-                  "url_retour"=>"index.php?p=accueil",
-                  "titre_retour"=>"l'accueil",
-                  "mode"=>get_mode($langid)
-    );
-    return $infos;
-}
+					  "langid"=>$this->langid,
+					  "code"=>$this->get_code(),
+					  "params"=>$this->get_params(),
+					  "stdin"=>$this->get_stdin(),
+					  "url_retour"=>"index.php?p=accueil",
+					  "titre_retour"=>"l'accueil",
+					  "mode"=>$this->get_mode($langid)
+		);
+		return $infos;
+	}
 
-function render_page($infos){
-    $template=$GLOBALS['mustache']->loadTemplate("pratique");
-    echo $template->render($infos);
 }
-

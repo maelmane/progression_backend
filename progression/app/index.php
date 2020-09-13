@@ -7,6 +7,7 @@ require_once(__DIR__.'/modele.php');
 require_once(__DIR__.'/controleurs/header_footer.php');
 
 require("controleurs/accueil.php");
+require("controleurs/pratique.php");
 require("controleurs/serie.php");
 require("controleurs/question_prog.php");
 require("controleurs/question_sys.php");
@@ -53,7 +54,7 @@ function inclusion_page(){
 
 				$réponse_utilisateur=array( "à_exécuter"=>isset($_REQUEST["exécuter"]) && isset($_REQUEST["incode"]) && $_REQUEST["incode"]!="",
 											"à_valider"=>(isset($_REQUEST["valider"]) &&
-														   (isset($_REQUEST["reponse"]) && $_REQUEST["reponse"]!="" || isset($_REQUEST["incode"]) && $_REQUEST["incode"]!="")),
+														  (isset($_REQUEST["reponse"]) && $_REQUEST["reponse"]!="" || isset($_REQUEST["incode"]) && $_REQUEST["incode"]!="")),
 											"langid"=>isset($_REQUEST["langid"])&& $_REQUEST["langid"]!="" ?$_REQUEST["langid"]:null,
 											"reponse"=>isset($_REQUEST["reponse"]) &&  $_REQUEST["reponse"]!="" ?$_REQUEST["reponse"]:null,
 											"reset"=>isset($_REQUEST["reset"]) &&  $_REQUEST["reset"]!="" ?$_REQUEST["reset"]:null,
@@ -70,6 +71,15 @@ function inclusion_page(){
 				elseif($question->type==Question::TYPE_BD){
 					$controleur=new ControleurQuestionBd($_REQUEST["ID"], $_SESSION["user_id"], $réponse_utilisateur);
 				}
+			}
+			elseif($fichier=="pratique"){
+				$réponse_utilisateur=array( "à_exécuter"=>isset($_REQUEST["exécuter"]) && isset($_REQUEST["incode"]) && $_REQUEST["incode"]!="",
+											"langid"=>isset($_REQUEST["langid"])&& $_REQUEST["langid"]!="" ?$_REQUEST["langid"]:null,
+											"incode"=>isset($_REQUEST["incode"]) &&  $_REQUEST["incode"]!="" ?$_REQUEST["incode"]:null,
+											"params"=>isset($_REQUEST["params"]) &&  $_REQUEST["params"]!="" ?$_REQUEST["params"]:null,
+											"stdin"=>isset($_REQUEST["stdin"]) &&  $_REQUEST["stdin"]!="" ?$_REQUEST["stdin"]:null);
+
+				$controleur=new ControleurPratique(null, $_SESSION["user_id"], $réponse_utilisateur);
 			}
 
 			if($controleur==null){

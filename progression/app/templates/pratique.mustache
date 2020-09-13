@@ -1,92 +1,40 @@
-<head>
+{{> header }}
+{{> question_prog_header }}
 
-  <link rel='stylesheet' type='text/css' href='css/style.css'>
-  <script src='./CodeMirror/lib/codemirror.js'></script>
-  <link rel='stylesheet' href='./CodeMirror/lib/codemirror.css'>
-
-  <script src='./CodeMirror/mode/{{mode}}'></script>
-
-  <meta charset='utf-8'>
-</head>
-<body>
-  <section class='main'>
-    <div class='example-wrapper clearfix'>
-      <h3>{{titre}}</h3>
-      <br>
-      {{{énoncé}}}
-      <br>
-      <br>
-      <pre class='code-wrapper'>
-        <code>
-          <form method='post' action=''>
+<pre class='code-wrapper'>
+    <code>
+        <form method='post' action=''>
             <table width=100% style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'>
-              <tr>
-                <td>
-					{{> menu_langages }}
-					<script> document.getElementById('langid').value={{langid}};</script>
-                </td>
-              </tr>
+				<tr>
+					<td>
+						{{> menu_langages }}
+						<script> document.getElementById('langid').value={{langid}};</script>
+					</td>
+				</tr>
 
 
-              <tr>
-                <td colspan=2>
-                  <textarea id='incode' name = 'incode' rows='10' cols='80'>{{code}}</textarea>
-                </td>
-              </tr>  
+				<tr>
+					<td colspan=2>
+						<textarea id='incode' name = 'incode' rows='10' cols='80'>{{code}}</textarea>
+					</td>
+				</tr>  
 
-              <tr>
-                <td width=50%>
-                  <h3>Paramètres </h3>
-                  <textarea id='params' name = 'params' rows='1' style='width:100%'>{{params}}</textarea>
-                </td>
-                <td width=50%>
-                  <h3>Entrées</h3>
-                  <textarea id='stdin' name = 'stdin' rows='1' style='width:100%'>{{stdin}}</textarea>
-                </td>
-              </tr>  
+				<tr>
+					<td width=50%>
+						<h3>Paramètres </h3>
+						<textarea id='params' name = 'params' rows='1' style='width:100%'>{{params}}</textarea>
+					</td>
+					<td width=50%>
+						<h3>Entrées</h3>
+						<textarea id='stdin' name = 'stdin' rows='1' style='width:100%'>{{stdin}}</textarea>
+					</td>
+				</tr>  
 
             </table>
             <input type=submit value='Soumettre' >
-          </form>
-        </code>
-      </pre>  
+        </form>
+    </code>
+</pre>  
 
-      <br>Sortie standard : <br><pre class='code-wrapper'><code>{{output}}</code></pre><br>
-      {{#erreurs}}
-      <br>Sortie d'erreur : <br><pre class='code-wrapper'><code>{{.}}</code></pre><br>
-      {{/erreurs}}
-      <table width=100%>
-        <tr>
-          <td align=left width=25%>
-            <a href={{url_retour}}>↩ Retour à {{titre_retour}}</a>
-          </td>
-	  <td/>
-	  <td/>
-        </tr>
-      </table>
-      <script>
-        function betterTab(cm) {                         
-        if (cm.somethingSelected()) {
-        cm.indentSelection('add');
-        } else {
-        cm.replaceSelection(cm.getOption('indentWithTabs')? '\t':
-        Array(cm.getOption('indentUnit') + 1).join(' '), 'end', '+input');
-        }
-	}
-
-        var editor = CodeMirror.fromTextArea(document.getElementById('incode'),{
-        matchBrackets: true,
-        lineNumbers: true,
-        readOnly: false,
-        indentUnit: 4,
-        scrollbarStyle: null,
-        extraKeys: { Tab: betterTab }
-        });
-        editor.setSize('100%', Math.max(100, editor.getScrollInfo().height)); 
-
-      </script>
-    </div>
-  </section>
-
-
-  
+{{> question_prog_footer }}
+{{> footer }}
