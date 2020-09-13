@@ -45,6 +45,9 @@ function calculer_url($questions){
         elseif($question->type==Question::TYPE_SYS){
             $question->page="question_sys";
         }
+        elseif($question->type==Question::TYPE_BD){
+            $question->page="question_bd";
+        }
         else{
             $question->page="erreur";
         }

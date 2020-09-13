@@ -16,9 +16,29 @@
       {{{énoncé}}}
       <br>
       <br>
+      {{#essayé}}
+        <table class='metro' width=100%><tr>
+          {{#réussi}}
+          <td width=50% align=center>
+            Bonne réponse!
+          </td>
+          {{#validation}}
+          <td>
+            Code de validation : {{validation}}
+          </td>
+          {{/validation}}
+          {{/réussi}}
+          {{#nonréussi}}    
+          <td width=50% align=center>
+            Raté! Essayez encore
+          </td>
+          {{/nonréussi}}
+        </table>
+      {{/essayé}}
+      </table>
       <pre class='code-wrapper'>
         <code>
-          <form method='post' action=''>
+            <form method='post' action=''>
             <table width=100% height=500 style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'>
               <tr>
                 <td>
@@ -68,7 +88,7 @@
 	<tr>
           {{/erreurs}}
           {{/essayé}}
-          <td witdh=100% valign=top><br>Sortie attendue : <br><pre class='code-wrapper'><code>{{reponse}}</code></pre><br>
+          <td witdh=100% valign=top><br>Sortie attendue : <br><pre class='code-wrapper'><code>{{solution}}</code></pre><br>
           <td width=50%  valign=top><br>Sortie standard : <br><pre class='code-wrapper'><code>{{output}}</code></pre><br></td>
         </tr>
       </table>
@@ -77,27 +97,6 @@
           <td align=left width=25%>
             <a href={{{url_retour}}}>↩ Retour à {{titre_retour}}</a>
           </td>
-	  {{#essayé}}
-	  {{#réussi}}
-          <td width=50% align=center>
-            Bonne réponse!
-          </td>
-	  {{#validation}}
-          <td>
-            Code de validation : {{validation}}
-          </td>
-	  {{/validation}}
-	  {{/réussi}}
-	  {{#nonréussi}}    
-          <td width=50% align=center>
-            Raté! Essayez encore
-          </td>
-	  {{/nonréussi}}
-	  {{/essayé}}
-	  {{^essayé}}
-	  <td/>
-	  {{/essayé}}
-
           <td align=right width=25%>
 	    {{#état_réussi}}
 	    {{#suivante}}
