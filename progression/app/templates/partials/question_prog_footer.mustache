@@ -22,33 +22,45 @@
 	 }
  }
 
- var preeditor = CodeMirror.fromTextArea(document.getElementById('precode'),{
-	 readOnly: true,
-	 lineNumbers: true,
-	 firstLineNumber: {{première_ligne_éditeur_precode}},
-	 indentUnit: 4
- });
- preeditor.setSize(null,'100%');//preeditor.getScrollInfo().height);
+ if(document.getElementById('precode') != null){
+	 var preeditor = CodeMirror.fromTextArea(document.getElementById('precode'),{
+		 readOnly: true,
+		 lineNumbers: true,
+		 {{#première_ligne_éditeur_precode}}
+  	     firstLineNumber: {{première_ligne_éditeur_precode}},
+		 {{/première_ligne_éditeur_precode}}
+		 indentUnit: 4
+	 });
+	 preeditor.setSize(null,'100%');//preeditor.getScrollInfo().height);
+ }
  
- var editor = CodeMirror.fromTextArea(document.getElementById('incode'),{
-	 matchBrackets: true,
-	 lineNumbers: true,
-	 firstLineNumber: {{première_ligne_éditeur_incode}},
-	 readOnly: false,
-	 indentUnit: 4,
-	 scrollbarStyle: null,
-	 extraKeys: { Tab: betterTab }
- });
- editor.setSize('100%', '100%');
+ if(document.getElementById('incode') != null){
+	 var editor = CodeMirror.fromTextArea(document.getElementById('incode'),{
+		 matchBrackets: true,
+		 lineNumbers: true,
+		 {{#première_ligne_éditeur_incode}}
+	     firstLineNumber: {{première_ligne_éditeur_incode}},
+		 {{/première_ligne_éditeur_incode}}
+		 readOnly: false,
+		 indentUnit: 4,
+		 scrollbarStyle: null,
+		 extraKeys: { Tab: betterTab }
+	 });
+	 editor.setSize('100%', '100%');
+ }
 
- var posteditor = CodeMirror.fromTextArea(document.getElementById('postcode'),{
-	 readOnly: true,
-	 lineNumbers: true,
-	 firstLineNumber: {{première_ligne_éditeur_incode}}+editor.doc.lineCount(),
-	 indentUnit: 4
- });
- posteditor.setSize(null,'100%');
- editor.doc.on('change', function(instance, changeObj){
-	 posteditor.setOption('firstLineNumber', {{première_ligne_éditeur_incode}}+editor.doc.lineCount());
- });
+ if(document.getElementById('postcode') != null){
+	 var posteditor = CodeMirror.fromTextArea(document.getElementById('postcode'),{
+		 readOnly: true,
+		 lineNumbers: true,
+		 {{#première_ligne_éditeur_incode}}
+	     firstLineNumber: {{première_ligne_éditeur_incode}}+editor.doc.lineCount(),
+		 {{/première_ligne_éditeur_incode}}
+		 indentUnit: 4
+	 });
+	 posteditor.setSize(null,'100%');
+	 editor.doc.on('change', function(instance, changeObj){
+		 posteditor.setOption('firstLineNumber', {{première_ligne_éditeur_incode}}+editor.doc.lineCount());
+	 });
+ }
 </script>

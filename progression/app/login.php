@@ -101,7 +101,6 @@ function get_user($username){
 
 function get_infos_session($user_info){
     #Obtient les infos de l'utilisateur
-    $_SESSION["nom"]=$user_info->nom;
     $_SESSION["user_id"]=$user_info->id;
     $_SESSION["username"]=$user_info->username;
     $_SESSION["actif"]=$user_info->actif;

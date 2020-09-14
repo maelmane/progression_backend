@@ -7,6 +7,7 @@ require_once(__DIR__.'/modele.php');
 require_once(__DIR__.'/controleurs/header_footer.php');
 
 require("controleurs/accueil.php");
+require("controleurs/ad_suivi.php");
 require("controleurs/pratique.php");
 require("controleurs/serie.php");
 require("controleurs/question_prog.php");
@@ -81,7 +82,9 @@ function inclusion_page(){
 
 				$controleur=new ControleurPratique(null, $_SESSION["user_id"], $réponse_utilisateur);
 			}
-
+			elseif($fichier=="ad_suivi"){
+				$controleur=new ControleurSuivi(null, $_SESSION["user_id"]);
+			}
 			if($controleur==null){
 				$controleur=new ControleurAccueil(null, $_SESSION["user_id"]);
 			}

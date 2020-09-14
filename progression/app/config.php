@@ -5,7 +5,7 @@ instancier_engine_mustache();
 
 function load_config(){
     if(!isset($GLOBALS["config"])){
-        $cfg=parse_ini_file(dirname(__FILE__)."/../quiz.conf");
+        $cfg=parse_ini_file("/etc/quiz.conf");
         $GLOBALS["config"]=$cfg;
     }
 }

@@ -37,132 +37,133 @@ function get_themes($inactif=false){
     }
     
     $res=array();
-    while($theme_id=$themes->fetch_assoc()['themeID']){
-        $t=new Theme($theme_id);
-        $res[] = $t;
-
-    }
-    $themes->close();
-    return $res;
-    
+	while($theme=$themes->fetch_assoc()){
+		$theme_id=$theme['themeID'];
+		$t=new Theme($theme_id);
+		$res[] = $t;
+	}
+	$themes->close();
+	
+	return $res;
+	
 }
 
 function get_users($inactif=false){
-    if($inactif){
-        $users=$GLOBALS["conn"]->query('SELECT userID FROM users ORDER BY username');
-    }
-    else{
-        $users=$GLOBALS["conn"]->query('SELECT userID FROM users 
+	if($inactif){
+		$users=$GLOBALS["conn"]->query('SELECT userID FROM users ORDER BY username');
+	}
+	else{
+		$users=$GLOBALS["conn"]->query('SELECT userID FROM users 
                                         WHERE actif=1 
                                         ORDER BY username');
-    }
+	}
 
-    $res=array();
-    $user=$users->fetch_assoc();
-    while(!is_null($user)){
-        $res[] = new User($user['userID']);
-        $user=$users->fetch_assoc();
-    }
+	$res=array();
+	$user=$users->fetch_assoc();
+	while(!is_null($user)){
+		$res[] = new User($user['userID']);
+		$user=$users->fetch_assoc();
+	}
 
-    $users->close();
-    return $res;
+	$users->close();
+	return $res;
 }
 
 class Entite{
-    public $id;
-    public $conn;
-    public $actif;
-    
-    public function __construct(){
-        $this->conn=$GLOBALS["conn"];
-        if(!is_null($this->id)) $this->load_info();
-    }
+	public $id;
+	public $conn;
+	public $actif;
+	
+	public function __construct(){
+		$this->conn=$GLOBALS["conn"];
+		if(!is_null($this->id)) $this->load_info();
+	}
 }    
 
 class User extends Entite{
-    const ROLE_NORMAL=0;
-    const ROLE_ADMIN=1;    
-    
-    public $username;
-    public $role;
-    public $id;    
+	const ROLE_NORMAL=0;
+	const ROLE_ADMIN=1;    
+	
+	public $username;
+	public $role;
+	public $id;    
 
-    public function __construct($id){
-        $this->id=$id;
-        parent::__construct();
-    }
-    
-    public static function existe($username){
-        return !is_null(User::get_user_id($username));
-    }
+	public function __construct($id){
+		$this->id=$id;
+		parent::__construct();
+	}
+	
+	public static function existe($username){
+		return !is_null(User::get_user_id($username));
+	}
 
-    public static function get_user_id($username){
-        $query=$GLOBALS["conn"]->prepare( 'SELECT userID FROM users WHERE username = ?');
-        $query->bind_param( "s", $username );
-        $query->execute();
-        $query->bind_result( $id );
-        $res=$query->fetch();
-        $query->close();
-        return $id;
-    }
+	public static function get_user_id($username){
+		$query=$GLOBALS["conn"]->prepare( 'SELECT userID FROM users WHERE username = ?');
+		$query->bind_param( "s", $username );
+		$query->execute();
+		$query->bind_result( $id );
+		$res=$query->fetch();
+		$query->close();
+		return $id;
+	}
 
-    protected function load_info(){
-        $query=$this->conn->prepare( 'SELECT userID, username, actif, role FROM users WHERE userID = ? ');
-        $query->bind_param( "i", $this->id);
-        $query->execute();
+	protected function load_info(){
+		$query=$this->conn->prepare( 'SELECT userID, username, actif, role FROM users WHERE userID = ? ');
+		$query->bind_param( "i", $this->id);
+		$query->execute();
 		
-        $query->bind_result( $this->id, $this->username, $this->actif, $this->role );
-        $res=$query->fetch();
-        $query->close();
-    }    
+		$query->bind_result( $this->id, $this->username, $this->actif, $this->role );
+		$res=$query->fetch();
+		$query->close();
+	}    
 
-    public static function creer_user($username){
-        $query=$GLOBALS["conn"]->prepare('INSERT INTO users(username) VALUES (?)');
-        $query->bind_param( "s", $username);
-        $query->execute();
-        $query->close();
-        
-        return User::get_user_id($username); 
-    }
+	public static function creer_user($username){
+		$query=$GLOBALS["conn"]->prepare('INSERT INTO users(username) VALUES (?)');
+		$query->bind_param( "s", $username);
+		$query->execute();
+		$query->close();
+		
+		return User::get_user_id($username); 
+	}
 }
 
 class Theme extends Entite{
 
-    //Données
-    public $titre;
-    public $description;
-    
-    public function __construct($id){
-        $this->id=$id;
-        parent::__construct();        
-    }
+	//Données
+	public $titre;
+	public $description;
+	
+	public function __construct($id){
+		$this->id=$id;
+		parent::__construct();        
+	}
 
-    protected function load_info(){
-        $query=$this->conn->prepare('SELECT themeID, actif, titre, description FROM theme WHERE themeID = ?');
-        $query->bind_param( "i", $this->id);
-        $query->execute();
-        $query->bind_result( $this->id, $this->actif, $this->titre, $this->description );
-        if(is_null($query->fetch()))
-            $this->id=null;
-        $query->close();
-    }
+	protected function load_info(){
+		$query=$this->conn->prepare('SELECT themeID, actif, titre, description FROM theme WHERE themeID = ?');
+		$query->bind_param( "i", $this->id);
+		$query->execute();
+		$query->bind_result( $this->id, $this->actif, $this->titre, $this->description );
+		if(is_null($query->fetch()))
+			$this->id=null;
+		$query->close();
+	}
 
-    public function save(){
-        if(!$this->id){
-            $query=$this->conn->prepare("INSERT INTO theme( titre,
+	public function save(){
+		if(!$this->id){
+			$query=$this->conn->prepare("INSERT INTO theme( titre,
                                                             description ) 
                                          VALUES( ?, ?)");
 
-            $query->bind_param( "ss",
-                                $this->titre,
-                                $this->description);
-            $query->execute();
-            $query->close();
-            $query=$this->conn->prepare("SELECT max(themeID) FROM theme");
-            $query->execute();
-            $query->bind_result( $this->id );
-            $query->fetch();
-            $query->close();
+			$query->bind_param( "ss",
+								$this->titre,
+								$this->description);
+			$query->execute();
+			$query->close();
+			$query=$this->conn->prepare("SELECT max(themeID) FROM theme");
+			$query->execute();
+			$query->bind_result( $this->id );
+			$query->fetch();
+			$query->close();
 		}
 	}
 	
@@ -259,8 +260,8 @@ class Serie extends Entite{
 		$query->close();
 	}
 	
-    public function save(){
-        if(!$this->id){
+	public function save(){
+		if(!$this->id){
 
 			$query=$this->conn->prepare("SELECT MAX(numero) as numero FROM serie WHERE themeID=?");
 			$query->bind_param("i", $this->themeID);
