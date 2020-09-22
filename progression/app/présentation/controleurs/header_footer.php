@@ -1,10 +1,11 @@
 <?php
 
-require_once(__DIR__.'/../modele.php');
+require_once(__DIR__.'/../../domaine/entités/user.php');
+require_once(__DIR__.'/../../domaine/interacteurs/themes_interacteur.php');
 
-function get_header_infos($thèmeID, $user_id){
+function get_header_infos($source_themes, $thèmeID, $user_id){
 	$user=new User($user_id);
-	$themes=get_themes($user->role == User::ROLE_ADMIN);
+	$themes=ThemeInteracteur::get_themes($source_themes, $user);
 	$themes[$thèmeID]->courant="true";
 
 	$infos=array("username"=>$user->username,

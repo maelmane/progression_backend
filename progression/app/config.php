@@ -15,8 +15,8 @@ function instancier_engine_mustache(){
         'template_class_prefix' => '__MyTemplates_',
         'cache' => dirname(__FILE__).'/tmp/cache/mustache',
         'cache_lambda_templates' => true,
-        'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__).'/templates'),
-        'partials_loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__).'/templates/partials'),
+        'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__).'/présentation/templates'),
+        'partials_loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__).'/présentation/templates/partials'),
         'escape' => function($value) {
             return htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
         },

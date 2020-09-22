@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__.'/../modele.php');
+require_once(__DIR__.'/../../domaine/entités/user.php');
 
 function get_headre_infos(){
 	$themes=get_themes($_SESSION['user_id']);
