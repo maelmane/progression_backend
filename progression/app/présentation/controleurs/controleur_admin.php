@@ -1,7 +1,7 @@
 <?php
 
 require_once('controleur.php');
-require_once('modele.php');
+require_once('domaine/entités/user.php');
 
 class ControleurAdmin extends Controleur {
 

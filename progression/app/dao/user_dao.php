@@ -1,6 +1,6 @@
 <?php
 
-require_once("../domaine/entités/user.php");
+require_once("domaine/entités/user.php");
 
 class UserDAO extends EntiteDAO{
 
@@ -22,6 +22,13 @@ class UserDAO extends EntiteDAO{
 		return $user;
 	}
 
+	public function get_user($user_id) {
+		$user = new User($user_id);
+		UserDAO::load($user);
+
+		return $user;
+	}
+	
 	public function load($objet){
 		$query=$GLOBALS["conn"]->prepare( 'SELECT userID, username, actif, role FROM users WHERE userID = ? ');
 		$query->bind_param( "i", $objet->id);
@@ -40,4 +47,5 @@ class UserDAO extends EntiteDAO{
 		
 		return $this->trouver_par_nomusager($username); 
 	}
+}
 ?>

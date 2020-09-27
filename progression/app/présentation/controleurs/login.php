@@ -5,6 +5,8 @@ class ConnexionException extends Exception{}
 //session_start();
 //require __DIR__ . '/../vendor/autoload.php';
 require_once(__DIR__.'/../../config.php');
+require_once('dao/user_dao.php');
+require_once('controleur.php');
 //require_once(__DIR__.'/modele.php');
 require_once(__DIR__.'/../../domaine/entités/user.php');
 require_once(__DIR__.'/../../domaine/interacteurs/user_interacteur.php');
@@ -29,9 +31,11 @@ require_once(__DIR__.'/../../domaine/interacteurs/user_interacteur.php');
 //	}
 //}
 
-class ControleurLogin {
+class ControleurLogin extends Controleur {
 
-	function __construct($réponse_utilisateur){
+	function __construct($source, $réponse_utilisateur){
+		parent::__construct($source);
+		
 		$this->submit=$réponse_utilisateur["submit"];
 		$this->username=$réponse_utilisateur["username"];
 		$this->passwd=$réponse_utilisateur["passwd"];
@@ -48,6 +52,7 @@ class ControleurLogin {
 			$user=$this->login_ldap();
 		}
 
+		
 		$this->get_infos_session($user);
 	}
 
@@ -58,7 +63,7 @@ class ControleurLogin {
 	function login_ldap(){
 		$this->vérifier_champs_valides();
 		$user=$this->get_utilisateur_ldap();
-		$user_info=UserInteracteur::obtenir_ou_créer_user(new UserDAO(), $this->username);
+		$user_info=new UserInteracteur(new DAOFactory(), obtenir_ou_créer_user($this->username));
 		$user_info->nom=$user['cn'][0];
 
 		return $user_info;
@@ -98,7 +103,6 @@ class ControleurLogin {
 
 	function get_infos_session($user_info){
 		#Obtient les infos de l'utilisateur
-		$_SESSION["nom"]=$user_info->nom;
 		$_SESSION["user_id"]=$user_info->id;
 		$_SESSION["username"]=$user_info->username;
 		$_SESSION["actif"]=$user_info->actif;
@@ -116,7 +120,9 @@ class ControleurLogin {
 
 	function login_sans_authentification(){
 		$username=$_POST["username"];
-		return UserInteracteur::obtenir_ou_créer_user($username);
+		log($username);
+		$interacteur = new UserInteracteur($this->_source);
+		return $interacteur->obtenir_ou_créer_user(new UserDAO(), $username);
 	}
 
 	function récupérer_configs(){
@@ -128,10 +134,10 @@ class ControleurLogin {
 	function get_page_infos(){
 		if ( ! is_null($this->submit) ){
 			$this->effectuer_login();
-			$this->rediriger_apres_login();
+			// $this->rediriger_apres_login();
 		}
 
-		return merge_array(
+		return array_merge(
 			array("template" => "login",
 				  "titre" => "Connexion"),
 			$this->récupérer_configs());

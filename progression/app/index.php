@@ -3,28 +3,26 @@
 session_start();
 require __DIR__ . '/../vendor/autoload.php';
 require_once(__DIR__.'/config.php');
-require_once(__DIR__.'/modele.php');
-require_once(__DIR__.'/controleurs/header_footer.php');
+require_once(__DIR__.'/domaine/entités/user.php');
+require_once(__DIR__.'/présentation/controleurs/header_footer.php');
 
-require("controleurs/accueil.php");
-require("controleurs/ad_suivi.php");
-require("controleurs/pratique.php");
-require("controleurs/serie.php");
-require("controleurs/question_prog.php");
-require("controleurs/question_sys.php");
-require("controleurs/question_bd.php");
-require("controleurs/theme.php");
+require_once(__DIR__.'/dao/dao_factory.php');
 
-vérifier_user_id();
+require("présentation/controleurs/accueil.php");
+require("présentation/controleurs/ad_suivi.php");
+require("présentation/controleurs/login.php");
+require("présentation/controleurs/logout.php");
+require("présentation/controleurs/pratique.php");
+require("présentation/controleurs/question_bd.php");
+require("présentation/controleurs/question_prog.php");
+require("présentation/controleurs/question_sys.php");
+require("présentation/controleurs/serie.php");
+require("présentation/controleurs/theme.php");
+
+//vérifier_user_id();
 set_locale();
 openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
 inclusion_page();
-
-function vérifier_user_id(){
-    if(!isset($_SESSION["user_id"])){
-        header("Location: /login.php".(isset($_GET[p])?"?p=".$_GET["p"]."&ID=".$_GET["ID"]:"").(isset($_GET['ID'])?("&ID=".$_GET['ID']):""));
-    }
-}
 
 function set_locale(){
     $locale=isset($GLOBALS['config']['locale'])?$GLOBALS['config']['locale']:'fr_CA.UTF-8';
@@ -33,20 +31,24 @@ function set_locale(){
 
 function inclusion_page(){
     if(isset($_SESSION["user_id"])){
+		$user_id = $_SESSION['user_id'];
         if(isset($_GET["p"])){
             $fichier=$_GET["p"];
 
 			$controleur=null;
 
 			$thèmeID=0;
+            if($fichier=="logout"){
+				$controleur=new ControleurLogout();
+			}
             if($fichier=="theme"){
 				$thèmeID=$_REQUEST["ID"];
-				$controleur=new ControleurThème($_REQUEST["ID"], $_SESSION["user_id"]);
+				$controleur=new ControleurThème($_REQUEST["ID"], $user_id);
 			}
             elseif($fichier=="serie"){
 				$série=new Serie($_REQUEST["ID"]);
 				$thèmeID=$série->themeID;
-				$controleur=new ControleurSérie($_REQUEST["ID"], $_SESSION["user_id"]);
+				$controleur=new ControleurSérie($_REQUEST["ID"], $user_id);
 			}
 			elseif($fichier=="question"){
 				$question=new Question($_REQUEST["ID"]);
@@ -64,13 +66,13 @@ function inclusion_page(){
 											"stdin"=>isset($_REQUEST["stdin"]) &&  $_REQUEST["stdin"]!="" ?$_REQUEST["stdin"]:null);
 				
 				if($question->type==Question::TYPE_PROG){
-					$controleur=new ControleurQuestionProg($_REQUEST["ID"], $_SESSION["user_id"], $réponse_utilisateur);
+					$controleur=new ControleurQuestionProg($_REQUEST["ID"], $user_id, $réponse_utilisateur);
 				}
 				elseif($question->type==Question::TYPE_SYS){
-					$controleur=new ControleurQuestionSys($_REQUEST["ID"], $_SESSION["user_id"], $réponse_utilisateur);
+					$controleur=new ControleurQuestionSys($_REQUEST["ID"], $user_id, $réponse_utilisateur);
 				}
 				elseif($question->type==Question::TYPE_BD){
-					$controleur=new ControleurQuestionBd($_REQUEST["ID"], $_SESSION["user_id"], $réponse_utilisateur);
+					$controleur=new ControleurQuestionBd($_REQUEST["ID"], $user_id, $réponse_utilisateur);
 				}
 			}
 			elseif($fichier=="pratique"){
@@ -80,35 +82,48 @@ function inclusion_page(){
 											"params"=>isset($_REQUEST["params"]) &&  $_REQUEST["params"]!="" ?$_REQUEST["params"]:null,
 											"stdin"=>isset($_REQUEST["stdin"]) &&  $_REQUEST["stdin"]!="" ?$_REQUEST["stdin"]:null);
 
-				$controleur=new ControleurPratique(null, $_SESSION["user_id"], $réponse_utilisateur);
+				$controleur=new ControleurPratique(null, $user_id, $réponse_utilisateur);
 			}
 			elseif($fichier=="ad_suivi"){
-				$controleur=new ControleurSuivi(null, $_SESSION["user_id"]);
+				$controleur=new ControleurSuivi(null, $user_id);
 			}
+
 			if($controleur==null){
-				$controleur=new ControleurAccueil(null, $_SESSION["user_id"]);
+				$controleur=new ControleurAccueil(new DAOFactory(), $user_id);
 			}
 			
-			render_page($thèmeID, $controleur);
 		}
 		else{
-			header("Location: index.php?p=accueil");
+			$controleur=new ControleurAccueil(new DAOFactory(), $user_id);
 		}        
 	}
 	else{    
-		if(isset($_GET["p"])){
-			header("Location: /login.php?p=$_GET[p]" . (isset($_GET['ID'])?("&ID=".$_GET['ID']):""));
-		}
-		else{
-			header("Location: /login.php");
-		}
+		$réponse_utilisateur=array( "submit"=>isset($_REQUEST["submit"]),
+									"username" => (isset($_REQUEST["username"]) ? $_REQUEST["username"]!="" : null),
+									"passwd" => (isset($_REQUEST["passwd"]) ? $_REQUEST["passwd"]!="" : null));
+		
+		$controleur=new ControleurLogin(new DAOFactory(), $réponse_utilisateur);
+
+		// if(isset($_GET["p"])){
+		// 	header("Location: /login.php?p=$_GET[p]" . (isset($_GET['ID'])?("&ID=".$_GET['ID']):""));
+		// }
+		// else{
+		// 	header("Location: /login.php");
+		// }
 	}
+
+	render_page(isset($_SESSION['user_id']) ? $user_id : null, isset($thèmeID) ? $thèmeID : null, $controleur);
+
 }
 
-function render_page($thèmeID, $controleur){
-	$infos=get_header_infos($thèmeID, $_SESSION["user_id"]);
+function render_page($user_id, $thèmeID, $controleur){
+	$infos = array();
+	
+	if ( ! is_null($user_id) ){
+		$infos=array_merge((new HeaderControleur(new DAOFactory(), $user_id))->get_header_infos($thèmeID, $user_id));
+	}
+	
 	$infos=array_merge($infos, $controleur->get_page_infos());
-	$infos=array_merge($infos, get_footer_infos());			
 	
 	$template=$GLOBALS['mustache']->loadTemplate($infos["template"]);
 	echo $template->render($infos);
