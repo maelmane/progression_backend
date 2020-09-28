@@ -13,10 +13,9 @@ class UserInteracteur extends Interacteur {
 	function obtenir_ou_créer_user($username){
 		$user_dao = $this->_source->get_user_dao();
 		
-		if($user_dao->existe($username)){
-			$user=$user_dao->trouver_par_nomusager($username);
-		}
-		else{
+		$user=$user_dao->trouver_par_nomusager($username);
+
+		if ( $user == null ) {
 			$user=$user_dao->créer($username);
 		}
 

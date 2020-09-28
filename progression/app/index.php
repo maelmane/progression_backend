@@ -99,19 +99,18 @@ function inclusion_page(){
 	}
 	else{    
 		$réponse_utilisateur=array( "submit"=>isset($_REQUEST["submit"]),
-									"username" => (isset($_REQUEST["username"]) ? $_REQUEST["username"]!="" : null),
-									"passwd" => (isset($_REQUEST["passwd"]) ? $_REQUEST["passwd"]!="" : null));
+									"username" => (isset($_REQUEST["username"]) ? $_REQUEST["username"] : null),
+									"passwd" => (isset($_REQUEST["passwd"]) ? $_REQUEST["passwd"] : null));
 		
 		$controleur=new ControleurLogin(new DAOFactory(), $réponse_utilisateur);
+		$user = $controleur->effectuer_login();
 
-		// if(isset($_GET["p"])){
-		// 	header("Location: /login.php?p=$_GET[p]" . (isset($_GET['ID'])?("&ID=".$_GET['ID']):""));
-		// }
-		// else{
-		// 	header("Location: /login.php");
-		// }
+		if ( isset($user) && $user != null ) {
+			$_SESSION['user_id'] = $user->id;
+			$controleur = new ControleurAccueil(new DAOFactory(), $user->id);
+		}
 	}
-
+	
 	render_page(isset($_SESSION['user_id']) ? $user_id : null, isset($thèmeID) ? $thèmeID : null, $controleur);
 
 }

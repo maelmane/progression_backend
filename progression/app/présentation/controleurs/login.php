@@ -42,6 +42,8 @@ class ControleurLogin extends Controleur {
 	}
 
 	function effectuer_login(){
+		$user = null;
+		
 		if($GLOBALS['config']['auth_type']=="no"){
 			$user=$this->login_sans_authentification();
 		}
@@ -52,8 +54,7 @@ class ControleurLogin extends Controleur {
 			$user=$this->login_ldap();
 		}
 
-		
-		$this->get_infos_session($user);
+		return $user;
 	}
 
 	function login_local(){
@@ -63,14 +64,15 @@ class ControleurLogin extends Controleur {
 	function login_ldap(){
 		$this->vérifier_champs_valides();
 		$user=$this->get_utilisateur_ldap();
-		$user_info=new UserInteracteur(new DAOFactory(), obtenir_ou_créer_user($this->username));
-		$user_info->nom=$user['cn'][0];
-
+		if ( $user != null ){
+			$user_info=new UserInteracteur(new DAOFactory(), obtenir_ou_créer_user($this->username));
+			$user_info->nom=$user['cn'][0];
+		}
 		return $user_info;
 	}
 
-	function vérifier_champs_valides(){
-		if(empty($_POST["username"]) || empty($_POST["passwd"])){
+	function vérifier_champs_valides() {
+		if(empty($this->username || empty($this->username))) {
 			throw new ConnexionException("Le nom d'utilisateur ou le mot de passe ne peuvent être vides.");
 		}
 	}
@@ -96,33 +98,14 @@ class ControleurLogin extends Controleur {
 		$user=ldap_get_entries($ldap, $result);
 
 		if(!$user[0] || !@ldap_bind($ldap, $user[0]['dn'], $password)){
-			throw new ConnexionException("Nom d'utilisateur ou mot de passe invalide.");
+			return null;
 		}
 		return $user[0];
 	}
 
-	function get_infos_session($user_info){
-		#Obtient les infos de l'utilisateur
-		$_SESSION["user_id"]=$user_info->id;
-		$_SESSION["username"]=$user_info->username;
-		$_SESSION["actif"]=$user_info->actif;
-		$_SESSION["role"]=$user_info->role;
-	}
-
-	function rediriger_apres_login(){
-		if(!isset($_GET["p"])){
-			header("Location: /index.php?p=accueil");
-		}
-		else{
-			header("Location: /index.php?p=$_GET[p]&ID=$_GET[ID]");
-		}
-	}
-
 	function login_sans_authentification(){
-		$username=$_POST["username"];
-		log($username);
 		$interacteur = new UserInteracteur($this->_source);
-		return $interacteur->obtenir_ou_créer_user(new UserDAO(), $username);
+		return $interacteur->obtenir_ou_créer_user($this->username);
 	}
 
 	function récupérer_configs(){
@@ -132,14 +115,10 @@ class ControleurLogin extends Controleur {
 	}
 
 	function get_page_infos(){
-		if ( ! is_null($this->submit) ){
-			$this->effectuer_login();
-			// $this->rediriger_apres_login();
-		}
-
 		return array_merge(
 			array("template" => "login",
 				  "titre" => "Connexion"),
 			$this->récupérer_configs());
 	}
+
 }

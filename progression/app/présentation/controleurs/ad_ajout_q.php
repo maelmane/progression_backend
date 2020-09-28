@@ -97,7 +97,6 @@ function sauvegarder(){
 	if(isset($_POST['theme']) && $_POST['theme']==0){
 		$theme=new Theme(0);
 		$theme->titre=$_POST['theme_titre'];
-		error_log("sauvegarde thème");
 		$theme->save();
 		header("Location: index.php?p=ad_ajout_q&theme=$_POST[theme]");
 	}
@@ -106,7 +105,6 @@ function sauvegarder(){
 		$serie->titre=$_POST['serie_titre'];
 		$serie->themeID=$_POST['theme'];
 		$serie->save();
-		error_log("sauvegarde série");		
 		header("Location: index.php?p=ad_ajout_q&theme=$_POST[theme]&serie=$_POST[serie]");
 	}
 	//Sauvegarde

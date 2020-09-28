@@ -16,6 +16,10 @@ class UserDAO extends EntiteDAO{
 		$res=$query->fetch();
 		$query->close();
 
+		if ( $id == null ) {
+			return null;
+		}
+		
 		$user = new User($id);
 		$this->load($user);
 
