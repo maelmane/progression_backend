@@ -1,6 +1,7 @@
 <?php
 
 require_once('controleur.php');
+require_once('domaine/entités/question_prog.php');
 
 class ControleurProg extends Controleur {
 
@@ -20,8 +21,8 @@ class ControleurProg extends Controleur {
 						  "SSH",
 						  "MySQL");
 	
-	function __construct($id, $user_id, $réponse_utilisateur){
-		parent::__construct($id, $user_id);
+	function __construct($source, $user_id, $réponse_utilisateur){
+		parent::__construct($source, $user_id);
 
 		$this->à_valider=isset($réponse_utilisateur["à_valider"])?$réponse_utilisateur["à_valider"]:null;
 		$this->à_exécuter=isset($réponse_utilisateur["à_exécuter"])?$réponse_utilisateur["à_exécuter"]:null;
@@ -31,9 +32,6 @@ class ControleurProg extends Controleur {
 		$this->incode=isset($réponse_utilisateur["incode"])?$réponse_utilisateur["incode"]:null;
 		$this->params=isset($réponse_utilisateur["params"])?$réponse_utilisateur["params"]:null;
 		$this->stdin=isset($réponse_utilisateur["stdin"])?$réponse_utilisateur["stdin"]:null;
-
-		$this->question=new QuestionProg($this->id);
-		$this->avancement=new Avancement($this->question->id, $this->user_id);
 	}
 
 	function get_code(){

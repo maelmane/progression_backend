@@ -19,9 +19,11 @@ require("présentation/controleurs/question_sys.php");
 require("présentation/controleurs/serie.php");
 require("présentation/controleurs/theme.php");
 
-//vérifier_user_id();
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 set_locale();
-openlog("quiz",LOG_NDELAY, LOG_LOCAL0);
+openlog("quiz",LOG_NDELAY, LOG_SYSLOG);
 inclusion_page();
 
 function set_locale(){
@@ -30,25 +32,24 @@ function set_locale(){
 }
 
 function inclusion_page(){
-    if(isset($_SESSION["user_id"])){
+	if(isset($_SESSION["user_id"])){
 		$user_id = $_SESSION['user_id'];
-        if(isset($_GET["p"])){
-            $fichier=$_GET["p"];
+		if(isset($_GET["p"])){
+			$fichier=$_GET["p"];
 
 			$controleur=null;
 
 			$thèmeID=0;
-            if($fichier=="logout"){
+			if($fichier=="logout"){
 				$controleur=new ControleurLogout();
 			}
-            if($fichier=="theme"){
-				$thèmeID=$_REQUEST["ID"];
-				$controleur=new ControleurThème($_REQUEST["ID"], $user_id);
+			if($fichier=="theme"){
+				$thème_id=$_REQUEST["ID"];
+				$controleur=new ControleurThème(new DAOFactory(), $thème_id, $user_id);
 			}
-            elseif($fichier=="serie"){
-				$série=new Serie($_REQUEST["ID"]);
-				$thèmeID=$série->themeID;
-				$controleur=new ControleurSérie($_REQUEST["ID"], $user_id);
+			elseif($fichier=="serie"){
+				$série_id=$_REQUEST["ID"];
+				$controleur=new ControleurSérie(new DAOFactory(), $serie_id, $user_id);
 			}
 			elseif($fichier=="question"){
 				$question=new Question($_REQUEST["ID"]);
@@ -66,13 +67,13 @@ function inclusion_page(){
 											"stdin"=>isset($_REQUEST["stdin"]) &&  $_REQUEST["stdin"]!="" ?$_REQUEST["stdin"]:null);
 				
 				if($question->type==Question::TYPE_PROG){
-					$controleur=new ControleurQuestionProg($_REQUEST["ID"], $user_id, $réponse_utilisateur);
+					$controleur=new ControleurQuestionProg(new DAOFactory(), $user_id, $réponse_utilisateur);
 				}
 				elseif($question->type==Question::TYPE_SYS){
-					$controleur=new ControleurQuestionSys($_REQUEST["ID"], $user_id, $réponse_utilisateur);
+					$controleur=new ControleurQuestionSys(new DAOFactory(), $user_id, $réponse_utilisateur);
 				}
 				elseif($question->type==Question::TYPE_BD){
-					$controleur=new ControleurQuestionBd($_REQUEST["ID"], $user_id, $réponse_utilisateur);
+					$controleur=new ControleurQuestionBd(new DAOFactory(), $user_id, $réponse_utilisateur);
 				}
 			}
 			elseif($fichier=="pratique"){
@@ -82,10 +83,10 @@ function inclusion_page(){
 											"params"=>isset($_REQUEST["params"]) &&  $_REQUEST["params"]!="" ?$_REQUEST["params"]:null,
 											"stdin"=>isset($_REQUEST["stdin"]) &&  $_REQUEST["stdin"]!="" ?$_REQUEST["stdin"]:null);
 
-				$controleur=new ControleurPratique(null, $user_id, $réponse_utilisateur);
+				$controleur=new ControleurPratique(new DAOFactory(), $user_id, $réponse_utilisateur);
 			}
 			elseif($fichier=="ad_suivi"){
-				$controleur=new ControleurSuivi(null, $user_id);
+				$controleur=new ControleurSuivi(new DAOFactory(), $user_id);
 			}
 
 			if($controleur==null){
@@ -103,11 +104,19 @@ function inclusion_page(){
 									"passwd" => (isset($_REQUEST["passwd"]) ? $_REQUEST["passwd"] : null));
 		
 		$controleur=new ControleurLogin(new DAOFactory(), $réponse_utilisateur);
-		$user = $controleur->effectuer_login();
 
-		if ( isset($user) && $user != null ) {
-			$_SESSION['user_id'] = $user->id;
-			$controleur = new ControleurAccueil(new DAOFactory(), $user->id);
+		if ( isset($_REQUEST["submit"] ) ) {
+			syslog(LOG_INFO, "Tentative de connexion : " . $_REQUEST["username"]);
+
+			$user = $controleur->effectuer_login( $_REQUEST["username"], $_REQUEST["password"] );
+			
+			if ( isset($user) && $user != null ) {
+				syslog(LOG_INFO, "Connexion : " . $user->username);
+
+				$_SESSION['user_id'] = $user->id;
+				$controleur = new ControleurAccueil(new DAOFactory(), $user->id);
+			}
+
 		}
 	}
 	
@@ -121,7 +130,8 @@ function render_page($user_id, $thèmeID, $controleur){
 	if ( ! is_null($user_id) ){
 		$infos=array_merge((new HeaderControleur(new DAOFactory(), $user_id))->get_header_infos($thèmeID, $user_id));
 	}
-	
+
+	syslog(LOG_INFO, "Controleur : " . get_class($controleur));
 	$infos=array_merge($infos, $controleur->get_page_infos());
 	
 	$template=$GLOBALS['mustache']->loadTemplate($infos["template"]);

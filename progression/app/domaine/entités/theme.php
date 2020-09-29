@@ -3,7 +3,7 @@
 require_once('entite.php');
 require_once('serie.php');
 
-class Theme extends Entite{
+class Thème extends Entite{
 
     public $titre;
     public $description;

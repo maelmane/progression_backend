@@ -22,12 +22,12 @@ class UserInteracteur extends Interacteur {
 		return $user;
 	}
 
-    function get_pourcentage_avancement($user_id, $theme_id){
-		return floor(UserInteracteur::get_avancement($user_id, $theme_id)/$this->_source->get_theme_dao()->get_nb_questions_actives($theme_id)*100);
+    function get_pourcentage_avancement($user_id, $thème_id){
+		return floor(UserInteracteur::get_avancement($user_id, $thème_id)/$this->_source->get_thème_dao()->get_nb_questions_actives($thème_id)*100);
     }
 
-	static function get_avancement($user_id, $theme_id){
-		$query=ThemeDAO::$conn->prepare('SELECT count(question.questionID) FROM avancement, question, serie WHERE 
+	static function get_avancement($user_id, $thème_id){
+		$query=ThèmeDAO::$conn->prepare('SELECT count(question.questionID) FROM avancement, question, serie WHERE 
 	                                     avancement.questionID=question.questionID AND 
 	                                     avancement.userID= ? AND 
 	                                     question.serieID=serie.serieID AND 
@@ -35,7 +35,7 @@ class UserInteracteur extends Interacteur {
 	                                     question.actif = 1 AND
 	                                     serie.actif = 1 AND
 	                                     avancement.etat = '.Question::ETAT_REUSSI);
-		$query->bind_param( "ii", $user_id, $theme_id);
+		$query->bind_param( "ii", $user_id, $thème_id);
 		$query->execute();
 		$query->bind_result($res);
 		$query->fetch();

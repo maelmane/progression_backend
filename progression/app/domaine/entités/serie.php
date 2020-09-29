@@ -2,11 +2,11 @@
 
 require_once('entite.php');
 
-class Serie extends Entite{
-    public $numero;
+class Série extends Entite{
+    public $numéro;
     public $titre;
     public $description;
-    public $themeID;
+    public $thèmeID;
 }
 
 ?>

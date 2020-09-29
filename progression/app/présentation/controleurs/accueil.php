@@ -12,8 +12,8 @@ class ControleurAccueil extends Controleur{
 	}
 	
 	function get_page_infos(){
-		$interacteur = new ThemeInteracteur($this->_source);
-		$this->thèmes=$interacteur->get_themes($this->_source->get_user_dao()->get_user($this->_user_id));
+		$interacteur = new ThèmeInteracteur($this->_source, $this->_user_id);
+		$this->thèmes=$interacteur->get_thèmes();
 		$this->calculer_avancement();
 
 		return array(

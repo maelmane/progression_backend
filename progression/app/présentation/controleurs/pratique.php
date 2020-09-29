@@ -4,6 +4,10 @@ require_once('controleur_prog.php');
 
 class ControleurPratique extends ControleurProg {
 
+	function __construct($source, $user_id, $réponse_utilisateur){
+		parent::__construct($source, $user_id, $réponse_utilisateur);
+	}
+	
 	function get_page_infos(){
 		$infos=$this->récupérer_paramètres();
 		$sorties=$this->exécuter_code($infos);
@@ -23,7 +27,7 @@ class ControleurPratique extends ControleurProg {
 					  "stdin"=>$this->get_stdin(),
 					  "url_retour"=>"index.php?p=accueil",
 					  "titre_retour"=>"l'accueil",
-					  "mode"=>$this->get_mode($langid)
+					  "mode"=>$this->get_mode($this->langid)
 		);
 		return $infos;
 	}

@@ -4,6 +4,7 @@ class ConnexionException extends Exception{}
 
 require_once(__DIR__.'/../../config.php');
 require_once('controleur.php');
+require_once('domaine/interacteurs/login_interacteur.php');
 
 class ControleurLogin extends Controleur {
 
@@ -29,15 +30,23 @@ class ControleurLogin extends Controleur {
 		return $configs;
 	}
 
-	function get_page_infos(){
-		if ( ! is_null($this->submit) ){
-			$user = $this->(new LoginInteracteur($this->_source))->effectuer_login();
+	function effectuer_login($username, $password) {
+		$user = (new LoginInteracteur($this->_source, $username, $password))->effectuer_login();
+		if ( $user != null ) {
 			$this->set_infos_session($user);
 		}
+		else {
+			$this->erreur = "Nom d'utilisateur ou mot de passe invalide";
+		}
 
+		return $user;
+	}
+
+	function get_page_infos(){
 		return array_merge(
-			array("template" => "login",
-				  "titre" => "Connexion"),
+			array( "template" => "login",
+				   "titre" => "Connexion",
+				   "erreur" => $this->erreur ),
 			$this->récupérer_configs());
 	}
 

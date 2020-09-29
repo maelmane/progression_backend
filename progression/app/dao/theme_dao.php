@@ -1,41 +1,42 @@
 <?php
 
-require_once('entite_dao.php');
-require_once(__DIR__.'/../domaine/entités/theme.php');
+require_once('dao/entite_dao.php');
+require_once('dao/serie_dao.php');
+require_once('domaine/entités/theme.php');
 
-class ThemeDAO extends EntiteDAO{
-    static function get_themes($inactif=false){
+class ThèmeDAO extends EntiteDAO{
+    static function get_thèmes($inactif=false){
 		if($inactif){
-            $theme_ids=ThemeDAO::$conn->query('SELECT themeID FROM theme WHERE themeID>0 ORDER BY ordre');
+            $thème_ids=ThèmeDAO::$conn->query('SELECT themeID FROM theme WHERE themeID>0 ORDER BY ordre');
 		}
 		else{
-            $theme_ids=ThemeDAO::$conn->query('SELECT themeID FROM theme WHERE 
+            $thème_ids=ThèmeDAO::$conn->query('SELECT themeID FROM theme WHERE 
                                          actif = 1 AND
                                          themeID>0 ORDER BY ordre');
 		}
 		
-		$themes=array();
+		$thèmes=array();
 
-		$row = $theme_id=$theme_ids->fetch_assoc();
+		$row = $thème_id=$thème_ids->fetch_assoc();
 		while( $row ){
-			$theme_id=$row['themeID'];
-            $themes[] = ThemeDAO::get_theme_par_id($theme_id);;
+			$thème_id=$row['themeID'];
+            $thèmes[] = ThèmeDAO::get_thème_par_id($thème_id);;
 
-			$row = $theme_id=$theme_ids->fetch_assoc();
+			$row = $thème_id=$thème_ids->fetch_assoc();
 		}
-		$theme_ids->close();
-		return $themes;
+		$thème_ids->close();
+		return $thèmes;
 		
 	}
 
-	static function get_theme_par_id($id){
-		$theme=new Theme($id);
+	static function get_thème_par_id($id){
+		$thème=new Thème($id);
 
 		if(!is_null($id)){
-			ThemeDAO::load($theme);
+			ThèmeDAO::load($thème);
 		}
 
-    	return $theme;
+    	return $thème;
 	}
 
 	#    protected static function calculer_avancement($themes, $user_id){
@@ -44,8 +45,8 @@ class ThemeDAO extends EntiteDAO{
 	#	}
 	#    }
 	#    
-	protected static function load($objet){
-		$query=ThemeDAO::$conn->prepare('SELECT themeID, actif, titre, description FROM theme WHERE themeID = ?');
+	public static function load($objet){
+		$query=ThèmeDAO::$conn->prepare('SELECT themeID, actif, titre, description FROM theme WHERE themeID = ?');
 		$query->bind_param( "i", $objet->id);
 		$query->execute();
 		$query->bind_result( $objet->id, $objet->actif, $objet->titre, $objet->description );
@@ -54,17 +55,17 @@ class ThemeDAO extends EntiteDAO{
 		$query->close();
 
 		if(!is_null($objet->id)){
-			$objet->series_ids=ThemeDAO::get_series_ids($objet->id);
+			$objet->séries_ids=ThèmeDAO::get_séries_ids($objet->id);
 		}
 	}
 
-	static function get_series_ids($id, $inactif=false){
+	static function get_séries_ids($id, $inactif=false){
 		if($inactif){
-			$query=ThemeDAO::$conn->prepare('SELECT serieID FROM serie WHERE
+			$query=ThèmeDAO::$conn->prepare('SELECT serieID FROM serie WHERE
                                              themeID= ? ORDER BY numero');
 		}
 		else{
-			$query=ThemeDAO::$conn->prepare('SELECT serieID FROM serie WHERE
+			$query=ThèmeDAO::$conn->prepare('SELECT serieID FROM serie WHERE
                                              serie.actif = 1 AND
                                              themeID= ? ORDER BY numero');
 		}
@@ -81,16 +82,16 @@ class ThemeDAO extends EntiteDAO{
 		return $res;
 	}
 
-	static function get_series($id, $inactif=false){
+	static function get_séries($id, $inactif=false){
 		$res=array();
-		foreach(ThemeDAO::get_series_ids($id,$inactif) as $serieid){
-			$res[]=SerieDAO::get_serie_par_id($serieid);
+		foreach(ThèmeDAO::get_séries_ids($id,$inactif) as $sérieid){
+			$res[]=SérieDAO::get_série_par_id($sérieid);
 		}
 		return $res;
 	}
 	
 	static function get_nb_questions_actives($id){
-		$query=ThemeDAO::$conn->prepare('SELECT count(question.questionID) FROM question, serie WHERE 
+		$query=ThèmeDAO::$conn->prepare('SELECT count(question.questionID) FROM question, serie WHERE 
 question.serieID = serie.serieID AND
 question.actif = 1 AND
 serie.actif = 1 AND

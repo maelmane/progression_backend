@@ -1,10 +1,11 @@
 <?php
 
-require_once('entite_dao.php');
-require_once('question.php');
+require_once('dao/entite_dao.php');
+require_once('dao/question_dao.php');
+require_once('domaine/entités/question.php');
 
 class QuestionDAO extends EntiteDAO{
- static function get_type($id){
+	static function get_type($id){
 		$query=QuestionDAO::$conn->prepare('SELECT type FROM question WHERE questionID = ?');
 		$query->bind_param("i", $id);
 		$query->execute();

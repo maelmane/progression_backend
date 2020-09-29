@@ -12,8 +12,8 @@ class HeaderControleur extends Controleur {
 	
 	function get_header_infos($thèmeID){
 		$user=(new UserInteracteur($this->_source))->get_user($this->_user_id);
-		$interacteur = new ThemeInteracteur($this->_source);
-		$themes=$interacteur->get_themes($user);
+		$interacteur = new ThèmeInteracteur($this->_source, $this->_user_id);
+		$themes=$interacteur->get_thèmes($user);
 
 		if ( ! is_null($thèmeID) ) {
 			$themes[$thèmeID]->courant="true";

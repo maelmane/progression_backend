@@ -5,6 +5,13 @@ require_once('helpers.php');
 
 class ControleurQuestionProg extends ControleurProg{
 
+	function __construct($source, $user_id, $réponse_utilisateur){
+		parent::__construct($source, $user_id, $réponse_utilisateur);
+
+		$this->question=new QuestionProg($this->id);
+		$this->avancement=new Avancement($this->question->id, $this->user_id);
+	}
+	
 	function get_page_infos(){
 		$infos=array("template"=>"question_prog");
 		

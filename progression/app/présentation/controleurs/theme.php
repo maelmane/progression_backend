@@ -1,12 +1,22 @@
 <?php
 
-require_once('controleur.php');
+require_once('présentation/controleurs/controleur.php');
+require_once('domaine/entités/theme.php');
+require_once('domaine/interacteurs/theme_interacteur.php');
 
 class ControleurThème extends Controleur{
 
+	function __construct($source, $thème_id, $user_id){
+		parent::__construct($source);
+		$this->_user_id = $user_id;
+		$this->_thème_id = $thème_id;
+	}
+	
 	function get_page_infos(){
-		$this->thème=$this->get_theme();
-		$this->séries=$this->thème?$this->get_series():null;
+		$interacteur = new ThèmeInteracteur($this->_source, $this->_user_id);
+		$this->thème = $interacteur->get_thème($this->_thème_id);
+		$this->séries = $interacteur->get_séries($this->_thème_id);
+		
 		return array("template"=>"theme",
 					 "titre"=>$this->thème->titre,
 					 'theme'=>$this->thème,
@@ -14,24 +24,6 @@ class ControleurThème extends Controleur{
 		
 	}
 
-	function get_theme(){
-		$theme=new Theme($this->id, $this->user_id);
-
-		return $theme->id ? $theme : null;
-	}
-
-	function get_series(){
-		$séries=$this->thème->get_series();
-		$this->calculer_avancement($séries);
-
-		return $séries;
-	}
-
-	function calculer_avancement($series){
-		foreach($series as $serie){
-			$serie->avancement=$serie->get_pourcentage_avancement($this->user_id);
-		}
-	}
 }
 
 ?>
