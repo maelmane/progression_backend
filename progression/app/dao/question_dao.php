@@ -5,6 +5,7 @@ require_once('dao/question_dao.php');
 require_once('domaine/entités/question.php');
 
 class QuestionDAO extends EntiteDAO{
+
 	static function get_type($id){
 		$query=QuestionDAO::$conn->prepare('SELECT type FROM question WHERE questionID = ?');
 		$query->bind_param("i", $id);
@@ -19,7 +20,7 @@ class QuestionDAO extends EntiteDAO{
 		return $type;
     }
     
-    static function get_question_par_id($id){
+    static function get_question($id){
 		$question=new Question($id);
 		QuestionDAO::load($question);
 		return $question;

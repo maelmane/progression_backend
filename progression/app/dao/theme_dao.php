@@ -20,7 +20,7 @@ class ThèmeDAO extends EntiteDAO{
 		$row = $thème_id=$thème_ids->fetch_assoc();
 		while( $row ){
 			$thème_id=$row['themeID'];
-            $thèmes[] = ThèmeDAO::get_thème_par_id($thème_id);;
+            $thèmes[] = ThèmeDAO::get_thème($thème_id);;
 
 			$row = $thème_id=$thème_ids->fetch_assoc();
 		}
@@ -29,7 +29,7 @@ class ThèmeDAO extends EntiteDAO{
 		
 	}
 
-	static function get_thème_par_id($id){
+	static function get_thème($id){
 		$thème=new Thème($id);
 
 		if(!is_null($id)){
@@ -39,13 +39,7 @@ class ThèmeDAO extends EntiteDAO{
     	return $thème;
 	}
 
-	#    protected static function calculer_avancement($themes, $user_id){
-	#	foreach($themes as $theme){
-	#	    $theme->avancement=$theme->get_pourcentage_avancement($user_id);
-	#	}
-	#    }
-	#    
-	public static function load($objet){
+	protected static function load($objet){
 		$query=ThèmeDAO::$conn->prepare('SELECT themeID, actif, titre, description FROM theme WHERE themeID = ?');
 		$query->bind_param( "i", $objet->id);
 		$query->execute();
@@ -85,7 +79,7 @@ class ThèmeDAO extends EntiteDAO{
 	static function get_séries($id, $inactif=false){
 		$res=array();
 		foreach(ThèmeDAO::get_séries_ids($id,$inactif) as $sérieid){
-			$res[]=SérieDAO::get_série_par_id($sérieid);
+			$res[]=SérieDAO::get_série($sérieid);
 		}
 		return $res;
 	}

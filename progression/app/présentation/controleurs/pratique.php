@@ -11,7 +11,9 @@ class ControleurPratique extends ControleurProg {
 	function get_page_infos(){
 		$infos=$this->récupérer_paramètres();
 		$sorties=$this->exécuter_code($infos);
-		$infos=array_merge($infos, $this->calculer_sorties($sorties, $infos));
+		$infos=array_merge(
+			parent::get_page_infos(),
+			$infos, $this->calculer_sorties($sorties, $infos));
 		return $infos;
 	}
 

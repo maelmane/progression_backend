@@ -4,35 +4,25 @@ require_once('controleur.php');
 
 class ControleurSérie extends Controleur{
 
-	function get_page_infos(){
-		$this->série=$this->get_série();
-		$this->questions=$this->série?$this->get_questions():null;
 
-		$thème=new Theme($this->série->themeID);
-		return array("template"=>"serie",
-					 "serie"=>$this->série,
-					 "titre"=>$thème->titre,
-					 "questions"=>$this->questions);
-
-	}
-
-	function get_série(){
-		$serie=new Serie($this->id);
+	function __construct($source, $série_id, $user_id){
+		parent::__construct($source, $user_id);
 		
-		return $serie;
+		$interacteur = new SérieInteracteur($this->_source, $user_id);
+		$this->_série=$interacteur->get_série($série_id);
+		$this->_questions=$interacteur->get_questions($série_id);
+		
+		$thème_id=$this->_série->thème_id;
+		$this->_thème = (new ThèmeInteracteur($this->_source, $user_id))->get_thème($thème_id);
 	}
+	
+	function get_page_infos(){
+		return array(parent::get_page_infos(),
+					 "template"=>"serie",
+					 "serie"=>$this->_série,
+					 "titre"=>$this->_thème->titre,
+					 "questions"=>$this->_questions);
 
-	function get_questions(){
-		$questions=$this->série->get_questions();
-		$this->calculer_réussite($questions);
-
-		return $questions;
-	}
-
-	function calculer_réussite($questions){
-		foreach($questions as $question){
-			$question->réussie=$question->get_avancement($this->user_id)->get_etat() == Question::ETAT_REUSSI;
-		}
 	}
 
 }

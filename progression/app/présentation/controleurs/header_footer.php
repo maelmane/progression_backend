@@ -6,7 +6,7 @@ require_once('controleur.php');
 
 class HeaderControleur extends Controleur {
 	function __construct($source, $user_id){
-		parent::__construct($source);
+		parent::__construct($source, $user_id);
 		$this->_user_id = $user_id;
 	}
 	
@@ -19,7 +19,8 @@ class HeaderControleur extends Controleur {
 			$themes[$thèmeID]->courant="true";
 		}
 
-		$infos=array("username"=>$user->username,
+		$infos=array(parent::get_page_infos(),
+					 "username"=>$user->username,
 					 "themes"=>$themes,
 					 "est_admin"=>$user->role == User::ROLE_ADMIN,
 					 "dashboard_actif"=>$themes[0]->actif);

@@ -2,11 +2,12 @@
 
 session_start();
 require __DIR__ . '/../vendor/autoload.php';
-require_once(__DIR__.'/config.php');
-require_once(__DIR__.'/domaine/entités/user.php');
-require_once(__DIR__.'/présentation/controleurs/header_footer.php');
+require_once('config.php');
+require_once('domaine/entités/user.php');
+require_once('présentation/controleurs/header_footer.php');
+require_once('dao/dao_factory.php');
 
-require_once(__DIR__.'/dao/dao_factory.php');
+require_once("domaine/interacteurs/question_interacteur.php");
 
 require("présentation/controleurs/accueil.php");
 require("présentation/controleurs/ad_suivi.php");
@@ -49,12 +50,11 @@ function inclusion_page(){
 			}
 			elseif($fichier=="serie"){
 				$série_id=$_REQUEST["ID"];
-				$controleur=new ControleurSérie(new DAOFactory(), $serie_id, $user_id);
+				$controleur=new ControleurSérie(new DAOFactory(), $série_id, $user_id);
 			}
 			elseif($fichier=="question"){
-				$question=new Question($_REQUEST["ID"]);
-				$série=new Serie($question->serieID);
-				$thèmeID=$série->themeID;
+				$question_id = $_REQUEST["ID"];
+				$question=(new QuestionInteracteur( new DAOFactory(), $user_id ))->get_question( $question_id );
 
 				$réponse_utilisateur=array( "à_exécuter"=>isset($_REQUEST["exécuter"]) && isset($_REQUEST["incode"]) && $_REQUEST["incode"]!="",
 											"à_valider"=>(isset($_REQUEST["valider"]) &&
@@ -67,13 +67,13 @@ function inclusion_page(){
 											"stdin"=>isset($_REQUEST["stdin"]) &&  $_REQUEST["stdin"]!="" ?$_REQUEST["stdin"]:null);
 				
 				if($question->type==Question::TYPE_PROG){
-					$controleur=new ControleurQuestionProg(new DAOFactory(), $user_id, $réponse_utilisateur);
+					$controleur=new ControleurQuestionProg(new DAOFactory(), $user_id, $question->id, $réponse_utilisateur);
 				}
 				elseif($question->type==Question::TYPE_SYS){
-					$controleur=new ControleurQuestionSys(new DAOFactory(), $user_id, $réponse_utilisateur);
+					$controleur=new ControleurQuestionSys(new DAOFactory(), $user_id, $question->id, $réponse_utilisateur);
 				}
 				elseif($question->type==Question::TYPE_BD){
-					$controleur=new ControleurQuestionBd(new DAOFactory(), $user_id, $réponse_utilisateur);
+					$controleur=new ControleurQuestionBd(new DAOFactory(), $user_id, $question->id, $réponse_utilisateur);
 				}
 			}
 			elseif($fichier=="pratique"){

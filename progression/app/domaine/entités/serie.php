@@ -6,7 +6,7 @@ class Série extends Entite{
     public $numéro;
     public $titre;
     public $description;
-    public $thèmeID;
+    public $thème_id;
 }
 
 ?>

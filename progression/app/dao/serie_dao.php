@@ -6,7 +6,7 @@ require_once('domaine/entités/serie.php');
 
 class SérieDAO extends EntiteDAO{
 
-    static function get_série_par_id($id){
+    static function get_série($id){
 		$série=new Série($id);
 		SérieDAO::load($série);
 		
@@ -27,11 +27,11 @@ class SérieDAO extends EntiteDAO{
 		}
     }
 
-    static function get_nb_questions_actives(){
+    static function get_nb_questions_actives($id){
 		$query=SérieDAO::$conn->prepare('SELECT count(question.questionID) FROM question WHERE
                                                  question.actif = 1 AND
                                                  question.serieID = ?');
-		$query->bind_param( "i", $this->id);
+		$query->bind_param( "i", $id);
 		$query->execute();
 		$query->bind_result($res);
 		$query->fetch();
@@ -69,7 +69,7 @@ class SérieDAO extends EntiteDAO{
     static function get_questions($id, $inactif=false){
 		$res=array();
 		foreach(SérieDAO::get_questions_ids($id,$inactif) as $question_id){
-			$res[]=QuestionDAO::get_question_par_id($question_id);
+			$res[]=QuestionDAO::get_question($question_id);
 		}
 		return $res;
     }

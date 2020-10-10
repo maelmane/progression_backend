@@ -1,62 +1,35 @@
 <?php
 
-require_once('../entite.php');
-require_once('../avancement.php');
+require_once('dao/entite_dao.php');
+require_once('domaine/entités/entite.php');
+require_once('domaine/entités/avancement.php');
 
 class AvancementDao extends EntiteDAO {
-	public function get_etat(){
-		return is_null($this->etat) ? Question::ETAT_DEBUT :  $this->etat;
-	}
 
-	public function set_etat($etat){
-		if($this->get_etat()==Question::ETAT_DEBUT){
-			$query=$GLOBALS["conn"]->prepare('INSERT INTO avancement SET etat = ?, questionID = ?, userID = ?');
-			$query->bind_param("sii", $etat, $this->questionID, $this->userID);
-			$query->execute();
-			$query->close();
-			$this->load_info();
-		}
-		else{
-			$query=$GLOBALS["conn"]->prepare('UPDATE avancement SET etat = ? WHERE questionID = ? AND userID = ?');
-			$query->bind_param("isi", $etat, $this->questionID, $this->userID);
-			$query->execute();
-			$query->close();
-			$this->etat=$etat;
-		}
-	}
+    static function get_avancement( $question_id, $user_id ) {
+		$avancement=new Avancement( $question_id, $user_id );
+		AvancementDAO::load( $avancement );
+		
+		return $avancement;
+    }
+	
+    protected static function load($objet){
+        $query=AvancementDAO::$conn->prepare('SELECT etat, reponse, code, conteneur FROM avancement WHERE questionID = ? AND userID = ?');
+        $query->bind_param("ii", $objet->question_id, $objet->user_id);
+        $query->execute();
+        $query->bind_result($objet->etat, $objet->reponse, $objet->code, $objet->conteneur);
+        $query->fetch();
 
-	public function set_reponse($reponse){
-		if($this->get_etat()==Question::ETAT_DEBUT){
-			//État par défaut = ETAT_NONREUSSI
-			$query=$GLOBALS["conn"]->prepare('INSERT INTO avancement SET etat = 1, reponse = ?, questionID = ?, userID = ?');
-			$query->bind_param("sii", $reponse, $this->questionID, $this->userID);
-			$query->execute();
-			$query->close();
-			$this->load_info();
-		}
-		else{
-			$query=$GLOBALS["conn"]->prepare('UPDATE avancement SET reponse = ? WHERE questionID = ? AND userID = ?');
-			$query->bind_param("sii", $reponse, $this->questionID, $this->userID);
-			$query->execute();
-			$query->close();
-			$this->reponse=$reponse;
-		}
+        $query->close();
+    }
+
+	public static function save($objet){
+		$query=AvancementDAO::$conn->prepare('INSERT INTO avancement (etat, questionID, userID, reponse, code, conteneur) VALUES (?, ?, ?, ?, ?, ?)
+                                              ON DUPLICATE KEY UPDATE etat = VALUES(etat), reponse=VALUES(reponse), code=VALUES(code), conteneur=VALUES(conteneur)');
+		
+		$query->bind_param("iiisss", $objet->etat, $objet->question_id, $objet->user_id, $objet->reponse, $objet->code, $objet->conteneur);
+		$query->execute();
+		$query->close();
 	}
-	public function set_conteneur($conteneur){
-		if($this->get_etat()==Question::ETAT_DEBUT){
-			//État par défaut = ETAT_NONREUSSI
-			$query=$GLOBALS["conn"]->prepare('INSERT INTO avancement SET etat = 1, conteneur = ?, questionID = ?, userID = ?');
-			$query->bind_param("sii", $conteneur, $this->questionID, $this->userID);
-			$query->execute();
-			$query->close();
-			$this->load_info();
-		}
-		else{
-			$query=$GLOBALS["conn"]->prepare('UPDATE avancement SET conteneur = ? WHERE questionID = ? AND userID = ?');
-			$query->bind_param("sii", $conteneur, $this->questionID, $this->userID);
-			$query->execute();
-			$query->close();
-			$this->conteneur=$conteneur;
-		}
-	}        
+}
 ?>

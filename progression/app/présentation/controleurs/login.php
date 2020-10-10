@@ -44,9 +44,9 @@ class ControleurLogin extends Controleur {
 
 	function get_page_infos(){
 		return array_merge(
+			parent::get_page_infos(),
 			array( "template" => "login",
-				   "titre" => "Connexion",
-				   "erreur" => $this->erreur ),
+				   "titre" => "Connexion"),
 			$this->récupérer_configs());
 	}
 

@@ -25,11 +25,6 @@ class Question extends Entite{
     public $code_validation;
     public $avancement;
     
-    public function get_avancement($user_id){
-        if (is_null($this->avancement))
-            $this->avancement=new Avancement($this->id, $user_id);
-        return $this->avancement;
-    }
     
 }
 

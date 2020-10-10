@@ -15,7 +15,7 @@ class QuestionProg extends Question{
     public $pre_code;
     public $incode;
     public $post_code;
-    public $reponse;
+    public $solution;
     public $params;
     public $stdin;
 

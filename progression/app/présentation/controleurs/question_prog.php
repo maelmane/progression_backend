@@ -1,21 +1,29 @@
 <?php
 
 require_once('controleur_prog.php');
+require_once('domaine/interacteurs/question_prog_interacteur.php');
 require_once('helpers.php');
 
 class ControleurQuestionProg extends ControleurProg{
 
-	function __construct($source, $user_id, $réponse_utilisateur){
+	function __construct($source, $user_id, $question_id, $réponse_utilisateur){
 		parent::__construct($source, $user_id, $réponse_utilisateur);
 
-		$this->question=new QuestionProg($this->id);
-		$this->avancement=new Avancement($this->question->id, $this->user_id);
+		$this->_question_id = $question_id;
+
+		$interacteur = new QuestionProgInteracteur($this->_source, $user_id);
+		$this->question = $interacteur->get_question( $this->_question_id );
+		
+		$this->avancement = $interacteur->get_avancement( $this->_question_id, $this->_question_id );
+
+		$interacteur = new SérieInteracteur($source, $user_id);
+		$this->série = $interacteur->get_série($this->question->serieID);
 	}
 	
-	function get_page_infos(){
-		$infos=array("template"=>"question_prog");
-		
-		$infos=array_merge($infos, $this->récupérer_paramètres());
+	function get_page_infos(){		
+		$infos=array_merge(parent::get_page_infos(),
+						   array("template"=>"question_prog"),
+						   $this->récupérer_paramètres());
 
 		if($this->à_valider || $this->à_exécuter){
 			$sorties=$this->exécuter_code($infos);
@@ -41,11 +49,10 @@ class ControleurQuestionProg extends ControleurProg{
 		$this->question->énoncé=str_replace("\r","",eval("return \"" . $this->question->enonce . "\";"));
 		$this->question->solution=str_replace("\r","",eval("return " . $this->question->solution . ";"));
 
-		$série=new Serie($this->question->serieID);
 		$infos=array("question"=>$this->question,
-					 "titre"=>$série->titre,
+					 "titre"=>$this->série->titre,
 					 "code"=>$this->get_code($this->question, $this->avancement),
-					 "langid"=>$this->langid or $this->question->lang or QuestionProg::PYTHON3,
+					 "langid"=>$this->question->lang or QuestionProg::PYTHON3,
 					 "première_ligne_éditeur_precode"=>$this->compter_lignes($this->question->pre_exec)+1,
 					 "première_ligne_éditeur_incode"=>$this->compter_lignes($this->question->pre_exec)+$this->compter_lignes($this->question->pre_code)+1,
 					 "params"=>$this->get_params($this->question),
@@ -53,7 +60,7 @@ class ControleurQuestionProg extends ControleurProg{
 					 "stdin"=>($this->question->stdin==""?$this->get_stdin($this->question):str_replace("\r","",eval("return ".$this->get_stdin($this->question).";"))),
 					 "url_retour"=>"index.php?p=serie&ID=".$this->question->serieID,
 					 "titre_retour"=>"la liste de questions",
-					 "état_réussi"=>$this->avancement->get_etat()==Question::ETAT_REUSSI,
+					 "état_réussi"=>$this->avancement->etat==Question::ETAT_REUSSI,
 					 "mode"=>$this->get_mode($this->question->lang),
 					 "lang_nom"=>ControleurProg::LANG_NOMS[$this->question->lang]
 		);
@@ -83,7 +90,7 @@ class ControleurQuestionProg extends ControleurProg{
 			$résultats["nonréussi"]="true";
 		}
 
-		$résultats["état_réussi"]=$this->avancement->get_etat()==Question::ETAT_REUSSI;
+		$résultats["état_réussi"]=$this->avancement->etat==Question::ETAT_REUSSI;
 
 		return $résultats;
 	}
@@ -97,21 +104,13 @@ class ControleurQuestionProg extends ControleurProg{
 	}
 
 	function sauvegarder_état_réussi($code){
-		$this->avancement->set_code($code);
-		$this->avancement->set_etat(Question::ETAT_REUSSI);
+		$interacteur = new QuestionInteracteur($this->_source, $this->_user_id);
+		$interacteur->set_avancement_réussi($this->question->id, $code );
 	}
 
 	function sauvegarder_état_échec($code){
-		//Met la réponse à jour dans l'avancement seulement
-		//si la question n'avait pas déjà été réussie
-		if($this->avancement->get_etat()!=Question::ETAT_REUSSI){
-			$this->avancement->set_code($code);
-			$this->avancement->set_etat(Question::ETAT_NONREUSSI);
-		}
-	}
-
-	function sauvegarder_état_non_réussi($code){
-		$this->avancement->set_etat(Question::ETAT_NONREUSSI);
+		$interacteur = new QuestionInteracteur($this->_source, $this->_user_id);
+		$interacteur->set_avancement_échec($this->question->id, $code );
 	}
 
 }
