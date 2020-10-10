@@ -1,9 +1,8 @@
 <?php
 
-require_once('helpers.php');
-require_once('controleur_prog.php');
+require_once __DIR__.'/prog.php';
 
-class ControleurQuestionBD extends ControleurProg {
+class QuestionBDCtl extends ProgCtl {
 
 	function get_page_infos(){
 		$infos=array("template"=>"question_bd");
@@ -23,12 +22,12 @@ class ControleurQuestionBD extends ControleurProg {
 
 	}
 
-	function sauvegarder_conteneur($infos){
+	private function sauvegarder_conteneur($infos){
 		if($infos["cont_id"]!="")
 			$this->avancement->set_conteneur($infos["cont_id"]);
 	}
 
-	function connexion_conteneur($infos){
+	private function connexion_conteneur($infos){
 		$url_rc=$this->get_url_compilebox();
 		$options_rc=$this->get_options_compilebox($infos);
 
@@ -38,7 +37,7 @@ class ControleurQuestionBD extends ControleurProg {
 		return $comp_resp;
 	}
 
-	function décoder_réponse($réponse){
+	private function décoder_réponse($réponse){
 		$infos_réponse=array();
 
 		$infos_réponse["cont_id"]=trim(json_decode($réponse, true)['cont_id']);
@@ -51,11 +50,11 @@ class ControleurQuestionBD extends ControleurProg {
 		return $infos_réponse;
 	}
 
-	function get_url_compilebox(){
+	private function get_url_compilebox(){
 		return "http://".$GLOBALS['config']['compilebox_hote'].":".$GLOBALS['config']['compilebox_port']."/compile"; //TODO à changer?
 	}
 
-	function get_options_compilebox($infos){
+	private function get_options_compilebox($infos){
 		if($this->avancement->get_etat()==Question::ETAT_DEBUT || $this->reset){
 			$data_rc=$this->get_data_nouveau_conteneur($infos);
 		}
@@ -71,7 +70,7 @@ class ControleurQuestionBD extends ControleurProg {
 		return $options_rc;
 	}
 
-	function get_data_nouveau_conteneur($infos){
+	private function get_data_nouveau_conteneur($infos){
 		return array('language' => 14,
 					 'code' => 'reset',
 					 'vm_name' => $this->question->image,
@@ -81,7 +80,7 @@ class ControleurQuestionBD extends ControleurProg {
 					 'user' => $this->question->user );
 	}
 
-	function get_data_conteneur($infos){
+	private function get_data_conteneur($infos){
 		//Inutile?
 		if(is_null($this->question->verification) || $this->question->verification==""){
 			return array('language' => 14,
@@ -103,7 +102,7 @@ class ControleurQuestionBD extends ControleurProg {
 		}
 	}
 
-	function construire_validation(){
+	private function construire_validation(){
 		echo $this->question->verification;
 		if(!is_null($this->question->verification) && $this->question->verification!=""){
 			return str_replace("{reponse}", $this->get_réponse_utilisateur(), $this->question->verification);
@@ -113,11 +112,11 @@ class ControleurQuestionBD extends ControleurProg {
 		}
 	}
 
-	function get_réponse_utilisateur(){
+	private function get_réponse_utilisateur(){
 		return $this->reponse!=null ? $this->reponse : "";
 	}
 
-	function récupérer_paramètres(){
+	private function récupérer_paramètres(){
 		$langid=$this->question->lang;
 
 		eval($this->question->setup);
@@ -146,7 +145,7 @@ class ControleurQuestionBD extends ControleurProg {
 		return $infos;
 	}
 
-	function compter_lignes($texte){
+	private function compter_lignes($texte){
 		if($texte==""){
 			return 0;
 		}
@@ -155,7 +154,7 @@ class ControleurQuestionBD extends ControleurProg {
 		}
 	}
 
-	function traiter_résultats($sorties, $infos){
+	private function traiter_résultats($sorties, $infos){
 		$résultats=array();
 		$résultats["essayé"]="true";
 		
@@ -194,7 +193,7 @@ class ControleurQuestionBD extends ControleurProg {
 		return $résultats;
 	}
 
-	function vérifier_solution($sorties, $solution){
+	private function vérifier_solution($sorties, $solution){
 		$sortie_standard=$this->extraire_sortie_standard($sorties);
 		$sortie_erreur=$this->extraire_sortie_erreur($sorties);
 
@@ -202,7 +201,7 @@ class ControleurQuestionBD extends ControleurProg {
 		return $solution!="null" && $sortie_standard==$solution;
 	}
 
-	function vérifier_validation($infos){
+	private function vérifier_validation($infos){
 		$réussi=false;
 		
 		//validation exécutée
@@ -213,7 +212,7 @@ class ControleurQuestionBD extends ControleurProg {
 		return false;
 	}
 
-	function vérifier_solution_courte($infos){    
+	private function vérifier_solution_courte($infos){    
 		//réponse textuelle
 		if(!is_null($this->question->solution_courte) &&
 		   $this->question->solution_courte!="" &&
@@ -224,13 +223,13 @@ class ControleurQuestionBD extends ControleurProg {
 		return false;
 	}
 
-	function sauvegarder_état_réussi($code, $reponse){
+	private function sauvegarder_état_réussi($code, $reponse){
 		$this->avancement->set_code($code);
 		$this->avancement->set_reponse($reponse);
 		$this->avancement->set_etat(Question::ETAT_REUSSI);
 	}
 
-	function sauvegarder_état_échec($code, $reponse){
+	private function sauvegarder_état_échec($code, $reponse){
 		//Met la réponse à jour dans l'avancement seulement
 		//si la question n'avait pas déjà été réussie
 		if($this->avancement->get_etat()!=Question::ETAT_REUSSI){
@@ -240,7 +239,7 @@ class ControleurQuestionBD extends ControleurProg {
 		}
 	}
 
-	function sauvegarder_état_non_réussi($code){
+	private function sauvegarder_état_non_réussi($code){
 		$this->avancement->set_etat(Question::ETAT_NONREUSSI);
 	}
 

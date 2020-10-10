@@ -6,7 +6,7 @@ class EntiteDAO{
 
 }
 
-require_once(__DIR__."/../config.php");
+require_once "config.php";
 
 function db_init(){
     if(!isset($GLOBALS["conn"]))

@@ -1,6 +1,6 @@
 <?php
 
-require_once('controleur.php');
+require_once 'controleur.php';
 
 class ControleurQuestionSys extends Controleur {
 

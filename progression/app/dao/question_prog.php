@@ -1,7 +1,7 @@
 <?php
 
-require_once('question_dao.php');
-require_once('domaine/entités/question_prog.php');
+require_once __DIR__.'/question.php';
+require_once 'domaine/entités/question_prog.php';
 
 class QuestionProgDAO extends QuestionDAO{
 
@@ -80,6 +80,8 @@ class QuestionProgDAO extends QuestionDAO{
 								$objet->stdin);
 			$query->execute();
 			$query->close();
+
+			$objet->id = mysqli_insert_id();
 		}
 		else{
 			$qid=parent::save($objet);
@@ -107,7 +109,8 @@ class QuestionProgDAO extends QuestionDAO{
 			$query->close();
 
 		}
-		return $qid;
+		
+		return $objet;
     }
     
 }

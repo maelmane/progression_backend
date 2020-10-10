@@ -1,8 +1,8 @@
 <?php
 
-require_once('dao/entite_dao.php');
-require_once('dao/question_dao.php');
-require_once('domaine/entités/serie.php');
+require_once __DIR__.'/entite.php';
+require_once __DIR__.'/theme.php';
+require_once 'domaine/entités/serie.php';
 
 class SérieDAO extends EntiteDAO{
 
@@ -12,6 +12,37 @@ class SérieDAO extends EntiteDAO{
 		
 		return $série;
     }
+	
+	static function get_séries_par_thème($id, $inactif=false){
+		$res=array();
+		foreach(SérieDAO::get_séries_ids_par_thème($id,$inactif) as $sérieid){
+			$res[]=SérieDAO::get_série($sérieid);
+		}
+		return $res;
+	}
+	
+	static function get_séries_ids_par_thème($id, $inactif=false){
+		if($inactif){
+			$query=ThèmeDAO::$conn->prepare('SELECT serieID FROM serie WHERE
+	                                         themeID= ? ORDER BY numero');
+		}
+		else{
+			$query=ThèmeDAO::$conn->prepare('SELECT serieID FROM serie WHERE
+	                                         serie.actif = 1 AND
+	                                         themeID= ? ORDER BY numero');
+		}
+		$query->bind_param( "i", $id);
+		$query->execute();
+		$query->bind_result($s_id);
+
+		$res=array();
+		while($query->fetch()){
+			$res[]=$s_id;
+		}
+		$query->close();
+
+		return $res;
+	}
 
     protected static function load($objet){
 		$query=SérieDAO::$conn->prepare('SELECT serieID, actif, numero, titre, description, themeID FROM serie WHERE serieID = ?');
@@ -66,15 +97,6 @@ class SérieDAO extends EntiteDAO{
 		return $res;
     }
     
-    static function get_questions($id, $inactif=false){
-		$res=array();
-		foreach(SérieDAO::get_questions_ids($id,$inactif) as $question_id){
-			$res[]=QuestionDAO::get_question($question_id);
-		}
-		return $res;
-    }
-    
-
     static function get_avancement($id, $user_id){
 		$query=SérieDAO::$conn->prepare('SELECT count(avancement.etat) FROM avancement, question WHERE 
                                          avancement.questionID=question.questionID AND 

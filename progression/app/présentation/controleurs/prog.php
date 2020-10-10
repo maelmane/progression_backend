@@ -1,9 +1,9 @@
 <?php
 
-require_once('controleur.php');
-require_once('domaine/entités/question_prog.php');
+require_once __DIR__.'/controleur.php';
+require_once 'domaine/entités/question_prog.php';
 
-class ControleurProg extends Controleur {
+class ProgCtl extends Controleur {
 
 	const LANG_NOMS=array("Python 2",
 						  "Python 3",
@@ -34,7 +34,7 @@ class ControleurProg extends Controleur {
 		$this->stdin=isset($réponse_utilisateur["stdin"])?$réponse_utilisateur["stdin"]:null;
 	}
 
-	function get_code(){
+	protected function get_code(){
 		$code="";
 		
 		if ($this->incode!=null){
@@ -52,7 +52,7 @@ class ControleurProg extends Controleur {
 		return $code;
 	}
 
-	function get_params(){
+	protected function get_params(){
 		$params="";
 		
 		if(!is_null($this->question) && $this->question->params!=""){
@@ -65,7 +65,7 @@ class ControleurProg extends Controleur {
 		return $params;
 	}
 
-	function get_stdin(){
+	protected function get_stdin(){
 		$stdin="";
 		if(!is_null($this->question) && $this->question->stdin!=""){
 			$stdin=$this->question->stdin;
@@ -77,7 +77,7 @@ class ControleurProg extends Controleur {
 		return $stdin;
 	}
 
-	function get_mode($langid){
+	protected function get_mode($langid){
 		if($langid<=QuestionProg::PYTHON3){
 			return "python/python.js";
 		}
@@ -86,8 +86,8 @@ class ControleurProg extends Controleur {
 		}
 	}
 
-	function exécuter_code($infos){
-		ControleurProg::loguer_code($infos);
+	protected function exécuter_code($infos){
+		ProgCtl::loguer_code($infos);
 
 		//Extrait les infos
 		$langid=$infos["langid"];
@@ -114,34 +114,34 @@ class ControleurProg extends Controleur {
 		return $comp_resp;
 	}
 
-	function calculer_sorties($sorties, $infos){
+	protected function calculer_sorties($sorties, $infos){
 		if ($sorties === FALSE) {
 			$output="";
 			$erreurs="Erreur interne. ";        
 		}
 		else{
-			$output=ControleurProg::extraire_sortie_standard($sorties);
-			$erreurs=ControleurProg::extraire_sortie_erreur($sorties);
+			$output=ProgCtl::extraire_sortie_standard($sorties);
+			$erreurs=ProgCtl::extraire_sortie_erreur($sorties);
 		}
 
 		return array("output"=>$output,
 					 "erreurs"=>$erreurs);
 	}
 
-	function loguer_code($infos){
+	protected function loguer_code($infos){
 		$com_log=$_SERVER['REMOTE_ADDR']." - " . $_SERVER["PHP_SELF"] . " : lang : " . $infos['langid'] . " Code : ". $infos['code']; //TODO à changer ?
 		syslog(LOG_INFO, $com_log);
 	}
 
-	function extraire_sortie_standard($sorties){
+	protected function extraire_sortie_standard($sorties){
 		return str_replace("\r","",json_decode($sorties, true)['output']);
 	}
 
-	function extraire_sortie_erreur($sorties){
+	protected function extraire_sortie_erreur($sorties){
 		return json_decode($sorties, true)['errors'];
 	}
 
-	function resume($in, $lignes_max){
+	protected function resume($in, $lignes_max){
 		$lignes=explode("\n", $in);
 		$nb_lignes=count($lignes);
 		if ($nb_lignes<=$lignes_max){

@@ -1,7 +1,7 @@
 <?php
 
-require_once('entite.php');
-require_once('serie.php');
+require_once __DIR__.'/entite.php';
+require_once __DIR__.'/serie.php';
 
 class Thème extends Entite{
 

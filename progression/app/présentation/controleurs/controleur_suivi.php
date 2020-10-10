@@ -1,6 +1,6 @@
 <?php
 
-require_once('controleur_admin.php');
+require_once 'controleur_admin.php';
 
 class ControleurSuivi extends ControleurAdmin {
 

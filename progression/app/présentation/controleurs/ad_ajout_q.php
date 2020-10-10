@@ -1,6 +1,6 @@
 <?php
 
-require_once('prog.php');
+require_once 'prog.php';
 include('admin.php');
 
 function page_contenu(){

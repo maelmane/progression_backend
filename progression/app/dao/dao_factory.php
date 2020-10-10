@@ -1,11 +1,11 @@
 <?php
 
-require_once('avancement_dao.php');
-require_once('question_dao.php');
-require_once('question_prog_dao.php');
-require_once('serie_dao.php');
-require_once('theme_dao.php');
-require_once('user_dao.php');
+require_once __DIR__.'/avancement.php';
+require_once __DIR__.'/question.php';
+require_once __DIR__.'/question_prog.php';
+require_once __DIR__.'/serie.php';
+require_once __DIR__.'/theme.php';
+require_once __DIR__.'/user.php';
 
 class DAOFactory {
 

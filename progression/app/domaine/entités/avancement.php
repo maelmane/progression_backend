@@ -1,8 +1,8 @@
 <?php
 
-require_once('entite.php');
+require_once __DIR__.'/entite.php';
 
-class Avancement extends Entite{
+class Avancement {
 
 	public $user_id;
 	public $question_id;

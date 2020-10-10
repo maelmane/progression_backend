@@ -1,6 +1,6 @@
 <?php
 
-require_once('question.php');
+require_once __DIR__.'/question.php';
 
 class QuestionProg extends Question{
 
@@ -8,12 +8,11 @@ class QuestionProg extends Question{
     const CPP=8;
     const JAVA=10;    
 
-    //Données
     public $lang;
     public $setup;
     public $pre_exec;
     public $pre_code;
-    public $incode;
+    public $code;
     public $post_code;
     public $solution;
     public $params;

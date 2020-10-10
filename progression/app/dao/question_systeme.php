@@ -1,7 +1,7 @@
 <?php
 
-require_once('question_dao.php');
-require_once(__DIR__ . '/../question_systeme.php');
+require_once 'question_dao.php';
+require_once __DIR__ . '/../question_systeme.php';
 
 class QuestionSystemeDAO extends Question{
 

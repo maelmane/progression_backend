@@ -1,12 +1,13 @@
 <?php
 
-require_once(__DIR__.'/../../config.php');
-require_once('user_interacteur.php');
+require_once 'config.php';
+require_once __DIR__.'/obtenir_user.php';
+require_once __DIR__.'/creer_user.php';
 
-class LoginInteracteur extends Interacteur {
+class LoginInt extends Interacteur {
 
 	function __construct($source, $username, $password){
-		$this->_source = $source;
+		parent::__construct($source);
 		$this->_username = $username;
 		$this->_pasword = $password;
 	}
@@ -67,10 +68,9 @@ class LoginInteracteur extends Interacteur {
 	}
 
 	function login_sans_authentification(){
-		$interacteur = new UserInteracteur($this->_source);
+		$interacteur = new CréerUserInt($this->_source);
 		return $interacteur->obtenir_ou_créer_user($this->_username);
 	}
-
 
 }
 

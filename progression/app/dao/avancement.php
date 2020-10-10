@@ -1,8 +1,8 @@
 <?php
 
-require_once('dao/entite_dao.php');
-require_once('domaine/entités/entite.php');
-require_once('domaine/entités/avancement.php');
+require_once __DIR__.'/entite.php';
+require_once 'domaine/entités/entite.php';
+require_once 'domaine/entités/avancement.php';
 
 class AvancementDao extends EntiteDAO {
 
@@ -30,6 +30,8 @@ class AvancementDao extends EntiteDAO {
 		$query->bind_param("iiisss", $objet->etat, $objet->question_id, $objet->user_id, $objet->reponse, $objet->code, $objet->conteneur);
 		$query->execute();
 		$query->close();
+
+		return AvancementDAO::get_avancement( $objet->question_id, $objet->user_id );
 	}
 }
 ?>

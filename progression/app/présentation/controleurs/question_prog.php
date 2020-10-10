@@ -1,23 +1,22 @@
 <?php
 
-require_once('controleur_prog.php');
-require_once('domaine/interacteurs/question_prog_interacteur.php');
-require_once('helpers.php');
+require_once __DIR__.'/prog.php';
+require_once 'domaine/interacteurs/obtenir_avancement.php';
+require_once 'domaine/interacteurs/obtenir_question_prog.php';
+require_once 'domaine/interacteurs/obtenir_serie.php';
+require_once 'domaine/interacteurs/sauvegarder_question.php';
 
-class ControleurQuestionProg extends ControleurProg{
+class QuestionProgCtl extends ProgCtl{
 
 	function __construct($source, $user_id, $question_id, $réponse_utilisateur){
 		parent::__construct($source, $user_id, $réponse_utilisateur);
 
 		$this->_question_id = $question_id;
 
-		$interacteur = new QuestionProgInteracteur($this->_source, $user_id);
-		$this->question = $interacteur->get_question( $this->_question_id );
-		
-		$this->avancement = $interacteur->get_avancement( $this->_question_id, $this->_question_id );
+		$this->question = (new ObtenirQuestionProgInt($this->_source, $user_id))->get_question( $this->_question_id );
+		$this->avancement = (new ObtenirAvancementInt($this->_source, $user_id))->get_avancement( $this->_question_id, $this->_question_id );
 
-		$interacteur = new SérieInteracteur($source, $user_id);
-		$this->série = $interacteur->get_série($this->question->serieID);
+		$this->série = (new ObtenirSérieInt($source, $user_id))->get_série($this->question->serieID);
 	}
 	
 	function get_page_infos(){		
@@ -40,7 +39,7 @@ class ControleurQuestionProg extends ControleurProg{
 		return $infos;
 	}
 
-	function récupérer_paramètres(){
+	private function récupérer_paramètres(){
 		eval($this->question->setup);
 
 		$this->question->pre_exec=str_replace("\r","",eval("return " . $this->question->pre_exec . ";"));
@@ -62,13 +61,13 @@ class ControleurQuestionProg extends ControleurProg{
 					 "titre_retour"=>"la liste de questions",
 					 "état_réussi"=>$this->avancement->etat==Question::ETAT_REUSSI,
 					 "mode"=>$this->get_mode($this->question->lang),
-					 "lang_nom"=>ControleurProg::LANG_NOMS[$this->question->lang]
+					 "lang_nom"=>ProgCtl::LANG_NOMS[$this->question->lang]
 		);
 
 		return $infos;
 	}
 
-	function compter_lignes($texte){
+	private function compter_lignes($texte){
 		if($texte==""){
 			return 0;
 		}
@@ -77,7 +76,7 @@ class ControleurQuestionProg extends ControleurProg{
 		}
 	}
 
-	function traiter_résultats($sorties, $infos){
+	private function traiter_résultats($sorties, $infos){
 		$résultats=array();
 
 		$résultats["essayé"]="true";
@@ -95,7 +94,7 @@ class ControleurQuestionProg extends ControleurProg{
 		return $résultats;
 	}
 
-	function vérifier_solution($sorties, $solution){
+	private function vérifier_solution($sorties, $solution){
 		$sortie_standard=$this->extraire_sortie_standard($sorties);
 		$sortie_erreur=$this->extraire_sortie_erreur($sorties);
 
@@ -103,13 +102,13 @@ class ControleurQuestionProg extends ControleurProg{
 		return $solution!="null" && $sortie_standard==$solution;
 	}
 
-	function sauvegarder_état_réussi($code){
-		$interacteur = new QuestionInteracteur($this->_source, $this->_user_id);
+	private function sauvegarder_état_réussi($code){
+		$interacteur = new SauvegarderQuestionInt($this->_source, $this->_user_id);
 		$interacteur->set_avancement_réussi($this->question->id, $code );
 	}
 
-	function sauvegarder_état_échec($code){
-		$interacteur = new QuestionInteracteur($this->_source, $this->_user_id);
+	private function sauvegarder_état_échec($code){
+		$interacteur = new SauvegarderQuestionInt($this->_source, $this->_user_id);
 		$interacteur->set_avancement_échec($this->question->id, $code );
 	}
 

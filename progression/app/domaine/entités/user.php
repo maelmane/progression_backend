@@ -1,6 +1,6 @@
 <?php
 
-require_once("entite.php");
+require_once __DIR__."/entite.php";
 
 class User extends Entite{
 	

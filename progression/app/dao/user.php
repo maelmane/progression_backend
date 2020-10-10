@@ -1,6 +1,6 @@
 <?php
 
-require_once("domaine/entités/user.php");
+require_once "domaine/entités/user.php";
 
 class UserDAO extends EntiteDAO{
 
@@ -33,7 +33,7 @@ class UserDAO extends EntiteDAO{
 		return $user;
 	}
 	
-	public function load($objet){
+	protected function load($objet){
 		$query=$GLOBALS["conn"]->prepare( 'SELECT userID, username, actif, role FROM users WHERE userID = ? ');
 		$query->bind_param( "i", $objet->id);
 		$query->execute();
@@ -43,13 +43,13 @@ class UserDAO extends EntiteDAO{
 		$query->close();
 	} 
 
-	public function créer($username){
+	public function save($objet){
 		$query=$GLOBALS["conn"]->prepare('INSERT INTO users(username) VALUES (?)');
-		$query->bind_param( "s", $username);
+		$query->bind_param( "s", $objet->username);
 		$query->execute();
 		$query->close();
-		
-		return $this->trouver_par_nomusager($username); 
+
+		return trouver_par_nomusager($objet->username);
 	}
 }
 ?>

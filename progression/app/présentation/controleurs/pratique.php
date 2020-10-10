@@ -1,23 +1,27 @@
 <?php
 
-require_once('controleur_prog.php');
+require_once __DIR__.'/prog.php';
 
-class ControleurPratique extends ControleurProg {
+class PratiqueCtl extends ProgCtl {
 
 	function __construct($source, $user_id, $réponse_utilisateur){
 		parent::__construct($source, $user_id, $réponse_utilisateur);
 	}
 	
 	function get_page_infos(){
-		$infos=$this->récupérer_paramètres();
-		$sorties=$this->exécuter_code($infos);
 		$infos=array_merge(
 			parent::get_page_infos(),
-			$infos, $this->calculer_sorties($sorties, $infos));
+			$this->récupérer_paramètres());
+		
+		$sorties=$this->exécuter_code($infos);
+		$infos=array_merge(
+			$infos,
+			$this->calculer_sorties($sorties, $infos));
+		
 		return $infos;
 	}
 
-	function récupérer_paramètres(){
+	private function récupérer_paramètres(){
 		$infos= array("template"=>"pratique",
 					  "question.titre"=>"Zone de pratique libre",
 					  "question.enonce"=>"Cette zone permet d'exécuter vos programmes dans le langage de votre choix. 
@@ -31,6 +35,7 @@ class ControleurPratique extends ControleurProg {
 					  "titre_retour"=>"l'accueil",
 					  "mode"=>$this->get_mode($this->langid)
 		);
+		
 		return $infos;
 	}
 

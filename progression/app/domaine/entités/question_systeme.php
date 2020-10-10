@@ -1,6 +1,6 @@
 <?php
 
-require_once('question.php');
+require_once __DIR__.'/question.php';
 
 class QuestionSysteme extends Question{
 
