@@ -1,6 +1,6 @@
 <?php
 
-include('admin.php');
+include( 'admin.php' );
 
 function page_contenu(){
     echo '

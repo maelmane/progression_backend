@@ -10,20 +10,20 @@
 
 	<script>
 	 function toggletype(){
-		 document.getElementById('prog').style.display=(document.getElementById('type').value!=1?'block':'none');
-		 document.getElementById('sys').style.display=(document.getElementById('type').value!=0?'block':'none');
+		 document.getElementById( 'prog' ).style.display=( document.getElementById( 'type' ).value!=1?'block':'none' );
+		 document.getElementById( 'sys' ).style.display=( document.getElementById( 'type' ).value!=0?'block':'none' );
 	 }
 
 	 function load_theme(){
-		 window.location='?p=ad_ajout_q&theme='+document.getElementById('theme').value;
+		 window.location='?p=ad_ajout_q&theme='+document.getElementById( 'theme' ).value;
 	 }
 
 	 function load_serie(){
-		 window.location='?p=ad_ajout_q&theme='+document.getElementById('theme').value+'&serie='+document.getElementById('serie').value;
+		 window.location='?p=ad_ajout_q&theme='+document.getElementById( 'theme' ).value+'&serie='+document.getElementById( 'serie' ).value;
 	 }
 
 	 function load_question(){
-		 window.location='?p=ad_ajout_q&theme='+document.getElementById('theme').value+'&serie='+document.getElementById('serie').value+'&question='+document.getElementById('question').value;}
+		 window.location='?p=ad_ajout_q&theme='+document.getElementById( 'theme' ).value+'&serie='+document.getElementById( 'serie' ).value+'&question='+document.getElementById( 'question' ).value;}
 
 	</script>
 </head>
@@ -129,7 +129,7 @@
 
 					<tr>
 						<td>
-							Énoncé (chaîne de caractères)<br>
+							Énoncé ( chaîne de caractères )<br>
 							<textarea cols=80 rows=20 id='enonce' name='enonce' >{{ enonce }}</textarea>
 						</td>
 					</tr>
@@ -148,7 +148,7 @@
 				<tr>
 					<td>
 						{{> menu_langages }}
-						<script> document.getElementById('langid').value={{ lang }};</script>
+						<script> document.getElementById( 'langid' ).value={{ lang }};</script>
 					</td>
 				</tr>
 
@@ -247,23 +247,23 @@
 			</table>
 
 			<script>
-			 function betterTab(cm) {                         
-				 if (cm.somethingSelected()) {
-					 cm.indentSelection('add');
+			 function betterTab( cm ) {                         
+				 if ( cm.somethingSelected() ) {
+					 cm.indentSelection( 'add' );
 				 } else {
-					 cm.replaceSelection(cm.getOption('indentWithTabs')? '\t':
-										 Array(cm.getOption('indentUnit') + 1).join(' '), 'end', '+input');
+					 cm.replaceSelection( cm.getOption( 'indentWithTabs' )? '\t':
+										 Array( cm.getOption( 'indentUnit' ) + 1 ).join( ' ' ), 'end', '+input' );
 				 }
 			 }
 
-			 var preeditor = CodeMirror.fromTextArea(document.getElementById('precode'),{
+			 var preeditor = CodeMirror.fromTextArea( document.getElementById( 'precode' ),{
 				 lineNumbers: true,
 				 firstLineNumber: {{première_ligne_éditeur_precode}},
 				 indentUnit: 4
-			 });
-			 preeditor.setSize(null,'100%');//preeditor.getScrollInfo().height);
+			 } );
+			 preeditor.setSize( null,'100%' );//preeditor.getScrollInfo().height );
 			 
-			 var editor = CodeMirror.fromTextArea(document.getElementById('incode'),{
+			 var editor = CodeMirror.fromTextArea( document.getElementById( 'incode' ),{
 				 matchBrackets: true,
 				 lineNumbers: true,
 				 firstLineNumber: {{première_ligne_éditeur_incode}},
@@ -271,22 +271,22 @@
 				 indentUnit: 4,
 				 scrollbarStyle: null,
 				 extraKeys: { Tab: betterTab }
-			 });
-			 editor.setSize('100%', '100%');
+			 } );
+			 editor.setSize( '100%', '100%' );
 
-			 var posteditor = CodeMirror.fromTextArea(document.getElementById('postcode'),{
+			 var posteditor = CodeMirror.fromTextArea( document.getElementById( 'postcode' ),{
 				 lineNumbers: true,
 				 firstLineNumber: {{première_ligne_éditeur_incode}}+editor.doc.lineCount(),
 				 indentUnit: 4
-			 });
-			 posteditor.setSize(null,'100%');
-			 preeditor.doc.on('change', function(instance, changeObj){
-			     editor.setOption('firstLineNumber', {{première_ligne_éditeur_precode}}+preeditor.doc.lineCount());
-			     posteditor.setOption('firstLineNumber', {{première_ligne_éditeur_precode}}+preeditor.doc.lineCount()+editor.doc.lineCount());
-			 });
-			 editor.doc.on('change', function(instance, changeObj){
-			     posteditor.setOption('firstLineNumber', {{première_ligne_éditeur_precode}}+preeditor.doc.lineCount()+editor.doc.lineCount());
-			 });
+			 } );
+			 posteditor.setSize( null,'100%' );
+			 preeditor.doc.on( 'change', function( instance, changeObj ){
+			     editor.setOption( 'firstLineNumber', {{première_ligne_éditeur_precode}}+preeditor.doc.lineCount() );
+			     posteditor.setOption( 'firstLineNumber', {{première_ligne_éditeur_precode}}+preeditor.doc.lineCount()+editor.doc.lineCount() );
+			 } );
+			 editor.doc.on( 'change', function( instance, changeObj ){
+			     posteditor.setOption( 'firstLineNumber', {{première_ligne_éditeur_precode}}+preeditor.doc.lineCount()+editor.doc.lineCount() );
+			 } );
 
 			</script>
   

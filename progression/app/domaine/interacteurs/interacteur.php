@@ -1,7 +1,7 @@
 <?php
 
 class Interacteur {
-	function __construct($source) {
+	function __construct( $source ) {
 		$this->_source = $source;
 	}
 }	

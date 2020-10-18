@@ -8,8 +8,8 @@ class User extends Entite{
 	const ROLE_ADMIN=1; 
 	
 	public $username;
-	public $role;
-	public $id; 
+	public $role=User::ROLE_NORMAL;
+	public $id;
 
 }
 

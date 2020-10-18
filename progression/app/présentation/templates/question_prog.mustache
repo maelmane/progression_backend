@@ -10,32 +10,32 @@
 					<td>
 						Langage : {{question.lang_nom}}
 				</tr>
-				<tr {{^question.pre_code}} style="display:none;" {{/question.pre_code}}>
+				<tr {{^exécutable.pre_code}} style="display:none;" {{/exécutable.pre_code}}>
 					<td colspan=2>
-						<textarea id='precode' rows='5' >{{question.pre_code}}</textarea>
+						<textarea id='precode' rows='5' >{{exécutable.pre_code}}</textarea>
 					</td>
 				</tr>
 
 				<tr>
 					<td colspan=2>
-						<textarea id='incode' name = 'incode' rows='10' cols='80'>{{code}}</textarea>
+						<textarea id='incode' name = 'incode' rows='10' cols='80'>{{exécutable.code}}</textarea>
 					</td>
 				</tr>  
 
-				<tr {{^question.post_code}} style="display:none;" {{/question.post_code}}>
+				<tr {{^exécutable.post_code}} style="display:none;" {{/exécutable.post_code}}>
 					<td colspan=2>
-						<textarea id='postcode' rows='5' >{{question.post_code}}</textarea>
+						<textarea id='postcode' rows='5' >{{exécutable.post_code}}</textarea>
 					</td>
 				</tr>
 				<tr height=100%></tr> <!-- comble l'espace inutilisé dans la table -->
 				<tr>
 					<td width=50%>
 						<h3>Paramètres </h3>
-						<textarea id='params' name = 'params' rows='3' style='width:100%;'>{{params}}</textarea>
+						<textarea id='params' name = 'params' rows='3' style='width:100%;'>{{exécutable.params}}</textarea>
 					</td>
 					<td width=50%>
 						<h3>Entrées</h3>
-						<textarea id='stdin' name = 'stdin' rows='3' style='width:100%';>{{stdin}}</textarea>
+						<textarea id='stdin' name = 'stdin' rows='3' style='width:100%';>{{exécutable.stdin}}</textarea>
 					</td>
 				</tr>  
 

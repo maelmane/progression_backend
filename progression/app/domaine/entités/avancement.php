@@ -11,7 +11,7 @@ class Avancement {
 	public $reponse;
 	public $conteneur;
 
-	public function __construct($question_id, $user_id) {
+	public function __construct( $question_id, $user_id ) {
 		$this->question_id = $question_id;
 		$this->user_id = $user_id;
 	}

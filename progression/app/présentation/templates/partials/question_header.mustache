@@ -5,9 +5,9 @@
 		{{{question.enonce}}}
 		<br>
 		<br>
-		{{#essayé}}
+		{{#résultats.essayé}}
 			<table class='metro' width=100%><tr>
-				{{#réussi}}
+				{{#résultats.réussi}}
 					<td width=50% align=center>
 						Bonne réponse!
 					</td>
@@ -16,14 +16,14 @@
 							Code de validation : {{question.code_validation}}
 						</td>
 					{{/question.code_validation}}
-				{{/réussi}}
-				{{#nonréussi}}    
+				{{/résultats.réussi}}
+				{{#résultats.nonréussi}}    
 					<td width=50% align=center>
 						Raté! Essayez encore
 					</td>
-				{{/nonréussi}}
+				{{/résultats.nonréussi}}
 			</tr></table>
-		{{/essayé}}
+		{{/résultats.essayé}}
 			</table>
 
 
