@@ -35,73 +35,78 @@ function set_locale(){
 function inclusion_page(){
 	if ( isset( $_SESSION[ "user_id" ] ) ){
 		$user_id = $_SESSION[ 'user_id' ];
+
+		$dao_factory = new DAOFactory();
+		
 		if ( isset( $_GET[ "p" ] ) ){
 			$fichier=$_GET[ "p" ];
 
 			$controleur=null;
 
-			$thèmeID=0;
 			if ( $fichier=="logout" ){
 				$controleur=new LogoutCtl( null, null );
 			}
 			if ( $fichier=="theme" ){
 				$thème_id=$_REQUEST[ "ID" ];
-				$controleur=new ThèmeCtl( new DAOFactory(), $user_id, $thème_id );
+				$controleur=new ThèmeCtl( $dao_factory, $user_id, $thème_id );
 			}
 			elseif ( $fichier=="serie" ){
 				$série_id=$_REQUEST[ "ID" ];
-				$controleur=new SérieCtl( new DAOFactory(), $série_id, $user_id );
+				$controleur=new SérieCtl( $dao_factory, $série_id, $user_id );
+				$thème_id=( new ObtenirSérieInt( $dao_factory, $user_id ) )->get_série( $série_id )->thème_id;
+				echo "ID:".$série_id . " ".$thème_id;
 			}
 			elseif ( $fichier=="question" ){
 				$question_id = $_REQUEST[ "ID" ];
-				$question=( new ObtenirQuestionInt( new DAOFactory(), $user_id ) )->get_question( $question_id );
+				$question=( new ObtenirQuestionInt( $dao_factory, $user_id ) )->get_question( $question_id );
+				$thème_id=( new ObtenirSérieInt( $dao_factory, $user_id ) )->get_série( $question->serieID )->thème_id;
 				
 				if ( $question->type==Question::TYPE_PROG ){
-					$controleur=new QuestionProgCtl( new DAOFactory(), $user_id, $question->id );
+					$controleur=new QuestionProgCtl( $dao_factory, $user_id, $question->id );
 				}
 				elseif ( $question->type==Question::TYPE_SYS ){
-					$controleur=new QuestionSysCtl( new DAOFactory(), $user_id, $question->id );
+					$controleur=new QuestionSysCtl( $dao_factory, $user_id, $question->id );
 				}
 				elseif ( $question->type==Question::TYPE_BD ){
-					$controleur=new QuestionBdCtl( new DAOFactory(), $user_id, $question->id );
+					$controleur=new QuestionBdCtl( $dao_factory, $user_id, $question->id );
 				}
 			}
 			elseif ( $fichier=="pratique" ){
-				$controleur=new PratiqueCtl( new DAOFactory(), $user_id );
+				$controleur=new PratiqueCtl( $dao_factory, $user_id );
 			}
 			elseif ( $fichier=="ad_suivi" ){
-				$controleur=new SuiviCtl( new DAOFactory(), $user_id );
+				$controleur=new SuiviCtl( $dao_factory, $user_id );
 			}
 
 			if ( $controleur==null ){
-				$controleur=new AccueilCtl( new DAOFactory(), $user_id );
+				$controleur=new AccueilCtl( $dao_factory, $user_id );
 			}
 			
 		}
 		else{
-			$controleur=new AccueilCtl( new DAOFactory(), $user_id );
+			$controleur=new AccueilCtl( $dao_factory, $user_id );
 		}        
 	}
 	else{    
-		$controleur=new LoginCtl( new DAOFactory() );
+		$controleur=new LoginCtl( $dao_factory );
 	}
 	
-	render_page( isset( $_SESSION[ 'user_id' ] ) ? $user_id : null, isset( $thèmeID ) ? $thèmeID : null, $controleur );
+	render_page( isset( $_SESSION[ 'user_id' ] ) ? $user_id : null, isset( $thème_id ) ? $thème_id : null, $controleur );
 
 }
 
-function render_page( $user_id, $thèmeID, $controleur ){
+function render_page( $user_id, $thème_id, $controleur ){
 	$infos = array();
 	
 	if ( ! is_null( $user_id ) ){
-		$infos=array_merge( ( new HeaderFooterCtl( new DAOFactory(), $user_id ) )->get_header_infos( $thèmeID, $user_id ) );
+		$infos=array_merge( ( new HeaderFooterCtl( new DAOFactory(), $user_id ) )->get_header_infos( $thème_id, $user_id ) );
 	}
 
 	syslog( LOG_INFO, "Controleur : " . get_class( $controleur ) );
 	$infos=array_merge( $infos, $controleur->get_page_infos() );
 	
 	$template=$GLOBALS[ 'mustache' ]->loadTemplate( $infos[ "template" ] );
-				echo $template->render( $infos );
-			}
+	echo $template->render( $infos );
+}
 
 ?>

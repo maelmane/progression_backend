@@ -10,12 +10,15 @@ class PratiqueCtl extends ProgCtl {
 			parent::get_page_infos(),
 			$this->récupérer_paramètres() );
 
-		$sorties = ( new ExécuterProgInt( $this->_source, $this->_user_id ) )->exécuter( $infos["exécutable"] );
+		if ( $this->à_valider ) {
 
-		$infos=array_merge(
-			$infos,
-			$this->calculer_sorties( $sorties ));
-		
+			$sorties = ( new ExécuterProgInt( $this->_source, $this->_user_id ) )->exécuter( $infos["exécutable"] );
+			
+			$infos=array_merge(
+				$infos,
+				array("résultats"=>array("essayé"=>"true")),
+				$this->calculer_sorties( $sorties ));
+		}			
 		return $infos;
 	}
 

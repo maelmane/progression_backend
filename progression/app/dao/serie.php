@@ -48,7 +48,7 @@ class SérieDAO extends EntiteDAO{
 		$query=SérieDAO::$conn->prepare( 'SELECT serieID, actif, numero, titre, description, themeID FROM serie WHERE serieID = ?' );
 		$query->bind_param( "i", $objet->id );
 		$query->execute();
-		$query->bind_result( $objet->id, $objet->actif, $objet->numero, $objet->titre, $objet->description, $objet->themeID );
+		$query->bind_result( $objet->id, $objet->actif, $objet->numero, $objet->titre, $objet->description, $objet->thème_id );
 		if( is_null( $query->fetch() ))
 			$objet->id=null;
 		$query->close();
