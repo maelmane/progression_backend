@@ -1,22 +1,28 @@
 <?php
 
-require_once 'question_dao.php';
-require_once __DIR__ . '/../question_systeme.php';
+require_once __DIR__.'/question.php';
+require_once 'domaine/entités/question_sys.php';
 
-class QuestionSystemeDAO extends Question{
+class QuestionSysDAO extends QuestionDAO{
+
+	static function get_question( $id ){
+		$question=new QuestionSys( $id );
+		QuestionSysDAO::load( $question );
+		return $question;
+	}
 
     public static function load( $objet ){
-        parent::load_info();
-        $query=$GLOBALS[ "conn" ]->prepare( 'SELECT question_systeme.reponse,
-                                            question_systeme.image,
-                                            question_systeme.user,
-                                            question_systeme.verification
-                                     FROM   question_systeme
-                                     WHERE  question_systeme.questionID = ?' );
+        parent::load( $objet );
+        $query=$GLOBALS[ "conn" ]->prepare( 'SELECT question_systeme.solution_courte,
+                                                    question_systeme.image,
+                                                    question_systeme.user,
+                                                    question_systeme.verification
+                                             FROM   question_systeme
+                                             WHERE  question_systeme.questionID = ?' );
 
         $query->bind_param( "i", $objet->id );
         $query->execute();
-        $query->bind_result( $objet->reponse,
+        $query->bind_result( $objet->solution_courte,
                              $objet->image,
                              $objet->user,
                              $objet->verification );

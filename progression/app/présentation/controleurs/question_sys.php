@@ -1,177 +1,64 @@
 <?php
 
-require_once 'controleur.php';
+require_once __DIR__.'/controleur.php';
+require_once 'domaine/interacteurs/connecter_conteneur.php';
+require_once 'domaine/interacteurs/obtenir_avancement.php';
+require_once 'domaine/interacteurs/obtenir_question_sys.php';
+require_once 'domaine/interacteurs/reinitialiser_conteneur.php';
+require_once 'domaine/interacteurs/sauvegarder_avancement.php';
+require_once 'domaine/interacteurs/sauvegarder_conteneur.php';
+require_once 'domaine/interacteurs/traiter_resultats_sys.php';
 
-class ControleurQuestionSys extends Controleur {
+class QuestionSysCtl extends Controleur {
 
-	function __construct( $id, $user_id, $réponse_utilisateur ){
-		parent::__construct( $id, $user_id );
+	function __construct( $source, $user_id, $question_id ){
+		parent::__construct( $source, $user_id );
+
+		$this->_question_id = $question_id;
+
+		$this->question = ( new ObtenirQuestionSysInt( $this->_source, $user_id ) )->get_question( $this->_question_id );
 		
-		$this->à_valider=$réponse_utilisateur[ "à_valider" ];
-		$this->reponse=$réponse_utilisateur[ "reponse" ];
-		$this->reset=$réponse_utilisateur[ "reset" ];
-	}
+		$this->avancement = ( new ObtenirAvancementInt( $this->_source, $user_id ) )->get_avancement( $this->_question_id, $this->_question_id );
+	}		
 
 	function get_page_infos(){
 		$infos=array( "template"=>"question_sys" );
-		$infos=array_merge( $infos, $this->get_infos() );
-		
-		$réponse_serveur=$this->connexion_conteneur( $infos );
-		$infos=array_merge( $infos, $this->décoder_réponse( $réponse_serveur ));
-		
+		$infos=array_merge( $infos,
+							$this->récupérer_paramètres() );
+
+		$réponse_serveur=( $this->reset ? new RéinitialiserConteneurInt( $this->_source ) : new ConnecterConteneurInt( $this->_source ) )->connexion_conteneur( $this->question, $this->avancement );
+
+		$infos=array_merge( $infos, $réponse_serveur );
+
 		if( $this->à_valider ){
-			$infos[ 'essayé' ]="true";
-			$infos=array_merge( $infos, $this->vérifier_réussite( $infos ));
+			$infos[ "résultats" ] = ( new TraiterRésultatsSysInt( $this->_source ) )->vérifier_réussite( $infos );
 		}
 		
-		$this->sauvegarder_conteneur( $infos );
+		if ( $infos[ "résultats" ][ "réussi" ] == "true" ) {
+			$this->avancement->etat = Question::ETAT_REUSSI ;
+		}
+
+		( new SauvegarderAvancementInt( $this->_source, $this->_user_id ) )->sauvegarder( $this->avancement );
+		( new SauvegarderConteneurInt( $this->_source, $this->_user_id ) )->sauvegarder_conteneur( $this->avancement, $réponse_serveur[ "cont_id" ] );
 		
 		return $infos;
 	}
 
-	function get_infos(){
-		$this->question=$this->charger_question();
-		$this->avancement=$this->charger_avancement();
+	function récupérer_paramètres(){
+		$this->à_valider = isset( $_REQUEST[ "valider" ] );
+		$this->reponse = isset( $_REQUEST[ "reponse" ] ) ? $_REQUEST[ "reponse" ] : "";
+		$this->reset = isset( $_REQUEST[ "reset" ] );
 
 		$infos=array(
 			"question"=>$this->question,
-			"réponse"=>$this->get_réponse_utilisateur(),
+			"réponse"=>$this->reponse,
 			"avancement"=>$this->avancement,
 			"nom_serveur"=>$GLOBALS[ 'config' ][ 'compilebox_hote' ], //TODO changer?
 			"url_retour"=>"index.php?p=serie&ID=" . $this->question->serieID,
-			"titre_retour"=>"la liste de questions",
-			"params_conteneur"=>"-e SIAB_SERVICE=/:" . $this->question->user . ":" . $this->question->user . ":HOME:SHELL" );
+			"titre_retour"=>"la liste de questions"
+		);
 
 		return $infos;
-	}
-
-	function charger_question(){
-		$question=new QuestionSysteme( $this->id );
-
-		if( is_null( $question->id )){
-			header( 'Location: index.php?p=accueil' );
-		}
-
-		return $question;
-	}
-
-	function charger_avancement(){
-		$avancement=new Avancement( $this->id, $this->user_id );
-
-		return $avancement;
-	}
-
-	function get_réponse_utilisateur(){
-		return $this->reponse!=null ? $this->reponse : "";
-	}
-
-	function connexion_conteneur( $infos ){
-		$url_rc=$this->get_url_compilebox();
-		$options_rc=$this->get_options_compilebox( $this->question, $this->avancement, $infos );
-
-		$context=stream_context_create( $options_rc );
-		$comp_resp=file_get_contents( $url_rc, false, $context );
-
-		return $comp_resp;
-	}
-
-	function get_url_compilebox(){
-		return "http://".$GLOBALS[ 'config' ][ 'compilebox_hote' ].":".$GLOBALS[ 'config' ][ 'compilebox_port' ]."/compile"; //TODO changer?
-	}
-
-	function get_options_compilebox( $question, $avancement, $infos ){
-		if( $this->avancement->get_etat()==Question::ETAT_DEBUT || $this->reset ){
-			$data_rc=$this->get_data_nouveau_conteneur( $infos );
-		}
-		else{
-			$data_rc=$this->get_data_conteneur( $infos );
-		}
-		
-		$options_rc=array( 'http'=> array(
-			'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-			'method'  => 'POST',
-			'content' => http_build_query( $data_rc )) );
-
-		return $options_rc;
-	}
-
-	function get_data_nouveau_conteneur( $infos ){
-		return array( 'language' => 13,
-					 'code' => 'reset',
-					 'vm_name' => $infos[ 'question' ]->image,
-					 'parameters' => $infos[ 'avancement' ]->conteneur,
-					 'params_conteneur' => $infos[ 'params_conteneur' ],
-					 'stdin' => '',
-					 'user' => $infos[ 'question' ]->user );
-	}
-
-	function get_data_conteneur( $infos ){
-		return array( 'language' => 13,
-					 'code' => $this->construire_validation( $infos[ 'question' ] ),
-					 'vm_name' => $infos[ 'question' ]->image,
-					 'parameters' => $infos[ 'avancement' ]->conteneur,
-					 'params_conteneur' => $infos[ 'params_conteneur' ],
-					 'stdin' => '',
-					 'user' => $infos[ 'question' ]->user );
-	}
-
-	function construire_validation( $question ){
-		return str_replace( "{reponse}", $this->get_réponse_utilisateur(), $question->verification );
-	}
-
-	function décoder_réponse( $réponse ){
-		$infos_réponse=array();
-		
-		$infos_réponse[ "cont_id" ]=trim( json_decode( $réponse, true )[ 'cont_id' ] );
-		$infos_réponse[ "cont_ip" ]=trim( json_decode( $réponse, true )[ 'add_ip' ] );
-		$infos_réponse[ "cont_port" ]=trim( json_decode( $réponse, true )[ 'add_port' ] );
-		$infos_réponse[ "res_validation" ]=trim( json_decode( $réponse, true )[ 'resultat' ] );
-
-		return $infos_réponse;
-	}
-
-	function vérifier_réussite( $infos ){
-		$réussite=array();
-		
-		$réussi=$this->vérifier_réponse( $infos );
-		if( $réussi ){
-			$réussite[ "réussi" ]="true";
-			$infos[ "avancement" ]->set_etat( Question::ETAT_REUSSI );
-		}
-		else{
-			$réussite[ "nonréussi" ]="true";
-		}
-
-		//récupère l'état d'avancement
-		if( $infos[ "avancement" ]->get_etat()==Question::ETAT_REUSSI ){
-			$réussite[ "état_réussi" ]="true";
-		}
-		else{
-			$réussite[ "état_réussi" ]="";
-		}
-		
-		return $réussite;
-	}
-
-	function sauvegarder_conteneur( $infos ){
-		$infos[ "avancement" ]->set_conteneur( $infos[ "cont_id" ] );
-	}
-
-	function vérifier_réponse( $infos ){
-		$réussi=false;
-		
-		//validation exécutée
-		if( $infos[ 'res_validation' ]!="" && $infos[ 'res_validation' ]=="valide" ){
-			$réussi=true;            
-		}
-		//réponse textuelle
-		elseif( !is_null( $infos[ "question" ]->solution_courte ) && $infos[ "question" ]->solution_courte!="" ){
-			if( $infos[ 'réponse' ]!='' )
-				if( $infos[ 'réponse' ]==$infos[ "question" ]->solution_courte ){
-					$réussi=true;
-				}
-		}
-		return $réussi;
 	}
 }
 ?>

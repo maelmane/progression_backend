@@ -69,8 +69,7 @@ class QuestionProgCtl extends ProgCtl{
 		if ( $this->à_valider ) {
 			$sorties = ( new ExécuterProgInt( $this->_source, $this->_user_id ) )->exécuter( $infos["exécutable"] );
 
-			$résultats = ( new TraiterRésultatsInt( $this->_source, $this->_user_id ) )->traiter_résultats( $sorties, $this->question, $infos[ "exécutable" ]->code );
-			$infos[ "résultats" ] = $résultats;
+			$infos[ "résultats" ] = ( new TraiterRésultatsProgInt( $this->_source, $this->_user_id ) )->traiter_résultats( $sorties, $this->question, $infos[ "exécutable" ]->code );
 			
 			$infos = array_merge( $infos, $this->calculer_sorties( $sorties ) );
 

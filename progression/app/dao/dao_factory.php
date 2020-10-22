@@ -3,6 +3,7 @@
 require_once __DIR__.'/avancement.php';
 require_once __DIR__.'/question.php';
 require_once __DIR__.'/question_prog.php';
+require_once __DIR__.'/question_sys.php';
 require_once __DIR__.'/serie.php';
 require_once __DIR__.'/theme.php';
 require_once __DIR__.'/user.php';
@@ -19,6 +20,10 @@ class DAOFactory {
 
 	function get_question_prog_dao() {
 		return new QuestionProgDAO();
+	}
+
+	function get_question_sys_dao() {
+		return new QuestionSysDAO();
 	}
 
 	function get_série_dao() {

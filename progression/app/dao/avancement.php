@@ -9,6 +9,7 @@ class AvancementDao extends EntiteDAO {
     static function get_avancement( $question_id, $user_id ) {
 		$avancement=new Avancement( $question_id, $user_id );
 		AvancementDAO::load( $avancement );
+		if ( is_null( $avancement->etat ) ) $avancement->etat = QUESTION::ETAT_DEBUT;
 		
 		return $avancement;
     }

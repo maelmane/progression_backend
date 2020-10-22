@@ -14,13 +14,13 @@
 				</td>
 				<tr>
 					<td>
-						{{#question.répondable}}
+						{{#question.solution_courte}}
 							Réponse: <input type=text name=reponse value='{{avancement.reponse}}'>
 							<input type=submit name='valider' value='Soumettre'>
-						{{/question.répondable}}
-						{{^question.répondable}}
+						{{/question.solution_courte}}
+						{{^question.solution_courte}}
 							<input type=submit name='valider' value='Valider'>
-						{{/question.répondable}}
+						{{/question.solution_courte}}
 					</td>
 					<td  align=right>
 						<input type=submit name='reset' value='Réinitialiser' onclick='return confirm( "Voulez-vous vraiment réinitialiser votre session?" );'>

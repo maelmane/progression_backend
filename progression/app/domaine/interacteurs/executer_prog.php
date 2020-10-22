@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__.'/interacteur.php';
-require_once __DIR__.'/sauvegarder_question.php';
 
 class ExécuterProgInt extends Interacteur {
 	
