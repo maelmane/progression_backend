@@ -1,15 +1,19 @@
 <table width=100%>
 	{{#résultats.essayé}}
-		{{#erreurs}}
-			<tr>
-				<td colspan=2><br>Sortie d'erreur : <br><pre class='code-wrapper'><code>{{erreurs}}</code></pre><br></td>
-			</tr>
-			<tr>
-		{{/erreurs}}
+		{{#sorties}}
+			{{#erreurs}}
+				<tr>
+					<td colspan=2><br>Sortie d'erreur : <br><pre class='code-wrapper'><code>{{erreurs}}</code></pre><br></td>
+				</tr>
+			{{/erreurs}}
+		{{/sorties}}
 	{{/résultats.essayé}}
-	<td witdh=100% valign=top><br>Sortie attendue : <br><pre class='code-wrapper'><code>{{solution}}</code></pre><br>
-		<td width=50%  valign=top><br>Sortie standard : <br><pre class='code-wrapper'><code>{{output}}</code></pre><br></td>
-			</tr>
+	{{#sorties}}
+		<tr>
+			<td witdh=100% valign=top><br>Sortie attendue : <br><pre class='code-wrapper'><code>{{solution}}</code></pre><br>
+				<td width=50%  valign=top><br>Sortie standard : <br><pre class='code-wrapper'><code>{{output}}</code></pre><br></td>
+		</tr>
+	{{/sorties}}
 </table>
 
 <script>

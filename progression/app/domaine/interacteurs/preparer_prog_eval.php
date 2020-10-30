@@ -3,35 +3,57 @@
 require_once __DIR__ . '/interacteur.php';
 require_once 'domaine/entités/question_prog.php';
 
-class PréparerProgInt extends Interacteur
+class PréparerProgEvalInt extends Interacteur
 {
 	public function __construct()
 	{
 		parent::__construct(null);
 	}
 
-	public function get_exécutable(
+	public function get_exécutables(
 		$question,
 		$avancement,
 		$params,
 		$stdin,
 		$incode
 	) {
+
+        eval($question->setup);
+
+		$question->enonce = str_replace(
+			"\r",
+			"",
+			eval("return " .  '"' . $question->enonce . '";'));
+		$question->solution = str_replace(
+			"\r",
+			"",
+			eval("return " . $question->solution . ";"));
+
 		$exécutable = new class {};
 		$exécutable->langid = $question->lang;
-		$exécutable->pre_exec = $question->pre_exec;
-		$exécutable->pre_code = $question->pre_code;
-		$exécutable->code = $this->get_code_utilisateur(
+		$exécutable->pre_exec = str_replace(
+			"\r",
+			"",
+			eval("return " . $question->pre_exec . ";"));
+		$exécutable->pre_code = str_replace(
+			"\r",
+			"",
+			eval("return " . $question->pre_code . ";"));
+		$exécutable->code = PréparerProgEvalInt::get_code_utilisateur(
 			$question,
 			$avancement,
 			$incode
 		);
-		$exécutable->post_code = $question->post_code;
-		$exécutable->params = $this->get_params($question, $params);
-		$exécutable->stdin = $this->get_stdin($question, $stdin);
+		$exécutable->post_code = str_replace(
+			"\r",
+			"",
+			eval("return " . $question->post_code . ";"));
 
-		$exécutable->code_exec = $this->composer_code($exécutable);
-		return $exécutable;
+		$exécutable->params = PréparerProgEvalInt::get_params($question, $params);
+		$exécutable->stdin = PréparerProgEvalInt::get_stdin($question, $stdin);
+
+		$exécutable->code_exec = PréparerProgEvalInt::composer_code($exécutable);
+		return [$exécutable];
 	}
 
 	private function composer_code($exécutable)

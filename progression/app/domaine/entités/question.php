@@ -10,8 +10,9 @@ class Question extends Entite{
     const ETAT_NONREUSSI=1;
     const ETAT_REUSSI=2;
 
-    const TYPE_PROG=0;
+    const TYPE_PROG_EVAL=0;
     const TYPE_SYS=1;
+    const TYPE_PROG_MULTITEST=2;
     
     public $serieID;
     public $actif;

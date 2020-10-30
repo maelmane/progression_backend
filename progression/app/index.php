@@ -16,6 +16,7 @@ require_once 'présentation/controleurs/logout.php';
 require_once 'présentation/controleurs/pratique.php';
 require_once 'présentation/controleurs/question_bd.php';
 require_once 'présentation/controleurs/question_prog_eval.php';
+require_once 'présentation/controleurs/question_prog.php';
 require_once 'présentation/controleurs/question_sys.php';
 require_once 'présentation/controleurs/serie.php';
 require_once 'présentation/controleurs/theme.php';
@@ -43,17 +44,17 @@ function inclusion_page()
 		$user_id = $_SESSION['user_id'];
 
 		if (isset($_GET["p"])) {
-			$fichier = $_GET["p"];
+			$page = $_GET["p"];
 
 			$controleur = null;
 
-			if ($fichier == "logout") {
+			if ($page == "logout") {
 				$controleur = new LogoutCtl(null, null);
 			}
-			if ($fichier == "theme") {
+			if ($page == "theme") {
 				$thème_id = $_REQUEST["ID"];
 				$controleur = new ThèmeCtl($dao_factory, $user_id, $thème_id);
-			} elseif ($fichier == "serie") {
+			} elseif ($page == "serie") {
 				$série_id = $_REQUEST["ID"];
 				$controleur = new SérieCtl($dao_factory, $série_id, $user_id);
 				$thème_id = (new ObtenirSérieInt(
@@ -61,7 +62,7 @@ function inclusion_page()
 					$user_id
 				))->get_série($série_id)->thème_id;
 				echo "ID:" . $série_id . " " . $thème_id;
-			} elseif ($fichier == "question") {
+			} elseif ($page == "question") {
 				$question_id = $_REQUEST["ID"];
 				$question = (new ObtenirQuestionInt(
 					$dao_factory,
@@ -72,28 +73,37 @@ function inclusion_page()
 					$user_id
 				))->get_série($question->serieID)->thème_id;
 
-				if ($question->type == Question::TYPE_PROG) {
+				if ($question->type == Question::TYPE_PROG_EVAL) {
 					$controleur = new QuestionProgEvalCtl(
 						$dao_factory,
 						$user_id,
 						$question->id
 					);
-				} elseif ($question->type == Question::TYPE_SYS) {
+                }
+				else if ($question->type == Question::TYPE_PROG_MULTITEST) {
+					$controleur = new QuestionProgCtl(
+						$dao_factory,
+						$user_id,
+						$question->id
+					);
+				}
+                elseif ($question->type == Question::TYPE_SYS) {
 					$controleur = new QuestionSysCtl(
 						$dao_factory,
 						$user_id,
 						$question->id
 					);
-				} elseif ($question->type == Question::TYPE_BD) {
+				}
+                elseif ($question->type == Question::TYPE_BD) {
 					$controleur = new QuestionBdCtl(
 						$dao_factory,
 						$user_id,
 						$question->id
 					);
 				}
-			} elseif ($fichier == "pratique") {
+			} elseif ($page == "pratique") {
 				$controleur = new PratiqueCtl($dao_factory, $user_id);
-			} elseif ($fichier == "ad_suivi") {
+			} elseif ($page == "ad_suivi") {
 				$controleur = new SuiviCtl($dao_factory, $user_id);
 			}
 
