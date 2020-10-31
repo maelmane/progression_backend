@@ -5,64 +5,64 @@ require_once __DIR__ . '/question_prog.php';
 
 class QuestionProgEvalCtl extends QuestionProgCtl
 {
-
-    protected function get_question(){
-		return (new ObtenirQuestionProgEvalInt(
-			$this->_source,
-			$this->_user_id
-		))->get_question($this->_question_id);
+    protected function get_question()
+    {
+        return (new ObtenirQuestionProgEvalInt(
+            $this->_source,
+            $this->_user_id
+        ))->get_question($this->_question_id);
     }
-    
-	public function get_page_infos()
-	{
-		$infos = array_merge(parent::get_page_infos(), [
-			"template" => "question_prog_eval",
-		]);
+
+    public function get_page_infos()
+    {
+        $infos = array_merge(parent::get_page_infos(), [
+            "template" => "question_prog_eval",
+        ]);
 
         //Prend la première et unique sortie
         $infos["sorties"] = $infos["sorties"][0];
 
         return $infos;
-	}
+    }
 
-	protected function récupérer_paramètres()
-	{
-		$infos = array_merge(parent::récupérer_paramètres(), [
-			"première_ligne_éditeur_precode" =>
-				$this->compter_lignes($this->question->pre_exec) + 1,
-			"première_ligne_éditeur_incode" =>
-				$this->compter_lignes($this->question->pre_exec) +
-				$this->compter_lignes($this->question->pre_code) +
-				1,
-		]);
+    protected function récupérer_paramètres()
+    {
+        $infos = array_merge(parent::récupérer_paramètres(), [
+            "première_ligne_éditeur_precode" =>
+                $this->compter_lignes($this->question->pre_exec) + 1,
+            "première_ligne_éditeur_incode" =>
+                $this->compter_lignes($this->question->pre_exec) +
+                $this->compter_lignes($this->question->pre_code) +
+                1,
+        ]);
 
         //Prend le premier et unique exécutable
         $infos["exécutable"] = $infos["exécutables"][0];
 
-		return $infos;
-	}
+        return $infos;
+    }
 
-    protected function get_exécutables(){
-		
-		$exécutables = (new PréparerProgEvalInt())->get_exécutables(
-			$this->question,
-			$this->avancement,
-			isset($_REQUEST["params"]) ? $_REQUEST["params"] : null,
-			isset($_REQUEST["stdin"]) ? $_REQUEST["stdin"] : null,
-			isset($_REQUEST["incode"]) ? $_REQUEST["incode"] : null
-		);
+    protected function get_exécutables()
+    {
+        $exécutables = (new PréparerProgEvalInt())->get_exécutables(
+            $this->question,
+            $this->avancement,
+            isset($_REQUEST["params"]) ? $_REQUEST["params"] : null,
+            isset($_REQUEST["stdin"]) ? $_REQUEST["stdin"] : null,
+            isset($_REQUEST["incode"]) ? $_REQUEST["incode"] : null
+        );
 
         return $exécutables;
     }
-    
-	private function compter_lignes($texte)
-	{
-		if ($texte == "") {
-			return 0;
-		} else {
-			return count(preg_split('/\n/', $texte));
-		}
-	}
+
+    private function compter_lignes($texte)
+    {
+        if ($texte == "") {
+            return 0;
+        } else {
+            return count(preg_split('/\n/', $texte));
+        }
+    }
 }
 
 ?>

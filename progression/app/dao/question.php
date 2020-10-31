@@ -1,41 +1,50 @@
 <?php
 
-require_once __DIR__.'/entite.php';
-require_once __DIR__.'/question.php';
+require_once __DIR__ . '/entite.php';
+require_once __DIR__ . '/question.php';
 require_once 'domaine/entités/question.php';
 
-class QuestionDAO extends EntiteDAO{
+class QuestionDAO extends EntiteDAO
+{
+    static function get_type($id)
+    {
+        $query = QuestionDAO::$conn->prepare(
+            'SELECT type FROM question WHERE questionID = ?'
+        );
+        $query->bind_param("i", $id);
+        $query->execute();
+        $query->bind_result($type);
+        if (is_null($query->fetch())) {
+            error_log($query->error);
+            $type = null;
+        }
+        $query->close();
 
-	static function get_type( $id ){
-		$query=QuestionDAO::$conn->prepare( 'SELECT type FROM question WHERE questionID = ?' );
-		$query->bind_param( "i", $id );
-		$query->execute();
-		$query->bind_result( $type );
-	    if( is_null( $query->fetch() )){
-			error_log( $query->error );
-			$type=null;
-		}
-		$query->close();
+        return $type;
+    }
 
-		return $type;
-	}
-	
-	static function get_question( $id ){
-		$question=new Question( $id );
-		QuestionDAO::load( $question );
-		return $question;
-	}
+    static function get_question($id)
+    {
+        $question = new Question($id);
+        QuestionDAO::load($question);
+        return $question;
+    }
 
-	static function get_questions_par_série( $série_id, $inactif=false ){
-		$res=array();
-		foreach( SérieDAO::get_questions_ids( $série_id,$inactif ) as $question_id ){
-			$res[]=QuestionDAO::get_question( $question_id );
-		}
-		return $res;
-	}
+    static function get_questions_par_série($série_id, $inactif = false)
+    {
+        $res = [];
+        foreach (
+            SérieDAO::get_questions_ids($série_id, $inactif)
+            as $question_id
+        ) {
+            $res[] = QuestionDAO::get_question($question_id);
+        }
+        return $res;
+    }
 
-	protected static function load( $objet ){
-	    $query=QuestionDAO::$conn->prepare( 'SELECT question.questionID,
+    protected static function load($objet)
+    {
+        $query = QuestionDAO::$conn->prepare('SELECT question.questionID,
 	                                        question.actif,
 	                                        question.type,
 	                                        question.serieID as s,
@@ -46,29 +55,32 @@ class QuestionDAO extends EntiteDAO{
 	                                        question.enonce,
 	                                        question.code_validation
 	                                        FROM question
-	                                        WHERE question.questionID = ?' );
-	    $query->bind_param( "i", $objet->id );
-	    $query->execute();
-	    $query->bind_result( $objet->id,
-	                         $objet->actif,
-	                         $objet->type,
-	                         $objet->serieID,
-	                         $objet->numero,
-	                         $objet->suivante,
-	                         $objet->titre,
-	                         $objet->description,
-	                         $objet->enonce,
-	                         $objet->code_validation );
-	    if( is_null( $query->fetch() )){
-			error_log( $query->error );
-	        $objet->id=null;
-		}
-	    $query->close();
-	}
-	
-	static function save( $objet ){
-	    if( !$objet->id ){
-	        $query=QuestionDAO::$conn->prepare( "INSERT INTO question( serieID,
+	                                        WHERE question.questionID = ?');
+        $query->bind_param("i", $objet->id);
+        $query->execute();
+        $query->bind_result(
+            $objet->id,
+            $objet->actif,
+            $objet->type,
+            $objet->serieID,
+            $objet->numero,
+            $objet->suivante,
+            $objet->titre,
+            $objet->description,
+            $objet->enonce,
+            $objet->code_validation
+        );
+        if (is_null($query->fetch())) {
+            error_log($query->error);
+            $objet->id = null;
+        }
+        $query->close();
+    }
+
+    static function save($objet)
+    {
+        if (!$objet->id) {
+            $query = QuestionDAO::$conn->prepare("INSERT INTO question( serieID,
 	                                                          actif,
 	                                                          type,
 	                                                          titre,
@@ -76,25 +88,25 @@ class QuestionDAO extends EntiteDAO{
 	                                                          numero,
 	                                                          enonce,
 	                                                          code_validation ) 
-	                                 VALUES( ?, ?, ?, ?, ?, ?, ?, ? )" );
+	                                 VALUES( ?, ?, ?, ?, ?, ?, ?, ? )");
 
-	        $query->bind_param( "iiississ",
-	                            $objet->serieID,
-	                            $objet->actif,
-	                            $objet->type,
-	                            $objet->titre,
-	                            $objet->description,
-	                            $objet->numero,
-	                            $objet->enonce,
-	                            $objet->code_validation );
-	        $query->execute();
-	        $query->close();
+            $query->bind_param(
+                "iiississ",
+                $objet->serieID,
+                $objet->actif,
+                $objet->type,
+                $objet->titre,
+                $objet->description,
+                $objet->numero,
+                $objet->enonce,
+                $objet->code_validation
+            );
+            $query->execute();
+            $query->close();
 
-			$objet->id = mysqli_insert_id();
-			
-	    }
-	    else{
-	        $query=QuestionDAO::$conn->prepare( "UPDATE question set 
+            $objet->id = mysqli_insert_id();
+        } else {
+            $query = QuestionDAO::$conn->prepare("UPDATE question set 
 	                                            serieID=?,
 	                                            actif=?,
 	                                            type=?,
@@ -102,23 +114,24 @@ class QuestionDAO extends EntiteDAO{
 	                                            description=?,
 	                                            numero=?,
 	                                            enonce=?,
-	                                            code_validation=? WHERE questionID = ?" );
+	                                            code_validation=? WHERE questionID = ?");
 
-	        $query->bind_param( "iiississi",
-	                            $objet->serieID,
-	                            $objet->actif,                                
-	                            $objet->type,
-	                            $objet->titre,
-	                            $objet->description,
-	                            $objet->numero,
-	                            $objet->enonce,
-	                            $objet->code_validation,
-	                            $objet->id );
-	        $query->execute();
-	        $query->close();
-	    }
-	    
-	    return $objet;
-	}
-	
+            $query->bind_param(
+                "iiississi",
+                $objet->serieID,
+                $objet->actif,
+                $objet->type,
+                $objet->titre,
+                $objet->description,
+                $objet->numero,
+                $objet->enonce,
+                $objet->code_validation,
+                $objet->id
+            );
+            $query->execute();
+            $query->close();
+        }
+
+        return $objet;
+    }
 }

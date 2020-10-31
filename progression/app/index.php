@@ -30,118 +30,115 @@ inclusion_page();
 
 function set_locale()
 {
-	$locale = isset($GLOBALS['config']['locale'])
-		? $GLOBALS['config']['locale']
-		: 'fr_CA.UTF-8';
-	setlocale(LC_ALL, $locale);
+    $locale = isset($GLOBALS['config']['locale'])
+        ? $GLOBALS['config']['locale']
+        : 'fr_CA.UTF-8';
+    setlocale(LC_ALL, $locale);
 }
 
 function inclusion_page()
 {
-	$dao_factory = new DAOFactory();
+    $dao_factory = new DAOFactory();
 
-	if (isset($_SESSION["user_id"])) {
-		$user_id = $_SESSION['user_id'];
+    if (isset($_SESSION["user_id"])) {
+        $user_id = $_SESSION['user_id'];
 
-		if (isset($_GET["p"])) {
-			$page = $_GET["p"];
+        if (isset($_GET["p"])) {
+            $page = $_GET["p"];
 
-			$controleur = null;
+            $controleur = null;
 
-			if ($page == "logout") {
-				$controleur = new LogoutCtl(null, null);
-			}
-			if ($page == "theme") {
-				$thème_id = $_REQUEST["ID"];
-				$controleur = new ThèmeCtl($dao_factory, $user_id, $thème_id);
-			} elseif ($page == "serie") {
-				$série_id = $_REQUEST["ID"];
-				$controleur = new SérieCtl($dao_factory, $série_id, $user_id);
-				$thème_id = (new ObtenirSérieInt(
-					$dao_factory,
-					$user_id
-				))->get_série($série_id)->thème_id;
-				echo "ID:" . $série_id . " " . $thème_id;
-			} elseif ($page == "question") {
-				$question_id = $_REQUEST["ID"];
-				$question = (new ObtenirQuestionInt(
-					$dao_factory,
-					$user_id
-				))->get_question($question_id);
-				$thème_id = (new ObtenirSérieInt(
-					$dao_factory,
-					$user_id
-				))->get_série($question->serieID)->thème_id;
+            if ($page == "logout") {
+                $controleur = new LogoutCtl(null, null);
+            }
+            if ($page == "theme") {
+                $thème_id = $_REQUEST["ID"];
+                $controleur = new ThèmeCtl($dao_factory, $user_id, $thème_id);
+            } elseif ($page == "serie") {
+                $série_id = $_REQUEST["ID"];
+                $controleur = new SérieCtl($dao_factory, $série_id, $user_id);
+                $thème_id = (new ObtenirSérieInt(
+                    $dao_factory,
+                    $user_id
+                ))->get_série($série_id)->thème_id;
+                echo "ID:" . $série_id . " " . $thème_id;
+            } elseif ($page == "question") {
+                $question_id = $_REQUEST["ID"];
+                $question = (new ObtenirQuestionInt(
+                    $dao_factory,
+                    $user_id
+                ))->get_question($question_id);
+                $thème_id = (new ObtenirSérieInt(
+                    $dao_factory,
+                    $user_id
+                ))->get_série($question->serieID)->thème_id;
 
-				if ($question->type == Question::TYPE_PROG_EVAL) {
-					$controleur = new QuestionProgEvalCtl(
-						$dao_factory,
-						$user_id,
-						$question->id
-					);
+                if ($question->type == Question::TYPE_PROG_EVAL) {
+                    $controleur = new QuestionProgEvalCtl(
+                        $dao_factory,
+                        $user_id,
+                        $question->id
+                    );
+                } elseif ($question->type == Question::TYPE_PROG_MULTITEST) {
+                    $controleur = new QuestionProgCtl(
+                        $dao_factory,
+                        $user_id,
+                        $question->id
+                    );
+                } elseif ($question->type == Question::TYPE_SYS) {
+                    $controleur = new QuestionSysCtl(
+                        $dao_factory,
+                        $user_id,
+                        $question->id
+                    );
+                } elseif ($question->type == Question::TYPE_BD) {
+                    $controleur = new QuestionBdCtl(
+                        $dao_factory,
+                        $user_id,
+                        $question->id
+                    );
                 }
-				else if ($question->type == Question::TYPE_PROG_MULTITEST) {
-					$controleur = new QuestionProgCtl(
-						$dao_factory,
-						$user_id,
-						$question->id
-					);
-				}
-                elseif ($question->type == Question::TYPE_SYS) {
-					$controleur = new QuestionSysCtl(
-						$dao_factory,
-						$user_id,
-						$question->id
-					);
-				}
-                elseif ($question->type == Question::TYPE_BD) {
-					$controleur = new QuestionBdCtl(
-						$dao_factory,
-						$user_id,
-						$question->id
-					);
-				}
-			} elseif ($page == "pratique") {
-				$controleur = new PratiqueCtl($dao_factory, $user_id);
-			} elseif ($page == "ad_suivi") {
-				$controleur = new SuiviCtl($dao_factory, $user_id);
-			}
+            } elseif ($page == "pratique") {
+                $controleur = new PratiqueCtl($dao_factory, $user_id);
+            } elseif ($page == "ad_suivi") {
+                $controleur = new SuiviCtl($dao_factory, $user_id);
+            }
 
-			if ($controleur == null) {
-				$controleur = new AccueilCtl($dao_factory, $user_id);
-			}
-		} else {
-			$controleur = new AccueilCtl($dao_factory, $user_id);
-		}
-	} else {
-		$controleur = new LoginCtl($dao_factory);
-	}
+            if ($controleur == null) {
+                $controleur = new AccueilCtl($dao_factory, $user_id);
+            }
+        } else {
+            $controleur = new AccueilCtl($dao_factory, $user_id);
+        }
+    } else {
+        $controleur = new LoginCtl($dao_factory);
+    }
 
-	render_page(
-		isset($_SESSION['user_id']) ? $user_id : null,
-		isset($thème_id) ? $thème_id : null,
-		$controleur
-	);
+    render_page(
+        isset($_SESSION['user_id']) ? $user_id : null,
+        isset($thème_id) ? $thème_id : null,
+        $controleur
+    );
 }
 
 function render_page($user_id, $thème_id, $controleur)
 {
-	$infos = [];
+    $infos = [];
 
-	if (!is_null($user_id)) {
-		$infos = array_merge(
-			(new HeaderFooterCtl(new DAOFactory(), $user_id))->get_header_infos(
-				$thème_id,
-				$user_id
-			)
-		);
-	}
+    if (!is_null($user_id)) {
+        $infos = array_merge(
+            (new HeaderFooterCtl(new DAOFactory(), $user_id))->get_header_infos(
+                $thème_id,
+                $user_id
+            )
+        );
+    }
 
-	syslog(LOG_INFO, "Controleur : " . get_class($controleur));
-	$infos = array_merge($infos, $controleur->get_page_infos());
+    syslog(LOG_INFO, "Controleur : " . get_class($controleur));
+    $infos = array_merge($infos, $controleur->get_page_infos());
 
-	$template = $GLOBALS['mustache']->loadTemplate($infos["template"]);
-	echo $template->render($infos);
+    $template = $GLOBALS['mustache']->loadTemplate($infos["template"]);
+    echo $template->render($infos);
 }
 
 ?>
