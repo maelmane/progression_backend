@@ -19,9 +19,6 @@ class QuestionProgEvalCtl extends QuestionProgCtl
             "template" => "question_prog_eval",
         ]);
 
-        //Prend la première et unique sortie
-        $infos["sorties"] = $infos["sorties"][0];
-
         return $infos;
     }
 
@@ -36,23 +33,27 @@ class QuestionProgEvalCtl extends QuestionProgCtl
                 1,
         ]);
 
-        //Prend le premier et unique exécutable
-        $infos["exécutable"] = $infos["exécutables"][0];
-
         return $infos;
     }
 
-    protected function get_exécutables()
+    protected function get_exécutable()
     {
-        $exécutables = (new PréparerProgEvalInt())->get_exécutables(
+        $exécutable = (new PréparerProgEvalInt())->get_exécutable(
             $this->question,
             $this->avancement,
             isset($_REQUEST["params"]) ? $_REQUEST["params"] : null,
-            isset($_REQUEST["stdin"]) ? $_REQUEST["stdin"] : null,
             isset($_REQUEST["incode"]) ? $_REQUEST["incode"] : null
         );
 
-        return $exécutables;
+        return $exécutable;
+    }
+
+    protected function get_tests()
+    {
+        $stdin = isset($_REQUEST["stdin"]) ? $_REQUEST["stdin"] : null;
+        $test = (new PréparerProgEvalInt())->get_test($this->question, $stdin);
+
+        return [$test];
     }
 
     private function compter_lignes($texte)

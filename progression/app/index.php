@@ -79,7 +79,7 @@ function inclusion_page()
                         $user_id,
                         $question->id
                     );
-                } elseif ($question->type == Question::TYPE_PROG_MULTITEST) {
+                } elseif ($question->type == Question::TYPE_PROG) {
                     $controleur = new QuestionProgCtl(
                         $dao_factory,
                         $user_id,

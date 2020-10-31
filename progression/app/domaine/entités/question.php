@@ -12,7 +12,8 @@ class Question extends Entite
 
     const TYPE_PROG_EVAL = 0;
     const TYPE_SYS = 1;
-    const TYPE_PROG_MULTITEST = 2;
+    const TYPE_BD = 2;
+    const TYPE_PROG = 3;
 
     public $serieID;
     public $actif;

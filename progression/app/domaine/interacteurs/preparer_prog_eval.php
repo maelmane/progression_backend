@@ -10,24 +10,14 @@ class PréparerProgEvalInt extends Interacteur
         parent::__construct(null);
     }
 
-    public function get_exécutables(
-        $question,
-        $avancement,
-        $params,
-        $stdin,
-        $incode
-    ) {
+    public function get_exécutable($question, $avancement, $params, $incode)
+    {
         eval($question->setup);
 
         $question->enonce = str_replace(
             "\r",
             "",
             eval("return " . '"' . $question->enonce . '";')
-        );
-        $question->solution = str_replace(
-            "\r",
-            "",
-            eval("return " . $question->solution . ";")
         );
 
         $exécutable = new class {};
@@ -57,12 +47,26 @@ class PréparerProgEvalInt extends Interacteur
             $question,
             $params
         );
-        $exécutable->stdin = PréparerProgEvalInt::get_stdin($question, $stdin);
-
         $exécutable->code_exec = PréparerProgEvalInt::composer_code(
             $exécutable
         );
-        return [$exécutable];
+        return $exécutable;
+    }
+
+    public function get_test($question, $stdin)
+    {
+        $solution = str_replace(
+            "\r",
+            "",
+            eval("return " . $question->solution . ";")
+        );
+
+        $test = new class {};
+        $test->nom = "Test 1";
+        $test->stdin = PréparerProgEvalInt::get_stdin($question, $stdin);
+        $test->solution = $solution;
+
+        return $test;
     }
 
     private function composer_code($exécutable)

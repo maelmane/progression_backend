@@ -8,7 +8,7 @@ class TraiterRésultatsProgInt extends Interacteur
         $this->_user_id = $user_id;
     }
 
-    function traiter_résultats($sorties, $question, $code)
+    function traiter_résultats($exécutable, $tests, $question)
     {
         $résultats = [];
 
@@ -16,17 +16,29 @@ class TraiterRésultatsProgInt extends Interacteur
             $this->_source,
             $this->_user_id
         ))->get_avancement($question->id, $this->_user_id);
-        $avancement->code = $code;
+        $avancement->code = $exécutable->code;
 
         $résultats["essayé"] = "true";
-        if ($this->vérifier_solution($sorties, $question->solution)) {
+
+        $réussi = true;
+        foreach ($tests as $test) {
+            $test->réussi = $this->vérifier_solution(
+                $test->sorties,
+                $test->solution
+            );
+            if (!$test->réussi) {
+                $réussi = false;
+            }
+        }
+
+        if ($réussi) {
             $avancement->etat = Question::ETAT_REUSSI;
-            $avancement->code = $code;
+            $avancement->code = $exécutable->code;
             $this->sauvegarder_avancement($avancement);
             $résultats["réussi"] = "true";
         } else {
             if ($avancement->etat != Question::ETAT_REUSSI) {
-                $avancement->code = $code;
+                $avancement->code = $exécutable->code;
                 $avancement->etat = Question::ETAT_NONREUSSI;
                 $this->sauvegarder_avancement($avancement);
             }
@@ -40,7 +52,7 @@ class TraiterRésultatsProgInt extends Interacteur
 
     private function vérifier_solution($sorties, $solution)
     {
-        $sortie_standard = $sorties["stdout"];
+        $sortie_standard = $sorties["output"];
 
         //en PHP, "" == NULL ( arg!!! )
         return $solution != "null" && $sortie_standard == $solution;

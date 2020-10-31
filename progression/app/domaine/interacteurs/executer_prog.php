@@ -10,7 +10,7 @@ class ExécuterProgInt extends Interacteur
         $this->_user_id = $user_id;
     }
 
-    function exécuter($exécutable)
+    function exécuter($exécutable, $test)
     {
         ExécuterProgInt::loguer_code($exécutable);
 
@@ -25,7 +25,7 @@ class ExécuterProgInt extends Interacteur
             'language' => $exécutable->langid,
             'code' => $exécutable->code_exec,
             'parameters' => "\"$exécutable->params\"",
-            'stdin' => $exécutable->stdin,
+            'stdin' => $test->stdin,
             'vm_name' => 'remotecompiler',
         ];
 

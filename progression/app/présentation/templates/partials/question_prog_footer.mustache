@@ -1,20 +1,37 @@
-<table width=100%>
-	{{#résultats.essayé}}
-		{{#sorties}}
-			{{#erreurs}}
-				<tr>
-					<td colspan=2><br>Sortie d'erreur : <br><pre class='code-wrapper'><code>{{erreurs}}</code></pre><br></td>
-				</tr>
-			{{/erreurs}}
-		{{/sorties}}
-	{{/résultats.essayé}}
-	{{#sorties}}
-		<tr>
-			<td witdh=100% valign=top><br>Sortie attendue : <br><pre class='code-wrapper'><code>{{solution}}</code></pre><br>
-				<td width=50%  valign=top><br>Sortie standard : <br><pre class='code-wrapper'><code>{{output}}</code></pre><br></td>
-		</tr>
-	{{/sorties}}
-</table>
+{{#résultats.essayé}}
+	<ul uk-accordion="multiple: true"> 
+		{{#tests}}
+			<li>
+				<a class="uk-accordion-title" href="#" style="color: 
+						  {{#réussi}}
+						  #00994d
+						  {{/réussi}}
+						  {{^réussi}}
+						  #cc0000
+						  {{/réussi}}
+						  ;">
+					{{nom}}
+				</a>
+				<div class="uk-accordion-content">
+					
+					<table width=100%>
+						{{#sorties}}
+							{{#erreurs}}
+								<tr>
+									<td colspan=2><br>sortie d'erreur : <br><pre class='code-wrapper'><code>{{erreurs}}</code></pre><br></td>
+								</tr>
+							{{/erreurs}}
+							<tr>
+								<td witdh=100% valign=top><br>Sortie attendue : <br><pre class='code-wrapper'><code>{{solution}}</code></pre><br></td>
+								<td width=50%  valign=top><br>Sortie standard : <br><pre class='code-wrapper'><code>{{output}}</code></pre><br></td>
+							</tr>
+						{{/sorties}}
+					</table>
+				</div>
+			</li>
+		{{/tests}}
+	</ul>
+{{/résultats.essayé}}
 
 <script>
  function betterTab( cm ) {                         
