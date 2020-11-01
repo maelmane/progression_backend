@@ -1,7 +1,11 @@
 {{#résultats.essayé}}
 	<ul uk-accordion="multiple: true"> 
 		{{#tests}}
-			<li>
+			<li
+				{{#réussi}}
+					class="uk-open"
+				{{/réussi}}
+			>
 				<a class="uk-accordion-title" href="#" style="color: 
 						  {{#réussi}}
 						  #00994d
@@ -22,7 +26,9 @@
 								</tr>
 							{{/erreurs}}
 							<tr>
-								<td witdh=100% valign=top><br>Sortie attendue : <br><pre class='code-wrapper'><code>{{solution}}</code></pre><br></td>
+								{{#solution}}
+									<td witdh=100% valign=top><br>Sortie attendue : <br><pre class='code-wrapper'><code>{{solution}}</code></pre><br></td>
+								{{/solution}}
 								<td width=50%  valign=top><br>Sortie standard : <br><pre class='code-wrapper'><code>{{output}}</code></pre><br></td>
 							</tr>
 						{{/sorties}}

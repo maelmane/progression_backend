@@ -69,7 +69,7 @@ class PréparerProgEvalInt extends Interacteur
         );
 
         $test = new class {};
-        $test->nom = "Test 1";
+        $test->nom = "Validation";
         $test->stdin = PréparerProgEvalInt::get_stdin($question, $stdin);
         $test->solution = $solution;
 

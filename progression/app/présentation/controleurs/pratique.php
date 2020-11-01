@@ -12,17 +12,22 @@ class PratiqueCtl extends ProgCtl
             $this->récupérer_paramètres()
         );
 
+        $exécutable = $this->get_exécutable();
+        $test = $this->get_test();
+
         if ($this->à_valider) {
             $sorties = (new ExécuterProgInt(
                 $this->_source,
                 $this->_user_id
-            ))->exécuter($infos["exécutable"]);
+            ))->exécuter($exécutable, $test);
 
-            $infos = array_merge(
-                $infos,
-                ["résultats" => ["essayé" => "true"]],
-                $this->calculer_sorties($sorties)
-            );
+            $test->sorties = $this->calculer_sorties($sorties);
+
+            $infos = array_merge($infos, [
+                "résultats" => ["essayé" => "true"],
+                "exécutable" => $exécutable,
+                "tests" => [$test],
+            ]);
         }
         return $infos;
     }
@@ -49,16 +54,6 @@ class PratiqueCtl extends ProgCtl
 
     private function récupérer_paramètres()
     {
-        $exécutable = new class {};
-
-        $exécutable->langid = $this->get_langid();
-        $exécutable->pre_exec = "";
-        $exécutable->pre_code = "";
-        $exécutable->code = $this->get_code();
-        $exécutable->post_code = "";
-        $exécutable->params = $this->get_params();
-        $exécutable->stdin = $this->get_stdin();
-
         $infos = [
             "template" => "pratique",
             "question.titre" => "Zone de pratique libre",
@@ -68,9 +63,30 @@ class PratiqueCtl extends ProgCtl
             "url_retour" => "index.php?p=accueil",
             "titre_retour" => "l'accueil",
             "mode" => $this->get_mode($this->langid),
-            "exécutable" => $exécutable,
         ];
 
         return $infos;
+    }
+
+    private function get_exécutable()
+    {
+        $exécutable = new class {};
+
+        $exécutable->langid = $this->get_langid();
+        $exécutable->code_exec = $exécutable->code = $this->get_code();
+        $exécutable->params = $this->get_params();
+        $exécutable->stdin = $this->get_stdin();
+
+        return $exécutable;
+    }
+
+    private function get_test()
+    {
+        $test = new class {};
+        $test->nom = "Résultats";
+        $test->stdin = $_REQUEST["stdin"];
+        $test->réussi = "true";
+
+        return $test;
     }
 }
