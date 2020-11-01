@@ -35,7 +35,9 @@
 					</td>
 					<td width=50%>
 						<h3>Entrées</h3>
-						<textarea id='stdin' name = 'stdin' rows='3' style='width:100%';>{{exécutable.stdin}}</textarea>
+						{{#tests}}
+							<textarea id='stdin' name = 'stdin' rows='3' style='width:100%';>{{stdin}}</textarea>
+						{{/tests}}
 					</td>
 				</tr>  
 

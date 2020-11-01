@@ -5,6 +5,12 @@ require_once __DIR__ . '/question_prog.php';
 
 class QuestionProgEvalCtl extends QuestionProgCtl
 {
+    public function __construct($source, $user_id, $question_id)
+    {
+        parent::__construct($source, $user_id, $question_id);
+        $this->préparateur = new PréparerProgEvalInt();
+    }
+
     protected function get_question()
     {
         return (new ObtenirQuestionProgEvalInt(
@@ -38,7 +44,7 @@ class QuestionProgEvalCtl extends QuestionProgCtl
 
     protected function get_exécutable()
     {
-        $exécutable = (new PréparerProgEvalInt())->get_exécutable(
+        $exécutable = $this->préparateur->get_exécutable(
             $this->question,
             $this->avancement,
             isset($_REQUEST["params"]) ? $_REQUEST["params"] : null,
@@ -51,7 +57,7 @@ class QuestionProgEvalCtl extends QuestionProgCtl
     protected function get_tests()
     {
         $stdin = isset($_REQUEST["stdin"]) ? $_REQUEST["stdin"] : null;
-        $test = (new PréparerProgEvalInt())->get_test($this->question, $stdin);
+        $test = $this->préparateur->get_test($this->question, $stdin);
 
         return [$test];
     }

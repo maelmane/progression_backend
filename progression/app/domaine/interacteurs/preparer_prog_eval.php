@@ -12,6 +12,10 @@ class PréparerProgEvalInt extends Interacteur
 
     public function get_exécutable($question, $avancement, $params, $incode)
     {
+        //Truc pour que question-setup soit évalué de la même façon partout.
+        $this->seed = rand();
+        srand($this->seed);
+
         eval($question->setup);
 
         $question->enonce = str_replace(
@@ -55,6 +59,9 @@ class PréparerProgEvalInt extends Interacteur
 
     public function get_test($question, $stdin)
     {
+        srand($this->seed);
+        eval($question->setup);
+
         $solution = str_replace(
             "\r",
             "",
@@ -112,9 +119,16 @@ class PréparerProgEvalInt extends Interacteur
 
     protected function get_stdin($question, $stdinp)
     {
+        srand($this->seed);
+        eval($question->setup);
+
         $stdin = "";
         if (!is_null($question) && $question->stdin != "") {
-            $stdin = $question->stdin;
+            $stdin = str_replace(
+                "\r",
+                "",
+                eval("return " . $question->stdin . ";")
+            );
         } elseif ($stdinp != null) {
             $stdin = $stdinp;
         }
