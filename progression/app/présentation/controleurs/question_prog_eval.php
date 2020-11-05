@@ -37,6 +37,7 @@ class QuestionProgEvalCtl extends QuestionProgCtl
                 $this->compter_lignes($this->question->pre_exec) +
                 $this->compter_lignes($this->question->pre_code) +
                 1,
+            "solution" => $this->resume($this->question->solution, 21),
         ]);
 
         return $infos;
