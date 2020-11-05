@@ -52,7 +52,22 @@ CREATE TABLE `question` (
   PRIMARY KEY (`questionID`)
 );
 
-CREATE TABLE `question_prog` (
+CREATE TABLE `executable` (
+  `questionID` int(11) NOT NULL,
+  `code` text NOT NULL,
+  `lang` int NOT NULL,
+  PRIMARY KEY (`questionID`, `lang`)
+  );
+
+CREATE TABLE `test` (
+  `questionID` int(11) NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `stdin` text NOT NULL,
+  `solution` text NOT NULL,
+  PRIMARY KEY (`questionID`, `nom`)
+  );
+
+CREATE TABLE `question_prog_eval` (
   `questionID`  int(11) NOT NULL,
   `lang`	int,
   `setup`	text,
