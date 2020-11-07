@@ -29,18 +29,25 @@
 				</tr>
 				<tr height=100%></tr> <!-- comble l'espace inutilisé dans la table -->
 				<tr>
-					<td width=50%>
-						<h3>Paramètres </h3>
-						<textarea id='params' name = 'params' rows='3' style='width:100%;'>{{exécutable.params}}</textarea>
-					</td>
-					<td width=50%>
-						<h3>Entrées</h3>
-						<textarea id='stdin' name = 'stdin' rows='3' style='width:100%';>{{exécutable.stdin}}</textarea>
+					<td>
+					<ul uk-accordion>
+						<li>
+							<h5 class="uk-accordion-title">Paramètres </h5>
+							<div  class="uk-accordion-content">
+								Entrez ici les paramètres passés sur la ligne de commande à votre programme
+								<textarea id='params' name = 'params' rows='3' style='width:100%;'>{{exécutable.params}}</textarea>
+							</div>
+						</li>
+					</ul>
 					</td>
 				</tr>  
-
+				<tr>
+					<td>
+						<input type=submit name='valider' value='Soumettre' class="uk-button uk-button-default">
+					</td>
+				</tr>
 			</table>
-			<input type=submit name='valider' value='Soumettre' >
+
 		</form>
 	</code>
 </pre>  
