@@ -180,8 +180,8 @@ INSERT INTO `executable` VALUES(
   2791, "print(\"allo\")", 1);
 
 INSERT INTO `test` VALUES
-  (2791, "Test 1", "42", "43"),
-  (2791, "Test 2", "-3", "-2");
+  (2791, "Test 1", "42", "aaa", "43"),
+  (2791, "Test 2", "-3", "bbb", "-2");
 
 --
 -- Table structure for table `users`

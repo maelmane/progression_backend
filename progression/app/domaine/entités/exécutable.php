@@ -11,7 +11,7 @@ class Exécutable
     public $code;
     public $lang;
     public $code_exec;
-    public $params;
+    public $params = null;
     public $résultats = null;
 }
 

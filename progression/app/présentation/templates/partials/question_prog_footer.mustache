@@ -1,8 +1,8 @@
 {{#résultats.essayé}}
-	<ul uk-accordion="multiple: true"> 
+	<ul uk-accordion="multiple: false"> 
 		{{#tests}}
 			<li
-				{{#réussi}}
+				{{^réussi}}
 					class="uk-open"
 				{{/réussi}}
 			>
@@ -19,18 +19,42 @@
 				<div class="uk-accordion-content">
 					
 					<table width=100%>
+						
+						<tr height=100%></tr> <!-- comble l'espace inutilisé dans la table -->
+						{{#params}}
+						<tr>
+							<td><br>paramètres de ligne de commande
+								<code>{{.}}</code></pre><br>
+							</td>
+						</tr>
+						{{/params}}
+
+						<tr>
+							<td><br>Entrées
+								<p>
+									<code>{{stdin}}</code></pre><br>
+								</p>
+							</td>
+						</tr>
+
 						{{#sorties}}
 							{{#erreurs}}
 								<tr>
-									<td colspan=2><br>sortie d'erreur : <br><pre class='code-wrapper'><code>{{erreurs}}</code></pre><br></td>
+									<td colspan=2><br>sortie d'erreur : <br>
+										<pre class='code-wrapper'><code>{{erreurs}}</code></pre><br>
+									</td>
 								</tr>
 							{{/erreurs}}
-							<tr>
-								{{#solution}}
-									<td witdh=100% valign=top><br>Sortie attendue : <br><pre class='code-wrapper'><code>{{solution}}</code></pre><br></td>
-								{{/solution}}
-								<td width=50%  valign=top><br>Sortie standard : <br><pre class='code-wrapper'><code>{{output}}</code></pre><br></td>
-							</tr>
+							{{^erreurs}}
+								<tr>
+									{{#solution}}
+										<td witdh=100% valign=top><br>Sortie attendue : <br>
+											<pre class='code-wrapper'><code>{{solution}}</code></pre><br>
+										</td>
+									{{/solution}}
+									<td width=50%  valign=top><br>Sortie standard : <br><pre class='code-wrapper'><code>{{output}}</code></pre><br></td>
+								</tr>
+							{{/erreurs}}
 						{{/sorties}}
 					</table>
 				</div>
@@ -45,7 +69,7 @@
 		 cm.indentSelection( 'add' );
 	 } else {
 		 cm.replaceSelection( cm.getOption( 'indentWithTabs' )? '\t':
-							 Array( cm.getOption( 'indentUnit' ) + 1 ).join( ' ' ), 'end', '+input' );
+							  Array( cm.getOption( 'indentUnit' ) + 1 ).join( ' ' ), 'end', '+input' );
 	 }
  }
 

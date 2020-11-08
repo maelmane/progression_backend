@@ -48,8 +48,7 @@ class QuestionProgEvalCtl extends QuestionProgCtl
         $exécutable = $this->préparateur->get_exécutable(
             $this->question,
             $this->avancement,
-            isset($_REQUEST["params"]) ? $_REQUEST["params"] : null,
-            isset($_REQUEST["incode"]) ? $_REQUEST["incode"] : null
+            isset($_REQUEST["incode"]) ? $_REQUEST["incode"] : ""
         );
 
         return $exécutable;
@@ -57,10 +56,20 @@ class QuestionProgEvalCtl extends QuestionProgCtl
 
     protected function get_tests()
     {
-        $stdin = isset($_REQUEST["stdin"]) ? $_REQUEST["stdin"] : null;
-        $test = $this->préparateur->get_test($this->question, $stdin);
+        $test = $this->préparateur->get_test(
+            $this->question,
+            isset($_REQUEST["params"]) ? $_REQUEST["params"] : null,
+            isset($_REQUEST["stdin"]) ? $_REQUEST["stdin"] : null
+        );
 
         return [$test];
+    }
+
+    protected function get_langage()
+    {
+        return isset($_REQUEST["langid"])
+            ? $_REQUEST["langid"]
+            : $this->question->lang;
     }
 
     private function compter_lignes($texte)

@@ -24,8 +24,7 @@ class ExécuterProgInt extends Interacteur
         $data_rc = [
             'language' => $exécutable->lang,
             'code' => $exécutable->code_exec,
-            'parameters' =>
-                "\"" . ($test->params or $exécutable->params or "") . "\"",
+            'parameters' => "\"" . $test->params . "\"",
             'stdin' => $test->stdin,
             'vm_name' => 'remotecompiler',
         ];

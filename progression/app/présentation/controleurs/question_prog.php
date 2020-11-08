@@ -102,11 +102,12 @@ class QuestionProgCtl extends ProgCtl
         return $this->question->tests;
     }
 
-    private function get_langage()
+    protected function get_langage()
     {
         return isset($_REQUEST["langid"])
             ? $_REQUEST["langid"]
             : $this->question->exécutables[
+                //Si le langage n'est pas dans les paramètres, on choisit le premier disponible dans la question
                 array_keys($this->question->exécutables)[0]
             ]->lang;
     }

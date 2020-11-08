@@ -63,6 +63,7 @@ CREATE TABLE `test` (
   `questionID` int(11) NOT NULL,
   `nom` varchar(255) NOT NULL,
   `stdin` text NOT NULL,
+  `params` text,
   `solution` text NOT NULL,
   PRIMARY KEY (`questionID`, `nom`)
   );
