@@ -48,10 +48,15 @@ class QuestionProgEvalCtl extends QuestionProgCtl
         $exécutable = $this->préparateur->get_exécutable(
             $this->question,
             $this->avancement,
-            isset($_REQUEST["incode"]) ? $_REQUEST["incode"] : ""
+            $this->get_code()
         );
 
         return $exécutable;
+    }
+
+    protected function get_code()
+    {
+        return isset($_REQUEST["incode"]) ? $_REQUEST["incode"] : "";
     }
 
     protected function get_tests()
