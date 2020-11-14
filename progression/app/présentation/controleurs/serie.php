@@ -29,12 +29,11 @@ class SérieCtl extends Controleur
 
     function get_page_infos()
     {
-        return [
-            parent::get_page_infos(),
+        return array_merge(parent::get_page_infos(), [
             "template" => "serie",
             "serie" => $this->_série,
             "titre" => $this->_thème->titre,
             "questions" => $this->_questions,
-        ];
+        ]);
     }
 }

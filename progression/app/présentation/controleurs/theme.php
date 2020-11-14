@@ -22,13 +22,12 @@ class ThèmeCtl extends Controleur
 
     function get_page_infos()
     {
-        return [
-            parent::get_page_infos(),
+        return array_merge(parent::get_page_infos(), [
             "template" => "theme",
             "titre" => $this->_thème->titre,
             'theme' => $this->_thème,
             'series' => $this->_séries,
-        ];
+        ]);
     }
 }
 

@@ -45,10 +45,9 @@ class LoginInt extends Interacteur
             $user_ldap = LoginInt::get_username_ldap($username, $password);
 
             if ($user_ldap != null) {
-                $user = (new UserInteracteur(
-                    $_source->get_user_dao()
-                ))->obtenir_ou_créer_user($username);
-                $user->nom = $user['cn'][0];
+                $user = (new ObtenirUserInt(
+                    $this->_source
+                ))->get_user_par_nomusager($username);
             }
         }
 
@@ -89,13 +88,16 @@ class LoginInt extends Interacteur
         }
         $result = ldap_search(
             $ldap,
-            $GLOBALS['config']['domaine_ldap'],
-            "( sAMAccountName=$username )",
+            $GLOBALS['config']['ldap_base'],
+            "(sAMAccountName=$username)",
             ['dn', 'cn', 1]
         );
         $user = ldap_get_entries($ldap, $result);
 
-        if (!$user[0] || !@ldap_bind($ldap, $user[0]['dn'], $password)) {
+        if (
+            $user["count"] != 1 ||
+            !@ldap_bind($ldap, $user[0]['dn'], $password)
+        ) {
             return null;
         }
         return $user[0];

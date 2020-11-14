@@ -30,8 +30,10 @@ class QuestionSysCtl extends Controleur
 
     function get_page_infos()
     {
-        $infos = ["template" => "question_sys"];
-        $infos = array_merge($infos, $this->récupérer_paramètres());
+        $infos = array_merge(
+            parent::get_page_infos(),
+            $this->récupérer_paramètres()
+        );
 
         $réponse_serveur = ($this->reset
             ? new RéinitialiserConteneurInt($this->_source)
@@ -74,6 +76,7 @@ class QuestionSysCtl extends Controleur
         $this->reset = isset($_REQUEST["reset"]);
 
         $infos = [
+            "template" => "question_sys",
             "question" => $this->question,
             "réponse" => $this->reponse,
             "avancement" => $this->avancement,

@@ -6,9 +6,10 @@ class QuestionBDCtl extends ProgCtl
 {
     function get_page_infos()
     {
-        $infos = ["template" => "question_bd"];
-
-        $infos = array_merge($infos, $this->récupérer_paramètres());
+        $infos = array_merge(
+            parent::get_page_infos(),
+            $this->récupérer_paramètres()
+        );
 
         if ($this->à_exécuter || $this->à_valider) {
             $sorties = $this->connexion_conteneur($infos);
@@ -183,6 +184,7 @@ class QuestionBDCtl extends ProgCtl
         );
 
         $infos = [
+            "template" => "question_bd",
             "question" => $this->question,
             "avancement" => $this->avancement,
             "params" => $this->question->user,

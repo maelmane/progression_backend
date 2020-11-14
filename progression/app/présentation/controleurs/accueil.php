@@ -15,12 +15,11 @@ class AccueilCtl extends Controleur
 
     function get_page_infos()
     {
-        return [
-            parent::get_page_infos(),
+        return array_merge(parent::get_page_infos(), [
             "themes" => $this->_thèmes,
             "titre" => "Taleau de bord",
             "template" => "accueil",
-        ];
+        ]);
     }
 }
 

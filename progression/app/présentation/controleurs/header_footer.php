@@ -15,7 +15,6 @@ class HeaderFooterCtl extends Controleur
 
     function get_header_infos($thèmeID)
     {
-        $user = (new ObtenirUserInt($this->_source))->get_user($this->_user_id);
         $interacteur = new ObtenirThèmeInt($this->_source, $this->_user_id);
         $thèmes = $interacteur->get_thèmes($user);
 
@@ -27,15 +26,11 @@ class HeaderFooterCtl extends Controleur
             }
         }
 
-        $infos = [
-            parent::get_page_infos(),
-            "username" => $user->username,
+        return array_merge(parent::get_page_infos(), [
             "themes" => $thèmes,
             "est_admin" => $user->role == User::ROLE_ADMIN,
             "dashboard_actif" => $thèmes[0]->actif,
-        ];
-
-        return $infos;
+        ]);
     }
 }
 ?>

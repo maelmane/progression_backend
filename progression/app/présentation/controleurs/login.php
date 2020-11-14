@@ -13,21 +13,12 @@ class LoginCtl extends Controleur
     function __construct($source)
     {
         parent::__construct($source, null);
-
-        $this->submit = isset($_REQUEST["submit"]);
-        $this->username = isset($_REQUEST["username"])
-            ? $_REQUEST["username"]
-            : null;
-        $this->passwd = isset($_REQUEST["passwd"]) ? $_REQUEST["passwd"] : null;
     }
 
     private function set_infos_session($user)
     {
         #Obtient les infos de l'utilisateur
         $_SESSION["user_id"] = $user->id;
-        $_SESSION["username"] = $user->username;
-        $_SESSION["actif"] = $user->actif;
-        $_SESSION["role"] = $user->role;
     }
 
     private function récupérer_configs()
@@ -55,21 +46,20 @@ class LoginCtl extends Controleur
 
     function get_page_infos()
     {
-        $erreurs = null;
-
         if (isset($_REQUEST["submit"])) {
             $user = $this->effectuer_login(
                 $_REQUEST["username"],
-                isset($_REQUEST["password"]) ? $_REQUEST["password"] : null
+                isset($_REQUEST["passwd"]) ? $_REQUEST["passwd"] : null
             );
 
-            if (isset($user) && $user != null) {
+            if ($user != null) {
                 return (new AccueilCtl(
                     new DAOFactory(),
                     $user->id
                 ))->get_page_infos();
             } else {
-                $erreurs = "Nom d'utilisateur ou mot de passe invalide.";
+                $this->_erreurs[] =
+                    "Nom d'utilisateur ou mot de passe invalide.";
             }
         }
 
@@ -78,7 +68,6 @@ class LoginCtl extends Controleur
             [
                 "template" => "login",
                 "titre" => "Connexion",
-                "erreurs" => $erreurs,
             ],
             $this->récupérer_configs()
         );
