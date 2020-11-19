@@ -21,6 +21,7 @@ CREATE TABLE `users` (
 
 CREATE TABLE `theme` (
   `themeID`     int(11) NOT NULL AUTO_INCREMENT,
+  `nom`         varcher(255) NOT NULL UNIQUE,
   `actif`       int NOT NULL DEFAULT 1,
   `lang`	int,
   `titre`       varchar(255) NOT NULL,
@@ -32,16 +33,19 @@ CREATE TABLE `theme` (
 CREATE TABLE `serie` (
   `serieID`     int(11) NOT NULL AUTO_INCREMENT,
   `themeID`	int(11) NOT NULL,
+  `nom`         varcher(255) NOT NULL,
   `actif`       int NOT NULL DEFAULT 1,
   `numero`	int NOT NULL,
   `titre`       varchar(255) NOT NULL,
   `description` text,
-  PRIMARY KEY (`serieID`)
+  PRIMARY KEY (`serieID`),
+  UNIQUE KEY(`themeID`, `nom`)
 );
 
 CREATE TABLE `question` (
   `questionID`	int(11) NOT NULL AUTO_INCREMENT,
   `serieID`	int(11) NOT NULL,
+  `nom`         varcher(255) NOT NULL,
   `actif`       int NOT NULL DEFAULT 1,
   `type`        int NOT NULL,
   `titre`       varchar(255) NOT NULL,
@@ -49,7 +53,9 @@ CREATE TABLE `question` (
   `numero`	int NOT NULL,
   `enonce`	text,
   `code_validation`varchar(64),
-  PRIMARY KEY (`questionID`)
+  PRIMARY KEY (`questionID`),
+  UNIQUE KEY(`serieID`, `nom`)
+  
 );
 
 CREATE TABLE `executable` (
