@@ -10,51 +10,52 @@ import importer_mysql
 
 def importer_répertoire(source, url):
     for thème in [d for d in os.scandir(source) if d.is_dir()]:
-        importer_mysql.importer(importer_thème(thème.path), url)
+        importer_mysql.importer(importer_thème(thème.path, thème.name), url)
 
 
-def importer_thème(path):
+def importer_thème(path, nom_thème):
     with open(path + "/info.yml") as info_thème:
         thème = yaml.safe_load(info_thème)
-        # titre = thème["titre"]
-        # desc = thème["description"]
+        thème["nom"] = nom_thème
         thème["lang"] = thème["lang"] if "lang" in thème else None
         thème["séries"] = importer_séries(path, thème["séries"])
     return thème
-    # ajouter_thème(titre, description, séries)
 
 
-def importer_séries(path, titre_séries):
+def importer_séries(path, noms_séries):
     séries = []
-    for n, s in enumerate(titre_séries):
+    for n, s in enumerate(noms_séries):
         série = importer_série(path, s)
         série["numéro"] = n
+        série["nom"]=s
         séries += [série]
 
     return séries
 
 
-def importer_série(path, série):
-    path = path + "/" + série
+def importer_série(path, nom_série):
+    path = path + "/" + nom_série
     with open(path + "/info.yml") as info_série:
         série = yaml.safe_load(info_série)
-        # titre = série["titre"]
-        # desc = série["description"]
         série["questions"] = importer_questions(path, série["questions"])
     return série
 
 
-def importer_questions(path, questions):
-    return [importer_question(path, s) for s in questions]
+def importer_questions(path, noms_questions):
+    questions=[]
+    for n, q in enumerate(noms_questions):
+        question = importer_question(path, q)
+        question["numéro"]=n
+        question["nom"]=q
+        questions+=[question]
+        
+    return questions
 
 
-def importer_question(path, question):
-    path = path + "/" + question
+def importer_question(path, nom_question):
+    path = path + "/" + nom_question
     with open(path + "/info.yml") as info_question:
         question = yaml.safe_load(info_question)
-        # titre = question["titre"]
-        # desc = question["description"]
-        # énoncé = question["énoncé"]
         question["feedback_pos"] = (
             question["feedback+"] if "feedback+" in question else None
         )
@@ -66,32 +67,41 @@ def importer_question(path, question):
     return question
 
 
-def importer_exécutables(path, exécutables):
-    for exécutable in exécutables:
-        # langage = exécutable["langage"]
+def importer_exécutables(path, noms_exécutables):
+    exécutables=[]
+    for exécutable in noms_exécutables:
         fichier = exécutable["fichier"]
         exécutable["code"] = importer_exécutable(path + "/" + fichier)
+        exécutables+=[exécutable]
     return exécutables
 
 
 def importer_exécutable(path):
     with open(path) as exécutable:
-        return exécutable
+        return exécutable.read()
 
 
-def importer_tests(path, tests):
-    return [importer_test(path + "/" + s) for s in tests]
+def importer_tests(path, noms_tests):
+    tests=[]
+    n=0
+    for t in noms_tests:
+        for test in importer_fichier_tests(path + "/" + t):
+            test["numéro"]=n
+            n+=1
+            tests+=[test]
+
+    return tests
 
 
-def importer_test(path):
+def importer_fichier_tests(path):
     with open(path) as info_test:
-        tests = yaml.safe_load_all(info_test)
-        for test in tests:
-            # nom = test["nom"]
-            # entrée = test["in"]
-            # sortie = test["out"]
+        tests=[]
+        tous_tests = yaml.safe_load_all(info_test)
+        for test in tous_tests:
             test["feedback+"] = test["feedback+"] if "feedback+" in test else None
             test["feedback-"] = test["feedback-"] if "feedback-" in test else None
+            test["params"] = test["params"] if "params" in test else None
+            tests+=[test]
     return tests
 
 

@@ -21,7 +21,7 @@ CREATE TABLE `users` (
 
 CREATE TABLE `theme` (
   `themeID`     int(11) NOT NULL AUTO_INCREMENT,
-  `nom`         varcher(255) NOT NULL UNIQUE,
+  `nom`         varchar(255) NOT NULL UNIQUE,
   `actif`       int NOT NULL DEFAULT 1,
   `lang`	int,
   `titre`       varchar(255) NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE `theme` (
 CREATE TABLE `serie` (
   `serieID`     int(11) NOT NULL AUTO_INCREMENT,
   `themeID`	int(11) NOT NULL,
-  `nom`         varcher(255) NOT NULL,
+  `nom`         varchar(255) NOT NULL,
   `actif`       int NOT NULL DEFAULT 1,
   `numero`	int NOT NULL,
   `titre`       varchar(255) NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE `serie` (
 CREATE TABLE `question` (
   `questionID`	int(11) NOT NULL AUTO_INCREMENT,
   `serieID`	int(11) NOT NULL,
-  `nom`         varcher(255) NOT NULL,
+  `nom`         varchar(255) NOT NULL,
   `actif`       int NOT NULL DEFAULT 1,
   `type`        int NOT NULL,
   `titre`       varchar(255) NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE `test` (
   `nom` varchar(255) NOT NULL,
   `stdin` text NOT NULL,
   `params` text,
-  `solution` text NOT NULL,
+  `solution` text,
   PRIMARY KEY (`questionID`, `nom`)
   );
 
