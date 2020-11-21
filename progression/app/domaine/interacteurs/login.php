@@ -45,9 +45,9 @@ class LoginInt extends Interacteur
             $user_ldap = LoginInt::get_username_ldap($username, $password);
 
             if ($user_ldap != null) {
-                $user = (new ObtenirUserInt(
+                $user = (new CréerUserInt(
                     $this->_source
-                ))->get_user_par_nomusager($username);
+                ))->obtenir_ou_créer_user($username);
             }
         }
 
@@ -65,7 +65,7 @@ class LoginInt extends Interacteur
         define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
 
         ($ldap = ldap_connect(
-            "ldaps://" . $GLOBALS['config']['hote_ad'],
+            "ldap://" . $GLOBALS['config']['hote_ad'],
             $GLOBALS['config']['port_ad']
         )) or die("Configuration de serveur LDAP invalide.");
         ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -93,7 +93,6 @@ class LoginInt extends Interacteur
             ['dn', 'cn', 1]
         );
         $user = ldap_get_entries($ldap, $result);
-
         if (
             $user["count"] != 1 ||
             !@ldap_bind($ldap, $user[0]['dn'], $password)

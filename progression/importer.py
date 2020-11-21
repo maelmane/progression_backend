@@ -1,4 +1,4 @@
-#!python3
+#!/usr/bin/python3
 
 import sys
 import os
@@ -27,7 +27,7 @@ def importer_séries(path, noms_séries):
     for n, s in enumerate(noms_séries):
         série = importer_série(path, s)
         série["numéro"] = n
-        série["nom"]=s
+        série["nom"] = s
         séries += [série]
 
     return séries
@@ -42,13 +42,13 @@ def importer_série(path, nom_série):
 
 
 def importer_questions(path, noms_questions):
-    questions=[]
+    questions = []
     for n, q in enumerate(noms_questions):
         question = importer_question(path, q)
-        question["numéro"]=n
-        question["nom"]=q
-        questions+=[question]
-        
+        question["numéro"] = n
+        question["nom"] = q
+        questions += [question]
+
     return questions
 
 
@@ -68,11 +68,11 @@ def importer_question(path, nom_question):
 
 
 def importer_exécutables(path, noms_exécutables):
-    exécutables=[]
+    exécutables = []
     for exécutable in noms_exécutables:
         fichier = exécutable["fichier"]
         exécutable["code"] = importer_exécutable(path + "/" + fichier)
-        exécutables+=[exécutable]
+        exécutables += [exécutable]
     return exécutables
 
 
@@ -82,26 +82,31 @@ def importer_exécutable(path):
 
 
 def importer_tests(path, noms_tests):
-    tests=[]
-    n=0
+    tests = []
+    n = 0
     for t in noms_tests:
         for test in importer_fichier_tests(path + "/" + t):
-            test["numéro"]=n
-            n+=1
-            tests+=[test]
+            test["numéro"] = n
+            n += 1
+            tests += [test]
 
     return tests
 
 
 def importer_fichier_tests(path):
     with open(path) as info_test:
-        tests=[]
+        tests = []
         tous_tests = yaml.safe_load_all(info_test)
         for test in tous_tests:
             test["feedback+"] = test["feedback+"] if "feedback+" in test else None
             test["feedback-"] = test["feedback-"] if "feedback-" in test else None
             test["params"] = test["params"] if "params" in test else None
-            tests+=[test]
+            test["out"] = (
+                str(test["out"])
+                if str(test["out"])[-1] == "\n"
+                else str(test["out"]) + "\n"
+            )
+            tests += [test]
     return tests
 
 
