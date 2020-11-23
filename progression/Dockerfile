@@ -8,7 +8,7 @@ RUN rm /srv/http/info.php
 
 # Mise a jour de la liste de package
 RUN pacman -Suy --noconfirm
-RUN pacman -S --noprogressbar --noconfirm --needed unzip wget composer
+RUN pacman -S --noprogressbar --noconfirm --needed unzip wget composer python-mysqlclient python-pyaml git
 RUN echo extension=gmp.so >> /etc/php/php.ini
 
 RUN wget http://codemirror.net/codemirror.zip
@@ -29,6 +29,8 @@ COPY quiz.conf /srv/
 COPY app /srv/http/
 
 RUN chown -R http:http /srv/
+
+COPY importer* /usr/local/bin/
 
 RUN echo AddDefaultCharset utf-8 >> /etc/httpd/conf/httpd.conf
 

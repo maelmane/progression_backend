@@ -1,23 +1,45 @@
 <?php
 
-page_header();
+require_once __DIR__ . '/controleur.php';
+require_once 'domaine/interacteurs/obtenir_user.php';
+require_once 'domaine/interacteurs/mettre_à_jour_thèmes.php';
 
-$user=charger_user_ou_terminer();
-rôle_admin_ou_terminer( $user );
-page_contenu();
-
-function charger_user_ou_terminer(){
-    $user=new User( $_SESSION[ 'user_id' ] );
-    if( is_null( $user->id )){
-        header( 'Location: index.php?p=accueil' );
+class AdminCtl extends Controleur
+{
+    function __construct($source, $user_id)
+    {
+        parent::__construct($source, $user_id);
     }
 
-    return $user;
-}
+    function get_page_infos()
+    {
+        $user = (new ObtenirUserInt($this->_source))->get_user($this->_user_id);
+        if ($user->role == User::ROLE_ADMIN) {
+            if ($_REQUEST["submit"]) {
+                $url = $_REQUEST["url"];
+                $username = $_REQUEST["username"];
+                $password = $_REQUEST["password"];
+                if (
+                    !(new MettreÀJourThèmesInt())->exécuter(
+                        $url,
+                        $username,
+                        $password
+                    )
+                ) {
+                    $this->_erreurs += ["Erreur d'importation"];
+                }
+            }
 
-function rôle_admin_ou_terminer( $user ){
-    if( $user->role!=User::ROLE_ADMIN ){
-        header( 'Location: index.php?p=accueil' );
+            return array_merge(parent::get_page_infos(), [
+                "titre" => "Page d'administration",
+                "template" => "admin",
+            ]);
+        } else {
+            return (new AccueilCtl(
+                $this->_source,
+                $this->_user_id
+            ))->get_page_infos();
+        }
     }
 }
 
