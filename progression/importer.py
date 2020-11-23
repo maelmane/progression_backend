@@ -101,11 +101,12 @@ def importer_fichier_tests(path):
             test["feedback+"] = test["feedback+"] if "feedback+" in test else None
             test["feedback-"] = test["feedback-"] if "feedback-" in test else None
             test["params"] = test["params"] if "params" in test else None
-            test["out"] = (
-                str(test["out"])
-                if str(test["out"])[-1] == "\n"
-                else str(test["out"]) + "\n"
-            )
+            if str(test["out"])!="":
+                test["out"] = (
+                    str(test["out"])
+                    if str(test["out"])[-1] == "\n"
+                    else str(test["out"]) + "\n"
+                )
             tests += [test]
     return tests
 
