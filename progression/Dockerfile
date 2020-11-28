@@ -25,10 +25,10 @@ RUN c_rehash
 COPY app/composer.json /srv/
 RUN cd /srv/ && composer install
 
-COPY quiz.conf /srv/
+COPY quiz.conf /etc/
 COPY app /srv/http/
 
-RUN chown -R http:http /srv/
+RUN chown -R http:http /srv/ /etc/quiz.conf
 
 COPY importer* /usr/local/bin/
 

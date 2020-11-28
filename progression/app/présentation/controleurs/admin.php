@@ -15,7 +15,7 @@ class AdminCtl extends Controleur
     {
         $user = (new ObtenirUserInt($this->_source))->get_user($this->_user_id);
         if ($user->role == User::ROLE_ADMIN) {
-            if ($_REQUEST["submit"]) {
+            if (isset($_REQUEST["submit"])) {
                 $url = $_REQUEST["url"];
                 $username = $_REQUEST["username"];
                 $password = $_REQUEST["password"];

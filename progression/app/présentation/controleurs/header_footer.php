@@ -16,7 +16,7 @@ class HeaderFooterCtl extends Controleur
     function get_header_infos($thèmeID)
     {
         $interacteur = new ObtenirThèmeInt($this->_source, $this->_user_id);
-        $thèmes = $interacteur->get_thèmes($user);
+        $thèmes = $interacteur->get_thèmes();
 
         if (!is_null($thèmeID)) {
             foreach ($thèmes as $thème) {
@@ -28,7 +28,7 @@ class HeaderFooterCtl extends Controleur
 
         return array_merge(parent::get_page_infos(), [
             "themes" => $thèmes,
-            "est_admin" => $user->role == User::ROLE_ADMIN,
+            //"est_admin" => $user->role == User::ROLE_ADMIN,
             "dashboard_actif" => $thèmes[0]->actif,
         ]);
     }
