@@ -22,7 +22,7 @@ COPY certs/* /etc/ssl/certs/
 RUN c_rehash
 
 #Installation des composantes PHP
-COPY app/composer.json /srv/
+COPY composer.json /srv/
 RUN cd /srv/ && composer install
 
 COPY quiz.conf /etc/

@@ -6,21 +6,21 @@ require_once 'domaine/entités/question_prog.php';
 class ProgCtl extends Controleur
 {
     const LANG_NOMS = [
-        "Python 2",
-        "Python 3",
-        "Ruby",
+        "python2",
+        "python",
+        "ruby",
         "",
-        "PHP",
+        "php",
         "",
         "",
-        "Go",
-        "C++",
-        "C",
-        "Java",
-        "Bash",
-        "Perl",
-        "SSH",
-        "MySQL",
+        "go",
+        "cpp",
+        "c",
+        "java",
+        "bash",
+        "perl",
+        "ssh",
+        "mysql",
     ];
 
     function __construct($source, $user_id)
@@ -81,7 +81,7 @@ class ProgCtl extends Controleur
         }
 
         return [
-            "output" => $this->resume($sorties["stdout"], 21),
+            "output" => $sorties["stdout"],
             "erreurs" => $sorties["stderr"],
         ];
     }

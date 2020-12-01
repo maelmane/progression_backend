@@ -9,7 +9,7 @@
             <table width=100% style='background-color: white; border-style:solid; border-color:black; border-width:0px; border-spacing: 10px 10px;'>
 				<tr>
 					<td>
-						{{> menu_langages }}
+						Langage : {{> menu_langages }}
 						<script> document.getElementById( 'langid' ).value={{exécutable.langid}};</script>
 					</td>
 				</tr>
@@ -17,7 +17,7 @@
 
 				<tr>
 					<td colspan=2>
-						<textarea id='incode' name = 'incode' rows='10' cols='80'>{{exécutable.code}}</textarea>
+						<textarea id='incode' name = 'incode' rows='10' cols='80'>{{exécutable.code_exec}}</textarea>
 					</td>
 				</tr>  
 
@@ -33,7 +33,7 @@
 				</tr>  
 
             </table>
-            <input type=submit name='valider'' value='Soumettre' >
+            <input type=submit name='valider' value='Soumettre' >
         </form>
     </code>
 </pre>  

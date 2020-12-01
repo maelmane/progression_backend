@@ -63,6 +63,10 @@ class PratiqueCtl extends ProgCtl
             "url_retour" => "index.php?p=accueil",
             "titre_retour" => "l'accueil",
             "mode" => $this->get_mode($this->langid),
+            "langid" => $this->langid,
+            "incode" => $this->get_code(),
+            "langages" => ["python2"=>true, "python"=>true, "java"=>true, "cpp"=>true, "perl"=>true, "ruby"=>true, "bash"=>true, "go"=>true],
+            
         ];
 
         return $infos;
@@ -72,8 +76,8 @@ class PratiqueCtl extends ProgCtl
     {
         $exécutable = new class {};
 
-        $exécutable->langid = $this->get_langid();
-        $exécutable->code_exec = $exécutable->code = $this->get_code();
+        $exécutable->lang = $this->get_langid();
+        $exécutable->code_exec = $this->get_code();
         $exécutable->params = $this->get_params();
         $exécutable->stdin = $this->get_stdin();
 
@@ -85,7 +89,7 @@ class PratiqueCtl extends ProgCtl
         $test = new class {};
         $test->nom = "Résultats";
         $test->stdin = $_REQUEST["stdin"];
-        $test->réussi = "true";
+        $test->réussi = false;
 
         return $test;
     }

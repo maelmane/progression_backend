@@ -62,7 +62,6 @@ function inclusion_page()
                     $dao_factory,
                     $user_id
                 ))->get_série($série_id)->thème_id;
-                echo "ID:" . $série_id . " " . $thème_id;
             } elseif ($page == "question") {
                 $question_id = $_REQUEST["ID"];
                 $question = (new ObtenirQuestionInt(
