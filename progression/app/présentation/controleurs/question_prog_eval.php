@@ -43,7 +43,7 @@ class QuestionProgEvalCtl extends QuestionProgCtl
         return $infos;
     }
 
-    protected function get_exécutable()
+    protected function get_exécutable($langage_id)
     {
         $exécutable = $this->préparateur->get_exécutable(
             $this->question,

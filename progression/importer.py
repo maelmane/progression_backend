@@ -98,8 +98,8 @@ def importer_fichier_tests(path):
         tests = []
         tous_tests = yaml.safe_load_all(info_test)
         for test in tous_tests:
-            test["feedback+"] = test["feedback+"] if "feedback+" in test else None
-            test["feedback-"] = test["feedback-"] if "feedback-" in test else None
+            test["feedback_pos"] = test["feedback+"] if "feedback+" in test else None
+            test["feedback_neg"] = test["feedback-"] if "feedback-" in test else None
             test["params"] = test["params"] if "params" in test else None
             if str(test["out"])!="":
                 test["out"] = (

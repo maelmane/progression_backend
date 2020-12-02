@@ -21,6 +21,8 @@ class Question extends Entite
     public $titre;
     public $description;
     public $enonce;
+    public $feedback_pos;
+    public $feedback_neg;
     public $etat;
     public $code_validation;
     public $avancement;

@@ -32,10 +32,32 @@ class QuestionProgCtl extends ProgCtl
 
     protected function get_question()
     {
-        return (new ObtenirQuestionProgInt(
+        $question= (new ObtenirQuestionProgInt(
             $this->_source,
             $this->_user_id
         ))->get_question($this->_question_id);
+
+        $question->enonce = (new FormaterMDInt())->exécuter(
+            $question->enonce
+        );
+        $question->feedback_pos = (new FormaterMDInt())->exécuter(
+            $question->feedback_pos
+        );
+        $question->feedback_neg = (new FormaterMDInt())->exécuter(
+            $question->feedback_neg
+        );
+
+        foreach ($question->tests as $test) {
+            $test->feedback_pos = (new FormaterMDInt())->exécuter(
+                $test->feedback_pos
+            );
+            $test->feedback_neg = (new FormaterMDInt())->exécuter(
+                $test->feedback_neg
+            );
+        }
+
+        return $question;
+
     }
 
     public function get_page_infos()
@@ -75,16 +97,12 @@ class QuestionProgCtl extends ProgCtl
 
     protected function récupérer_paramètres()
     {
-        $this->question->enonce = (new FormaterMDInt())->exécuter(
-            $this->question->enonce
-        );
         $infos = [
             "template" => "question_prog",
             "question" => $this->question,
             "titre" => $this->série->titre,
             "url_retour" => "index.php?p=serie&ID=" . $this->question->serieID,
             "titre_retour" => "la liste de questions",
-            "mode" => $this->get_mode($this->get_id_langage_sélectionné()),
             "langid" => $this->get_id_langage_sélectionné(),
             "langages" => $this->get_langages(),
         ];

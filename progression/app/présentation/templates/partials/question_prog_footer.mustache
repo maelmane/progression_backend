@@ -28,14 +28,34 @@
 							</td>
 						</tr>
 						{{/params}}
+						{{#réussi}}
+							{{#feedback_pos}}
+							<tr>
+								<td class="mac">
+									{{{.}}}
+								</td>
+							</tr>
+							{{/feedback_pos}}
+						{{/réussi}}
+						{{^réussi}}
+							{{#feedback_neg}}
+								<tr>
+									<td class="mac">
+										{{{.}}}
+									</td>
+								</tr>
+							{{/feedback_neg}}
+						{{/réussi}}
 
+						{{#stdin}}
 						<tr>
 							<td><br>Entrées
 								<p>
-									<code>{{stdin}}</code></pre><br>
+									<code>{{.}}</code></pre><br>
 								</p>
 							</td>
 						</tr>
+						{{/stdin}}
 
 						{{#sorties}}
 							{{#erreurs}}
@@ -64,5 +84,5 @@
 {{/résultats.essayé}}
 
 <script>
-	créerÉditeur(document.getElementById( 'incode' ));
+	créerÉditeur(document.getElementById( 'incode' ), {{langid}});
 </script>

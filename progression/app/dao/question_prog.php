@@ -41,15 +41,15 @@ class QuestionProgDAO extends QuestionDAO
     private function load_tests($id)
     {
         $query = QuestionProgDAO::$conn->prepare(
-            'SELECT nom, stdin, params, solution FROM test WHERE questionID=?'
+            'SELECT nom, stdin, params, solution, feedback_pos, feedback_neg FROM test WHERE questionID=?'
         );
         $query->bind_param("i", $id);
         $query->execute();
-        $query->bind_result($nom, $stdin, $params, $solution);
+        $query->bind_result($nom, $stdin, $params, $solution, $feedback_pos, $feedback_neg);
 
         $tests = [];
         while ($query->fetch()) {
-            $tests[] = new Test($nom, $stdin, $solution, $params);
+            $tests[] = new Test($nom, $stdin, $solution, $params, $feedback_pos, $feedback_neg);
         }
         $query->close();
 

@@ -52,6 +52,8 @@ CREATE TABLE `question` (
   `description`	text,
   `numero`	int NOT NULL,
   `enonce`	text,
+  `feedback_pos` text,
+  `feedback_neg` text,
   `code_validation`varchar(64),
   PRIMARY KEY (`questionID`),
   UNIQUE KEY(`serieID`, `nom`)
@@ -71,6 +73,8 @@ CREATE TABLE `test` (
   `stdin` text NOT NULL,
   `params` text,
   `solution` text,
+  `feedback_pos` text,
+  `feedback_neg` text,
   PRIMARY KEY (`questionID`, `nom`)
   );
 

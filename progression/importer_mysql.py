@@ -95,15 +95,18 @@ def importer_question(c, série_id, question):
             titre,
             description,
             numero,
-            enonce
+            enonce,
+            feedback_pos,
+            feedback_neg
         )
-        VALUES ( %s, %s, 3, %s, %s, %s, %s)
+        VALUES ( %s, %s, 3, %s, %s, %s, %s, %s, %s)
         ON DUPLICATE KEY UPDATE
             titre=%s,
             description=%s,
             numero=%s,
-            enonce=%s
-
+            enonce=%s,
+            feedback_pos=%s,
+            feedback_neg=%s
         """,
         [
          série_id,
@@ -112,10 +115,14 @@ def importer_question(c, série_id, question):
          question["description"],
          question["numéro"],
          question["énoncé"],
+         question["feedback_pos"],
+         question["feedback_neg"],
          question["titre"],
          question["description"],
          question["numéro"],
-         question["énoncé"]
+         question["énoncé"],
+         question["feedback_pos"],
+         question["feedback_neg"],
         ],
         )
 
@@ -154,13 +161,17 @@ def importer_test(c, question_id, test):
             nom,
             stdin,
             params,
-            solution
+            solution,
+            feedback_pos,
+            feedback_neg
         )
-        VALUES( %s, %s, %s, %s, %s)
+        VALUES( %s, %s, %s, %s, %s, %s, %s)
         ON DUPLICATE KEY UPDATE
             stdin=%s,
             params=%s,
-            solution=%s
+            solution=%s,
+            feedback_pos=%s,
+            feedback_neg=%s
         """
         ,
         [
@@ -169,9 +180,13 @@ def importer_test(c, question_id, test):
             test["in"],
             test["params"],
             test["out"],
+            test["feedback_pos"],
+            test["feedback_neg"],
             test["in"],
             test["params"],
             test["out"],
+            test["feedback_pos"],
+            test["feedback_neg"],
         ],
         )
         

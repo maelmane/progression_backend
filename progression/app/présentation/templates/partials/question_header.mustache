@@ -6,21 +6,35 @@
 		<br>
 		<br>
 		{{#résultats.essayé}}
-			<table class='metro' width=100%><tr>
+			<table width=100%><tr>
 				{{#résultats.réussi}}
-					<td width=50% align=center>
+					<td  class='metro' width=100% align=center>
 						Bonne réponse!
 					</td>
-					{{#question.code_validation}}
+			</tr>
+			<tr>
+				<tr>
+					<td class="mac">
+					{{{question.feedback_pos}}}
+				</td>
+				</tr>
+			</tr>
+				{{#question.code_validation}}
 						<td>
 							Code de validation : {{question.code_validation}}
 						</td>
 					{{/question.code_validation}}
 				{{/résultats.réussi}}
 				{{#résultats.nonréussi}}    
-					<td width=50% align=center>
+					<td class='metro' width=100% align=center>
 						Raté! Essayez encore
 					</td>
+      			</tr>
+      			<tr>
+					<td class="mac">
+						{{{question.feedback_neg}}}
+					</td>
+      			</tr>
 				{{/résultats.nonréussi}}
 			</tr></table>
 		{{/résultats.essayé}}

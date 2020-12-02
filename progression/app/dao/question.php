@@ -53,6 +53,8 @@ class QuestionDAO extends EntiteDAO
 	                                        question.titre,
 	                                        question.description,
 	                                        question.enonce,
+	                                        question.feedback_pos,
+	                                        question.feedback_neg,
 	                                        question.code_validation
 	                                        FROM question
 	                                        WHERE question.questionID = ?');
@@ -68,6 +70,8 @@ class QuestionDAO extends EntiteDAO
             $objet->titre,
             $objet->description,
             $objet->enonce,
+            $objet->feedback_pos,
+            $objet->feedback_neg,
             $objet->code_validation
         );
         if (is_null($query->fetch())) {
@@ -87,11 +91,13 @@ class QuestionDAO extends EntiteDAO
 	                                                          description,
 	                                                          numero,
 	                                                          enonce,
+	                                                          feedback_pos,
+	                                                          feedback_neg,
 	                                                          code_validation ) 
-	                                 VALUES( ?, ?, ?, ?, ?, ?, ?, ? )");
+	                                 VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )");
 
             $query->bind_param(
-                "iiississ",
+                "iiississss",
                 $objet->serieID,
                 $objet->actif,
                 $objet->type,
@@ -99,6 +105,8 @@ class QuestionDAO extends EntiteDAO
                 $objet->description,
                 $objet->numero,
                 $objet->enonce,
+                $objet->feedback_pos,
+                $objet->feedback_neg,
                 $objet->code_validation
             );
             $query->execute();
@@ -114,10 +122,12 @@ class QuestionDAO extends EntiteDAO
 	                                            description=?,
 	                                            numero=?,
 	                                            enonce=?,
+	                                            feedback_pos=?,
+	                                            feedback_neg=?,
 	                                            code_validation=? WHERE questionID = ?");
 
             $query->bind_param(
-                "iiississi",
+                "iiississssi",
                 $objet->serieID,
                 $objet->actif,
                 $objet->type,
@@ -125,6 +135,8 @@ class QuestionDAO extends EntiteDAO
                 $objet->description,
                 $objet->numero,
                 $objet->enonce,
+                $objet->feedback_pos,
+                $objet->feedback_neg,
                 $objet->code_validation,
                 $objet->id
             );
