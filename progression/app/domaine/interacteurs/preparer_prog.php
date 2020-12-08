@@ -39,7 +39,9 @@ class PréparerProgInt
         $orig = explode("\n", $code_utilisateur);
         $code = $code;
 
-        preg_match_all("/\+TODO.*\n((.|\n)*?)\n(.*-TODO|\Z)/", $code, $todos);
+        error_log($code);
+        preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code, $todos);
+        error_log($todos[1][0]);
         $n = 0;
         $res = [];
         $todo = false;
@@ -59,7 +61,9 @@ class PréparerProgInt
             }
         }
 
-        return implode("\n", $res);
+        $res= implode("\n", $res);
+
+        return $res;
     }
 }
 ?>

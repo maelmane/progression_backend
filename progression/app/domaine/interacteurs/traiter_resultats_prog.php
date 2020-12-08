@@ -33,12 +33,10 @@ class TraiterRésultatsProgInt extends Interacteur
 
 		if ($réussi) {
 			$avancement->etat = Question::ETAT_REUSSI;
-			$avancement->code = $exécutable->code_utilisateur;
 			$this->sauvegarder_avancement($avancement);
 			$résultats["réussi"] = "true";
 		} else {
 			if ($avancement->etat != Question::ETAT_REUSSI) {
-				$avancement->code = $exécutable->code_utilisateur;
 				$avancement->etat = Question::ETAT_NONREUSSI;
 				$this->sauvegarder_avancement($avancement);
 			}
