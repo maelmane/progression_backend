@@ -14,7 +14,7 @@ function betterTab(cm) {
 	}
 }
 
-function créerÉditeur(textarea) {
+function créerÉditeur(textarea, lang_id) {
 	if (document.getElementById("incode") != null) {
 		editor = CodeMirror.fromTextArea(textarea, {
 			matchBrackets: true,
@@ -23,22 +23,23 @@ function créerÉditeur(textarea) {
 			indentUnit: 4,
 			scrollbarStyle: null,
 			extraKeys: { Tab: betterTab },
+			mode: getMode(lang_id),
 			gutters: ["CodeMirror-linenumbers", "gutter-ro"],
 		});
 		editor.setSize("100%", "100%");
 
 		//Si on a au moins un TODO
-		if(textarea.value.indexof("TODO")){  
-			désactiverHorsTodo(textarea.value, editor);
+		if(textarea.value.indexOf("TODO")){
+			désactiverHorsTodo(textarea.value);
 		}
 
 		//Si on a au moins un VISIBLE
-		if(textarea.value.indexof("VISIBLE")){  
-			cacherHorsVisible(textarea.value, editor);
+		if(textarea.value.indexOf("VISIBLE")){
+			cacherHorsVisible(textarea.value);
 		}
 	}
 }
-function désactiverHorsTodo(doc, editor) {
+function désactiverHorsTodo(doc) {
 	posDébut = 0;
 	posFin = 0;
 	while (posDébut > -1) {
@@ -79,7 +80,7 @@ function désactiverHorsTodo(doc, editor) {
 	}
 }
 
-function cacherHorsVisible(doc, editor) {
+function cacherHorsVisible(doc) {
 	posDébut = 0;
 	posFin = 0;
 	while (posDébut > -1) {
@@ -104,35 +105,35 @@ function cacherHorsVisible(doc, editor) {
 	}
 }
 
-function changerMode(lang_id) {
+function getMode(lang_id) {
 	var mode = "c";
 	switch (lang_id) {
-		case "1":
+		case 1:
 			mode = "python";
 			break;
-		case "2":
+		case 2:
 			mode = "ruby";
 			break;
-		case "4":
+		case 4:
 			mode = "php";
 			break;
-		case "7":
+		case 7:
 			mode = "go";
 			break;
-		case "8":
-		case "9":
+		case 8:
+		case 9:
 			mode = "c";
 			break;
-		case "10":
-			mode = "java";
+		case 10:
+			mode = "text/x-java";
 			break;
-		case "11":
+		case 11:
 			mode = "shell";
 			break;
-		case "12":
+		case 12:
 			mode = "perl";
 			break;
 	}
 
-	editor.setOption("mode", "text/x-" + mode);
+	return mode;
 }

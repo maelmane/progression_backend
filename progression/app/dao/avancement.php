@@ -20,15 +20,12 @@ class AvancementDao extends EntiteDAO
 	protected static function load($objet)
 	{
 		$query = AvancementDAO::$conn->prepare(
-			'SELECT etat, reponse, code, conteneur FROM avancement WHERE questionID = ? AND userID = ?'
+			'SELECT etat FROM avancement WHERE questionID = ? AND userID = ?'
 		);
 		$query->bind_param("ii", $objet->question_id, $objet->user_id);
 		$query->execute();
 		$query->bind_result(
-			$objet->etat,
-			$objet->reponse,
-			$objet->code_utilisateur,
-			$objet->conteneur
+			$objet->etat
 		);
 		$query->fetch();
 
@@ -38,17 +35,14 @@ class AvancementDao extends EntiteDAO
 	public static function save($objet)
 	{
 		$query = AvancementDAO::$conn
-			->prepare('INSERT INTO avancement ( etat, questionID, userID, reponse, code, conteneur ) VALUES ( ?, ?, ?, ?, ?, ? )
-                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ), reponse=VALUES( reponse ), code=VALUES( code ), conteneur=VALUES( conteneur )');
+			->prepare('INSERT INTO avancement ( etat, questionID, userID ) VALUES ( ?, ?, ?, ?, ?, ? )
+                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 
 		$query->bind_param(
 			"iiisss",
 			$objet->etat,
 			$objet->question_id,
-			$objet->user_id,
-			$objet->reponse,
-			$objet->code,
-			$objet->conteneur
+			$objet->user_id
 		);
 		$query->execute();
 		$query->close();

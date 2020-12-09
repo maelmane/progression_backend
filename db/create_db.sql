@@ -101,12 +101,32 @@ CREATE TABLE `question_systeme` (
 CREATE TABLE `avancement` (
   `userID`       int(11) NOT NULL,
   `questionID`   int(11) NOT NULL,
+  `etat`	     int DEFAULT 1,
+  PRIMARY KEY (`userID`, `questionID`)
+);
+
+CREATE TABLE `avancement_prog` (
+  `userID`                int(11) NOT NULL,
+  `questionID`            int(11) NOT NULL,
+  `lang_derniere_reponse` int,
+  PRIMARY KEY (`userID`, `questionID`)
+);
+
+CREATE TABLE `reponse_sys` (
+  `userID`       int(11) NOT NULL,
+  `questionID`   int(11) NOT NULL,
   `conteneur`    varchar(64),
-  `etat`	 int DEFAULT 1,
-  `code`	 text,
   `reponse`      varchar(255),
   PRIMARY KEY (`userID`, `questionID`)
 );
+
+CREATE TABLE `reponse_prog` (
+  `userID`       int(11) NOT NULL,
+  `questionID`   int(11) NOT NULL,
+  `lang`         int NOT NULL,
+  `code`	     text,
+  PRIMARY KEY (`userID`, `questionID`, `lang`)
+  );
 
 /*Admin*/
 

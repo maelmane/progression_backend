@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/prog.php';
-require_once 'domaine/interacteurs/obtenir_avancement.php';
+require_once 'domaine/interacteurs/obtenir_avancement_prog.php';
 require_once 'domaine/interacteurs/formater_md.php';
 require_once 'domaine/interacteurs/preparer_prog.php';
 require_once 'domaine/interacteurs/obtenir_serie.php';
@@ -20,7 +20,7 @@ class QuestionProgCtl extends ProgCtl
 
         $this->question = $this->get_question();
 
-        $this->avancement = (new ObtenirAvancementInt(
+        $this->avancement = (new ObtenirAvancementProgInt(
             $this->_source,
             $user_id
         ))->get_avancement($this->_question_id, $this->_question_id);
@@ -98,7 +98,7 @@ class QuestionProgCtl extends ProgCtl
             $this->question,
             $this->avancement,
             $langage_id,
-            isset($_REQUEST["incode"]) ? $_REQUEST["incode"] : null
+            $this->à_valider ? $this->incode : null
         );
     }
 
@@ -109,10 +109,12 @@ class QuestionProgCtl extends ProgCtl
 
     protected function get_id_langage_sélectionné()
     {
-        //Si aucun langage n'a été choisi, on prend le premier
-        return isset($_REQUEST["langid"])
-            ? $_REQUEST["langid"]
-            : $this->question->exécutables[array_keys($this->question->exécutables)[0]]->lang;
+        if (isset($_REQUEST["langid"]))
+            return $_REQUEST["langid"];
+        else if(!is_null($this->avancement->lang))
+            return $this->avancement->lang;
+        else
+            return $this->question->exécutables[array_keys($this->question->exécutables)[0]]->lang;
     }
 
     protected function get_langages()

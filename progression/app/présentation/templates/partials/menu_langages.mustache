@@ -16,7 +16,8 @@
 <script>
 
  function onChangerMode(){
-	 changerMode(document.getElementById("langid").value);
+	 document.forms.form_code.elements.incode.value="";
+	 document.forms.form_code.submit();
  }
  
  {{#langid}}

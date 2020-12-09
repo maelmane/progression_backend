@@ -1,6 +1,7 @@
 <?php
 
 require_once 'domaine/entités/serie.php';
+require_once 'domaine/interacteurs/obtenir_avancement.php';
 require_once __DIR__ . '/interacteur.php';
 
 class ObtenirQuestionInt extends Interacteur

@@ -26,8 +26,8 @@ class PréparerProgInt
                 $exécutable->code_utilisateur,
                 $code
             );
-        } elseif ($code == null && $avancement->code_utilisateur != null) {
-            return $avancement->code_utilisateur;
+        } elseif ($code == null && array_key_exists($exécutable->lang, $avancement->réponses )) {
+            return $avancement->réponses[$exécutable->lang]->code;
         } else {
             return $exécutable->code_utilisateur;
         }
