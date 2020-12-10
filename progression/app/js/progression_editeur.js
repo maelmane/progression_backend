@@ -23,6 +23,7 @@ function créerÉditeur(textarea, lang_id) {
 			indentUnit: 4,
 			scrollbarStyle: null,
 			extraKeys: { Tab: betterTab },
+			mode: getMode(lang_id),
 			gutters: ["CodeMirror-linenumbers", "gutter-ro"],
 		});
 		changerMode(lang_id);
@@ -105,7 +106,7 @@ function cacherHorsVisible(doc) {
 	}
 }
 
-function changerMode(lang_id) {
+function getMode(lang_id) {
 	var mode = "c";
 	switch (lang_id) {
 		case 1:
@@ -125,7 +126,7 @@ function changerMode(lang_id) {
 			mode = "c";
 			break;
 		case 10:
-			mode = "java";
+			mode = "text/x-java";
 			break;
 		case 11:
 			mode = "shell";
@@ -135,5 +136,5 @@ function changerMode(lang_id) {
 			break;
 	}
 
-	editor.setOption("mode", "text/x-" + mode);
+	return mode;
 }

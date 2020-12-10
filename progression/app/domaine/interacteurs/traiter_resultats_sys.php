@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/obtenir_avancement_sys.php';
+require_once __DIR__ . '/sauvegarder_avancement_sys.php';
+
 class TraiterRésultatsSysInt extends Interacteur
 {
     function vérifier_réussite($infos)

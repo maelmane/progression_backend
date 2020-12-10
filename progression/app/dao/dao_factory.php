@@ -1,6 +1,8 @@
 <?php
 
 require_once __DIR__ . '/avancement.php';
+require_once __DIR__ . '/avancement_prog.php';
+require_once __DIR__ . '/avancement_sys.php';
 require_once __DIR__ . '/question.php';
 require_once __DIR__ . '/question_prog_eval.php';
 require_once __DIR__ . '/question_prog.php';
@@ -14,6 +16,16 @@ class DAOFactory
     function get_avancement_dao()
     {
         return new AvancementDAO();
+    }
+
+    function get_avancement_prog_dao()
+    {
+        return new AvancementProgDAO();
+    }
+
+    function get_avancement_sys_dao()
+    {
+        return new AvancementSysDAO();
     }
 
     function get_question_dao()

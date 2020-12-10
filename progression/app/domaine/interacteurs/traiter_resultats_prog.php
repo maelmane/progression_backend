@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/obtenir_avancement_prog.php';
+require_once __DIR__ . '/sauvegarder_avancement_prog.php';
+
 class TraiterRésultatsProgInt extends Interacteur
 {
 	function __construct($source, $user_id)
@@ -12,11 +15,12 @@ class TraiterRésultatsProgInt extends Interacteur
 	{
 		$résultats = [];
 
-		$avancement = (new ObtenirAvancementInt(
+		$avancement = (new ObtenirAvancementProgInt(
 			$this->_source,
 			$this->_user_id
 		))->get_avancement($question->id, $this->_user_id);
-		$avancement->code = $exécutable->code_utilisateur;
+
+		$avancement->réponses[$exécutable->lang] = new RéponseProg($exécutable->lang, $exécutable->code_utilisateur);
 
 		$résultats["essayé"] = "true";
 
@@ -58,7 +62,7 @@ class TraiterRésultatsProgInt extends Interacteur
 
 	private function sauvegarder_avancement($avancement)
 	{
-		$interacteur = new SauvegarderAvancementInt(
+		$interacteur = new SauvegarderAvancementProgInt(
 			$this->_source,
 			$this->_user_id
 		);

@@ -2,8 +2,8 @@ import MySQLdb
 import urllib.parse
 
 langages={
-    "python" : 0,
-    "python3" : 1,
+    "python2" : 0,
+    "python" : 1,
     "ruby" : 2,
     "clojure" : 3,
     "php" : 4,
