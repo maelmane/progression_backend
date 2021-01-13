@@ -4,13 +4,22 @@ import sys
 import os
 import yaml
 from collections import defaultdict
+from urllib import parse
+from .importeur_mysql import importer
 
-import importer_mysql
+def importer_dépôt(source, url):
+    path  = "/tmp/progression_importation"
+    clone = f"git clone --depth 1 {source} {path}"
 
+    os.system(clone)
+    os.system("rm -rf /tmp/progression_importation/.git")
+    importer_répertoire("/tmp/progression_importation/", url)
+        
 
 def importer_répertoire(source, url):
     for thème in [d for d in os.scandir(source) if d.is_dir()]:
-        importer_mysql.importer(importer_thème(thème.path, thème.name), url)
+        print(thème)
+        importer(importer_thème(thème.path, thème.name), url)
 
 
 def importer_thème(path, nom_thème):
@@ -112,9 +121,31 @@ def importer_fichier_tests(path):
 
 
 if len(sys.argv) < 3:
-    print("Usage : importer.py répertoire_cible uri_db")
-    exit(1)
-source = sys.argv[1]
-url = sys.argv[2]
+    print("""
+Usage : importer.py uri_source uri_db
 
-importer_répertoire(source, url)
+où <source> peut être un répertoire :
+    file:///home/bob/mes_exercices
+
+    ou un dépôt git :
+
+    https://gitlab.com:bob/mes_exercices
+    ssh://git@gitlab.com:bob/mes_exercices
+
+   <uri_db> est l'uri de la base de données MySQL à populer avec les exercices :
+
+    mysql://user:pass@mon.sgbd.com/maBD
+""", file=sys.stderr)
+    exit(1)
+    
+source = sys.argv[1]
+uri_bd = sys.argv[2]
+
+uri_source=parse.urlparse(source)
+if uri_source.scheme == "file" :
+    importer_répertoire(uri_source.path, uri_bd)
+elif uri_source.scheme in ["http", "https", "git", "ssh"] :
+    importer_dépôt(source, uri_bd)
+else :
+    print("Le protocole de la source n'est pas implémenté", file=sys.stderr)
+    exit(2)

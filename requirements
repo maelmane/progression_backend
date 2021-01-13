@@ -1,7 +1,2 @@
 #Debian
 php5-ldap
-
-#Python
-pyyaml
-mysqlclient
-urllib
