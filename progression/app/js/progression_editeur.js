@@ -26,7 +26,6 @@ function créerÉditeur(textarea, lang_id) {
 			mode: getMode(lang_id),
 			gutters: ["CodeMirror-linenumbers", "gutter-ro"],
 		});
-		changerMode(lang_id);
 		editor.setSize("100%", "100%");
 
 		//Si on a au moins un TODO

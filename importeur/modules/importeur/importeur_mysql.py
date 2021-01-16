@@ -196,6 +196,7 @@ def get_connexion(uri):
         host=uri.hostname,
         user=uri.username,
         passwd=uri.password,
+        charset='utf8',
         db="quiz",
     )
 

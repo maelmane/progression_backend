@@ -30,7 +30,5 @@ COPY app /srv/http/
 
 RUN chown -R http:http /srv/ /etc/quiz.conf
 
-COPY importer* /usr/local/bin/
-
 RUN echo AddDefaultCharset utf-8 >> /etc/httpd/conf/httpd.conf
 
