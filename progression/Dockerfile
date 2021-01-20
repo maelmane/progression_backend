@@ -11,10 +11,6 @@ RUN pacman -Suy --noconfirm
 RUN pacman -S --noprogressbar --noconfirm --needed unzip wget composer python-mysqlclient python-pyaml git
 RUN echo extension=gmp.so >> /etc/php/php.ini
 
-RUN wget http://codemirror.net/codemirror.zip
-RUN unzip -d /srv/http/ codemirror.zip
-RUN mv /srv/http/codemirror* /srv/http/CodeMirror
-
 #Pour authentification par LDAP
 RUN mkdir /etc/ldap
 COPY ldap.conf /etc/ldap
