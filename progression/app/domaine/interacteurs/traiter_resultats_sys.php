@@ -60,7 +60,7 @@ class TraiterRésultatsSysInt extends Interacteur
             $infos["question"]->solution_courte != ""
         ) {
             if ($infos['réponse'] != '') {
-                if ($infos['réponse'] == $infos["question"]->solution_courte) {
+                if (trim($infos['réponse']) == $infos["question"]->solution_courte) {
                     $réussi = true;
                 }
             }
