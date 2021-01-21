@@ -55,9 +55,9 @@ class TraiterRésultatsProgInt extends Interacteur
 	private function vérifier_solution($sorties, $solution)
 	{
 		$sortie_standard = $sorties["output"];
-
+		$erreur = $sorties["erreurs"];
 		//en PHP, "" == NULL ( arg!!! )
-		return $solution != "null" && $sortie_standard == $solution;
+		return $solution != "null" && $sortie_standard == $solution && $erreur == "";
 	}
 
 	private function sauvegarder_avancement($avancement)
