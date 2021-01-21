@@ -1,6 +1,6 @@
 Contributeurs :
 
-Patrick La- france
+- Patrick Lafrance
 - Mikaël Nadeau
 - Hugo Barou
 - Radu Dumitru
