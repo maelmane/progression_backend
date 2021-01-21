@@ -1,30 +1,77 @@
-Progression requiert :
- * compilebox modifié (https://git.dept-info.crosemont.quebec/progression/compilebox)
- * docker
- * docker-compose v1.13+
+# Progression backend
 
-Configuration :
- * La configuration de l'application se fait dans le fichier quiz.conf
- * au besoin, utiliser l'exemple fournit dans quiz.conf.exemple
- * Pour une installation minimale, le type d'authentification peut être sélectionné à "no".
+## 1. Dépendances obligatoires
+- [git](https://git-scm.com/downloads)
+- [docker](https://www.docker.com/)
+- [docker-compose](https://docs.docker.com/compose/)
+- [compilebox (modifié)](https://git.dti.crosemont.quebec/progression/compilebox)
 
-Compilation des images docker :
- * `docker-compose build` (l'avertissement «Do not run Composer as root/super user! » est normal)
+## 2. Installation & Configuration 
+### 2.1 Obtenir le code source
+- Cloner le projet
+```
+git clone https://git.dti.crosemont.quebec/progression/progression_backend.git
+```
 
-Démarrage des conteneurs :
- * `docker-compose up -d progression`
+### 2.2 Créer et adapter le fichier de configuration
+- Copier le ficher **quiz.conf.example** dans le répertoire **/progression**
+```
+cp quiz.conf.exemple quiz.conf
+```
+- Modifier le type d\'authentification et l\'hôte pour le compilebox du fichier **quiz.conf** 
 
-Création (ou réinitialisation) de la base de données :
- * `docker exec -it progression_db bash`
- * `cd /tmp/ && ./build_db.sh`
- * Ctrl-D
+#### En développement :
+- Désactiver l'authentification
+```
+auth_type = "no"
+```
+- Effectuer les compilations sur la machine de développement
+```
+compilebox_hote = 172.20.0.1
+```
 
-Importation des questions/exercices de programmation :
- * Ajuster au besoin les variables d'environnement $SOURCE et $DESTINATION dans docker-compose.yml
- * `docker-compose up importeur`
-  
-L'application est accessible via :
- * https://172.20.0.3
-  
-Pour obtenir les questions système, dépendantes de conteneurs propres,
- * `cd progression/conteneurs_sys && ./build_all`
+### 2.3 Construire et exécuter le backend avec docker-compose
+- Compilation des images docker
+```
+docker-compose build
+```
+- Démarrage des conteneurs
+```
+docker-compose up -d progression
+```
+- Pour voir ce qui est en cours d\'exécution
+```
+docker-compose ps
+```
+Les conteneurs `progression`et `progression_db` devraient être «Up»
+
+### 2.4 Gestion de la base de données
+- Création (ou réinitialisation) de la base de données
+```
+docker exec -it progression_db bash`
+cd /tmp/ && ./build_db.sh
+```
+Fermer le terminal avec Ctrl-D ou `exit`
+
+### 2.5 L\'application est accessible via:
+- https://172.20.0.3/
+
+Sans authentification, les utilisateurs sont automatiquement créés dès leur connexion sans mot de passe.
+
+
+### 2.6 Obtenir les questions système, dépendantes de conteneurs propres (facultatif)
+- Construire les conteneurs :
+```
+cd progression/conteneurs && ./build_all
+```
+
+## 3. FAQ
+Q: Pourquoi `docker-compose build` me donne des erreurs ?
+- Assurez-vous que votre utilisateur fait partie du groupe docker. Le résultat de la commande `groups` devrait inclure le groupe `docker`.
+
+- Assurez-vous que Docker est en marche!
+```
+systemctl enable docker
+systemctl start docker
+```
+
