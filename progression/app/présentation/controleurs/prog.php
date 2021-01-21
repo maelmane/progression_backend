@@ -78,18 +78,6 @@ class ProgCtl extends Controleur
                 : null;
     }
 
-    protected function get_mode($langid)
-    {
-        if ($langid <= QuestionProg::PYTHON3) {
-            return "python/python.js";
-        } elseif (
-            $langid == QuestionProg::CPP ||
-            $langid == QuestionProg::JAVA
-        ) {
-            return "clike/clike.js";
-        }
-    }
-
     protected function calculer_sorties($sorties)
     {
         if ($sorties === false) {

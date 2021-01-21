@@ -213,7 +213,6 @@ class QuestionBDCtl extends ProgCtl
             "titre_retour" => "la liste de questions",
             "état_réussi" =>
                 $this->avancement->get_etat() == Question::ETAT_REUSSI,
-            "mode" => $this->get_mode($langid),
             "lang_nom" => ControleurProg::LANG_NOMS[$langid],
             "nom_serveur" => $_SERVER["SERVER_NAME"], //TODO à changer ?
             "url_retour" => "index.php?p=serie&ID=" . $this->question->serieID,

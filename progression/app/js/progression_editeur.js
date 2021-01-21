@@ -46,12 +46,12 @@ function créerÉditeur(textarea, lang_id) {
 		editor.setSize("100%", "100%");
 
 		//Si on a au moins un TODO
-		if(textarea.value.indexOf("TODO")){
+		if(textarea.value.indexOf("TODO") > -1){
 			désactiverHorsTodo(textarea.value);
 		}
 
 		//Si on a au moins un VISIBLE
-		if(textarea.value.indexOf("VISIBLE")){
+		if(textarea.value.indexOf("VISIBLE") > -1){
 			cacherHorsVisible(textarea.value);
 		}
 	}

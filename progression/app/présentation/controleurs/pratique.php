@@ -79,7 +79,6 @@ class PratiqueCtl extends ProgCtl
                             <em>Attention, vos programmes entrés ici ne seront pas sauvegardés.</em>",
             "url_retour" => "index.php?p=accueil",
             "titre_retour" => "l'accueil",
-            "mode" => $this->get_mode($this->langid),
             "langid" => $this->langid,
             "incode" => $this->get_code(),
             "langages" => ["python2"=>true, "python"=>true, "java"=>true, "cpp"=>true, "perl"=>true, "ruby"=>true, "bash"=>true, "go"=>true],
