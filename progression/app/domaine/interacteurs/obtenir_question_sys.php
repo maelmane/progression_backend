@@ -15,7 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
-?><?php
+
 
 require_once 'domaine/entités/question_sys.php';
 require_once __DIR__ . '/interacteur.php';

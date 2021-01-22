@@ -15,7 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
-?><?php
+
 
 require_once __DIR__ . '/obtenir_avancement_prog.php';
 require_once __DIR__ . '/sauvegarder_avancement_prog.php';
