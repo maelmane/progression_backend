@@ -18,7 +18,6 @@
 ?><?php
 
 require_once __DIR__ . '/entite.php';
-require_once __DIR__ . '/avancement.php';
 
 class Question extends Entite
 {
@@ -42,7 +41,6 @@ class Question extends Entite
     public $feedback_neg;
     public $etat;
     public $code_validation;
-    public $avancement;
 }
 
 ?>
