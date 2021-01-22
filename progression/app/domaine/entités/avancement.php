@@ -18,6 +18,7 @@
 ?><?php
 
 require_once __DIR__ . '/entite.php';
+require_once __DIR__ . '/question.php';
 
 class Avancement
 {
