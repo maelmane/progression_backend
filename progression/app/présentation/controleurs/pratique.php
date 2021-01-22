@@ -19,6 +19,8 @@
 
 require_once __DIR__ . '/prog.php';
 require_once 'domaine/interacteurs/executer_prog.php';
+require_once 'domaine/entités/test.php';
+require_once 'domaine/entités/exécutable.php';
 
 class PratiqueCtl extends ProgCtl
 {
@@ -90,11 +92,7 @@ class PratiqueCtl extends ProgCtl
 
     private function get_exécutable()
     {
-        $exécutable = new class {};
-
-        $exécutable->lang = $this->get_langid();
-        $exécutable->code_exec = $this->get_code();
-        $exécutable->params = $this->get_params();
+        $exécutable = new Exécutable($this->get_code(), $this->get_langid());
         $exécutable->stdin = $this->get_stdin();
 
         return $exécutable;
@@ -102,10 +100,7 @@ class PratiqueCtl extends ProgCtl
 
     private function get_test()
     {
-        $test = new class {};
-        $test->nom = "Résultats";
-        $test->stdin = $_REQUEST["stdin"];
-        $test->réussi = false;
+        $test = new Test("Résultats", $_REQUEST["stdin"], false, $this->get_params());
 
         return $test;
     }
