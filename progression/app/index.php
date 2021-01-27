@@ -22,7 +22,7 @@ require __DIR__ . '/../vendor/autoload.php';
 require_once 'config.php';
 require_once 'domaine/entités/user.php';
 require_once 'présentation/controleurs/header_footer.php';
-require_once 'dao/dao_factory.php';
+require_once 'dao/mock/mock_dao_factory.php';
 
 require_once 'domaine/interacteurs/obtenir_question.php';
 

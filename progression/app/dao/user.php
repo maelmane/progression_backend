@@ -18,6 +18,7 @@
 
 
 require_once "domaine/entités/user.php";
+require_once "dao/entite.php";
 
 class UserDAO extends EntiteDAO
 {
