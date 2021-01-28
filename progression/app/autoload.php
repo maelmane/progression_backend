@@ -16,26 +16,18 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\interacteur;
+class MissingException extends Exception{}
 
-use progression\domaine\entité\User;
+// chargement des fichiers automatique
+spl_autoload_register(function ($class_name) {
+	$class = str_replace('\\', '/', $class_name) . '.php';
 
-class CréerUserInt extends Interacteur
-{
-    function obtenir_ou_créer_user($username)
-    {
-        $user_dao = $this->_source->get_user_dao();
-
-        $user = $user_dao->trouver_par_nomusager($username);
-
-        if ($user == null) {
-            $user = new User(null);
-            $user->username = $username;
-            $user = $user_dao->save($user);
-        }
-
-        return $user;
+    if (file_exists(__DIR__ . "/" . $class)){
+        require $class;
     }
-}
+    else {
+        throw new MissingException("Impossible de charger " . __DIR__ . "/" . $class);
+    }
+    
+});
 
-?>

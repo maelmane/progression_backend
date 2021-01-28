@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit colors="true">
+<phpunit colors="true"
+		 bootstrap="tests/bootstrap.php" >
     <testsuites>
         <testsuite name="Tests unitaires">
-            <directory suffix="_test.php">tests/domaine/entités</directory>
+            <directory suffix="Tests.php">tests/domaine/entités</directory>
         </testsuite>
     </testsuites>
 

@@ -17,6 +17,7 @@
 */
 
 namespace progression;
+
 use progression\dao\DAOFactory;
 use progression\domaine\entité\Question;
 use progression\domaine\interacteur\{
@@ -39,22 +40,9 @@ use progression\présentation\controleur\{
     SuiviCtl,
     ThèmeCtl};
 
-class MissingException extends \Exception{}
-
-// chargement des fichiers automatique
-spl_autoload_register(function ($class_name) {
-	$class = str_replace('\\', '/', $class_name) . '.php';
-
-    if (file_exists(__DIR__ . "/" . $class)){
-        require $class;
-    }
-    else {
-        throw new MissingException("Impossible de charger " . __DIR__ . "/" . $class);
-    }
-    
-});
-
 session_start();
+
+require __DIR__ . '/autoload.php';
 require __DIR__ . '/../vendor/autoload.php';
 require_once 'config.php';
 
