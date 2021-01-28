@@ -18,25 +18,28 @@
 
 namespace progression\domaine\entité;
 
-use PHPUnit\Framework\TestCase;
+class Question extends Entité
+{
+    const ETAT_CACHE = -1;
+    const ETAT_DEBUT = 0;
+    const ETAT_NONREUSSI = 1;
+    const ETAT_REUSSI = 2;
 
-final class AvancementTest extends TestCase{
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_et_userid_3_lorsquon_récupère_son_questionid_on_obtient_5(){
-        $avancementTest = new Avancement(5, 3);
+    const TYPE_PROG_EVAL = 0;
+    const TYPE_SYS = 1;
+    const TYPE_BD = 2;
+    const TYPE_PROG = 3;
 
-        $questionid = $avancementTest->question_id;
-
-        $this->assertEquals( 5, $questionid );
-    }
-
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_et_userid_3_lorsquon_récupère_son_userid_on_obtient_3(){
-        $avancementTest = new Avancement(5, 3);
-
-        $userid = $avancementTest->user_id;
-
-        $this->assertEquals( 3, $userid );
-    }
-
+    public $serieID;
+    public $actif;
+    public $numero;
+    public $titre;
+    public $description;
+    public $enonce;
+    public $feedback_pos;
+    public $feedback_neg;
+    public $etat;
+    public $code_validation;
 }
 
 ?>

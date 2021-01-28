@@ -15,28 +15,41 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
+namespace progression\dao;
 
-namespace progression\domaine\entité;
-
-use PHPUnit\Framework\TestCase;
-
-final class AvancementTest extends TestCase{
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_et_userid_3_lorsquon_récupère_son_questionid_on_obtient_5(){
-        $avancementTest = new Avancement(5, 3);
-
-        $questionid = $avancementTest->question_id;
-
-        $this->assertEquals( 5, $questionid );
-    }
-
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_et_userid_3_lorsquon_récupère_son_userid_on_obtient_3(){
-        $avancementTest = new Avancement(5, 3);
-
-        $userid = $avancementTest->user_id;
-
-        $this->assertEquals( 3, $userid );
-    }
-
+class EntitéDAO
+{
+    static $conn;
 }
+
+require_once "config.php";
+
+function db_init()
+{
+    if (!isset($GLOBALS["conn"])) {
+        create_connection();
+        set_errors();
+    }
+}
+
+function create_connection()
+{
+    $GLOBALS["conn"] = new \mysqli(
+        $GLOBALS["config"]["servername"],
+        $GLOBALS["config"]["username"],
+        $GLOBALS["config"]["password"],
+        $GLOBALS["config"]["dbname"]
+    );
+    $GLOBALS["conn"]->set_charset("utf8");
+}
+
+function set_errors()
+{
+    $GLOBALS["errno"] = mysqli_connect_errno();
+    $GLOBALS["error"] = mysqli_connect_error();
+}
+
+db_init();
+EntitéDAO::$conn = $GLOBALS["conn"];
 
 ?>

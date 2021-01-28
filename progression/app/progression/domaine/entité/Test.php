@@ -18,24 +18,24 @@
 
 namespace progression\domaine\entité;
 
-use PHPUnit\Framework\TestCase;
-
-final class AvancementTest extends TestCase{
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_et_userid_3_lorsquon_récupère_son_questionid_on_obtient_5(){
-        $avancementTest = new Avancement(5, 3);
-
-        $questionid = $avancementTest->question_id;
-
-        $this->assertEquals( 5, $questionid );
+class Test
+{
+    public function __construct($nom, $stdin, $solution, $params = null, $fbp=null, $fbn=null)
+    {
+        $this->nom = $nom;
+        $this->stdin = $stdin;
+        $this->solution = $solution;
+        $this->params = $params;
+        $this->feedback_pos = $fbp;
+        $this->feedback_neg = $fbn;
     }
 
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_et_userid_3_lorsquon_récupère_son_userid_on_obtient_3(){
-        $avancementTest = new Avancement(5, 3);
-
-        $userid = $avancementTest->user_id;
-
-        $this->assertEquals( 3, $userid );
-    }
+    public $nom;
+    public $stdin;
+    public $params = null;
+    public $solution;
+    public $feedback_pos;
+    public $feedback_neg;
 
 }
 

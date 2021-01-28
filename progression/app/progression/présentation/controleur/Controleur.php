@@ -16,27 +16,28 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
 
-use PHPUnit\Framework\TestCase;
+namespace progression\présentation\controleur;
 
-final class AvancementTest extends TestCase{
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_et_userid_3_lorsquon_récupère_son_questionid_on_obtient_5(){
-        $avancementTest = new Avancement(5, 3);
+use progression\domaine\interacteur\ObtenirUserInt;
 
-        $questionid = $avancementTest->question_id;
-
-        $this->assertEquals( 5, $questionid );
+class Controleur
+{
+    function __construct($source, $user_id)
+    {
+        $this->_source = $source;
+        $this->_user_id = $user_id;
+        $this->_erreurs = [];
     }
 
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_et_userid_3_lorsquon_récupère_son_userid_on_obtient_3(){
-        $avancementTest = new Avancement(5, 3);
-
-        $userid = $avancementTest->user_id;
-
-        $this->assertEquals( 3, $userid );
+    function get_page_infos()
+    {
+        return [
+            "erreurs" => $this->_erreurs,
+            "user" => (new ObtenirUserInt($this->_source))->get_user(
+                $this->_user_id
+            ),
+        ];
     }
-
 }
-
 ?>

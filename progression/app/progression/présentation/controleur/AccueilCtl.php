@@ -16,27 +16,28 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\présentation\controleur;
 
-use PHPUnit\Framework\TestCase;
+use progression\domaine\interacteur\ObtenirThèmeInt;
 
-final class AvancementTest extends TestCase{
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_et_userid_3_lorsquon_récupère_son_questionid_on_obtient_5(){
-        $avancementTest = new Avancement(5, 3);
+class AccueilCtl extends Controleur
+{
+    function __construct($source, $user_id)
+    {
+        parent::__construct($source, $user_id);
 
-        $questionid = $avancementTest->question_id;
-
-        $this->assertEquals( 5, $questionid );
+        $interacteur = new ObtenirThèmeInt($this->_source, $this->_user_id);
+        $this->_thèmes = $interacteur->get_thèmes();
     }
 
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_et_userid_3_lorsquon_récupère_son_userid_on_obtient_3(){
-        $avancementTest = new Avancement(5, 3);
-
-        $userid = $avancementTest->user_id;
-
-        $this->assertEquals( 3, $userid );
+    function get_page_infos()
+    {
+        return array_merge(parent::get_page_infos(), [
+            "themes" => $this->_thèmes,
+            "titre" => "Taleau de bord",
+            "template" => "accueil",
+        ]);
     }
-
 }
 
 ?>

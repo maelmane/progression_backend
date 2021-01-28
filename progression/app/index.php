@@ -16,31 +16,47 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+namespace progression;
+use progression\dao\DAOFactory;
+use progression\domaine\entité\Question;
+use progression\domaine\interacteur\{
+    ObtenirSérieInt,
+    ObtenirQuestionInt};
+use progression\présentation\controleur\{
+    AccueilCtl,
+    AdminCtl,
+    ControleurAdminCtl,
+    ControleurSuiviCtl,
+    HeaderFooterCtl,
+    LoginCtl,
+    LogoutCtl,
+    PratiqueCtl,
+    QuestionBDCtl,
+    QuestionProgCtl,
+    QuestionProgEvalCtl,
+    QuestionSysCtl,
+    SérieCtl,
+    SuiviCtl,
+    ThèmeCtl};
+
+class MissingException extends \Exception{}
+
+// chargement des fichiers automatique
+spl_autoload_register(function ($class_name) {
+	$class = str_replace('\\', '/', $class_name) . '.php';
+
+    if (file_exists(__DIR__ . "/" . $class)){
+        require $class;
+    }
+    else {
+        throw new MissingException("Impossible de charger " . __DIR__ . "/" . $class);
+    }
+    
+});
 
 session_start();
 require __DIR__ . '/../vendor/autoload.php';
 require_once 'config.php';
-require_once 'domaine/entités/user.php';
-require_once 'présentation/controleurs/header_footer.php';
-require_once 'dao/mock/mock_dao_factory.php';
-
-require_once 'domaine/interacteurs/obtenir_question.php';
-
-require_once 'présentation/controleurs/accueil.php';
-require_once 'présentation/controleurs/admin.php';
-require_once 'présentation/controleurs/ad_suivi.php';
-require_once 'présentation/controleurs/login.php';
-require_once 'présentation/controleurs/logout.php';
-require_once 'présentation/controleurs/pratique.php';
-require_once 'présentation/controleurs/question_bd.php';
-require_once 'présentation/controleurs/question_prog_eval.php';
-require_once 'présentation/controleurs/question_prog.php';
-require_once 'présentation/controleurs/question_sys.php';
-require_once 'présentation/controleurs/serie.php';
-require_once 'présentation/controleurs/theme.php';
-
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 
 set_locale();
 openlog("quiz", LOG_NDELAY, LOG_SYSLOG);

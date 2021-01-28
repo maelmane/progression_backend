@@ -16,27 +16,24 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\interacteur;
 
-use PHPUnit\Framework\TestCase;
+use progression\domaine\entité\Question;
 
-final class AvancementTest extends TestCase{
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_et_userid_3_lorsquon_récupère_son_questionid_on_obtient_5(){
-        $avancementTest = new Avancement(5, 3);
-
-        $questionid = $avancementTest->question_id;
-
-        $this->assertEquals( 5, $questionid );
+class SauvegarderAvancementSysInt extends Interacteur
+{
+    function __construct($source, $user_id)
+    {
+        parent::__construct($source);
+        $this->_user_id = $user_id;
     }
 
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_et_userid_3_lorsquon_récupère_son_userid_on_obtient_3(){
-        $avancementTest = new Avancement(5, 3);
-
-        $userid = $avancementTest->user_id;
-
-        $this->assertEquals( 3, $userid );
+    public function sauvegarder($avancement)
+    {
+        $dao = $this->_source->get_avancement_sys_dao();
+        if ($avancement->etat == Question::ETAT_DEBUT) {
+            $avancement->etat = Question::ETAT_NONREUSSI;
+        }
+        $dao->save($avancement);
     }
-
 }
-
-?>
