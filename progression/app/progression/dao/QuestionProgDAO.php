@@ -36,7 +36,7 @@ class QuestionProgDAO extends QuestionDAO
         $objet->tests = QuestionProgDAO::load_tests($objet->id);
     }
 
-    private function load_exécutables($id)
+    private static function load_exécutables($id)
     {
         $query = QuestionProgDAO::$conn->prepare(
             'SELECT code, lang FROM executable WHERE questionID=?'
@@ -54,7 +54,7 @@ class QuestionProgDAO extends QuestionDAO
         return $exécutables;
     }
 
-    private function load_tests($id)
+    private static function load_tests($id)
     {
         $query = QuestionProgDAO::$conn->prepare(
             'SELECT nom, stdin, params, solution, feedback_pos, feedback_neg FROM test WHERE questionID=?'
