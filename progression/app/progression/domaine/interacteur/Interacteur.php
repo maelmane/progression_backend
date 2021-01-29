@@ -15,11 +15,10 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
+namespace progression\domaine\interacteur;
 
 use progression\config;
 use progression\domaine\entité;
-
-namespace progression\domaine\interacteur;
 
 class Interacteur
 {
