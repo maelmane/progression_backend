@@ -23,7 +23,7 @@ services:
       - 80:80
     #En développement, monte les source directement dans le conteneur
     volumes:
-      - "./progression/app/:/var/www/html/"
+      - "./progression/app/:/var/www/"
       - "./progression/vendor/:/var/www/vendor/"
       - "./progression/quiz.conf:/etc/quiz.conf"
     extra_hosts:
@@ -50,6 +50,7 @@ services:
     container_name: composer
     command: composer install -d /var/www/
     volumes:
+      - "./progression/:/var/www/"
       - "./progression/composer.json:/var/www/composer.json"
       - "./progression/vendor/:/var/www/vendor/"
 
