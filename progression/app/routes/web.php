@@ -21,13 +21,8 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->get('/calcul/add/{nb1}/{nb2}', function ($nb1, $nb2) use ($router) {
-    return $nb1+$nb2;
-});
-
-$router->get('user/connexion/{nomUtilisateur}', 'LoginControleur@login');
+$router->post('/user/connexion/', 'LoginControleur@login');
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('themes', 'ThemeControleur@getThemes');
-    $router->get('calcul/{signe}/{nb1}/{nb2}', 'CalculatriceController@calc');
 });

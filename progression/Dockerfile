@@ -18,4 +18,5 @@ COPY app /var/www/
 RUN chown -R www-data:www-data /var/www/html /etc/quiz.conf
 
 RUN echo AddDefaultCharset utf-8 >> /etc/apache2/apache2.conf
+RUN a2enmod rewrite
 
