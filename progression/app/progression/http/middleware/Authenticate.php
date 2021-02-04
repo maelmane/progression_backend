@@ -4,6 +4,8 @@ namespace progression\http\middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Support\Facades\Log;
+
 
 class Authenticate
 {
@@ -36,9 +38,10 @@ class Authenticate
     public function handle($request, Closure $next, $guard = null)
     {
         if ($this->auth->guard($guard)->guest()) {
-            return response('Unauthorized.', 401);
+            Log::info("Le token est invalide pour: " . $request->ip() . " (AuthServiceProvider)");
+            return response()->json(['message' => 'Utilisateur non autorisé.'], 401);
         }
-
+        Log::info("Le token est valide pour: " . $request->ip() . " (AuthServiceProvider)");
         return $next($request);
     }
 }

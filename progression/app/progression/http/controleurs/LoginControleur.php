@@ -19,6 +19,8 @@
 
 namespace progression\http\controleurs;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use progression\domaine\interacteurs\AuthentificationInteracteur;
 
 class LoginControleur extends Controller
@@ -27,14 +29,17 @@ class LoginControleur extends Controller
     {
     }
 
-    public function login($nomUtilisateur){
+    public function login(Request $request){
         $authInt = new AuthentificationInteracteur();
+        $nomUtilisateur = $request->input("username");
         $token = $authInt->créerToken($nomUtilisateur);
 
         if($token){
+            Log::info("Le token a été créé pour: " . $request->ip() . " (LoginInteracteur)");
             return response()->json(['token' => $token], 200);
         }
-        return response()->json(['message' => 'User not found'], 401);
+        Log::warning("Le token n'a pas été créé pour: " . $request->ip() . " (LoginInteracteur)");
+        return response()->json(['message' => 'Utilisateur non autorisé.'], 401);
     }
 }
 
