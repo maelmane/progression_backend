@@ -3,7 +3,6 @@
 ## 1. Dépendances obligatoires
 - [git](https://git-scm.com/downloads)
 - [docker](https://www.docker.com/)
-- [docker-compose](https://docs.docker.com/compose/)
 - [compilebox (modifié)](https://git.dti.crosemont.quebec/progression/compilebox)
 
 ## 2. Installation & Configuration 
@@ -35,14 +34,10 @@ auth_type = "no"
 compilebox_hote = 172.20.0.1
 ```
 
-### 2.3 Construire et exécuter le backend avec docker-compose
+### 2.3 Construire les images docker
 - Compilation des images docker
 ```
 docker-compose build
-```
-- Installation des dépendances PHP
-```
-docker-compose up composer
 ```
 
 ### 2.4 Initialiser la base de données

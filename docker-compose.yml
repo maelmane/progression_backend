@@ -24,7 +24,6 @@ services:
     #En développement, monte les source directement dans le conteneur
     volumes:
       - "./progression/app/:/var/www/"
-      - "./progression/vendor/:/var/www/vendor/"
       - "./progression/quiz.conf:/etc/quiz.conf"
     extra_hosts:
       - "watson.dept-info.crosemont.quebec:205.237.24.200"
@@ -43,17 +42,6 @@ services:
     environment:
       SOURCE: https://git.dti.crosemont.quebec/progression/progression_contenu_demo.git
       DESTINATION: mysql://quiz:password@172.20.0.2/quiz
-
-  composer:
-    image: composer:latest
-    restart: 'no'
-    container_name: composer
-    command: composer install -d /var/www/
-    volumes:
-      - "./progression/:/var/www/"
-      - "./progression/composer.json:/var/www/composer.json"
-      - "./progression/vendor/:/var/www/vendor/"
-
 networks:
   progressionnet:
     ipam:
