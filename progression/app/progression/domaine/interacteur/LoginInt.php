@@ -18,6 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
+class ConnexionException extends \Exception{};
+
 class LoginInt extends Interacteur
 {
     function __construct($source)

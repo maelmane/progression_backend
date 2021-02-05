@@ -11,10 +11,10 @@ RUN mkdir -p /var/www/vendor
 
 # Mise a jour de la liste de package
 RUN apt update && apt upgrade -y && apt autoclean
-RUN apt update && apt install -y unzip wget default-libmysqlclient-dev python-yaml git && apt autoclean
+RUN apt update && apt install -y unzip wget default-libmysqlclient-dev python-yaml git libldap2-dev && apt autoclean
 
 #Ajout d'extensions PHP
-RUN docker-php-ext-install -j$(nproc) mysqli
+RUN docker-php-ext-install -j$(nproc) mysqli ldap
 
 #Pour authentification par LDAP
 COPY ldap.conf /etc/ldap
@@ -29,4 +29,3 @@ RUN chown -R www-data:www-data /var/www/ /etc/quiz.conf
 
 RUN echo AddDefaultCharset utf-8 >> /etc/apache2/apache2.conf
 RUN a2enmod rewrite
-
