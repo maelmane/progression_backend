@@ -17,10 +17,12 @@
 */
 ?><?php
 
-namespace progression\domaine\interacteurs;
+namespace progression\domaine\interacteur;
 
+use Exception;
 use \Firebase\JWT\JWT;
-use progression\domaine\interacteurs\LoginInteracteur;
+use progression\domaine\interacteur\LoginInt;
+use progression\dao\DAOFactory;
 
 class AuthentificationInteracteur
 {
@@ -28,24 +30,25 @@ class AuthentificationInteracteur
     {
     }
 
-    public function créerToken($nomUtilisateur){
-        $loginInt = new LoginInteracteur();
-        $objetUser = $loginInt->login($nomUtilisateur);
+    public function créerToken($username, $password){
+        $loginInt = new LoginInt(new DAOFactory());
+        $user = $loginInt->effectuer_login($username, $password);
 
-        if($objetUser!=null){
+        if($user!=null){
             $payload = [
-                'user' => $objetUser,
+                'user' => $user,
                 'current' => time(),
                 'expired' => time() + env("JWT_TTL")
             ];
             try {
                 $token = JWT::encode($payload, env('JWT_SECRET'), 'HS256');
                 return $token;
-            } catch(\Exception $e) {
+            } catch(Exception $e) {
+                error_log($e);
                 return null;
             }
         }
-        return $objetUser;
+        return $user;
     }
 }
 

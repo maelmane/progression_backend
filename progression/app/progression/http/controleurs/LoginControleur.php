@@ -21,7 +21,7 @@ namespace progression\http\controleurs;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use progression\domaine\interacteurs\AuthentificationInteracteur;
+use progression\domaine\interacteur\AuthentificationInteracteur;
 
 class LoginControleur extends Controller
 {
@@ -31,8 +31,10 @@ class LoginControleur extends Controller
 
     public function login(Request $request){
         $authInt = new AuthentificationInteracteur();
-        $nomUtilisateur = $request->input("username");
-        $token = $authInt->créerToken($nomUtilisateur);
+        $username = $request->input("username");
+        $password = $request->input("password");
+
+        $token = $authInt->créerToken($username, $password);
 
         if($token){
             Log::info("Le token a été créé pour: " . $request->ip() . " (LoginInteracteur)");
