@@ -57,10 +57,10 @@ class ConnecterConteneurInt extends Interacteur
     private function get_url_compilebox()
     {
         return "http://" .
-            $GLOBALS['config']['compilebox_hote'] .
-            ":" .
-            $GLOBALS['config']['compilebox_port'] .
-            "/compile"; //TODO changer?
+                         env('COMPILEBOX_HOTE') .
+                         ":" .
+                         env('COMPILEBOX_PORT') .
+                         "/compile";
     }
 
     private function get_options_compilebox()

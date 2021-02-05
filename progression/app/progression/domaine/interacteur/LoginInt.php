@@ -29,11 +29,11 @@ class LoginInt extends Interacteur
     {
         syslog(LOG_INFO, "Tentative de connexion : " . $username);
 
-        if ($GLOBALS['config']['auth_type'] == "no") {
+        if (env('AUTH_TYPE') == "no") {
             $user = $this->login_sans_authentification($username);
-        } elseif ($GLOBALS['config']['auth_type'] == "local") {
+        } elseif (env('AUTH_TYPE') == "local") {
             $user = $this->login_local($username, $password);
-        } elseif ($GLOBALS['config']['auth_type'] == "ldap") {
+        } elseif (env('AUTH_TYPE') == "ldap") {
             $user = $this->login_ldap($username, $password);
         }
 
@@ -79,15 +79,15 @@ class LoginInt extends Interacteur
         define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
 
         ($ldap = ldap_connect(
-            "ldap://" . $GLOBALS['config']['hote_ad'],
-            $GLOBALS['config']['port_ad']
+            "ldap://" . env('HOTE_AD'),
+            env('PORT_AD')
         )) or die("Configuration de serveur LDAP invalide.");
         ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
         ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
         $bind = @ldap_bind(
             $ldap,
-            $GLOBALS['config']['dn_bind'],
-            $GLOBALS['config']['pw_bind']
+            env('DN_BIND'),
+            env('PW_BIND')
         );
 
         if (!$bind) {
@@ -102,7 +102,7 @@ class LoginInt extends Interacteur
         }
         $result = ldap_search(
             $ldap,
-            $GLOBALS['config']['ldap_base'],
+            env('LDAP_BASE'),
             "(sAMAccountName=$username)",
             ['dn', 'cn', 1]
         );

@@ -35,10 +35,10 @@ function db_init()
 function create_connection()
 {
     $GLOBALS["conn"] = new \mysqli(
-        $GLOBALS["config"]["servername"],
-        $GLOBALS["config"]["username"],
-        $GLOBALS["config"]["password"],
-        $GLOBALS["config"]["dbname"]
+        env("SERVERNAME"),
+        env("USERNAME"),
+        env("PASSWORD"),
+        env("DBNAME")
     );
     $GLOBALS["conn"]->set_charset("utf8");
 }
