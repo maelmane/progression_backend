@@ -22,8 +22,6 @@ class EntitéDAO
     static $conn;
 }
 
-require_once "config.php";
-
 function db_init()
 {
     if (!isset($GLOBALS["conn"])) {
