@@ -21,11 +21,9 @@ COPY ldap.conf /etc/ldap
 COPY certs/* /etc/ssl/certs/
 RUN c_rehash
 
-COPY quiz.conf /etc/
 COPY app /var/www/
 COPY --from=composer  /var/www/vendor/ /var/www/vendor/
 
-RUN chown -R www-data:www-data /var/www/ /etc/quiz.conf
-
+RUN chown -R www-data:www-data /var/www/
 RUN echo AddDefaultCharset utf-8 >> /etc/apache2/apache2.conf
 RUN a2enmod rewrite
