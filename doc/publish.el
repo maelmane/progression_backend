@@ -22,6 +22,16 @@
 
 (require 'org)
 (require 'ox-publish)
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((sql . t)
+   (ditaa . t)
+   (emacs-lisp . t)
+   (python . t)
+   (java . t)
+   (shell . t)
+   (C . t)))
+
 
 ;; setting to nil, avoids "Author: x" at the bottom
 (setq user-full-name nil)
