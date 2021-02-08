@@ -137,7 +137,7 @@ curl https://progression.dti.crosemont.quebec/api/v1/user?links -H "Authorizatio
 ** Obtenir la catégorie «programmation_1» :
 
 #+BEGIN_SRC sh :eval never
-curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1&links -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1?links -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 #+RESULTS:

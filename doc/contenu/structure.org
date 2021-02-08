@@ -1,21 +1,20 @@
 * Définitions :
-** Thème : 
-Un thème est une collection de d'exercices liés à une compétence. Le thème peut couvrir un cours ou une section d'un cours. L'étudiant qui complète un thème devrait être confiant d'avoir acquis une compétence ou une partie d'une compétence.
-** Série :
-La série est une collection d'exercices ciblant un concept particulier. Chaque série peut couvrir les concepts d'une ou quelques séances. L'étudiant qui complète une série devrait être confiant d'avoir acquis le concept.
+
+** Catégorie : 
+Une catégorie est une collection de de sous-catégories ou d'exercices liés à une compétence. La catégorie peut couvrir un cours ou une section d'un cours. L'étudiant qui complète une catégorie devrait être confiant d'avoir acquis une compétence ou une partie d'une compétence.
 ** Question :
 La question est un exercice unique, validé par une série de tests.
 ** Test :
 Chacune des validations effectuées pour prouver que l'étudiant a répondu correctement à la question.
 
-** Structure d'un thème
+* Structure des catégories :
 
-La structure des thèmes et séries est données par l'arborescence de répertoires qui les contiennent. Un thème contient un sous-répertoire par série et une série contient un sous-répertoire par question. Pour décrire le thème, la série et la question, un fichier ~info.yml~ doit être présent dans la racine de chaque section.
+La structure des catégories est données par l'arborescence de répertoires qui les contiennent. Une catégories contient un sous-répertoire par sous-catégorie et la sous-catégorie terminale contient un sous-répertoire par question. Pour décrire la catégorie, sous-catégorie ou la question, un fichier ~info.yml~ doit être présent dans la racine de chaque répertoire.
 
-#+BEGIN_SRC ditaa
-thème/
+#+BEGIN_SRC text :exports both
+catégorie/
 |_info.yml
-|_série1/
+|_sous-catégorie_1/
 | |_info.yml
 | |_question1/
 | | |_info.yml
@@ -30,7 +29,7 @@ thème/
 |     |_cas1.yml
 |     |_cas2.yml
 | 
-|_série2/
+|_sous-catégorie_2/
   |_info.yml
   |_question1/
   | |_info.yml
@@ -43,14 +42,9 @@ thème/
   |_question3/
 #+END_SRC
 
-** Composantes d'un thème
-- un fichier ~info.yml~ comportant les attributs suivants :
-  - titre : le titre du thème
-  - description : description courte du thème
-  - séries : liste des sous-répertoires contenant une série
-- un sous-répertoire par série
+* Composition des fichiers
 
-** Composantes d'une série
+** Composantes d'une catégorie
 - un fichier ~info.yml~ comportant les attributs suivants :
   - titre : le titre de la série
   - description : description courte de la série
