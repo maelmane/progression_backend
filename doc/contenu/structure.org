@@ -1,0 +1,87 @@
+* Définitions :
+** Thème : 
+Un thème est une collection de d'exercices liés à une compétence. Le thème peut couvrir un cours ou une section d'un cours. L'étudiant qui complète un thème devrait être confiant d'avoir acquis une compétence ou une partie d'une compétence.
+** Série :
+La série est une collection d'exercices ciblant un concept particulier. Chaque série peut couvrir les concepts d'une ou quelques séances. L'étudiant qui complète une série devrait être confiant d'avoir acquis le concept.
+** Question :
+La question est un exercice unique, validé par une série de tests.
+** Test :
+Chacune des validations effectuées pour prouver que l'étudiant a répondu correctement à la question.
+
+** Structure d'un thème
+
+La structure des thèmes et séries est données par l'arborescence de répertoires qui les contiennent. Un thème contient un sous-répertoire par série et une série contient un sous-répertoire par question. Pour décrire le thème, la série et la question, un fichier ~info.yml~ doit être présent dans la racine de chaque section.
+
+#+BEGIN_SRC ditaa
+thème/
+|_info.yml
+|_série1/
+| |_info.yml
+| |_question1/
+| | |_info.yml
+| | |_question.py
+| | |_tests/
+| |   |_tous_les_cas.yml
+| |
+| |_question2/
+|   |_info.yml
+|   |_question.py
+|   |_tests/
+|     |_cas1.yml
+|     |_cas2.yml
+| 
+|_série2/
+  |_info.yml
+  |_question1/
+  | |_info.yml
+  | |_Question.java
+  | |_tests/
+  |   |_cas1.yml
+  |   |_cas2.yml
+  |
+  |_question2/
+  |_question3/
+#+END_SRC
+
+** Composantes d'un thème
+- un fichier ~info.yml~ comportant les attributs suivants :
+  - titre : le titre du thème
+  - description : description courte du thème
+  - séries : liste des sous-répertoires contenant une série
+- un sous-répertoire par série
+
+** Composantes d'une série
+- un fichier ~info.yml~ comportant les attributs suivants :
+  - titre : le titre de la série
+  - description : description courte de la série
+  - questions : liste des répertoires contenant une question
+- un sous-répertoire par question
+
+** Composantes d'une question
+- un fichier ~info.yml~ comportant les attributs suivants :
+  - titre : le titre de la question
+  - description : description courte de la question
+  - énoncé : énoncé de la question (en format Markdown)
+  - execs : liste de descriptifs des programmes exécutables. Chaque élément contenant les attributs suivants :
+    - langage : langage de programmation
+    - fichier: le fichier contenant l'ébauche de programme
+  - feedback+ : feedback positif général (facultatif, en format Markdown)
+  - feedback- : feedback négatif général (facultatif, en format Markdown)
+  - tests : liste des fichiers de tests
+
+** Le fichier d'ébauche de programme
+Pour chaque question, un fichier de départ est fourni. Le programme entier doit résider dans ce seul fichier (pas d'import/include possible autre que ceux des librairies standard); c'est ce fichier qui sera exécuté.
+
+En commentaire (quelque soit le style de commentaire du langage utilisé), les étiquettes suivantes peuvent être utilisées pour contrôler l'affichage et la modification du code par l'étudiant :
+  - parties visibles (entre +VISIBLE et -VISIBLE) : ces sections seront visibles par l'étudiant
+  - parties éditables (entre +TODO et -TODO) : ces sections seront modifiables par l'étudiant. Au moins une est obligatoire mais elle peut être vide.
+
+Tout ce qui se trouve hors des sections VISIBLE sera invisible à l'étudiant (et donc immuable) mais sera tout de même exécuté normalement.
+
+** fichiers de tests
+Les fichiers de tests sont dans le format yaml et comportent une ou plusieurs sections correspondant chacune à un test effectué. Les sections sont séparées par trois tirets (---) et elles contiennent les attributs suivants :
+  - nom : nom du test
+  - in : les entrées textuelles passés directement à l'entrée standard du programme
+  - out : les sorties textuelles attendues sur la sortie standard du programme
+  - feedback+ : feedback positif spécifique à la question (facultatif, en format Markdown)
+  - feedback- : feedback négatif spécifique à la question (facultatif, en format Markdown)
