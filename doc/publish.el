@@ -77,6 +77,12 @@
              :html-head-extra "<link rel=\"icon\" type=\"image/x-icon\" href=\"/favicon.ico\"/>"
              :sitemap-style 'list
 			 )
+       (list "démo"
+             :base-directory "contenu/démo"
+             :base-extension 'any
+             :publishing-directory "../progression/app/html/doc/contenu/démo/"
+             :publishing-function 'org-publish-attachment
+             :recursive t)
        (list "images"
              :base-directory "images"
              :base-extension (regexp-opt '("jpg" "jpeg" "gif" "png" "svg" "ico"))
