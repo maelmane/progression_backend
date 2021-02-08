@@ -13,7 +13,6 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-refresh-contents)
 (package-install 'org-plus-contrib)
-(package-install 'htmlize)
 
 ;; CSS
 (require 'htmlize)
