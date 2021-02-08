@@ -2,9 +2,8 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
-use progression\http\controllers\CalculatriceController;
-use progression\http\controllers\ThemeControleur;
-use progression\http\controllers\UtilisateurControleur;
+use progression\http\contrôleur\UserCtl;
+use progression\http\contrôleur\LoginCtl;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +20,8 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->post('/user/connexion/', 'LoginControleur@login');
+$router->post('/auth/', 'LoginCtl@login');
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
-    $router->get('themes', 'ThemeControleur@getThemes');
+    $router->get('/user', 'UserCtl@get');
 });

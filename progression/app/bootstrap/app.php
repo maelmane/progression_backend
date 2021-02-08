@@ -108,7 +108,7 @@ $app->register(progression\providers\AuthServiceProvider::class);
 */
 
 $app->router->group([
-    'namespace' => 'progression\http\controleurs',
+    'namespace' => 'progression\http\contrôleur',
 ], function ($router) {
     require __DIR__.'/../routes/web.php';
 });

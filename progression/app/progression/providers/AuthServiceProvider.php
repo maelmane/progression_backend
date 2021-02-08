@@ -7,7 +7,8 @@ use Exception;
 use Illuminate\Support\ServiceProvider;
 use \Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
-use progression\domaine\interacteurs\LoginInteracteur;
+use progression\dao\DAOFactory;
+use progression\domaine\interacteur\CréerUserInt;
 use UnexpectedValueException;
 
 class AuthServiceProvider extends ServiceProvider
@@ -31,20 +32,28 @@ class AuthServiceProvider extends ServiceProvider
     {
         // Décode le token de la requête.
         $this->app['auth']->viaRequest('api', function ($request) {
-            $token = $request->header('token');
-            try {
-                $tokenDécodé = JWT::decode($token, env('JWT_SECRET'), array('HS256'));
-                // Compare le Unix Timestamp courant et l'expiration du token. 
-                if (time() > $tokenDécodé->expired) {
+            $parties_token = explode(" ", $request->header('Authorization'));
+            if (count($parties_token) == 2 && strtolower($parties_token[0])=="bearer" ) {
+                $token = $parties_token[1];
+            
+                try {
+                    $tokenDécodé = JWT::decode($token, env('JWT_SECRET'), array('HS256'));
+                    // Compare le Unix Timestamp courant et l'expiration du token. 
+                    if (time() > $tokenDécodé->expired) {
+                        return null;
+                    } else {
+                        // Recherche de l'utilisateur
+                        $user = (new CréerUserInt(new DAOFactory()))->obtenir_ou_créer_user(($tokenDécodé->user)->username);
+                        $request->request->add(['username' => $user->username]);
+                        
+                        return $user;
+                    }
+                } catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
+                    error_log("Erreur de décodage: ".$e);
                     return null;
-                } else {
-                    // Recherche de l'utilisateur
-                    $LoginInt = new LoginInteracteur();
-                    $user = $LoginInt->login(($tokenDécodé->user)->username);
-                    return $user;
                 }
-            } catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
-                error_log("Erreur de décodage: ".$e);
+            }
+            else {
                 return null;
             }
         });

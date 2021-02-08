@@ -22,8 +22,9 @@ COPY certs/* /etc/ssl/certs/
 RUN c_rehash
 
 COPY app /var/www/
+RUN chown -R www-data:www-data /var/www/
+
 COPY --from=composer  /var/www/vendor/ /var/www/vendor/
 
-RUN chown -R www-data:www-data /var/www/
 RUN echo AddDefaultCharset utf-8 >> /etc/apache2/apache2.conf
 RUN a2enmod rewrite
