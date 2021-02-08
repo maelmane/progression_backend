@@ -43,21 +43,24 @@ Les points d'entrée privés requierent un token dans l'entête : «Authentifica
 |-----------+-------------+-------------+-------+---------+------------|
 
 ** Question
-| Classe                       | Identifiant   | Propriétés   | Type |                          Valeurs | Liens     |
-|------------------------------+---------------+--------------+------+----------------------------------+-----------|
-| Question                     | catégorie/nom | nom          | str  |                                  | suivante  |
-| ▲                            |               | titre        | str  |                                  | catégorie |
-| │                            |               | description  | str  |                                  | ébauches  |
-| │                            |               | énoncé       | str  |                                  | solutions |
-| │                            |               | avancement   | int  | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) | tests     |
-| │                            |               | type         | int  |                                  |           |
-| ├ QuestionProg               |               |              |      |                                3 |           |
-| ├ QuestionProgEval(obsolète) |               |              |      |                                0 |           |
-| ├ QuestionSys                |               |              |      |                                1 |           |
-| └ QuestionBD                 |               |              |      |                                2 |           |
-|                              |               | image        | str  |                           SHA256 |           |
-|                              |               | user         | str  |                                  |           |
-|                              |               | vérification | str  |                                  |           |
+| Classe                       | Identifiant   | Propriétés  | Type |                          Valeurs | Liens     |
+|------------------------------+---------------+-------------+------+----------------------------------+-----------|
+| Question                     | catégorie/nom | nom         | str  |                                  | suivante  |
+| ▲                            |               | titre       | str  |                                  | catégorie |
+| │                            |               | description | str  |                                  | ébauches  |
+| │                            |               | énoncé      | str  |                                  | tests     |
+| │                            |               | avancement  | int  | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) |           |
+| │                            |               | type        | int  |                                  |           |
+| ├ QuestionProg               |               |             |      |                                3 |           |
+| ├ QuestionProgEval(obsolète) |               |             |      |                                0 |           |
+| ├ QuestionSys                |               |             |      |                                1 |           |
+| └ QuestionBD                 |               |             |      |                                2 |           |
+
+** Avancement
+| Classe     | Identifiant   | Propriétés | Type | Valeurs                          | Liens     |
+|------------+---------------+------------+------+----------------------------------+-----------|
+| Avancement | user/question | état       | int  | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) | question  |
+|            |               |            |      |                                  | solutions |
 
 ** Solution
 | Classe   | Identifiant              | Propriétés      | Type      | Valeurs | Liens    |
