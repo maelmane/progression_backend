@@ -22,6 +22,7 @@ Les points d'entrée privés requierent un token dans l'entête : «Authentifica
 | GET     | ~/user/{username}~ | Obtient l'utilisateur /username/ | User,  l'utilisateur authentifié |
 
 * Objets
+** User
 | Classe                       | Identifiant              | Propriétés      | Type      |                          Valeurs | Liens           |
 |------------------------------+--------------------------+-----------------+-----------+----------------------------------+-----------------|
 | /                            | <                        |                 |           |                                  | <               |
@@ -29,116 +30,152 @@ Les points d'entrée privés requierent un token dans l'entête : «Authentifica
 |                              |                          | rôle            | int       |                         0=normal |                 |
 |                              |                          |                 |           |                          1=admin |                 |
 |------------------------------+--------------------------+-----------------+-----------+----------------------------------+-----------------|
-| Catégorie                    | parent/nom               | nom             | str       |                                  | parent          |
-|                              |                          | titre           | str       |                                  | sous-catégories |
-|                              |                          | description     | str       |                                  | questions       |
-|                              |                          | numéro          | int       |                                  |                 |
-|                              |                          | avancement      | float     |                           0-100% |                 |
-|                              |                          | accessible      | bool      |                                  |                 |
-|------------------------------+--------------------------+-----------------+-----------+----------------------------------+-----------------|
-| Question                     | catégorie/nom            | nom             | str       |                                  | suivante        |
-| ▲                            |                          | titre           | str       |                                  | catégorie       |
-| │                            |                          | description     | str       |                                  | ébauches        |
-| │                            |                          | numéro          | int       |                                  | tests           |
-| │                            |                          | énoncé          | str       |                                  | solutions       |
-| │                            |                          | avancement      | int       | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) |                 |
-| │                            |                          | type            | int       |                                  |                 |
-| ├ QuestionProg               |                          |                 |           |                                3 |                 |
-| ├ QuestionProgEval(obsolète) |                          |                 |           |                                0 |                 |
-| ├ QuestionSys                |                          |                 |           |                                1 |                 |
-| └ QuestionBD                 |                          |                 |           |                                2 |                 |
-|                              |                          | image           | str       |                           SHA256 |                 |
-|                              |                          | user            | str       |                                  |                 |
-|                              |                          | vérification    | str       |                                  |                 |
-|------------------------------+--------------------------+-----------------+-----------+----------------------------------+-----------------|
-| Solution                     | question/date_soumission | date_soumission | timestamp |                                  | question        |
-|                              |                          | langage         | int       |                                  |                 |
-|                              |                          | code            | str       |                                  |                 |
-|                              |                          | feedback        | str       |                                  |                 |
-|------------------------------+--------------------------+-----------------+-----------+----------------------------------+-----------------|
-| Test                         | question/numéro          | numéro          | int       |                                  | question        |
-|                              |                          | nom             | str       |                                  |                 |
-|                              |                          | entrée          | str       |                                  |                 |
-|                              |                          | sortie_attendue | str       |                                  |                 |
-|                              |                          | sortie_observée | str       |                                  |                 |
-|                              |                          | sortie_erreur   | str       |                                  |                 |
-|                              |                          | résultat        | bool      |                                  |                 |
-|                              |                          | feedback        | str       |                                  |                 |
+
+** Catégorie
+| Classe    | Identifiant | Propriétés  | Type  | Valeurs | Liens      |
+|-----------+-------------+-------------+-------+---------+------------|
+| Catégorie | parent/nom  | nom         | str   |         | parent     |
+|           |             | titre       | str   |         | catégories |
+|           |             | description | str   |         | questions  |
+|           |             | avancement  | float |  0-100% |            |
+|           |             | accessible  | bool  |         |            |
+|-----------+-------------+-------------+-------+---------+------------|
+
+** Question
+| Classe                       | Identifiant   | Propriétés   | Type |                          Valeurs | Liens     |
+|------------------------------+---------------+--------------+------+----------------------------------+-----------|
+| Question                     | catégorie/nom | nom          | str  |                                  | suivante  |
+| ▲                            |               | titre        | str  |                                  | catégorie |
+| │                            |               | description  | str  |                                  | ébauches  |
+| │                            |               | énoncé       | str  |                                  | solutions |
+| │                            |               | avancement   | int  | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) | tests     |
+| │                            |               | type         | int  |                                  |           |
+| ├ QuestionProg               |               |              |      |                                3 |           |
+| ├ QuestionProgEval(obsolète) |               |              |      |                                0 |           |
+| ├ QuestionSys                |               |              |      |                                1 |           |
+| └ QuestionBD                 |               |              |      |                                2 |           |
+|                              |               | image        | str  |                           SHA256 |           |
+|                              |               | user         | str  |                                  |           |
+|                              |               | vérification | str  |                                  |           |
+
+** Solution
+| Classe   | Identifiant              | Propriétés      | Type      | Valeurs | Liens    |
+|----------+--------------------------+-----------------+-----------+---------+----------|
+| Solution | question/date_soumission | date_soumission | timestamp |         | question |
+|          |                          | langage         | int       |         |          |
+|          |                          | code            | str       |         |          |
+|          |                          | feedback        | str       |         |          |
+
+** Test
+| Classe | Identifiant     | Propriétés      | Type | Valeurs | Liens    |
+|--------+-----------------+-----------------+------+---------+----------|
+| Test   | question/numéro | numéro          | int  |         | question |
+|        |                 | nom             | str  |         |          |
+|        |                 | entrée          | str  |         |          |
+|        |                 | sortie_attendue | str  |         |          |
+|        |                 | sortie_observée | str  |         |          |
+|        |                 | sortie_erreur   | str  |         |          |
+|        |                 | résultat        | bool |         |          |
+|        |                 | feedback        | str  |         |          |
 
 * Exemples
 
-#+NAME: extract_token
-#+BEGIN_SRC sh :var token="" :export no :results output
-echo $token | cut -d '"' -f 4
-#+END_SRC
-
 #+NAME: get_token
-#+BEGIN_SRC sh :eval :post extract_token(token=*this*) :results output :export no
-PASSWORD=$(cat ~/mot_de_passe)
-curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=bob&password=$PASSWORD" 
+#+BEGIN_SRC sh :eval yes :results output :exports none
+PASSWORD=$(cat ./mot_de_passe)
+RET=$(curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=test&password=$PASSWORD" | cut -d '"' -f 4)
+printf "%s" $RET
 #+END_SRC
 
-** Connexion en tant qu'utilisateur ~bob~ :
+** Connexion en tant qu'utilisateur ~test~ :
 
 
-#+BEGIN_SRC sh :eval :results output
-PASSWORD=$(cat ~/mot_de_passe)
-curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=bob&password=$PASSWORD" 
+#+BEGIN_SRC sh :eval yes :results output
+PASSWORD=$(cat ./mot_de_passe)
+curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=test&password=$PASSWORD" 
 #+END_SRC
 
 #+RESULTS:
-: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoicGxhZnJhbmNlIiwicm9sZSI6MCwiaWQiOjEsImFjdGlmIjpudWxsfSwiY3VycmVudCI6MTYxMjc1NDczOCwiZXhwaXJlZCI6MTYxMjg0MTEzOH0.fOzl57wzxQh1HmAClHDzGJo4dLcMZfOxmqW9bGHlAP8
+: {"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoidGVzdCIsInJvbGUiOjAsImlkIjozLCJhY3RpZiI6bnVsbH0sImN1cnJlbnQiOjE2MTI4MDkxMDcsImV4cGlyZWQiOjE2MTI4OTU1MDd9.hL_-G4bfNjaVuSku6Ed05UsE54IaQrDskRWq_HUQ8PA"}
 
-** Obtenir le profil de l'utilisateur connecté ~bob~ : 
+** Obtenir le profil de l'utilisateur connecté ~test~ : 
 
 #+BEGIN_SRC sh :var TOKEN=get_token :results output
 curl https://progression.dti.crosemont.quebec/api/v1/user -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 #+RESULTS:
-#+begin_example
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-<html><head>
-<title>400 Bad Request</title>
-</head><body>
-<h1>Bad Request</h1>
-<p>Your browser sent a request that this server could not understand.<br />
-</p>
-<hr>
-<address>Apache/2.4.25 (Debian) Server at ic.dti.crosemont.quebec Port 443</address>
-</body></html>
-#+end_example
+: {
+:   "user": {
+:     "username": "test",
+:     "rôle": 0
+:   }
+: }
 
-** Obtenir la liste des catégories disponibles pour ~bob~ :
+** Obtenir la liste des catégories disponibles pour l'utilisateur ~test~ :
 
-#+BEGIN_SRC sh :eval never
-curl https://progression.dti.crosemont.quebec/api/v1/user/bob?links -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoicGxhZnJhbmNlIiwicm9sZSI6MCwiaWQiOjEsImFjdGlmIjpudWxsfSwiY3VycmVudCI6MTYxMjczNTgwMiwiZXhwaXJlZCI6MTYxMjgyMjIwMn0.d3X4qWXi1bAIrlwyk37grM-KzO0S0gmIc3NUYK-KseM" 
+#+BEGIN_SRC sh :eval never :var TOKEN=get_token :results output
+curl https://progression.dti.crosemont.quebec/api/v1/user?links -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
+#+RESULTS:
+: {
+:   "user": {
+:     "username": "test",
+:     "rôle": 0
+:   },
+:   "links": {
+:     "catégories": [
+:       "/catégorie/tutoriel",
+:       "/catégorie/programmation_1"
+:     ]
+:   }
+: }
 
-** Obtenir la catégorie «prog_1» :
+
+** Obtenir la catégorie «programmation_1» :
 
 #+BEGIN_SRC sh :eval never
-curl https://progression.dti.crosemont.quebec/api/v1/categorie/prog_1&links -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoicGxhZnJhbmNlIiwicm9sZSI6MCwiaWQiOjEsImFjdGlmIjpudWxsfSwiY3VycmVudCI6MTYxMjczNTgwMiwiZXhwaXJlZCI6MTYxMjgyMjIwMn0.d3X4qWXi1bAIrlwyk37grM-KzO0S0gmIc3NUYK-KseM" 
+curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1&links -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
+#+RESULTS:
+: {
+:   "catégorie": {
+:     "nom": "programmation_1",
+:     "titre": "Introduction à la programmation",
+:     "description": "Exercices d'introduction à la programmation.",
+:     "avancement": "42",
+:     "accessible": "true"
+:   },
+:   "links": {
+:     "parent": "/",
+:     "catégories": [
+:       "/catégorie/programmation_1/les_boucles",
+:       "/catégorie/programmation_1/les_fonctions"
+:     ],
+:     "questions": [
+:       "question/programmation_1/les_fonctions/appeler_une_fonction"
+:     ]
+:   }
+: }
 
-** Obtenir la question «fonction_42» :
+** Obtenir la question «appeler_une_fonction» :
 
 #+BEGIN_SRC sh :eval never
-curl https://progression.dti.crosemont.quebec/api/v1/question/prog_1/les_fonctions/fonction_42 -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoicGxhZnJhbmNlIiwicm9sZSI6MCwiaWQiOjEsImFjdGlmIjpudWxsfSwiY3VycmVudCI6MTYxMjczNTgwMiwiZXhwaXJlZCI6MTYxMjgyMjIwMn0.d3X4qWXi1bAIrlwyk37grM-KzO0S0gmIc3NUYK-KseM" 
+curl https://progression.dti.crosemont.quebec/api/v1/question/programmation_1/les_fonctions/appeler_une_fonction -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir l'ébauche de solution en Python pour question «fonction_42» :
+** Obtenir l'ébauche de solution en Python pour question «appeler_une_fonction» :
 
 #+BEGIN_SRC sh :eval never
-curl https://progression.dti.crosemont.quebec/api/v1/solution/prog_1/les_fonctions/fonction_42?langage=python -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoicGxhZnJhbmNlIiwicm9sZSI6MCwiaWQiOjEsImFjdGlmIjpudWxsfSwiY3VycmVudCI6MTYxMjczNTgwMiwiZXhwaXJlZCI6MTYxMjgyMjIwMn0.d3X4qWXi1bAIrlwyk37grM-KzO0S0gmIc3NUYK-KseM" 
+curl https://progression.dti.crosemont.quebec/api/v1/solution/programmation_1/les_fonctions/appeler_une_fonction?langage=python -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Soumettre une solution à la question «fonction_42» :
+** Soumettre une solution à la question «appeler_une_fonction» :
 
 #+BEGIN_SRC sh :eval never
-curl --data '{"langage":"python", "code":"print (\"Allo le monde\")"  }' https://progression.dti.crosemont.quebec/api/v1/solution/prog_1/les_fonctions/fonction_42 -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoicGxhZnJhbmNlIiwicm9sZSI6MCwiaWQiOjEsImFjdGlmIjpudWxsfSwiY3VycmVudCI6MTYxMjczNTgwMiwiZXhwaXJlZCI6MTYxMjgyMjIwMn0.d3X4qWXi1bAIrlwyk37grM-KzO0S0gmIc3NUYK-KseM" 
+curl --data '{"langage":"python", "code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dti.crosemont.quebec/api/v1/solution/programmation_1/les_fonctions/appeler_une_fonction -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 
