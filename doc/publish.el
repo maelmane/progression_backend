@@ -13,7 +13,7 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-refresh-contents)
 (package-install 'org-plus-contrib)
-(setq 'org-confirm-babel-evaluate nil)
+(setq org-confirm-babel-evaluate nil)
 
 ;; CSS
 (require 'htmlize)
