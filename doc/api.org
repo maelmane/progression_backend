@@ -26,7 +26,6 @@ Les points d'entrée privés requierent un token dans l'entête : «Authentifica
 ** User
 | Classe | Identifiant | Propriétés | Type | Valeurs  |
 |--------+-------------+------------+------+----------|
-| /      | <           |            |      |          |
 | User   | username    | username   | str  |          |
 |        |             | rôle       | int  | 0=normal |
 |        |             |            |      | 1=admin  |
@@ -38,23 +37,23 @@ Liens :
 | catégories | liste de Catégories |
 
 ** Catégorie
-| Classe    | Identifiant | Propriétés  | Type                              | Valeurs |
-|-----------+-------------+-------------+-----------------------------------+---------|
-| Catégorie | parent/nom  | nom         | str                               |         |
-|           |             | titre       | str                               |         |
-|           |             | description | str                               |         |
-|           |             | catégories  | liste des noms de sous-catégories |         |
-|           |             | questions   | liste des noms de questions       |         |
-|-----------+-------------+-------------+-----------------------------------+---------|
+| Classe    | Identifiant | Propriétés  | Type                       | Valeurs |
+|-----------+-------------+-------------+----------------------------+---------|
+| Catégorie | parent/nom  | nom         | str                        |         |
+|           |             | titre       | str                        |         |
+|           |             | description | str                        |         |
+|           |             | catégories  | liste de (sous-)Catégories |         |
+|           |             | questions   | liste de Questions         |         |
+|-----------+-------------+-------------+----------------------------+---------|
 
 Liens :
-| Nom        | Description                                            |
-|------------+--------------------------------------------------------|
-| parent     | Catégorie parent                                       |
-| catégories | liste de sous-catégories                               |
-| questions  | liste de Questions                                     |
-| avancement | pourcentage d'avancement dans cette catégorie          |
-| accessible | Vrai si la catégorie est accessible pour l'utilisateur |
+| Nom           | Description                                            |
+|---------------+--------------------------------------------------------|
+| parent        | Catégorie parent                                       |
+| catégories    | liste de sous-catégories                               |
+| questions     | liste de Questions                                     |
+| avancement    | pourcentage d'avancement dans cette catégorie          |
+| accessibilité | Vrai si la catégorie est accessible pour l'utilisateur |
 
 ** Question
 | Classe                       | Identifiant   | Propriétés  | Type                                 | Valeurs |
@@ -72,12 +71,13 @@ Liens :
 | └ QuestionBD                 |               |             |                                      |       2 |
 
 Liens :
-| Nom        | Description                    |
-|------------+--------------------------------|
-| suivante   | Question suivante              |
-| catégorie  | Catégorie parent               |
-| ébauches   | liste d'ébauches de Solutions  |
-| avancement | Avancement pour cette question |
+| Nom           | Description                                           |
+|---------------+-------------------------------------------------------|
+| suivante      | Question suivante                                     |
+| catégorie     | Catégorie parent                                      |
+| ébauches      | liste d'ébauches de Solutions                         |
+| avancement    | Avancement pour cette question                        |
+| accessibilité | Vrai si la question est accessible pour l'utilisateur |
 
 ** Avancement
 | Classe     | Identifiant   | Propriétés | Type               | Valeurs                          |
@@ -172,8 +172,8 @@ curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1?
 :     "nom": "programmation_1",
 :     "titre": "Introduction à la programmation",
 :     "description": "Exercices d'introduction à la programmation.",
-:     "avancement": "42",
-:     "accessible": "true"
+:     "catégories": ["les_boucles", "les_fonctions"],
+:     "questions": []
 :   },
 :   "links": {
 :     "parent": "/",
@@ -181,11 +181,38 @@ curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1?
 :       "/catégorie/programmation_1/les_boucles",
 :       "/catégorie/programmation_1/les_fonctions"
 :     ],
-:     "questions": [
-:       "question/programmation_1/les_fonctions/appeler_une_fonction"
-:     ]
+:     "questions": [],
+:     "avancement": "/user/test/catégorie/programmation_1/avancement",
+:     "accessibilité": "/user/test/catégorie/programmation_1/accessibilité",
 :   }
 : }
+
+** Obtenir la sous-catégorie «les_fonctions» :
+
+#+BEGIN_SRC sh :eval never
+curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/les_fonctions?links -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+#+RESULTS:
+: {
+:   "catégorie": {
+:     "nom": "les_fonctions",
+:     "titre": "Introduction aux fonctions",
+:     "description": "Exercices d'introduction aux fonctions.",
+:     "catégories": [],
+:     "questions": ["appeler_une_fonction"]
+:   },
+:   "links": {
+:     "parent": "/",
+:     "catégories": [],
+:     "questions": [
+:       "question/programmation_1/les_fonctions/appeler_une_fonction"
+:     ],
+:     "avancement": "/user/test/catégorie/programmation_1/les_fonctions/avancement",
+:     "accessibilité": "/user/test/catégorie/programmation_1/les_fonctions/accessibilité",
+:   }
+: }
+
 
 ** Obtenir la question «appeler_une_fonction» :
 
@@ -193,35 +220,21 @@ curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1?
 curl https://progression.dti.crosemont.quebec/api/v1/question/programmation_1/les_fonctions/appeler_une_fonction -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir l'ébauche de solution en Python pour question «appeler_une_fonction» :
+** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction» :
 
 #+BEGIN_SRC sh :eval never
-curl https://progression.dti.crosemont.quebec/api/v1/solution/programmation_1/les_fonctions/appeler_une_fonction?langage=python -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/user/test/solution/programmation_1/les_fonctions/appeler_une_fonction?langage=python -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Soumettre une solution à la question «appeler_une_fonction» :
 
 #+BEGIN_SRC sh :eval never
-curl --data '{"langage":"python", "code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dti.crosemont.quebec/api/v1/solution/programmation_1/les_fonctions/appeler_une_fonction -H "Authorization: Bearer $TOKEN"
+curl --data '{"code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dti.crosemont.quebec/api/v1/solution/programmation_1/les_fonctions/appeler_une_fonction?langage=python -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
+** Obtenir une solution soumise pour la question «appeler_une_fonction» :
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#+BEGIN_SRC sh :eval never
+curl https://progression.dti.crosemont.quebec/api/v1/user/test/solution/programmation_1/les_fonctions/appeler_une_fonction/1612834148 -H "Authorization: Bearer $TOKEN"
+#+END_SRC
 
