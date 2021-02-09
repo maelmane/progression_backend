@@ -20,23 +20,23 @@ namespace progression\domaine\entité;
 
 use PHPUnit\Framework\TestCase;
 
-final class AvancementTests extends TestCase{
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_et_userid_3_lorsquon_récupère_son_questionid_on_obtient_5(){
-        $avancementTest = new Avancement(5, 3);
+final class EntitéTests extends TestCase{
+    public function test_étant_donné_une_entité_instancié_avec_id_3_lorsquon_récupère_son_id_on_obtient_3(){
+        $entitéTest = new Entité(3);
 
-        $questionid = $avancementTest->question_id;
+        $id = $entitéTest->id;
 
-        $this->assertEquals( 5, $questionid );
+        $this->assertEquals( 3, $id );
     }
 
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_et_userid_3_lorsquon_récupère_son_userid_on_obtient_3(){
-        $avancementTest = new Avancement(5, 3);
+    public function test_étant_donné_une_entité_instancié_sans_paramètre_lorsquon_récupère_son_id_on_obtient_null(){
+        $entitéTest = new Entité();
 
-        $userid = $avancementTest->user_id;
+        $id = $entitéTest->id;
 
-        $this->assertEquals( 3, $userid );
+        $this->assertEquals( null, $id );
     }
-
+    
 }
 
 ?>
