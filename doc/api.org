@@ -24,63 +24,86 @@ Les points d'entrée privés requierent un token dans l'entête : «Authentifica
 
 * Objets
 ** User
-| Classe                       | Identifiant              | Propriétés      | Type      |                          Valeurs | Liens           |
-|------------------------------+--------------------------+-----------------+-----------+----------------------------------+-----------------|
-| /                            | <                        |                 |           |                                  | <               |
-| User                         | username                 | username        | str       |                                  | catégories      |
-|                              |                          | rôle            | int       |                         0=normal |                 |
-|                              |                          |                 |           |                          1=admin |                 |
-|------------------------------+--------------------------+-----------------+-----------+----------------------------------+-----------------|
+| Classe | Identifiant | Propriétés | Type | Valeurs  |
+|--------+-------------+------------+------+----------|
+| /      | <           |            |      |          |
+| User   | username    | username   | str  |          |
+|        |             | rôle       | int  | 0=normal |
+|        |             |            |      | 1=admin  |
+|--------+-------------+------------+------+----------|
+
+Liens :
+| Nom        | Description         |
+|------------+---------------------|
+| catégories | liste de Catégories |
 
 ** Catégorie
-| Classe    | Identifiant | Propriétés  | Type  | Valeurs | Liens      |
-|-----------+-------------+-------------+-------+---------+------------|
-| Catégorie | parent/nom  | nom         | str   |         | parent     |
-|           |             | titre       | str   |         | catégories |
-|           |             | description | str   |         | questions  |
-|           |             | avancement  | float |  0-100% |            |
-|           |             | accessible  | bool  |         |            |
-|-----------+-------------+-------------+-------+---------+------------|
+| Classe    | Identifiant | Propriétés  | Type                              | Valeurs |
+|-----------+-------------+-------------+-----------------------------------+---------|
+| Catégorie | parent/nom  | nom         | str                               |         |
+|           |             | titre       | str                               |         |
+|           |             | description | str                               |         |
+|           |             | catégories  | liste des noms de sous-catégories |         |
+|           |             | questions   | liste des noms de questions       |         |
+|-----------+-------------+-------------+-----------------------------------+---------|
+
+Liens :
+| Nom        | Description                                            |
+|------------+--------------------------------------------------------|
+| parent     | Catégorie parent                                       |
+| catégories | liste de sous-catégories                               |
+| questions  | liste de Questions                                     |
+| avancement | pourcentage d'avancement dans cette catégorie          |
+| accessible | Vrai si la catégorie est accessible pour l'utilisateur |
 
 ** Question
-| Classe                       | Identifiant   | Propriétés  | Type |                          Valeurs | Liens     |
-|------------------------------+---------------+-------------+------+----------------------------------+-----------|
-| Question                     | catégorie/nom | nom         | str  |                                  | suivante  |
-| ▲                            |               | titre       | str  |                                  | catégorie |
-| │                            |               | description | str  |                                  | ébauches  |
-| │                            |               | énoncé      | str  |                                  | tests     |
-| │                            |               | avancement  | int  | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) |           |
-| │                            |               | type        | int  |                                  |           |
-| ├ QuestionProg               |               |             |      |                                3 |           |
-| ├ QuestionProgEval(obsolète) |               |             |      |                                0 |           |
-| ├ QuestionSys                |               |             |      |                                1 |           |
-| └ QuestionBD                 |               |             |      |                                2 |           |
+| Classe                       | Identifiant   | Propriétés  | Type                                 | Valeurs |
+|------------------------------+---------------+-------------+--------------------------------------+---------|
+| Question                     | catégorie/nom | nom         | str                                  |         |
+| ▲                            |               | titre       | str                                  |         |
+| │                            |               | description | str                                  |         |
+| │                            |               | énoncé      | str                                  |         |
+| │                            |               | type        | int                                  |         |
+| ├ QuestionProg               |               |             |                                      |       3 |
+| │                            |               | langages    | liste de noms de langage disponibles |         |
+| │                            |               | tests       | liste de Tests                       |         |
+| ├ QuestionProgEval(obsolète) |               |             |                                      |       0 |
+| ├ QuestionSys                |               |             |                                      |       1 |
+| └ QuestionBD                 |               |             |                                      |       2 |
+
+Liens :
+| Nom        | Description                    |
+|------------+--------------------------------|
+| suivante   | Question suivante              |
+| catégorie  | Catégorie parent               |
+| ébauches   | liste d'ébauches de Solutions  |
+| avancement | Avancement pour cette question |
 
 ** Avancement
-| Classe     | Identifiant   | Propriétés | Type | Valeurs                          | Liens     |
-|------------+---------------+------------+------+----------------------------------+-----------|
-| Avancement | user/question | état       | int  | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) | question  |
-|            |               |            |      |                                  | solutions |
+| Classe     | Identifiant   | Propriétés | Type               | Valeurs                          |
+|------------+---------------+------------+--------------------+----------------------------------|
+| Avancement | user/question | état       | int                | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) |
+|            |               | solutions  | liste de Solutions |                                  |
 
 ** Solution
-| Classe   | Identifiant              | Propriétés      | Type      | Valeurs | Liens    |
-|----------+--------------------------+-----------------+-----------+---------+----------|
-| Solution | question/date_soumission | date_soumission | timestamp |         | question |
-|          |                          | langage         | int       |         |          |
-|          |                          | code            | str       |         |          |
-|          |                          | feedback        | str       |         |          |
+| Classe   | Identifiant              | Propriétés      | Type | Valeurs   |
+|----------+--------------------------+-----------------+------+-----------|
+| Solution | question/date_soumission | date_soumission | int  | timestamp |
+|          |                          | langage         | int  |           |
+|          |                          | code            | str  |           |
+|          |                          | feedback        | str  |           |
 
 ** Test
-| Classe | Identifiant     | Propriétés      | Type | Valeurs | Liens    |
-|--------+-----------------+-----------------+------+---------+----------|
-| Test   | question/numéro | numéro          | int  |         | question |
-|        |                 | nom             | str  |         |          |
-|        |                 | entrée          | str  |         |          |
-|        |                 | sortie_attendue | str  |         |          |
-|        |                 | sortie_observée | str  |         |          |
-|        |                 | sortie_erreur   | str  |         |          |
-|        |                 | résultat        | bool |         |          |
-|        |                 | feedback        | str  |         |          |
+| Classe | Identifiant     | Propriétés      | Type | Valeurs |
+|--------+-----------------+-----------------+------+---------|
+| Test   | question/numéro | numéro          | int  |         |
+|        |                 | nom             | str  |         |
+|        |                 | entrée          | str  |         |
+|        |                 | sortie_attendue | str  |         |
+|        |                 | sortie_observée | str  |         |
+|        |                 | sortie_erreur   | str  |         |
+|        |                 | résultat        | bool |         |
+|        |                 | feedback        | str  |         |
 
 * Exemples
 
