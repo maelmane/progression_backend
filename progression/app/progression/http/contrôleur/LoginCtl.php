@@ -25,17 +25,12 @@ use progression\domaine\interacteur\AuthentificationInteracteur;
 
 class LoginCtl extends Contrôleur
 {
-    function __construct()
-    {
-    }
-
     public function login(Request $request){
         $authInt = new AuthentificationInteracteur();
         $username = $request->input("username");
         $password = $request->input("password");
 
         $token = $authInt->créerToken($username, $password);
-
         if($token){
             Log::info("Le token a été créé pour: " . $request->ip() . " (LoginInteracteur)");
             return $this->réponseJson(['token' => $token], 200);

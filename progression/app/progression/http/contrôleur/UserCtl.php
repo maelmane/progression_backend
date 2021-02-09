@@ -24,10 +24,6 @@ use progression\dao\DAOFactory;
 
 class UserCtl extends Contrôleur
 {
-    function __construct()
-    {
-    }
-
     public function get(Request $request){
         $username = $request->input("username");
 

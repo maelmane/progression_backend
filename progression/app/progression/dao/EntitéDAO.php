@@ -21,12 +21,13 @@ class ConnexionException extends \Exception{};
 
 class EntitéDAO
 {
-    static $conn=null;
+    public $conn;
+    static $la_connexion=null;
 
     function db_init()
     {
-        if ( ! EntitéDAO::$conn ){
-            create_connection();
+        if ( ! EntitéDAO::$la_connexion ){
+            $this->create_connection();
             if ( mysqli_connect_errno() != 0 ){
                 throw new ConnexionException( mysqli_connect_error() . "(".mysqli_connect_errno().")" );
             }
@@ -35,18 +36,18 @@ class EntitéDAO
 
     function create_connection()
     {
-        EntitéDAO::$conn = new \mysqli(
+        EntitéDAO::$la_connexion = new \mysqli(
             $_ENV["SERVERNAME"],
             $_ENV["USERNAME"],
             $_ENV["PASSWORD"],
             $_ENV["DBNAME"]
         );
-        EntitéDAO::$conn->set_charset("utf8");
+        EntitéDAO::$la_connexion->set_charset("utf8");
     }
 
-    private function __construct(){
-        db_init();
-        $this->conn = EntitéDAO::$conn;
+    public function __construct(){
+        $this->db_init();
+        $this->conn = EntitéDAO::$la_connexion;
     }
 
 }

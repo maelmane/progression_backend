@@ -59,8 +59,6 @@ class LoginInt extends Interacteur
         $user = null;
 
         if ($this->vérifier_champs_valides($username, $password)) {
-            error_log($username);
-            error_log($password);
             $user_ldap = LoginInt::get_username_ldap($username, $password);
 
             if ($user_ldap != null) {
