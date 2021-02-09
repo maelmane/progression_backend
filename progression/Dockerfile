@@ -1,12 +1,10 @@
-FROM composer:latest
-RUN mkdir /var/www/vendor/
-COPY composer.json /var/www/vendor/
+FROM composer:latest AS composer
 
-RUN composer install -d /var/www/vendor/
+COPY composer.json /var/www/
+
+RUN composer install -d /var/www/
 
 FROM php:apache
-
-COPY --from=0  /var/www/vendor /var/www/
 
 # Mise a jour de la liste de package
 RUN apt update && apt upgrade -y && apt autoclean
@@ -23,6 +21,7 @@ RUN c_rehash
 COPY app /var/www/
 RUN chown -R www-data:www-data /var/www/
 
+RUN mkdir /var/www/vendor
 COPY --from=composer  /var/www/vendor/ /var/www/vendor/
 
 RUN echo AddDefaultCharset utf-8 >> /etc/apache2/apache2.conf
