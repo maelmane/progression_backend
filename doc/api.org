@@ -1,0 +1,240 @@
+#+SETUPFILE: https://portail.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg.setup
+#+TITLE: API Progression
+#+PROPERTY: header-args:sh :results output
+#+PROPERTY: header-args:sh :exports both
+
+* Versions
+Les versions de l'api sont accessibles à des URL distincts pour assurer la rétrocompatibilité.
+
+| Version | URL        |
+|       1 | ~/api/v1/~ |
+
+* Points d'entrée
+** Publics
+| Méthode | URL     | Description      | Paramètres         | Réponse             |
+| GET     | ~/doc~  | Documentation    |                    | str (HTML)          |
+| POST    | ~/auth~ | Authentification | username, password | token, un token JWT |
+
+** Privés
+Les points d'entrée privés requierent un token dans l'entête : «Authentification: Bearer <token>»
+
+| Méthode | URL                | Description                            | Réponse |
+| GET     | ~/user/~           | Obtient l'utilisateur Authentification | User    |
+| GET     | ~/user/{username}~ | Obtient l'utilisateur /username/       | User    |
+
+* Objets
+** User
+| Classe | Identifiant | Propriétés | Type | Valeurs  |
+|--------+-------------+------------+------+----------|
+| User   | username    | username   | str  |          |
+|        |             | rôle       | int  | 0=normal |
+|        |             |            |      | 1=admin  |
+|--------+-------------+------------+------+----------|
+
+Liens :
+| Nom        | Description         |
+|------------+---------------------|
+| catégories | liste de Catégories |
+
+** Catégorie
+| Classe    | Identifiant | Propriétés  | Type                       | Valeurs |
+|-----------+-------------+-------------+----------------------------+---------|
+| Catégorie | parent/nom  | nom         | str                        |         |
+|           |             | titre       | str                        |         |
+|           |             | description | str                        |         |
+|           |             | catégories  | liste de (sous-)Catégories |         |
+|           |             | questions   | liste de Questions         |         |
+|-----------+-------------+-------------+----------------------------+---------|
+
+Liens :
+| Nom           | Description                                            |
+|---------------+--------------------------------------------------------|
+| parent        | Catégorie parent                                       |
+| catégories    | liste de sous-catégories                               |
+| questions     | liste de Questions                                     |
+| avancement    | pourcentage d'avancement dans cette catégorie          |
+| accessibilité | Vrai si la catégorie est accessible pour l'utilisateur |
+
+** Question
+| Classe                       | Identifiant   | Propriétés  | Type                                 | Valeurs |
+|------------------------------+---------------+-------------+--------------------------------------+---------|
+| Question                     | catégorie/nom | nom         | str                                  |         |
+| ▲                            |               | titre       | str                                  |         |
+| │                            |               | description | str                                  |         |
+| │                            |               | énoncé      | str                                  |         |
+| │                            |               | type        | int                                  |         |
+| ├ QuestionProg               |               |             |                                      |       3 |
+| │                            |               | langages    | liste de noms de langage disponibles |         |
+| │                            |               | tests       | liste de Tests                       |         |
+| ├ QuestionProgEval(obsolète) |               |             |                                      |       0 |
+| ├ QuestionSys                |               |             |                                      |       1 |
+| └ QuestionBD                 |               |             |                                      |       2 |
+
+Liens :
+| Nom           | Description                                           |
+|---------------+-------------------------------------------------------|
+| suivante      | Question suivante                                     |
+| catégorie     | Catégorie parent                                      |
+| ébauches      | liste d'ébauches de Solutions                         |
+| avancement    | Avancement pour cette question                        |
+| accessibilité | Vrai si la question est accessible pour l'utilisateur |
+
+** Avancement
+| Classe     | Identifiant   | Propriétés | Type               | Valeurs                          |
+|------------+---------------+------------+--------------------+----------------------------------|
+| Avancement | user/question | état       | int                | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) |
+|            |               | solutions  | liste de Solutions |                                  |
+
+** Solution
+| Classe   | Identifiant              | Propriétés      | Type | Valeurs   |
+|----------+--------------------------+-----------------+------+-----------|
+| Solution | question/date_soumission | date_soumission | int  | timestamp |
+|          |                          | langage         | int  |           |
+|          |                          | code            | str  |           |
+|          |                          | feedback        | str  |           |
+
+** Test
+| Classe | Identifiant     | Propriétés      | Type | Valeurs |
+|--------+-----------------+-----------------+------+---------|
+| Test   | question/numéro | numéro          | int  |         |
+|        |                 | nom             | str  |         |
+|        |                 | entrée          | str  |         |
+|        |                 | sortie_attendue | str  |         |
+|        |                 | sortie_observée | str  |         |
+|        |                 | sortie_erreur   | str  |         |
+|        |                 | résultat        | bool |         |
+|        |                 | feedback        | str  |         |
+
+* Exemples
+
+#+NAME: get_token
+#+BEGIN_SRC sh :eval yes :results output :exports none
+PASSWORD=$(cat ./mot_de_passe)
+RET=$(curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=test&password=$PASSWORD" | cut -d '"' -f 4)
+printf "%s" $RET
+#+END_SRC
+
+** Connexion en tant qu'utilisateur ~test~ :
+
+
+#+BEGIN_SRC sh :eval yes :results output
+PASSWORD=$(cat ./mot_de_passe)
+curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=test&password=$PASSWORD" 
+#+END_SRC
+
+#+RESULTS:
+: {"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoidGVzdCIsInJvbGUiOjAsImlkIjozLCJhY3RpZiI6bnVsbH0sImN1cnJlbnQiOjE2MTI4MDkxMDcsImV4cGlyZWQiOjE2MTI4OTU1MDd9.hL_-G4bfNjaVuSku6Ed05UsE54IaQrDskRWq_HUQ8PA"}
+
+** Obtenir le profil de l'utilisateur connecté ~test~ : 
+
+#+BEGIN_SRC sh :var TOKEN=get_token :results output
+curl https://progression.dti.crosemont.quebec/api/v1/user -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+#+RESULTS:
+: {
+:   "user": {
+:     "username": "test",
+:     "rôle": 0
+:   }
+: }
+
+** Obtenir la liste des catégories disponibles pour l'utilisateur ~test~ :
+
+#+BEGIN_SRC sh :eval never :var TOKEN=get_token :results output
+curl https://progression.dti.crosemont.quebec/api/v1/user?links -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+#+RESULTS:
+: {
+:   "user": {
+:     "username": "test",
+:     "rôle": 0
+:   },
+:   "links": {
+:     "catégories": [
+:       "/catégorie/tutoriel",
+:       "/catégorie/programmation_1"
+:     ]
+:   }
+: }
+
+
+** Obtenir la catégorie «programmation_1» :
+
+#+BEGIN_SRC sh :eval never
+curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1?links -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+#+RESULTS:
+: {
+:   "catégorie": {
+:     "nom": "programmation_1",
+:     "titre": "Introduction à la programmation",
+:     "description": "Exercices d'introduction à la programmation.",
+:     "catégories": ["les_boucles", "les_fonctions"],
+:     "questions": []
+:   },
+:   "links": {
+:     "parent": "/",
+:     "catégories": [
+:       "/catégorie/programmation_1/les_boucles",
+:       "/catégorie/programmation_1/les_fonctions"
+:     ],
+:     "questions": [],
+:     "avancement": "/user/test/catégorie/programmation_1/avancement",
+:     "accessibilité": "/user/test/catégorie/programmation_1/accessibilité",
+:   }
+: }
+
+** Obtenir la sous-catégorie «les_fonctions» :
+
+#+BEGIN_SRC sh :eval never
+curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/les_fonctions?links -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+#+RESULTS:
+: {
+:   "catégorie": {
+:     "nom": "les_fonctions",
+:     "titre": "Introduction aux fonctions",
+:     "description": "Exercices d'introduction aux fonctions.",
+:     "catégories": [],
+:     "questions": ["appeler_une_fonction"]
+:   },
+:   "links": {
+:     "parent": "/",
+:     "catégories": [],
+:     "questions": [
+:       "question/programmation_1/les_fonctions/appeler_une_fonction"
+:     ],
+:     "avancement": "/user/test/catégorie/programmation_1/les_fonctions/avancement",
+:     "accessibilité": "/user/test/catégorie/programmation_1/les_fonctions/accessibilité",
+:   }
+: }
+
+
+** Obtenir la question «appeler_une_fonction» :
+
+#+BEGIN_SRC sh :eval never
+curl https://progression.dti.crosemont.quebec/api/v1/question/programmation_1/les_fonctions/appeler_une_fonction -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction» :
+
+#+BEGIN_SRC sh :eval never
+curl https://progression.dti.crosemont.quebec/api/v1/user/test/solution/programmation_1/les_fonctions/appeler_une_fonction?langage=python -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Soumettre une solution à la question «appeler_une_fonction» :
+
+#+BEGIN_SRC sh :eval never
+curl --data '{"code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dti.crosemont.quebec/api/v1/solution/programmation_1/les_fonctions/appeler_une_fonction?langage=python -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Obtenir une solution soumise pour la question «appeler_une_fonction» :
+
+#+BEGIN_SRC sh :eval never
+curl https://progression.dti.crosemont.quebec/api/v1/user/test/solution/programmation_1/les_fonctions/appeler_une_fonction/1612834148 -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+

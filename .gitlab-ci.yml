@@ -9,15 +9,33 @@ cache:
 before_script:
 # Install git, the php image doesn't have installed
 - apt-get update -yqq
-- apt-get install git -yqq
+- apt-get install git emacs elpa-htmlize -yqq
 
 # Install composer
 - curl -sS https://getcomposer.org/installer | php
 
 # Install all project dependencies
-- php composer.phar install -d progression/
+- php composer.phar install --dev -d progression/
 
 # We test PHP7
 test:
   script:
   - progression/vendor/bin/phpunit --configuration progression/phpunit.xml --coverage-text
+
+# Production de la documentation
+.build: &build
+  script:
+  - emacs --batch --no-init-file --load doc/publish.el --funcall org-publish-all
+  artifacts:
+    paths:
+    - progression/app/html/doc/
+
+pages:
+  <<: *build
+  only:
+  - master
+
+test:
+  <<: *build
+  except:
+  - master

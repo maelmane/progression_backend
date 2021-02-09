@@ -4,7 +4,7 @@
 		 bootstrap="tests/bootstrap.php" >
     <testsuites>
         <testsuite name="Tests unitaires">
-            <directory suffix="Tests.php">tests/domaine/entités</directory>
+            <directory suffix="Tests.php">tests/progression/</directory>
         </testsuite>
     </testsuites>
 

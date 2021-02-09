@@ -18,20 +18,20 @@ cd progression_backend/progression
 ```
 
 ### 2.2 Créer et adapter le fichier de configuration
-- Copier le ficher **quiz.conf.example** dans le répertoire **/progression**
+- Copier le ficher **.env** dans le répertoire **/progression/app**
 ```
-cp quiz.conf.exemple quiz.conf
+cp .env.exemple .env
 ```
-- Modifier le type d\'authentification et l\'hôte pour le compilebox du fichier **quiz.conf** 
+- Modifier le type d\'authentification et l\'hôte pour le compilebox du fichier **.env** 
 
 #### En développement :
 - Désactiver l'authentification
 ```
-auth_type = "no"
+AUTH_TYPE = "no"
 ```
 - Effectuer les compilations sur la machine de développement
 ```
-compilebox_hote = 172.20.0.1
+COMPILEBOX_HOTE = 172.20.0.1
 ```
 
 ### 2.3 Construire les images docker

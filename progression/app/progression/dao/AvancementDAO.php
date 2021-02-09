@@ -35,7 +35,7 @@ class AvancementDAO extends EntitéDAO
 
 	protected static function load($objet)
 	{
-		$query = AvancementDAO::$conn->prepare(
+		$query = $this->conn->prepare(
 			'SELECT etat FROM avancement WHERE questionID = ? AND userID = ?'
 		);
 		$query->bind_param("ii", $objet->question_id, $objet->user_id);
@@ -50,7 +50,7 @@ class AvancementDAO extends EntitéDAO
 
 	public static function save($objet)
 	{
-		$query = AvancementDAO::$conn
+		$query = $this->conn
 			->prepare('INSERT INTO avancement ( etat, questionID, userID ) VALUES ( ?, ?, ?, ?, ?, ? )
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 

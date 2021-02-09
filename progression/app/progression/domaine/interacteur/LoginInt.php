@@ -18,8 +18,11 @@
 
 namespace progression\domaine\interacteur;
 
+class AuthException extends \Exception{};
+
 class LoginInt extends Interacteur
 {
+    
     function __construct($source)
     {
         parent::__construct($source);
@@ -29,11 +32,11 @@ class LoginInt extends Interacteur
     {
         syslog(LOG_INFO, "Tentative de connexion : " . $username);
 
-        if ($GLOBALS['config']['auth_type'] == "no") {
+        if ($_ENV['AUTH_TYPE'] == "no") {
             $user = $this->login_sans_authentification($username);
-        } elseif ($GLOBALS['config']['auth_type'] == "local") {
+        } elseif ($_ENV['AUTH_TYPE'] == "local") {
             $user = $this->login_local($username, $password);
-        } elseif ($GLOBALS['config']['auth_type'] == "ldap") {
+        } elseif ($_ENV['AUTH_TYPE'] == "ldap") {
             $user = $this->login_ldap($username, $password);
         }
 
@@ -46,7 +49,7 @@ class LoginInt extends Interacteur
 
     function login_local($username, $password)
     {
-        throw new ConnexionException(
+        throw new AuthException(
             "L'authentification locale n'est pas implémentée."
         );
     }
@@ -70,7 +73,7 @@ class LoginInt extends Interacteur
 
     function vérifier_champs_valides($username, $password)
     {
-        return !empty(trim($username) || empty($password));
+        return ! (empty(trim($username)) || empty($password));
     }
 
     function get_username_ldap($username, $password)
@@ -79,15 +82,15 @@ class LoginInt extends Interacteur
         define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
 
         ($ldap = ldap_connect(
-            "ldap://" . $GLOBALS['config']['hote_ad'],
-            $GLOBALS['config']['port_ad']
+            "ldap://" . $_ENV['HOTE_AD'],
+            $_ENV['PORT_AD']
         )) or die("Configuration de serveur LDAP invalide.");
         ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
         ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
         $bind = @ldap_bind(
             $ldap,
-            $GLOBALS['config']['dn_bind'],
-            $GLOBALS['config']['pw_bind']
+            $_ENV['DN_BIND'],
+            $_ENV['PW_BIND']
         );
 
         if (!$bind) {
@@ -96,13 +99,13 @@ class LoginInt extends Interacteur
                 LDAP_OPT_DIAGNOSTIC_MESSAGE,
                 $extended_error
             );
-            throw new ConnexionException(
+            throw new AuthException(
                 "Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extended_error"
             );
         }
         $result = ldap_search(
             $ldap,
-            $GLOBALS['config']['ldap_base'],
+            $_ENV['LDAP_BASE'],
             "(sAMAccountName=$username)",
             ['dn', 'cn', 1]
         );
