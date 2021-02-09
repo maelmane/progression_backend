@@ -44,7 +44,7 @@ class UserCtl extends Contrôleur
         $réponse->username = $user->username;
         $réponse->rôle = $user->role;
         
-        return response()->json($réponse);
+        return $this->réponseJson($réponse, 200);
 
     }
 }

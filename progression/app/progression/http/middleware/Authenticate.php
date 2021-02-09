@@ -39,7 +39,7 @@ class Authenticate
     {
         if ($this->auth->guard($guard)->guest()) {
             Log::info("Le token est invalide pour: " . $request->ip() . " (AuthServiceProvider)");
-            return response()->json(['message' => 'Utilisateur non autorisé.'], 401);
+            return response()->json(['message' => 'Utilisateur non autorisé.'], 401, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']);
         }
         Log::info("Le token est valide pour: " . $request->ip() . " (AuthServiceProvider)");
         return $next($request);
