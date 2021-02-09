@@ -21,7 +21,8 @@ namespace progression\domaine\entité;
 use PHPUnit\Framework\TestCase;
 
 final class TestTests extends TestCase{
-    public function test_étant_donné_un_test_instancié_avec_nom_testNom_stdin_testStdIn_solution_testSolution_array_testParam0_testParam1_fbp_testFbp_et_fbn_testFbn_lorsquon_récupère_son_nom_on_obtient_testNom(){
+    // nom
+    public function test_étant_donné_un_test_instancié_avec_nom_testNom_lorsquon_récupère_son_nom_on_obtient_testNom(){
         $testTest = new Test("testNom", "testStdIn", "testSolution", array("testParam0", "testParam1"), "testFbp", "testFbn");
 
         $nom = $testTest->nom;
@@ -29,7 +30,8 @@ final class TestTests extends TestCase{
         $this->assertEquals( "testNom", $nom );
     }
 
-    public function test_étant_donné_un_test_instancié_avec_nom_testNom_stdin_testStdIn_et_solution_testSolution_array_testParam0_testParam1_fbp_testFbp_et_fbn_testFbn_lorsquon_récupère_son_stdin_on_obtient_testStdIn(){
+    // stdin
+    public function test_étant_donné_un_test_instancié_avec_stdin_testStdIn_lorsquon_récupère_son_stdin_on_obtient_testStdIn(){
         $testTest = new Test("testNom", "testStdIn", "testSolution", array("testParam0", "testParam1"), "testFbp", "testFbn");
 
         $stdin = $testTest->stdin;
@@ -37,7 +39,8 @@ final class TestTests extends TestCase{
         $this->assertEquals( "testStdIn", $stdin );
     }
 
-    public function test_étant_donné_un_test_instancié_avec_nom_testNom_stdin_testStdIn_et_solution_testSolution_array_testParam0_testParam1_fbp_testFbp_et_fbn_testFbn_lorsquon_récupère_sa_solution_on_obtient_testSolution(){
+    // solution
+    public function test_étant_donné_un_test_instancié_avec_solution_testSolution_lorsquon_récupère_sa_solution_on_obtient_testSolution(){
         $testTest = new Test("testNom", "testStdIn", "testSolution", array("testParam0", "testParam1"), "testFbp", "testFbn");
 
         $solution = $testTest->solution;
@@ -45,7 +48,8 @@ final class TestTests extends TestCase{
         $this->assertEquals( "testSolution", $solution );
     }
 
-    public function test_étant_donné_un_test_instancié_avec_nom_testNom_stdin_testStdIn_et_solution_testSolution_array_testParam0_testParam1_fbp_testFbp_et_fbn_testFbn_lorsquon_récupère_son_premier_paramètre_on_obtient_testParam0(){
+    // params
+    public function test_étant_donné_un_test_instancié_avec_params_array_testParam0_testParam1_lorsquon_récupère_son_premier_item_on_obtient_testParam0(){
         $testTest = new Test("testNom", "testStdIn", "testSolution", array("testParam0", "testParam1"), "testFbp", "testFbn");
 
         $params = $testTest->params;
@@ -53,7 +57,8 @@ final class TestTests extends TestCase{
         $this->assertEquals( "testParam0", $params[0] );
     }
 
-    public function test_étant_donné_un_test_instancié_avec_nom_testNom_stdin_testStdIn_et_solution_testSolution_array_testParam0_testParam1_fbp_testFbp_et_fbn_testFbn_lorsquon_récupère_son_fbp_on_obtient_testFbp(){
+    // feedback_pos
+    public function test_étant_donné_un_test_instancié_avec_fbp_testFbp_et_fbn_testFbn_lorsquon_récupère_son_fbp_on_obtient_testFbp(){
         $testTest = new Test("testNom", "testStdIn", "testSolution", array("testParam0", "testParam1"), "testFbp", "testFbn");
 
         $fbp = $testTest->feedback_pos;
@@ -61,7 +66,8 @@ final class TestTests extends TestCase{
         $this->assertEquals( "testFbp", $fbp );
     }
 
-    public function test_étant_donné_un_test_instancié_avec_nom_testNom_stdin_testStdIn_et_solution_testSolution_array_testParam0_testParam1_fbp_testFbp_et_fbn_testFbn_lorsquon_récupère_son_fbn_on_obtient_testFbn(){
+    // feedback_neg
+    public function test_étant_donné_un_test_instancié_fbn_testFbn_lorsquon_récupère_son_fbn_on_obtient_testFbn(){
         $testTest = new Test("testNom", "testStdIn", "testSolution", array("testParam0", "testParam1"), "testFbp", "testFbn");
 
         $fbn = $testTest->feedback_neg;
