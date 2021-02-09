@@ -33,9 +33,9 @@ class ExécuterProgInt extends Interacteur
 		//post le code à remotecompiler
 		$url_rc =
 			'http://' .
-                env('COMPILEBOX_HOTE') .
+                $_ENV['COMPILEBOX_HOTE'] .
                 ':' .
-                env('COMPILEBOX_PORT') .
+                $_ENV['COMPILEBOX_PORT'] .
 			'/compile'; //TODO à changer ?
 		$data_rc = [
 			'language' => $exécutable->lang,

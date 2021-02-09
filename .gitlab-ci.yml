@@ -15,7 +15,7 @@ before_script:
 - curl -sS https://getcomposer.org/installer | php
 
 # Install all project dependencies
-- php composer.phar install -d progression/
+- php composer.phar install --dev -d progression/
 
 # We test PHP7
 test:

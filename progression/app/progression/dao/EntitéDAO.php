@@ -17,37 +17,38 @@
 */
 namespace progression\dao;
 
+class ConnexionException extends \Exception{};
+
 class EntitéDAO
 {
-    static $conn;
-}
+    static $conn=null;
 
-function db_init()
-{
-    if (!isset($GLOBALS["conn"])) {
-        create_connection();
-        set_errors();
+    function db_init()
+    {
+        if ( ! EntitéDAO::$conn ){
+            create_connection();
+            if ( mysqli_connect_errno() != 0 ){
+                throw new ConnexionException( mysqli_connect_error() . "(".mysqli_connect_errno().")" );
+            }
+        }
     }
-}
 
-function create_connection()
-{
-    $GLOBALS["conn"] = new \mysqli(
-        env("SERVERNAME"),
-        env("USERNAME"),
-        env("PASSWORD"),
-        env("DBNAME")
-    );
-    $GLOBALS["conn"]->set_charset("utf8");
-}
+    function create_connection()
+    {
+        EntitéDAO::$conn = new \mysqli(
+            $_ENV["SERVERNAME"],
+            $_ENV["USERNAME"],
+            $_ENV["PASSWORD"],
+            $_ENV["DBNAME"]
+        );
+        EntitéDAO::$conn->set_charset("utf8");
+    }
 
-function set_errors()
-{
-    $GLOBALS["errno"] = mysqli_connect_errno();
-    $GLOBALS["error"] = mysqli_connect_error();
-}
+    private function __construct(){
+        db_init();
+        $this->conn = EntitéDAO::$conn;
+    }
 
-db_init();
-EntitéDAO::$conn = $GLOBALS["conn"];
+}
 
 ?>

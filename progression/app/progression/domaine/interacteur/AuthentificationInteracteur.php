@@ -38,10 +38,10 @@ class AuthentificationInteracteur
             $payload = [
                 'user' => $user,
                 'current' => time(),
-                'expired' => time() + env("JWT_TTL")
+                'expired' => time() + $_ENV["JWT_TTL"]
             ];
             try {
-                $token = JWT::encode($payload, env('JWT_SECRET'), 'HS256');
+                $token = JWT::encode($payload, $_ENV['JWT_SECRET'], 'HS256');
                 return $token;
             } catch(Exception $e) {
                 error_log($e);

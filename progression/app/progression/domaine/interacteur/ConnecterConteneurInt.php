@@ -57,9 +57,9 @@ class ConnecterConteneurInt extends Interacteur
     private function get_url_compilebox()
     {
         return "http://" .
-                         env('COMPILEBOX_HOTE') .
+                         $_ENV['COMPILEBOX_HOTE'] .
                          ":" .
-                         env('COMPILEBOX_PORT') .
+                         $_ENV['COMPILEBOX_PORT'] .
                          "/compile";
     }
 

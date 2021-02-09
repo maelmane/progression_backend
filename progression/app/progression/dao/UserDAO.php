@@ -30,7 +30,7 @@ class UserDAO extends EntitéDAO
     {
         $id = null;
 
-        $query = $GLOBALS["conn"]->prepare(
+        $query = $this->conn->prepare(
             'SELECT userID FROM users WHERE username = ?'
         );
         $query->bind_param("s", $username);
@@ -56,7 +56,7 @@ class UserDAO extends EntitéDAO
 
     protected function load($objet)
     {
-        $query = $GLOBALS["conn"]->prepare(
+        $query = $this->conn->prepare(
             'SELECT userID, username, role FROM users WHERE userID = ? '
         );
         $query->bind_param("i", $objet->id);
@@ -69,7 +69,7 @@ class UserDAO extends EntitéDAO
 
     public function save($objet)
     {
-        $query = $GLOBALS["conn"]->prepare(
+        $query = $this->conn->prepare(
             'INSERT INTO users( username, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )'
         );
         $query->bind_param("si", $objet->username, $objet->role);
