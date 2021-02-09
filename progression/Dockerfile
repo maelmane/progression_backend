@@ -1,13 +1,12 @@
-FROM composer:latest AS composer
+FROM composer:latest
+RUN mkdir /var/www/vendor/
+COPY composer.json /var/www/vendor/
 
-COPY composer.json /var/www/
-
-RUN composer install -d /var/www/
+RUN composer install -d /var/www/vendor/
 
 FROM php:apache
 
-RUN mkdir -p /var/www/storage/logs
-RUN mkdir -p /var/www/vendor
+COPY --from=0  /var/www/vendor /var/www/
 
 # Mise a jour de la liste de package
 RUN apt update && apt upgrade -y && apt autoclean
