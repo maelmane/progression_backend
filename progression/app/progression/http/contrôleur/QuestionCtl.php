@@ -23,11 +23,13 @@ use progression\dao\DAOFactory;
 use progression\http\transformer\QuestionTransformer;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
+use Illuminate\Support\Facades\Log;
 
 class QuestionCtl extends Contrôleur
 {
-    public function get(Request $request){
+    public function get( Request $request ) {
         $id = $request->input("id");
+        
         if ($id != null && $id != "" ) {
             $dao_factory = new DAOFactory();
             $question_dao = $dao_factory->get_question_dao();
@@ -40,6 +42,12 @@ class QuestionCtl extends Contrôleur
         $fractal = new Manager();
         $réponse = $fractal->createData($resource);
 
-        return $this->réponseJson($réponse, 200);
+        if ($question != null) {
+            Log::info("La question avec l'identifiant " . $id . " à été envoyé à: " . $request->ip() . " (QuestionCtl)");
+            return $this->réponseJson($réponse, 200);    
+        } else {
+            Log::warning("La question avec l'identifiant " . $id . " n'a pas été trouvée pour: " . $request->ip() . " (QuestionCtl)");
+            return $this->réponseJson(['message' => 'Question non trouvée.'], 404);
+        }
     }
 }
