@@ -92,6 +92,12 @@ Liens :
 |          |                          | code            | str  |           |
 |          |                          | feedback        | str  |           |
 
+** Tentative
+| Classe    | Identifiant              | Propriétés      | Type | Valeurs   |
+|-----------+--------------------------+-----------------+------+-----------|
+| Tentative | question/date_soumission | date_soumission | int  | timestamp |
+|           |                          | feedback        | str  |           |
+
 ** Test
 | Classe | Identifiant     | Propriétés      | Type | Valeurs |
 |--------+-----------------+-----------------+------+---------|
@@ -99,42 +105,59 @@ Liens :
 |        |                 | nom             | str  |         |
 |        |                 | entrée          | str  |         |
 |        |                 | sortie_attendue | str  |         |
-|        |                 | sortie_observée | str  |         |
-|        |                 | sortie_erreur   | str  |         |
-|        |                 | résultat        | bool |         |
-|        |                 | feedback        | str  |         |
+
+** Résultat
+| Classe   | Identifiant     | Propriétés      | Type | Valeurs |
+|----------+-----------------+-----------------+------+---------|
+| Résultat | question/numéro | numéro          | int  |         |
+|          |                 | sortie_observée | str  |         |
+|          |                 | sortie_erreur   | str  |         |
+|          |                 | résultat        | bool |         |
+|          |                 | feedback        | str  |         |
 
 * Exemples
 
 #+NAME: get_token
 #+BEGIN_SRC sh :eval yes :results output :exports none
-PASSWORD=$(cat ./mot_de_passe)
-RET=$(curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=test&password=$PASSWORD" | cut -d '"' -f 4)
+RET=$(curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=jdoe&password=Crosemont2021!" | cut -d '"' -f 4)
 printf "%s" $RET
 #+END_SRC
 
-** Connexion en tant qu'utilisateur ~test~ :
+** Connexion en tant qu'utilisateur ~jdoe~ :
 
 
 #+BEGIN_SRC sh :eval yes :results output
-PASSWORD=$(cat ./mot_de_passe)
-curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=test&password=$PASSWORD" 
+curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=jdoe&password=Crosemont2021!"
 #+END_SRC
 
 #+RESULTS:
-: {"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoidGVzdCIsInJvbGUiOjAsImlkIjozLCJhY3RpZiI6bnVsbH0sImN1cnJlbnQiOjE2MTI4MDkxMDcsImV4cGlyZWQiOjE2MTI4OTU1MDd9.hL_-G4bfNjaVuSku6Ed05UsE54IaQrDskRWq_HUQ8PA"}
+: {"message":"Utilisateur non autorisé."}
 
-** Obtenir le profil de l'utilisateur connecté ~test~ : 
+** Obtenir le profil de l'utilisateur connecté ~jdoe~ et ses avancements :
 
 #+BEGIN_SRC sh :var TOKEN=get_token :results output
-curl https://progression.dti.crosemont.quebec/api/v1/user?embed=true -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 #+RESULTS:
 : {
-:   "username": "test",
-:   "rôle": 0,
-:   "_embedded": {
+:   "links": {
+:     "self": "https://progression.dti.crosemont.quebec/api/v1/user"
+:     },
+:   "data" : [ {
+:     "type" : "user",
+:     "id" : "jdoe"
+:     "attributes": {
+:       "username": "jdoe",
+:       "rôle": 0
+:     }},
+:     "relationships": {
+:       "catégories": {
+:         "self": "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/relationships/catégories"
+:         "related": "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/catégories"
+:       }
+:     }],
+:   "included": {
 :     "avancements": [
 :       "programmation_1/les_fonctions/appeler_une_fonction": {
 :         "état": 1,
@@ -148,23 +171,35 @@ curl https://progression.dti.crosemont.quebec/api/v1/user?embed=true -H "Authori
 :   }
 : }
 
-** Obtenir la liste des catégories disponibles pour l'utilisateur ~test~ :
+** Obtenir la liste des catégories disponibles pour l'utilisateur ~jdoe~ :
 
 #+BEGIN_SRC sh :eval never :var TOKEN=get_token :results output
-curl https://progression.dti.crosemont.quebec/api/v1/user?links=true -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/user/jdoe/catégories -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 #+RESULTS:
 : {
-:   "username": "test",
-:   "rôle": 0,
-:   "_links": {
-:     "self": {
-:       "href": "https://progression.dti.crosemont.quebec/api/v1/user"
+:   "links": {
+:     "self": "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/catégories"
+:   },
+:   "data": { [
+:     "type": "Catégorie",
+:     "id": "programmation_1",
+:     "attributes": {
+:       "nom": "programmation_1",
+:       "titre": "Introduction à la programmation",
+:       "description": "Exercices d'introduction à la programmation."
 :     },
-:     "catégories": {
-:       "href": "https://progression.dti.crosemont.quebec/api/v1/user/test/catégories"
-:     }
+:     "relationships": {
+:       "catégories": {
+:         "self": "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/relationships/catégories"
+:         "related": "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/catégories"
+:       },
+:       "questions": {
+:         "self": "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/relationships/questions"
+:         "related": "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/questions"
+:       }
+:     }],
 :   }
 : }
 
@@ -174,74 +209,11 @@ curl https://progression.dti.crosemont.quebec/api/v1/user?links=true -H "Authori
 curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1?links=true -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-#+RESULTS:
-: {
-:   "catégorie": {
-:     "nom": "programmation_1",
-:     "titre": "Introduction à la programmation",
-:     "description": "Exercices d'introduction à la programmation.",
-:     "catégories": ["les_boucles", "les_fonctions"],
-:     "questions": []
-:   },
-:   "_links": {
-:     "self": {
-:       "href": "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1"
-:     },
-:     "parent": {
-:       "href": "https://progression.dti.crosemont.quebec/api/v1/user/test"
-:     },
-:     "catégories": {
-:       "href": "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/catégories"
-:     },
-:     "questions": {
-:        "href": "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/questions"
-:     },
-:     "pourcentage_avancement": {
-:       "href": "https://progression.dti.crosemont.quebec/api/v1/user/test/catégorie/programmation_1/pourcentage_avancement"
-:     },
-:     "accessibilité": {
-:       "href": "https://progression.dti.crosemont.quebec/api/v1/user/test/catégorie/programmation_1/accessibilité"
-:     }
-:   }
-: }
-
 ** Obtenir la sous-catégorie «les_fonctions» :
 
 #+BEGIN_SRC sh :eval never
 curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/les_fonctions?links=true -H "Authorization: Bearer $TOKEN"
 #+END_SRC
-
-#+RESULTS:
-: {
-:   "catégorie": {
-:     "nom": "les_fonctions",
-:     "titre": "Introduction aux fonctions",
-:     "description": "Exercices d'introduction aux fonctions.",
-:     "catégories": [],
-:     "questions": ["appeler_une_fonction"]
-:   },
-:   "_links": {
-:     "self": {
-:       "href": "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/les_fonctions/"
-:     },
-:     "parent": {
-:       "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1"
-:     },
-:     "catégories": {
-:       "href": "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/les_fonctions/catégories",
-:     },
-:     "questions": {
-:       "href": "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/les_fonctions/catégories"
-:     },
-:     "pourcentage_avancement": {
-:       "href": "https://progression.dti.crosemont.quebec/api/v1/user/test/catégorie/programmation_1/les_fonctions/pourcentage_avancement"
-:     },
-:     "accessibilité": {
-:       "href": "https://progression.dti.crosemont.quebec/api/v1/user/test/catégorie/programmation_1/les_fonctions/accessibilité"
-:     }
-:   }
-: }
-
 
 ** Obtenir la question «appeler_une_fonction» :
 
@@ -258,12 +230,39 @@ curl https://progression.dti.crosemont.quebec/api/v1/question/programmation_1/le
 ** Soumettre une solution à la question «appeler_une_fonction» :
 
 #+BEGIN_SRC sh :eval never
-curl --data '{"code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dti.crosemont.quebec/api/v1/user/test/question/programmation_1/les_fonctions/appeler_une_fonction/avancement/solutions?langage=python -H "Authorization: Bearer $TOKEN"
+curl --data '{"code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dti.crosemont.quebec/api/v1/user/jdoe/question/programmation_1/les_fonctions/appeler_une_fonction/avancement/solutions?langage=python -H "Authorization: Bearer $TOKEN"
 #+END_SRC
+
+#+RESULTS:
+: {
+:  "data": {
+:    "type": "Tentative",
+:    "id": ... ,
+:    "attributes": {
+:      "feedback":"Sers-toi d'un for pour itérer"
+:    },
+:  "included":{
+:    "type": "Résultat",
+:    "id": "0",
+:    "attributes": {
+:      "résultat":"true",
+:      "sortie_erreur":"",
+:      "sortie_observée":"itération 0\n",
+:      "feedback":"Bravo!"
+:     },
+:    "type": "Résultat",
+:    "id": "1",
+:    "attributes": {
+:      "résultat":"false",
+:      "sortie_erreur":"x is not defined int the current context",
+:      "sortie_observée":"",
+:      "feedback":"Mmmm... il va falloir réessayer"
+:      }
+:   }
+: }
 
 ** Obtenir une solution soumise pour la question «appeler_une_fonction» :
 
 #+BEGIN_SRC sh :eval never
-curl https://progression.dti.crosemont.quebec/api/v1/user/test/solution/programmation_1/les_fonctions/appeler_une_fonction/1612834148 -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/user/jdoe/solution/programmation_1/les_fonctions/appeler_une_fonction/1612834148 -H "Authorization: Bearer $TOKEN"
 #+END_SRC
-
