@@ -38,28 +38,29 @@ class QuestionDAO extends EntitéDAO
         return $type;
     }
 
-    static function get_question($id)
+    public function get_question($id)
     {
         $question = new Question($id);
-        QuestionDAO::load($question);
+        $this->load($question);
         return $question;
     }
 
-    static function get_questions_par_série($série_id, $inactif = false)
+    public function get_questions_par_série($série_id, $inactif = false)
     {
         $res = [];
+        $série = new SérieDAO();
         foreach (
-            SérieDAO::get_questions_ids($série_id, $inactif)
+            $série->get_questions_ids($série_id, $inactif)
             as $question_id
         ) {
-            $res[] = QuestionDAO::get_question($question_id);
+            $res[] = $this->get_question($question_id);
         }
         return $res;
     }
 
-    protected static function load($objet)
+    protected function load($objet)
     {
-        $query = QuestionDAO::$conn->prepare('SELECT question.questionID,
+        $query = $this->conn->prepare('SELECT question.questionID,
 	                                        question.actif,
 	                                        question.type,
 	                                        question.serieID as s,

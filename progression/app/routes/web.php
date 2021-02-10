@@ -4,6 +4,7 @@
 
 use progression\http\contrôleur\UserCtl;
 use progression\http\contrôleur\LoginCtl;
+use progression\http\contrôleur\QuestionCtl;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,4 +25,5 @@ $router->post('/auth/', 'LoginCtl@login');
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/user', 'UserCtl@get');
+    $router->get('/question', 'QuestionCtl@get');
 });
