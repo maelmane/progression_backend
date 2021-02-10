@@ -65,11 +65,11 @@
 (setq org-publish-project-alist
       (list
        (list "org"
-             :base-directory "."
+             :base-directory "doc/"
              :base-extension "org"
              :recursive t
              :publishing-function '(org-html-publish-to-html)
-             :publishing-directory "../progression/app/html/doc/"
+             :publishing-directory "progression/app/html/doc/"
              :exclude (regexp-opt '("README" "draft"))
              :auto-sitemap t
              :sitemap-filename "index.org"
@@ -78,15 +78,15 @@
              :sitemap-style 'list
 			 )
        (list "démo"
-             :base-directory "contenu/démo"
+             :base-directory "doc/contenu/démo"
              :base-extension 'any
-             :publishing-directory "../progression/app/html/doc/contenu/démo/"
+             :publishing-directory "progression/app/html/doc/contenu/démo/"
              :publishing-function 'org-publish-attachment
              :recursive t)
        (list "images"
-             :base-directory "images"
+             :base-directory "doc/images"
              :base-extension (regexp-opt '("jpg" "jpeg" "gif" "png" "svg" "ico"))
-             :publishing-directory "../progression/app/html/doc/images"
+             :publishing-directory "progression/app/html/doc/images"
              :publishing-function 'org-publish-attachment
              :recursive t)
        (list "site" :components '("org"))))
