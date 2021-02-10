@@ -21,9 +21,9 @@ use progression\domaine\entité\Question;
 
 class QuestionDAO extends EntitéDAO
 {
-    static function get_type($id)
+    public function get_type($id)
     {
-        $query = QuestionDAO::$conn->prepare(
+        $query = $this->conn->prepare(
             'SELECT type FROM question WHERE questionID = ?'
         );
         $query->bind_param("i", $id);
@@ -97,10 +97,10 @@ class QuestionDAO extends EntitéDAO
         $query->close();
     }
 
-    static function save($objet)
+    public function save($objet)
     {
         if (!$objet->id) {
-            $query = QuestionDAO::$conn->prepare("INSERT INTO question( serieID,
+            $query = $this->conn->prepare("INSERT INTO question( serieID,
 	                                                          actif,
 	                                                          type,
 	                                                          titre,
@@ -130,7 +130,7 @@ class QuestionDAO extends EntitéDAO
 
             $objet->id = mysqli_insert_id();
         } else {
-            $query = QuestionDAO::$conn->prepare("UPDATE question set 
+            $query = $this->conn->prepare("UPDATE question set 
 	                                            serieID=?,
 	                                            actif=?,
 	                                            type=?,

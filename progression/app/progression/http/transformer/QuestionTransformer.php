@@ -26,16 +26,10 @@ class QuestionTransformer extends Fractal\TransformerAbstract
 	public function transform(Question $question)
 	{
         return [
-            'catégorieID' => $question->serieID,
-            'actif' => $question->actif,
-            'numero' => $question->numero,
             'titre' => $question->titre,
             'description' => $question->description,
-            'enonce' => $question->enonce,
-            'feedback_pos' => $question->feedback_pos,
-            'feedback_neg' => $question->feedback_neg,
-            'etat' => $question->etat,
-            'code_validation' => $question->code_validation,
+            'énoncé' => $question->enonce,
+            'type' => $question->type,
             'links'   => [
                 [
                     'rel' => 'self',
