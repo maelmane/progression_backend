@@ -15,12 +15,15 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
-?><?php
 
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
+use progression\domaine\entité\User;
 use progression\dao\DAOFactory;
+use progression\http\transformer\UserTransformer;
+use League\Fractal\Manager;
+use League\Fractal\Resource\Item;
 
 class UserCtl extends Contrôleur
 {
@@ -36,10 +39,10 @@ class UserCtl extends Contrôleur
             $user = null;
         }
 
-        $réponse = new class{};
-        $réponse->username = $user->username;
-        $réponse->rôle = $user->role;
-        
+        $resource = new Item($user, new UserTransformer);
+        $fractal = new Manager();
+        $réponse = $fractal->createData($resource);
+
         return $this->réponseJson($réponse, 200);
 
     }
