@@ -33,7 +33,7 @@ class LoginCtl extends Contrôleur
         $token = $authInt->créerToken($username, $password);
         if($token){
             Log::info("Le token a été créé pour: " . $request->ip() . " (LoginInteracteur)");
-            return $this->réponseJson(['token' => $token], 200);
+            return $this->réponse_json(['token' => $token], 200);
         }
         Log::warning("Le token n'a pas été créé pour: " . $request->ip() . " (LoginInteracteur)");
         return $this->réponseJson(['message' => 'Utilisateur non autorisé.'], 401);

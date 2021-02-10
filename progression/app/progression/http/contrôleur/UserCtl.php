@@ -43,7 +43,7 @@ class UserCtl extends Contrôleur
         $fractal = new Manager();
         $réponse = $fractal->createData($resource);
 
-        return $this->réponseJson($réponse, 200);
+        return $this->réponse_json($réponse, 200);
 
     }
 }
