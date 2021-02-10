@@ -6,4 +6,6 @@ data/
 
 progression/app/tmp/
 progression/app/CodeMirror/
-progression/app/vendor/
+progression/vendor/
+progression/composer.lock
+progression/app/.env
