@@ -29,13 +29,12 @@ class QuestionCtl extends Contrôleur
 {
     public function get( Request $request ) {
         $id = $request->input("id");
-        
+        $question = null;
+
         if ($id != null && $id != "" ) {
             $dao_factory = new DAOFactory();
             $question_dao = $dao_factory->get_question_dao();
             $question = $question_dao->get_question($id);
-        } else {
-            $id = null;
         }
 
         $resource = new Item($question, new QuestionTransformer);
@@ -43,11 +42,11 @@ class QuestionCtl extends Contrôleur
         $réponse = $fractal->createData($resource);
 
         if ($question != null) {
-            Log::info("La question avec l'identifiant " . $id . " à été envoyé à: " . $request->ip() . " (QuestionCtl)");
-            return $this->réponseJson($réponse, 200);    
+            Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
+            return $this->réponse_json($réponse, 200);
         } else {
-            Log::warning("La question avec l'identifiant " . $id . " n'a pas été trouvée pour: " . $request->ip() . " (QuestionCtl)");
-            return $this->réponseJson(['message' => 'Question non trouvée.'], 404);
+            Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
+            return $this->réponse_json(['message' => 'Question non trouvée.'], 404);
         }
     }
 }
