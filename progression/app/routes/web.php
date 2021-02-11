@@ -24,7 +24,6 @@ $router->get('/', function () use ($router) {
 $router->post('/auth/', 'LoginCtl@login');
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
-    $router->get('/user', 'UserCtl@get');
-    $router->get('/user/{username}', 'UserCtl@get');
+    $router->get('/user[/{username}]', 'UserCtl@get');
     $router->get('/question/{id}', 'QuestionCtl@get');
 });
