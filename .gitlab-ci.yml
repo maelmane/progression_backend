@@ -9,7 +9,7 @@ cache:
 before_script:
 # Install git, the php image doesn't have installed
 - apt-get update -yqq
-- apt-get install git emacs elpa-htmlize unzip -yqq
+- apt-get install git emacs elpa-htmlize unzip python -yqq
 
 # Install composer
 - curl -sS https://getcomposer.org/installer | php
