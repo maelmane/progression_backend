@@ -22,19 +22,25 @@ Les points d'entrée privés requierent un token dans l'entête : «Authentifica
 | GET     | ~/user/~           | Obtient l'utilisateur Authentification | User    |
 | GET     | ~/user/{username}~ | Obtient l'utilisateur /username/       | User    |
 
-* Objets
-** User
-| Classe | Identifiant | Propriétés  | Type               | Valeurs          |
-|--------+-------------+-------------+--------------------+------------------|
-| User   | username    | username    | str                |                  |
-|        |             | rôle        | int                | 0=normal,1=admin |
-|        |             | avancements | liste d'Avancement |                  |
-|--------+-------------+-------------+--------------------+------------------|
+* Ressources
 
-Liens :
-| Nom        | Description         |
-|------------+---------------------|
-| catégories | liste de Catégories |
+Les ressources échangées sont représentée en format [[json-api.com][JSON-API]]
+
+** Utilisateur
+
+Un utilisateur du système.
+
+| Classe    | Identifiant | Propriétés  | Type               | Valeurs          |
+|-----------+-------------+-------------+--------------------+------------------|
+| User      | username    | username    | str                |                  |
+|           |             | rôle        | int                | 0=normal,1=admin |
+|-----------+-------------+-------------+--------------------+------------------|
+
+Relations :
+| Nom         | Cardinalité | Type       | Description         |
+|-------------+-------------+------------+---------------------|
+| avancements | 1-n         | Avancement | liste d'Avancement  |
+| catégories  | 1-n         | Catégorie  | liste de Catégories |
 
 ** Catégorie
 | Classe    | Identifiant | Propriétés  | Type                       | Valeurs |
@@ -46,14 +52,18 @@ Liens :
 |           |             | questions   | liste de Questions         |         |
 |-----------+-------------+-------------+----------------------------+---------|
 
+Relations :
+| Nom                    | Cardinalité | Type                        | Description                                            |
+|------------------------+-------------+-----------------------------+--------------------------------------------------------|
+| catégories             | 1-n         | Catégorie                   | liste de sous-catégories                               |
+| questions              | 1-n         | Question                    | liste de Questions                                     |
+| pourcentage_avancement | 1-1         | float(AvancementCatégorie?) | pourcentage d'avancement dans cette catégorie          |
+| accessibilité          | 1-1         | bool(AvancementCatégorie?)  | Vrai si la catégorie est accessible pour l'utilisateur |
+
 Liens :
 | Nom                    | Description                                            |
 |------------------------+--------------------------------------------------------|
 | parent                 | Catégorie parent                                       |
-| catégories             | liste de sous-catégories                               |
-| questions              | liste de Questions                                     |
-| pourcentage_avancement | pourcentage d'avancement dans cette catégorie          |
-| accessibilité          | Vrai si la catégorie est accessible pour l'utilisateur |
 
 ** Question
 | Classe                       | Identifiant   | Propriétés  | Type                                 | Valeurs |
@@ -64,19 +74,23 @@ Liens :
 | │                            |               | énoncé      | str                                  |         |
 | │                            |               | type        | int                                  |         |
 | ├ QuestionProg               |               |             |                                      |       3 |
-| │                            |               | ébauches    | liste d'ébauches de Solution         |         |
-| │                            |               | tests       | liste de Tests                       |         |
 | ├ QuestionProgEval(obsolète) |               |             |                                      |       0 |
 | ├ QuestionSys                |               |             |                                      |       1 |
 | └ QuestionBD                 |               |             |                                      |       2 |
+
+Relations :
+| Nom                                   | Cardinalité | Type       | description                                                   |
+|---------------------------------------+-------------+------------+---------------------------------------------------------------|
+| avancement                            | 1-1         | Avancement | avancement pour cette question pour l'utilisateur courant     |
+| ébauches                              | 1-n         | Solution   | liste d'ébauches de Solution                                  |
+| tests                                 | 1-n         | Test       | liste de Tests                                                |
+| accessibilité (relation? lien? meta?) | 1-1         | bool       | Vrai si la question est accessible pour l'utilisateur courant |
 
 Liens :
 | Nom           | Description                                                   |
 |---------------+---------------------------------------------------------------|
 | suivante      | Question suivante pour l'utilisateur courant                  |
 | catégorie     | Catégorie parent                                              |
-| avancement    | Avancement pour cette question pour l'utilisateur courant     |
-| accessibilité | Vrai si la question est accessible pour l'utilisateur courant |
 
 ** Avancement
 | Classe     | Identifiant   | Propriétés | Type               | Valeurs                          |
@@ -145,7 +159,7 @@ curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H
 :     "self": "https://progression.dti.crosemont.quebec/api/v1/user"
 :     },
 :   "data" : [ {
-:     "type" : "user",
+:     "type" : "User",
 :     "id" : "jdoe"
 :     "attributes": {
 :       "username": "jdoe",
@@ -153,20 +167,55 @@ curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H
 :     }},
 :     "relationships": {
 :       "catégories": {
-:         "self": "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/relationships/catégories"
-:         "related": "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/catégories"
+:         "links": {
+:           "self": "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/relationships/catégories"
+:           "related": "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/catégories"
+:         },
+:         "data": [
+:           { "type": "Catégorie", "id": "les_boucles" }
+:           { "type": "Catégorie", "id": "les_fonctions" }
+:         }
+:       },
+:       "avancements": {
+:         "links": {
+:           "self": "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/relationships/avancements"
+:           "related": "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/avancements"
+:         },
+:         "data": [
+:           { "type": "Avancement", "id": "les_fonctions/appeler_une_fonction" }
+:           { "type": "Avancement", "id": "les_fonctions/appeler_une_autre_fonction" }
+:         }
 :       }
 :     }],
 :   "included": {
 :     "avancements": [
-:       "programmation_1/les_fonctions/appeler_une_fonction": {
-:         "état": 1,
-:         "solutions" : []
+:       "type" : "Avancement",
+:       "id" : "les_fonctions/appeler_une_fonction",
+:       "attributes" : {
+:         "état": 1
 :       },
-:       "programmation_1/les_fonctions/appeler_une_autre_fonction": {
-:         "état": 1,
-:         "solutions" : []
+:       "relationships" : {
+:         "solutions" : [
+:           "links" :
+:           "data" : [
+:             "type" : "Solution",: "id" : 1234567
+:             "type" : "Solution",: "id" : 1234987
+:           ]
+:         ]
 :       },
+:       "type" : "Avancement",
+:       "id" : "programmation_1/les_fonctions/appeler_une_autre_fonction"
+:       "attributes" : {
+:         "état": 2
+:       },
+:       "relationships" : {
+:         "solutions" : [
+:           "links" :
+:           "data" : [
+:             "type" : "Solution",: "id" : 1239984
+:           ]
+:         ]
+:       }
 :     ]
 :   }
 : }
