@@ -19,7 +19,7 @@ Les versions de l'api sont accessibles à des URL distincts pour assurer la rét
 Les points d'entrée privés requierent un token dans l'entête : «Authentification: Bearer <token>»
 
 | Méthode | URL                | Description                       | Réponse |
-| GET     | ~/user/~           | Obtient l'utilisateur authentifié | User    |
+| GET     | ~/user~           | Obtient l'utilisateur authentifié | User    |
 | GET     | ~/user/{username}~ | Obtient l'utilisateur /username/  | User    |
 
 * Ressources
@@ -138,10 +138,9 @@ printf "%s" $RET
 #+END_SRC
 
 #+NAME: json_pretty
-#+begin_src sh :eval yes :var json="" :results output :exports none
+#+begin_src sh :eval yes :var json="{}" :results output :exports none
 echo $json|python -m json.tool
 #+end_src
-
 
 ** Connexion en tant qu'utilisateur ~jdoe~ :
 
@@ -151,11 +150,11 @@ curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=jdoe&
 #+END_SRC
 
 #+RESULTS:
-: {"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiamRvZSIsInJvbGUiOjAsImlkIjo3LCJhY3RpZiI6bnVsbH0sImN1cnJlbnQiOjE2MTMwNjk1MDMsImV4cGlyZWQiOjE2MTMxNTU5MDN9.9i4E8TZHl5MTfxuDOmAapzNgQVwd1Um1-ueAozL1TMU"}
+: {"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiamRvZSIsInJvbGUiOjAsImlkIjo3LCJhY3RpZiI6bnVsbH0sImN1cnJlbnQiOjE2MTMwNzE3OTQsImV4cGlyZWQiOjE2MTMxNTgxOTR9.epf3-B6HvXwxconriMoCXhD533moQ8yWgWOyAkaCBgQ"}
 
 ** Obtenir le profil de l'utilisateur connecté ~jdoe~ et ses avancements :
 
-#+BEGIN_SRC sh :var :eval no TOKEN=get_token :results output
+#+BEGIN_SRC sh :eval no :var TOKEN=get_token :results output
 curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
