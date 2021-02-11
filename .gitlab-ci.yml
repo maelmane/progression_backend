@@ -21,9 +21,12 @@ before_script:
 test:
   script:
   - progression/vendor/bin/phpunit --configuration progression/phpunit.xml --coverage-text
+  except:
+  - master
+  - documentation
 
 # Production de la documentation
-.build: &build
+.doc: &doc
   script:
   - emacs --batch --no-init-file --load doc/publish.el --funcall org-publish-all && mkdir public && cp -r progression/app/html/doc/* public/
   artifacts:
@@ -31,11 +34,9 @@ test:
     - public
 
 pages:
-  <<: *build
+  <<: *doc
   only:
   - dev
+  - documentation
 
-test:
-  <<: *build
-  except:
-  - master
+
