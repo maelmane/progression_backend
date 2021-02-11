@@ -26,15 +26,56 @@ class QuestionTransformer extends Fractal\TransformerAbstract
 	public function transform(Question $question)
 	{
         return [
+            'nom' => $question->nom,
             'titre' => $question->titre,
             'description' => $question->description,
             'énoncé' => $question->enonce,
             'type' => $question->type,
-            'links'   => [
-                [
-                    'rel' => 'self',
-                    'uri' => '/question/'.$question->id
-                ]
+            'relationships' => [
+                'avancement' => [
+                    'links' => [
+                        'self' => "",
+                        'related' => ""
+                    ],
+                    "data" => [
+                        [ "type" => "", "id" => "" ],
+                        [ "type" => "", "id" => "" ]
+                    ]
+                ],
+                'ébauches' => [
+                    'links' => [
+                        'self' => "",
+                        'related' => ""
+                    ],
+                    "data" => [
+                        [ "type" => "", "id" => "" ],
+                        [ "type" => "", "id" => "" ]
+                    ]
+                ],
+                'tests' => [
+                    'links' => [
+                        'self' => "",
+                        'related' => ""
+                    ],
+                    "data" => [
+                        [ "type" => "", "id" => "" ],
+                        [ "type" => "", "id" => "" ]
+                    ]
+                ],
+                'accessibilité' => [
+                    'links' => [
+                        'self' => "",
+                        'related' => ""
+                    ],
+                    "data" => [
+                        [ "type" => "", "id" => "" ],
+                        [ "type" => "", "id" => "" ]
+                    ]
+                ],
+
+            ],
+            'links' => [
+                'self' => 'https://progression.dti.crosemont.quebec/api/v1/question/'
             ]                
         ];
     }
