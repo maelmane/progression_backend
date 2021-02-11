@@ -138,10 +138,11 @@ printf "%s" $RET
 #+END_SRC
 
 #+NAME: json_pretty
-#+begin_src python :eval yes :var json_str="{}" :results output :exports none
+#+begin_src python :eval yes :var json_str="{}" :exports none
 import json
 import sys
-print(json.dumps( json.loads(json_str), ensure_ascii=False, indent=4 ))
+
+json.dumps( json.loads(json_str), ensure_ascii=False, indent=4 )
 #+end_src
 
 ** Connexion en tant qu'utilisateur ~jdoe~ :
