@@ -27,8 +27,10 @@ use League\Fractal\Resource\Item;
 
 class UserCtl extends Contrôleur
 {
-    public function get(Request $request){
-        $username = $request->input("username");
+    public function get(Request $request, $username=null){
+        if ($username == null ) {
+            $username = $request->username;
+        }
 
         if ($username != null && $username != "" ) {
             $dao_factory = new DAOFactory();

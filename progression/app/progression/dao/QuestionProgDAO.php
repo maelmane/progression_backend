@@ -25,7 +25,8 @@ class QuestionProgDAO extends QuestionDAO
     {
         $question = new QuestionProg($id);
         QuestionProgDAO::load($question);
-        return $question;
+
+        return $question->id ? $question : null;
     }
 
     protected static function load($objet)

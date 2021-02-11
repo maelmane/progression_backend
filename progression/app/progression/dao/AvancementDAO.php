@@ -30,17 +30,18 @@ class AvancementDAO extends EntitéDAO
 			$avancement->etat = Question::ETAT_DEBUT;
 		}
 
-		return $avancement;
+		return $avancement->id ? $avancement : null;
 	}
 
 	protected static function load($objet)
 	{
 		$query = $this->conn->prepare(
-			'SELECT etat FROM avancement WHERE questionID = ? AND userID = ?'
+			'SELECT id, etat FROM avancement WHERE questionID = ? AND userID = ?'
 		);
 		$query->bind_param("ii", $objet->question_id, $objet->user_id);
 		$query->execute();
 		$query->bind_result(
+            $objet->id,
 			$objet->etat
 		);
 		$query->fetch();

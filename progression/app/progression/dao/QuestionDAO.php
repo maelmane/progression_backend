@@ -42,7 +42,7 @@ class QuestionDAO extends EntitéDAO
     {
         $question = new Question($id);
         $this->load($question);
-        return $question;
+        return $question->id ? $question : null ;
     }
 
     public function get_questions_par_série($série_id, $inactif = false)

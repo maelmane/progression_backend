@@ -27,8 +27,7 @@ use Illuminate\Support\Facades\Log;
 
 class QuestionCtl extends Contrôleur
 {
-    public function get( Request $request ) {
-        $id = $request->input("id");
+    public function get( Request $request, $id ) {
         $question = null;
 
         if ($id != null && $id != "" ) {

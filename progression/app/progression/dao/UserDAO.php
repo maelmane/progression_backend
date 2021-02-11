@@ -51,7 +51,7 @@ class UserDAO extends EntitéDAO
         $user = new User($user_id);
         UserDAO::load($user);
 
-        return $user;
+        return $user->id ? $user : null;
     }
 
     protected function load($objet)

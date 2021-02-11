@@ -25,7 +25,7 @@ class QuestionSysDAO extends QuestionDAO
     {
         $question = new QuestionSys($id);
         QuestionSysDAO::load($question);
-        return $question;
+        return $question->id ? $question : null;
     }
 
     public static function load($objet)

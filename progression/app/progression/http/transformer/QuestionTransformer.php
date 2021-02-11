@@ -23,19 +23,25 @@ use League\Fractal;
 
 class QuestionTransformer extends Fractal\TransformerAbstract
 {
-	public function transform(Question $question)
+	public function transform(Question|null $question)
 	{
-        return [
-            'titre' => $question->titre,
-            'description' => $question->description,
-            'énoncé' => $question->enonce,
-            'type' => $question->type,
-            'links'   => [
-                [
-                    'rel' => 'self',
-                    'uri' => '/question/'.$question->id
-                ]
-            ]                
-        ];
+        if ($question == null ) {
+            $data = [ null ];
+        }
+        else {
+            $data = [
+                'titre' => $question->titre,
+                'description' => $question->description,
+                'énoncé' => $question->enonce,
+                'type' => $question->type,
+                'links'   => [
+                    [
+                        'rel' => 'self',
+                        'uri' => '/question/'.$question->id
+                    ]
+                ]                
+            ];
+        }
+        return $data;
     }
 }

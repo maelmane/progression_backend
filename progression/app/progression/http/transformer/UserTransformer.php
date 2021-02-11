@@ -23,17 +23,24 @@ use League\Fractal;
 
 class UserTransformer extends Fractal\TransformerAbstract
 {
-	public function transform(User $user)
+	public function transform(User|null $user)
 	{
-        return [
-            "username" => $user->username,
-            "rôle" => $user->role,
-            'links'   => [
-                [
-                    'rel' => 'self',
-                    'uri' => '/user/'.$user->username
-                ]
-            ]                
-        ];
+        if ($user == null ) {
+            $data = [ null ];
+        }
+        else {
+            $data = [
+                "username" => $user->username,
+                "rôle" => $user->role,
+                'links'   => [
+                    [
+                        'rel' => 'self',
+                        'uri' => '/user/'.$user->username
+                    ]
+                ]                
+            ];
+        }
+
+        return $data;
     }
 }

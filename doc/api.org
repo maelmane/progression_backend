@@ -18,9 +18,9 @@ Les versions de l'api sont accessibles à des URL distincts pour assurer la rét
 ** Privés
 Les points d'entrée privés requierent un token dans l'entête : «Authentification: Bearer <token>»
 
-| Méthode | URL                | Description                            | Réponse |
-| GET     | ~/user/~           | Obtient l'utilisateur Authentification | User    |
-| GET     | ~/user/{username}~ | Obtient l'utilisateur /username/       | User    |
+| Méthode | URL                | Description                       | Réponse |
+| GET     | ~/user/~           | Obtient l'utilisateur authentifié | User    |
+| GET     | ~/user/{username}~ | Obtient l'utilisateur /username/  | User    |
 
 * Ressources
 
@@ -264,11 +264,13 @@ curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1?
 curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/les_fonctions?links=true -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir la question «appeler_une_fonction» :
+** Obtenir la question «appeler_une_fonction_paramétrée» :
 
-#+BEGIN_SRC sh :eval never
-curl https://progression.dti.crosemont.quebec/api/v1/question/programmation_1/les_fonctions/appeler_une_fonction -H "Authorization: Bearer $TOKEN"
+#+BEGIN_SRC sh :eval yes
+curl https://progression.dti.crosemont.quebec/api/v1/question/2 -H "Authorization: Bearer $TOKEN"
 #+END_SRC
+
+#+RESULTS:
 
 ** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction» :
 

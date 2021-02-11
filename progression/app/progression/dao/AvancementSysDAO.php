@@ -29,13 +29,13 @@ class AvancementSysDAO extends EntitéDAO
             $avancement->etat = Question::ETAT_DEBUT;
         }
 
-        return $avancement;
+		return $avancement->id ? $avancement : null;
     }
 
     protected static function load($objet)
     {
         $query = AvancementSysDAO::$conn->prepare(
-            'SELECT etat, reponse, conteneur 
+            'SELECT id, etat, reponse, conteneur 
              FROM avancement LEFT JOIN reponse_sys 
              ON avancement.questionID = reponse_sys.questionID AND
                 avancement.userID = reponse_sys.userID
@@ -43,7 +43,7 @@ class AvancementSysDAO extends EntitéDAO
         );
         $query->bind_param("ii", $objet->question_id, $objet->user_id);
         $query->execute();
-        $query->bind_result($objet->etat, $objet->reponse, $objet->conteneur);
+        $query->bind_result($objet->id, $objet->etat, $objet->reponse, $objet->conteneur);
         $query->fetch();
 
         $query->close();

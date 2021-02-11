@@ -30,13 +30,13 @@ class AvancementProgDAO extends EntitéDAO
             $avancement->etat = Question::ETAT_DEBUT;
         }
 
-        return $avancement;
+		return $avancement->id ? $avancement : null;
     }
 
     protected static function load($objet)
     {
         $query = AvancementProgDAO::$conn->prepare(
-            'SELECT etat, code, lang, lang_derniere_reponse
+            'SELECT id, etat, code, lang, lang_derniere_reponse
              FROM avancement 
              LEFT JOIN avancement_prog 
              ON avancement.questionID = avancement_prog.questionID AND
@@ -48,7 +48,7 @@ class AvancementProgDAO extends EntitéDAO
         );
         $query->bind_param("ii", $objet->question_id, $objet->user_id);
         $query->execute();
-        $query->bind_result($objet->etat, $code, $lang, $objet->lang);
+        $query->bind_result($objet->id, $objet->etat, $code, $lang, $objet->lang);
 
         $réponses = [];
         while ($query->fetch()) {
