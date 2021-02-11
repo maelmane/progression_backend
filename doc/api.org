@@ -24,7 +24,7 @@ Les points d'entrée privés requierent un token dans l'entête : «Authentifica
 
 * Ressources
 
-Les ressources échangées sont représentée en format [[json-api.com][JSON-API]]
+Les ressources échangées sont représentée en format [[https://jsonapi.org][JSON-API]]
 
 ** Utilisateur
 
