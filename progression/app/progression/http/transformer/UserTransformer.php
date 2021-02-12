@@ -23,6 +23,8 @@ use League\Fractal;
 
 class UserTransformer extends Fractal\TransformerAbstract
 {
+    public $type = "User";
+
 	public function transform(User|null $user)
 	{
         if ($user == null ) {
@@ -30,6 +32,7 @@ class UserTransformer extends Fractal\TransformerAbstract
         }
         else {
             $data = [
+                "id" => $user->id,
                 "username" => $user->username,
                 "rôle" => $user->role,
                 'links'   => [

@@ -2,10 +2,6 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
-use progression\http\contrôleur\UserCtl;
-use progression\http\contrôleur\LoginCtl;
-use progression\http\contrôleur\QuestionCtl;
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes

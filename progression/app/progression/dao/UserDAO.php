@@ -42,14 +42,14 @@ class UserDAO extends EntitéDAO
         if ($id == null) {
             return null;
         } else {
-            return UserDAO::get_user($id);
+            return $this->get_user($id);
         }
     }
 
     public function get_user($user_id)
     {
         $user = new User($user_id);
-        UserDAO::load($user);
+        $this->load($user);
 
         return $user->id ? $user : null;
     }

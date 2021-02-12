@@ -22,9 +22,9 @@ use progression\domaine\entité\Question;
 use progression\domaine\entité\Test;
 use League\Fractal;
 
-class QuestionTransformer extends Fractal\TransformerAbstract {
+class QuestionProgTransformer extends Fractal\TransformerAbstract {
 
-    public $type = "Question";
+    public $type = "QuestionProg";
 
     protected $availableIncludes = ['Tests'];    
 
@@ -35,11 +35,11 @@ class QuestionTransformer extends Fractal\TransformerAbstract {
         }
         else {
             $data = [
-                'id' => "question1",
+                'id' => $question->id,
                 'titre' => $question->titre,
                 'description' => $question->description,
                 'énoncé' => $question->enonce,
-                'type_de_question' => $question->type, //Il faut changer type pour une autre nom
+                'type_de_question' => $this->type,
                 'links'   => [
                     [
                         'rel' => 'self',

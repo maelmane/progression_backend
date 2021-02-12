@@ -32,6 +32,7 @@ class Question extends Entité
 
     public $serieID;
     public $actif;
+    public $type;
     public $numero;
     public $titre;
     public $description;

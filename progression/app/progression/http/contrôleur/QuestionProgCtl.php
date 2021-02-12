@@ -19,33 +19,26 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use progression\domaine\interacteur\ObtenirQuestionInt;
-use progression\domaine\entité\Test;
+use progression\domaine\interacteur\ObtenirQuestionProgInt;
 use progression\dao\DAOFactory;
-use progression\http\transformer\QuestionTransformer;
+use progression\http\transformer\QuestionProgTransformer;
 use League\Fractal\Resource\Item;
 use Illuminate\Support\Facades\Log;
-use \Firebase\JWT\JWT;
-use Firebase\JWT\SignatureInvalidException;
-use UnexpectedValueException;
-use DomainException;
-use Exception;
 
-class QuestionCtl extends Contrôleur
+class QuestionProgCtl extends Contrôleur
 {
     public function get( Request $request, $id ) {
         $question = null;
 
         if ($id != null && $id != "" ) {
-            $questionInt = new ObtenirQuestionInt(new DAOFactory);
+            $questionInt = new ObtenirQuestionProgInt(new DAOFactory);
             $question = $questionInt->get_question($id);
-            $question->tests = [new Test("Test 1", "123", "321"), new Test("Test 2", "234", "432")]; //À populer à partir du DAO
         }
 
         $fractal = $this->getFractalManager();
 
         if ($question != null) {
-            $réponse = $this->item($question, new QuestionTransformer);
+            $réponse = $this->item($question, new QuestionProgTransformer);
             
             Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return $this->réponse_json($réponse, 200);

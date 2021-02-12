@@ -21,25 +21,25 @@ use progression\domaine\entité\{QuestionProg, Exécutable, Test};
 
 class QuestionProgDAO extends QuestionDAO
 {
-    static function get_question($id)
+    public function get_question($id)
     {
         $question = new QuestionProg($id);
-        QuestionProgDAO::load($question);
+        $this->load($question);
 
         return $question->id ? $question : null;
     }
 
-    protected static function load($objet)
+    protected function load($objet)
     {
         parent::load($objet);
 
-        $objet->exécutables = QuestionProgDAO::load_exécutables($objet->id);
-        $objet->tests = QuestionProgDAO::load_tests($objet->id);
+        $objet->exécutables = $this->load_exécutables($objet->id);
+        $objet->tests = $this->load_tests($objet->id);
     }
 
-    private static function load_exécutables($id)
+    private function load_exécutables($id)
     {
-        $query = QuestionProgDAO::$conn->prepare(
+        $query = $this->conn->prepare(
             'SELECT code, lang FROM executable WHERE questionID=?'
         );
         $query->bind_param("i", $id);
@@ -55,9 +55,9 @@ class QuestionProgDAO extends QuestionDAO
         return $exécutables;
     }
 
-    private static function load_tests($id)
+    private function load_tests($id)
     {
-        $query = QuestionProgDAO::$conn->prepare(
+        $query = $this->conn->prepare(
             'SELECT nom, stdin, params, solution, feedback_pos, feedback_neg FROM test WHERE questionID=?'
         );
         $query->bind_param("i", $id);
