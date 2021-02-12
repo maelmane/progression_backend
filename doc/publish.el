@@ -31,7 +31,7 @@
    (java . t)
    (shell . t)
    (C . t)))
-
+(setq org-babel-python-command "python3")
 
 ;; setting to nil, avoids "Author: x" at the bottom
 (setq user-full-name nil)
