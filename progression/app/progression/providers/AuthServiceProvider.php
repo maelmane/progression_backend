@@ -2,14 +2,14 @@
 
 namespace progression\providers;
 
-use DomainException;
-use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
-use \Firebase\JWT\JWT;
-use Firebase\JWT\SignatureInvalidException;
 use progression\dao\DAOFactory;
 use progression\domaine\interacteur\CréerUserInt;
+use \Firebase\JWT\JWT;
+use Firebase\JWT\SignatureInvalidException;
 use UnexpectedValueException;
+use DomainException;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -48,8 +48,8 @@ class AuthServiceProvider extends ServiceProvider
                         
                         return $user;
                     }
-                } catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
-                    error_log("Erreur de décodage: ".$e);
+                } catch (UnexpectedValueException | SignatureInvalidException | DomainException $e ) {
+                    Log::error("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")" . " " . $e);
                     return null;
                 }
             }

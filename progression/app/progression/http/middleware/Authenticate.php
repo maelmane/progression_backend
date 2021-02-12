@@ -38,10 +38,10 @@ class Authenticate
     public function handle($request, Closure $next, $guard = null)
     {
         if ($this->auth->guard($guard)->guest()) {
-            Log::info("Le token est invalide pour: " . $request->ip() . " (AuthServiceProvider)");
+            Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return response()->json(['message' => 'Utilisateur non autorisé.'], 401, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']);
         }
-        Log::info("Le token est valide pour: " . $request->ip() . " (AuthServiceProvider)");
+        Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
         return $next($request);
     }
 }

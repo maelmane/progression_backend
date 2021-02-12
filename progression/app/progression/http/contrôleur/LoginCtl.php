@@ -19,24 +19,40 @@
 
 namespace progression\http\contrôleur;
 
+use Exception;
+use \Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use progression\domaine\interacteur\AuthentificationInteracteur;
+use progression\domaine\interacteur\LoginInt;
+use progression\dao\DAOFactory;
 
 class LoginCtl extends Contrôleur
 {
     public function login(Request $request){
-        $authInt = new AuthentificationInteracteur();
+        $loginInt = new LoginInt(new DAOFactory());
         $username = $request->input("username");
         $password = $request->input("password");
+        $user = null;
+        $token = null;
 
-        $token = $authInt->créerToken($username, $password);
-        if($token){
-            Log::info("Le token a été créé pour: " . $request->ip() . " (LoginInteracteur)");
-            return $this->réponse_json(['token' => $token], 200);
+        $user = $loginInt->effectuer_login($username, $password);
+
+        if ($user != null ) {
+            $payload = [
+                'user' => $user,
+                'current' => time(),
+                'expired' => time() + $_ENV["JWT_TTL"]
+            ];
+            $token = JWT::encode($payload, $_ENV['JWT_SECRET'], 'HS256');
         }
-        Log::warning("Le token n'a pas été créé pour: " . $request->ip() . " (LoginInteracteur)");
-        return $this->réponseJson(['message' => 'Utilisateur non autorisé.'], 401);
+
+        if ($token != null ) {
+            Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
+            return $this->réponse_json(['Authorization' => $token], 200);
+        } else {
+            Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
+            return $this->réponse_json(['message' => 'Utilisateur non autorisé.'], 401);
+        }
     }
 }
 

@@ -19,30 +19,35 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
+use progression\domaine\interacteur\ObtenirQuestionInt;
 use progression\dao\DAOFactory;
 use progression\http\transformer\QuestionTransformer;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
 use Illuminate\Support\Facades\Log;
+use \Firebase\JWT\JWT;
+use Firebase\JWT\SignatureInvalidException;
+use UnexpectedValueException;
+use DomainException;
+use Exception;
 
 class QuestionCtl extends Contrôleur
 {
     public function get( Request $request, $id ) {
         $question = null;
 
-        if ($id != null && $id != "" ) {
-            $dao_factory = new DAOFactory();
-            $question_dao = $dao_factory->get_question_dao();
-            $question = $question_dao->get_question($id);
+        if ($id != null && $id != "") {
+            $questionInt = new ObtenirQuestionInt(new DAOFactory);
+            $question = $questionInt->get_question($id);
         }
 
-        $resource = new Item($question, new QuestionTransformer);
-        $fractal = new Manager();
-        $réponse = $fractal->createData($resource);
-
         if ($question != null) {
+            $resource = new Item($question, new QuestionTransformer);
+            $fractal = new Manager();
+            $réponse = $fractal->createData($resource);
             Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return $this->réponse_json($réponse, 200);
+
         } else {
             Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return $this->réponse_json(['message' => 'Question non trouvée.'], 404);
