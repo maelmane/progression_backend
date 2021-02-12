@@ -269,29 +269,11 @@ curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1?
 curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/les_fonctions?links=true -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir la question «appeler_une_fonction_paramétrée» :
+** Obtenir la question «appeler_une_fonction_paramétrée» et ses tests:
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl https://progression.dti.crosemont.quebec/api/v1/question/2 -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/question/2?include=Tests -H "Authorization: Bearer $TOKEN"
 #+END_SRC
-
-#+RESULTS:
-#+begin_example
-{
-    "data": {
-        "titre": "Appeler une fonction paramétrée",
-        "description": "Appel d'une fonction existante recevant un paramètre",
-        "énoncé": "La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.",
-        "type": 3,
-        "links": [
-            {
-                "rel": "self",
-                "uri": "/question/2"
-            }
-        ]
-    }
-}
-#+end_example
 
 ** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction» :
 
