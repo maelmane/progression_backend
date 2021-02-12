@@ -61,6 +61,7 @@ class QuestionDAO extends EntitéDAO
     protected function load($objet)
     {
         $query = $this->conn->prepare('SELECT question.questionID,
+                                            question.nom,
 	                                        question.actif,
 	                                        question.type,
 	                                        question.serieID as s,
@@ -78,6 +79,7 @@ class QuestionDAO extends EntitéDAO
         $query->execute();
         $query->bind_result(
             $objet->id,
+            $objet->nom,
             $objet->actif,
             $objet->type,
             $objet->serieID,
@@ -101,6 +103,7 @@ class QuestionDAO extends EntitéDAO
     {
         if (!$objet->id) {
             $query = $this->conn->prepare("INSERT INTO question( serieID,
+                                                              nom,
 	                                                          actif,
 	                                                          type,
 	                                                          titre,
@@ -110,11 +113,12 @@ class QuestionDAO extends EntitéDAO
 	                                                          feedback_pos,
 	                                                          feedback_neg,
 	                                                          code_validation ) 
-	                                 VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )");
+	                                 VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )");
 
             $query->bind_param(
                 "iiississss",
                 $objet->serieID,
+                $objet->nom,
                 $objet->actif,
                 $objet->type,
                 $objet->titre,
@@ -132,6 +136,7 @@ class QuestionDAO extends EntitéDAO
         } else {
             $query = $this->conn->prepare("UPDATE question set 
 	                                            serieID=?,
+                                                nom=?,
 	                                            actif=?,
 	                                            type=?,
 	                                            titre=?,
@@ -145,6 +150,7 @@ class QuestionDAO extends EntitéDAO
             $query->bind_param(
                 "iiississssi",
                 $objet->serieID,
+                $objet->nom,
                 $objet->actif,
                 $objet->type,
                 $objet->titre,
