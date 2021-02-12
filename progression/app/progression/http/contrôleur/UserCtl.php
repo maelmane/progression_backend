@@ -18,35 +18,41 @@
 
 namespace progression\http\contrôleur;
 
+use Exception;
 use Illuminate\Http\Request;
-use progression\domaine\entité\User;
+use progression\domaine\interacteur\ObtenirUserInt;
 use progression\dao\DAOFactory;
 use progression\http\transformer\UserTransformer;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
+use Illuminate\Support\Facades\Log;
+
 
 class UserCtl extends Contrôleur
 {
     public function get(Request $request, $username=null){
+        $userInt = new ObtenirUserInt(new DAOFactory());
+        $user = null;
+        
         if ($username == null ) {
             $username = $request->username;
         }
 
         if ($username != null && $username != "" ) {
-            $dao_factory = new DAOFactory();
-            $user_dao = $dao_factory->get_user_dao();
-            $user = $user_dao->trouver_par_nomusager($username);
-        }
-        else{
-            $user = null;
+            $user = $userInt->get_user_par_nomusager($username);
         }
 
-        $resource = new Item($user, new UserTransformer);
-        $fractal = new Manager();
-        $réponse = $fractal->createData($resource);
+        if ($user != null ) {
+            $resource = new Item($user, new UserTransformer);
+            $fractal = new Manager();
+            $réponse = $fractal->createData($resource);
+            Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
+            return $this->réponse_json($réponse, 200);
 
-        return $this->réponse_json($réponse, 200);
-
+        } else {
+            Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
+            return $this->réponse_json(['message' => 'Utilisateur non trouvé.'], 404);
+        }
     }
 }
 
