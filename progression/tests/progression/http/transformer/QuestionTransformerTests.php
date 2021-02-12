@@ -27,16 +27,16 @@ use League\Fractal\Resource\Item;
 final class QuestionTransformerTests extends TestCase{
     public function test_étant_donné_une_question_instanciée_avec_tests_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant(){
         $testTest1 = new Test("nomTest1", "stdinTest1", "solutionTest1");
-        $questionProgTest = new QuestionProg();
-        $questionProgTest->id = 1;
-        $questionProgTest->titre = "titreTest";
-        $questionProgTest->description = "descriptionTest";
-        $questionProgTest->enonce = "énoncéTest";
-        $questionProgTest->tests = array($testTest1);
+        $question = new QuestionProg();
+        $question->id = 1;
+        $question->titre = "titreTest";
+        $question->description = "descriptionTest";
+        $question->enonce = "énoncéTest";
+        $question->tests = array($testTest1);
 
         $json = '{"data":{"type":"QuestionProg","id":"1","attributes":{"titre":"titreTest","description":"descriptionTest","énoncé":"énoncéTest","type_de_question":"QuestionProg"},"links":{"self":"https:\/\/progression.dti.crosemont.quebec\/QuestionProg\/1","0":{"rel":"self","self":"https:\/\/progression.dti.crosemont.quebec\/api\/v1\/question\/"}},"relationships":{"Tests":{"links":{"self":"https:\/\/progression.dti.crosemont.quebec\/QuestionProg\/1\/relationships\/Tests","related":"https:\/\/progression.dti.crosemont.quebec\/QuestionProg\/1\/Tests"},"data":[{"type":"Test","id":"0"}]}}},"included":[{"type":"Test","id":"0","attributes":{"nom":"nomTest1","entrée":"stdinTest1","sortie":"solutionTest1"},"links":{"self":"https:\/\/progression.dti.crosemont.quebec\/Test\/0"}}]}';
 
-        $tableau = $this->item($questionProgTest, new QuestionTransformer);
+        $tableau = $this->item($question, new QuestionTransformer);
 
         $this->assertEquals($json, json_encode($tableau, JSON_UNESCAPED_UNICODE));
     }
