@@ -17,22 +17,24 @@
 */
 
 namespace progression\http\transformer;
-use progression\domaine\entité\User;
-use PHPUnit\Framework\TestCase;
 use League\Fractal\Manager;
 use League\Fractal\Serializer\JsonApiSerializer;
 use League\Fractal\Resource\Item;
 
-final class UserTransformerTests extends TestCase{
-    public function test_étant_donné_un_user_instancié_avec_id_2_et_nom_bob_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant(){
-        $transformer = new Transformer();
-        $user = new User(2);
-        $user->username = "bob";
-        $json = '{"data":{"type":"User","id":"2","attributes":{"username":"bob","rôle":0},"links":{"self":"https:\/\/progression.dti.crosemont.quebec\/User\/2","0":{"rel":"self","uri":"\/user\/bob"}}}}';
+class Transformer {
+    protected function getFractalManager($includes)
+    {
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer("https://progression.dti.crosemont.quebec")); //À CHANGER. Dans .env? est-ce qu'on peut le trouver automatiquement?
+        $manager->parseIncludes($includes);
+        return $manager;
+    }
 
-        $tableau = $transformer->item($user, new UserTransformer, "Tests");
-
-        $this->assertEquals($json, json_encode($tableau, JSON_UNESCAPED_UNICODE));
+    public function item($data, $transformer, $includes, $resourceKey = null)
+    {
+        $manager = $this->getFractalManager($includes);
+        $resource = new Item($data, $transformer, $transformer->type);
+        return $manager->createData($resource)->toArray();
     }
 }
 

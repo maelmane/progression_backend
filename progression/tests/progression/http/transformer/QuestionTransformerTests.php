@@ -20,12 +20,11 @@ namespace progression\http\transformer;
 use progression\domaine\entité\QuestionProg;
 use progression\domaine\entité\Test;
 use PHPUnit\Framework\TestCase;
-use League\Fractal\Manager;
-use League\Fractal\Serializer\JsonApiSerializer;
-use League\Fractal\Resource\Item;
 
 final class QuestionTransformerTests extends TestCase{
     public function test_étant_donné_une_question_instanciée_avec_tests_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant(){
+        $transformer = new Transformer();
+
         $testTest1 = new Test("nomTest1", "stdinTest1", "solutionTest1");
         $question = new QuestionProg();
         $question->id = 1;
@@ -36,24 +35,9 @@ final class QuestionTransformerTests extends TestCase{
 
         $json = '{"data":{"type":"QuestionProg","id":"1","attributes":{"titre":"titreTest","description":"descriptionTest","énoncé":"énoncéTest","type_de_question":"QuestionProg"},"links":{"self":"https:\/\/progression.dti.crosemont.quebec\/QuestionProg\/1","0":{"rel":"self","self":"https:\/\/progression.dti.crosemont.quebec\/api\/v1\/question\/"}},"relationships":{"Tests":{"links":{"self":"https:\/\/progression.dti.crosemont.quebec\/QuestionProg\/1\/relationships\/Tests","related":"https:\/\/progression.dti.crosemont.quebec\/QuestionProg\/1\/Tests"},"data":[{"type":"Test","id":"0"}]}}},"included":[{"type":"Test","id":"0","attributes":{"nom":"nomTest1","entrée":"stdinTest1","sortie":"solutionTest1"},"links":{"self":"https:\/\/progression.dti.crosemont.quebec\/Test\/0"}}]}';
 
-        $tableau = $this->item($question, new QuestionTransformer);
+        $tableau = $transformer->item($question, new QuestionTransformer, "Tests");
 
         $this->assertEquals($json, json_encode($tableau, JSON_UNESCAPED_UNICODE));
-    }
-
-    protected function getFractalManager()
-    {
-        $manager = new Manager();
-        $manager->setSerializer(new JsonApiSerializer("https://progression.dti.crosemont.quebec")); //À CHANGER. Dans .env? est-ce qu'on peut le trouver automatiquement?
-        $manager->parseIncludes("Tests");
-        return $manager;
-    }
-
-    public function item($data, $transformer, $resourceKey = null)
-    {
-        $manager = $this->getFractalManager();
-        $resource = new Item($data, $transformer, $transformer->type);
-        return $manager->createData($resource)->toArray();
     }
 }
 
