@@ -20,9 +20,9 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use progression\domaine\interacteur\ObtenirQuestionInt;
+use progression\domaine\entité\Test;
 use progression\dao\DAOFactory;
 use progression\http\transformer\QuestionTransformer;
-use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
 use Illuminate\Support\Facades\Log;
 use \Firebase\JWT\JWT;
@@ -36,10 +36,15 @@ class QuestionCtl extends Contrôleur
     public function get( Request $request, $id ) {
         $question = null;
 
-        if ($id != null && $id != "") {
+        if ($id != null && $id != "" ) {
             $questionInt = new ObtenirQuestionInt(new DAOFactory);
             $question = $questionInt->get_question($id);
+            $question->tests = [new Test("Test 1", "123", "321"), new Test("Test 2", "234", "432")]; //À populer à partir du DAO
         }
+
+        $fractal = $this->getFractalManager();
+
+        $réponse = $this->item($question, new QuestionTransformer);
 
         if ($question != null) {
             $resource = new Item($question, new QuestionTransformer);

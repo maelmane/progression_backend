@@ -19,69 +19,40 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\Question;
+use progression\domaine\entité\Test;
 use League\Fractal;
 
-class QuestionTransformer extends Fractal\TransformerAbstract
-{
-    public function transform(Question|null $question)
-    {
-        if ($question == null) {
-            $data = [null];
-        } else {
+class QuestionTransformer extends Fractal\TransformerAbstract {
+
+    public $type = "Question";
+
+    protected $availableIncludes = ['Tests'];    
+
+	public function transform(Question|null $question)
+	{
+        if ($question == null ) {
+            $data = [ null ];
+        }
+        else {
             $data = [
-                'nom' => $question->nom,
+                'id' => "question1",
                 'titre' => $question->titre,
                 'description' => $question->description,
                 'énoncé' => $question->enonce,
-                'type' => $question->type,
-                'relationships' => [
-                    'avancement' => [
-                        'links' => [
-                            'self' => "",
-                            'related' => ""
-                        ],
-                        "data" => [
-                            ["type" => "", "id" => ""],
-                            ["type" => "", "id" => ""]
-                        ]
-                    ],
-                    'ébauches' => [
-                        'links' => [
-                            'self' => "",
-                            'related' => ""
-                        ],
-                        "data" => [
-                            ["type" => "", "id" => ""],
-                            ["type" => "", "id" => ""]
-                        ]
-                    ],
-                    'tests' => [
-                        'links' => [
-                            'self' => "",
-                            'related' => ""
-                        ],
-                        "data" => [
-                            ["type" => "", "id" => ""],
-                            ["type" => "", "id" => ""]
-                        ]
-                    ],
-                    'accessibilité' => [
-                        'links' => [
-                            'self' => "",
-                            'related' => ""
-                        ],
-                        "data" => [
-                            ["type" => "", "id" => ""],
-                            ["type" => "", "id" => ""]
-                        ]
-                    ],
-
-                ],
-                'links' => [
-                    'self' => 'https://progression.dti.crosemont.quebec/api/v1/question/'
+                'type_de_question' => $question->type, //Il faut changer type pour une autre nom
+                'links'   => [
+                    [
+                        'rel' => 'self',
+                        'self' => 'https://progression.dti.crosemont.quebec/api/v1/question/'
+                    ]
                 ]
             ];
         }
+
         return $data;
+    }
+
+    public function includeTests( $question ){
+        return $this->collection($question->tests, new TestTransformer, "Test");
     }
 }
