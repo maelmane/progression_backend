@@ -29,7 +29,7 @@ class TestTransformer extends Fractal\TransformerAbstract
 	public function transform(Test|null $test)
 	{
         return [
-            "id" => $test->nom, //À CHANGER
+            "id" => $test->numéro,
             "nom" => $test->nom,
             "entrée" => $test->stdin,
             "sortie" => $test->solution

@@ -53,6 +53,11 @@ class QuestionProgTransformer extends Fractal\TransformerAbstract {
     }
 
     public function includeTests( $question ){
+        $i = 0;
+        foreach ($question->tests as $test) {
+            $test->numéro = $i++;
+        }
+
         return $this->collection($question->tests, new TestTransformer, "Test");
     }
 }
