@@ -21,7 +21,7 @@ class Contrôleur extends BaseController
     {
         $request = app(Request::class);
         $manager = new Manager();
-        $manager->setSerializer(new JsonApiSerializer("https://progression.dti.crosemont.quebec")); //À CHANGER. Dans .env? est-ce qu'on peut le trouver automatiquement?
+        $manager->setSerializer(new JsonApiSerializer($_ENV["APP_URL"]));
         if (!empty($request->query('include'))) {
             $manager->parseIncludes($request->query('include'));
         }
