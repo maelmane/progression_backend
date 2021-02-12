@@ -39,7 +39,6 @@ class QuestionProgTransformer extends Fractal\TransformerAbstract {
                 'titre' => $question->titre,
                 'description' => $question->description,
                 'énoncé' => $question->enonce,
-                'type' => $this->type,
                 'links'   => [
                     [
                         'rel' => 'self',

@@ -33,6 +33,7 @@ class UserTransformer extends Fractal\TransformerAbstract
         else {
             $data = [
                 "id" => $user->username,
+                "username" => $user->username,
                 "rôle" => $user->role,
                 'links'   => [
                     [
