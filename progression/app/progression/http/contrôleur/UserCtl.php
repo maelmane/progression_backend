@@ -42,8 +42,6 @@ class UserCtl extends Contrôleur
             $user = $userInt->get_user_par_nomusager($username);
         }
 
-        $fractal = $this->getFractalManager();
-
         if ($user != null ) {
             $réponse = $this->item($user, new UserTransformer);
             

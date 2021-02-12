@@ -35,8 +35,6 @@ class QuestionProgCtl extends Contrôleur
             $question = $questionInt->get_question($id);
         }
 
-        $fractal = $this->getFractalManager();
-
         if ($question != null) {
             $réponse = $this->item($question, new QuestionProgTransformer);
             
