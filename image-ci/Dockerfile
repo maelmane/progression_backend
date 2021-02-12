@@ -1,7 +1,7 @@
 FROM php:7
 
 # Install git, the php image doesn't have installed
-RUN apt update -yqq && apt install git emacs elpa-htmlize unzip python -yqq && apt autoclean
+RUN apt update -yqq && apt install git emacs elpa-htmlize unzip python3 -yqq && apt autoclean
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php
