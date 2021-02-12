@@ -42,10 +42,11 @@ class UserCtl extends Contrôleur
             $user = $userInt->get_user_par_nomusager($username);
         }
 
+        $fractal = $this->getFractalManager();
+
         if ($user != null ) {
-            $resource = new Item($user, new UserTransformer);
-            $fractal = new Manager();
-            $réponse = $fractal->createData($resource);
+            $réponse = $this->item($user, new UserTransformer);
+            
             Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return $this->réponse_json($réponse, 200);
 

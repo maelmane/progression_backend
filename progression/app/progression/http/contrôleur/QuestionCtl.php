@@ -44,15 +44,11 @@ class QuestionCtl extends Contrôleur
 
         $fractal = $this->getFractalManager();
 
-        $réponse = $this->item($question, new QuestionTransformer);
-
         if ($question != null) {
-            $resource = new Item($question, new QuestionTransformer);
-            $fractal = new Manager();
-            $réponse = $fractal->createData($resource);
+            $réponse = $this->item($question, new QuestionTransformer);
+            
             Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return $this->réponse_json($réponse, 200);
-
         } else {
             Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return $this->réponse_json(['message' => 'Question non trouvée.'], 404);
