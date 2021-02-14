@@ -46,6 +46,7 @@ CREATE TABLE `question` (
   `questionID`	int(11) NOT NULL AUTO_INCREMENT,
   `serieID`	int(11) NOT NULL,
   `nom`         varchar(255) NOT NULL,
+  `chemin`      varchar(15000) NOT NULL,
   `actif`       int NOT NULL DEFAULT 1,
   `type`        int NOT NULL,
   `titre`       varchar(255) NOT NULL,

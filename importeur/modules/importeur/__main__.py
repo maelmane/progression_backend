@@ -7,13 +7,14 @@ from collections import defaultdict
 from urllib import parse
 from .importeur_mysql import importer
 
+base_path  = "/tmp/progression_importation/"
+
 def importer_dépôt(source, url):
-    path  = "/tmp/progression_importation"
-    clone = f"git clone --depth 1 {source} {path}"
+    clone = f"git clone --depth 1 {source} {base_path}"
 
     os.system(clone)
     os.system("rm -rf /tmp/progression_importation/.git")
-    importer_répertoire("/tmp/progression_importation/", url)
+    importer_répertoire(base_path , url)
         
 
 def importer_répertoire(source, url):
@@ -27,7 +28,7 @@ def importer_thème(path, nom_thème):
         thème = yaml.safe_load(info_thème)
         thème["nom"] = nom_thème
         thème["lang"] = thème["lang"] if "lang" in thème else None
-        thème["séries"] = importer_séries(path, thème["séries"])
+        thème["séries"] = importer_séries(base_path + path, thème["séries"])
     return thème
 
 
@@ -62,9 +63,10 @@ def importer_questions(path, noms_questions):
 
 
 def importer_question(path, nom_question):
-    path = path + "/" + nom_question
+    path = path[len(base_path):] + "/" + nom_question
     with open(path + "/info.yml") as info_question:
         question = yaml.safe_load(info_question)
+        question["chemin"] = path + "/" + nom_question
         question["feedback_pos"] = (
             question["feedback+"] if "feedback+" in question else None
         )

@@ -91,6 +91,7 @@ def importer_question(c, série_id, question):
         INSERT INTO question(
             serieID,
             nom,
+            chemin,
             type,
             titre,
             description,
@@ -99,7 +100,7 @@ def importer_question(c, série_id, question):
             feedback_pos,
             feedback_neg
         )
-        VALUES ( %s, %s, 3, %s, %s, %s, %s, %s, %s)
+        VALUES ( %s, %s, %s, 3, %s, %s, %s, %s, %s, %s)
         ON DUPLICATE KEY UPDATE
             titre=%s,
             description=%s,
@@ -111,6 +112,7 @@ def importer_question(c, série_id, question):
         [
          série_id,
          question["nom"],
+         question["chemin"],
          question["titre"],
          question["description"],
          question["numéro"],
