@@ -7,8 +7,6 @@ cache:
   - vendor/
 
 before_script:
-# Install composer
-- curl -sS https://getcomposer.org/installer | php
 # Install all project dependencies
 - php composer.phar install --dev -d progression/
 
