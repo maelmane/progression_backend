@@ -30,11 +30,11 @@ Les ressources échangées sont représentée en format [[https://jsonapi.org][J
 
 Un utilisateur du système.
 
-| Classe    | Identifiant | Propriétés  | Type               | Valeurs          |
-|-----------+-------------+-------------+--------------------+------------------|
-| User      | username    | username    | str                |                  |
-|           |             | rôle        | int                | 0=normal,1=admin |
-|-----------+-------------+-------------+--------------------+------------------|
+| Identifiant | Propriétés | Type | Valeurs          |
+|-------------+------------+------+------------------|
+| username    | username   | str  |                  |
+|             | rôle       | int  | 0=normal,1=admin |
+|-------------+------------+------+------------------|
 
 Relations :
 | Nom         | Cardinalité | Type       | Description         |
@@ -43,14 +43,15 @@ Relations :
 | catégories  | 1-n         | Catégorie  | liste de Catégories |
 
 ** Catégorie
-| Classe    | Identifiant | Propriétés  | Type                       | Valeurs |
-|-----------+-------------+-------------+----------------------------+---------|
-| Catégorie | parent/nom  | nom         | str                        |         |
-|           |             | titre       | str                        |         |
-|           |             | description | str                        |         |
-|           |             | catégories  | liste de (sous-)Catégories |         |
-|           |             | questions   | liste de Questions         |         |
-|-----------+-------------+-------------+----------------------------+---------|
+
+Une catégorie de questions
+
+| Identifiant         | Propriétés  | Type | Valeurs |
+|---------------------+-------------+------+---------|
+| catǵorie parent/nom | nom         | str  |         |
+|                     | titre       | str  |         |
+|                     | description | str  |         |
+|---------------------+-------------+------+---------|
 
 Relations :
 | Nom                    | Cardinalité | Type                        | Description                                            |
@@ -66,68 +67,109 @@ Liens :
 | parent                 | Catégorie parent                                       |
 
 ** Question
-| Classe                       | Identifiant   | Propriétés  | Type                                 | Valeurs |
-|------------------------------+---------------+-------------+--------------------------------------+---------|
-| Question                     | catégorie/nom | nom         | str                                  |         |
-| ▲                            |               | titre       | str                                  |         |
-| │                            |               | description | str                                  |         |
-| │                            |               | énoncé      | str                                  |         |
-| │                            |               | type        | int                                  |         |
-| ├ QuestionProg               |               |             |                                      |       3 |
-| ├ QuestionProgEval(obsolète) |               |             |                                      |       0 |
-| ├ QuestionSys                |               |             |                                      |       1 |
-| └ QuestionBD                 |               |             |                                      |       2 |
+
+Une question générique
+
+| Hiérarchie                   | Identifiant          | Propriétés  | Type | Valeurs |
+|------------------------------+----------------------+-------------+------+---------|
+| Question                     | catégorie parent/nom | nom         | str  |         |
+| ▲                            |                      | titre       | str  |         |
+| │                            |                      | description | str  |         |
+| │                            |                      | énoncé      | str  |         |
+| ├ QuestionProg               |                      |             |      |         |
+| ├ QuestionProgEval(obsolète) |                      |             |      |         |
+| ├ QuestionSys                |                      |             |      |         |
+| └ QuestionBD                 |                      |             |      |         |
+
+Liens :
+| Nom                                   | Description                                                   |
+|---------------------------------------+---------------------------------------------------------------|
+| avancement                            | avancement pour cette question pour l'utilisateur courant     |
+| suivantes                             | liste de questions suivantes pour l'utilisateur courant       |
+| catégorie                             | Catégorie parent                                              |
+| accessibilité (relation? lien? meta?) | Vrai si la question est accessible pour l'utilisateur courant |
+
+** QuestionProg (Question)
+
+Une question spécifiquement de programmation
 
 Relations :
 | Nom                                   | Cardinalité | Type       | description                                                   |
 |---------------------------------------+-------------+------------+---------------------------------------------------------------|
-| avancement                            | 1-1         | Avancement | avancement pour cette question pour l'utilisateur courant     |
 | ébauches                              | 1-n         | Solution   | liste d'ébauches de Solution                                  |
-| tests                                 | 1-n         | Test       | liste de Tests                                                |
-| accessibilité (relation? lien? meta?) | 1-1         | bool       | Vrai si la question est accessible pour l'utilisateur courant |
-
-Liens :
-| Nom           | Description                                                   |
-|---------------+---------------------------------------------------------------|
-| suivante      | Question suivante pour l'utilisateur courant                  |
-| catégorie     | Catégorie parent                                              |
+| tests                                 | 1-n         | Test       | liste de Tests de validation                                  |
 
 ** Avancement
-| Classe     | Identifiant   | Propriétés | Type               | Valeurs                          |
-|------------+---------------+------------+--------------------+----------------------------------|
-| Avancement | user/question | état       | int                | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) |
-|            |               | solutions  | liste de Solutions |                                  |
 
-** Solution
-| Classe   | Identifiant              | Propriétés      | Type | Valeurs   |
-|----------+--------------------------+-----------------+------+-----------|
-| Solution | question/date_soumission | date_soumission | int  | timestamp |
-|          |                          | langage         | int  |           |
-|          |                          | code            | str  |           |
-|          |                          | feedback        | str  |           |
+L'avancement d'un utilisateur pour une question
+
+| Identifiant       | Propriétés | Type | Valeurs                          |
+|-------------------+------------+------+----------------------------------|
+| username/question | état       | int  | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) |
+
+Relations :
+| Nom        | Cardinalité | Type       | Description         |
+|------------+-------------+------------+---------------------|
+| tentatives | 1-n         | Tentatives | liste de Tentatives |
+
+Liens :
+| Nom       | Description                  |
+|-----------+------------------------------|
+| tentative | Créer une nouvelle tentative |
 
 ** Tentative
-| Classe    | Identifiant              | Propriétés      | Type | Valeurs   |
-|-----------+--------------------------+-----------------+------+-----------|
-| Tentative | question/date_soumission | date_soumission | int  | timestamp |
-|           |                          | feedback        | str  |           |
+
+Une tentative de réponse à une question.
+
+| Identifiant                | Propriétés      | Type | Valeurs             |
+|----------------------------+-----------------+------+---------------------|
+| avancement/date_soumission | date_soumission | int  | timestamp           |
+|                            | tests_réussis   | int  | nb de tests réussis |
+|                            | feedback        | str  |                     |
+
+Relations :
+| Nom       | Cardinalité | Type     | Description           |
+|-----------+-------------+----------+-----------------------|
+| solution  | 1-1         | Solution | la solution proposée  |
+| résultats | 1-n         | Résultat | les résultats de test |
+
+** Solution
+
+Une solution proposée pour une question
+
+| Identifiant                      | Propriétés | Type | Valeurs |
+|----------------------------------+------------+------+---------|
+| avancement/date_soumission (???) | langage    | int  |         |
+|                                  | code       | str  |         |
+
+Liens :
+
+| Nom       | Description                                        |
+|-----------+----------------------------------------------------|
+| question  | Question pour laquelle cette solution est proposée |
 
 ** Test
-| Classe | Identifiant     | Propriétés      | Type | Valeurs |
-|--------+-----------------+-----------------+------+---------|
-| Test   | question/numéro | numéro          | int  |         |
-|        |                 | nom             | str  |         |
-|        |                 | entrée          | str  |         |
-|        |                 | sortie_attendue | str  |         |
+
+Un test de validation d'une question auquel sont soumises les solutions proposées.
+
+| Identifiant     | Propriétés      | Type | Valeurs |
+|-----------------+-----------------+------+---------|
+| question/numéro | numéro          | int  |         |
+|                 | nom             | str  |         |
+|                 | entrée          | str  |         |
+|                 | sortie_attendue | str  |         |
 
 ** Résultat
-| Classe   | Identifiant     | Propriétés      | Type | Valeurs |
-|----------+-----------------+-----------------+------+---------|
-| Résultat | question/numéro | numéro          | int  |         |
-|          |                 | sortie_observée | str  |         |
-|          |                 | sortie_erreur   | str  |         |
-|          |                 | résultat        | bool |         |
-|          |                 | feedback        | str  |         |
+
+Le résultat d'un test pour une solution proposée.
+
+| Identifiant     | Propriétés      | Type | Valeurs |
+|-----------------+-----------------+------+---------|
+| question/numéro | numéro          | int  |         |
+|                 | sortie_observée | str  |         |
+|                 | sortie_erreur   | str  |         |
+|                 | résultat        | bool |         |
+|                 | feedback        | str  |         |
 
 * Exemples
 
