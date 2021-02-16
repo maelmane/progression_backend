@@ -38,7 +38,7 @@ class UserTransformer extends Fractal\TransformerAbstract
                 'links'   => [
                     [
                         'rel' => 'self',
-                        'uri' => 'https://progression.dti.crosemont.quebec/api/v1/user/'.$user->username
+                        'uri' => $_ENV['APP_URL'] . $user->username
                     ]
                 ]                
             ];
