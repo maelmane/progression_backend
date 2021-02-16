@@ -42,6 +42,14 @@ services:
       SOURCE: https://git.dti.crosemont.quebec/progression/progression_contenu_demo.git
       DESTINATION: mysql://quiz:password@172.20.0.2/quiz
 
+  tests:
+    build: progression/
+    container_name: progression_tests
+    volumes:
+      - "./progression/:/var/www/progression/"
+    restart: "no"
+    command: /var/www/vendor/bin/phpunit --configuration /var/www/progression/phpunit.xml --coverage-text
+
 networks:
   progressionnet:
     ipam:
