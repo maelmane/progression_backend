@@ -40,4 +40,7 @@ final class UserTransformerTests extends TestCase{
     }
 }
 
-?>
+    $json = '[null]';
+    $this->assertEquals($json, json_encode($userTransformer->transform($user)));
+  }
+}
