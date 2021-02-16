@@ -32,13 +32,12 @@ class UserTransformer extends Fractal\TransformerAbstract
         }
         else {
             $data = [
-                "id" => $user->id,
-                "username" => $user->username,
+                "id" => $user->username,
                 "rôle" => $user->role,
                 'links'   => [
                     [
                         'rel' => 'self',
-                        'uri' => '/user/'.$user->username
+                        'uri' => 'https://progression.dti.crosemont.quebec/api/v1/user/'.$user->username
                     ]
                 ]                
             ];

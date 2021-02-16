@@ -30,7 +30,10 @@ class Question extends Entité
     const TYPE_BD = 2;
     const TYPE_PROG = 3;
 
+    public $id;
     public $serieID;
+    public $nom;
+    public $chemin;
     public $actif;
     public $type;
     public $numero;

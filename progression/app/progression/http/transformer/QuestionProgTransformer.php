@@ -35,15 +35,15 @@ class QuestionProgTransformer extends Fractal\TransformerAbstract {
         }
         else {
             $data = [
-                'id' => $question->id,
+                'id' => $question->chemin,
                 'titre' => $question->titre,
                 'description' => $question->description,
                 'énoncé' => $question->enonce,
-                'type_de_question' => $this->type,
+                'type' => $this->type,
                 'links'   => [
                     [
                         'rel' => 'self',
-                        'self' => 'https://progression.dti.crosemont.quebec/api/v1/question/'
+                        'self' => 'https://progression.dti.crosemont.quebec/api/v1/question/'.$question->id
                     ]
                 ]
             ];
@@ -53,9 +53,8 @@ class QuestionProgTransformer extends Fractal\TransformerAbstract {
     }
 
     public function includeTests( $question ){
-        $i = 0;
-        foreach ($question->tests as $test) {
-            $test->numéro = $i++;
+        foreach ($question->tests as $i => $test) {
+            $test->numéro = $i;
         }
 
         return $this->collection($question->tests, new TestTransformer, "Test");
