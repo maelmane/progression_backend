@@ -25,14 +25,18 @@ use League\Fractal\Resource\Item;
 
 final class UserTransformerTests extends TestCase{
     public function test_étant_donné_un_user_instancié_avec_id_2_et_nom_bob_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant(){
-        $transformer = new Transformer();
+        $userTransformer = new UserTransformer();
+        
         $user = new User(2);
         $user->username = "bob";
         $json = '{"data":{"type":"User","id":"2","attributes":{"username":"bob","rôle":0},"links":{"self":"https:\/\/progression.dti.crosemont.quebec\/User\/2","0":{"rel":"self","uri":"\/user\/bob"}}}}';
-
-        $tableau = $transformer->item($user, new UserTransformer, "Tests");
-
-        $this->assertEquals($json, json_encode($tableau, JSON_UNESCAPED_UNICODE));
+        
+        $manager = new Manager();
+        $manager->setSerializer(new JsonApiSerializer("https://progression.dti.crosemont.quebec"));
+        
+        $item = new Item($user, $userTransformer, $userTransformer->type);
+        
+        $this->assertEquals($json, json_encode($manager->createData($item)->toArray(),JSON_UNESCAPED_UNICODE));
     }
 }
 
