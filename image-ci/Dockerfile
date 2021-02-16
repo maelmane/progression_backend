@@ -1,4 +1,4 @@
-FROM php:7
+FROM php:8
 
 # Install git, the php image doesn't have installed
 RUN apt update -yqq && apt install git emacs elpa-htmlize unzip python3 -yqq && apt autoclean
