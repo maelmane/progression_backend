@@ -42,7 +42,7 @@ class QuestionProgTransformer extends Fractal\TransformerAbstract {
                 'links'   => [
                     [
                         'rel' => 'self',
-                        'self' => 'https://progression.dti.crosemont.quebec/api/v1/question/'.$question->id
+                        'self' => $_ENV['APP_URL'] . $question->id
                     ]
                 ]
             ];
