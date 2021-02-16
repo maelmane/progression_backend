@@ -32,7 +32,7 @@ final class QuestionProgTransformerTests extends TestCase{
     $question->titre = "titreTest";
     $question->description = "descriptionTest";
     $question->enonce = "énoncéTest";
-    $json = '{"id":null,"nom":null,"titre":"titreTest","description":"descriptionTest","énoncé":"énoncéTest","type":"QuestionProg","links":[{"rel":"self","self":"https:\/\/progression.dti.crosemont.quebec"}]}';
+    $json = '{"id":null,"nom":null,"titre":"titreTest","description":"descriptionTest","énoncé":"énoncéTest","links":[{"rel":"self","self":"https:\/\/progression.dti.crosemont.quebec"}]}';
     $item = $questionProgTransformer->transform($question);
 
     $this->assertEquals(
