@@ -36,13 +36,14 @@ class QuestionProgTransformer extends Fractal\TransformerAbstract {
         else {
             $data = [
                 'id' => $question->chemin,
+                'nom' => $question->nom,
                 'titre' => $question->titre,
                 'description' => $question->description,
                 'énoncé' => $question->enonce,
                 'links'   => [
                     [
                         'rel' => 'self',
-                        'self' => $_ENV['APP_URL'] . $question->id
+                        'self' => $_ENV['APP_URL'] . $question->chemin
                     ]
                 ]
             ];

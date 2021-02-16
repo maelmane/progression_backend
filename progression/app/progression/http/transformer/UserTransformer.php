@@ -38,7 +38,7 @@ class UserTransformer extends Fractal\TransformerAbstract
                 'links'   => [
                     [
                         'rel' => 'self',
-                        'uri' => $_ENV['APP_URL'] . $user->username
+                        'self' => $_ENV['APP_URL'] . $user->username
                     ]
                 ]                
             ];
