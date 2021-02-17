@@ -19,44 +19,33 @@
 namespace progression\http\transformer;
 use progression\domaine\entité\QuestionProg;
 use PHPUnit\Framework\TestCase;
-use League\Fractal\Manager;
-use League\Fractal\Serializer\JsonApiSerializer;
-use League\Fractal\Resource\Item;
 
-final class QuestionProgTransformerTests extends TestCase{
-  public function test_étant_donné_une_questionprog_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant(){
-    $_ENV['APP_URL']='https://progression.dti.crosemont.quebec';
-    $questionProgTransformer = new QuestionProgTransformer();
-    $question = new QuestionProg();
-    $question->id = 1;
-    $question->titre = "titreTest";
-    $question->description = "descriptionTest";
-    $question->enonce = "énoncéTest";
-    $json = '{"id":null,"nom":null,"titre":"titreTest","description":"descriptionTest","énoncé":"énoncéTest","links":[{"rel":"self","self":"https:\/\/progression.dti.crosemont.quebec"}]}';
-    $item = $questionProgTransformer->transform($question);
+final class QuestionProgTransformerTests extends TestCase
+{
+    public function test_étant_donné_une_questionprog_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+    {
+        $_ENV['APP_URL'] = 'https://progression.dti.crosemont.quebec';
+        $questionProgTransformer = new QuestionProgTransformer();
+        $question = new QuestionProg();
+        $question->id = 1;
+        $question->titre = "titreTest";
+        $question->description = "descriptionTest";
+        $question->enonce = "énoncéTest";
+        $json =
+            '{"id":null,"nom":null,"titre":"titreTest","description":"descriptionTest","énoncé":"énoncéTest","links":[{"rel":"self","self":"https:\/\/progression.dti.crosemont.quebec"}]}';
+        $item = $questionProgTransformer->transform($question);
 
-    $this->assertEquals(
-      $json,
-      json_encode(
-                $item,
-                JSON_UNESCAPED_UNICODE
-      )
-    );
-  }
-  public function test_étant_donné_une_questionprog_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null(){
-    $questionProgTransformer = new QuestionProgTransformer();
-    $question = null;
-    $json = '[null]';
-    $item = $questionProgTransformer->transform($question);
+        $this->assertEquals($json, json_encode($item, JSON_UNESCAPED_UNICODE));
+    }
+    public function test_étant_donné_une_questionprog_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
+    {
+        $questionProgTransformer = new QuestionProgTransformer();
+        $question = null;
+        $json = '[null]';
+        $item = $questionProgTransformer->transform($question);
 
-    $this->assertEquals(
-      $json,
-      json_encode(
-                $item,
-                JSON_UNESCAPED_UNICODE
-      )
-    );
-  }
+        $this->assertEquals($json, json_encode($item, JSON_UNESCAPED_UNICODE));
+    }
 }
 
 ?>
