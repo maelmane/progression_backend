@@ -18,6 +18,8 @@
 
 namespace progression\http\transformer;
 use progression\domaine\entité\QuestionProg;
+use progression\domaine\entité\Exécutable;
+use progression\domaine\entité\Test;
 use PHPUnit\Framework\TestCase;
 
 final class QuestionProgTransformerTests extends TestCase
