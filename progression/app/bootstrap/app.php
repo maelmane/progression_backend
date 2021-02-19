@@ -1,10 +1,19 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
     dirname(__DIR__)
 ))->bootstrap();
+
+// Vérification des variables d'environnement
+if (
+    isset($_ENV['APP_URL']) &&
+    $_ENV['APP_URL'] != "" &&
+    substr($_ENV['APP_URL'], -1) != "/"
+) {
+    $_ENV['APP_URL'] = $_ENV['APP_URL'] . '/';
+}
 
 date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
 
@@ -19,9 +28,7 @@ date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
 |
 */
 
-$app = new Laravel\Lumen\Application(
-    dirname(__DIR__)
-);
+$app = new Laravel\Lumen\Application(dirname(__DIR__));
 
 $app->withFacades();
 
@@ -107,10 +114,13 @@ $app->register(progression\providers\AuthServiceProvider::class);
 |
 */
 
-$app->router->group([
-    'namespace' => 'progression\http\contrôleur',
-], function ($router) {
-    require __DIR__.'/../routes/web.php';
-});
+$app->router->group(
+    [
+        'namespace' => 'progression\http\contrôleur',
+    ],
+    function ($router) {
+        require __DIR__ . '/../routes/web.php';
+    }
+);
 
 return $app;

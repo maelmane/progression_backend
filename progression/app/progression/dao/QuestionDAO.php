@@ -38,9 +38,10 @@ class QuestionDAO extends EntitéDAO
         return $type;
     }
 
-    public function get_question($id)
+    public function get_question($chemin)
     {
-        $question = new Question($id);
+        $question = new Question(null);
+        $question->chemin = $chemin;
         $this->load($question);
         return $question->id ? $question : null ;
     }
@@ -62,7 +63,7 @@ class QuestionDAO extends EntitéDAO
     {
         $query = $this->conn->prepare('SELECT question.questionID,
                                             question.nom,
-                                            quesiton.chemin,
+                                            question.chemin,
 	                                        question.actif,
 	                                        question.type,
 	                                        question.serieID as s,
@@ -75,8 +76,8 @@ class QuestionDAO extends EntitéDAO
 	                                        question.feedback_neg,
 	                                        question.code_validation
 	                                        FROM question
-	                                        WHERE question.questionID = ?');
-        $query->bind_param("i", $objet->id);
+	                                        WHERE question.chemin = ?');
+        $query->bind_param("s", $objet->chemin);
         $query->execute();
         $query->bind_result(
             $objet->id,
