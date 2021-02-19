@@ -18,20 +18,29 @@
 
 namespace progression\domaine\interacteur;
 
-use Mockery\Adapter\Phpunit\MockeryTestCase;
-use \Mockery;
+use progression\domaine\entité\User;
+use PHPUnit\Framework\TestCase;
+use \Mockery as m;
     
-final class LoginIntTest extends MockeryTestCase{
+final class LoginIntTests extends TestCase
+{
     public function test_étant_donné_lauthentification_sans_mot_de_passe_lorsquon_authentifie_un_nouvel_utilisateur_il_est_créé(){
-        $_ENV['AUTH_TYPE']='no';
-        
-        $mockUserDao = Mockery::mock('progression\dao\UserDAO');
-        $mockUserDao->shouldReceive('trouver_par_nomusager', 'save');
+        $_ENV['AUTH_TYPE'] = 'no';
 
-        $mockFactory = Mockery::mock('progression\dao\DAOFactory');
-        $mockFactory->allows()->get_user_dao()->andReturn( $mockUserDao );
+        $user = new User( 1 );
+        $user->username = "Bob";
+        $user->role = 0;
         
-        $interacteur = new LoginInt($mockFactory);
-        $interacteur->effectuer_login("Bob", "");
+        $mockUserDao = m::mock( 'progression\dao\UserDAO' );
+        $mockUserDao->shouldReceive( 'save' );
+        $mockUserDao->allows()->trouver_par_nomusager('Bob')->andReturn( $user );
+
+        $mockFactory = m::mock( 'progression\dao\DAOFactory' );
+        $mockFactory->allows()->get_user_dao()->andReturn( $mockUserDao );
+
+        $interacteur = new LoginInt( $mockFactory );
+        $résultatTest = $interacteur->effectuer_login( "Bob", "" );
+
+        $this->assertEquals( $user, $résultatTest );
     }
 }
