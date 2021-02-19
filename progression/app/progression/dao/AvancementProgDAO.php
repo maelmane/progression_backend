@@ -22,21 +22,21 @@ use progression\domaine\entité\{AvancementProg, Question, RéponseProg};
 
 class AvancementProgDAO extends EntitéDAO
 {
-    static function get_avancement($question_id, $user_id)
+    public function get_avancement($question_id, $user_id)
     {
         $avancement = new AvancementProg($question_id, $user_id);
-        AvancementProgDAO::load($avancement);
+        $this->load($avancement);
         if (is_null($avancement->etat)) {
             $avancement->etat = Question::ETAT_DEBUT;
         }
 
-		return $avancement->id ? $avancement : null;
+		return $avancement->user_id ? $avancement : null;
     }
 
-    protected static function load($objet)
+    protected function load($objet)
     {
-        $query = AvancementProgDAO::$conn->prepare(
-            'SELECT id, etat, code, lang, lang_derniere_reponse
+        $query = $this->conn->prepare(
+            'SELECT etat, code, lang, lang_derniere_reponse
              FROM avancement 
              LEFT JOIN avancement_prog 
              ON avancement.questionID = avancement_prog.questionID AND
@@ -48,7 +48,7 @@ class AvancementProgDAO extends EntitéDAO
         );
         $query->bind_param("ii", $objet->question_id, $objet->user_id);
         $query->execute();
-        $query->bind_result($objet->id, $objet->etat, $code, $lang, $objet->lang);
+        $query->bind_result($objet->etat, $code, $lang, $objet->lang);
 
         $réponses = [];
         while ($query->fetch()) {
@@ -59,11 +59,11 @@ class AvancementProgDAO extends EntitéDAO
         $query->close();
     }
 
-    public static function save($objet)
+    public function save($objet)
     {
-        AvancementProgDAO::$conn->begin_transaction();
+        $this->conn->begin_transaction();
         try {
-            $query = AvancementProgDAO::$conn
+            $query = $this->conn
                 ->prepare('INSERT INTO avancement ( etat, questionID, userID ) VALUES ( ?, ?, ? )
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 
@@ -76,7 +76,7 @@ class AvancementProgDAO extends EntitéDAO
             $query->execute();
             $query->close();
 
-            $query = AvancementProgDAO::$conn
+            $query = $this->conn
                 ->prepare('INSERT INTO avancement_prog ( questionID, userID, lang_derniere_reponse ) VALUES ( ?, ?, ? )
                                               ON DUPLICATE KEY UPDATE lang_derniere_reponse = VALUES( lang_derniere_reponse ) ');
 
@@ -89,7 +89,7 @@ class AvancementProgDAO extends EntitéDAO
             $query->execute();
             $query->close();
             
-            $query = AvancementProgDAO::$conn
+            $query = $this->conn
                 ->prepare('INSERT INTO reponse_prog ( questionID, userID, lang, code ) VALUES ( ?, ?, ?, ?  )
                                               ON DUPLICATE KEY UPDATE code=VALUES( code )');
             foreach ($objet->réponses as $réponse) {
@@ -104,13 +104,13 @@ class AvancementProgDAO extends EntitéDAO
             }
             $query->close();
 
-            AvancementProgDAO::$conn->commit();
+            $this->conn->commit();
         } catch (\mysqli_sql_exception $exception) {
-            AvancementProgDAO::$conn->rollback();
+            $this->conn->rollback();
 
             throw $exception;
         }
-        return AvancementProgDAO::get_avancement(
+        return $this->get_avancement(
             $objet->question_id,
             $objet->user_id
         );

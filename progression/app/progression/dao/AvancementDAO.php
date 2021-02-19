@@ -22,10 +22,10 @@ use progression\domaine\entité\{Avancement, Question};
 
 class AvancementDAO extends EntitéDAO
 {
-	static function get_avancement($question_id, $user_id)
+	public function get_avancement($question_id, $user_id)
 	{
 		$avancement = new Avancement($question_id, $user_id);
-		AvancementDAO::load($avancement);
+		$this->load($avancement);
 		if (is_null($avancement->etat)) {
 			$avancement->etat = Question::ETAT_DEBUT;
 		}
@@ -33,10 +33,10 @@ class AvancementDAO extends EntitéDAO
 		return $avancement->id ? $avancement : null;
 	}
 
-	protected static function load($objet)
+	protected function load($objet)
 	{
 		$query = $this->conn->prepare(
-			'SELECT id, etat FROM avancement WHERE questionID = ? AND userID = ?'
+			'SELECT userID, etat FROM avancement WHERE questionID = ? AND userID = ?'
 		);
 		$query->bind_param("ii", $objet->question_id, $objet->user_id);
 		$query->execute();
@@ -49,7 +49,7 @@ class AvancementDAO extends EntitéDAO
 		$query->close();
 	}
 
-	public static function save($objet)
+	public function save($objet)
 	{
 		$query = $this->conn
 			->prepare('INSERT INTO avancement ( etat, questionID, userID ) VALUES ( ?, ?, ?, ?, ?, ? )
@@ -64,7 +64,7 @@ class AvancementDAO extends EntitéDAO
 		$query->execute();
 		$query->close();
 
-		return AvancementDAO::get_avancement(
+		return $this->get_avancement(
 			$objet->question_id,
 			$objet->user_id
 		);
