@@ -22,29 +22,45 @@ use PHPUnit\Framework\TestCase;
 
 final class QuestionProgTransformerTests extends TestCase
 {
-    public function test_étant_donné_une_questionprog_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+    public function test_étant_donné_une_questionprog_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique_avec_les_liens()
     {
-        $_ENV['APP_URL'] = 'https://progression.dti.crosemont.quebec';
-        $questionProgTransformer = new QuestionProgTransformer();
+        $_ENV['APP_URL'] = 'https://example.com/';
+        $username = "jdoe";
+
         $question = new QuestionProg();
-        $question->id = 1;
-        $question->titre = "titreTest";
-        $question->description = "descriptionTest";
-        $question->enonce = "énoncéTest";
-        $json =
-            '{"id":null,"nom":null,"titre":"titreTest","description":"descriptionTest","énoncé":"énoncéTest","links":[{"rel":"self","self":"https:\/\/progression.dti.crosemont.quebec"}]}';
-        $item = $questionProgTransformer->transform($question);
+        $question->nom = "appeler_une_fonction_paramétrée";
+        $question->chemin =
+            "prog1/les_fonctions/appeler_une_fonction_paramétrée";
+        $question->titre = "Appeler une fonction paramétrée";
+        $question->description =
+            "Appel d\'une fonction existante recevant un paramètre";
+        $question->enonce =
+            "La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
 
-        $this->assertEquals($json, json_encode($item, JSON_UNESCAPED_UNICODE));
-    }
-    public function test_étant_donné_une_questionprog_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
-    {
-        $questionProgTransformer = new QuestionProgTransformer();
-        $question = null;
-        $json = '[null]';
-        $item = $questionProgTransformer->transform($question);
+        $résultat = [
+            "id" =>
+                "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+            "nom" => "appeler_une_fonction_paramétrée",
+            "titre" => "Appeler une fonction paramétrée",
+            "description" =>
+                "Appel d\'une fonction existante recevant un paramètre",
+            "énoncé" =>
+                "La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.",
+            'links' => [
+                'self' =>
+                    'https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=',
+                'avancement' =>
+                    'https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=',
+                'catégorie' =>
+                    'https://example.com/catégorie/cHJvZzEvbGVzX2ZvbmN0aW9ucw==',
+            ],
+        ];
 
-        $this->assertEquals($json, json_encode($item, JSON_UNESCAPED_UNICODE));
+        $item = (new QuestionProgTransformer())->transform([
+            "question" => $question,
+            "username" => $username,
+        ]);
+        $this->assertEquals($résultat, $item);
     }
 }
 

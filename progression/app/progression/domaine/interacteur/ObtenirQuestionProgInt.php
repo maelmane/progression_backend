@@ -20,10 +20,10 @@ namespace progression\domaine\interacteur;
 
 class ObtenirQuestionProgInt extends ObtenirQuestionInt
 {
-    public function get_question($question_id)
+    public function get_question($chemin)
     {
         return $this->_source
             ->get_question_prog_dao()
-            ->get_question($question_id);
+            ->get_question($chemin);
     }
 }

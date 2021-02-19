@@ -36,14 +36,10 @@ class UserTransformer extends Fractal\TransformerAbstract
                 "username" => $user->username,
                 "rôle" => $user->role,
                 'links'   => [
-                    [
-                        'rel' => 'self',
-                        'self' => $_ENV['APP_URL'] . $user->username
-                    ]
-                ]                
+                    'self' => $_ENV['APP_URL'] . 'user/' . $user->username
+                ]
             ];
         }
-
         return $data;
     }
 }

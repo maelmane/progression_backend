@@ -335,9 +335,10 @@ curl --data '{"code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dt
 :    "type": "Tentative",
 :    "id": ... ,
 :    "attributes": {
+:      "tests_réussis":"1",
 :      "feedback":"Sers-toi d'un for pour itérer"
 :    },
-:  "included":{
+:  "included": [ {
 :    "type": "Résultat",
 :    "id": "0",
 :    "attributes": {
@@ -353,7 +354,7 @@ curl --data '{"code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dt
 :      "sortie_erreur":"x is not defined int the current context",
 :      "sortie_observée":"",
 :      "feedback":"Mmmm... il va falloir réessayer"
-:      }
+:      } ]
 :   }
 : }
 

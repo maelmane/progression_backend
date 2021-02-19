@@ -15,12 +15,23 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 namespace progression\dao;
 
-use progression\domaine\entité\{QuestionProg, Exécutable, Test};
+use progression\domaine\entité\{QuestionProg, Exécutable, Test};;
 
-class QuestionProgDAO extends QuestionDAO
+class MockQuestionProgDAO extends MockQuestionDAO
 {
+
+    public function get_question($chemin)
+    {
+        $questionProg = new QuestionProg();
+        $questionProg->chemin = $chemin;
+
+        $this->load($questionProg);
+        return $questionProg;
+    }
+
     protected function load($objet)
     {
         parent::load($objet);
@@ -31,37 +42,27 @@ class QuestionProgDAO extends QuestionDAO
 
     private function load_exécutables($id)
     {
-        $query = $this->conn->prepare(
-            'SELECT code, lang FROM executable WHERE questionID=?'
-        );
-        $query->bind_param("i", $id);
-        $query->execute();
-        $query->bind_result($code, $lang);
-
-        $exécutables = [];
-        while ($query->fetch()) {
-            $exécutables[$lang] = new Exécutable($code, $lang);
+        if ($id == 1) {
+            $exécutables["java"] = new Exécutable("return nb1 + nb2;", "java");
+            $exécutables["python"] = new Exécutable("return nb1 + nb2", "python");
         }
-        $query->close();
-
+        if ($id == 2) {
+            $exécutables["c++"] = new Exécutable("public X(int i)", "c++");
+            $exécutables["c#"] = new Exécutable("public X(int i)", "c#");
+        }
         return $exécutables;
     }
 
     private function load_tests($id)
     {
-        $query = $this->conn->prepare(
-            'SELECT nom, stdin, params, solution, feedback_pos, feedback_neg FROM test WHERE questionID=?'
-        );
-        $query->bind_param("i", $id);
-        $query->execute();
-        $query->bind_result($nom, $stdin, $params, $solution, $feedback_pos, $feedback_neg);
-
-        $tests = [];
-        while ($query->fetch()) {
-            $tests[] = new Test($nom, $stdin, $solution, $params, $feedback_pos, $feedback_neg);
+        if ($id == 1) {
+            $tests[] = new Test("appeler_une_fonction", "21\n21\n", "42");
+            $tests[] = new Test("appeler_une_fonction", "700\n77\n", "777");
         }
-        $query->close();
-
+        if ($id == 2) {
+            $tests[] = new Test("les_constructeurs", "", "error de compilation");
+            $tests[] = new Test("les_constructeurs", "test", "object",);
+        }
         return $tests;
     }
 }

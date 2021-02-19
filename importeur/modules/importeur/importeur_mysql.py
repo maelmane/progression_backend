@@ -103,6 +103,7 @@ def importer_question(c, série_id, question):
         VALUES ( %s, %s, %s, 3, %s, %s, %s, %s, %s, %s)
         ON DUPLICATE KEY UPDATE
             titre=%s,
+            chemin=%s,
             description=%s,
             numero=%s,
             enonce=%s,
@@ -120,6 +121,7 @@ def importer_question(c, série_id, question):
          question["feedback_pos"],
          question["feedback_neg"],
          question["titre"],
+         question["chemin"],
          question["description"],
          question["numéro"],
          question["énoncé"],

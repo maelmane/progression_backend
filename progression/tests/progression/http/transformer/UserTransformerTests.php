@@ -28,19 +28,23 @@ final class UserTransformerTests extends TestCase
         $userTransformer = new UserTransformer();
         $user = new User(2);
         $user->username = "bob";
-        $json =
-            '{"id":"bob","username":"bob","rôle":0,"links":[{"rel":"self","self":"https:\/\/example.com\/bob"}]}';
-        $item = $userTransformer->transform($user);
 
-        $this->assertEquals($json, json_encode($item, JSON_UNESCAPED_UNICODE));
+        $résultat = [
+            "id" => "bob",
+            "username" => "bob",
+            "rôle" => 0,
+            "links" => [
+                "self" => "https://example.com/user/bob"
+            ]];
+        
+        $this->assertEquals( $résultat, $userTransformer->transform($user) );
     }
     public function test_étant_donné_un_user_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
     {
         $userTransformer = new UserTransformer();
         $user = null;
-        $json = '[null]';
-        $item = $userTransformer->transform($user);
+        $résultat = [null];
 
-        $this->assertEquals($json, json_encode($item, JSON_UNESCAPED_UNICODE));
+        $this->assertEquals( $résultat, $userTransformer->transform($user) );
     }
 }
