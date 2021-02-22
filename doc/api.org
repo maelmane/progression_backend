@@ -180,7 +180,7 @@ Le résultat d'un test pour une solution proposée.
 * Exemples
 
 #+begin_warning
-Les exemples marqués ~LIVE~ reflètent les résultats réels.
+Les exemples marqués ~LIVE~ reflètent les résultats réels sur la plus récente version de l'API disponible sur ~https://progression.dti.crosemont.quebec/api/v1/~.
 
 Les exemples marqués ~PROTOTYPE~ sont générés manuellement à titre indicatif et ne reflètent nécessairement pas les résultats réels.
 #+end_warning
@@ -206,7 +206,7 @@ print( json.dumps( json.loads(json_str), ensure_ascii=False, indent=4 ) )
 curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=jdoe&password=Crosemont2021!"
 #+END_SRC
 
-Obtenir le profil de l'utilisateur authentifié ~jdoe~ : ~LIVE~
+** Obtenir le profil de l'utilisateur authentifié ~jdoe~ : ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H "Authorization: Bearer $TOKEN"
@@ -215,76 +215,12 @@ curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H
 
 ** Obtenir le profil de l'utilisateur authentifié ~jdoe~ et ses avancements : ~PROTOTYPE~
 
-#+BEGIN_SRC sh :eval no :var TOKEN=get_token :results output
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :results output
 curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 #+RESULTS:
-: {
-:   "links": {
-:     "self": "https://progression.dti.crosemont.quebec/api/v1/user"
-:     },
-:   "data" : [ {
-:     "type" : "User",
-:     "id" : "jdoe"
-:     "attributes": {
-:       "username": "jdoe",
-:       "rôle": 0
-:     }},
-:     "relationships": {
-:       "catégories": {
-:         "links": {
-:           "self": "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/relationships/catégories"
-:           "related": "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/catégories"
-:         },
-:         "data": [
-:           { "type": "Catégorie", "id": "les_boucles" }
-:           { "type": "Catégorie", "id": "les_fonctions" }
-:         }
-:       },
-:       "avancements": {
-:         "links": {
-:           "self": "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/relationships/avancements"
-:           "related": "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/avancements"
-:         },
-:         "data": [
-:           { "type": "Avancement", "id": "les_fonctions/appeler_une_fonction" }
-:           { "type": "Avancement", "id": "les_fonctions/appeler_une_autre_fonction" }
-:         }
-:       }
-:     }],
-:   "included": {
-:     "avancements": [
-:       "type" : "Avancement",
-:       "id" : "les_fonctions/appeler_une_fonction",
-:       "attributes" : {
-:         "état": 1
-:       },
-:       "relationships" : {
-:         "solutions" : [
-:           "links" :
-:           "data" : [
-:             "type" : "Solution",: "id" : 1234567
-:             "type" : "Solution",: "id" : 1234987
-:           ]
-:         ]
-:       },
-:       "type" : "Avancement",
-:       "id" : "programmation_1/les_fonctions/appeler_une_autre_fonction"
-:       "attributes" : {
-:         "état": 2
-:       },
-:       "relationships" : {
-:         "solutions" : [
-:           "links" :
-:           "data" : [
-:             "type" : "Solution",: "id" : 1239984
-:           ]
-:         ]
-:       }
-:     ]
-:   }
-: }
+: {"data":{"type":"User","id":"jdoe","attributes":{"username":"jdoe","rôle":0},"links":{"self":"http:\/\/localhost\/user\/jdoe"}}}
 
 ** Obtenir la liste des catégories disponibles pour l'utilisateur ~jdoe~ : ~PROTOTYPE~
 
