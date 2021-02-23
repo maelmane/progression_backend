@@ -52,7 +52,7 @@ final class ObtenirQuestionProgIntTests extends TestCase
         $mockQuestionProgDao = m::mock( 'progression\dao\QuestionProgDAO' );
         $mockQuestionProgDao->shouldReceive( 'get_question' )
             ->with( $chemin )
-            ->andReturn( null );
+            ->andReturn( $résultat );
 
         $mockFactory = m::mock( 'progression\dao\DAOFactory' );
         $mockFactory->shouldReceive( 'get_question_prog_dao' )

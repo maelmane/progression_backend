@@ -46,10 +46,10 @@ final class LoginIntTests extends TestCase
         $this->assertEquals( $résultat, $résultatTest );
     }
 
-    public function test_étant_donné_un_user_non_trouvé_on_obtient_un_objet_user()
+    public function test_étant_donné_un_user_non_trouvé_par_son_username_on_obtient_un_objet_user()
     {
         $résultat = new User();
-        $résultat->username = 'Bob';
+        $résultat->username = 'Banane';
         
         $mockUserDao = m::mock( 'progression\dao\UserDAO' );
         $mockUserDao->allows()
