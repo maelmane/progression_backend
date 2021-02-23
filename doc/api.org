@@ -269,7 +269,13 @@ curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/
 ** Obtenir la question «appeler_une_fonction_paramétrée» et ses tests: ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl https://progression.dti.crosemont.quebec/api/v1/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=?include=Tests -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=?include=tests -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Obtenir la question «appeler_une_fonction_paramétrée», ses tests et ses ébauches: ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+curl https://progression.dti.crosemont.quebec/api/v1/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=?include=tests,ébauches -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction» : ~PROTOTYPE~
