@@ -124,7 +124,7 @@ final class QuestionProgTransformerTests extends TestCase
         ];
 
         $questionProgTransformer = new QuestionProgTransformer();
-        $résultat_obtenu = $questionProgTransformer->includeÉbauches([
+        $résultat_obtenu = $questionProgTransformer->includeébauches([
             "question" => $question,
             "username" => "Bob",
         ]);
@@ -146,7 +146,7 @@ final class QuestionProgTransformerTests extends TestCase
         $question->exécutables = [];
 
         $questionProgTransformer = new QuestionProgTransformer();
-        $résultat_obtenu = $questionProgTransformer->includeÉbauches([
+        $résultat_obtenu = $questionProgTransformer->includeébauches([
             "question" => $question,
             "username" => "Bob",
         ]);
