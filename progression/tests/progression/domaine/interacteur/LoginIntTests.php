@@ -24,22 +24,46 @@ use \Mockery as m;
     
 final class LoginIntTests extends TestCase
 {
-    public function test_étant_donné_lauthentification_sans_mot_de_passe_lorsquon_authentifie_un_nouvel_utilisateur_il_est_créé(){
+    public function test_étant_donné_un_user_qui_a_été_trouvé_on_obtient_un_objet_user()
+    {
         $_ENV['AUTH_TYPE'] = 'no';
 
-        $user = new User( 1 );
-        $user->username = "Bob";
-        $user->role = 0;
+        $user = new User();
+        $user->username = 'Bob';
         
         $mockUserDao = m::mock( 'progression\dao\UserDAO' );
-        $mockUserDao->shouldReceive( 'save' );
-        $mockUserDao->allows()->trouver_par_nomusager('Bob')->andReturn( $user );
+        $mockUserDao->shouldReceive( 'trouver_par_nomusager' )
+            ->with( 'Bob' )
+            ->andReturn( $user );
 
         $mockFactory = m::mock( 'progression\dao\DAOFactory' );
-        $mockFactory->allows()->get_user_dao()->andReturn( $mockUserDao );
+        $mockFactory->shouldReceive( 'get_user_dao' )
+            ->andReturn( $mockUserDao );
 
         $interacteur = new LoginInt( $mockFactory );
-        $résultatTest = $interacteur->effectuer_login( "Bob", "" );
+        $résultatTest = $interacteur->effectuer_login( $user->username, '' );
+
+        $this->assertEquals( $user, $résultatTest );
+    }
+
+    public function test_étant_donné_un_user_qui_na_pas_été_trouvé_on_obtient_un_objet_user()
+    {
+        $user = new User();
+        $user->username = 'Bob';
+        
+        $mockUserDao = m::mock( 'progression\dao\UserDAO' );
+        $mockUserDao->allows()
+            ->trouver_par_nomusager( 'Bob' )
+            ->andReturn( null );
+        $mockUserDao->shouldReceive( 'save' )
+            ->andReturn( $user );
+
+        $mockFactory = m::mock( 'progression\dao\DAOFactory' );
+        $mockFactory->shouldReceive( 'get_user_dao' )
+            ->andReturn( $mockUserDao );
+
+        $interacteur = new LoginInt( $mockFactory );
+        $résultatTest = $interacteur->effectuer_login( $user->username, '' );
 
         $this->assertEquals( $user, $résultatTest );
     }
