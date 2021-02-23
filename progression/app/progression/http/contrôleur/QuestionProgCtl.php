@@ -26,13 +26,14 @@ use Illuminate\Support\Facades\Log;
 
 class QuestionProgCtl extends Contrôleur
 {
+
     public function get( Request $request, $chemin ) {
         $question = null;
 
         $chemin = base64_decode($chemin);
         
         if ($chemin != null && $chemin != "" ) {
-            $questionInt = new ObtenirQuestionProgInt(new DAOFactory);
+            $questionInt = $this->intFactory->getObtenirQuestionProgInt();
             $question = $questionInt->get_question($chemin);
         }
 

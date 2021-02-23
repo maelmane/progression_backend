@@ -40,7 +40,6 @@ final class QuestionProgTransformerTests extends TestCase
         $résultat = [
             "id" =>
                 "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
-            "nom" => "appeler_une_fonction_paramétrée",
             "titre" => "Appeler une fonction paramétrée",
             "description" =>
                 "Appel d\'une fonction existante recevant un paramètre",

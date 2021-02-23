@@ -3,6 +3,12 @@
 #+PROPERTY: header-args:sh :results output
 #+PROPERTY: header-args:sh :exports both
 
+#+begin_warning
+  Cette documentation est proposée à titre indicatif seulement et peut changer à tout moment.
+#+end_warning
+
+
+
 * Versions
 Les versions de l'api sont accessibles à des URL distincts pour assurer la rétrocompatibilité.
 
@@ -70,12 +76,13 @@ Liens :
 
 Une question générique
 
+
 | Hiérarchie                   | Identifiant          | Propriétés  | Type | Valeurs |
 |------------------------------+----------------------+-------------+------+---------|
-| Question                     | catégorie parent/nom | nom         | str  |         |
-| ▲                            |                      | titre       | str  |         |
-| │                            |                      | description | str  |         |
+| Question                     | catégorie parent/nom | titre       | str  |         |
+| ▲                            |                      | description | str  |         |
 | │                            |                      | énoncé      | str  |         |
+| │                            |                      |             |      |         |
 | ├ QuestionProg               |                      |             |      |         |
 | ├ QuestionProgEval(obsolète) |                      |             |      |         |
 | ├ QuestionSys                |                      |             |      |         |
@@ -173,6 +180,12 @@ Le résultat d'un test pour une solution proposée.
 
 * Exemples
 
+#+begin_warning
+Les exemples marqués ~LIVE~ reflètent les résultats réels.
+
+Les exemples marqués ~PROTOTYPE~ sont générés manuellement à titre indicatif et ne reflètent nécessairement pas les résultats réels.
+#+end_warning
+
 #+NAME: get_token
 #+BEGIN_SRC sh :eval yes :results output :exports none
 RET=$(curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=jdoe&password=Crosemont2021!" | cut -d '"' -f 4)
@@ -187,14 +200,21 @@ import sys
 print( json.dumps( json.loads(json_str), ensure_ascii=False, indent=4 ) )
 #+end_src
 
-** Connexion en tant qu'utilisateur ~jdoe~ :
+** Authentification en tant qu'utilisateur ~jdoe~ : ~LIVE~
 
 
 #+BEGIN_SRC sh :eval yes :results output
 curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=jdoe&password=Crosemont2021!"
 #+END_SRC
 
-** Obtenir le profil de l'utilisateur connecté ~jdoe~ et ses avancements :
+Obtenir le profil de l'utilisateur authentifié ~jdoe~ : ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+
+** Obtenir le profil de l'utilisateur authentifié ~jdoe~ et ses avancements : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval no :var TOKEN=get_token :results output
 curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H "Authorization: Bearer $TOKEN"
@@ -267,7 +287,7 @@ curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H
 :   }
 : }
 
-** Obtenir la liste des catégories disponibles pour l'utilisateur ~jdoe~ :
+** Obtenir la liste des catégories disponibles pour l'utilisateur ~jdoe~ : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never :var TOKEN=get_token :results output
 curl https://progression.dti.crosemont.quebec/api/v1/user/jdoe/catégories -H "Authorization: Bearer $TOKEN"
@@ -299,31 +319,31 @@ curl https://progression.dti.crosemont.quebec/api/v1/user/jdoe/catégories -H "A
 :   }
 : }
 
-** Obtenir la catégorie «programmation_1» :
+** Obtenir la catégorie «programmation_1» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never
 curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1?links=true -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir la sous-catégorie «les_fonctions» :
+** Obtenir la sous-catégorie «les_fonctions» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never
 curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/les_fonctions?links=true -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir la question «appeler_une_fonction_paramétrée» et ses tests:
+** Obtenir la question «appeler_une_fonction_paramétrée» et ses tests: ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 curl https://progression.dti.crosemont.quebec/api/v1/question/2?include=Tests -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction» :
+** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never
 curl https://progression.dti.crosemont.quebec/api/v1/question/programmation_1/les_fonctions/appeler_une_fonction/solutions?langage=python -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Soumettre une solution à la question «appeler_une_fonction» :
+** Soumettre une solution à la question «appeler_une_fonction» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never
 curl --data '{"code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dti.crosemont.quebec/api/v1/user/jdoe/question/programmation_1/les_fonctions/appeler_une_fonction/avancement/solutions?langage=python -H "Authorization: Bearer $TOKEN"
@@ -358,7 +378,7 @@ curl --data '{"code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dt
 :   }
 : }
 
-** Obtenir une solution soumise pour la question «appeler_une_fonction» :
+** Obtenir une solution soumise pour la question «appeler_une_fonction» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never
 curl https://progression.dti.crosemont.quebec/api/v1/user/jdoe/solution/programmation_1/les_fonctions/appeler_une_fonction/1612834148 -H "Authorization: Bearer $TOKEN"

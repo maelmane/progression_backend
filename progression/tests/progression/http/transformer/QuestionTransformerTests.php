@@ -17,33 +17,17 @@
 */
 
 namespace progression\http\transformer;
+use PHPUnit\Framework\TestCase;
 
-
-class QuestionProgTransformer extends QuestionTransformer
+final class QuestionTransformerTests extends TestCase
 {
-    public $type = "QuestionProg";
 
-    protected $availableIncludes = ['Tests', 'Solutions'];
+	public function test_étant_donné_une_questionprog_null_lorsquon_récupère_son_transformer_on_obtient_un_array_contenant_null()
+	{
+		$question = null;
+		$item = (new QuestionTransformer())->transform($question);
 
-    public function includeTests($data_in)
-    {
-        foreach ($data_in['question']->tests as $i => $test) {
-            $test->numéro = $i;
-        }
+		$this->assertEquals([null], $item);
+	}
 
-        return $this->collection(
-            $data_in['question']->tests,
-            new TestTransformer(),
-            "Test"
-        );
-    }
-
-    public function includeSolutions($data_in)
-    {
-        return $this->collection(
-            $data_in['question']->exécutables,
-            new SolutionTransformer(),
-            "Solution"
-        );
-    }
 }
