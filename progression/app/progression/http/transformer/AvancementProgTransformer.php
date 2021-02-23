@@ -35,13 +35,10 @@ class AvancementProgTransformer extends Fractal\TransformerAbstract {
                 'id' => $avancement->user_id . '/' . $avancement->question_id,
                 'user_id' => $avancement->user_id,
                 'question_id' => $avancement->question_id,
-                'etat' => $avancement->etat,
+                'état' => $avancement->etat,
                 'réponses' => $avancement->réponses,
                 'links'   => [
-                    [
-                        'rel' => 'self',
-                        'self' => $_ENV['APP_URL'] . '/' . $avancement->user_id . '/' . $avancement->question_id
-                    ]
+                    'self' => $_ENV['APP_URL'] . '/avancement/' . $avancement->user_id . '/' . $avancement->question_id
                 ]
             ];
         }

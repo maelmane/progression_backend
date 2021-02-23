@@ -24,19 +24,27 @@ final class AvancementProgTransformerTests extends TestCase
 {
     public function test_étant_donné_un_avancement_instancié_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
     {
-        $_ENV['APP_URL'] = 'https://example.org';
+        $_ENV['APP_URL'] = 'https://example.com';
         $user_id = 1;
         $question_id = 1;
 
         $avancementProgTransformer = new AvancementProgTransformer();
         $avancement = new AvancementProg($question_id, $user_id);
         
-        $json =
-            '{"id":"1\/1","user_id":1,"question_id":1,"etat":0,"réponses":[],"links":[{"rel":"self","self":"https:\/\/example.org\/1\/1"}]}';
-        $item = $avancementProgTransformer->transform($avancement);
+        $résultat = [
+            "id" => $user_id . "/" . $question_id,
+            "user_id" => $user_id,
+            "question_id" => $question_id,
+            "état" => 0,
+            "réponses" => [],
+            "links" => [
+                "self" => $_ENV['APP_URL'] . "/avancement/" . $user_id . "/" . $question_id
+            ]
+        ];
 
-        $this->assertEquals($json, json_encode($item, JSON_UNESCAPED_UNICODE));
+        $this->assertEquals( $résultat, $avancementProgTransformer->transform($avancement) );
     }
+
     public function test_étant_donné_un_avancement_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
     {
         $questionProgTransformer = new QuestionProgTransformer();
