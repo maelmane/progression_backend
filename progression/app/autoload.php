@@ -20,13 +20,13 @@ class MissingException extends Exception{}
 
 // chargement des fichiers automatique
 spl_autoload_register(function ($class_name) {
-	$class = str_replace('\\', '/', $class_name) . '.php';
+	$class = __DIR__ . "/" . str_replace('\\', '/', $class_name) . '.php';
 
-    if (file_exists(__DIR__ . "/" . $class)){
-        require $class;
+    if (file_exists($class)){
+        require  $class;
     }
     else {
-        throw new MissingException("Impossible de charger " . __DIR__ . "/" . $class);
+        throw new MissingException("Impossible de charger " . $class);
     }
     
 });
