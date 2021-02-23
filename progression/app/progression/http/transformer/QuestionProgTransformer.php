@@ -25,7 +25,7 @@ class QuestionProgTransformer extends Fractal\TransformerAbstract
 {
     public $type = "QuestionProg";
 
-    protected $availableIncludes = ['Tests', 'Solutions'];
+    protected $availableIncludes = ['tests', 'ébauches'];
 
     public function transform($data_in)
     {
@@ -75,7 +75,8 @@ class QuestionProgTransformer extends Fractal\TransformerAbstract
         );
     }
 
-    public function includeSolutions($data_in)
+    //Doit être en minuscules à cause de l'accent (É n'est pas transformé en é)
+    public function includeébauches($data_in)
     {
         return $this->collection(
             $data_in['question']->exécutables,

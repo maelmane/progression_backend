@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 
 final class QuestionProgTransformerTests extends TestCase
 {
-    public function test_étant_donné_une_questionprog_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique_avec_les_liens()
+    public function test_étant_donné_une_questionprog_instanciée_avec_des_valeurs_lorsquon_le_transforme_on_obtient_un_tableau_d_objets_identique_avec_les_liens_avancement_et_catégorie()
     {
         $_ENV['APP_URL'] = 'https://example.com/';
         $username = "jdoe";
@@ -63,6 +63,95 @@ final class QuestionProgTransformerTests extends TestCase
             "username" => $username,
         ]);
         $this->assertEquals($résultat, $item);
+    }
+
+    public function test_étant_donné_une_question_avec_ses_tests_lorsquon_inclut_les_tests_on_reçoit_un_tableau_de_tests_numérotés_dans_le_même_ordre()
+    {
+        $question = new QuestionProg();
+
+        $question->tests = [
+            new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
+            new Test("Aucune salutation", "0", ""),
+        ];
+
+        $résultat_attendu = [$question->tests[0], $question->tests[1]];
+
+        $questionProgTransformer = new QuestionProgTransformer();
+        $résultat_obtenu = $questionProgTransformer->includeTests([
+            "question" => $question,
+            "username" => "Bob",
+        ]);
+
+        $this->assertEquals(
+            $résultat_attendu[0],
+            $résultat_obtenu->getData()[0]
+        );
+        $this->assertEquals(0, $résultat_obtenu->getData()[0]->numéro);
+        $this->assertEquals(
+            $résultat_attendu[1],
+            $résultat_obtenu->getData()[1]
+        );
+        $this->assertEquals(1, $résultat_obtenu->getData()[1]->numéro);
+    }
+
+    public function test_étant_donné_une_question_sans_tests_lorsquon_inclut_les_tests_on_reçoit_un_tableau_vide()
+    {
+        $question = new QuestionProg();
+
+        $question->tests = [];
+
+        $questionProgTransformer = new QuestionProgTransformer();
+        $résultat_obtenu = $questionProgTransformer->includeTests([
+            "question" => $question,
+            "username" => "Bob",
+        ]);
+
+        $this->assertEquals(0, count($résultat_obtenu->getData()));
+    }
+
+    public function test_étant_donné_une_question_avec_ses_ébauches_lorsquon_inclut_les_ébauches_on_reçoit_un_tableau_débauches()
+    {
+        $question = new QuestionProg();
+
+        $question->exécutables = [
+            new Exécutable("print(\"Hello world\")", "python"),
+            new Exécutable("System.out.println(\"Hello world\")", "java"),
+        ];
+
+        $résultat_attendu = [
+            $question->exécutables[0],
+            $question->exécutables[1],
+        ];
+
+        $questionProgTransformer = new QuestionProgTransformer();
+        $résultat_obtenu = $questionProgTransformer->includeÉbauches([
+            "question" => $question,
+            "username" => "Bob",
+        ]);
+
+        $this->assertEquals(
+            $résultat_attendu[0],
+            $résultat_obtenu->getData()[0]
+        );
+        $this->assertEquals(
+            $résultat_attendu[1],
+            $résultat_obtenu->getData()[1]
+        );
+    }
+
+    public function test_étant_donné_une_question_sans_ébauche_lorsquon_inclut_les_ébauches_on_reçoit_un_tableau_vide()
+    {
+        $question = new QuestionProg();
+
+        $question->exécutables = [];
+
+        $questionProgTransformer = new QuestionProgTransformer();
+        $résultat_obtenu = $questionProgTransformer->includeÉbauches([
+            "question" => $question,
+            "username" => "Bob",
+        ]);
+
+        $this->assertEquals(0, count($résultat_obtenu->getData()));
     }
 }
 
