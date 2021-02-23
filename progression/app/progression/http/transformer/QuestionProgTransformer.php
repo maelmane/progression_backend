@@ -23,7 +23,7 @@ class QuestionProgTransformer extends QuestionTransformer
 {
     public $type = "QuestionProg";
 
-    protected $availableIncludes = ['Tests', 'Solutions'];
+    protected $availableIncludes = ['tests', 'ébauches'];
 
     public function includeTests($data_in)
     {
@@ -38,7 +38,8 @@ class QuestionProgTransformer extends QuestionTransformer
         );
     }
 
-    public function includeSolutions($data_in)
+    //Doit être en minuscules à cause de l'accent (É n'est pas transformé en é)
+    public function includeébauches($data_in)
     {
         return $this->collection(
             $data_in['question']->exécutables,
