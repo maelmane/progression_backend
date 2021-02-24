@@ -19,21 +19,12 @@
 namespace progression\http\transformer;
 
 use PHPUnit\Framework\TestCase;
-use progression\domaine\entité\QuestionProg;
-use progression\domaine\entité\AvancementProg;
 use progression\domaine\entité\RéponseProg;
 
 final class TentativeTransformerTests extends TestCase
 {
     public function test_étant_donné_une_tentative_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
     {
-        $_ENV['APP_URL'] = 'https://example.com';
-        $user_id = 1;
-        $question_id = 1;
-
-        $question = new QuestionProg($question_id);
-        $question->chemin = "cheminTest";
-        $avancement = new AvancementProg($question_id, $user_id);
         $tentative = new RéponseProg(10, "codeTest", "dateSoumissionTest", "testsRéussisTest", "feedBackTest");
         $tentativeTransformer = new TentativeTransformer();
 
@@ -53,9 +44,9 @@ final class TentativeTransformerTests extends TestCase
     {
         $tentativeTransformer = new TentativeTransformer();
         $tentative = null;
-        $json = [null];
-        $item = $tentativeTransformer->transform($tentative);
+        $résultat_attendu = [null];
+        $résultat_obtenu = $tentativeTransformer->transform($tentative);
 
-        $this->assertEquals($json, $item);
+        $this->assertEquals($résultat_attendu, $résultat_obtenu);
     }
 }

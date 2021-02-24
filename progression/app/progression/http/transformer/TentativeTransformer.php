@@ -32,7 +32,7 @@ class TentativeTransformer extends Fractal\TransformerAbstract
             $data_out = [null];
         } else {
             $data_out = [
-                'id' => $tentative->id,
+                'id' => $tentative->date_soumission,
                 'date_soumission' => $tentative->date_soumission,
                 'tests_réussis' => $tentative->tests_réussis,
                 'feedback' => $tentative->feedback,

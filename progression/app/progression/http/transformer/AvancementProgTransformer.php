@@ -25,7 +25,7 @@ class AvancementProgTransformer extends Fractal\TransformerAbstract
 
     public $type = "AvancementProg";
 
-    protected $availableIncludes = ['Tentatives'];
+    protected $availableIncludes = ['tentatives'];
 
     public function transform($data_in)
     {
@@ -36,11 +36,9 @@ class AvancementProgTransformer extends Fractal\TransformerAbstract
             $question = $data_in["question"];
 
             $data_out = [
-                'id' => $avancement->user_id . '/' . $question->chemin,
+                'id' => $avancement->user_id . '/' . $question->id,
                 'user_id' => $avancement->user_id,
-                'question_id' => $question->id,
                 'état' => $avancement->etat,
-                'réponses' => $avancement->réponses,
                 'links'   => [
                     'self' => $_ENV['APP_URL'] . 'avancement/' . $avancement->user_id . '/' . $question->id
                 ]
@@ -52,11 +50,9 @@ class AvancementProgTransformer extends Fractal\TransformerAbstract
 
     public function includeTentatives($data_in)
     {
-        foreach ($data_in["tentatives"] as $i => $tentative) {
-            $tentative->id = $i;
-        }
+        $tentatives = $data_in["avancement"]->réponses;
         return $this->collection(
-            $data_in["tentatives"],
+            $tentatives,
             new TentativeTransformer(),
             "Tentative"
         );

@@ -17,47 +17,42 @@
 */
 
 namespace progression\http\transformer;
-use progression\domaine\entité\AvancementProg;
-use progression\domaine\entité\QuestionProg;
+
+use progression\domaine\entité\{AvancementProg, QuestionProg};
 use PHPUnit\Framework\TestCase;
 
 final class AvancementProgTransformerTests extends TestCase
 {
     public function test_étant_donné_un_avancement_instancié_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
     {
-        $_ENV['APP_URL'] = 'https://example.com';
         $user_id = 1;
         $question_id = 1;
+        $_ENV['APP_URL'] = "https://example.com/";
 
         $avancementProgTransformer = new AvancementProgTransformer();
-        $question = new QuestionProg($question_id);
         $avancement = new AvancementProg($question_id, $user_id);
-        
+        $question = new QuestionProg($question_id);
+
         $résultat = [
-            "id" => $user_id . "/" . $question->chemin,
-            "user_id" => $avancement->user_id,
-            "question_id" => $question->id,
+            "id" => $user_id . "/" . $question_id,
+            "user_id" => $user_id,
             "état" => 0,
-            "réponses" => [],
             "links" => [
-                "self" => $_ENV['APP_URL'] . "avancement/" . $avancement->user_id . "/" . $question->id
+                "self" => "https://example.com/avancement/" . $avancement->user_id . "/" . $question_id
             ]
         ];
 
-        $this->assertEquals( $résultat, $avancementProgTransformer->transform(["avancement" => $avancement, "question" => $question]) );
+        $this->assertEquals($résultat, $avancementProgTransformer->transform(["avancement" => $avancement, "question" => $question]));
     }
 
     public function test_étant_donné_un_avancement_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
     {
         $avancementProgTransformer = new AvancementProgTransformer();
-
         $avancement = null;
 
-        $json = [null];
-        $item = $avancementProgTransformer->transform($avancement);
+        $résultat_attendu = [null];
+        $résultat_obtenu = $avancementProgTransformer->transform($avancement);
 
-        $this->assertEquals($json, $item);
+        $this->assertEquals($résultat_attendu, $résultat_obtenu);
     }
 }
-
-?>
