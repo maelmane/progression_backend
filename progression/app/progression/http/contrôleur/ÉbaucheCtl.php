@@ -41,7 +41,7 @@ class ÉbaucheCtl extends Contrôleur
             return $this->réponse_json(['message' => 'Langage inexistant.'], 404);
         }
         if ($question != null) {
-            $réponse = $this->item(["question" => $question, "langage" => $request["langage"]], new ÉbaucheTransformer);
+            $réponse = $this->item(["question" => $question, "langage" => $langage], new ÉbaucheTransformer);
 
             Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return $this->réponse_json($réponse, 200);
