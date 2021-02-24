@@ -18,33 +18,140 @@
 
 namespace progression\http\transformer;
 use progression\domaine\entité\QuestionProg;
+use progression\domaine\entité\Exécutable;
+use progression\domaine\entité\Test;
 use PHPUnit\Framework\TestCase;
 
 final class QuestionProgTransformerTests extends TestCase
 {
-    public function test_étant_donné_une_questionprog_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+    public function test_étant_donné_une_questionprog_instanciée_avec_des_valeurs_lorsquon_le_transforme_on_obtient_un_tableau_d_objets_identique_avec_les_liens_avancement_et_catégorie()
     {
-        $_ENV['APP_URL'] = 'https://progression.dti.crosemont.quebec';
-        $questionProgTransformer = new QuestionProgTransformer();
+        $_ENV['APP_URL'] = 'https://example.com/';
+        $username = "jdoe";
+
         $question = new QuestionProg();
-        $question->id = 1;
-        $question->titre = "titreTest";
-        $question->description = "descriptionTest";
-        $question->enonce = "énoncéTest";
-        $json =
-            '{"id":null,"nom":null,"titre":"titreTest","description":"descriptionTest","énoncé":"énoncéTest","links":[{"rel":"self","self":"https:\/\/progression.dti.crosemont.quebec"}]}';
-        $item = $questionProgTransformer->transform($question);
+        $question->nom = "appeler_une_fonction_paramétrée";
+        $question->chemin =
+            "prog1/les_fonctions/appeler_une_fonction_paramétrée";
+        $question->titre = "Appeler une fonction paramétrée";
+        $question->description =
+            "Appel d\'une fonction existante recevant un paramètre";
+        $question->enonce =
+            "La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
 
-        $this->assertEquals($json, json_encode($item, JSON_UNESCAPED_UNICODE));
+        $résultat = [
+            "id" =>
+                "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+            "nom" => "appeler_une_fonction_paramétrée",
+            "titre" => "Appeler une fonction paramétrée",
+            "description" =>
+                "Appel d\'une fonction existante recevant un paramètre",
+            "énoncé" =>
+                "La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.",
+            'links' => [
+                'self' =>
+                    'https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=',
+                'avancement' =>
+                    'https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=',
+                'catégorie' =>
+                    'https://example.com/catégorie/cHJvZzEvbGVzX2ZvbmN0aW9ucw==',
+            ],
+        ];
+
+        $item = (new QuestionProgTransformer())->transform([
+            "question" => $question,
+            "username" => $username,
+        ]);
+        $this->assertEquals($résultat, $item);
     }
-    public function test_étant_donné_une_questionprog_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
-    {
-        $questionProgTransformer = new QuestionProgTransformer();
-        $question = null;
-        $json = '[null]';
-        $item = $questionProgTransformer->transform($question);
 
-        $this->assertEquals($json, json_encode($item, JSON_UNESCAPED_UNICODE));
+    public function test_étant_donné_une_question_avec_ses_tests_lorsquon_inclut_les_tests_on_reçoit_un_tableau_de_tests_numérotés_dans_le_même_ordre()
+    {
+        $question = new QuestionProg();
+
+        $question->tests = [
+            new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
+            new Test("Aucune salutation", "0", ""),
+        ];
+
+        $résultat_attendu = [$question->tests[0], $question->tests[1]];
+
+        $questionProgTransformer = new QuestionProgTransformer();
+        $résultat_obtenu = $questionProgTransformer->includeTests([
+            "question" => $question,
+            "username" => "Bob",
+        ]);
+
+        $this->assertEquals(
+            $résultat_attendu[0],
+            $résultat_obtenu->getData()[0]
+        );
+        $this->assertEquals(0, $résultat_obtenu->getData()[0]->numéro);
+        $this->assertEquals(
+            $résultat_attendu[1],
+            $résultat_obtenu->getData()[1]
+        );
+        $this->assertEquals(1, $résultat_obtenu->getData()[1]->numéro);
+    }
+
+    public function test_étant_donné_une_question_sans_tests_lorsquon_inclut_les_tests_on_reçoit_un_tableau_vide()
+    {
+        $question = new QuestionProg();
+
+        $question->tests = [];
+
+        $questionProgTransformer = new QuestionProgTransformer();
+        $résultat_obtenu = $questionProgTransformer->includeTests([
+            "question" => $question,
+            "username" => "Bob",
+        ]);
+
+        $this->assertEquals(0, count($résultat_obtenu->getData()));
+    }
+
+    public function test_étant_donné_une_question_avec_ses_ébauches_lorsquon_inclut_les_ébauches_on_reçoit_un_tableau_débauches()
+    {
+        $question = new QuestionProg();
+
+        $question->exécutables = [
+            new Exécutable("print(\"Hello world\")", "python"),
+            new Exécutable("System.out.println(\"Hello world\")", "java"),
+        ];
+
+        $résultat_attendu = [
+            $question->exécutables[0],
+            $question->exécutables[1],
+        ];
+
+        $questionProgTransformer = new QuestionProgTransformer();
+        $résultat_obtenu = $questionProgTransformer->includeébauches([
+            "question" => $question,
+            "username" => "Bob",
+        ]);
+
+        $this->assertEquals(
+            $résultat_attendu[0],
+            $résultat_obtenu->getData()[0]
+        );
+        $this->assertEquals(
+            $résultat_attendu[1],
+            $résultat_obtenu->getData()[1]
+        );
+    }
+
+    public function test_étant_donné_une_question_sans_ébauche_lorsquon_inclut_les_ébauches_on_reçoit_un_tableau_vide()
+    {
+        $question = new QuestionProg();
+
+        $question->exécutables = [];
+
+        $questionProgTransformer = new QuestionProgTransformer();
+        $résultat_obtenu = $questionProgTransformer->includeébauches([
+            "question" => $question,
+            "username" => "Bob",
+        ]);
+
+        $this->assertEquals(0, count($résultat_obtenu->getData()));
     }
 }
 

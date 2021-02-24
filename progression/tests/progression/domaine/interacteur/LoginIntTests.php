@@ -18,8 +18,6 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\dao\DAOFactory;
-use progression\dao\UserDAO;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use \Mockery;
     

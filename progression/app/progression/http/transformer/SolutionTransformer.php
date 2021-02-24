@@ -16,33 +16,27 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\http\transformer;
 
-class Question extends Entité
+use progression\domaine\entité\Exécutable;
+use League\Fractal;
+
+class SolutionTransformer extends Fractal\TransformerAbstract
 {
-    const ETAT_CACHE = -1;
-    const ETAT_DEBUT = 0;
-    const ETAT_NONREUSSI = 1;
-    const ETAT_REUSSI = 2;
-
-    const TYPE_PROG_EVAL = 0;
-    const TYPE_SYS = 1;
-    const TYPE_BD = 2;
-    const TYPE_PROG = 3;
-
-    public $serieID;
-    public $nom;
-    public $chemin;
-    public $actif;
-    public $type;
-    public $numero;
-    public $titre;
-    public $description;
-    public $enonce;
-    public $feedback_pos;
-    public $feedback_neg;
-    public $etat;
-    public $code_validation;
+    public $type = "Solution";
+    
+	public function transform(Exécutable|null $solution)
+	{
+        if ($solution == null) {
+            $data = [ null ];
+        } 
+        else {
+            $data = [
+                "id" => $solution->lang,
+                "langage" => $solution->lang,
+                "code" => $solution->code_exec
+            ];
+        }
+        return $data;
+    }
 }
-
-?>

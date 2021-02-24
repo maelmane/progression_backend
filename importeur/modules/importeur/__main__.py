@@ -66,7 +66,7 @@ def importer_question(path, nom_question):
     path = path + "/" + nom_question
     with open(path + "/info.yml") as info_question:
         question = yaml.safe_load(info_question)
-        question["chemin"] = path[len(base_path):]+ "/" + nom_question
+        question["chemin"] = path[len(base_path):]
         question["feedback_pos"] = (
             question["feedback+"] if "feedback+" in question else None
         )

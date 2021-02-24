@@ -16,33 +16,30 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\http\transformer;
 
-class Question extends Entité
+use progression\domaine\entité\Test;
+use League\Fractal;
+
+class TestTransformer extends Fractal\TransformerAbstract
 {
-    const ETAT_CACHE = -1;
-    const ETAT_DEBUT = 0;
-    const ETAT_NONREUSSI = 1;
-    const ETAT_REUSSI = 2;
 
-    const TYPE_PROG_EVAL = 0;
-    const TYPE_SYS = 1;
-    const TYPE_BD = 2;
-    const TYPE_PROG = 3;
-
-    public $serieID;
-    public $nom;
-    public $chemin;
-    public $actif;
-    public $type;
-    public $numero;
-    public $titre;
-    public $description;
-    public $enonce;
-    public $feedback_pos;
-    public $feedback_neg;
-    public $etat;
-    public $code_validation;
+    public $type = "Test";
+    
+	public function transform(Test|null $test)
+	{
+        if ($test == null ) {
+            $data = [ null ];
+        }
+        else {
+            $data = [
+                "id" => $test->numéro,
+                "nom" => $test->nom,
+                "entrée" => $test->stdin,
+                "sortie" => $test->solution
+            ];
+        }
+        
+        return $data;
+    }
 }
-
-?>

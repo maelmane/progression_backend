@@ -22,21 +22,22 @@ use Illuminate\Http\Request;
 use progression\domaine\interacteur\ObtenirQuestionProgInt;
 use progression\dao\DAOFactory;
 use progression\http\transformer\QuestionProgTransformer;
-use League\Fractal\Resource\Item;
 use Illuminate\Support\Facades\Log;
 
 class QuestionProgCtl extends Contrôleur
 {
-    public function get( Request $request, $id ) {
+    public function get( Request $request, $chemin ) {
         $question = null;
 
-        if ($id != null && $id != "" ) {
+        $chemin = base64_decode($chemin);
+        
+        if ($chemin != null && $chemin != "" ) {
             $questionInt = new ObtenirQuestionProgInt(new DAOFactory);
-            $question = $questionInt->get_question($id);
+            $question = $questionInt->get_question($chemin);
         }
 
         if ($question != null) {
-            $réponse = $this->item($question, new QuestionProgTransformer);
+            $réponse = $this->item([ "question" => $question, "username" => $request["username"] ], new QuestionProgTransformer);
             
             Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return $this->réponse_json($réponse, 200);
