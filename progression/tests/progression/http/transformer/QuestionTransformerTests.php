@@ -16,19 +16,18 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-class MissingException extends Exception{}
+namespace progression\http\transformer;
+use PHPUnit\Framework\TestCase;
 
-// chargement des fichiers automatique
-spl_autoload_register(function ($class_name) {
-	$class = __DIR__ . '/../app/' . str_replace('\\', '/', $class_name) . '.php';
+final class QuestionTransformerTests extends TestCase
+{
 
-    error_log($class);
-    if (file_exists($class)){
-        require $class;
-    }
-    else {
-        throw new MissingException("Impossible de charger " .$class);
-    }
-    
-});
+	public function test_étant_donné_une_questionprog_null_lorsquon_récupère_son_transformer_on_obtient_un_array_contenant_null()
+	{
+		$question = null;
+		$item = (new QuestionTransformer())->transform($question);
 
+		$this->assertEquals([null], $item);
+	}
+
+}

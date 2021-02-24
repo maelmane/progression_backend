@@ -31,6 +31,7 @@ class Test
     }
 
     public $nom;
+    public $numéro=0;
     public $stdin;
     public $params = null;
     public $solution;
