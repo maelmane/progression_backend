@@ -54,8 +54,7 @@ Une catégorie de questions
 
 | Identifiant         | Propriétés  | Type | Valeurs |
 |---------------------+-------------+------+---------|
-| catǵorie parent/nom | nom         | str  |         |
-|                     | titre       | str  |         |
+| catǵorie parent/nom | titre       | str  |         |
 |                     | description | str  |         |
 |---------------------+-------------+------+---------|
 
@@ -76,12 +75,13 @@ Liens :
 
 Une question générique
 
+
 | Hiérarchie                   | Identifiant          | Propriétés  | Type | Valeurs |
 |------------------------------+----------------------+-------------+------+---------|
-| Question                     | catégorie parent/nom | nom         | str  |         |
-| ▲                            |                      | titre       | str  |         |
-| │                            |                      | description | str  |         |
+| Question                     | catégorie parent/nom | titre       | str  |         |
+| ▲                            |                      | description | str  |         |
 | │                            |                      | énoncé      | str  |         |
+| │                            |                      |             |      |         |
 | ├ QuestionProg               |                      |             |      |         |
 | ├ QuestionProgEval(obsolète) |                      |             |      |         |
 | ├ QuestionSys                |                      |             |      |         |
@@ -100,10 +100,10 @@ Liens :
 Une question spécifiquement de programmation
 
 Relations :
-| Nom                                   | Cardinalité | Type       | description                                                   |
-|---------------------------------------+-------------+------------+---------------------------------------------------------------|
-| ébauches                              | 1-n         | Solution   | liste d'ébauches de Solution                                  |
-| tests                                 | 1-n         | Test       | liste de Tests de validation                                  |
+| Nom      | Cardinalité | Type    | description                  |
+|----------+-------------+---------+------------------------------|
+| ébauches | 1-n         | Ébauche | liste d'ébauches de Solution |
+| tests    | 1-n         | Test    | liste de Tests de validation |
 
 ** Avancement
 
@@ -114,14 +114,29 @@ L'avancement d'un utilisateur pour une question
 | username/question | état       | int  | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) |
 
 Relations :
-| Nom        | Cardinalité | Type       | Description         |
-|------------+-------------+------------+---------------------|
-| tentatives | 1-n         | Tentatives | liste de Tentatives |
+| Nom        | Cardinalité | Type       | Description                    |
+|------------+-------------+------------+--------------------------------|
+| tentatives | 1-n         | Tentatives | liste de Tentatives effectuées |
 
 Liens :
-| Nom       | Description                  |
-|-----------+------------------------------|
-| tentative | Créer une nouvelle tentative |
+| Nom       | Description                      |
+|-----------+----------------------------------|
+| tentative | Soumettre une nouvelle tentative |
+
+** Ébauche
+
+Une ébauche de solution fournie comme point de départ à la résolution de l'exercice
+
+| Identifiant      | Propriétés | Type | Valeurs |
+|------------------+------------+------+---------|
+| question/langage | langage    | str  |         |
+|                  | code       | str  |         |
+
+Liens :
+
+| Nom      | Description                                                   |
+|----------+---------------------------------------------------------------|
+| question | Question pour laquelle cette ébauche de solution est proposée |
 
 ** Tentative
 
@@ -130,29 +145,21 @@ Une tentative de réponse à une question.
 | Identifiant                | Propriétés      | Type | Valeurs             |
 |----------------------------+-----------------+------+---------------------|
 | avancement/date_soumission | date_soumission | int  | timestamp           |
+|                            | langage         | str  |                     |
+|                            | code            | str  |                     |
 |                            | tests_réussis   | int  | nb de tests réussis |
 |                            | feedback        | str  |                     |
 
 Relations :
 | Nom       | Cardinalité | Type     | Description           |
 |-----------+-------------+----------+-----------------------|
-| solution  | 1-1         | Solution | la solution proposée  |
 | résultats | 1-n         | Résultat | les résultats de test |
-
-** Solution
-
-Une solution proposée pour une question
-
-| Identifiant                      | Propriétés | Type | Valeurs |
-|----------------------------------+------------+------+---------|
-| avancement/date_soumission (???) | langage    | int  |         |
-|                                  | code       | str  |         |
 
 Liens :
 
-| Nom       | Description                                        |
-|-----------+----------------------------------------------------|
-| question  | Question pour laquelle cette solution est proposée |
+| Nom      | Description                                                     |
+|----------+-----------------------------------------------------------------|
+| question | Question pour laquelle cette tentative de solution est proposée |
 
 ** Test
 
@@ -169,18 +176,22 @@ Un test de validation d'une question auquel sont soumises les solutions proposé
 
 Le résultat d'un test pour une solution proposée.
 
-| Identifiant     | Propriétés      | Type | Valeurs |
-|-----------------+-----------------+------+---------|
-| question/numéro | numéro          | int  |         |
-|                 | sortie_observée | str  |         |
-|                 | sortie_erreur   | str  |         |
-|                 | résultat        | bool |         |
-|                 | feedback        | str  |         |
+| Identifiant     | Propriétés      | Type | Valeurs   |
+|-----------------+-----------------+------+-----------|
+| question/numéro | numéro          | int  | # du test |
+|                 | sortie_observée | str  |           |
+|                 | sortie_erreur   | str  |           |
+|                 | résultat        | bool |           |
+|                 | feedback        | str  |           |
 
 * Exemples
 
 #+begin_warning
+<<<<<<< HEAD
+Les exemples marqués ~LIVE~ reflètent les résultats réels.
+=======
 Les exemples marqués ~LIVE~ reflètent les résultats réels sur la plus récente version de l'API disponible sur ~https://progression.dti.crosemont.quebec/api/v1/~.
+>>>>>>> dev
 
 Les exemples marqués ~PROTOTYPE~ sont générés manuellement à titre indicatif et ne reflètent nécessairement pas les résultats réels.
 #+end_warning
@@ -206,7 +217,14 @@ print( json.dumps( json.loads(json_str), ensure_ascii=False, indent=4 ) )
 curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=jdoe&password=Crosemont2021!"
 #+END_SRC
 
-** Obtenir le profil de l'utilisateur authentifié ~jdoe~ : ~LIVE~
+Obtenir le profil de l'utilisateur authentifié ~jdoe~ : ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+
+** Obtenir le profil de l'utilisateur authentifié ~jdoe~ et ses avancements : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H "Authorization: Bearer $TOKEN"
@@ -267,12 +285,15 @@ curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/
 #+END_SRC
 
 ** Obtenir la question «appeler_une_fonction_paramétrée» et ses tests: ~LIVE~
+<<<<<<< HEAD
+=======
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 curl https://progression.dti.crosemont.quebec/api/v1/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=?include=tests -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir la question «appeler_une_fonction_paramétrée», ses tests et ses ébauches: ~LIVE~
+>>>>>>> dev
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 curl https://progression.dti.crosemont.quebec/api/v1/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=?include=tests,ébauches -H "Authorization: Bearer $TOKEN"
@@ -281,13 +302,13 @@ curl https://progression.dti.crosemont.quebec/api/v1/question/cHJvZzEvbGVzX2Zvbm
 ** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never
-curl https://progression.dti.crosemont.quebec/api/v1/question/programmation_1/les_fonctions/appeler_une_fonction/solutions?langage=python -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/ébauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Soumettre une solution à la question «appeler_une_fonction» : ~PROTOTYPE~
+** Soumettre une tentative de solution à la question «appeler_une_fonction» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never
-curl --data '{"code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dti.crosemont.quebec/api/v1/user/jdoe/question/programmation_1/les_fonctions/appeler_une_fonction/avancement/solutions?langage=python -H "Authorization: Bearer $TOKEN"
+curl --data '{"langage":"python","code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU= -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 #+RESULTS:
@@ -319,8 +340,8 @@ curl --data '{"code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dt
 :   }
 : }
 
-** Obtenir une solution soumise pour la question «appeler_une_fonction» : ~PROTOTYPE~
+** Obtenir une tentative de solution préalablement soumise pour la question «appeler_une_fonction» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never
-curl https://progression.dti.crosemont.quebec/api/v1/user/jdoe/solution/programmation_1/les_fonctions/appeler_une_fonction/1612834148 -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/user/jdoe/tentative/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/1612834148 -H "Authorization: Bearer $TOKEN"
 #+END_SRC

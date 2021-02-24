@@ -22,27 +22,38 @@ use PHPUnit\Framework\TestCase;
 
 final class TestTransformerTests extends TestCase
 {
-    public function test_étant_donné_un_test_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
-    {
-        $_ENV['APP_URL'] = 'https://example.com';
-        $testTransformer = new TestTransformer();
-        $test = new Test("appeler_une_fonction", "21\n21\n", "42");
-        $test->numéro = 0;
-        $json =
-            '{"id":0,"nom":"appeler_une_fonction","entrée":"21\n21\n","sortie":"42"}';
-        $item = $testTransformer->transform($test);
+	public function test_étant_donné_un_test_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+	{
+		$testTransformer = new TestTransformer();
+		$test = new Test("Somme de deux nombres", "21\n21\n", "42");
+		$test->id =
+			"cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/0";
+		$test->numéro = 0;
+		$résultat_attendu = [
+			"id" =>
+				"cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/0",
+			"numéro" => 0,
+			"nom" => "Somme de deux nombres",
+			"entrée" => "21\n21\n",
+			"sortie_attendue" => "42",
+			"links" => [
+				"self" =>
+					"https://example.com/test/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/0",
+			],
+		];
+		$résultat_obtenu = $testTransformer->transform($test);
 
-        $this->assertEquals($json, json_encode($item, JSON_UNESCAPED_UNICODE));
-    }
-    public function test_étant_donné_un_test_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
-    {
-        $testTransformer = new TestTransformer();
-        $test = null;
-        $json = '[null]';
-        $item = $testTransformer->transform($test);
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+	public function test_étant_donné_un_test_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
+	{
+		$testTransformer = new TestTransformer();
+		$test = null;
+		$json = '[null]';
+		$item = $testTransformer->transform($test);
 
-        $this->assertEquals($json, json_encode($item, JSON_UNESCAPED_UNICODE));
-    }
+		$this->assertEquals($json, json_encode($item, JSON_UNESCAPED_UNICODE));
+	}
 }
 
 ?>

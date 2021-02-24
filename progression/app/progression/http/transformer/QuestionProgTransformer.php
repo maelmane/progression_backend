@@ -18,70 +18,87 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\Question;
-use League\Fractal;
 
-class QuestionProgTransformer extends Fractal\TransformerAbstract
+class QuestionProgTransformer extends QuestionTransformer
 {
-    public $type = "QuestionProg";
+	public $type = "QuestionProg";
 
-    protected $availableIncludes = ['tests', 'ébauches'];
+	protected $availableIncludes = ['tests', 'ébauches'];
 
-    public function transform($data_in)
-    {
-        if ($data_in == null) {
-            $data_out = [null];
-        } else {
-            $question = $data_in["question"];
-            $username = $data_in["username"];
+	public function transform($data_in)
+	{
+		if ($data_in == null) {
+			$data_out = [null];
+		} else {
+			$question = $data_in["question"];
+			$username = $data_in["username"];
 
-            $chemin_encodé = base64_encode($question->chemin);
+			$chemin_encodé = base64_encode($question->chemin);
 
-            $data_out = [
-                'id' => $chemin_encodé,
-                'nom' => $question->nom,
-                'titre' => $question->titre,
-                'description' => $question->description,
-                'énoncé' => $question->enonce,
-                'links' => [
-                    'self' => $_ENV['APP_URL'] . "question/" . $chemin_encodé,
-                    'avancement' =>
-                        $_ENV['APP_URL'] .
-                        "avancement/" .
-                        $username .
-                        "/" .
-                        $chemin_encodé,
-                    'catégorie' =>
-                        $_ENV['APP_URL'] .
-                        "catégorie/" .
-                        base64_encode(dirname($question->chemin)),
-                ],
-            ];
-        }
+			$data_out = [
+				'id' => $chemin_encodé,
+				'nom' => $question->nom,
+				'titre' => $question->titre,
+				'description' => $question->description,
+				'énoncé' => $question->enonce,
+				'links' => [
+					'self' => $_ENV['APP_URL'] . "question/" . $chemin_encodé,
+					'avancement' =>
+						$_ENV['APP_URL'] .
+						"avancement/" .
+						$username .
+						"/" .
+						$chemin_encodé,
+				],
+			];
+		}
 
-        return $data_out;
-    }
+		return $data_out;
+	}
 
-    public function includeTests($data_in)
-    {
-        foreach ($data_in['question']->tests as $i => $test) {
-            $test->numéro = $i;
-        }
+	public function includeTests($data_in)
+	{
+        $question = $data_in['question'];
+        
+		foreach ($question->tests as $i => $test) {
+			$test->numéro = $i;
+			$test->id = base64_encode($question->chemin) . "/$i";
+			$test->links = [
+				"related" =>
+					$_ENV['APP_URL'] .
+					"question/" .
+					base64_encode($question->chemin),
+			];
+		}
 
+		return $this->collection(
+			$question->tests,
+			new TestTransformer(),
+			"Test"
+		);
+
+	}
+
+	//Doit être en minuscules à cause de l'accent (É n'est pas transformé en é)
+	public function includeébauches($data_in)
+	{
+		$question = $data_in['question'];
+
+		foreach ($question->exécutables as $ébauche) {
+            $ébauche->id = base64_encode($question->chemin) . "/{$ébauche->lang}";
+			$ébauche->links = [
+				"related" =>
+					$_ENV['APP_URL'] .
+					"question/" .
+					base64_encode($question->chemin),
+			];
+		}
+        
         return $this->collection(
-            $data_in['question']->tests,
-            new TestTransformer(),
-            "Test"
-        );
-    }
+			$question->exécutables,
+			new SolutionTransformer(),
+			"Solution"
+		);
 
-    //Doit être en minuscules à cause de l'accent (É n'est pas transformé en é)
-    public function includeébauches($data_in)
-    {
-        return $this->collection(
-            $data_in['question']->exécutables,
-            new SolutionTransformer(),
-            "Solution"
-        );
-    }
+	}
 }
