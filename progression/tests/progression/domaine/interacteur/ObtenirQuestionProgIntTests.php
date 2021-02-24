@@ -18,51 +18,53 @@
 
 namespace progression\domaine\interacteur;
 
-use PHPUnit\Framework\TestCase;
-use \Mockery as m;
 use progression\domaine\entité\QuestionProg;
+use PHPUnit\Framework\TestCase;
+use \Mockery;
+use Mockery\Mock;
 
 final class ObtenirQuestionProgIntTests extends TestCase
 {
-    public function test_étant_donné_une_questionprog_trouvée_par_son_chemin_on_obtient_une_questionprog_correspondante()
+    public function test_étant_donné_une_questionprog_avec_un_chemin_existant_lorsque_cherchéé_par_chemin_on_obtient_un_objet_questionprog_correspondant()
     {
-        $résultat = new QuestionProg();
-        $résultat->chemin = 'prog1/les_fonctions/appeler_une_fonction';
-        
-        $mockQuestionProgDao = m::mock( 'progression\dao\QuestionProgDAO' );
-        $mockQuestionProgDao->shouldReceive( 'get_question' )
-            ->with( $résultat->chemin )
-            ->andReturn( $résultat );
+        $résultat_attendu = new QuestionProg();
+        $résultat_attendu->chemin = 'prog1/les_fonctions/appeler_une_fonction';
 
-        $mockFactory = m::mock( 'progression\dao\DAOFactory' );
-        $mockFactory->shouldReceive( 'get_question_prog_dao' )
-            ->andReturn( $mockQuestionProgDao );
-        
-        $interacteur = new ObtenirQuestionProgInt( $mockFactory );
-        $résultatTest = $interacteur->get_question( $résultat->chemin );
+        $mockQuestionProgDao = Mockery::mock('progression\dao\QuestionProgDAO');
+        $mockQuestionProgDao->shouldReceive('get_question')
+            ->with('prog1/les_fonctions/appeler_une_fonction')
+            ->andReturn($résultat_attendu);
 
-        $this->assertEquals( $résultat, $résultatTest );
+        $mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
+        $mockDAOFactory
+            ->allows()
+            ->get_question_prog_dao()
+            ->andReturn($mockQuestionProgDao);
+
+        $interacteur = new ObtenirQuestionProgInt($mockDAOFactory);
+        $résultat_obtenu = $interacteur->get_question('prog1/les_fonctions/appeler_une_fonction');
+
+        $this->assertEquals($résultat_attendu, $résultat_obtenu);
     }
 
-    public function test_étant_donné_une_questionprog_non_trouvée_par_son_chemin_on_obtient_null()
+    public function test_étant_donné_une_questionprog_avec_un_chemin_inexistant_lorsque_cherchéé_par_chemin_on_obtient_null()
     {
-        $résultat = null;
-        $chemin = 'test/de/chemin/non/valide';
-        
-        $mockQuestionProgDao = m::mock( 'progression\dao\QuestionProgDAO' );
-        $mockQuestionProgDao->shouldReceive( 'get_question' )
-            ->with( $chemin )
-            ->andReturn( $résultat );
+        $résultat_attendu = null;
 
-        $mockFactory = m::mock( 'progression\dao\DAOFactory' );
-        $mockFactory->shouldReceive( 'get_question_prog_dao' )
-            ->andReturn( $mockQuestionProgDao );
-        
-        $interacteur = new ObtenirQuestionProgInt( $mockFactory );
-        $résultatTest = $interacteur->get_question( $chemin );
+        $mockQuestionProgDao = Mockery::mock('progression\dao\QuestionProgDAO');
+        $mockQuestionProgDao->shouldReceive('get_question')
+            ->with('test/de/chemin/non/valide')
+            ->andReturn(null);
 
-        $this->assertEquals( $résultat, $résultatTest );
+        $mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
+        $mockDAOFactory
+            ->allows()
+            ->get_question_prog_dao()
+            ->andReturn($mockQuestionProgDao);
+
+        $interacteur = new ObtenirQuestionProgInt($mockDAOFactory);
+        $résultat_obtenu = $interacteur->get_question('test/de/chemin/non/valide');
+
+        $this->assertEquals($résultat_attendu, $résultat_obtenu);
     }
 }
-
-?>
