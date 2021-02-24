@@ -32,9 +32,10 @@ class SolutionTransformer extends Fractal\TransformerAbstract
         } 
         else {
             $data = [
-                "id" => $solution->lang,
+                "id" => $solution->id,
                 "langage" => $solution->lang,
-                "code" => $solution->code_exec
+                "code" => $solution->code_exec,
+                "links" => (isset($solution->links)?$solution->links:[]) + [ "self" => "{$_ENV['APP_URL']}ébauche/{$solution->id}" ]
             ];
         }
         return $data;
