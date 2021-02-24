@@ -19,36 +19,25 @@
 namespace progression\http\transformer;
 
 use League\Fractal;
+use progression\domaine\entité\RéponseProg;
 
-class TentativeTransformer extends Fractal\TransformerAbstract {
+class TentativeTransformer extends Fractal\TransformerAbstract
+{
 
     public $type = "Tentative";
 
-	public function transform($data_in)
-	{
-        if ($data_in == null ) {
-            $data_out = [ null ];
-        }
-        else {
-            $avancement = $data_in["avancement"];
-            $question = $data_in["question"];
-            $tentative = $data_in["tentative"];
-
+    public function transform(RéponseProg|null $tentative)
+    {
+        if ($tentative == null) {
+            $data_out = [null];
+        } else {
             $data_out = [
-                'id' => $avancement->user_id 
-                    . '/' . $question->chemin . '/' 
-                    . $tentative->date_soumission,
+                'id' => $tentative->id,
                 'date_soumission' => $tentative->date_soumission,
                 'tests_réussis' => $tentative->tests_réussis,
                 'feedback' => $tentative->feedback,
                 'langage' => $tentative->langid,
                 'code' => $tentative->code,
-                'links'   => [
-                    'self' => $_ENV['APP_URL'] 
-                    . 'tentative/' . $avancement->user_id 
-                    . '/' . $question->chemin . '/' 
-                    . $tentative->date_soumission
-                ]
             ];
         }
 

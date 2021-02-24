@@ -17,6 +17,7 @@
 */
 
 namespace progression\http\transformer;
+
 use PHPUnit\Framework\TestCase;
 use progression\domaine\entité\QuestionProg;
 use progression\domaine\entité\AvancementProg;
@@ -35,25 +36,17 @@ final class TentativeTransformerTests extends TestCase
         $avancement = new AvancementProg($question_id, $user_id);
         $tentative = new RéponseProg(10, "codeTest", "dateSoumissionTest", "testsRéussisTest", "feedBackTest");
         $tentativeTransformer = new TentativeTransformer();
-        
+
         $résultat = [
-            'id' => $avancement->user_id 
-                . '/' . $question->chemin . '/' 
-                . $tentative->date_soumission,
+            'id' => $tentative->date_soumission,
             'date_soumission' => $tentative->date_soumission,
             'tests_réussis' => $tentative->tests_réussis,
             'feedback' => $tentative->feedback,
             'langage' => $tentative->langid,
-            'code' => $tentative->code,
-            'links' => [
-                'self' => $_ENV['APP_URL'] 
-                . 'tentative/' . $avancement->user_id 
-                . '/' . $question->chemin . '/' 
-                . $tentative->date_soumission
-            ]
+            'code' => $tentative->code
         ];
 
-        $this->assertEquals( $résultat, $tentativeTransformer->transform(["tentative" => $tentative, "avancement" => $avancement, "question" => $question]) );
+        $this->assertEquals($résultat, $tentativeTransformer->transform($tentative));
     }
 
     public function test_étant_donné_une_tentative_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
@@ -66,5 +59,3 @@ final class TentativeTransformerTests extends TestCase
         $this->assertEquals($json, $item);
     }
 }
-
-?>

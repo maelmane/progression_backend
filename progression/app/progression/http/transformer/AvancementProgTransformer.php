@@ -20,18 +20,18 @@ namespace progression\http\transformer;
 
 use League\Fractal;
 
-class AvancementProgTransformer extends Fractal\TransformerAbstract {
+class AvancementProgTransformer extends Fractal\TransformerAbstract
+{
 
     public $type = "AvancementProg";
 
     protected $availableIncludes = ['Tentatives'];
 
-	public function transform($data_in)
-	{
-        if ($data_in == null ) {
-            $data_out = [ null ];
-        }
-        else {
+    public function transform($data_in)
+    {
+        if ($data_in == null) {
+            $data_out = [null];
+        } else {
             $avancement = $data_in["avancement"];
             $question = $data_in["question"];
 
@@ -50,13 +50,13 @@ class AvancementProgTransformer extends Fractal\TransformerAbstract {
         return $data_out;
     }
 
-    public function includeTentatives($data_in){
-        foreach ($data_in['tentative']->tests as $i => $test) {
-            $test->numéro = $i;
+    public function includeTentatives($data_in)
+    {
+        foreach ($data_in["tentatives"] as $i => $tentative) {
+            $tentative->id = $i;
         }
-
         return $this->collection(
-            $data_in['tentative'],
+            $data_in["tentatives"],
             new TentativeTransformer(),
             "Tentative"
         );

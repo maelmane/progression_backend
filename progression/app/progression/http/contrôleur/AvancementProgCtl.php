@@ -27,22 +27,21 @@ use Illuminate\Support\Facades\Log;
 
 class AvancementProgCtl extends Contrôleur
 {
-    public function get( Request $request, $username, $question ) {
-        $avancement = null;
-        $tentative = ["id"=>0001];
+    public function get(Request $request, $username, $question)
+    {
 
-        if ($question != null && $question != "" ) {
+        if ($question != null && $question != "") {
             $avancementProgInt = new ObtenirAvancementProgInt(new DAOFactory, $username);
             $questionProgInt = new ObtenirQuestionProgInt(new DAOFactory);
 
-            $avancement = $avancementProgInt->get_avancement($question);
-            $question = $questionProgInt->get_question($question);
-
+            $question = $questionProgInt->get_question(base64_decode($question));
+            $avancement = $avancementProgInt->get_avancement($question->id);
+            $tentatives = $avancement->réponses;
         }
 
         if ($question != null) {
-            $réponse = $this->item(["avancement" => $avancement, "question" => $question, "tentative" => $tentative], new AvancementProgTransformer);
-            
+            $réponse = $this->item(["avancement" => $avancement, "question" => $question, "tentatives" => $tentatives], new AvancementProgTransformer);
+
             Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return $this->réponse_json($réponse, 200);
         } else {
