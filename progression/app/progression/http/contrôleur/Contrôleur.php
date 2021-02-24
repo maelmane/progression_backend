@@ -1,7 +1,24 @@
 <?php
+/*
+  This file is part of Progression.
+
+  Progression is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Progression is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 namespace progression\http\contrôleur;
 
+use progression\domaine\interacteur\InteracteurFactory;
 use Illuminate\Http\Request;
 use League\Fractal\Manager;
 use League\Fractal\Serializer\JsonApiSerializer;
@@ -11,6 +28,15 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 class Contrôleur extends BaseController
 {
+    public function __construct(InteracteurFactory $intFactory=null){
+        if ($intFactory == null ) {
+            $this->intFactory = new InteracteurFactory();
+        }
+        else {
+            $this->intFactory = $intFactory;
+        }
+    }
+    
     protected function réponse_json( $réponse, $code=200 ){
         return response()->json($réponse,
                                 $code,
@@ -20,6 +46,7 @@ class Contrôleur extends BaseController
     protected function getFractalManager()
     {
         $request = app(Request::class);
+        error_log("INCLUDE".$request->query('include'));
         $manager = new Manager();
         $manager->setSerializer(new JsonApiSerializer($_ENV["APP_URL"]));
         if (!empty($request->query('include'))) {

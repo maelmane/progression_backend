@@ -26,7 +26,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     // catégories
     $router->get('/catégorie/{chemin}', 'NotImplementedCtl@get');
     // Question
-    $router->get('/question/{chemin}', 'QuestionProgCtl@get');
+    $router->get('/question/{chemin}', 'QuestionCtl@get');
     $router->get('/question/{chemin}/relationships/{relation}', 'NotImplementedCtl@get');
     // Avancement
     $router->get('/avancement/{username}/{question}', 'NotImplementedCtl@get');

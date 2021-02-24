@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "progression\\": "progression/",
+            "progression\\": "../progression/app/progression/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }

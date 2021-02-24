@@ -18,11 +18,13 @@ COPY ldap.conf /etc/ldap
 COPY certs/* /etc/ssl/certs/
 RUN c_rehash
 
-COPY app /var/www/
+RUN mkdir -p /var/www/progression/app
+COPY app /var/www/progression/app/
+
+RUN mkdir -p /var/www/progression/vendor
+COPY --from=composer  /var/www/vendor/ /var/www/progression/vendor/
 RUN chown -R www-data:www-data /var/www/
 
-RUN mkdir /var/www/vendor
-COPY --from=composer  /var/www/vendor/ /var/www/vendor/
-
 RUN echo AddDefaultCharset utf-8 >> /etc/apache2/apache2.conf
+RUN sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/progression\/app\/html/' /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite

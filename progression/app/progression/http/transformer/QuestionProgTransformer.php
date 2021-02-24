@@ -18,10 +18,8 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\Question;
-use League\Fractal;
 
-class QuestionProgTransformer extends Fractal\TransformerAbstract
+class QuestionProgTransformer extends QuestionTransformer
 {
 	public $type = "QuestionProg";
 
