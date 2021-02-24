@@ -32,15 +32,13 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/avancement/{username}/{question}', 'NotImplementedCtl@get');
     $router->get('/avancement/{username}/{question}/relationships/{relation}', 'NotImplementedCtl@get');
     // Tentative
+    $router->post('/tentative/{username}/{question}', 'NotImplementedCtl@get');
     $router->get('/tentative/{username}/{question}/{timestamp:[[:digit:]]+}', 'NotImplementedCtl@get');
     $router->get('/tentative/{username}/{question}/{timestamp:[[:digit:]]+}/relationships/{relation}', 'NotImplementedCtl@get');
-    // Solution
-    $router->post('/solution/{username}/{question}', 'NotImplementedCtl@get');
-    $router->get('/solution/{question}/', 'NotImplementedCtl@get');
-    $router->get('/solution/{username}/{question}/{timestamp:[[:digit:]]+}', 'NotImplementedCtl@get');
+    // Ébauche
+    $router->get('/ébauche/{question}/{langage}', 'NotImplementedCtl@get');
     // Test
     $router->get('/test/{question}/{numero:[[:digit:]]+}', 'NotImplementedCtl@get');
     // Résultat
     $router->post('/test/{username}/{question}/{numero:[[:digit:]]+}', 'NotImplementedCtl@get');
-
 });
