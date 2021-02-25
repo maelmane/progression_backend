@@ -18,8 +18,15 @@
 
 namespace progression\domaine\interacteur;
 
-class InteracteurFactory {
-    public function getObtenirQuestionProgInt(){
-        return new ObtenirQuestionProgInt();
-    }
+class InteracteurFactory
+{
+  public function getObtenirQuestionProgInt()
+  {
+    return new ObtenirQuestionProgInt();
+  }
+
+  public function getObtenirAvancementProgInt()
+  {
+    return new ObtenirAvancementProgInt();
+  }
 }

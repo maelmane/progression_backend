@@ -19,6 +19,7 @@
 namespace progression\http\transformer;
 
 use League\Fractal;
+use progression\domaine\entité\AvancementProg;
 
 class AvancementProgTransformer extends Fractal\TransformerAbstract
 {
@@ -27,20 +28,18 @@ class AvancementProgTransformer extends Fractal\TransformerAbstract
 
     protected $availableIncludes = ['tentatives'];
 
-    public function transform($data_in)
+    public function transform(AvancementProg|null $avancement)
     {
-        if ($data_in == null) {
+        if ($avancement == null) {
             $data_out = [null];
         } else {
-            $avancement = $data_in["avancement"];
-            $question = $data_in["question"];
 
             $data_out = [
-                'id' => $avancement->user_id . '/' . $question->id,
+                'id' => $avancement->user_id . '/' . $avancement->question_id,
                 'user_id' => $avancement->user_id,
                 'état' => $avancement->etat,
                 'links'   => [
-                    'self' => $_ENV['APP_URL'] . 'avancement/' . $avancement->user_id . '/' . $question->id
+                    'self' => $_ENV['APP_URL'] . '/avancement/' . $avancement->user_id . '/' . $avancement->question_id
                 ]
             ];
         }
@@ -48,13 +47,13 @@ class AvancementProgTransformer extends Fractal\TransformerAbstract
         return $data_out;
     }
 
-    public function includeTentatives($data_in)
+    public function includeTentatives($avancement)
     {
-        $tentatives = $data_in["avancement"]->réponses;
+        $tentatives = $avancement->réponses;
         return $this->collection(
             $tentatives,
             new TentativeTransformer(),
-            "Tentative"
+            "tentative"
         );
     }
 }

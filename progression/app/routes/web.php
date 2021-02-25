@@ -29,8 +29,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/question/{chemin}', 'QuestionCtl@get');
     $router->get('/question/{chemin}/relationships/{relation}', 'NotImplementedCtl@get');
     // Avancement
-    $router->get('/avancement/{username}/{question}', 'AvancementProgCtl@get');
-    $router->get('/avancement/{username}/{question}/relationships/{relation}', 'NotImplementedCtl@get');
+    $router->get('/avancement/{username}/{chemin}', 'AvancementProgCtl@get');
+    $router->get('/avancement/{username}/{chemin}/relationships/{relation}', 'NotImplementedCtl@get');
     // Tentative
     $router->get('/tentative/{username}/{question}/{timestamp:[[:digit:]]+}', 'NotImplementedCtl@get');
     $router->get('/tentative/{username}/{question}/{timestamp:[[:digit:]]+}/relationships/{relation}', 'NotImplementedCtl@get');
@@ -41,5 +41,4 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/test/{question}/{numero:[[:digit:]]+}', 'NotImplementedCtl@get');
     // Résultat
     $router->post('/test/{username}/{question}/{numero:[[:digit:]]+}', 'NotImplementedCtl@get');
-
 });

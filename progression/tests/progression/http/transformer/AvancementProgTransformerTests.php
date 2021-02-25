@@ -18,7 +18,7 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\{AvancementProg, QuestionProg};
+use progression\domaine\entité\AvancementProg;
 use PHPUnit\Framework\TestCase;
 
 final class AvancementProgTransformerTests extends TestCase
@@ -27,22 +27,21 @@ final class AvancementProgTransformerTests extends TestCase
     {
         $user_id = 1;
         $question_id = 1;
-        $_ENV['APP_URL'] = "https://example.com/";
+        $_ENV['APP_URL'] = "https://example.com";
 
         $avancementProgTransformer = new AvancementProgTransformer();
         $avancement = new AvancementProg($question_id, $user_id);
-        $question = new QuestionProg($question_id);
 
         $résultat = [
             "id" => $user_id . "/" . $question_id,
             "user_id" => $user_id,
             "état" => 0,
             "links" => [
-                "self" => "https://example.com/avancement/" . $avancement->user_id . "/" . $question_id
+                "self" => "https://example.com/avancement/" . $user_id . "/" . $question_id
             ]
         ];
 
-        $this->assertEquals($résultat, $avancementProgTransformer->transform(["avancement" => $avancement, "question" => $question]));
+        $this->assertEquals($résultat, $avancementProgTransformer->transform($avancement));
     }
 
     public function test_étant_donné_un_avancement_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()

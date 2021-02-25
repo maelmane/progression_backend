@@ -19,26 +19,28 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use progression\domaine\interacteur\{ObtenirAvancementProgInt, ObtenirQuestionProgInt};
 use progression\dao\DAOFactory;
 use progression\http\transformer\AvancementProgTransformer;
 use Illuminate\Support\Facades\Log;
 
 class AvancementProgCtl extends Contrôleur
 {
-    public function get(Request $request, $username, $question)
+    public function get(Request $request, $username, $chemin)
     {
+        $chemin = base64_decode($chemin);
+        $question = null;
+        $avancement = null;
 
-        if ($question != null && $question != "") {
-            $avancementProgInt = new ObtenirAvancementProgInt(new DAOFactory, $username);
-            $questionProgInt = new ObtenirQuestionProgInt(new DAOFactory);
+        if ($chemin != null && $chemin != "") {
+            $avancementProgInt = $this->intFactory->getObtenirAvancementProgInt();
+            $questionProgInt = $this->intFactory->getObtenirQuestionProgInt();
 
-            $question = $questionProgInt->get_question(base64_decode($question));
-            $avancement = $avancementProgInt->get_avancement($question->id);
+            $question = $questionProgInt->get_question($chemin);
+            $avancement = $avancementProgInt->get_avancement($username, $question->id);
         }
 
-        if ($question != null) {
-            $réponse = $this->item(["avancement" => $avancement, "question" => $question], new AvancementProgTransformer);
+        if ($avancement != null) {
+            $réponse = $this->item($avancement, new AvancementProgTransformer, "avancement");
 
             Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return $this->réponse_json($réponse, 200);
