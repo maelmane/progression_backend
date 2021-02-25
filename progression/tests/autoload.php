@@ -22,7 +22,6 @@ class MissingException extends Exception{}
 spl_autoload_register(function ($class_name) {
 	$class = __DIR__ . '/../app/' . str_replace('\\', '/', $class_name) . '.php';
 
-    error_log($class);
     if (file_exists($class)){
         require $class;
     }
