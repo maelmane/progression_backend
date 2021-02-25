@@ -22,7 +22,7 @@ use Illuminate\Http\Request;
 use progression\dao\DAOFactory;
 use Illuminate\Support\Facades\Log;
 use progression\domaine\interacteur\ObtenirQuestionProgInt;
-use progression\http\transformer\SolutionTransformer;
+use progression\http\transformer\ÉbaucheTransformer;
 
 class ÉbaucheCtl extends Contrôleur
 {
@@ -41,15 +41,15 @@ class ÉbaucheCtl extends Contrôleur
             return $this->réponse_json(['message' => 'Langage inexistant.'], 404);
         }
         if ($question != null) {
-            $exécutable = $question->exécutables[$langage];
-            $exécutable->id = base64_encode($question->chemin) . "/{$exécutable->lang}";
-            $exécutable->links = [
+            $ébauche = $question->exécutables[$langage];
+            $ébauche->id = base64_encode($question->chemin) . "/{$ébauche->lang}";
+            $ébauche->links = [
                 "related" =>
                 $_ENV['APP_URL'] .
                     "question/" .
                     base64_encode($question->chemin),
             ];
-            $réponse = $this->item($exécutable, new SolutionTransformer);
+            $réponse = $this->item($ébauche, new ÉbaucheTransformer);
 
             Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return $this->réponse_json($réponse, 200);

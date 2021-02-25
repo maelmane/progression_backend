@@ -34,7 +34,7 @@ class ÉbaucheTransformer extends Fractal\TransformerAbstract
                 "id" => $ébauche->id,
                 "langage" => $ébauche->lang,
                 "code" => $ébauche->code_exec,
-                "links" => (isset($ébauche->links) ? $ébauche->links : []) + ["self" => "{$_ENV['APP_URL']}ébauche/{$ébauche->id}"]
+                "links" => (isset($ébauche->links) ? $ébauche->links : []) + ["self" => "{$_ENV['APP_URL']}ebauche/{$ébauche->id}"]
             ];
         }
         return $data;
