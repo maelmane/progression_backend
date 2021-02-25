@@ -1,4 +1,4 @@
-#+SETUPFILE: https://portail.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg.setup
+#+SETUPFILE: http://plafrance.pages.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg.setup
 #+TITLE: Structure de contenu Progression
 
 * Définitions :

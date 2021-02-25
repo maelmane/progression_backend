@@ -16,18 +16,17 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-class MissingException extends Exception{}
+class MissingException extends Exception
+{
+}
 
 // chargement des fichiers automatique
 spl_autoload_register(function ($class_name) {
 	$class = __DIR__ . "/" . str_replace('\\', '/', $class_name) . '.php';
 
-    if (file_exists($class)){
-        require  $class;
-    }
-    else {
-        throw new MissingException("Impossible de charger " . $class);
-    }
-    
+	if (file_exists($class)) {
+		require $class;
+	} else {
+		throw new MissingException("Impossible de charger " . $class);
+	}
 });
-
