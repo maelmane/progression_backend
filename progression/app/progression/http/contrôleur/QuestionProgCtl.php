@@ -26,7 +26,6 @@ use Illuminate\Support\Facades\Log;
 
 class QuestionProgCtl extends Contrôleur
 {
-
     public function get( Request $request, $chemin ) {
         $question = null;
 
@@ -38,7 +37,7 @@ class QuestionProgCtl extends Contrôleur
         }
 
         if ($question != null) {
-            $réponse = $this->item([ "question" => $question, "username" => $request["username"] ], new QuestionProgTransformer);
+            $réponse = $this->item([ "question" => $question, "username" => $request["username"] ], new QuestionProgTransformer, "question");
             
             Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return $this->réponse_json($réponse, 200);

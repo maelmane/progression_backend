@@ -20,12 +20,12 @@ namespace progression\http\transformer;
 use progression\domaine\entité\Exécutable;
 use PHPUnit\Framework\TestCase;
 
-final class SolutionTransformerTests extends TestCase
+final class ÉbaucheTransformerTests extends TestCase
 {
-	public function test_étant_donné_une_solution_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+	public function test_étant_donné_une_ébauche_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
 		$_ENV['APP_URL'] = 'https://example.com/';
-		$solutionTransformer = new SolutionTransformer();
+		$ébaucheTransformer = new ÉbaucheTransformer();
 
 		$exécutable = new Exécutable("return nb1 + nb2;", "java");
 		$exécutable->id =
@@ -41,16 +41,16 @@ final class SolutionTransformerTests extends TestCase
 					"https://example.com/ébauche/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java",
 			],
 		];
-		$résultat_obtenu = $solutionTransformer->transform($exécutable);
+		$résultat_obtenu = $ébaucheTransformer->transform($exécutable);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
-	public function test_étant_donné_une_solution_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
+	public function test_étant_donné_une_ébauche_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
 	{
-		$solutionTransformer = new SolutionTransformer();
+		$ébaucheTransformer = new ÉbaucheTransformer();
 		$question = null;
 		$résultat_attendu = [null];
-		$résultat_obtenu = $solutionTransformer->transform($question);
+		$résultat_obtenu = $ébaucheTransformer->transform($question);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}

@@ -21,21 +21,21 @@ namespace progression\http\transformer;
 use progression\domaine\entité\Exécutable;
 use League\Fractal;
 
-class SolutionTransformer extends Fractal\TransformerAbstract
+class ÉbaucheTransformer extends Fractal\TransformerAbstract
 {
-    public $type = "Solution";
+    public $type = "Ébauche";
     
-	public function transform(Exécutable|null $solution)
+	public function transform(Exécutable|null $ébauche)
 	{
-        if ($solution == null) {
+        if ($ébauche == null) {
             $data = [ null ];
         } 
         else {
             $data = [
-                "id" => $solution->id,
-                "langage" => $solution->lang,
-                "code" => $solution->code_exec,
-                "links" => (isset($solution->links)?$solution->links:[]) + [ "self" => "{$_ENV['APP_URL']}ébauche/{$solution->id}" ]
+                "id" => $ébauche->id,
+                "langage" => $ébauche->lang,
+                "code" => $ébauche->code_exec,
+                "links" => (isset($ébauche->links)?$ébauche->links:[]) + [ "self" => "{$_ENV['APP_URL']}ébauche/{$ébauche->id}" ]
             ];
         }
         return $data;
