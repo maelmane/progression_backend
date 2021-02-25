@@ -19,7 +19,6 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use progression\dao\DAOFactory;
 use progression\http\transformer\AvancementProgTransformer;
 use Illuminate\Support\Facades\Log;
 
@@ -32,8 +31,10 @@ class AvancementProgCtl extends Contrôleur
         $avancement = null;
 
         if ($chemin != null && $chemin != "") {
-            $avancementProgInt = $this->intFactory->getObtenirAvancementProgInt();
-            $questionProgInt = $this->intFactory->getObtenirQuestionProgInt();
+            $avancementProgInt = $this->intFactory
+                ->getObtenirAvancementProgInt();
+            $questionProgInt = $this->intFactory
+                ->getObtenirQuestionProgInt();
 
             $question = $questionProgInt->get_question($chemin);
             $avancement = $avancementProgInt->get_avancement($username, $question->id);

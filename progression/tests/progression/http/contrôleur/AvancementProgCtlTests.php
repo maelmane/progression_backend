@@ -85,6 +85,7 @@ final class AvancementProgCtlTests extends TestCase
                 ]
             ];
 
+
         // Intéracteur
         $mockObtenirQuestionProgInt = Mockery::mock(
             'progression\domaine\interacteur\ObtenirQuestionProgInt'
@@ -120,10 +121,6 @@ final class AvancementProgCtlTests extends TestCase
 
         // Requête
         $mockRequest = Mockery::mock('Illuminate\Http\Request');
-        $mockRequest
-            ->allows()
-            ->offsetGet('username')
-            ->andReturn("Bob");
         $mockRequest
             ->allows()
             ->ip()

@@ -18,15 +18,17 @@
 
 namespace progression\domaine\interacteur;
 
+use progression\dao\DAOFactory;
+
 class InteracteurFactory
 {
   public function getObtenirQuestionProgInt()
   {
-    return new ObtenirQuestionProgInt();
+    return new ObtenirQuestionProgInt(new DAOFactory);
   }
 
   public function getObtenirAvancementProgInt()
   {
-    return new ObtenirAvancementProgInt();
+    return new ObtenirAvancementProgInt(new DAOFactory);
   }
 }
