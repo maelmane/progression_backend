@@ -17,13 +17,17 @@
 */
 
 namespace progression\http\transformer;
+<<<<<<< HEAD
 
 use progression\domaine\entité\QuestionProg;
+=======
+>>>>>>> 08c720e42d1331adfcf9a2f5c132e67c4d263f84
 use progression\domaine\entité\Exécutable;
 use PHPUnit\Framework\TestCase;
 
 final class ÉbaucheTransformerTests extends TestCase
 {
+<<<<<<< HEAD
     public function test_étant_donné_une_questionprog_instanciée_avec_des_valeurs_lorsquon_récupère_le_transformer_ébauche_on_obtient_la_solution_selon_un_langage()
     {
         $_ENV['APP_URL'] = 'https://example.com/';
@@ -61,3 +65,40 @@ final class ÉbaucheTransformerTests extends TestCase
         $this->assertEquals($résultat_attendu, $résultat_obtenu);
     }
 }
+=======
+	public function test_étant_donné_une_ébauche_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+	{
+		$_ENV['APP_URL'] = 'https://example.com/';
+		$ébaucheTransformer = new ÉbaucheTransformer();
+
+		$exécutable = new Exécutable("return nb1 + nb2;", "java");
+		$exécutable->id =
+			"cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java";
+
+		$résultat_attendu = [
+			"id" =>
+				"cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java",
+			"langage" => "java",
+			"code" => "return nb1 + nb2;",
+			"links" => [
+				"self" =>
+					"https://example.com/ébauche/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java",
+			],
+		];
+		$résultat_obtenu = $ébaucheTransformer->transform($exécutable);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+	public function test_étant_donné_une_ébauche_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
+	{
+		$ébaucheTransformer = new ÉbaucheTransformer();
+		$question = null;
+		$résultat_attendu = [null];
+		$résultat_obtenu = $ébaucheTransformer->transform($question);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+}
+
+?>
+>>>>>>> 08c720e42d1331adfcf9a2f5c132e67c4d263f84

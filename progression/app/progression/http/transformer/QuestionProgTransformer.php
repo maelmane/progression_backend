@@ -25,37 +25,6 @@ class QuestionProgTransformer extends QuestionTransformer
 
 	protected $availableIncludes = ['tests', 'ébauches'];
 
-	public function transform($data_in)
-	{
-		if ($data_in == null) {
-			$data_out = [null];
-		} else {
-			$question = $data_in["question"];
-			$username = $data_in["username"];
-
-			$chemin_encodé = base64_encode($question->chemin);
-
-			$data_out = [
-				'id' => $chemin_encodé,
-				'nom' => $question->nom,
-				'titre' => $question->titre,
-				'description' => $question->description,
-				'énoncé' => $question->enonce,
-				'links' => [
-					'self' => $_ENV['APP_URL'] . "question/" . $chemin_encodé,
-					'avancement' =>
-						$_ENV['APP_URL'] .
-						"avancement/" .
-						$username .
-						"/" .
-						$chemin_encodé,
-				],
-			];
-		}
-
-		return $data_out;
-	}
-
 	public function includeTests($data_in)
 	{
         $question = $data_in['question'];
@@ -96,8 +65,8 @@ class QuestionProgTransformer extends QuestionTransformer
         
         return $this->collection(
 			$question->exécutables,
-			new SolutionTransformer(),
-			"Solution"
+			new ÉbaucheTransformer(),
+			"Ébauche"
 		);
 
 	}

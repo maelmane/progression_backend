@@ -34,27 +34,22 @@ class QuestionTransformer extends Fractal\TransformerAbstract
 
             $chemin_encodé = base64_encode($question->chemin);
 
-            $data_out = [
-                'id' => $chemin_encodé,
-                'titre' => $question->titre,
-                'description' => $question->description,
-                'énoncé' => $question->enonce,
-                'links' => [
-                    'self' => $_ENV['APP_URL'] . "question/" . $chemin_encodé,
-                    'avancement' =>
-                        $_ENV['APP_URL'] .
-                        "avancement/" .
-                        $username .
-                        "/" .
-                        $chemin_encodé,
-                    'catégorie' =>
-                        $_ENV['APP_URL'] .
-                        "catégorie/" .
-                        base64_encode(dirname($question->chemin)),
-                ],
-            ];
+			$data_out = [
+				'id' => $chemin_encodé,
+				'titre' => $question->titre,
+				'description' => $question->description,
+				'énoncé' => $question->enonce,
+				'links' => [
+					'self' => $_ENV['APP_URL'] . "question/" . $chemin_encodé,
+					'avancement' =>
+						$_ENV['APP_URL'] .
+						"avancement/" .
+						$username .
+						"/" .
+						$chemin_encodé,
+				],
+			];
         }
-
         return $data_out;
     }
 }

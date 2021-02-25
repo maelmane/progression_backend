@@ -18,37 +18,25 @@
 
 namespace progression\http\transformer;
 
+use progression\domaine\entité\Exécutable;
 use League\Fractal;
 
 class ÉbaucheTransformer extends Fractal\TransformerAbstract
 {
     public $type = "Ébauche";
 
-    public function transform($data_in)
+    public function transform(Exécutable|null $ébauche)
     {
-        if ($data_in == null) {
-            $data_out = [null];
+        if ($ébauche == null) {
+            $data = [null];
         } else {
-            $question = $data_in["question"];
-            $langage = $data_in["langage"];
-
-            $chemin_encodé = base64_encode($question->chemin);
-            $ébauches = $question->exécutables;
-
-            $data_out = [
-                'id' => $chemin_encodé . "/" . $langage,
-                'langage' => $langage,
-                'code' => $ébauches[$langage]->code_exec,
-                'links' => [
-                    'self' => $_ENV['APP_URL'] . "solution/" . $chemin_encodé . "/" . $langage,
-                    'question' =>
-                    $_ENV['APP_URL'] .
-                        "question/" .
-                        $chemin_encodé,
-                ],
+            $data = [
+                "id" => $ébauche->id,
+                "langage" => $ébauche->lang,
+                "code" => $ébauche->code_exec,
+                "links" => (isset($ébauche->links) ? $ébauche->links : []) + ["self" => "{$_ENV['APP_URL']}ébauche/{$ébauche->id}"]
             ];
         }
-
-        return $data_out;
+        return $data;
     }
 }
