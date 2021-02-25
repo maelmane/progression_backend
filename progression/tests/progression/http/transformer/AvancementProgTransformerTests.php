@@ -18,7 +18,7 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\AvancementProg;
+use progression\domaine\entité\{AvancementProg, RéponseProg};
 use PHPUnit\Framework\TestCase;
 
 final class AvancementProgTransformerTests extends TestCase
@@ -53,5 +53,28 @@ final class AvancementProgTransformerTests extends TestCase
         $résultat_obtenu = $avancementProgTransformer->transform($avancement);
 
         $this->assertEquals($résultat_attendu, $résultat_obtenu);
+    }
+
+    public function test_étant_donné_un_avancement_avec_ses_tentatives_lorsquon_inclut_les_tentatives_on_reçoit_un_tableau_de_tentatives()
+    {
+        $_ENV['APP_URL'] = "https://example.com";
+
+        $tentativeTransformer = new TentativeTransformer();
+        $tentative =
+            new RéponseProg(10, "codeTest");
+        $tentative->date_soumission = "dateTest";
+        $tentative->tests_réussis = 2;
+        $tentative->feedback = "feedbackTest";
+
+        $résultat = [
+            "id" => "dateTest",
+            "date_soumission" => "dateTest",
+            "tests_réussis" => 2,
+            "feedback" => "feedbackTest",
+            "langage" => 10,
+            "code" => "codeTest"
+        ];
+
+        $this->assertEquals($résultat, $tentativeTransformer->transform($tentative));
     }
 }
