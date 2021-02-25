@@ -19,26 +19,25 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use progression\domaine\interacteur\ObtenirQuestionProgInt;
-use progression\dao\DAOFactory;
 use progression\http\transformer\QuestionProgTransformer;
 use Illuminate\Support\Facades\Log;
 
 class QuestionProgCtl extends Contrôleur
 {
-    public function get( Request $request, $chemin ) {
+    public function get(Request $request, $chemin)
+    {
         $question = null;
 
         $chemin = base64_decode($chemin);
-        
-        if ($chemin != null && $chemin != "" ) {
+
+        if ($chemin != null && $chemin != "") {
             $questionInt = $this->intFactory->getObtenirQuestionProgInt();
             $question = $questionInt->get_question($chemin);
         }
 
         if ($question != null) {
-            $réponse = $this->item([ "question" => $question, "username" => $request["username"] ], new QuestionProgTransformer, "question");
-            
+            $réponse = $this->item(["question" => $question, "username" => $request["username"]], new QuestionProgTransformer, "question");
+
             Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return $this->réponse_json($réponse, 200);
         } else {

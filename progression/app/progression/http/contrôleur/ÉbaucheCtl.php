@@ -19,9 +19,7 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use progression\dao\DAOFactory;
 use Illuminate\Support\Facades\Log;
-use progression\domaine\interacteur\ObtenirQuestionProgInt;
 use progression\http\transformer\ÉbaucheTransformer;
 
 class ÉbaucheCtl extends Contrôleur
@@ -32,7 +30,7 @@ class ÉbaucheCtl extends Contrôleur
         $question = null;
 
         if ($chemin != null && $chemin != "") {
-            $questionProgInt = new ObtenirQuestionProgInt(new DAOFactory);
+            $questionProgInt =  $this->intFactory->getObtenirQuestionProgInt();
             $question = $questionProgInt->get_question($chemin);
         }
 

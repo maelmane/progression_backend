@@ -22,6 +22,8 @@ use progression\domaine\entité\{QuestionProg, Exécutable, Test};
 use progression\http\contrôleur\ÉbaucheCtl;
 use Illuminate\Http\Request;
 
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
 final class ÉbaucheCtlTests extends TestCase
 {
     public function test_étant_donné_le_chemin_dune_ébauche_lorsquon_appelle_get_on_obtient_lébauche_et_ses_relations_sous_forme_json()
@@ -40,10 +42,8 @@ final class ÉbaucheCtlTests extends TestCase
             "La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
 
         // Ébauches
-        $question->exécutables = [
-            new Exécutable("print(\"Hello world\")", "python"),
-            new Exécutable("System.out.println(\"Hello world\")", "java"),
-        ];
+        $question->exécutables['python'] = new Exécutable("print(\"Hello world\")", "python");
+        $question->exécutables['java'] = new Exécutable("System.out.println(\"Hello world\")", "java");
 
         // Tests
         $question->tests = [
@@ -60,8 +60,8 @@ final class ÉbaucheCtlTests extends TestCase
                     "code" => "print(\"Hello world\")",
                 ],
                 "links" => [
-                    "self" => "https://progression.dti.crosemont.quebec/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
-                    "related" => "https://progression.dti.crosemont.quebec/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+                    "self" => "https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
+                    "related" => "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
                 ],
             ],
         ];
@@ -90,10 +90,6 @@ final class ÉbaucheCtlTests extends TestCase
         $mockRequest = Mockery::mock('Illuminate\Http\Request');
         $mockRequest
             ->allows()
-            ->offsetGet()
-            ->andReturn();
-        $mockRequest
-            ->allows()
             ->ip()
             ->andReturn("127.0.0.1");
         $mockRequest
@@ -108,7 +104,7 @@ final class ÉbaucheCtlTests extends TestCase
             );
         $mockRequest
             ->allows()
-            ->query()
+            ->query('include')
             ->andReturn();
         $this->app->bind(Request::class, function () use ($mockRequest) {
             return $mockRequest;

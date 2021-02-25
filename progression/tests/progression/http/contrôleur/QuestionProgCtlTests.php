@@ -41,10 +41,8 @@ final class QuestionProgCtlTests extends TestCase
             "La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
 
         // Ébauches
-        $question->exécutables = [
-            new Exécutable("print(\"Hello world\")", "python"),
-            new Exécutable("System.out.println(\"Hello world\")", "java"),
-        ];
+        $question->exécutables['python'] = new Exécutable("print(\"Hello world\")", "python");
+        $question->exécutables['java'] = new Exécutable("System.out.println(\"Hello world\")", "java");
 
         // Tests
         $question->tests = [
