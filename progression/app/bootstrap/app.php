@@ -10,10 +10,9 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 // Vérification des variables d'environnement
 if (
     isset($_ENV['APP_URL']) &&
-    $_ENV['APP_URL'] != "" &&
-    substr($_ENV['APP_URL'], -1) != "/"
-) {
-    $_ENV['APP_URL'] = $_ENV['APP_URL'] . '/';
+    $_ENV['APP_URL'] != "" )
+{
+    $_ENV['APP_URL'] = preg_replace("/\/+$/", "/", $_ENV['APP_URL']);
 }
 
 date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));

@@ -46,9 +46,15 @@ class Contrôleur extends BaseController
     protected function getFractalManager()
     {
         $request = app(Request::class);
-        error_log("INCLUDE".$request->query('include'));
         $manager = new Manager();
-        $manager->setSerializer(new JsonApiSerializer($_ENV["APP_URL"]));
+
+        // On redéfinit le Serializer pour avoir des liens «relationship» personnalisés
+
+        //JsonApiSerializer ajoute un slash à l'URL de base, on s'assure d'enlèver le slash ultime
+        $urlBase = preg_replace("/\/+$/", "", $_ENV["APP_URL"]);
+        //$manager->setSerializer(new JsonApiSerializer($urlBase));
+        $manager->setSerializer(new JsonApiSerializer($urlBase) );
+
         if (!empty($request->query('include'))) {
             $manager->parseIncludes($request->query('include'));
         }
@@ -59,7 +65,7 @@ class Contrôleur extends BaseController
     public function item($data, $transformer, $resourceKey = null)
     {
         $manager = $this->getFractalManager();
-        $resource = new Item($data, $transformer, $transformer->type);
+        $resource = new Item($data, $transformer, $resourceKey!=null?$resourceKey:$transformer->type);
         return $manager->createData($resource)->toArray();
     }
 
