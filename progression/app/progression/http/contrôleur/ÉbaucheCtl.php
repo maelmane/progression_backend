@@ -49,7 +49,7 @@ class ÉbaucheCtl extends Contrôleur
                     "question/" .
                     base64_encode($question->chemin),
             ];
-            $réponse = $this->item($ébauche, new ÉbaucheTransformer);
+            $réponse = $this->item($ébauche, new ÉbaucheTransformer, "ébauche");
         }
 
         return $this->préparer_réponse($réponse);
