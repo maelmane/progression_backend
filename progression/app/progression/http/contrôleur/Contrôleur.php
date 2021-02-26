@@ -73,14 +73,18 @@ class Contrôleur extends BaseController
 		}
 
 		$manager = $this->getFractalManager();
-		$resource = new Item($data, $transformer, $resourceKey != null ? $resourceKey : $transformer->type);
+		$resource = new Item($data, $transformer, $resourceKey);
 		return $manager->createData($resource)->toArray();
 	}
 
 	public function collection($data, $transformer, $resourceKey = null)
 	{
+		if ($data == null) {
+			return [null];
+		}
+
 		$manager = $this->getFractalManager();
-		$resource = new Collection($data, $transformer, $transformer->type);
+		$resource = new Collection($data, $transformer, $resourceKey);
 		return $manager->createData($resource)->toArray();
 	}
 
@@ -97,7 +101,7 @@ class Contrôleur extends BaseController
 		return $manager->createData($resource)->toArray();
 	}
 
-	protected function préparer_réponse($réponse)
+	protected function préparer_réponse(array $réponse)
 	{
 		$request = app(Request::class);
 		if ($réponse != null && $réponse != [null]) {
