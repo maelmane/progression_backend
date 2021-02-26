@@ -47,7 +47,7 @@ final class ÉbaucheCtlTests extends TestCase
 
 		$résultat_attendu = [
 			"data" => [
-				"type" => "ébauche",
+				"type" => "ebauche",
 				"id" => "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
 				"attributes" => [
 					"langage" => "python",
