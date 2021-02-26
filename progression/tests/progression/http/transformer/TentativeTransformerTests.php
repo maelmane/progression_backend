@@ -40,13 +40,4 @@ final class TentativeTransformerTests extends TestCase
         $this->assertEquals($résultat, $tentativeTransformer->transform($tentative));
     }
 
-    public function test_étant_donné_une_tentative_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
-    {
-        $tentativeTransformer = new TentativeTransformer();
-        $tentative = null;
-        $résultat_attendu = [null];
-        $résultat_obtenu = $tentativeTransformer->transform($tentative);
-
-        $this->assertEquals($résultat_attendu, $résultat_obtenu);
-    }
 }

@@ -45,15 +45,6 @@ final class TestTransformerTests extends TestCase
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
-	public function test_étant_donné_un_test_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
-	{
-		$testTransformer = new TestTransformer();
-		$test = null;
-		$json = '[null]';
-		$item = $testTransformer->transform($test);
-
-		$this->assertEquals($json, json_encode($item, JSON_UNESCAPED_UNICODE));
-	}
 }
 
 ?>

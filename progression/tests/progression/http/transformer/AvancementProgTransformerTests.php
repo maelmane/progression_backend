@@ -23,58 +23,47 @@ use PHPUnit\Framework\TestCase;
 
 final class AvancementProgTransformerTests extends TestCase
 {
-    public function test_étant_donné_un_avancement_instancié_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
-    {
-        $user_id = 1;
-        $question_id = 1;
-        $_ENV['APP_URL'] = "https://example.com";
+	public function test_étant_donné_un_avancement_instancié_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
+	{
+		$user_id = "jdoe";
+		$question_id = "prog1/les_fonctions_01/appeler_une_fonction_paramétrée";
+		$_ENV["APP_URL"] = "https://example.com/";
 
-        $avancementProgTransformer = new AvancementProgTransformer();
-        $avancement = new AvancementProg($question_id, $user_id);
+		$avancementProgTransformer = new AvancementProgTransformer();
+		$avancement = new AvancementProg("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
 
-        $résultat = [
-            "id" => $user_id . "/" . $question_id,
-            "user_id" => $user_id,
-            "état" => 0,
-            "links" => [
-                "self" => "https://example.com/avancement/" . $user_id . "/" . $question_id
-            ]
-        ];
+		$résultat = [
+			"id" => "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+			"user_id" => "jdoe",
+			"état" => 0,
+			"links" => [
+				"self" =>
+					"https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+			],
+		];
 
-        $this->assertEquals($résultat, $avancementProgTransformer->transform($avancement));
-    }
+		$this->assertEquals($résultat, $avancementProgTransformer->transform($avancement));
+	}
 
-    public function test_étant_donné_un_avancement_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
-    {
-        $avancementProgTransformer = new AvancementProgTransformer();
-        $avancement = null;
+	public function test_étant_donné_un_avancement_avec_ses_tentatives_lorsquon_inclut_les_tentatives_on_reçoit_un_tableau_de_tentatives()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
 
-        $résultat_attendu = [null];
-        $résultat_obtenu = $avancementProgTransformer->transform($avancement);
+		$tentativeTransformer = new TentativeTransformer();
+		$tentative = new RéponseProg(10, "codeTest");
+		$tentative->date_soumission = "dateTest";
+		$tentative->tests_réussis = 2;
+		$tentative->feedback = "feedbackTest";
 
-        $this->assertEquals($résultat_attendu, $résultat_obtenu);
-    }
+		$résultat = [
+			"id" => "dateTest",
+			"date_soumission" => "dateTest",
+			"tests_réussis" => 2,
+			"feedback" => "feedbackTest",
+			"langage" => 10,
+			"code" => "codeTest",
+		];
 
-    public function test_étant_donné_un_avancement_avec_ses_tentatives_lorsquon_inclut_les_tentatives_on_reçoit_un_tableau_de_tentatives()
-    {
-        $_ENV['APP_URL'] = "https://example.com";
-
-        $tentativeTransformer = new TentativeTransformer();
-        $tentative =
-            new RéponseProg(10, "codeTest");
-        $tentative->date_soumission = "dateTest";
-        $tentative->tests_réussis = 2;
-        $tentative->feedback = "feedbackTest";
-
-        $résultat = [
-            "id" => "dateTest",
-            "date_soumission" => "dateTest",
-            "tests_réussis" => 2,
-            "feedback" => "feedbackTest",
-            "langage" => 10,
-            "code" => "codeTest"
-        ];
-
-        $this->assertEquals($résultat, $tentativeTransformer->transform($tentative));
-    }
+		$this->assertEquals($résultat, $tentativeTransformer->transform($tentative));
+	}
 }

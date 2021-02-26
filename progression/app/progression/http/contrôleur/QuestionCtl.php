@@ -56,6 +56,7 @@ class QuestionCtl extends Contrôleur
 			$réponse = $this->item(
 				["question" => $question, "username" => $request["username"]],
 				new QuestionProgTransformer(),
+				"question",
 			);
 			return $this->préparer_réponse($réponse);
 		} elseif ($question->type == Question::TYPE_SYS) {

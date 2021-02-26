@@ -39,12 +39,4 @@ final class UserTransformerTests extends TestCase
         
         $this->assertEquals( $résultat, $userTransformer->transform($user) );
     }
-    public function test_étant_donné_un_user_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
-    {
-        $userTransformer = new UserTransformer();
-        $user = null;
-        $résultat = [null];
-
-        $this->assertEquals( $résultat, $userTransformer->transform($user) );
-    }
 }

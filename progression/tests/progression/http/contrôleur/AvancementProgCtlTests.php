@@ -21,16 +21,16 @@ final class AvancementProgCtlTests extends TestCase
 {
     public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_l_avancement_et_ses_relations_sous_forme_json()
     {
-        $_ENV['APP_URL'] = 'https://example.com';
+        $_ENV['APP_URL'] = 'https://example.com/';
 
         // Question
         $question = new QuestionProg();
-        $question->id = 2;
+        $question->id =             "prog1/les_fonctions_01/appeler_une_fonction_paramétrée";
         $question->chemin =
             "prog1/les_fonctions_01/appeler_une_fonction_paramétrée";
 
         // Avancement
-        $avancement = new AvancementProg(2, 1);
+        $avancement = new AvancementProg("prog1/les_fonctions_01/appeler_une_fonction_paramétrée","jdoe");
         $avancement->lang = 10;
         $avancement->etat = 1;
         $avancement->réponses = [
@@ -44,19 +44,19 @@ final class AvancementProgCtlTests extends TestCase
             [
                 "data" => [
                     "type" => "avancement",
-                    "id" => "1/2",
+                    "id" => "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
                     "attributes" => [
                         "user_id" => 1,
                         "état" => 1
                     ],
                     "links" => [
-                        "self" => "https://example.com/avancement/1/2"
+                        "self" => "https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU="
                     ],
                     "relationships" => [
                         "tentatives" => [
                             "links" => [
-                                "self" => "https://example.com/avancement/1/2/relationships/tentatives",
-                                "related" => "https://example.com/avancement/1/2/tentatives"
+                                "self" => "https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/relationships/tentatives",
+                                "related" => "https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/tentatives"
                             ],
                             "data" => [
                                 [
@@ -102,7 +102,7 @@ final class AvancementProgCtlTests extends TestCase
         );
         $mockObtenirAvancementProgInt
             ->allows()
-            ->get_avancement(1, 2)
+            ->get_avancement("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée")
             ->andReturn($avancement);
 
         // InteracteurFactory
@@ -133,7 +133,7 @@ final class AvancementProgCtlTests extends TestCase
             ->allows()
             ->path()
             ->andReturn(
-                "/avancement/1/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU="
+                "/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU="
             );
         $mockRequest
             ->allows()
@@ -151,7 +151,7 @@ final class AvancementProgCtlTests extends TestCase
                 $ctl
                     ->get(
                         $mockRequest,
-                        1,
+                        "jdoe",
                         "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU="
                     )->getContent(),
                 true

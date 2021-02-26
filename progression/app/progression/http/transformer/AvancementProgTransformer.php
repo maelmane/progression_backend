@@ -30,11 +30,12 @@ class AvancementProgTransformer extends Fractal\TransformerAbstract
 	public function transform(AvancementProg $avancement)
 	{
 		$data_out = [
-			"id" => "{$avancement->user_id}/{$avancement->question_id}",
+			"id" => "{$avancement->user_id}/" . base64_encode($avancement->question_id),
 			"user_id" => $avancement->user_id,
 			"état" => $avancement->etat,
 			"links" => [
-				"self" => "{$_ENV["APP_URL"]}avancement/{$avancement->user_id}/{$avancement->question_id}",
+				"self" =>
+					"{$_ENV["APP_URL"]}avancement/{$avancement->user_id}/" . base64_encode($avancement->question_id),
 			],
 		];
 
