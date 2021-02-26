@@ -219,23 +219,6 @@ Obtenir le profil de l'utilisateur authentifié ~jdoe~ : ~LIVE~
 curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-
-** Obtenir le profil de l'utilisateur authentifié ~jdoe~ et ses avancements : ~PROTOTYPE~
-
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H "Authorization: Bearer $TOKEN"
-#+END_SRC
-
-
-** Obtenir le profil de l'utilisateur authentifié ~jdoe~ et ses avancements : ~PROTOTYPE~
-
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :results output
-curl https://progression.dti.crosemont.quebec/api/v1/user?include=avancements -H "Authorization: Bearer $TOKEN"
-#+END_SRC
-
-#+RESULTS:
-: {"data":{"type":"User","id":"jdoe","attributes":{"username":"jdoe","rôle":0},"links":{"self":"http:\/\/localhost\/user\/jdoe"}}}
-
 ** Obtenir la liste des catégories disponibles pour l'utilisateur ~jdoe~ : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never :var TOKEN=get_token :results output
@@ -292,13 +275,19 @@ curl https://progression.dti.crosemont.quebec/api/v1/question/cHJvZzEvbGVzX2Zvbm
 curl https://progression.dti.crosemont.quebec/api/v1/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=?include=tests,ébauches -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction» : ~PROTOTYPE~
+** Obtenir l'avancement de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+curl https://progression.dti.crosemont.quebec/api/v1/avancement/1/Mg== -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction_paramétrée» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never
 curl https://progression.dti.crosemont.quebec/api/v1/ébauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Soumettre une tentative de solution à la question «appeler_une_fonction» : ~PROTOTYPE~
+** Soumettre une tentative de solution à la question «appeler_une_fonction_paramétrée» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never
 curl --data '{"langage":"python","code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU= -H "Authorization: Bearer $TOKEN"
@@ -333,7 +322,7 @@ curl --data '{"langage":"python","code":"ma_fonction(\"Allo le monde\")"  }' htt
 :   }
 : }
 
-** Obtenir une tentative de solution préalablement soumise pour la question «appeler_une_fonction» : ~PROTOTYPE~
+** Obtenir une tentative de solution préalablement soumise pour la question «appeler_une_fonction_paramétrée» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never
 curl https://progression.dti.crosemont.quebec/api/v1/user/jdoe/tentative/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/1612834148 -H "Authorization: Bearer $TOKEN"

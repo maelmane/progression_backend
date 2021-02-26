@@ -36,6 +36,6 @@ class AvancementProgCtl extends Contrôleur
 
 		$réponse = $this->item($avancement, new AvancementProgTransformer(), "avancement");
 
-		return $this->préparer_réponse($avancement);
+		return $this->préparer_réponse($réponse);
 	}
 }

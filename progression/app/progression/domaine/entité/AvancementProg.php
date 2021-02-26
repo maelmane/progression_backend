@@ -21,13 +21,13 @@ namespace progression\domaine\entité;
 
 class AvancementProg extends Avancement
 {
-	public $reponses;
+	public $réponses;
     public $lang;
 
-	public function __construct($question_id, $user_id, $reponses=null, $lang=null)
+	public function __construct($question_id, $user_id, $réponses=null, $lang=null)
 	{
         parent::__construct($question_id, $user_id);
-        $this->reponses=$reponses;
+        $this->réponses=$réponses;
         $this->lang=$lang;
 	}
 }

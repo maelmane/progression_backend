@@ -21,7 +21,7 @@ namespace progression\domaine\entité;
 use PHPUnit\Framework\TestCase;
 
 final class AvancementProgTests extends TestCase{
-    public function test_étant_donné_un_avancement_prog_instancié_avec_questionid_2_et_userid_4_et_reponses_9_et_lang_8_lorsquon_récupère_son_questionid_on_obtient_2(){
+    public function test_étant_donné_un_avancement_prog_instancié_avec_questionid_2_et_userid_4_et_réponses_9_et_lang_8_lorsquon_récupère_son_questionid_on_obtient_2(){
         $avancementProgTest = new AvancementProg(2, 4, 9, 8);
 
         $questionid = $avancementProgTest->question_id;
@@ -29,7 +29,7 @@ final class AvancementProgTests extends TestCase{
         $this->assertEquals( 2, $questionid );
     }
 
-    public function test_étant_donné_un_avancement_prog_instancié_avec_questionid_2_et_userid_4_et_reponses_9_et_lang_8_lorsquon_récupère_son_userid_on_obtient_4(){
+    public function test_étant_donné_un_avancement_prog_instancié_avec_questionid_2_et_userid_4_et_réponses_9_et_lang_8_lorsquon_récupère_son_userid_on_obtient_4(){
         $avancementProgTest = new AvancementProg(2, 4, 9, 8);
 
         $userid = $avancementProgTest->user_id;
@@ -37,15 +37,15 @@ final class AvancementProgTests extends TestCase{
         $this->assertEquals( 4, $userid );
     }
 
-    public function test_étant_donné_un_avancement_prog_instancié_avec_questionid_2_et_userid_4_et_reponses_9_et_lang_8_lorsquon_récupère_son_reponses_on_obtient_9(){
+    public function test_étant_donné_un_avancement_prog_instancié_avec_questionid_2_et_userid_4_et_réponses_9_et_lang_8_lorsquon_récupère_son_réponses_on_obtient_9(){
         $avancementProgTest = new AvancementProg(2, 4, 9, 8);
 
-        $reponses = $avancementProgTest->reponses;
+        $réponses = $avancementProgTest->réponses;
 
-        $this->assertEquals( 9, $reponses);
+        $this->assertEquals( 9, $réponses);
     }
 
-    public function test_étant_donné_un_avancement_prog_instancié_avec_questionid_2_et_userid_4_et_reponses_9_et_lang_8_lorsquon_récupère_son_lang_on_obtient_8(){
+    public function test_étant_donné_un_avancement_prog_instancié_avec_questionid_2_et_userid_4_et_réponses_9_et_lang_8_lorsquon_récupère_son_lang_on_obtient_8(){
         $avancementProgTest = new AvancementProg(2, 4, 9, 8);
 
         $lang = $avancementProgTest->lang;
@@ -53,12 +53,12 @@ final class AvancementProgTests extends TestCase{
         $this->assertEquals( 8, $lang);
     }
 
-    public function test_étant_donné_un_avancement_prog_instancié_avec_questionid_2_et_userid_4_lorsquon_récupère_son_reponses_on_obtient_null(){
+    public function test_étant_donné_un_avancement_prog_instancié_avec_questionid_2_et_userid_4_lorsquon_récupère_son_réponses_on_obtient_null(){
         $avancementProgTest = new AvancementProg(2, 4);
 
-        $reponses = $avancementProgTest->reponses;
+        $réponses = $avancementProgTest->réponses;
 
-        $this->assertEquals( null, $reponses);
+        $this->assertEquals( null, $réponses);
     }
 
     public function test_étant_donné_un_avancement_prog_instancié_avec_questionid_2_et_userid_4_etlorsquon_récupère_son_lang_on_obtient_null(){

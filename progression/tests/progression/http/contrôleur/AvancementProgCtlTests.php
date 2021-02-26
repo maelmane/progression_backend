@@ -46,7 +46,7 @@ final class AvancementProgCtlTests extends TestCase
                     "type" => "avancement",
                     "id" => "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
                     "attributes" => [
-                        "user_id" => 1,
+                        "user_id" => "jdoe",
                         "état" => 1
                     ],
                     "links" => [
