@@ -45,12 +45,6 @@ final class ÉbaucheCtlTests extends TestCase
 		$question->exécutables['python'] = new Exécutable("print(\"Hello world\")", "python");
 		$question->exécutables['java'] = new Exécutable("System.out.println(\"Hello world\")", "java");
 
-		// Tests
-		$question->tests = [
-			new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
-			new Test("Aucune salutation", "0", ""),
-		];
-
 		$résultat_attendu = [
 			"data" => [
 				"type" => "ébauche",

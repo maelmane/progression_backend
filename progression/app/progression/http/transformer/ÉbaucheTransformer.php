@@ -23,7 +23,7 @@ use progression\domaine\entité\Exécutable;
 
 class ÉbaucheTransformer extends Fractal\TransformerAbstract
 {
-	public $type = "ébauche";
+	public $type = "Ébauche";
 
 	public function transform(Exécutable $ébauche)
 	{
