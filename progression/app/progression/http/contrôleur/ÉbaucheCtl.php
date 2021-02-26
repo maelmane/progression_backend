@@ -18,15 +18,14 @@
 
 namespace progression\http\contrôleur;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use progression\http\transformer\ÉbaucheTransformer;
 
 class ÉbaucheCtl extends Contrôleur
 {
-	public function get(Request $request, $question, $langage)
+	public function get($question, $langage)
 	{
 		$chemin = base64_decode($question);
+		$réponse = [null];
 		$question = null;
 
 		if ($chemin != null && $chemin != "") {
@@ -47,8 +46,6 @@ class ÉbaucheCtl extends Contrôleur
 				];
 
 				$réponse = $this->item($ébauche, new ÉbaucheTransformer, "ebauche");
-			} else {
-				$réponse = null;
 			}
 		}
 
