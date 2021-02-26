@@ -187,11 +187,7 @@ Le résultat d'un test pour une solution proposée.
 * Exemples
 
 #+begin_warning
-<<<<<<< HEAD
-Les exemples marqués ~LIVE~ reflètent les résultats réels.
-=======
 Les exemples marqués ~LIVE~ reflètent les résultats réels sur la plus récente version de l'API disponible sur ~https://progression.dti.crosemont.quebec/api/v1/~.
->>>>>>> dev
 
 Les exemples marqués ~PROTOTYPE~ sont générés manuellement à titre indicatif et ne reflètent nécessairement pas les résultats réels.
 #+end_warning
@@ -285,15 +281,12 @@ curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/
 #+END_SRC
 
 ** Obtenir la question «appeler_une_fonction_paramétrée» et ses tests: ~LIVE~
-<<<<<<< HEAD
-=======
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 curl https://progression.dti.crosemont.quebec/api/v1/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=?include=tests -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir la question «appeler_une_fonction_paramétrée», ses tests et ses ébauches: ~LIVE~
->>>>>>> dev
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 curl https://progression.dti.crosemont.quebec/api/v1/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=?include=tests,ébauches -H "Authorization: Bearer $TOKEN"
