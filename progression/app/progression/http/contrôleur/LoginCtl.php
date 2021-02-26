@@ -15,45 +15,37 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
-?><?php
-
 namespace progression\http\contrôleur;
 
 use Exception;
-use \Firebase\JWT\JWT;
+use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use progression\domaine\interacteur\LoginInt;
 use progression\dao\DAOFactory;
 
 class LoginCtl extends Contrôleur
 {
-    public function login(Request $request){
-        $loginInt = new LoginInt(new DAOFactory());
-        $username = $request->input("username");
-        $password = $request->input("password");
-        $user = null;
-        $token = null;
+	public function login(Request $request)
+	{
+		$loginInt = $this->intFactory->getLoginInt();
+		$username = $request->input("username");
+		$password = $request->input("password");
+		$user = null;
+		$token = null;
 
-        $user = $loginInt->effectuer_login($username, $password);
+		$user = $loginInt->effectuer_login($username, $password);
 
-        if ($user != null ) {
-            $payload = [
-                'user' => $user,
-                'current' => time(),
-                'expired' => time() + $_ENV["JWT_TTL"]
-            ];
-            $token = JWT::encode($payload, $_ENV['JWT_SECRET'], 'HS256');
-        }
+		if ($user != null) {
+			$payload = [
+				"user" => $user,
+				"current" => time(),
+				"expired" => time() + $_ENV["JWT_TTL"],
+			];
+			$token = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
+		}
 
-        if ($token != null ) {
-            Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-            return $this->réponse_json(['Authorization' => $token], 200);
-        } else {
-            Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-            return $this->réponse_json(['message' => 'Utilisateur non autorisé.'], 401);
-        }
-    }
+		return $this->préparer_réponse(["Token" => $token]);
+	}
 }
 
 ?>

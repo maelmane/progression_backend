@@ -24,6 +24,30 @@ class InteracteurFactory
 {
     public function getObtenirQuestionProgInt()
     {
-        return new ObtenirQuestionProgInt(new DAOFactory);
+        return new ObtenirQuestionProgInt(new DAOFactory());
+    }
+
+    public function getObtenirAvancementProgInt()
+    {
+        return new ObtenirAvancementProgInt(new DAOFactory());
+    }
+
+    public function getLoginInt()
+    {
+        return new LoginInt(new DAOFactory());
+    }
+
+    public function getUserInt()
+    {
+        return new UserInt(new DAOFactory());
+    }
+
+    public function getObtenirQuestionInt()
+    {
+        return new ObtenirQuestionInt(new DAOFactory());
+    }
+    public function getObtenirUserInt()
+    {
+        return new ObtenirUserInt(new DAOFactory());
     }
 }

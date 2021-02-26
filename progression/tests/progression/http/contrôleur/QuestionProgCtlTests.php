@@ -15,15 +15,18 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
+
+namespace progression\http\contrôleur;
+
 require_once __DIR__ . '/../../../TestCase.php';
 
-use progression\domaine\entité\{QuestionProg, Exécutable, Test};
-use progression\http\contrôleur\QuestionProgCtl;
+use progression\domaine\entité\{Question, QuestionProg, Exécutable, Test};
 use Illuminate\Http\Request;
 
+use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-final class QuestionProgCtlTests extends TestCase
+final class QuestionProgCtlTests extends \TestCase
 {
     public function test_étant_donné_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_la_question_et_ses_relations_sous_forme_json()
     {
@@ -31,6 +34,7 @@ final class QuestionProgCtlTests extends TestCase
 
         // Question
         $question = new QuestionProg();
+        $question->type = Question::TYPE_PROG;
         $question->nom = "appeler_une_fonction_paramétrée";
         $question->chemin =
             "prog1/les_fonctions_01/appeler_une_fonction_paramétrée";
@@ -180,6 +184,16 @@ final class QuestionProgCtlTests extends TestCase
         ];
 
         // Intéracteur
+        $mockObtenirQuestionInt = Mockery::mock(
+            'progression\domaine\interacteur\ObtenirQuestionInt'
+        );
+        $mockObtenirQuestionInt
+            ->allows()
+            ->get_question(
+                'prog1/les_fonctions_01/appeler_une_fonction_paramétrée'
+            )
+            ->andReturn($question);
+
         $mockObtenirQuestionProgInt = Mockery::mock(
             'progression\domaine\interacteur\ObtenirQuestionProgInt'
         );
@@ -194,6 +208,10 @@ final class QuestionProgCtlTests extends TestCase
         $mockIntFactory = Mockery::mock(
             'progression\domaine\interacteur\InteracteurFactory'
         );
+        $mockIntFactory
+            ->allows()
+            ->getObtenirQuestionInt()
+            ->andReturn($mockObtenirQuestionInt);
         $mockIntFactory
             ->allows()
             ->getObtenirQuestionProgInt()
@@ -228,7 +246,7 @@ final class QuestionProgCtlTests extends TestCase
         });
 
         // Contrôleur
-        $ctl = new QuestionProgCtl($mockIntFactory);
+        $ctl = new QuestionCtl($mockIntFactory);
 
         $this->assertEquals(
             $résultat_attendu,

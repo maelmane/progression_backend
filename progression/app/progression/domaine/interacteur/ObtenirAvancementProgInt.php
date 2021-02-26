@@ -20,16 +20,10 @@ namespace progression\domaine\interacteur;
 
 class ObtenirAvancementProgInt extends Interacteur
 {
-    function __construct($source, $user_id)
-    {
-        parent::__construct($source);
-        $this->_user_id = $user_id;
-    }
-
-    function get_avancement($question_id)
+    function get_avancement($user_id, $question_id)
     {
         return $this->_source
             ->get_avancement_prog_dao()
-            ->get_avancement($question_id, $this->_user_id);
+            ->get_avancement($question_id, $user_id);
     }
 }

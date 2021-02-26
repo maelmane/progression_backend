@@ -25,16 +25,14 @@ final class ÉbaucheTransformerTests extends TestCase
 {
     public function test_étant_donné_une_ébauche_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
     {
-        $_ENV['APP_URL'] = 'https://example.com/';
+        $_ENV["APP_URL"] = "https://example.com/";
         $ébaucheTransformer = new ÉbaucheTransformer();
 
         $exécutable = new Exécutable("return nb1 + nb2;", "java");
-        $exécutable->id =
-            "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java";
+        $exécutable->id = "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java";
 
         $résultat_attendu = [
-            "id" =>
-            "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java",
+            "id" => "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java",
             "langage" => "java",
             "code" => "return nb1 + nb2;",
             "links" => [
@@ -43,15 +41,6 @@ final class ÉbaucheTransformerTests extends TestCase
             ],
         ];
         $résultat_obtenu = $ébaucheTransformer->transform($exécutable);
-
-        $this->assertEquals($résultat_attendu, $résultat_obtenu);
-    }
-    public function test_étant_donné_une_ébauche_null_lorsquon_récupère_son_transformer_on_obtient_un_array_null()
-    {
-        $ébaucheTransformer = new ÉbaucheTransformer();
-        $question = null;
-        $résultat_attendu = [null];
-        $résultat_obtenu = $ébaucheTransformer->transform($question);
 
         $this->assertEquals($résultat_attendu, $résultat_obtenu);
     }

@@ -18,24 +18,33 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\Test;
 use League\Fractal;
+use progression\domaine\entité\AvancementProg;
 
-class TestTransformer extends Fractal\TransformerAbstract
+class AvancementProgTransformer extends Fractal\TransformerAbstract
 {
-	public $type = "Test";
+	public $type = "AvancementProg";
 
-	public function transform(Test $test)
+	protected $availableIncludes = ["tentatives"];
+
+	public function transform(AvancementProg $avancement)
 	{
-		$data = [
-			"id" => $test->id,
-			"numéro" => $test->numéro,
-			"nom" => $test->nom,
-			"entrée" => $test->stdin,
-			"sortie_attendue" => $test->solution,
-			"links" => (isset($test->links) ? $test->links : []) + ["self" => "{$_ENV["APP_URL"]}test/{$test->id}"],
+		$data_out = [
+			"id" => "{$avancement->user_id}/" . base64_encode($avancement->question_id),
+			"user_id" => $avancement->user_id,
+			"état" => $avancement->etat,
+			"links" => [
+				"self" =>
+					"{$_ENV["APP_URL"]}avancement/{$avancement->user_id}/" . base64_encode($avancement->question_id),
+			],
 		];
 
-		return $data;
+		return $data_out;
+	}
+
+	public function includeTentatives($avancement)
+	{
+		$tentatives = $avancement->réponses;
+		return $this->collection($tentatives, new TentativeTransformer(), "tentative");
 	}
 }

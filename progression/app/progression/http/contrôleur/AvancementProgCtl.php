@@ -16,18 +16,26 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\http\transformer;
-use PHPUnit\Framework\TestCase;
+namespace progression\http\contrôleur;
 
-final class QuestionTransformerTests extends TestCase
+use Illuminate\Http\Request;
+use progression\http\transformer\AvancementProgTransformer;
+
+class AvancementProgCtl extends Contrôleur
 {
-
-	public function test_étant_donné_une_questionprog_null_lorsquon_récupère_son_transformer_on_obtient_un_array_contenant_null()
+	public function get(Request $request, $username, $chemin)
 	{
-		$question = null;
-		$item = (new QuestionTransformer())->transform($question);
+		$chemin = base64_decode($chemin);
+		$avancement = null;
 
-		$this->assertEquals([null], $item);
+		if ($chemin != null && $chemin != "" && $username != null && $username != "") {
+			$avancementProgInt = $this->intFactory->getObtenirAvancementProgInt();
+
+			$avancement = $avancementProgInt->get_avancement($username, $chemin);
+		}
+
+		$réponse = $this->item($avancement, new AvancementProgTransformer(), "avancement");
+
+		return $this->préparer_réponse($avancement);
 	}
-
 }

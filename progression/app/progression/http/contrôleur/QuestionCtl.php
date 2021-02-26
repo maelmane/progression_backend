@@ -19,12 +19,9 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use progression\domaine\interacteur\ObtenirQuestionInt;
-use progression\domaine\interacteur\ObtenirQuestionProgInt;
-use progression\dao\DAOFactory;
-use Illuminate\Support\Facades\Log;
 use progression\domaine\entité\Question;
 use progression\http\transformer\QuestionProgTransformer;
+use Illuminate\Support\Facades\Log;
 
 class QuestionCtl extends Contrôleur
 {
@@ -35,33 +32,31 @@ class QuestionCtl extends Contrôleur
         $chemin = base64_decode($chemin);
 
         if ($chemin != null && $chemin != "") {
-            $questionInt = new ObtenirQuestionInt(new DAOFactory);
+            $questionInt = $this->intFactory->getObtenirQuestionInt();
             $question = $questionInt->get_question($chemin);
             if ($question->type == Question::TYPE_PROG) {
-                $questionInt = new ObtenirQuestionProgInt(new DAOFactory);
+                $questionInt = $this->intFactory->getObtenirQuestionProgInt();
                 $question = $questionInt->get_question($chemin);
-            } else if ($question->type == Question::TYPE_SYS) {
-            } // À implémenter
-            else if ($question->type == Question::TYPE_BD) {
-            } // À implémenter
+            } elseif ($question->type == Question::TYPE_SYS) {
+                // À implémenter
+            } elseif ($question->type == Question::TYPE_BD) {
+                // À implémenter
+            }
         }
 
-        if ($question != null) {
-            if ($question->type == Question::TYPE_PROG) {
-                $réponse = $this->item(["question" => $question, "username" => $request["username"]], new QuestionProgTransformer);
-            } else if ($question->type == Question::TYPE_SYS) {
-                Log::error("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-                return $this->réponse_json(['message' => 'Question système non implémentée.'], 501);
-            } else if ($question->type == Question::TYPE_BD) {
-                Log::error("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-                return $this->réponse_json(['message' => 'Question BD non implémentée.'], 501);
-            }
-
-            Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-            return $this->réponse_json($réponse, 200);
-        } else {
-            Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-            return $this->réponse_json(['message' => 'Question non trouvée.'], 404);
+        if ($question->type == Question::TYPE_PROG) {
+            $réponse = $this->item(
+                ["question" => $question, "username" => $request["username"]],
+                new QuestionProgTransformer(),
+                "question",
+            );
+            return $this->préparer_réponse($réponse);
+        } elseif ($question->type == Question::TYPE_SYS) {
+            Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+            return $this->réponse_json(["message" => "Question système non implémentée."], 501);
+        } elseif ($question->type == Question::TYPE_BD) {
+            Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+            return $this->réponse_json(["message" => "Question BD non implémentée."], 501);
         }
     }
 }
