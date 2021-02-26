@@ -28,6 +28,7 @@ class ÉbaucheCtl extends Contrôleur
     {
         $chemin = base64_decode($question);
         $question = null;
+        $réponse = null;
 
         if ($chemin != null && $chemin != "") {
             $questionProgInt =  $this->intFactory->getObtenirQuestionProgInt();
@@ -38,6 +39,7 @@ class ÉbaucheCtl extends Contrôleur
             Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
             return $this->réponse_json(['message' => 'Langage inexistant.'], 404);
         }
+
         if ($question != null) {
             $ébauche = $question->exécutables[$langage];
             $ébauche->id = base64_encode($question->chemin) . "/{$ébauche->lang}";
@@ -48,12 +50,8 @@ class ÉbaucheCtl extends Contrôleur
                     base64_encode($question->chemin),
             ];
             $réponse = $this->item($ébauche, new ÉbaucheTransformer);
-
-            Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-            return $this->réponse_json($réponse, 200);
-        } else {
-            Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-            return $this->réponse_json(['message' => 'Question non trouvée.'], 404);
         }
+
+        return $this->préparer_réponse($réponse);
     }
 }
