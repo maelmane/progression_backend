@@ -36,7 +36,7 @@ class AvancementProgDAO extends EntitéDAO
     protected function load($objet)
     {
         $query = $this->conn->prepare(
-            'SELECT etat, code, lang, lang_derniere_reponse
+            'SELECT avancement.userID, avancement.questionID, etat, code, lang, lang_derniere_reponse
              FROM avancement 
              LEFT JOIN avancement_prog 
              ON avancement.questionID = avancement_prog.questionID AND
@@ -48,8 +48,9 @@ class AvancementProgDAO extends EntitéDAO
         );
         $query->bind_param("ii", $objet->question_id, $objet->user_id);
         $query->execute();
-        $query->bind_result($objet->etat, $code, $lang, $objet->lang);
+        $query->bind_result($objet->user_id, $objet->etat, $code, $lang, $objet->lang, $objet->question_id);
 
+        $objet->user_id=null;
         $réponses = [];
         while ($query->fetch()) {
             $réponses[$lang] = new RéponseProg($lang, $code);

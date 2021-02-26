@@ -23,25 +23,19 @@ use League\Fractal;
 
 class TestTransformer extends Fractal\TransformerAbstract
 {
+	public $type = "Test";
 
-    public $type = "Test";
-    
-	public function transform(Test|null $test)
+	public function transform(Test $test)
 	{
-        if ($test == null ) {
-            $data = [ null ];
-        }
-        else {
-            $data = [
-                "id" => $test->id,
-                "numéro" => $test->numéro,
-                "nom" => $test->nom,
-                "entrée" => $test->stdin,
-                "sortie_attendue" => $test->solution,
-                "links" => (isset($test->links)?$test->links:[]) + [ "self" => "{$_ENV['APP_URL']}test/{$test->id}" ]
-            ];
-        }
-        
-        return $data;
-    }
+		$data = [
+			"id" => $test->id,
+			"numéro" => $test->numéro,
+			"nom" => $test->nom,
+			"entrée" => $test->stdin,
+			"sortie_attendue" => $test->solution,
+			"links" => (isset($test->links) ? $test->links : []) + ["self" => "{$_ENV["APP_URL"]}test/{$test->id}"],
+		];
+
+		return $data;
+	}
 }

@@ -27,32 +27,25 @@ use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
 use Illuminate\Support\Facades\Log;
 
-
 class UserCtl extends Contrôleur
 {
-    public function get(Request $request, $username=null){
-        $userInt = new ObtenirUserInt(new DAOFactory());
-        $user = null;
-        
-        if ($username == null ) {
-            $username = $request->username;
-        }
+	public function get(Request $request, $username = null)
+	{
+		$userInt = $this->intFactory->getObtenirUserInt();
+		$user = null;
 
-        if ($username != null && $username != "" ) {
-            $user = $userInt->get_user_par_nomusager($username);
-        }
+		if ($username == null) {
+			$username = $request->username;
+		}
 
-        if ($user != null ) {
-            $réponse = $this->item($user, new UserTransformer);
-            
-            Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-            return $this->réponse_json($réponse, 200);
+		if ($username != null && $username != "") {
+			$user = $userInt->get_user_par_nomusager($username);
+		}
 
-        } else {
-            Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-            return $this->réponse_json(['message' => 'Utilisateur non trouvé.'], 404);
-        }
-    }
+		$réponse = $this->item($user, new UserTransformer());
+
+		return $this->préparer_réponse($réponse);
+	}
 }
 
 ?>

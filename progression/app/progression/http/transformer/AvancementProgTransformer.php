@@ -23,37 +23,27 @@ use progression\domaine\entité\AvancementProg;
 
 class AvancementProgTransformer extends Fractal\TransformerAbstract
 {
+	public $type = "AvancementProg";
 
-    public $type = "AvancementProg";
+	protected $availableIncludes = ["tentatives"];
 
-    protected $availableIncludes = ['tentatives'];
+	public function transform(AvancementProg $avancement)
+	{
+		$data_out = [
+			"id" => "{$avancement->user_id}/{$avancement->question_id}",
+			"user_id" => $avancement->user_id,
+			"état" => $avancement->etat,
+			"links" => [
+				"self" => "{$_ENV["APP_URL"]}avancement/{$avancement->user_id}/{$avancement->question_id}",
+			],
+		];
 
-    public function transform(AvancementProg|null $avancement)
-    {
-        if ($avancement == null) {
-            $data_out = [null];
-        } else {
+		return $data_out;
+	}
 
-            $data_out = [
-                'id' => $avancement->user_id . '/' . $avancement->question_id,
-                'user_id' => $avancement->user_id,
-                'état' => $avancement->etat,
-                'links'   => [
-                    'self' => $_ENV['APP_URL'] . '/avancement/' . $avancement->user_id . '/' . $avancement->question_id
-                ]
-            ];
-        }
-
-        return $data_out;
-    }
-
-    public function includeTentatives($avancement)
-    {
-        $tentatives = $avancement->réponses;
-        return $this->collection(
-            $tentatives,
-            new TentativeTransformer(),
-            "tentative"
-        );
-    }
+	public function includeTentatives($avancement)
+	{
+		$tentatives = $avancement->réponses;
+		return $this->collection($tentatives, new TentativeTransformer(), "tentative");
+	}
 }

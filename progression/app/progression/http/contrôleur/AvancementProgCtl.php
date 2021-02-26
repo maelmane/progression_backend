@@ -20,34 +20,22 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use progression\http\transformer\AvancementProgTransformer;
-use Illuminate\Support\Facades\Log;
 
 class AvancementProgCtl extends Contrôleur
 {
-    public function get(Request $request, $username, $chemin)
-    {
-        $chemin = base64_decode($chemin);
-        $question = null;
-        $avancement = null;
+	public function get(Request $request, $username, $chemin)
+	{
+		$chemin = base64_decode($chemin);
+		$avancement = null;
 
-        if ($chemin != null && $chemin != "") {
-            $avancementProgInt = $this->intFactory
-                ->getObtenirAvancementProgInt();
-            $questionProgInt = $this->intFactory
-                ->getObtenirQuestionProgInt();
+		if ($chemin != null && $chemin != "" && $username != null && $username != "") {
+			$avancementProgInt = $this->intFactory->getObtenirAvancementProgInt();
 
-            $question = $questionProgInt->get_question($chemin);
-            $avancement = $avancementProgInt->get_avancement($username, $question->id);
-        }
+			$avancement = $avancementProgInt->get_avancement($username, $chemin);
+		}
 
-        if ($avancement != null) {
-            $réponse = $this->item($avancement, new AvancementProgTransformer, "avancement");
+		$réponse = $this->item($avancement, new AvancementProgTransformer(), "avancement");
 
-            Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-            return $this->réponse_json($réponse, 200);
-        } else {
-            Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-            return $this->réponse_json(['message' => 'Avancement non trouvé.'], 404);
-        }
-    }
+		return $this->préparer_réponse($avancement);
+	}
 }
