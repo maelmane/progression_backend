@@ -24,25 +24,25 @@ use Illuminate\Support\Facades\Log;
 
 class QuestionProgCtl extends Contrôleur
 {
-    public function get(Request $request, $chemin)
-    {
-        $question = null;
+	public function get(Request $request, $chemin)
+	{
+		$question = null;
 
-        $chemin = base64_decode($chemin);
+		$chemin = base64_decode($chemin);
 
-        if ($chemin != null && $chemin != "") {
-            $questionInt = $this->intFactory->getObtenirQuestionProgInt();
-            $question = $questionInt->get_question($chemin);
-        }
+		if ($chemin != null && $chemin != "") {
+			$questionInt = $this->intFactory->getObtenirQuestionProgInt();
+			$question = $questionInt->get_question($chemin);
+		}
 
-        if ($question != null) {
-            $réponse = $this->item(["question" => $question, "username" => $request["username"]], new QuestionProgTransformer, "question");
+		if ($question != null) {
+			$réponse = $this->item(["question" => $question, "username" => $request["username"]], new QuestionProgTransformer, "question");
 
-            Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-            return $this->réponse_json($réponse, 200);
-        } else {
-            Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-            return $this->réponse_json(['message' => 'Question non trouvée.'], 404);
-        }
-    }
+			Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
+			return $this->réponse_json($réponse, 200);
+		} else {
+			Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
+			return $this->réponse_json(['message' => 'Question non trouvée.'], 404);
+		}
+	}
 }

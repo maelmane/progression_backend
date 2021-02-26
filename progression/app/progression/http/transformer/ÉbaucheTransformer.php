@@ -23,19 +23,19 @@ use progression\domaine\entité\Exécutable;
 
 class ÉbaucheTransformer extends Fractal\TransformerAbstract
 {
-    public $type = "ébauche";
+	public $type = "ébauche";
 
-    public function transform(Exécutable $ébauche)
-    {
-        $data_out = [
-            "id" => $ébauche->id,
-            "langage" => $ébauche->lang,
-            "code" => $ébauche->code_exec,
-            "links" => (isset($ébauche->links) ? $ébauche->links : []) + [
-                "self" => "{$_ENV["APP_URL"]}ebauche/{$ébauche->id}",
-            ],
-        ];
+	public function transform(Exécutable $ébauche)
+	{
+		$data_out = [
+			"id" => $ébauche->id,
+			"langage" => $ébauche->lang,
+			"code" => $ébauche->code_exec,
+			"links" => (isset($ébauche->links) ? $ébauche->links : []) + [
+				"self" => "{$_ENV["APP_URL"]}ebauche/{$ébauche->id}",
+			],
+		];
 
-        return $data_out;
-    }
+		return $data_out;
+	}
 }

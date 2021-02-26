@@ -26,105 +26,105 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 final class ÉbaucheCtlTests extends TestCase
 {
-    public function test_étant_donné_le_chemin_dune_ébauche_lorsquon_appelle_get_on_obtient_lébauche_et_ses_relations_sous_forme_json()
-    {
-        $_ENV['APP_URL'] = 'https://example.com/';
+	public function test_étant_donné_le_chemin_dune_ébauche_lorsquon_appelle_get_on_obtient_lébauche_et_ses_relations_sous_forme_json()
+	{
+		$_ENV['APP_URL'] = 'https://example.com/';
 
-        // Question
-        $question = new QuestionProg();
-        $question->nom = "appeler_une_fonction_paramétrée";
-        $question->chemin =
-            "prog1/les_fonctions_01/appeler_une_fonction_paramétrée";
-        $question->titre = "Appeler une fonction paramétrée";
-        $question->description =
-            "Appel d'une fonction existante recevant un paramètre";
-        $question->enonce =
-            "La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
+		// Question
+		$question = new QuestionProg();
+		$question->nom = "appeler_une_fonction_paramétrée";
+		$question->chemin =
+			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée";
+		$question->titre = "Appeler une fonction paramétrée";
+		$question->description =
+			"Appel d'une fonction existante recevant un paramètre";
+		$question->enonce =
+			"La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
 
-        // Ébauches
-        $question->exécutables['python'] = new Exécutable("print(\"Hello world\")", "python");
-        $question->exécutables['java'] = new Exécutable("System.out.println(\"Hello world\")", "java");
+		// Ébauches
+		$question->exécutables['python'] = new Exécutable("print(\"Hello world\")", "python");
+		$question->exécutables['java'] = new Exécutable("System.out.println(\"Hello world\")", "java");
 
-        // Tests
-        $question->tests = [
-            new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
-            new Test("Aucune salutation", "0", ""),
-        ];
+		// Tests
+		$question->tests = [
+			new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
+			new Test("Aucune salutation", "0", ""),
+		];
 
-        $résultat_attendu = [
-            "data" => [
-                "type" => "ébauche",
-                "id" => "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
-                "attributes" => [
-                    "langage" => "python",
-                    "code" => "print(\"Hello world\")",
-                ],
-                "links" => [
-                    "self" => "https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
-                    "related" => "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
-                ],
-            ],
-        ];
+		$résultat_attendu = [
+			"data" => [
+				"type" => "ébauche",
+				"id" => "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
+				"attributes" => [
+					"langage" => "python",
+					"code" => "print(\"Hello world\")",
+				],
+				"links" => [
+					"self" => "https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
+					"related" => "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+				],
+			],
+		];
 
-        // Intéracteur
-        $mockObtenirQuestionProgInt = Mockery::mock(
-            'progression\domaine\interacteur\ObtenirQuestionProgInt'
-        );
-        $mockObtenirQuestionProgInt
-            ->allows()
-            ->get_question(
-                'prog1/les_fonctions_01/appeler_une_fonction_paramétrée'
-            )
-            ->andReturn($question);
+		// Intéracteur
+		$mockObtenirQuestionProgInt = Mockery::mock(
+			'progression\domaine\interacteur\ObtenirQuestionProgInt'
+		);
+		$mockObtenirQuestionProgInt
+			->allows()
+			->get_question(
+				'prog1/les_fonctions_01/appeler_une_fonction_paramétrée'
+			)
+			->andReturn($question);
 
-        // InteracteurFactory
-        $mockIntFactory = Mockery::mock(
-            'progression\domaine\interacteur\InteracteurFactory'
-        );
-        $mockIntFactory
-            ->allows()
-            ->getObtenirQuestionProgInt()
-            ->andReturn($mockObtenirQuestionProgInt);
+		// InteracteurFactory
+		$mockIntFactory = Mockery::mock(
+			'progression\domaine\interacteur\InteracteurFactory'
+		);
+		$mockIntFactory
+			->allows()
+			->getObtenirQuestionProgInt()
+			->andReturn($mockObtenirQuestionProgInt);
 
-        // Requête
-        $mockRequest = Mockery::mock('Illuminate\Http\Request');
-        $mockRequest
-            ->allows()
-            ->ip()
-            ->andReturn("127.0.0.1");
-        $mockRequest
-            ->allows()
-            ->method()
-            ->andReturn("GET");
-        $mockRequest
-            ->allows()
-            ->path()
-            ->andReturn(
-                "/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python"
-            );
-        $mockRequest
-            ->allows()
-            ->query('include')
-            ->andReturn();
-        $this->app->bind(Request::class, function () use ($mockRequest) {
-            return $mockRequest;
-        });
+		// Requête
+		$mockRequest = Mockery::mock('Illuminate\Http\Request');
+		$mockRequest
+			->allows()
+			->ip()
+			->andReturn("127.0.0.1");
+		$mockRequest
+			->allows()
+			->method()
+			->andReturn("GET");
+		$mockRequest
+			->allows()
+			->path()
+			->andReturn(
+				"/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python"
+			);
+		$mockRequest
+			->allows()
+			->query('include')
+			->andReturn();
+		$this->app->bind(Request::class, function () use ($mockRequest) {
+			return $mockRequest;
+		});
 
-        // Contrôleur
-        $ctl = new ÉbaucheCtl($mockIntFactory);
+		// Contrôleur
+		$ctl = new ÉbaucheCtl($mockIntFactory);
 
-        $this->assertEquals(
-            $résultat_attendu,
-            json_decode(
-                $ctl
-                    ->get(
-                        $mockRequest,
-                        "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
-                        "python"
-                    )
-                    ->getContent(),
-                true
-            )
-        );
-    }
+		$this->assertEquals(
+			$résultat_attendu,
+			json_decode(
+				$ctl
+					->get(
+						$mockRequest,
+						"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+						"python"
+					)
+					->getContent(),
+				true
+			)
+		);
+	}
 }
