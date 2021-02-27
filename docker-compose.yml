@@ -52,8 +52,16 @@ services:
     restart: "no"
     command: /var/www/progression/vendor/bin/phpunit --configuration /var/www/progression/phpunit.xml --coverage-text
 
+  doc:
+    image: git.dti.crosemont.quebec:5050/progression/progression_backend:latest 
+    volumes:
+      - "./progression/app/:/progression/app/"
+      - "./doc/:/doc/"
+    command: emacs --batch --load /root/.emacs.el --load /doc/publish.el --funcall org-publish-all
+
+
 networks:
-  progressionnet:
+  progression_serveur_net:
     ipam:
       config:
-        - subnet: 172.20.0.0/24
+        - subnet: 172.99.0.0/24
