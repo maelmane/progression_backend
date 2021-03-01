@@ -20,7 +20,7 @@
              :recursive t
              :publishing-function '(org-html-publish-to-html)
              :publishing-directory "progression/app/html/doc/"
-             :exclude (regexp-opt '("README" "draft"))
+             :exclude (regexp-opt '("README" "draft" "démo" "thème"))
              :auto-sitemap t
              :sitemap-filename "index.org"
              :sitemap-file-entry-format "%d *%t*"
@@ -29,11 +29,18 @@
 			 )
        (list "démo"
              :base-directory "doc/contenu/démo"
+             :recursive t
              :base-extension 'any
              :publishing-directory "progression/app/html/doc/contenu/démo/"
              :publishing-function 'org-publish-attachment
              :recursive t)
-       (list "site" :components '("org") '("images"))
+       (list "thème"
+             :base-directory "doc/src"
+             :recursive t
+             :base-extension 'any
+             :publishing-directory "progression/app/html/doc/src/"
+             :publishing-function 'org-publish-attachment
+             :recursive t)
        (list "images"
              :base-directory "doc/images"
              :base-extension (regexp-opt '("jpg" "jpeg" "gif" "png" "svg" "ico"))
