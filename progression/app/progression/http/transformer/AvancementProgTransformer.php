@@ -21,30 +21,27 @@ namespace progression\http\transformer;
 use League\Fractal;
 use progression\domaine\entité\AvancementProg;
 
-class AvancementProgTransformer extends Fractal\TransformerAbstract
+class AvancementProgTransformer extends AvancementTransformer
 {
-	public $type = "AvancementProg";
+    public function includeTentatives($avancement)
+    {
+        $tentatives = $avancement->réponses;
+        foreach ($tentatives as $tentative) {
+            $tentative->id =
+                "{$avancement->user_id}/" .
+                base64_encode($avancement->question_id) .
+                "/" .
+                $tentative->date_soumission;
 
-	protected $availableIncludes = ["tentatives"];
+            $tentative->links = [
+                "related" => $_ENV["APP_URL"] . "tentative/" . $tentative->id,
+            ];
+        }
 
-	public function transform(AvancementProg $avancement)
-	{
-		$data_out = [
-			"id" => "{$avancement->user_id}/" . base64_encode($avancement->question_id),
-			"user_id" => $avancement->user_id,
-			"état" => $avancement->etat,
-			"links" => [
-				"self" =>
-					"{$_ENV["APP_URL"]}avancement/{$avancement->user_id}/" . base64_encode($avancement->question_id),
-			],
-		];
-
-		return $data_out;
-	}
-
-	public function includeTentatives($avancement)
-	{
-		$tentatives = $avancement->réponses;
-		return $this->collection($tentatives, new TentativeTransformer(), "tentative");
-	}
+        return $this->collection(
+            $tentatives,
+            new TentativeTransformer(),
+            "tentative"
+        );
+    }
 }

@@ -22,26 +22,31 @@ use League\Fractal;
 
 class QuestionTransformer extends Fractal\TransformerAbstract
 {
-	public $type = "Question";
+    public $type = "question";
 
-	public function transform($data_in)
-	{
-		$question = $data_in["question"];
-		$username = $data_in["username"];
+    public function transform($data_in)
+    {
+        $question = $data_in["question"];
+        $username = $data_in["username"];
 
-		$chemin_encodé = base64_encode($question->chemin);
+        $chemin_encodé = base64_encode($question->chemin);
 
-		$data_out = [
-			"id" => $chemin_encodé,
-			"titre" => $question->titre,
-			"description" => $question->description,
-			"énoncé" => $question->enonce,
-			"links" => [
-				"self" => $_ENV["APP_URL"] . "question/" . $chemin_encodé,
-				"avancement" => $_ENV["APP_URL"] . "avancement/" . $username . "/" . $chemin_encodé,
-			],
-		];
+        $data_out = [
+            "id" => $chemin_encodé,
+            "titre" => $question->titre,
+            "description" => $question->description,
+            "énoncé" => $question->enonce,
+            "links" => [
+                "self" => $_ENV["APP_URL"] . "question/" . $chemin_encodé,
+                "avancement" =>
+                    $_ENV["APP_URL"] .
+                    "avancement/" .
+                    $username .
+                    "/" .
+                    $chemin_encodé,
+            ],
+        ];
 
-		return $data_out;
-	}
+        return $data_out;
+    }
 }

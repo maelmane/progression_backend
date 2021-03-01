@@ -24,7 +24,7 @@ class QuestionDAO extends EntitéDAO
     public function get_type($id)
     {
         $query = $this->conn->prepare(
-            'SELECT type FROM question WHERE questionID = ?'
+            "SELECT type FROM question WHERE questionID = ?"
         );
         $query->bind_param("i", $id);
         $query->execute();
@@ -43,20 +43,7 @@ class QuestionDAO extends EntitéDAO
         $question = new Question(null);
         $question->chemin = $chemin;
         $this->load($question);
-        return $question->id ? $question : null ;
-    }
-
-    public function get_questions_par_série($série_id, $inactif = false)
-    {
-        $res = [];
-        $série = new SérieDAO();
-        foreach (
-            $série->get_questions_ids($série_id, $inactif)
-            as $question_id
-        ) {
-            $res[] = $this->get_question($question_id);
-        }
-        return $res;
+        return $question->id ? $question : null;
     }
 
     protected function load($objet)
@@ -65,7 +52,6 @@ class QuestionDAO extends EntitéDAO
                                             question.nom,
                                             question.chemin,
 	                                        question.actif,
-	                                        question.type,
 	                                        question.serieID as s,
 	                                        question.numero as n,
 	                                        ( select questionID from question where serieID=s and numero=n+1 ) as suivante,
@@ -84,7 +70,6 @@ class QuestionDAO extends EntitéDAO
             $objet->nom,
             $objet->chemin,
             $objet->actif,
-            $objet->type,
             $objet->serieID,
             $objet->numero,
             $objet->suivante,
@@ -109,7 +94,6 @@ class QuestionDAO extends EntitéDAO
                                                               nom,
                                                               chemin,
 	                                                          actif,
-	                                                          type,
 	                                                          titre,
 	                                                          description,
 	                                                          numero,
@@ -125,7 +109,6 @@ class QuestionDAO extends EntitéDAO
                 $objet->nom,
                 $objet->chemin,
                 $objet->actif,
-                $objet->type,
                 $objet->titre,
                 $objet->description,
                 $objet->numero,
@@ -144,7 +127,6 @@ class QuestionDAO extends EntitéDAO
                                                 nom=?,
                                                 chemin=?,
 	                                            actif=?,
-	                                            type=?,
 	                                            titre=?,
 	                                            description=?,
 	                                            numero=?,
@@ -159,7 +141,6 @@ class QuestionDAO extends EntitéDAO
                 $objet->nom,
                 $objet->chemin,
                 $objet->actif,
-                $objet->type,
                 $objet->titre,
                 $objet->description,
                 $objet->numero,

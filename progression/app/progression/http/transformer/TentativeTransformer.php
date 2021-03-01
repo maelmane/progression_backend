@@ -23,19 +23,19 @@ use progression\domaine\entité\RéponseProg;
 
 class TentativeTransformer extends Fractal\TransformerAbstract
 {
-	public $type = "Tentative";
+    public $type = "tentative";
 
-	public function transform(RéponseProg $tentative)
-	{
-		$data_out = [
-			"id" => $tentative->date_soumission,
-			"date_soumission" => $tentative->date_soumission,
-			"tests_réussis" => $tentative->tests_réussis,
-			"feedback" => $tentative->feedback,
-			"langage" => $tentative->langid,
-			"code" => $tentative->code,
-		];
+    public function transform(RéponseProg $tentative)
+    {
+        $data_out = [
+            "id" => $tentative->date_soumission,
+            "date_soumission" => $tentative->date_soumission,
+            "tests_réussis" => $tentative->tests_réussis,
+            "feedback" => $tentative->feedback,
+            "langage" => $tentative->langid,
+            "code" => $tentative->code,
+        ];
 
-		return $data_out;
-	}
+        return $data_out;
+    }
 }

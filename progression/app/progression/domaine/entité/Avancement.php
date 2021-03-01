@@ -20,17 +20,15 @@ namespace progression\domaine\entité;
 
 class Avancement
 {
-	public $user_id;
-	public $question_id;
-	public $etat = Question::ETAT_DEBUT;
-    public $réponses;
+    public $user_id;
+    public $question_id;
+    public $etat = Question::ETAT_DEBUT;
 
-	public function __construct($question_id, $user_id)
-	{
-		$this->question_id = $question_id;
-		$this->user_id = $user_id;
-        $this->réponses=[];
-	}
+    public function __construct($question_id, $user_id)
+    {
+        $this->question_id = $question_id;
+        $this->user_id = $user_id;
+    }
 }
 
 ?>

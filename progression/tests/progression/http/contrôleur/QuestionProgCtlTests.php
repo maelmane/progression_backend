@@ -17,7 +17,7 @@
 */
 namespace progression\http\contrôleur;
 
-require_once __DIR__ . '/../../../TestCase.php';
+require_once __DIR__ . "/../../../TestCase.php";
 use progression\domaine\entité\{Question, QuestionProg, Exécutable, Test};
 use Illuminate\Http\Request;
 
@@ -28,7 +28,7 @@ final class QuestionProgCtlTests extends \TestCase
 {
     public function test_étant_donné_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_la_question_et_ses_relations_sous_forme_json()
     {
-        $_ENV['APP_URL'] = 'https://example.com/';
+        $_ENV["APP_URL"] = "https://example.com/";
 
         // Question
         $question = new QuestionProg();
@@ -82,32 +82,32 @@ final class QuestionProgCtlTests extends \TestCase
                         ],
                         "data" => [
                             [
-                                "type" => "Test",
+                                "type" => "test",
                                 "id" =>
                                     "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/0",
                             ],
                             [
-                                "type" => "Test",
+                                "type" => "test",
                                 "id" =>
                                     "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/1",
                             ],
                         ],
                     ],
-                    "ébauches" => [
+                    "ebauches" => [
                         "links" => [
                             "self" =>
-                                "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/relationships/ébauches",
+                                "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/relationships/ebauches",
                             "related" =>
-                                "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/ébauches",
+                                "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/ebauches",
                         ],
                         "data" => [
                             [
-                                "type" => "Ébauche",
+                                "type" => "ebauche",
                                 "id" =>
                                     "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
                             ],
                             [
-                                "type" => "Ébauche",
+                                "type" => "ebauche",
                                 "id" =>
                                     "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java",
                             ],
@@ -117,7 +117,7 @@ final class QuestionProgCtlTests extends \TestCase
             ],
             "included" => [
                 [
-                    "type" => "Test",
+                    "type" => "test",
                     "id" =>
                         "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/0",
                     "attributes" => [
@@ -134,7 +134,7 @@ final class QuestionProgCtlTests extends \TestCase
                     ],
                 ],
                 [
-                    "type" => "Test",
+                    "type" => "test",
                     "id" =>
                         "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/1",
                     "attributes" => [
@@ -151,7 +151,7 @@ final class QuestionProgCtlTests extends \TestCase
                     ],
                 ],
                 [
-                    "type" => "Ébauche",
+                    "type" => "ebauche",
                     "id" =>
                         "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
                     "attributes" => [
@@ -160,13 +160,13 @@ final class QuestionProgCtlTests extends \TestCase
                     ],
                     "links" => [
                         "self" =>
-                            "https://example.com/ébauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
+                            "https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
                         "related" =>
                             "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
                     ],
                 ],
                 [
-                    "type" => "Ébauche",
+                    "type" => "ebauche",
                     "id" =>
                         "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java",
                     "attributes" => [
@@ -175,7 +175,7 @@ final class QuestionProgCtlTests extends \TestCase
                     ],
                     "links" => [
                         "self" =>
-                            "https://example.com/ébauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java",
+                            "https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java",
                         "related" =>
                             "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
                     ],
@@ -185,43 +185,29 @@ final class QuestionProgCtlTests extends \TestCase
 
         // Intéracteur
         $mockObtenirQuestionInt = Mockery::mock(
-            'progression\domaine\interacteur\ObtenirQuestionInt'
+            "progression\domaine\interacteur\ObtenirQuestionInt"
         );
         $mockObtenirQuestionInt
             ->allows()
             ->get_question(
-                'prog1/les_fonctions_01/appeler_une_fonction_paramétrée'
-            )
-            ->andReturn($question);
-
-        $mockObtenirQuestionProgInt = Mockery::mock(
-            'progression\domaine\interacteur\ObtenirQuestionProgInt'
-        );
-        $mockObtenirQuestionProgInt
-            ->allows()
-            ->get_question(
-                'prog1/les_fonctions_01/appeler_une_fonction_paramétrée'
+                "prog1/les_fonctions_01/appeler_une_fonction_paramétrée"
             )
             ->andReturn($question);
 
         // InteracteurFactory
         $mockIntFactory = Mockery::mock(
-            'progression\domaine\interacteur\InteracteurFactory'
+            "progression\domaine\interacteur\InteracteurFactory"
         );
         $mockIntFactory
             ->allows()
             ->getObtenirQuestionInt()
             ->andReturn($mockObtenirQuestionInt);
-        $mockIntFactory
-            ->allows()
-            ->getObtenirQuestionProgInt()
-            ->andReturn($mockObtenirQuestionProgInt);
 
         // Requête
-        $mockRequest = Mockery::mock('Illuminate\Http\Request');
+        $mockRequest = Mockery::mock("Illuminate\Http\Request");
         $mockRequest
             ->allows()
-            ->offsetGet('username')
+            ->offsetGet("username")
             ->andReturn("Bob");
         $mockRequest
             ->allows()
@@ -240,7 +226,7 @@ final class QuestionProgCtlTests extends \TestCase
         $mockRequest
             ->allows()
             ->query("include")
-            ->andReturn("tests,ébauches");
+            ->andReturn("tests,ebauches");
         $this->app->bind(Request::class, function () use ($mockRequest) {
             return $mockRequest;
         });

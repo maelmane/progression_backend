@@ -22,52 +22,28 @@ use progression\domaine\entité\{Avancement, Question};
 
 class AvancementDAO extends EntitéDAO
 {
-	public function get_avancement($question_id, $user_id)
-	{
-		$avancement = new Avancement($question_id, $user_id);
-		$this->load($avancement);
-		if (is_null($avancement->etat)) {
-			$avancement->etat = Question::ETAT_DEBUT;
-		}
+    public function get_avancement($question_id, $user_id)
+    {
+        $avancement = new Avancement($question_id, $user_id);
+        $this->load($avancement);
+        if (is_null($avancement->etat)) {
+            $avancement->etat = Question::ETAT_DEBUT;
+        }
 
-		return $avancement->id ? $avancement : null;
-	}
+        return $avancement->id ? $avancement : null;
+    }
 
-	protected function load($objet)
-	{
-		$query = $this->conn->prepare(
-			'SELECT userID, etat FROM avancement WHERE questionID = ? AND userID = ?'
-		);
-		$query->bind_param("ii", $objet->question_id, $objet->user_id);
-		$query->execute();
-		$query->bind_result(
-            $objet->id,
-			$objet->etat
-		);
-		$query->fetch();
+    protected function load($objet)
+    {
+        $query = $this->conn->prepare(
+            "SELECT userID, etat FROM avancement WHERE questionID = ? AND userID = ?"
+        );
+        $query->bind_param("ii", $objet->question_id, $objet->user_id);
+        $query->execute();
+        $query->bind_result($objet->id, $objet->etat);
+        $query->fetch();
 
-		$query->close();
-	}
-
-	public function save($objet)
-	{
-		$query = $this->conn
-			->prepare('INSERT INTO avancement ( etat, questionID, userID ) VALUES ( ?, ?, ?, ?, ?, ? )
-                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
-
-		$query->bind_param(
-			"iiisss",
-			$objet->etat,
-			$objet->question_id,
-			$objet->user_id
-		);
-		$query->execute();
-		$query->close();
-
-		return $this->get_avancement(
-			$objet->question_id,
-			$objet->user_id
-		);
-	}
+        $query->close();
+    }
 }
 ?>

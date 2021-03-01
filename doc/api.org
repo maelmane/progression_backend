@@ -45,7 +45,6 @@ Un utilisateur du système.
 Relations :
 | Nom         | Cardinalité | Type       | Description         |
 |-------------+-------------+------------+---------------------|
-| avancements | 1-n         | Avancement | liste d'Avancement  |
 | catégories  | 1-n         | Catégorie  | liste de Catégories |
 
 ** Catégorie
@@ -76,16 +75,16 @@ Liens :
 Une question générique
 
 
-| Hiérarchie                   | Identifiant          | Propriétés  | Type | Valeurs |
-|------------------------------+----------------------+-------------+------+---------|
-| Question                     | catégorie parent/nom | titre       | str  |         |
-| ▲                            |                      | description | str  |         |
-| │                            |                      | énoncé      | str  |         |
-| │                            |                      |             |      |         |
-| ├ QuestionProg               |                      |             |      |         |
-| ├ QuestionProgEval(obsolète) |                      |             |      |         |
-| ├ QuestionSys                |                      |             |      |         |
-| └ QuestionBD                 |                      |             |      |         |
+| Hiérarchie         | Identifiant          | Propriétés  | Type | Valeurs      |
+|--------------------+----------------------+-------------+------+--------------|
+| Question           | catégorie parent/nom | titre       | str  |              |
+| ▲                  |                      | description | str  |              |
+| │                  |                      | énoncé      | str  |              |
+| ├ QuestionProg     |                      | sous-type   | str  | questionProg |
+| ├ QuestionProgEval |                      |             |      | (obsolète)   |
+| ├ QuestionSys      |                      |             |      | questionSys  |
+| └ QuestionBD       |                      |             |      | questionBD   |
+
 
 Liens :
 | Nom                                   | Description                                                   |
@@ -95,14 +94,14 @@ Liens :
 | catégorie                             | Catégorie parent                                              |
 | accessibilité (relation? lien? meta?) | Vrai si la question est accessible pour l'utilisateur courant |
 
-** QuestionProg (Question)
+** Question (sous-type QuestionProg)
 
 Une question spécifiquement de programmation
 
 Relations :
 | Nom      | Cardinalité | Type    | description                  |
 |----------+-------------+---------+------------------------------|
-| ébauches | 1-n         | Ébauche | liste d'ébauches de Solution |
+| ebauches | 1-n         | Ébauche | liste d'ébauches de Solution |
 | tests    | 1-n         | Test    | liste de Tests de validation |
 
 ** Avancement
@@ -142,13 +141,30 @@ Liens :
 
 Une tentative de réponse à une question.
 
+| Hiérarchie      | Identifiant                | Propriétés      | Type | Valeurs       |
+|-----------------+----------------------------+-----------------+------+---------------|
+| Tentative       | avancement/date_soumission | date_soumission | int  | timestamp     |
+| ▲               |                            | feedback        | str  |               |
+| ├ TentativeProg |                            | sous-type       | str  | tentativeProg |
+| ├ TentativeSys  |                            |                 |      | tentativeSys  |
+| ├ TentativeBD   |                            |                 |      | tentativeBD   |
+  
+
+Liens :
+
+| Nom      | Description                                                     |
+|----------+-----------------------------------------------------------------|
+| question | Question pour laquelle cette tentative de solution est proposée |
+
+** Tentative (sous-type tentativeProg)
+
+Une tentative de réponse à une question.
+
 | Identifiant                | Propriétés      | Type | Valeurs             |
 |----------------------------+-----------------+------+---------------------|
-| avancement/date_soumission | date_soumission | int  | timestamp           |
 |                            | langage         | str  |                     |
 |                            | code            | str  |                     |
 |                            | tests_réussis   | int  | nb de tests réussis |
-|                            | feedback        | str  |                     |
 
 Relations :
 | Nom       | Cardinalité | Type     | Description           |

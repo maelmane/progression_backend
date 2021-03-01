@@ -11,13 +11,13 @@
 */
 require_once __DIR__ . '/../../../TestCase.php';
 
-use progression\domaine\entité\{AvancementProg, RéponseProg, QuestionProg};
-use progression\http\contrôleur\AvancementProgCtl;
+use progression\domaine\entité\{Question, AvancementProg, RéponseProg, QuestionProg};
+use progression\http\contrôleur\AvancementCtl;
 use Illuminate\Http\Request;
 
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-final class AvancementProgCtlTests extends TestCase
+final class AvancementCtlTests extends TestCase
 {
     public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_l_avancement_et_ses_relations_sous_forme_json()
     {
@@ -32,6 +32,7 @@ final class AvancementProgCtlTests extends TestCase
         // Avancement
         $avancement = new AvancementProg("prog1/les_fonctions_01/appeler_une_fonction_paramétrée","jdoe");
         $avancement->lang = 10;
+        $avancement->type = Question::TYPE_PROG;
         $avancement->etat = 1;
         $avancement->réponses = [
             new RéponseProg(10, "codeTest")
@@ -87,20 +88,20 @@ final class AvancementProgCtlTests extends TestCase
 
 
         // Intéracteur
-        $mockObtenirQuestionProgInt = Mockery::mock(
-            'progression\domaine\interacteur\ObtenirQuestionProgInt'
+        $mockObtenirQuestionInt = Mockery::mock(
+            'progression\domaine\interacteur\ObtenirQuestionInt'
         );
-        $mockObtenirQuestionProgInt
+        $mockObtenirQuestionInt
             ->allows()
             ->get_question(
                 'prog1/les_fonctions_01/appeler_une_fonction_paramétrée'
             )
             ->andReturn($question);
 
-        $mockObtenirAvancementProgInt = Mockery::mock(
-            'progression\domaine\interacteur\ObtenirAvancementProgInt'
+        $mockObtenirAvancementInt = Mockery::mock(
+            'progression\domaine\interacteur\ObtenirAvancementInt'
         );
-        $mockObtenirAvancementProgInt
+        $mockObtenirAvancementInt
             ->allows()
             ->get_avancement("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée")
             ->andReturn($avancement);
@@ -111,13 +112,13 @@ final class AvancementProgCtlTests extends TestCase
         );
         $mockIntFactory
             ->allows()
-            ->getObtenirQuestionProgInt()
-            ->andReturn($mockObtenirQuestionProgInt);
+            ->getObtenirQuestionInt()
+            ->andReturn($mockObtenirQuestionInt);
 
         $mockIntFactory
             ->allows()
-            ->getObtenirAvancementProgInt()
-            ->andReturn($mockObtenirAvancementProgInt);
+            ->getObtenirAvancementInt()
+            ->andReturn($mockObtenirAvancementInt);
 
         // Requête
         $mockRequest = Mockery::mock('Illuminate\Http\Request');
@@ -144,7 +145,7 @@ final class AvancementProgCtlTests extends TestCase
         });
 
         // Contrôleur
-        $ctl = new AvancementProgCtl($mockIntFactory);
+        $ctl = new AvancementCtl($mockIntFactory);
         $this->assertEquals(
             $résultat_attendu,
             json_decode(

@@ -30,7 +30,7 @@ class AvancementProgDAO extends EntitéDAO
             $avancement->etat = Question::ETAT_DEBUT;
         }
 
-		return $avancement->user_id ? $avancement : null;
+        return $avancement->user_id ? $avancement : null;
     }
 
     protected function load($objet)
@@ -48,9 +48,16 @@ class AvancementProgDAO extends EntitéDAO
         );
         $query->bind_param("ii", $objet->question_id, $objet->user_id);
         $query->execute();
-        $query->bind_result($objet->user_id, $objet->etat, $code, $lang, $objet->lang, $objet->question_id);
+        $query->bind_result(
+            $objet->user_id,
+            $objet->etat,
+            $code,
+            $lang,
+            $objet->lang,
+            $objet->question_id
+        );
 
-        $objet->user_id=null;
+        $objet->user_id = null;
         $réponses = [];
         while ($query->fetch()) {
             $réponses[$lang] = new RéponseProg($lang, $code);
@@ -65,14 +72,15 @@ class AvancementProgDAO extends EntitéDAO
         $this->conn->begin_transaction();
         try {
             $query = $this->conn
-                ->prepare('INSERT INTO avancement ( etat, questionID, userID ) VALUES ( ?, ?, ? )
+                ->prepare('INSERT INTO avancement ( etat, questionID, userID, type ) VALUES ( ?, ?, ? )
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 
             $query->bind_param(
                 "iii",
                 $objet->etat,
                 $objet->question_id,
-                $objet->user_id
+                $objet->user_id,
+                Question::TYPE_PROG
             );
             $query->execute();
             $query->close();
@@ -89,7 +97,7 @@ class AvancementProgDAO extends EntitéDAO
             );
             $query->execute();
             $query->close();
-            
+
             $query = $this->conn
                 ->prepare('INSERT INTO reponse_prog ( questionID, userID, lang, code ) VALUES ( ?, ?, ?, ?  )
                                               ON DUPLICATE KEY UPDATE code=VALUES( code )');
@@ -111,10 +119,7 @@ class AvancementProgDAO extends EntitéDAO
 
             throw $exception;
         }
-        return $this->get_avancement(
-            $objet->question_id,
-            $objet->user_id
-        );
+        return $this->get_avancement($objet->question_id, $objet->user_id);
     }
 }
 ?>

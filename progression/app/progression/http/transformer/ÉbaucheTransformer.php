@@ -23,19 +23,19 @@ use League\Fractal;
 
 class ÉbaucheTransformer extends Fractal\TransformerAbstract
 {
-	public $type = "Ébauche";
+    public $type = "ebauche";
 
-	public function transform(Exécutable $ébauche)
-	{
-		$data = [
-			"id" => $ébauche->id,
-			"langage" => $ébauche->lang,
-			"code" => $ébauche->code_exec,
-			"links" => (isset($ébauche->links) ? $ébauche->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}ébauche/{$ébauche->id}",
-			],
-		];
+    public function transform(Exécutable $ébauche)
+    {
+        $data = [
+            "id" => $ébauche->id,
+            "langage" => $ébauche->lang,
+            "code" => $ébauche->code_exec,
+            "links" => (isset($ébauche->links) ? $ébauche->links : []) + [
+                "self" => "{$_ENV["APP_URL"]}ebauche/{$ébauche->id}",
+            ],
+        ];
 
-		return $data;
-	}
+        return $data;
+    }
 }
