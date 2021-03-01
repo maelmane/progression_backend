@@ -22,28 +22,32 @@ use progression\domaine\entité\{Avancement, Question};
 
 class AvancementDAO extends EntitéDAO
 {
-    public function get_avancement($question_id, $user_id)
-    {
-        $avancement = new Avancement($question_id, $user_id);
-        $this->load($avancement);
-        if (is_null($avancement->etat)) {
-            $avancement->etat = Question::ETAT_DEBUT;
-        }
+	public function get_avancement($question_id, $user_id)
+	{
+		$type = $this->_source->get_question_dao()->get_type($question_id);
 
-        return $avancement->id ? $avancement : null;
-    }
+		if ($type == null) {
+			return null;
+		} else {
+			if ($type == Question::TYPE_PROG) {
+				return $this->_source->get_avancement_prog_dao()->get_avancement($question_id, $user_id);
+			} elseif ($type == Question::TYPE_SYS) {
+				return $this->_source->get_avancement_sys_dao()->get_avancement($question_id, $user_id);
+			} elseif ($type == Question::TYPE_BD) {
+				return $this->_source->get_avancement_BD_dao()->get_avancement($question_id, $user_id);
+			}
+		}
+	}
 
-    protected function load($objet)
-    {
-        $query = $this->conn->prepare(
-            "SELECT userID, etat FROM avancement WHERE questionID = ? AND userID = ?"
-        );
-        $query->bind_param("ii", $objet->question_id, $objet->user_id);
-        $query->execute();
-        $query->bind_result($objet->id, $objet->etat);
-        $query->fetch();
+	protected function load($objet)
+	{
+		$query = $this->conn->prepare("SELECT userID, etat FROM avancement WHERE questionID = ? AND userID = ?");
+		$query->bind_param("ii", $objet->question_id, $objet->user_id);
+		$query->execute();
+		$query->bind_result($objet->id, $objet->etat);
+		$query->fetch();
 
-        $query->close();
-    }
+		$query->close();
+	}
 }
 ?>

@@ -22,26 +22,8 @@ use progression\domaine\entité\{Série, Question};
 
 class ObtenirQuestionInt extends Interacteur
 {
-    function get_question($question_id)
-    {
-        $type = $this->_source->get_question_dao()->get_type($question_id);
-
-        if ($type == null) {
-            return null;
-        } else {
-            if ($type == Question::TYPE_PROG) {
-                return $this->_source
-                    ->get_question_prog_dao()
-                    ->get_question($question_id);
-            } elseif ($type == Question::TYPE_SYS) {
-                return $this->_source
-                    ->get_question_sys_dao()
-                    ->get_question($question_id);
-            } elseif ($type == Question::TYPE_BD) {
-                return $this->_source
-                    ->get_question_BD_dao()
-                    ->get_question($question_id);
-            }
-        }
-    }
+	function get_question($question_id)
+	{
+		return $this->_source->get_question_dao()->get_type($question_id);
+	}
 }

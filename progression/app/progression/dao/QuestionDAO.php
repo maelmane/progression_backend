@@ -43,8 +43,19 @@ class QuestionDAO extends EntitéDAO
         $question = new Question(null);
         $question->chemin = $chemin;
         $this->load($question);
-        return $question->id ? $question : null;
-    }
+
+		if ($question->id == null) {
+			return null;
+		} else {
+			if ($question->type == Question::TYPE_PROG) {
+				return $this->_source->get_question_prog_dao()->get_question($question_id, $user_id);
+			} elseif ($question->type == Question::TYPE_SYS) {
+				return $this->_source->get_question_sys_dao()->get_question($question_id, $user_id);
+			} elseif ($question->type == Question::TYPE_BD) {
+				return $this->_source->get_question_BD_dao()->get_question($question_id, $user_id);
+			}
+		}
+	}
 
     protected function load($objet)
     {
