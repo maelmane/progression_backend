@@ -29,17 +29,17 @@ final class ÉbaucheTransformerTests extends TestCase
 
         $exécutable = new Exécutable("return nb1 + nb2;", "java");
         $exécutable->id =
-            "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java";
+            "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java";
         $exécutable->type = "Exécutable";
 
         $résultat_attendu = [
             "id" =>
-                "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java",
+                "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java",
             "langage" => "java",
             "code" => "return nb1 + nb2;",
             "links" => [
                 "self" =>
-                    "https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java",
+                    "https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java",
             ],
         ];
         $résultat_obtenu = $ébaucheTransformer->transform($exécutable);

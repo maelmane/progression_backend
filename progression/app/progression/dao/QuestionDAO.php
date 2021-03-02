@@ -17,14 +17,14 @@
 */
 namespace progression\dao;
 
-use progression\domaine\entité\Question;
+use progression\domaine\entité\{Question, QuestionProg, QuestionSys, QuestionBD};
 
 class QuestionDAO extends EntitéDAO
 {
     public function get_type($id)
     {
         $query = $this->conn->prepare(
-            "SELECT type FROM question WHERE questionID = ?"
+            "SELECT type FROM question WHERE chemin = ?"
         );
         $query->bind_param("i", $id);
         $query->execute();
@@ -40,20 +40,26 @@ class QuestionDAO extends EntitéDAO
 
     public function get_question($chemin)
     {
-        $question = new Question(null);
-        $question->chemin = $chemin;
-        $this->load($question);
+        $type = $this->get_type($chemin);
 
-		if ($question->id == null) {
+		if ($type == null) {
 			return null;
 		} else {
-			if ($question->type == Question::TYPE_PROG) {
-				return $this->_source->get_question_prog_dao()->get_question($question_id, $user_id);
-			} elseif ($question->type == Question::TYPE_SYS) {
-				return $this->_source->get_question_sys_dao()->get_question($question_id, $user_id);
-			} elseif ($question->type == Question::TYPE_BD) {
-				return $this->_source->get_question_BD_dao()->get_question($question_id, $user_id);
+			if ($type == Question::TYPE_PROG) {
+                $question = new QuestionProg(null);
+                $question->chemin = $chemin;
+				(new QuestionProgDAO())->load($question);
+			} elseif ($type == Question::TYPE_SYS) {
+                $question = new QuestionSys(null);
+                $question->chemin = $chemin;
+                (new QuestionSysDAO())->load($question);
+			} elseif ($type == Question::TYPE_BD) {
+                $question = new QuestionBD(null);
+                $question->chemin = $chemin;
+                (new QuestionBDDAO())->load($question);
 			}
+
+            return $question;
 		}
 	}
 

@@ -24,6 +24,6 @@ class ObtenirQuestionInt extends Interacteur
 {
 	function get_question($question_id)
 	{
-		return $this->_source->get_question_dao()->get_type($question_id);
+		return $this->_source->get_question_dao()->get_question($question_id);
 	}
 }

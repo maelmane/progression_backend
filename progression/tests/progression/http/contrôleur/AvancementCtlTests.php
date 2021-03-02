@@ -45,19 +45,19 @@ final class AvancementCtlTests extends TestCase
             [
                 "data" => [
                     "type" => "avancement",
-                    "id" => "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+                    "id" => "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
                     "attributes" => [
                         "user_id" => "jdoe",
                         "état" => 1
                     ],
                     "links" => [
-                        "self" => "https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU="
+                        "self" => "https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU"
                     ],
                     "relationships" => [
                         "tentatives" => [
                             "links" => [
-                                "self" => "https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/relationships/tentatives",
-                                "related" => "https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/tentatives"
+                                "self" => "https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/relationships/tentatives",
+                                "related" => "https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/tentatives"
                             ],
                             "data" => [
                                 [
@@ -134,7 +134,7 @@ final class AvancementCtlTests extends TestCase
             ->allows()
             ->path()
             ->andReturn(
-                "/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU="
+                "/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU"
             );
         $mockRequest
             ->allows()
@@ -153,7 +153,7 @@ final class AvancementCtlTests extends TestCase
                     ->get(
                         $mockRequest,
                         "jdoe",
-                        "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU="
+                        "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU"
                     )->getContent(),
                 true
             )

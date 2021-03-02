@@ -33,12 +33,12 @@ final class AvancementProgTransformerTests extends TestCase
 		$avancement = new AvancementProg("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
 
 		$résultat = [
-			"id" => "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+			"id" => "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
 			"user_id" => "jdoe",
 			"état" => 0,
 			"links" => [
 				"self" =>
-					"https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+					"https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
 			],
 		];
 

@@ -22,16 +22,6 @@ use progression\dao\DAOFactory;
 
 class InteracteurFactory
 {
-	public function getObtenirQuestionProgInt()
-	{
-		return new ObtenirQuestionProgInt(new DAOFactory());
-	}
-
-	public function getObtenirAvancementProgInt()
-	{
-		return new ObtenirAvancementProgInt(new DAOFactory());
-	}
-
 	public function getLoginInt()
 	{
 		return new LoginInt(new DAOFactory());
@@ -49,5 +39,9 @@ class InteracteurFactory
 	public function getObtenirUserInt()
 	{
 		return new ObtenirUserInt(new DAOFactory());
+	}
+	public function getObtenirAvancementInt()
+	{
+		return new ObtenirAvancementInt(new DAOFactory());
 	}
 }

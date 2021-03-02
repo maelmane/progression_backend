@@ -18,6 +18,8 @@
 
 namespace progression\http\transformer;
 
+use progression\util\Encodage;
+
 class QuestionProgTransformer extends QuestionTransformer
 {
     protected $availableIncludes = ["tests", "ebauches"];
@@ -28,12 +30,12 @@ class QuestionProgTransformer extends QuestionTransformer
 
         foreach ($question->tests as $i => $test) {
             $test->numéro = $i;
-            $test->id = base64_encode($question->chemin) . "/$i";
+            $test->id = Encodage::base64_encode_url($question->chemin) . "/$i";
             $test->links = [
                 "related" =>
                     $_ENV["APP_URL"] .
                     "question/" .
-                    base64_encode($question->chemin),
+                    Encodage::base64_encode_url($question->chemin),
             ];
         }
 
@@ -51,12 +53,12 @@ class QuestionProgTransformer extends QuestionTransformer
 
         foreach ($question->exécutables as $ébauche) {
             $ébauche->id =
-                base64_encode($question->chemin) . "/{$ébauche->lang}";
+                Encodage::base64_encode_url($question->chemin) . "/{$ébauche->lang}";
             $ébauche->links = [
                 "related" =>
                     $_ENV["APP_URL"] .
                     "question/" .
-                    base64_encode($question->chemin),
+                    Encodage::base64_encode_url($question->chemin),
             ];
         }
 

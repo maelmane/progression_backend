@@ -22,19 +22,10 @@ use progression\domaine\entité\{AvancementProg, Question, RéponseProg};
 
 class AvancementProgDAO extends EntitéDAO
 {
-    public function get_avancement($question_id, $user_id)
-    {
-        $avancement = new AvancementProg($question_id, $user_id);
-        $this->load($avancement);
-        if (is_null($avancement->etat)) {
-            $avancement->etat = Question::ETAT_DEBUT;
-        }
-
-        return $avancement->user_id ? $avancement : null;
-    }
-
     protected function load($objet)
     {
+        parent::load($objet);
+        
         $query = $this->conn->prepare(
             'SELECT avancement.userID, avancement.questionID, etat, code, lang, lang_derniere_reponse
              FROM avancement 

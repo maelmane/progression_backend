@@ -19,6 +19,7 @@
 namespace progression\http\transformer;
 
 use League\Fractal;
+use progression\util\Encodage;
 
 class QuestionTransformer extends Fractal\TransformerAbstract
 {
@@ -29,7 +30,7 @@ class QuestionTransformer extends Fractal\TransformerAbstract
         $question = $data_in["question"];
         $username = $data_in["username"];
 
-        $chemin_encodé = base64_encode($question->chemin);
+        $chemin_encodé = Encodage::base64_encode_url($question->chemin);
 
         $data_out = [
             "id" => $chemin_encodé,

@@ -27,6 +27,7 @@ use progression\domaine\entité\{
     QuestionBD,
     Test
 };
+use progression\util\Encodage;
 use progression\dao\DAOFactory;
 use progression\http\transformer\QuestionProgTransformer;
 use League\Fractal\Resource\Item;
@@ -43,19 +44,20 @@ class QuestionCtl extends Contrôleur
     {
         $question = null;
 
-        $chemin = base64_decode($chemin);
+        $chemin = Encodage::base64_decode_url($chemin);
 
         if ($chemin != null && $chemin != "") {
             $questionInt = $this->intFactory->getObtenirQuestionInt();
             $question = $questionInt->get_question($chemin);
         }
 
+        $réponse = null;
+        
         if ($question instanceof QuestionProg) {
             $réponse = $this->item(
                 ["question" => $question, "username" => $request["username"]],
                 new QuestionProgTransformer()
             );
-            return $this->préparer_réponse($réponse);
         } elseif ($question instanceof QuestionSys) {
             Log::warning(
                 "({$request->ip()}) - {$request->method()} {$request->path()} (" .
@@ -77,5 +79,8 @@ class QuestionCtl extends Contrôleur
                 501
             );
         }
+        
+        return $this->préparer_réponse($réponse);
+        
     }
 }

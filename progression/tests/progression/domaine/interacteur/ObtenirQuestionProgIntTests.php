@@ -35,8 +35,8 @@ final class ObtenirQuestionProgIntTests extends TestCase
             ->with("prog1/les_fonctions/appeler_une_fonction")
             ->andReturn(Question::TYPE_PROG);
 
-        $mockQuestionProgDao = Mockery::mock("progression\dao\QuestionProgDAO");
-        $mockQuestionProgDao
+        $mockQuestiongDao = Mockery::mock("progression\dao\QuestionDAO");
+        $mockQuestionDao
             ->shouldReceive("get_question")
             ->with("prog1/les_fonctions/appeler_une_fonction")
             ->andReturn($résultat_attendu);
@@ -46,10 +46,6 @@ final class ObtenirQuestionProgIntTests extends TestCase
             ->allows()
             ->get_question_dao()
             ->andReturn($mockQuestionDao);
-        $mockDAOFactory
-            ->allows()
-            ->get_question_prog_dao()
-            ->andReturn($mockQuestionProgDao);
 
         $interacteur = new ObtenirQuestionInt($mockDAOFactory);
         $résultat_obtenu = $interacteur->get_question(
@@ -66,6 +62,10 @@ final class ObtenirQuestionProgIntTests extends TestCase
         $mockQuestionDao = Mockery::mock("progression\dao\QuestionDAO");
         $mockQuestionDao
             ->shouldReceive("get_type")
+            ->with("test/de/chemin/non/valide")
+            ->andReturn(null);
+        $mockQuestionDao
+            ->shouldReceive("get_question")
             ->with("test/de/chemin/non/valide")
             ->andReturn(null);
 

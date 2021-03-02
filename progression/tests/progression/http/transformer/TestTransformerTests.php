@@ -27,19 +27,19 @@ final class TestTransformerTests extends TestCase
         $testTransformer = new TestTransformer();
         $test = new Test("Somme de deux nombres", "21\n21\n", "42");
         $test->id =
-            "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/0";
+            "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0";
         $test->type = "Test";
         $test->numéro = 0;
         $résultat_attendu = [
             "id" =>
-                "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/0",
+                "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0",
             "numéro" => 0,
             "nom" => "Somme de deux nombres",
             "entrée" => "21\n21\n",
             "sortie_attendue" => "42",
             "links" => [
                 "self" =>
-                    "https://example.com/test/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/0",
+                    "https://example.com/test/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0",
             ],
         ];
         $résultat_obtenu = $testTransformer->transform($test);

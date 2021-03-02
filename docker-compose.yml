@@ -61,7 +61,7 @@ services:
 
 
 networks:
-  progression_serveur_net:
+  progressionnet:
     ipam:
       config:
-        - subnet: 172.99.0.0/24
+        - subnet: 172.20.0.0/24
