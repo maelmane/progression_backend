@@ -16,20 +16,23 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 namespace progression\domaine\entité;
 
 class AvancementProg extends Avancement
 {
-	public $réponses;
+    public $réponses;
     public $lang;
 
-	public function __construct($question_id, $user_id, $réponses=null, $lang=null)
-	{
+    public function __construct(
+        $question_id,
+        $user_id,
+        $réponses = [],
+        $lang = null
+    ) {
         parent::__construct($question_id, $user_id);
-        $this->réponses=$réponses;
-        $this->lang=$lang;
-	}
+        $this->réponses = $réponses;
+        $this->lang = $lang;
+    }
 }
 
 ?>

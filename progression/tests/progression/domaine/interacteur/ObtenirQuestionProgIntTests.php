@@ -18,58 +18,68 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\QuestionProg;
+use progression\domaine\entité\{Question, QuestionProg};
 use PHPUnit\Framework\TestCase;
 use \Mockery;
 
 final class ObtenirQuestionProgIntTests extends TestCase
 {
-	public function test_étant_donné_une_questionprog_avec_un_chemin_existant_lorsque_cherché_par_chemin_on_obtient_un_objet_questionprog_correspondant()
-	{
-		$résultat_attendu = new QuestionProg();
-		$résultat_attendu->chemin = 'prog1/les_fonctions/appeler_une_fonction';
+    public function test_étant_donné_une_questionprog_avec_un_chemin_existant_lorsque_cherché_par_chemin_on_obtient_un_objet_questionprog_correspondant()
+    {
+        $résultat_attendu = new QuestionProg();
+        $résultat_attendu->chemin = "prog1/les_fonctions/appeler_une_fonction";
 
-		$mockQuestionProgDao = Mockery::mock('progression\dao\QuestionProgDAO');
-		$mockQuestionProgDao
-			->shouldReceive('get_question')
-			->with('prog1/les_fonctions/appeler_une_fonction')
-			->andReturn($résultat_attendu);
+        $mockQuestionDao = Mockery::mock("progression\dao\QuestionDAO");
+        $mockQuestionDao
+            ->shouldReceive("get_type")
+            ->with("prog1/les_fonctions/appeler_une_fonction")
+            ->andReturn(Question::TYPE_PROG);
 
-		$mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
-		$mockDAOFactory
-			->allows()
-			->get_question_prog_dao()
-			->andReturn($mockQuestionProgDao);
+        $mockQuestiongDao = Mockery::mock("progression\dao\QuestionDAO");
+        $mockQuestionDao
+            ->shouldReceive("get_question")
+            ->with("prog1/les_fonctions/appeler_une_fonction")
+            ->andReturn($résultat_attendu);
 
-		$interacteur = new ObtenirQuestionProgInt($mockDAOFactory);
-		$résultat_obtenu = $interacteur->get_question(
-			'prog1/les_fonctions/appeler_une_fonction'
-		);
+        $mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+        $mockDAOFactory
+            ->allows()
+            ->get_question_dao()
+            ->andReturn($mockQuestionDao);
 
-		$this->assertEquals($résultat_attendu, $résultat_obtenu);
-	}
+        $interacteur = new ObtenirQuestionInt($mockDAOFactory);
+        $résultat_obtenu = $interacteur->get_question(
+            "prog1/les_fonctions/appeler_une_fonction"
+        );
 
-	public function test_étant_donné_une_questionprog_avec_un_chemin_inexistant_lorsque_cherché_par_chemin_on_obtient_null()
-	{
-		$résultat_attendu = null;
+        $this->assertEquals($résultat_attendu, $résultat_obtenu);
+    }
 
-		$mockQuestionProgDao = Mockery::mock('progression\dao\QuestionProgDAO');
-		$mockQuestionProgDao
-			->shouldReceive('get_question')
-			->with('test/de/chemin/non/valide')
-			->andReturn(null);
+    public function test_étant_donné_une_questionprog_avec_un_chemin_inexistant_lorsque_cherché_par_chemin_on_obtient_null()
+    {
+        $résultat_attendu = null;
 
-		$mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
-		$mockDAOFactory
-			->allows()
-			->get_question_prog_dao()
-			->andReturn($mockQuestionProgDao);
+        $mockQuestionDao = Mockery::mock("progression\dao\QuestionDAO");
+        $mockQuestionDao
+            ->shouldReceive("get_type")
+            ->with("test/de/chemin/non/valide")
+            ->andReturn(null);
+        $mockQuestionDao
+            ->shouldReceive("get_question")
+            ->with("test/de/chemin/non/valide")
+            ->andReturn(null);
 
-		$interacteur = new ObtenirQuestionProgInt($mockDAOFactory);
-		$résultat_obtenu = $interacteur->get_question(
-			'test/de/chemin/non/valide'
-		);
+        $mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+        $mockDAOFactory
+            ->allows()
+            ->get_question_dao()
+            ->andReturn($mockQuestionDao);
 
-		$this->assertEquals($résultat_attendu, $résultat_obtenu);
-	}
+        $interacteur = new ObtenirQuestionInt($mockDAOFactory);
+        $résultat_obtenu = $interacteur->get_question(
+            "test/de/chemin/non/valide"
+        );
+
+        $this->assertEquals($résultat_attendu, $résultat_obtenu);
+    }
 }

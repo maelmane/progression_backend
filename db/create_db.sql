@@ -107,6 +107,7 @@ CREATE TABLE `avancement` (
   `userID`       int(11) NOT NULL,
   `questionID`   int(11) NOT NULL,
   `etat`	     int DEFAULT 1,
+  `type`         int NOT NULL,
   PRIMARY KEY (`userID`, `questionID`)
 );
 

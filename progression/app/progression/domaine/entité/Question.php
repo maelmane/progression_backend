@@ -34,7 +34,6 @@ class Question extends Entité
     public $nom;
     public $chemin;
     public $actif;
-    public $type;
     public $numero;
     public $titre;
     public $description;

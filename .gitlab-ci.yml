@@ -21,7 +21,7 @@ test:
 # Production de la documentation
 .doc: &doc
   script:
-  - emacs --batch --no-init-file --load doc/publish.el --funcall org-publish-all && mkdir public && cp -r progression/app/html/doc/* public/
+  - emacs --batch --load $HOME/.emacs.el --load doc/publish.el --funcall org-publish-all && mkdir public && cp -r progression/app/html/doc/* public/
   artifacts:
     paths:
     - public

@@ -18,56 +18,49 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Avancement, Question};
+use progression\domaine\entité\{
+    Avancement,
+    AvancementProg,
+    AvancementSys,
+    AvancementBD,
+    Question
+};
 
 class AvancementDAO extends EntitéDAO
 {
-	public function get_avancement($question_id, $user_id)
-	{
-		$avancement = new Avancement($question_id, $user_id);
-		$this->load($avancement);
-		if (is_null($avancement->etat)) {
-			$avancement->etat = Question::ETAT_DEBUT;
-		}
+    public function get_avancement($question_id, $user_id)
+    {
+        $type = (new QuestionDAO())->get_type($question_id);
 
-		return $avancement->id ? $avancement : null;
-	}
+        if ($type == null) {
+            return null;
+        } else {
+            if ($type == Question::TYPE_PROG) {
+                $avancement = new AvancementProg($question_id, $user_id);
+                return (new AvancementProgDAO())->load($avancement);
+            } elseif ($type == Question::TYPE_SYS) {
+                $avancement = new AvancementSys($question_id, $user_id);
+                return (new AvancementSysDAO())->load($avancement);
+            } elseif ($type == Question::TYPE_BD) {
+                $avancement = new AvancementBD($question_id, $user_id);
+                return (new AvancementBDDAO())->load($avancement);
+            }
 
-	protected function load($objet)
-	{
-		$query = $this->conn->prepare(
-			'SELECT userID, etat FROM avancement WHERE questionID = ? AND userID = ?'
-		);
-		$query->bind_param("ii", $objet->question_id, $objet->user_id);
-		$query->execute();
-		$query->bind_result(
-            $objet->id,
-			$objet->etat
-		);
-		$query->fetch();
+            return $avancement;
+        }
+    }
 
-		$query->close();
-	}
+    protected function load($objet)
+    {
+        $query = $this->conn->prepare(
+            "SELECT userID, etat FROM avancement WHERE questionID = ? AND userID = ?"
+        );
+        $query->bind_param("ii", $objet->question_id, $objet->user_id);
+        $query->execute();
+        $query->bind_result($objet->id, $objet->etat);
+        $query->fetch();
 
-	public function save($objet)
-	{
-		$query = $this->conn
-			->prepare('INSERT INTO avancement ( etat, questionID, userID ) VALUES ( ?, ?, ?, ?, ?, ? )
-                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
-
-		$query->bind_param(
-			"iiisss",
-			$objet->etat,
-			$objet->question_id,
-			$objet->user_id
-		);
-		$query->execute();
-		$query->close();
-
-		return $this->get_avancement(
-			$objet->question_id,
-			$objet->user_id
-		);
-	}
+        $query->close();
+    }
 }
 ?>
