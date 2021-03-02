@@ -20,24 +20,24 @@ namespace progression\http\transformer;
 
 use PHPUnit\Framework\TestCase;
 use progression\domaine\entité\RéponseProg;
+use progression\util\Encodage;
 
 final class TentativeTransformerTests extends TestCase
 {
-    public function test_étant_donné_une_tentative_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
-    {
-        $tentative = new RéponseProg(10, "codeTest", "dateSoumissionTest", "testsRéussisTest", "feedBackTest");
-        $tentativeTransformer = new TentativeTransformer();
+	public function test_étant_donné_une_tentative_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+	{
+		$tentative = new RéponseProg(10, "codeTest", "dateSoumissionTest", "testsRéussisTest", "feedBackTest");
+		$tentativeTransformer = new TentativeTransformer();
 
-        $résultat = [
-            'id' => $tentative->date_soumission,
-            'date_soumission' => $tentative->date_soumission,
-            'tests_réussis' => $tentative->tests_réussis,
-            'feedback' => $tentative->feedback,
-            'langage' => $tentative->langid,
-            'code' => $tentative->code
-        ];
+		$résultat = [
+			'id' => $tentative->date_soumission,
+			'date_soumission' => $tentative->date_soumission,
+			'tests_réussis' => $tentative->tests_réussis,
+			'feedback' => $tentative->feedback,
+			'langage' => $tentative->langid,
+			'code' => $tentative->code
+		];
 
-        $this->assertEquals($résultat, $tentativeTransformer->transform($tentative));
-    }
-
+		$this->assertEquals($résultat, $tentativeTransformer->transform($tentative));
+	}
 }

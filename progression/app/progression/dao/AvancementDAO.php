@@ -19,48 +19,66 @@
 namespace progression\dao;
 
 use progression\domaine\entité\{
-    Avancement,
-    AvancementProg,
-    AvancementSys,
-    AvancementBD,
-    Question
+	Avancement,
+	AvancementProg,
+	AvancementSys,
+	AvancementBD,
+	Question,
+	RéponseProg
 };
 
 class AvancementDAO extends EntitéDAO
 {
-    public function get_avancement($question_id, $user_id)
-    {
-        $type = (new QuestionDAO())->get_type($question_id);
+	public function get_avancement($question_id, $user_id)
+	{
+		$type = (new QuestionDAO())->get_type($question_id);
 
-        if ($type == null) {
-            return null;
-        } else {
-            if ($type == Question::TYPE_PROG) {
-                $avancement = new AvancementProg($question_id, $user_id);
-                return (new AvancementProgDAO())->load($avancement);
-            } elseif ($type == Question::TYPE_SYS) {
-                $avancement = new AvancementSys($question_id, $user_id);
-                return (new AvancementSysDAO())->load($avancement);
-            } elseif ($type == Question::TYPE_BD) {
-                $avancement = new AvancementBD($question_id, $user_id);
-                return (new AvancementBDDAO())->load($avancement);
-            }
+		if ($type == null) {
+			return null;
+		} else {
+			if ($type == Question::TYPE_PROG) {
+				$avancement = new AvancementProg($question_id, $user_id);
+				return (new AvancementProgDAO())->load($avancement);
+			} elseif ($type == Question::TYPE_SYS) {
+				$avancement = new AvancementSys($question_id, $user_id);
+				return (new AvancementSysDAO())->load($avancement);
+			} elseif ($type == Question::TYPE_BD) {
+				$avancement = new AvancementBD($question_id, $user_id);
+				return (new AvancementBDDAO())->load($avancement);
+			}
 
-            return $avancement;
-        }
-    }
+			return $avancement;
+		}
+	}
 
-    protected function load($objet)
-    {
-        $query = $this->conn->prepare(
-            "SELECT userID, etat FROM avancement WHERE questionID = ? AND userID = ?"
-        );
-        $query->bind_param("ii", $objet->question_id, $objet->user_id);
-        $query->execute();
-        $query->bind_result($objet->id, $objet->etat);
-        $query->fetch();
+	public function get_tentative($userid, $questionid, $timestamp)
+	{
+		$query = $this->conn->prepare(
+			'SELECT lang, code
+             FROM reponse_prog
+             WHERE userID = ? AND questionID = ?
+             AND date_soumission = ?'
+		);
+		$query->bind_param("iii", $userid, $questionid, $timestamp);
+		$query->execute();
+		$query->bind_result($lang, $code);
 
-        $query->close();
-    }
+		$tentative = new RéponseProg($lang, $code, $timestamp);
+		$query->close();
+
+		return $tentative;
+	}
+
+	protected function load($objet)
+	{
+		$query = $this->conn->prepare(
+			"SELECT userID, etat FROM avancement WHERE questionID = ? AND userID = ?"
+		);
+		$query->bind_param("ii", $objet->question_id, $objet->user_id);
+		$query->execute();
+		$query->bind_result($objet->id, $objet->etat);
+		$query->fetch();
+
+		$query->close();
+	}
 }
-?>

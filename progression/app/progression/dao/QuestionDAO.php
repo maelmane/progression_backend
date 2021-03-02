@@ -15,57 +15,58 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 namespace progression\dao;
 
 use progression\domaine\entité\{Question, QuestionProg, QuestionSys, QuestionBD};
 
 class QuestionDAO extends EntitéDAO
 {
-    public function get_type($id)
-    {
-        $query = $this->conn->prepare(
-            "SELECT type FROM question WHERE chemin = ?"
-        );
-        $query->bind_param("i", $id);
-        $query->execute();
-        $query->bind_result($type);
-        if (is_null($query->fetch())) {
-            error_log($query->error);
-            $type = null;
-        }
-        $query->close();
+	public function get_type($id)
+	{
+		$query = $this->conn->prepare(
+			"SELECT type FROM question WHERE chemin = ?"
+		);
+		$query->bind_param("s", $id);
+		$query->execute();
+		$query->bind_result($type);
+		if (is_null($query->fetch())) {
+			error_log($query->error);
+			$type = null;
+		}
+		$query->close();
 
-        return $type;
-    }
+		return $type;
+	}
 
-    public function get_question($chemin)
-    {
-        $type = $this->get_type($chemin);
+	public function get_question($chemin)
+	{
+		$type = $this->get_type($chemin);
 
 		if ($type == null) {
 			return null;
 		} else {
 			if ($type == Question::TYPE_PROG) {
-                $question = new QuestionProg(null);
-                $question->chemin = $chemin;
+				$question = new QuestionProg(null);
+				$question->chemin = $chemin;
 				(new QuestionProgDAO())->load($question);
 			} elseif ($type == Question::TYPE_SYS) {
-                $question = new QuestionSys(null);
-                $question->chemin = $chemin;
-                (new QuestionSysDAO())->load($question);
+				$question = new QuestionSys(null);
+				$question->chemin = $chemin;
+				(new QuestionSysDAO())->load($question);
 			} elseif ($type == Question::TYPE_BD) {
-                $question = new QuestionBD(null);
-                $question->chemin = $chemin;
-                (new QuestionBDDAO())->load($question);
+				$question = new QuestionBD(null);
+				$question->chemin = $chemin;
+				(new QuestionBDDAO())->load($question);
 			}
 
-            return $question;
+			return $question;
 		}
 	}
 
-    protected function load($objet)
-    {
-        $query = $this->conn->prepare('SELECT question.questionID,
+	protected function load($objet)
+	{
+		$query = $this->conn->prepare('SELECT question.questionID,
                                             question.nom,
                                             question.chemin,
 	                                        question.actif,
@@ -80,34 +81,34 @@ class QuestionDAO extends EntitéDAO
 	                                        question.code_validation
 	                                        FROM question
 	                                        WHERE question.chemin = ?');
-        $query->bind_param("s", $objet->chemin);
-        $query->execute();
-        $query->bind_result(
-            $objet->id,
-            $objet->nom,
-            $objet->chemin,
-            $objet->actif,
-            $objet->serieID,
-            $objet->numero,
-            $objet->suivante,
-            $objet->titre,
-            $objet->description,
-            $objet->enonce,
-            $objet->feedback_pos,
-            $objet->feedback_neg,
-            $objet->code_validation
-        );
-        if (is_null($query->fetch())) {
-            error_log($query->error);
-            $objet->id = null;
-        }
-        $query->close();
-    }
+		$query->bind_param("s", $objet->chemin);
+		$query->execute();
+		$query->bind_result(
+			$objet->id,
+			$objet->nom,
+			$objet->chemin,
+			$objet->actif,
+			$objet->serieID,
+			$objet->numero,
+			$objet->suivante,
+			$objet->titre,
+			$objet->description,
+			$objet->enonce,
+			$objet->feedback_pos,
+			$objet->feedback_neg,
+			$objet->code_validation
+		);
+		if (is_null($query->fetch())) {
+			error_log($query->error);
+			$objet->id = null;
+		}
+		$query->close();
+	}
 
-    public function save($objet)
-    {
-        if (!$objet->id) {
-            $query = $this->conn->prepare("INSERT INTO question( serieID,
+	public function save($objet)
+	{
+		if (!$objet->id) {
+			$query = $this->conn->prepare("INSERT INTO question( serieID,
                                                               nom,
                                                               chemin,
 	                                                          actif,
@@ -120,26 +121,26 @@ class QuestionDAO extends EntitéDAO
 	                                                          code_validation ) 
 	                                 VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )");
 
-            $query->bind_param(
-                "iiississss",
-                $objet->serieID,
-                $objet->nom,
-                $objet->chemin,
-                $objet->actif,
-                $objet->titre,
-                $objet->description,
-                $objet->numero,
-                $objet->enonce,
-                $objet->feedback_pos,
-                $objet->feedback_neg,
-                $objet->code_validation
-            );
-            $query->execute();
-            $query->close();
+			$query->bind_param(
+				"iiississss",
+				$objet->serieID,
+				$objet->nom,
+				$objet->chemin,
+				$objet->actif,
+				$objet->titre,
+				$objet->description,
+				$objet->numero,
+				$objet->enonce,
+				$objet->feedback_pos,
+				$objet->feedback_neg,
+				$objet->code_validation
+			);
+			$query->execute();
+			$query->close();
 
-            $objet->id = mysqli_insert_id();
-        } else {
-            $query = $this->conn->prepare("UPDATE question set 
+			$objet->id = mysqli_insert_id();
+		} else {
+			$query = $this->conn->prepare("UPDATE question set 
 	                                            serieID=?,
                                                 nom=?,
                                                 chemin=?,
@@ -152,25 +153,25 @@ class QuestionDAO extends EntitéDAO
 	                                            feedback_neg=?,
 	                                            code_validation=? WHERE questionID = ?");
 
-            $query->bind_param(
-                "iiississssi",
-                $objet->serieID,
-                $objet->nom,
-                $objet->chemin,
-                $objet->actif,
-                $objet->titre,
-                $objet->description,
-                $objet->numero,
-                $objet->enonce,
-                $objet->feedback_pos,
-                $objet->feedback_neg,
-                $objet->code_validation,
-                $objet->id
-            );
-            $query->execute();
-            $query->close();
-        }
+			$query->bind_param(
+				"iiississssi",
+				$objet->serieID,
+				$objet->nom,
+				$objet->chemin,
+				$objet->actif,
+				$objet->titre,
+				$objet->description,
+				$objet->numero,
+				$objet->enonce,
+				$objet->feedback_pos,
+				$objet->feedback_neg,
+				$objet->code_validation,
+				$objet->id
+			);
+			$query->execute();
+			$query->close();
+		}
 
-        return $objet;
-    }
+		return $objet;
+	}
 }

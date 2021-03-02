@@ -21,12 +21,10 @@ namespace progression\http\transformer;
 use progression\domaine\entité\{AvancementProg, RéponseProg};
 use PHPUnit\Framework\TestCase;
 
-final class AvancementProgTransformerTests extends TestCase
+final class AvancementTransformerTests extends TestCase
 {
 	public function test_étant_donné_un_avancement_instancié_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
 	{
-		$user_id = "jdoe";
-		$question_id = "prog1/les_fonctions_01/appeler_une_fonction_paramétrée";
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$avancementProgTransformer = new AvancementProgTransformer();
@@ -38,7 +36,7 @@ final class AvancementProgTransformerTests extends TestCase
 			"état" => 0,
 			"links" => [
 				"self" =>
-					"https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
+				"https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
 			],
 		];
 
@@ -50,14 +48,13 @@ final class AvancementProgTransformerTests extends TestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$tentativeTransformer = new TentativeTransformer();
-		$tentative = new RéponseProg(10, "codeTest");
-		$tentative->date_soumission = "dateTest";
+		$tentative = new RéponseProg(10, "codeTest", 1614711760);
 		$tentative->tests_réussis = 2;
 		$tentative->feedback = "feedbackTest";
 
 		$résultat = [
-			"id" => "dateTest",
-			"date_soumission" => "dateTest",
+			"id" => 1614711760,
+			"date_soumission" => 1614711760,
 			"tests_réussis" => 2,
 			"feedback" => "feedbackTest",
 			"langage" => 10,

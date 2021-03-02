@@ -16,32 +16,26 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\interacteur;
+namespace progression\http\contrôleur;
 
-use progression\dao\DAOFactory;
+use Illuminate\Http\Request;
+use progression\http\transformer\TentativeTransformer;
 
-class InteracteurFactory
+class TentativeCtl extends Contrôleur
 {
-	public function getLoginInt()
+	public function get(Request $request, $username, $question, $timestamp)
 	{
-		return new LoginInt(new DAOFactory());
-	}
+		$chemin = base64_decode($question);
+		$tentative = null;
 
-	public function getUserInt()
-	{
-		return new UserInt(new DAOFactory());
-	}
+		if ($chemin != null && $chemin != "" && $username != null && $username != "" && $timestamp != null) {
+			$avancementProgInt = $this->intFactory->getObtenirAvancementInt($username);
 
-	public function getObtenirQuestionInt()
-	{
-		return new ObtenirQuestionInt(new DAOFactory());
-	}
-	public function getObtenirUserInt()
-	{
-		return new ObtenirUserInt(new DAOFactory());
-	}
-	public function getObtenirAvancementInt($user_id)
-	{
-		return new ObtenirAvancementInt(new DAOFactory(), $user_id);
+			$tentative = $avancementProgInt->get_tentative($username, $chemin, $timestamp);
+		}
+
+		$réponse = $this->item($tentative, new TentativeTransformer(), "tentative");
+
+		return $this->préparer_réponse($réponse);
 	}
 }

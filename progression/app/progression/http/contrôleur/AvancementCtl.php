@@ -31,24 +31,22 @@ class AvancementCtl extends Contrôleur
 		$avancement = null;
 
 		if ($chemin != null && $chemin != "" && $username != null && $username != "") {
-			$avancementInt = $this->intFactory->getObtenirAvancementInt();
+			$avancementInt = $this->intFactory->getObtenirAvancementInt($username);
 
 			$avancement = $avancementInt->get_avancement($username, $chemin);
 		}
 
-        $réponse = null;
+		$réponse = null;
 
-        if ($avancement instanceof AvancementProg) {
-            $réponse = $this->item($avancement, new AvancementProgTransformer());
-        }
-        elseif ($avancement instanceof AvancementSys) {
+		if ($avancement instanceof AvancementProg) {
+			$réponse = $this->item($avancement, new AvancementProgTransformer());
+		} elseif ($avancement instanceof AvancementSys) {
 			Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["message" => "Question système non implémentée."], 501);
-        }
-        elseif ($avancement instanceof AvancementBD) {
+		} elseif ($avancement instanceof AvancementBD) {
 			Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["message" => "Question BD non implémentée."], 501);
-        }
+		}
 
 		return $this->préparer_réponse($réponse);
 	}

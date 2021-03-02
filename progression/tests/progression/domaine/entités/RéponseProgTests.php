@@ -20,23 +20,32 @@ namespace progression\domaine\entité;
 
 use PHPUnit\Framework\TestCase;
 
-final class RéponseProgTests extends TestCase{
-    public function test_étant_donné_une_réponseProg_instanciée_avec_langid_2_et_code_5_lorsquon_récupère_son_langid_on_obtient_2(){
-        $réponseProgTest = new RéponseProg(2, 5);
+final class RéponseProgTests extends TestCase
+{
+	public function test_étant_donné_une_réponseProg_instanciée_avec_langid_2_lorsquon_récupère_son_langid_on_obtient_2()
+	{
+		$réponseProgTest = new RéponseProg(2, 5, 8);
 
-        $langid = $réponseProgTest->langid;
+		$langid = $réponseProgTest->langid;
 
-        $this->assertEquals( 2, $langid );
-    }
+		$this->assertEquals(2, $langid);
+	}
 
-    public function test_étant_donné_une_réponseProg_instanciée_avec_langid_2_et_code_5_lorsquon_récupère_son_code_on_obtient_5(){
-        $réponseProgTest = new RéponseProg(2, 5);
+	public function test_étant_donné_une_réponseProg_instanciée_avec_code_5_lorsquon_récupère_son_code_on_obtient_5()
+	{
+		$réponseProgTest = new RéponseProg(2, 5, 8);
 
-        $code = $réponseProgTest->code;
+		$code = $réponseProgTest->code;
 
-        $this->assertEquals( 5, $code );
-    }
+		$this->assertEquals(5, $code);
+	}
 
+	public function test_étant_donné_une_réponseProg_instanciée_avec_date_soumission_8_lorsquon_récupère_sa_date_soumission_on_obtient_8()
+	{
+		$réponseProgTest = new RéponseProg(2, 5, 8);
+
+		$date_soumission = $réponseProgTest->date_soumission;
+
+		$this->assertEquals(8, $date_soumission);
+	}
 }
-
-?>

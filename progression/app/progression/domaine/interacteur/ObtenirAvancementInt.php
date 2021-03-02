@@ -15,22 +15,30 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Question;
 
 class ObtenirAvancementInt extends Interacteur
 {
-    function __construct($source, $user_id)
-    {
-        parent::__construct($source);
-        $this->_user_id = $user_id;
-    }
+	function __construct($source, $user_id)
+	{
+		parent::__construct($source);
+		$this->_user_id = $user_id;
+	}
 
-    function get_avancement($question_id)
-    {
-        return $this->_source
-            ->get_avancement_dao()
-            ->get_avancement($question_id, $user_id);
-    }
+	function get_avancement($user_id, $question_id)
+	{
+		return $this->_source
+			->get_avancement_dao()
+			->get_avancement($question_id, $user_id);
+	}
+
+	function get_tentative($user_id, $question_id, $date)
+	{
+		return $this->_source
+			->get_avancement_dao()
+			->get_tentative($user_id, $question_id, $date);
+	}
 }

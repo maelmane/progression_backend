@@ -43,7 +43,7 @@ $router->group(["middleware" => "auth"], function () use ($router) {
     // Tentative
     $router->get(
         "/tentative/{username}/{question}/{timestamp:[[:digit:]]+}",
-        "NotImplementedCtl@get"
+        "TentativeCtl@get"
     );
     $router->get(
         "/tentative/{username}/{question}/{timestamp:[[:digit:]]+}/relationships/{relation}",
