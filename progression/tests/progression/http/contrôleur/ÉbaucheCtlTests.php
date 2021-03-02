@@ -95,7 +95,7 @@ final class ÉbaucheCtlTests extends TestCase
 			->allows()
 			->path()
 			->andReturn(
-				"/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python"
+				"/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python"
 			);
 		$mockRequest
 			->allows()
@@ -114,7 +114,7 @@ final class ÉbaucheCtlTests extends TestCase
 				$ctl
 					->get(
 						$mockRequest,
-						"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+						"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
 						"python"
 					)
 					->getContent(),
