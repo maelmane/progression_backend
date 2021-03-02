@@ -19,33 +19,35 @@
 namespace progression\http\contrôleur;
 
 use progression\http\transformer\ÉbaucheTransformer;
+use progression\util\Encodage;
+use Illuminate\Http\Request;
 
 class ÉbaucheCtl extends Contrôleur
 {
-	public function get($question, $langage)
+	public function get(Request $request, $question, $langage)
 	{
-		$chemin = base64_decode($question);
-		$réponse = [null];
+		$chemin = Encodage::base64_decode_url($question);
 		$question = null;
+		$réponse = null;
 
 		if ($chemin != null && $chemin != "") {
-			$questionProgInt =  $this->intFactory->getObtenirQuestionProgInt();
-			$question = $questionProgInt->get_question($chemin);
+			$questionInt =  $this->intFactory->getObtenirQuestionInt();
+			$question = $questionInt->get_question($chemin);
 		}
 
 		if ($question != null) {
 
 			if (array_key_exists($langage, $question->exécutables)) {
 				$ébauche = $question->exécutables[$langage];
-				$ébauche->id = base64_encode($question->chemin) . "/{$ébauche->lang}";
+				$ébauche->id = Encodage::base64_encode_url($question->chemin) . "/{$ébauche->lang}";
 				$ébauche->links = [
 					"related" =>
 					$_ENV['APP_URL'] .
 						"question/" .
-						base64_encode($question->chemin),
+						Encodage::base64_encode_url($question->chemin),
 				];
 
-				$réponse = $this->item($ébauche, new ÉbaucheTransformer, "ebauche");
+				$réponse = $this->item($ébauche, new ÉbaucheTransformer);
 			}
 		}
 

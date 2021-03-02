@@ -18,7 +18,7 @@
 
 require_once __DIR__ . '/../../../TestCase.php';
 
-use progression\domaine\entité\{QuestionProg, Exécutable, Test};
+use progression\domaine\entité\{Question, QuestionProg, Exécutable, Test};
 use progression\http\contrôleur\ÉbaucheCtl;
 use Illuminate\Http\Request;
 
@@ -32,6 +32,7 @@ final class ÉbaucheCtlTests extends TestCase
 
 		// Question
 		$question = new QuestionProg();
+		$question->type = Question::TYPE_PROG;
 		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->chemin =
 			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée";
@@ -48,23 +49,23 @@ final class ÉbaucheCtlTests extends TestCase
 		$résultat_attendu = [
 			"data" => [
 				"type" => "ebauche",
-				"id" => "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
+				"id" => "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python",
 				"attributes" => [
 					"langage" => "python",
 					"code" => "print(\"Hello world\")",
 				],
 				"links" => [
-					"self" => "https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
-					"related" => "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+					"self" => "https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python",
+					"related" => "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
 				],
 			],
 		];
 
 		// Intéracteur
-		$mockObtenirQuestionProgInt = Mockery::mock(
-			'progression\domaine\interacteur\ObtenirQuestionProgInt'
+		$mockObtenirQuestionInt = Mockery::mock(
+			'progression\domaine\interacteur\ObtenirQuestionInt'
 		);
-		$mockObtenirQuestionProgInt
+		$mockObtenirQuestionInt
 			->allows()
 			->get_question(
 				'prog1/les_fonctions_01/appeler_une_fonction_paramétrée'
@@ -77,8 +78,8 @@ final class ÉbaucheCtlTests extends TestCase
 		);
 		$mockIntFactory
 			->allows()
-			->getObtenirQuestionProgInt()
-			->andReturn($mockObtenirQuestionProgInt);
+			->getObtenirQuestionInt()
+			->andReturn($mockObtenirQuestionInt);
 
 		// Requête
 		$mockRequest = Mockery::mock('Illuminate\Http\Request');

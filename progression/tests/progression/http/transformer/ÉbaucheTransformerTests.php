@@ -28,10 +28,9 @@ final class ÉbaucheTransformerTests extends TestCase
         $_ENV["APP_URL"] = "https://example.com/";
         $ébaucheTransformer = new ÉbaucheTransformer();
 
-        $exécutable = new Exécutable("return nb1 + nb2;", "java");
-        $exécutable->id =
+        $ébauche = new Exécutable("return nb1 + nb2;", "java");
+        $ébauche->id =
             "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java";
-        $exécutable->type = "Exécutable";
 
         $résultat_attendu = [
             "id" =>
@@ -43,7 +42,7 @@ final class ÉbaucheTransformerTests extends TestCase
                 "https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java",
             ],
         ];
-        $résultat_obtenu = $ébaucheTransformer->transform($exécutable);
+        $résultat_obtenu = $ébaucheTransformer->transform($ébauche);
 
         $this->assertEquals($résultat_attendu, $résultat_obtenu);
     }

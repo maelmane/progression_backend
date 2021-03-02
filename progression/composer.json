@@ -9,13 +9,8 @@
         "firebase/php-jwt": "^5.2",
         "laravel/lumen-framework": "^8.0",
         "league/fractal": "^0.19.2",
-<<<<<<< HEAD
-        "symfony/config": "^5.2",
-        "tymon/jwt-auth": "^1.0.0-beta.3@dev"
-=======
         "tymon/jwt-auth": "^1.0.0-beta.3@dev",
 		"symfony/config": "^5.2"
->>>>>>> cc43243ad523eb60f24ad1f298f5cceb4411270c
     },
 	"require-dev": {
         "mockery/mockery": "@stable",

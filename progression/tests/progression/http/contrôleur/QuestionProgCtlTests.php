@@ -18,12 +18,8 @@
 
 namespace progression\http\contrôleur;
 
-<<<<<<< HEAD
-require_once __DIR__ . '/../../../TestCase.php';
-
-=======
 require_once __DIR__ . "/../../../TestCase.php";
->>>>>>> cc43243ad523eb60f24ad1f298f5cceb4411270c
+
 use progression\domaine\entité\{Question, QuestionProg, Exécutable, Test};
 use Illuminate\Http\Request;
 
@@ -32,15 +28,9 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 final class QuestionProgCtlTests extends \TestCase
 {
-<<<<<<< HEAD
 	public function test_étant_donné_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_la_question_et_ses_relations_sous_forme_json()
 	{
-		$_ENV['APP_URL'] = 'https://example.com/';
-=======
-    public function test_étant_donné_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_la_question_et_ses_relations_sous_forme_json()
-    {
-        $_ENV["APP_URL"] = "https://example.com/";
->>>>>>> cc43243ad523eb60f24ad1f298f5cceb4411270c
+		$_ENV["APP_URL"] = "https://example.com/";
 
 		// Question
 		$question = new QuestionProg();
@@ -64,12 +54,11 @@ final class QuestionProgCtlTests extends \TestCase
 			new Test("Aucune salutation", "0", ""),
 		];
 
-<<<<<<< HEAD
 		$résultat_attendu = [
 			"data" => [
 				"type" => "question",
 				"id" =>
-				"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+				"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
 				"attributes" => [
 					"titre" => "Appeler une fonction paramétrée",
 					"description" =>
@@ -79,48 +68,48 @@ final class QuestionProgCtlTests extends \TestCase
 				],
 				"links" => [
 					"self" =>
-					"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+					"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
 					"avancement" =>
-					"https://example.com/avancement/Bob/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+					"https://example.com/avancement/Bob/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
 				],
 				"relationships" => [
 					"tests" => [
 						"links" => [
 							"self" =>
-							"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/relationships/tests",
+							"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/relationships/tests",
 							"related" =>
-							"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/tests",
+							"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/tests",
 						],
 						"data" => [
 							[
-								"type" => "Test",
+								"type" => "test",
 								"id" =>
-								"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/0",
+								"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0",
 							],
 							[
-								"type" => "Test",
+								"type" => "test",
 								"id" =>
-								"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/1",
+								"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1",
 							],
 						],
 					],
-					"ébauches" => [
+					"ebauches" => [
 						"links" => [
 							"self" =>
-							"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/relationships/ébauches",
+							"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/relationships/ebauches",
 							"related" =>
-							"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/ébauches",
+							"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/ebauches",
 						],
 						"data" => [
 							[
-								"type" => "Ébauche",
+								"type" => "ebauche",
 								"id" =>
-								"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
+								"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python",
 							],
 							[
-								"type" => "Ébauche",
+								"type" => "ebauche",
 								"id" =>
-								"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java",
+								"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java",
 							],
 						],
 					],
@@ -128,9 +117,9 @@ final class QuestionProgCtlTests extends \TestCase
 			],
 			"included" => [
 				[
-					"type" => "Test",
+					"type" => "test",
 					"id" =>
-					"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/0",
+					"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0",
 					"attributes" => [
 						"numéro" => 0,
 						"nom" => "2 salutations",
@@ -139,15 +128,15 @@ final class QuestionProgCtlTests extends \TestCase
 					],
 					"links" => [
 						"self" =>
-						"https://example.com/test/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/0",
+						"https://example.com/test/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0",
 						"related" =>
-						"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+						"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
 					],
 				],
 				[
-					"type" => "Test",
+					"type" => "test",
 					"id" =>
-					"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/1",
+					"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1",
 					"attributes" => [
 						"numéro" => 1,
 						"nom" => "Aucune salutation",
@@ -156,39 +145,39 @@ final class QuestionProgCtlTests extends \TestCase
 					],
 					"links" => [
 						"self" =>
-						"https://example.com/test/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/1",
+						"https://example.com/test/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1",
 						"related" =>
-						"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+						"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
 					],
 				],
 				[
-					"type" => "Ébauche",
+					"type" => "ebauche",
 					"id" =>
-					"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
+					"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python",
 					"attributes" => [
 						"langage" => "python",
 						"code" => "print(\"Hello world\")",
 					],
 					"links" => [
 						"self" =>
-						"https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python",
+						"https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python",
 						"related" =>
-						"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+						"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
 					],
 				],
 				[
-					"type" => "Ébauche",
+					"type" => "ebauche",
 					"id" =>
-					"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java",
+					"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java",
 					"attributes" => [
 						"langage" => "java",
 						"code" => "System.out.println(\"Hello world\")",
 					],
 					"links" => [
 						"self" =>
-						"https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/java",
+						"https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java",
 						"related" =>
-						"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=",
+						"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
 					],
 				],
 			],
@@ -196,43 +185,29 @@ final class QuestionProgCtlTests extends \TestCase
 
 		// Intéracteur
 		$mockObtenirQuestionInt = Mockery::mock(
-			'progression\domaine\interacteur\ObtenirQuestionInt'
+			"progression\domaine\interacteur\ObtenirQuestionInt"
 		);
 		$mockObtenirQuestionInt
 			->allows()
 			->get_question(
-				'prog1/les_fonctions_01/appeler_une_fonction_paramétrée'
-			)
-			->andReturn($question);
-
-		$mockObtenirQuestionProgInt = Mockery::mock(
-			'progression\domaine\interacteur\ObtenirQuestionProgInt'
-		);
-		$mockObtenirQuestionProgInt
-			->allows()
-			->get_question(
-				'prog1/les_fonctions_01/appeler_une_fonction_paramétrée'
+				"prog1/les_fonctions_01/appeler_une_fonction_paramétrée"
 			)
 			->andReturn($question);
 
 		// InteracteurFactory
 		$mockIntFactory = Mockery::mock(
-			'progression\domaine\interacteur\InteracteurFactory'
+			"progression\domaine\interacteur\InteracteurFactory"
 		);
 		$mockIntFactory
 			->allows()
 			->getObtenirQuestionInt()
 			->andReturn($mockObtenirQuestionInt);
-		$mockIntFactory
-			->allows()
-			->getObtenirQuestionProgInt()
-			->andReturn($mockObtenirQuestionProgInt);
 
 		// Requête
-		$mockRequest = Mockery::mock('Illuminate\Http\Request');
+		$mockRequest = Mockery::mock("Illuminate\Http\Request");
 		$mockRequest
 			->allows()
-			->offsetGet('username')
+			->offsetGet("username")
 			->andReturn("Bob");
 		$mockRequest
 			->allows()
@@ -246,224 +221,30 @@ final class QuestionProgCtlTests extends \TestCase
 			->allows()
 			->path()
 			->andReturn(
-				"/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU="
+				"/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU"
 			);
 		$mockRequest
 			->allows()
 			->query("include")
-			->andReturn("tests,ébauches");
+			->andReturn("tests,ebauches");
 		$this->app->bind(Request::class, function () use ($mockRequest) {
 			return $mockRequest;
 		});
-=======
-        $résultat_attendu = [
-            "data" => [
-                "type" => "question",
-                "id" =>
-                    "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
-                "attributes" => [
-                    "titre" => "Appeler une fonction paramétrée",
-                    "description" =>
-                        "Appel d'une fonction existante recevant un paramètre",
-                    "énoncé" =>
-                        "La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.",
-                ],
-                "links" => [
-                    "self" =>
-                        "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
-                    "avancement" =>
-                        "https://example.com/avancement/Bob/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
-                ],
-                "relationships" => [
-                    "tests" => [
-                        "links" => [
-                            "self" =>
-                                "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/relationships/tests",
-                            "related" =>
-                                "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/tests",
-                        ],
-                        "data" => [
-                            [
-                                "type" => "test",
-                                "id" =>
-                                    "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0",
-                            ],
-                            [
-                                "type" => "test",
-                                "id" =>
-                                    "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1",
-                            ],
-                        ],
-                    ],
-                    "ebauches" => [
-                        "links" => [
-                            "self" =>
-                                "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/relationships/ebauches",
-                            "related" =>
-                                "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/ebauches",
-                        ],
-                        "data" => [
-                            [
-                                "type" => "ebauche",
-                                "id" =>
-                                    "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python",
-                            ],
-                            [
-                                "type" => "ebauche",
-                                "id" =>
-                                    "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java",
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-            "included" => [
-                [
-                    "type" => "test",
-                    "id" =>
-                        "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0",
-                    "attributes" => [
-                        "numéro" => 0,
-                        "nom" => "2 salutations",
-                        "entrée" => "2",
-                        "sortie_attendue" => "Bonjour\nBonjour\n",
-                    ],
-                    "links" => [
-                        "self" =>
-                            "https://example.com/test/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0",
-                        "related" =>
-                            "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
-                    ],
-                ],
-                [
-                    "type" => "test",
-                    "id" =>
-                        "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1",
-                    "attributes" => [
-                        "numéro" => 1,
-                        "nom" => "Aucune salutation",
-                        "entrée" => "0",
-                        "sortie_attendue" => "",
-                    ],
-                    "links" => [
-                        "self" =>
-                            "https://example.com/test/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1",
-                        "related" =>
-                            "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
-                    ],
-                ],
-                [
-                    "type" => "ebauche",
-                    "id" =>
-                        "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python",
-                    "attributes" => [
-                        "langage" => "python",
-                        "code" => "print(\"Hello world\")",
-                    ],
-                    "links" => [
-                        "self" =>
-                            "https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python",
-                        "related" =>
-                            "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
-                    ],
-                ],
-                [
-                    "type" => "ebauche",
-                    "id" =>
-                        "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java",
-                    "attributes" => [
-                        "langage" => "java",
-                        "code" => "System.out.println(\"Hello world\")",
-                    ],
-                    "links" => [
-                        "self" =>
-                            "https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java",
-                        "related" =>
-                            "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
-                    ],
-                ],
-            ],
-        ];
-
-        // Intéracteur
-        $mockObtenirQuestionInt = Mockery::mock(
-            "progression\domaine\interacteur\ObtenirQuestionInt"
-        );
-        $mockObtenirQuestionInt
-            ->allows()
-            ->get_question(
-                "prog1/les_fonctions_01/appeler_une_fonction_paramétrée"
-            )
-            ->andReturn($question);
-
-        // InteracteurFactory
-        $mockIntFactory = Mockery::mock(
-            "progression\domaine\interacteur\InteracteurFactory"
-        );
-        $mockIntFactory
-            ->allows()
-            ->getObtenirQuestionInt()
-            ->andReturn($mockObtenirQuestionInt);
-
-        // Requête
-        $mockRequest = Mockery::mock("Illuminate\Http\Request");
-        $mockRequest
-            ->allows()
-            ->offsetGet("username")
-            ->andReturn("Bob");
-        $mockRequest
-            ->allows()
-            ->ip()
-            ->andReturn("127.0.0.1");
-        $mockRequest
-            ->allows()
-            ->method()
-            ->andReturn("GET");
-        $mockRequest
-            ->allows()
-            ->path()
-            ->andReturn(
-                "/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU"
-            );
-        $mockRequest
-            ->allows()
-            ->query("include")
-            ->andReturn("tests,ebauches");
-        $this->app->bind(Request::class, function () use ($mockRequest) {
-            return $mockRequest;
-        });
->>>>>>> cc43243ad523eb60f24ad1f298f5cceb4411270c
 
 		// Contrôleur
 		$ctl = new QuestionCtl($mockIntFactory);
 
-<<<<<<< HEAD
 		$this->assertEquals(
 			$résultat_attendu,
 			json_decode(
 				$ctl
 					->get(
 						$mockRequest,
-						"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU="
+						"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU"
 					)
 					->getContent(),
 				true
 			)
 		);
 	}
-=======
-        $this->assertEquals(
-            $résultat_attendu,
-            json_decode(
-                $ctl
-                    ->get(
-                        $mockRequest,
-                        "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU"
-                    )
-                    ->getContent(),
-                true
-            )
-        );
-    }
->>>>>>> cc43243ad523eb60f24ad1f298f5cceb4411270c
 }
