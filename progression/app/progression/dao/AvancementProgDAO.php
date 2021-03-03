@@ -27,28 +27,25 @@ class AvancementProgDAO extends EntitéDAO
         parent::load($objet);
         
         $query = $this->conn->prepare(
-            'SELECT avancement.userID, avancement.questionID, etat, code, lang, lang_derniere_reponse
+            'SELECT avancement.user_id, avancement.question_uri, etat, code, langage
              FROM avancement 
-             LEFT JOIN avancement_prog 
-             ON avancement.questionID = avancement_prog.questionID AND
-                avancement.userID = avancement_prog.userID
              LEFT JOIN reponse_prog 
-             ON avancement.questionID = reponse_prog.questionID AND
-                avancement.userID = reponse_prog.userID
-             WHERE avancement.questionID = ? AND avancement.userID = ?'
+             ON avancement.question_uri = reponse_prog.question_uri AND
+                avancement.user_id = reponse_prog.user_id
+             WHERE avancement.question_uri = ? AND avancement.user_id = ?'
         );
-        $query->bind_param("ii", $objet->question_id, $objet->user_id);
+        $query->bind_param("ii", $objet->question_uri, $objet->username);
         $query->execute();
         $query->bind_result(
-            $objet->user_id,
+            $objet->username,
             $objet->etat,
             $code,
             $lang,
             $objet->lang,
-            $objet->question_id
+            $objet->question_uri
         );
 
-        $objet->user_id = null;
+        $objet->username = null;
         $réponses = [];
         while ($query->fetch()) {
             $réponses[$lang] = new RéponseProg($lang, $code);
@@ -63,40 +60,27 @@ class AvancementProgDAO extends EntitéDAO
         $this->conn->begin_transaction();
         try {
             $query = $this->conn
-                ->prepare('INSERT INTO avancement ( etat, questionID, userID, type ) VALUES ( ?, ?, ? )
+                ->prepare('INSERT INTO avancement ( etat, question_uri, username, type ) VALUES ( ?, ?, ? )
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 
             $query->bind_param(
                 "iii",
                 $objet->etat,
-                $objet->question_id,
-                $objet->user_id,
+                $objet->question_uri,
+                $objet->username,
                 Question::TYPE_PROG
             );
             $query->execute();
             $query->close();
 
             $query = $this->conn
-                ->prepare('INSERT INTO avancement_prog ( questionID, userID, lang_derniere_reponse ) VALUES ( ?, ?, ? )
-                                              ON DUPLICATE KEY UPDATE lang_derniere_reponse = VALUES( lang_derniere_reponse ) ');
-
-            $query->bind_param(
-                "iii",
-                $objet->question_id,
-                $objet->user_id,
-                $objet->lang
-            );
-            $query->execute();
-            $query->close();
-
-            $query = $this->conn
-                ->prepare('INSERT INTO reponse_prog ( questionID, userID, lang, code ) VALUES ( ?, ?, ?, ?  )
+                ->prepare('INSERT INTO reponse_prog ( question_uri, username, lang, code ) VALUES ( ?, ?, ?, ?  )
                                               ON DUPLICATE KEY UPDATE code=VALUES( code )');
             foreach ($objet->réponses as $réponse) {
                 $query->bind_param(
                     "iiis",
-                    $objet->question_id,
-                    $objet->user_id,
+                    $objet->question_uri,
+                    $objet->username,
                     $réponse->langid,
                     $réponse->code
                 );
@@ -110,7 +94,7 @@ class AvancementProgDAO extends EntitéDAO
 
             throw $exception;
         }
-        return $this->get_avancement($objet->question_id, $objet->user_id);
+        return $this->get_avancement($objet->question_uri, $objet->username);
     }
 }
 ?>

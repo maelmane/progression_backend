@@ -19,15 +19,14 @@
 namespace progression\domaine\entité;
 
 class RéponseProg{
-
-    public $langid;
+    public $langage;
     public $code;
     public $date_soumission;
     public $tests_réussis;
     public $feedback;
 
-    public function __construct($langid, $code, $date_soumission = null, $tests_réussis = null, $feedback = null){
-        $this->langid=$langid;
+    public function __construct($langage, $code, $date_soumission = null, $tests_réussis = null, $feedback = null){
+        $this->langid=$langage;
         $this->code=$code;
         $this->date_soumission=$date_soumission;
     }

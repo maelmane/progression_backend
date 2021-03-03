@@ -22,9 +22,9 @@ use progression\domaine\entité\{AvancementBD, Question};
 
 class AvancementBDDAO extends EntitéDAO
 {
-	static function get_avancement($question_id, $user_id)
+	static function get_avancement($question_id, $username)
 	{
-		$avancement = new AvancementBD($question_id, $user_id);
+		$avancement = new AvancementBD($question_id, $username);
 		AvancementBDDAO::load($avancement);
 		if (is_null($avancement->etat)) {
 			$avancement->etat = Question::ETAT_DEBUT;
@@ -36,9 +36,9 @@ class AvancementBDDAO extends EntitéDAO
 	protected static function load($objet)
 	{
 		$query = AvancementBDDAO::$conn->prepare(
-			'SELECT id, etat, reponse, code, conteneur FROM avancement WHERE questionID = ? AND userID = ?'
+			'SELECT id, etat, reponse, code, conteneur FROM avancement WHERE question_uri = ? AND name = ?'
 		);
-		$query->bind_param("ii", $objet->question_id, $objet->user_id);
+		$query->bind_param("ii", $objet->question_uri, $objet->username);
 		$query->execute();
 		$query->bind_result(
             $objet->id,
@@ -57,26 +57,26 @@ class AvancementBDDAO extends EntitéDAO
         $mysql->begin_transaction();
         try {
             $query = AvancementBDDAO::$conn
-                ->prepare('INSERT INTO avancement ( etat, questionID, userID ) VALUES ( ?, ?, ? )
+                ->prepare('INSERT INTO avancement ( etat, question_uri, username ) VALUES ( ?, ?, ? )
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 
             $query->bind_param(
                 "iii",
                 $objet->etat,
-                $objet->question_id,
-                $objet->user_id
+                $objet->question_uri,
+                $objet->username
             );
             $query->execute();
             $query->close();
 
             $query = AvancementBDDAO::$conn
-                ->prepare('INSERT INTO reponse_sys ( questionID, userID, reponse, conteneur ) VALUES ( ?, ?, ?, ?  )
+                ->prepare('INSERT INTO reponse_sys ( question_uri, username, reponse, conteneur ) VALUES ( ?, ?, ?, ?  )
                                               ON DUPLICATE KEY UPDATE reponse=VALUES( reponse ), conteneur=VALUES( conteneur )');
 
             $query->bind_param(
                 "iiss",
-                $objet->question_id,
-                $objet->user_id,
+                $objet->question_uri,
+                $objet->username,
                 $objet->reponse,
                 $objet->conteneur
             );
@@ -84,13 +84,13 @@ class AvancementBDDAO extends EntitéDAO
             $query->close();
 
             $query = AvancementBDDAO::$conn
-                ->prepare('INSERT INTO reponse_prog ( questionID, userID, lang, code ) VALUES ( ?, ?, ?, ?  )
+                ->prepare('INSERT INTO reponse_prog ( question_uri, username, lang, code ) VALUES ( ?, ?, ?, ?  )
                                               ON DUPLICATE KEY UPDATE lang=VALUES( lang ), code=VALUES( code )');
 
             $query->bind_param(
                 "iiss",
-                $objet->question_id,
-                $objet->user_id,
+                $objet->question_uri,
+                $objet->username,
                 "mysql",
                 $objet->code
             );
@@ -103,8 +103,8 @@ class AvancementBDDAO extends EntitéDAO
             throw $exception;
         }
         return AvancementBDDAO::get_avancement(
-            $objet->question_id,
-            $objet->user_id
+            $objet->question_uri,
+            $objet->username
         );
     }
 }

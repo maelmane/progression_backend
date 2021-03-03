@@ -8,11 +8,18 @@ FROM php:apache
 
 # Mise a jour de la liste de package
 RUN apt update && apt upgrade -y && apt autoclean
-RUN apt update && apt install -y unzip wget default-libmysqlclient-dev python-yaml git libldap2-dev && apt autoclean
+RUN apt update && apt install -y unzip wget default-libmysqlclient-dev python-yaml git libldap2-dev libyaml-dev && apt autoclean
 
 #Ajout d'extensions PHP
 RUN docker-php-ext-install -j$(nproc) mysqli ldap
 
+COPY docker-php-ext-get /usr/local/bin/
+
+RUN docker-php-source extract &&\
+    docker-php-ext-get yaml 2.2.1 &&\
+    docker-php-ext-install yaml &&\
+    docker-php-source delete
+	
 #Pour authentification par LDAP
 COPY ldap.conf /etc/ldap
 COPY certs/* /etc/ssl/certs/
