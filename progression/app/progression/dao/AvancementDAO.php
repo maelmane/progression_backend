@@ -34,7 +34,7 @@ class AvancementDAO extends EntitéDAO
 		$avancement = null;
 
 		if ($type == null) {
-			return "iugjshn";
+			return null;
 		} else {
 			if ($type == Question::TYPE_PROG) {
 				$avancement = new AvancementProg($question_id, $user_id);
@@ -53,17 +53,28 @@ class AvancementDAO extends EntitéDAO
 
 	public function get_tentative($userid, $questionid, $timestamp)
 	{
+		$tentative = null;
 		$query = $this->conn->prepare(
-			'SELECT lang, code
+			'SELECT lang, code, date_soumission
              FROM reponse_prog
              WHERE userID = ? AND questionID = ?
              AND date_soumission = ?'
 		);
 		$query->bind_param("iii", $userid, $questionid, $timestamp);
 		$query->execute();
-		$query->bind_result($lang, $code);
+		$query->bind_result(
+			$lang,
+			$code,
+			$date_soumission
+		);
 
-		$tentative = new RéponseProg($lang, $code, $timestamp);
+		if (is_null($query->fetch())) {
+			error_log($query->error);
+		}
+
+		if ($lang && $code) {
+			$tentative = new RéponseProg($lang, $code, $date_soumission);
+		}
 		$query->close();
 
 		return $tentative;

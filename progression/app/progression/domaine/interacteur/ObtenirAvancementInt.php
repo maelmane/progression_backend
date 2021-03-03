@@ -18,8 +18,6 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Question;
-
 class ObtenirAvancementInt extends Interacteur
 {
 	function __construct($source)
