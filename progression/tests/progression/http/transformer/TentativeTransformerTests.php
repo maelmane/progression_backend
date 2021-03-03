@@ -30,12 +30,18 @@ final class TentativeTransformerTests extends TestCase
 		$tentativeTransformer = new TentativeTransformer();
 
 		$résultat = [
-			'id' => $tentative->date_soumission,
+			"id" => "{$tentative->user_id}/" .
+				$tentative->question_id .
+				"/" .
+				$tentative->date_soumission,
 			'date_soumission' => $tentative->date_soumission,
 			'tests_réussis' => $tentative->tests_réussis,
 			'feedback' => $tentative->feedback,
 			'langage' => $tentative->langid,
-			'code' => $tentative->code
+			'code' => $tentative->code,
+			"links" => [
+				"self" => "{$_ENV["APP_URL"]}tentative/{$tentative->user_id}/{$tentative->question_id}/{$tentative->date_soumission}",
+			]
 		];
 
 		$this->assertEquals($résultat, $tentativeTransformer->transform($tentative));

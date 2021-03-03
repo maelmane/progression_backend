@@ -23,12 +23,6 @@ final class AvancementCtlTests extends TestCase
 	{
 		$_ENV['APP_URL'] = 'https://example.com/';
 
-		// Question
-		$question = new QuestionProg();
-		$question->id = "prog1/les_fonctions_01/appeler_une_fonction_paramétrée";
-		$question->chemin =
-			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée";
-
 		// Avancement
 		$avancement = new AvancementProg("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
 		$avancement->lang = 10;
@@ -61,7 +55,7 @@ final class AvancementCtlTests extends TestCase
 							"data" => [
 								[
 									"type" => "tentative",
-									"id" => 1614374490
+									"id" => "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
 								]
 							]
 						]
@@ -70,7 +64,7 @@ final class AvancementCtlTests extends TestCase
 				"included" => [
 					[
 						"type" => "tentative",
-						"id" => 1614374490,
+						"id" => "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
 						"attributes" => [
 							"date_soumission" => 1614374490,
 							"tests_réussis" => 2,
@@ -79,7 +73,7 @@ final class AvancementCtlTests extends TestCase
 							"code" => "codeTest"
 						],
 						"links" => [
-							"self" => "https://example.com/tentative/1614374490"
+							"self" => "https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490"
 						]
 					]
 				]
@@ -87,16 +81,6 @@ final class AvancementCtlTests extends TestCase
 
 
 		// Intéracteur
-		$mockObtenirQuestionInt = Mockery::mock(
-			'progression\domaine\interacteur\ObtenirQuestionInt'
-		);
-		$mockObtenirQuestionInt
-			->allows()
-			->get_question(
-				'prog1/les_fonctions_01/appeler_une_fonction_paramétrée'
-			)
-			->andReturn($question);
-
 		$mockObtenirAvancementInt = Mockery::mock(
 			'progression\domaine\interacteur\ObtenirAvancementInt'
 		);
@@ -109,11 +93,6 @@ final class AvancementCtlTests extends TestCase
 		$mockIntFactory = Mockery::mock(
 			'progression\domaine\interacteur\InteracteurFactory'
 		);
-		$mockIntFactory
-			->allows()
-			->getObtenirQuestionInt()
-			->andReturn($mockObtenirQuestionInt);
-
 		$mockIntFactory
 			->allows()
 			->getObtenirAvancementInt()

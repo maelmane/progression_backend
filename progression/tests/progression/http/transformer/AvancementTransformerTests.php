@@ -53,12 +53,18 @@ final class AvancementTransformerTests extends TestCase
 		$tentative->feedback = "feedbackTest";
 
 		$résultat = [
-			"id" => 1614711760,
+			"id" => "{$tentative->user_id}/" .
+				$tentative->question_id .
+				"/" .
+				$tentative->date_soumission,
 			"date_soumission" => 1614711760,
 			"tests_réussis" => 2,
 			"feedback" => "feedbackTest",
 			"langage" => 10,
 			"code" => "codeTest",
+			"links" => [
+				"self" => "{$_ENV["APP_URL"]}tentative/{$tentative->user_id}/{$tentative->question_id}/{$tentative->date_soumission}",
+			]
 		];
 
 		$this->assertEquals($résultat, $tentativeTransformer->transform($tentative));

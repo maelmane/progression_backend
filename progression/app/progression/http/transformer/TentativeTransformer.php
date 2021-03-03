@@ -38,7 +38,7 @@ class TentativeTransformer extends Fractal\TransformerAbstract
 			"langage" => $tentative->langid,
 			"code" => $tentative->code,
 			"links" => [
-				"self" => "{$_ENV["APP_URL"]}/tentative/{$tentative->user_id}/{$tentative->question_id}/{$tentative->date_soumission}",
+				"self" => "{$_ENV["APP_URL"]}tentative/{$tentative->user_id}/{$tentative->question_id}/{$tentative->date_soumission}",
 			]
 		];
 

@@ -22,12 +22,13 @@ use Illuminate\Http\Request;
 use progression\http\transformer\AvancementProgTransformer;
 use progression\domaine\entité\{Avancement, AvancementProg, AvancementSys, AvancementBD};
 use Illuminate\Support\Facades\Log;
+use progression\util\Encodage;
 
 class AvancementCtl extends Contrôleur
 {
 	public function get(Request $request, $username, $chemin)
 	{
-		//$chemin = Encodage::base64_decode_url($chemin);
+		$chemin = Encodage::base64_decode_url($chemin);
 		$avancement = null;
 
 		if ($chemin != null && $chemin != "" && $username != null && $username != "") {

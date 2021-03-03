@@ -25,6 +25,8 @@ class TentativeProg
 	public $date_soumission;
 	public $tests_réussis;
 	public $feedback;
+	public $user_id;
+	public $question_id;
 
 	public function __construct($langid, $code, $date_soumission, $tests_réussis = null, $feedback = null)
 	{
