@@ -18,16 +18,18 @@
 
 namespace progression\domaine\entité;
 
-class RéponseProg
+class TentativeProg
 {
-	public $numéro;
-	public $sortie_observée;
-	public $sortie_erreur;
-	public $résultat;
+	public $langid;
+	public $code;
+	public $date_soumission;
+	public $tests_réussis;
 	public $feedback;
 
-	public function __construct($numéro)
+	public function __construct($langid, $code, $date_soumission, $tests_réussis = null, $feedback = null)
 	{
-		$this->numéro = $numéro;
+		$this->langid = $langid;
+		$this->code = $code;
+		$this->date_soumission = $date_soumission;
 	}
 }

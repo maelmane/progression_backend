@@ -11,7 +11,7 @@
 */
 require_once __DIR__ . '/../../../TestCase.php';
 
-use progression\domaine\entité\{Question, AvancementProg, RéponseProg, QuestionProg};
+use progression\domaine\entité\{Question, AvancementProg, TentativeProg, QuestionProg};
 use progression\http\contrôleur\AvancementCtl;
 use Illuminate\Http\Request;
 
@@ -35,7 +35,7 @@ final class AvancementCtlTests extends TestCase
 		$avancement->type = Question::TYPE_PROG;
 		$avancement->etat = 1;
 		$avancement->réponses = [
-			new RéponseProg(10, "codeTest", 1614374490)
+			new TentativeProg(10, "codeTest", 1614374490)
 		];
 		$avancement->réponses[0]->tests_réussis = 2;
 		$avancement->réponses[0]->feedback = "feedbackTest";

@@ -18,7 +18,7 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Question, RéponseProg};
+use progression\domaine\entité\{Question, TentativeProg};
 
 class AvancementProgDAO extends EntitéDAO
 {
@@ -50,7 +50,7 @@ class AvancementProgDAO extends EntitéDAO
 		$objet->user_id = null;
 		$réponses = [];
 		while ($query->fetch()) {
-			$réponses[$lang] = new RéponseProg($lang, $code, $date);
+			$réponses[$lang] = new TentativeProg($lang, $code, $date);
 		}
 
 		$objet->réponses = $réponses;

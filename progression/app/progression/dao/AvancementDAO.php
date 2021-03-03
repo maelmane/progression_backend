@@ -23,7 +23,7 @@ use progression\domaine\entité\{
 	AvancementSys,
 	AvancementBD,
 	Question,
-	RéponseProg
+	TentativeProg
 };
 
 class AvancementDAO extends EntitéDAO
@@ -73,7 +73,7 @@ class AvancementDAO extends EntitéDAO
 		}
 
 		if ($lang && $code) {
-			$tentative = new RéponseProg($lang, $code, $date_soumission);
+			$tentative = new TentativeProg($lang, $code, $date_soumission);
 		}
 		$query->close();
 

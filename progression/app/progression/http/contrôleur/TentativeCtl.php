@@ -31,9 +31,12 @@ class TentativeCtl extends Contrôleur
 			$avancementInt = $this->intFactory->getObtenirAvancementInt();
 
 			$tentative = $avancementInt->get_tentative($username, $question, $timestamp);
+			if ($tentative) {
+				$tentative->user_id = $username;
+				$tentative->question_id = $question;
+			}
 		}
-		$tentative->user_id = $username;
-		$tentative->question_id = $question;
+
 		$réponse = $this->item($tentative, new TentativeTransformer());
 
 		return $this->préparer_réponse($réponse);

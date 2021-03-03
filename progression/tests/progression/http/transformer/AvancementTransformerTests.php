@@ -18,7 +18,7 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\{AvancementProg, RéponseProg};
+use progression\domaine\entité\{AvancementProg, TentativeProg};
 use PHPUnit\Framework\TestCase;
 
 final class AvancementTransformerTests extends TestCase
@@ -48,7 +48,7 @@ final class AvancementTransformerTests extends TestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$tentativeTransformer = new TentativeTransformer();
-		$tentative = new RéponseProg(10, "codeTest", 1614711760);
+		$tentative = new TentativeProg(10, "codeTest", 1614711760);
 		$tentative->tests_réussis = 2;
 		$tentative->feedback = "feedbackTest";
 

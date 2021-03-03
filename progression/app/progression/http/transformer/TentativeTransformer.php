@@ -19,16 +19,19 @@
 namespace progression\http\transformer;
 
 use League\Fractal;
-use progression\domaine\entité\RéponseProg;
+use progression\domaine\entité\TentativeProg;
 
 class TentativeTransformer extends Fractal\TransformerAbstract
 {
 	public $type = "tentative";
 
-	public function transform(RéponseProg $tentative)
+	public function transform(TentativeProg $tentative)
 	{
 		$data_out = [
-			"id" => $tentative->date_soumission,
+			"id" => "{$tentative->user_id}/" .
+				$tentative->question_id .
+				"/" .
+				$tentative->date_soumission,
 			"date_soumission" => $tentative->date_soumission,
 			"tests_réussis" => $tentative->tests_réussis,
 			"feedback" => $tentative->feedback,

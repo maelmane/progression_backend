@@ -19,14 +19,14 @@
 namespace progression\http\transformer;
 
 use PHPUnit\Framework\TestCase;
-use progression\domaine\entité\RéponseProg;
+use progression\domaine\entité\TentativeProg;
 use progression\util\Encodage;
 
 final class TentativeTransformerTests extends TestCase
 {
 	public function test_étant_donné_une_tentative_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
-		$tentative = new RéponseProg(10, "codeTest", "dateSoumissionTest", "testsRéussisTest", "feedBackTest");
+		$tentative = new TentativeProg(10, "codeTest", "dateSoumissionTest", "testsRéussisTest", "feedBackTest");
 		$tentativeTransformer = new TentativeTransformer();
 
 		$résultat = [

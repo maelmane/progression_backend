@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Question, RéponseProg};
+use progression\domaine\entité\{Question, TentativeProg};
 
 class TraiterRésultatsProgInt extends Interacteur
 {
@@ -37,7 +37,7 @@ class TraiterRésultatsProgInt extends Interacteur
 			$this->_user_id
 		))->get_avancement($question->id, $this->_user_id);
 
-		$avancement->réponses[$exécutable->lang] = new RéponseProg($exécutable->lang, $exécutable->code_utilisateur);
+		$avancement->réponses[$exécutable->lang] = new TentativeProg($exécutable->lang, $exécutable->code_utilisateur);
 
 		$résultats["essayé"] = "true";
 
@@ -86,5 +86,3 @@ class TraiterRésultatsProgInt extends Interacteur
 		$interacteur->sauvegarder($avancement);
 	}
 }
-
-?>
