@@ -20,6 +20,7 @@ namespace progression\http\transformer;
 
 use progression\domaine\entité\Exécutable;
 use PHPUnit\Framework\TestCase;
+use progression\util\Encodage;
 
 final class ÉbaucheTransformerTests extends TestCase
 {
@@ -29,17 +30,19 @@ final class ÉbaucheTransformerTests extends TestCase
 		$ébaucheTransformer = new ÉbaucheTransformer();
 
 		$ébauche = new Exécutable("return nb1 + nb2;", "java");
-		$ébauche->id =
-			"aHR0cHM6Ly91cmkuY29tL3Byb2cxL2xlc19mb25jdGlvbnNfMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25fcGFyYW3DqXRyw6ll/java";
+		$ébauche->lang = "java";
+		$ébauche->id = Encodage::base64_encode_url(
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction/ebauche.py"
+		) . "/{$ébauche->lang}";
 
 		$résultat_attendu = [
 			"id" =>
-			"aHR0cHM6Ly91cmkuY29tL3Byb2cxL2xlc19mb25jdGlvbnNfMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25fcGFyYW3DqXRyw6ll/java",
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24vZWJhdWNoZS5weQ/java",
 			"langage" => "java",
 			"code" => "return nb1 + nb2;",
 			"links" => [
 				"self" =>
-				"https://example.com/ebauche/aHR0cHM6Ly91cmkuY29tL3Byb2cxL2xlc19mb25jdGlvbnNfMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25fcGFyYW3DqXRyw6ll/java",
+				"https://example.com/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24vZWJhdWNoZS5weQ/java",
 			],
 		];
 		$résultat_obtenu = $ébaucheTransformer->transform($ébauche);
