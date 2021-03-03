@@ -24,33 +24,33 @@ use Illuminate\Http\Request;
 
 class ÉbaucheCtl extends Contrôleur
 {
-    public function get(Request $request, $uri, $langage)
-    {
-        $chemin = Encodage::base64_decode_url($uri);
-        $question = null;
-        $réponse = null;
+	public function get(Request $request, $uri, $langage)
+	{
+		$chemin = Encodage::base64_decode_url($uri);
+		$question = null;
+		$réponse = null;
 
-        if ($chemin != null && $chemin != "") {
-            $questionInt =  $this->intFactory->getObtenirQuestionInt();
-            $question = $questionInt->get_question($chemin);
-        }
+		if ($chemin != null && $chemin != "") {
+			$questionInt =  $this->intFactory->getObtenirQuestionInt();
+			$question = $questionInt->get_question($chemin);
+		}
 
-        if ($question != null) {
+		if ($question != null) {
 
-            if (array_key_exists($langage, $question->exécutables)) {
-                $ébauche = $question->exécutables[$langage];
-                $ébauche->id = Encodage::base64_encode_url($question->chemin) . "/{$ébauche->lang}";
-                $ébauche->links = [
-                    "related" =>
-                    $_ENV['APP_URL'] .
-                        "question/" .
-                        Encodage::base64_encode_url($question->chemin),
-                ];
+			if (array_key_exists($langage, $question->exécutables)) {
+				$ébauche = $question->exécutables[$langage];
+				$ébauche->id = Encodage::base64_encode_url($question->chemin) . "/{$ébauche->lang}";
+				$ébauche->links = [
+					"related" =>
+					$_ENV['APP_URL'] .
+						"question/" .
+						Encodage::base64_encode_url($question->chemin),
+				];
 
-                $réponse = $this->item($ébauche, new ÉbaucheTransformer);
-            }
-        }
+				$réponse = $this->item($ébauche, new ÉbaucheTransformer);
+			}
+		}
 
-        return $this->préparer_réponse($réponse);
-    }
+		return $this->préparer_réponse($réponse);
+	}
 }

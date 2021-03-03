@@ -23,27 +23,27 @@ use PHPUnit\Framework\TestCase;
 
 final class ÉbaucheTransformerTests extends TestCase
 {
-    public function test_étant_donné_une_ébauche_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
-    {
-        $_ENV["APP_URL"] = "https://example.com/";
-        $ébaucheTransformer = new ÉbaucheTransformer();
+	public function test_étant_donné_une_ébauche_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
+		$ébaucheTransformer = new ÉbaucheTransformer();
 
-        $ébauche = new Exécutable("return nb1 + nb2;", "java");
-        $ébauche->id =
-            "aHR0cHM6Ly91cmkuY29tL3Byb2cxL2xlc19mb25jdGlvbnNfMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25fcGFyYW3DqXRyw6ll/java";
+		$ébauche = new Exécutable("return nb1 + nb2;", "java");
+		$ébauche->id =
+			"aHR0cHM6Ly91cmkuY29tL3Byb2cxL2xlc19mb25jdGlvbnNfMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25fcGFyYW3DqXRyw6ll/java";
 
-        $résultat_attendu = [
-            "id" =>
-            "aHR0cHM6Ly91cmkuY29tL3Byb2cxL2xlc19mb25jdGlvbnNfMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25fcGFyYW3DqXRyw6ll/java",
-            "langage" => "java",
-            "code" => "return nb1 + nb2;",
-            "links" => [
-                "self" =>
-                "https://example.com/ebauche/aHR0cHM6Ly91cmkuY29tL3Byb2cxL2xlc19mb25jdGlvbnNfMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25fcGFyYW3DqXRyw6ll/java",
-            ],
-        ];
-        $résultat_obtenu = $ébaucheTransformer->transform($ébauche);
+		$résultat_attendu = [
+			"id" =>
+			"aHR0cHM6Ly91cmkuY29tL3Byb2cxL2xlc19mb25jdGlvbnNfMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25fcGFyYW3DqXRyw6ll/java",
+			"langage" => "java",
+			"code" => "return nb1 + nb2;",
+			"links" => [
+				"self" =>
+				"https://example.com/ebauche/aHR0cHM6Ly91cmkuY29tL3Byb2cxL2xlc19mb25jdGlvbnNfMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25fcGFyYW3DqXRyw6ll/java",
+			],
+		];
+		$résultat_obtenu = $ébaucheTransformer->transform($ébauche);
 
-        $this->assertEquals($résultat_attendu, $résultat_obtenu);
-    }
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
 }
