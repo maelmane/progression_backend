@@ -20,7 +20,6 @@ namespace progression\http\transformer;
 
 use League\Fractal;
 use progression\domaine\entité\Avancement;
-use progression\util\Encodage;
 
 class AvancementTransformer extends Fractal\TransformerAbstract
 {
@@ -32,14 +31,14 @@ class AvancementTransformer extends Fractal\TransformerAbstract
     {
         $data_out = [
             "id" =>
-                "{$avancement->user_id}/" .
-                Encodage::base64_encode_url($avancement->question_id),
+            "{$avancement->user_id}/" .
+                $avancement->question_id,
             "user_id" => $avancement->user_id,
             "état" => $avancement->etat,
             "links" => [
                 "self" =>
-                    "{$_ENV["APP_URL"]}avancement/{$avancement->user_id}/" .
-                    Encodage::base64_encode_url($avancement->question_id),
+                "{$_ENV["APP_URL"]}avancement/{$avancement->user_id}/" .
+                    $avancement->question_id,
             ],
         ];
 

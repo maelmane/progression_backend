@@ -19,7 +19,6 @@
 namespace progression\dao;
 
 use progression\domaine\entité\{
-	Avancement,
 	AvancementProg,
 	AvancementSys,
 	AvancementBD,
@@ -29,22 +28,23 @@ use progression\domaine\entité\{
 
 class AvancementDAO extends EntitéDAO
 {
-	public function get_avancement($question_id, $user_id)
+	public function get_avancement($user_id, $question_id)
 	{
 		$type = (new QuestionDAO())->get_type($question_id);
+		$avancement = null;
 
 		if ($type == null) {
-			return null;
+			return "iugjshn";
 		} else {
 			if ($type == Question::TYPE_PROG) {
 				$avancement = new AvancementProg($question_id, $user_id);
-				return (new AvancementProgDAO())->load($avancement);
+				(new AvancementProgDAO())->load($avancement);
 			} elseif ($type == Question::TYPE_SYS) {
 				$avancement = new AvancementSys($question_id, $user_id);
-				return (new AvancementSysDAO())->load($avancement);
+				(new AvancementSysDAO())->load($avancement);
 			} elseif ($type == Question::TYPE_BD) {
 				$avancement = new AvancementBD($question_id, $user_id);
-				return (new AvancementBDDAO())->load($avancement);
+				(new AvancementBDDAO())->load($avancement);
 			}
 
 			return $avancement;

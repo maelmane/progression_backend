@@ -19,19 +19,19 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use progression\util\Encodage;
 use progression\http\transformer\AvancementProgTransformer;
 use progression\domaine\entité\{Avancement, AvancementProg, AvancementSys, AvancementBD};
+use Illuminate\Support\Facades\Log;
 
 class AvancementCtl extends Contrôleur
 {
 	public function get(Request $request, $username, $chemin)
 	{
-		$chemin = Encodage::base64_decode_url($chemin);
+		//$chemin = Encodage::base64_decode_url($chemin);
 		$avancement = null;
 
 		if ($chemin != null && $chemin != "" && $username != null && $username != "") {
-			$avancementInt = $this->intFactory->getObtenirAvancementInt($username);
+			$avancementInt = $this->intFactory->getObtenirAvancementInt();
 
 			$avancement = $avancementInt->get_avancement($username, $chemin);
 		}

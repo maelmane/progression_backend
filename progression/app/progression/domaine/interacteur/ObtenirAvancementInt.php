@@ -22,17 +22,16 @@ use progression\domaine\entité\Question;
 
 class ObtenirAvancementInt extends Interacteur
 {
-	function __construct($source, $user_id)
+	function __construct($source)
 	{
-		parent::__construct($source);
-		$this->_user_id = $user_id;
+		$this->_source = $source;
 	}
 
 	function get_avancement($user_id, $question_id)
 	{
 		return $this->_source
 			->get_avancement_dao()
-			->get_avancement($question_id, $user_id);
+			->get_avancement($user_id, $question_id);
 	}
 
 	function get_tentative($user_id, $question_id, $date)

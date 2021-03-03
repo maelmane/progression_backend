@@ -20,18 +20,22 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use progression\http\transformer\TentativeTransformer;
+use progression\util\Encodage;
 
 class TentativeCtl extends Contrôleur
 {
 	public function get(Request $request, $username, $question, $timestamp)
 	{
-		$chemin = base64_decode($question);
+		$chemin = Encodage::base64_decode_url($question);
 		$tentative = null;
 
 		if ($chemin != null && $chemin != "" && $username != null && $username != "" && $timestamp != null) {
-			$avancementProgInt = $this->intFactory->getObtenirAvancementInt($username);
+			$avancementInt = $this->intFactory->getObtenirAvancementInt();
+			$questionInt = $this->intFactory->getObtenirQuestionInt();
 
-			$tentative = $avancementProgInt->get_tentative($username, $chemin, $timestamp);
+			//$questionID = $questionInt->get_question($chemin)->id;
+			//$tentative = $avancementInt->get_tentative($username, 2, $timestamp);
+			$tentative = $avancementInt->get_tentative(1, 2, 1614711760);
 		}
 
 		$réponse = $this->item($tentative, new TentativeTransformer(), "tentative");

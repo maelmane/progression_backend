@@ -116,7 +116,7 @@ final class AvancementCtlTests extends TestCase
 
 		$mockIntFactory
 			->allows()
-			->getObtenirAvancementInt("jdoe")
+			->getObtenirAvancementInt()
 			->andReturn($mockObtenirAvancementInt);
 
 		// Requête

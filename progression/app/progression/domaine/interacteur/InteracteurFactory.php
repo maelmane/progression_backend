@@ -40,8 +40,8 @@ class InteracteurFactory
 	{
 		return new ObtenirUserInt(new DAOFactory());
 	}
-	public function getObtenirAvancementInt($user_id)
+	public function getObtenirAvancementInt()
 	{
-		return new ObtenirAvancementInt(new DAOFactory(), $user_id);
+		return new ObtenirAvancementInt(new DAOFactory());
 	}
 }

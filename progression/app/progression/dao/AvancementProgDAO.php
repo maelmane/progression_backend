@@ -18,14 +18,14 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{AvancementProg, Question, RéponseProg};
+use progression\domaine\entité\{Question, RéponseProg};
 
 class AvancementProgDAO extends EntitéDAO
 {
 	public function load($objet)
 	{
 		$query = $this->conn->prepare(
-			'SELECT avancement.userID, avancement.questionID, etat, code, lang, lang_derniere_reponse
+			'SELECT avancement.userID, avancement.questionID, etat, code, lang, lang_derniere_reponse, date_soumission
              FROM avancement 
              LEFT JOIN avancement_prog 
              ON avancement.questionID = avancement_prog.questionID AND
@@ -39,17 +39,18 @@ class AvancementProgDAO extends EntitéDAO
 		$query->execute();
 		$query->bind_result(
 			$objet->user_id,
+			$objet->question_id,
 			$objet->etat,
 			$code,
 			$lang,
 			$objet->lang,
-			$objet->question_id
+			$date
 		);
 
 		$objet->user_id = null;
 		$réponses = [];
 		while ($query->fetch()) {
-			$réponses[$lang] = new RéponseProg($lang, $code);
+			$réponses[$lang] = new RéponseProg($lang, $code, $date);
 		}
 
 		$objet->réponses = $réponses;

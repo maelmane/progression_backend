@@ -25,9 +25,9 @@ class QuestionDAO extends EntitéDAO
 	public function get_type($id)
 	{
 		$query = $this->conn->prepare(
-			"SELECT type FROM question WHERE chemin = ?"
+			"SELECT type FROM question WHERE questionID = ?"
 		);
-		$query->bind_param("s", $id);
+		$query->bind_param("i", $id);
 		$query->execute();
 		$query->bind_result($type);
 		if (is_null($query->fetch())) {
