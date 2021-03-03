@@ -20,32 +20,54 @@ namespace progression\domaine\entité;
 
 use PHPUnit\Framework\TestCase;
 
-final class TentativeProgTests extends TestCase
+final class RéponseProgTests extends TestCase
 {
-	public function test_étant_donné_une_TentativeProg_instanciée_avec_langid_2_lorsquon_récupère_son_langid_on_obtient_2()
+	public function test_étant_donné_une_RéponseProg_instanciée_avec_numéro_2_lorsquon_récupère_son_numéro_on_obtient_2()
 	{
-		$TentativeProgTest = new TentativeProg(2, 5, 8);
+		$RéponseProgTest = new RéponseProg(2);
 
-		$langid = $TentativeProgTest->langid;
+		$numéro = $RéponseProgTest->numéro;
 
-		$this->assertEquals(2, $langid);
+		$this->assertEquals(2, $numéro);
 	}
 
-	public function test_étant_donné_une_TentativeProg_instanciée_avec_code_5_lorsquon_récupère_son_code_on_obtient_5()
+	public function test_étant_donné_une_RéponseProg_instanciée_avec_sortie_observée_sortieObservéeTest_lorsquon_récupère_sa_sortie_observée_on_obtient_sortieObservéeTest()
 	{
-		$TentativeProgTest = new TentativeProg(2, 5, 8);
+		$RéponseProgTest = new RéponseProg(2);
+		$RéponseProgTest->sortie_observée = "sortieObservéeTest";
 
-		$code = $TentativeProgTest->code;
+		$sortie_observée = $RéponseProgTest->sortie_observée;
 
-		$this->assertEquals(5, $code);
+		$this->assertEquals("sortieObservéeTest", $sortie_observée);
 	}
 
-	public function test_étant_donné_une_TentativeProg_instanciée_avec_date_soumission_8_lorsquon_récupère_sa_date_soumission_on_obtient_8()
+	public function test_étant_donné_une_RéponseProg_instanciée_avec_sortie_erreur_sortieObservéeTest_lorsquon_récupère_sa_sortie_erreur_on_obtient_sortieObservéeTest()
 	{
-		$TentativeProgTest = new TentativeProg(2, 5, 8);
+		$RéponseProgTest = new RéponseProg(2);
+		$RéponseProgTest->sortie_erreur = "sortieObservéeTest";
 
-		$date_soumission = $TentativeProgTest->date_soumission;
+		$sortie_erreur = $RéponseProgTest->sortie_erreur;
 
-		$this->assertEquals(8, $date_soumission);
+		$this->assertEquals("sortieObservéeTest", $sortie_erreur);
+	}
+
+	public function test_étant_donné_une_RéponseProg_instanciée_avec_résultat_résultatTest_lorsquon_récupère_son_résultat_on_obtient_résultatTest()
+	{
+		$RéponseProgTest = new RéponseProg(2);
+		$RéponseProgTest->résultat = "résultatTest";
+
+		$résultat = $RéponseProgTest->résultat;
+
+		$this->assertEquals("résultatTest", $résultat);
+	}
+
+	public function test_étant_donné_une_RéponseProg_instanciée_avec_feedback_feedbackTest_lorsquon_récupère_son_feedback_on_obtient_feedbackTest()
+	{
+		$RéponseProgTest = new RéponseProg(2);
+		$RéponseProgTest->feedback = "feedbackTest";
+
+		$feedback = $RéponseProgTest->feedback;
+
+		$this->assertEquals("feedbackTest", $feedback);
 	}
 }
