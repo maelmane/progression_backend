@@ -26,100 +26,100 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 final class ÉbaucheCtlTests extends TestCase
 {
-	public function test_étant_donné_le_chemin_dune_ébauche_lorsquon_appelle_get_on_obtient_lébauche_et_ses_relations_sous_forme_json()
-	{
-		$_ENV['APP_URL'] = 'https://example.com/';
+    public function test_étant_donné_le_chemin_dune_ébauche_lorsquon_appelle_get_on_obtient_lébauche_et_ses_relations_sous_forme_json()
+    {
+        $_ENV["APP_URL"] = "https://example.com/";
 
-		// Question
-		$question = new QuestionProg();
-		$question->type = Question::TYPE_PROG;
-		$question->nom = "appeler_une_fonction_paramétrée";
-		$question->chemin =
-			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée";
-		$question->titre = "Appeler une fonction paramétrée";
-		$question->description =
-			"Appel d'une fonction existante recevant un paramètre";
-		$question->enonce =
-			"La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
+        // Question
+        $question = new QuestionProg();
+        $question->type = Question::TYPE_PROG;
+        $question->nom = "appeler_une_fonction_paramétrée";
+        $question->chemin =
+            "https://uri.com/prog1/les_fonctions_01/appeler_une_fonction_paramétrée";
+        $question->titre = "Appeler une fonction paramétrée";
+        $question->description =
+            "Appel d'une fonction existante recevant un paramètre";
+        $question->enonce =
+            "La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
 
-		// Ébauches
-		$question->exécutables['python'] = new Exécutable("print(\"Hello world\")", "python");
-		$question->exécutables['java'] = new Exécutable("System.out.println(\"Hello world\")", "java");
+        // Ébauches
+        $question->exécutables["python"] = new Exécutable("print(\"Hello world\")", "python");
+        $question->exécutables["java"] = new Exécutable("System.out.println(\"Hello world\")", "java");
 
-		$résultat_attendu = [
-			"data" => [
-				"type" => "ebauche",
-				"id" => "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python",
-				"attributes" => [
-					"langage" => "python",
-					"code" => "print(\"Hello world\")",
-				],
-				"links" => [
-					"self" => "https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python",
-					"related" => "https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
-				],
-			],
-		];
+        $résultat_attendu = [
+            "data" => [
+                "type" => "ebauche",
+                "id" => "aHR0cHM6Ly91cmkuY29tL3Byb2cxL2xlc19mb25jdGlvbnNfMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25fcGFyYW3DqXRyw6ll/python",
+                "attributes" => [
+                    "langage" => "python",
+                    "code" => "print(\"Hello world\")",
+                ],
+                "links" => [
+                    "self" => "https://example.com/ebauche/aHR0cHM6Ly91cmkuY29tL3Byb2cxL2xlc19mb25jdGlvbnNfMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25fcGFyYW3DqXRyw6ll/python",
+                    "related" => "https://example.com/question/aHR0cHM6Ly91cmkuY29tL3Byb2cxL2xlc19mb25jdGlvbnNfMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25fcGFyYW3DqXRyw6ll",
+                ],
+            ],
+        ];
 
-		// Intéracteur
-		$mockObtenirQuestionInt = Mockery::mock(
-			'progression\domaine\interacteur\ObtenirQuestionInt'
-		);
-		$mockObtenirQuestionInt
-			->allows()
-			->get_question(
-				'prog1/les_fonctions_01/appeler_une_fonction_paramétrée'
-			)
-			->andReturn($question);
+        // Intéracteur
+        $mockObtenirQuestionInt = Mockery::mock(
+            "progression\domaine\interacteur\ObtenirQuestionInt"
+        );
+        $mockObtenirQuestionInt
+            ->allows()
+            ->get_question(
+                "https://uri.com/prog1/les_fonctions_01/appeler_une_fonction_paramétrée"
+            )
+            ->andReturn($question);
 
-		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			'progression\domaine\interacteur\InteracteurFactory'
-		);
-		$mockIntFactory
-			->allows()
-			->getObtenirQuestionInt()
-			->andReturn($mockObtenirQuestionInt);
+        // InteracteurFactory
+        $mockIntFactory = Mockery::mock(
+            "progression\domaine\interacteur\InteracteurFactory"
+        );
+        $mockIntFactory
+            ->allows()
+            ->getObtenirQuestionInt()
+            ->andReturn($mockObtenirQuestionInt);
 
-		// Requête
-		$mockRequest = Mockery::mock('Illuminate\Http\Request');
-		$mockRequest
-			->allows()
-			->ip()
-			->andReturn("127.0.0.1");
-		$mockRequest
-			->allows()
-			->method()
-			->andReturn("GET");
-		$mockRequest
-			->allows()
-			->path()
-			->andReturn(
-				"/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python"
-			);
-		$mockRequest
-			->allows()
-			->query('include')
-			->andReturn();
-		$this->app->bind(Request::class, function () use ($mockRequest) {
-			return $mockRequest;
-		});
+        // Requête
+        $mockRequest = Mockery::mock("Illuminate\Http\Request");
+        $mockRequest
+            ->allows()
+            ->ip()
+            ->andReturn("127.0.0.1");
+        $mockRequest
+            ->allows()
+            ->method()
+            ->andReturn("GET");
+        $mockRequest
+            ->allows()
+            ->path()
+            ->andReturn(
+                "/ebauche/aHR0cHM6Ly91cmkuY29tL3Byb2cxL2xlc19mb25jdGlvbnNfMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25fcGFyYW3DqXRyw6ll/python"
+            );
+        $mockRequest
+            ->allows()
+            ->query("include")
+            ->andReturn();
+        $this->app->bind(Request::class, function () use ($mockRequest) {
+            return $mockRequest;
+        });
 
-		// Contrôleur
-		$ctl = new ÉbaucheCtl($mockIntFactory);
+        // Contrôleur
+        $ctl = new ÉbaucheCtl($mockIntFactory);
 
-		$this->assertEquals(
-			$résultat_attendu,
-			json_decode(
-				$ctl
-					->get(
-						$mockRequest,
-						"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
-						"python"
-					)
-					->getContent(),
-				true
-			)
-		);
-	}
+        $this->assertEquals(
+            $résultat_attendu,
+            json_decode(
+                $ctl
+                    ->get(
+                        $mockRequest,
+                        "aHR0cHM6Ly91cmkuY29tL3Byb2cxL2xlc19mb25jdGlvbnNfMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25fcGFyYW3DqXRyw6ll",
+                        "python"
+                    )
+                    ->getContent(),
+                true
+            )
+        );
+    }
 }
