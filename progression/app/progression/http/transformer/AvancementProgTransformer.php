@@ -32,7 +32,7 @@ class AvancementProgTransformer extends AvancementTransformer
                 "/" .
                 $tentative->date_soumission;
             $tentative->user_id = $avancement->user_id;
-            $tentative->question_id = Encodage::base64_encode_url($avancement->question_id);
+            $tentative->question_id = $avancement->question_id;
             $tentative->links = [
                 "related" => $_ENV["APP_URL"] . "tentative/" . $tentative->id,
             ];
