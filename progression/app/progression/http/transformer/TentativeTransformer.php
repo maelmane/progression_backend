@@ -20,6 +20,7 @@ namespace progression\http\transformer;
 
 use League\Fractal;
 use progression\domaine\entité\TentativeProg;
+use progression\util\Encodage;
 
 class TentativeTransformer extends Fractal\TransformerAbstract
 {
@@ -29,7 +30,7 @@ class TentativeTransformer extends Fractal\TransformerAbstract
 	{
 		$data_out = [
 			"id" => "{$tentative->user_id}/" .
-				$tentative->question_id .
+				Encodage::base64_encode_url($tentative->question_id) .
 				"/" .
 				$tentative->date_soumission,
 			"date_soumission" => $tentative->date_soumission,
@@ -38,7 +39,9 @@ class TentativeTransformer extends Fractal\TransformerAbstract
 			"langage" => $tentative->langid,
 			"code" => $tentative->code,
 			"links" => [
-				"self" => "{$_ENV["APP_URL"]}tentative/{$tentative->user_id}/{$tentative->question_id}/{$tentative->date_soumission}",
+				"self" => "{$_ENV["APP_URL"]}tentative/{$tentative->user_id}/" .
+					Encodage::base64_encode_url($tentative->question_id) .
+					"/{$tentative->date_soumission}",
 			]
 		];
 
