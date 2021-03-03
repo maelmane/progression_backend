@@ -20,7 +20,6 @@ namespace progression\http\transformer;
 
 use progression\domaine\entité\Exécutable;
 use PHPUnit\Framework\TestCase;
-use progression\util\Encodage;
 
 final class ÉbaucheTransformerTests extends TestCase
 {
@@ -31,9 +30,9 @@ final class ÉbaucheTransformerTests extends TestCase
 
 		$ébauche = new Exécutable("return nb1 + nb2;", "java");
 		$ébauche->lang = "java";
-		$ébauche->id = Encodage::base64_encode_url(
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction/ebauche.py"
-		) . "/{$ébauche->lang}";
+		$ébauche->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24vZWJhdWNoZS5weQ"
+			. "/java";
 
 		$résultat_attendu = [
 			"id" =>
