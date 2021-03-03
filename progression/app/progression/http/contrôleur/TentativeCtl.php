@@ -32,7 +32,8 @@ class TentativeCtl extends Contrôleur
 
 			$tentative = $avancementInt->get_tentative($username, $question, $timestamp);
 		}
-
+		$tentative->user_id = $username;
+		$tentative->question_id = $question;
 		$réponse = $this->item($tentative, new TentativeTransformer());
 
 		return $this->préparer_réponse($réponse);
