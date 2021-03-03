@@ -18,49 +18,41 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{
-    Avancement,
-    AvancementProg,
-    AvancementSys,
-    AvancementBD,
-    Question
-};
+use progression\domaine\entité\{Avancement, AvancementProg, AvancementSys, AvancementBD, Question};
 
 class AvancementDAO extends EntitéDAO
 {
-    public function get_avancement($question_id, $user_id)
-    {
-        $type = (new QuestionDAO())->get_type($question_id);
+	public function get_avancement($question_uri, $username)
+	{
+		$type = (new QuestionDAO())->get_type($question_uri);
 
-        if ($type == null) {
-            return null;
-        } else {
-            if ($type == Question::TYPE_PROG) {
-                $avancement = new AvancementProg($question_id, $user_id);
-                return (new AvancementProgDAO())->load($avancement);
-            } elseif ($type == Question::TYPE_SYS) {
-                $avancement = new AvancementSys($question_id, $user_id);
-                return (new AvancementSysDAO())->load($avancement);
-            } elseif ($type == Question::TYPE_BD) {
-                $avancement = new AvancementBD($question_id, $user_id);
-                return (new AvancementBDDAO())->load($avancement);
-            }
+		if ($type == null) {
+			return null;
+		} else {
+			if ($type == Question::TYPE_PROG) {
+				$avancement = new AvancementProg($question_uri, $username);
+				return (new AvancementProgDAO())->load($avancement);
+			} elseif ($type == Question::TYPE_SYS) {
+				$avancement = new AvancementSys($question_uri, $username);
+				return (new AvancementSysDAO())->load($avancement);
+			} elseif ($type == Question::TYPE_BD) {
+				$avancement = new AvancementBD($question_uri, $username);
+				return (new AvancementBDDAO())->load($avancement);
+			}
 
-            return $avancement;
-        }
-    }
+			return $avancement;
+		}
+	}
 
-    protected function load($objet)
-    {
-        $query = $this->conn->prepare(
-            "SELECT userID, etat FROM avancement WHERE questionID = ? AND userID = ?"
-        );
-        $query->bind_param("ii", $objet->question_id, $objet->user_id);
-        $query->execute();
-        $query->bind_result($objet->id, $objet->etat);
-        $query->fetch();
+	protected function load($objet)
+	{
+		$query = $this->conn->prepare("SELECT user_id, etat FROM avancement WHERE question_uri = ? AND user_id = ?");
+		$query->bind_param("ii", $objet->question_uri, $objet->username);
+		$query->execute();
+		$query->bind_result($objet->id, $objet->etat);
+		$query->fetch();
 
-        $query->close();
-    }
+		$query->close();
+	}
 }
 ?>

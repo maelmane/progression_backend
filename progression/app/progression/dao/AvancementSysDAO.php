@@ -21,9 +21,9 @@ use progression\domaine\entité\{AvancementSys, Question, RéponseSys};
 
 class AvancementSysDAO extends EntitéDAO
 {
-    static function get_avancement($question_id, $user_id)
+    static function get_avancement($question_uri, $username)
     {
-        $avancement = new AvancementSys($question_id, $user_id, null, null);
+        $avancement = new AvancementSys($question_uri, $username, null, null);
         AvancementSysDAO::load($avancement);
         if (is_null($avancement->etat)) {
             $avancement->etat = Question::ETAT_DEBUT;
@@ -41,7 +41,7 @@ class AvancementSysDAO extends EntitéDAO
                 avancement.userID = reponse_sys.userID
              WHERE avancement.questionID = ? AND avancement.userID = ?'
         );
-        $query->bind_param("ii", $objet->question_id, $objet->user_id);
+        $query->bind_param("ii", $objet->question_uri, $objet->username);
         $query->execute();
         $query->bind_result($objet->id, $objet->etat, $objet->reponse, $objet->conteneur);
         $query->fetch();
@@ -54,26 +54,26 @@ class AvancementSysDAO extends EntitéDAO
         AvancementSysDAO::$conn->begin_transaction();
         try {
             $query = AvancementSysDAO::$conn
-                ->prepare('INSERT INTO avancement ( etat, questionID, userID ) VALUES ( ?, ?, ? )
+                ->prepare('INSERT INTO avancement ( etat, question_uri, username ) VALUES ( ?, ?, ? )
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 
             $query->bind_param(
                 "iii",
                 $objet->etat,
-                $objet->question_id,
-                $objet->user_id
+                $objet->question_uri,
+                $objet->username
             );
             $query->execute();
             $query->close();
 
             $query = AvancementSysDAO::$conn
-                ->prepare('INSERT INTO reponse_sys ( questionID, userID, reponse, conteneur ) VALUES ( ?, ?, ?, ?  )
+                ->prepare('INSERT INTO reponse_sys ( question_uri, username, reponse, conteneur ) VALUES ( ?, ?, ?, ?  )
                                               ON DUPLICATE KEY UPDATE reponse=VALUES( reponse ), conteneur=VALUES( conteneur )');
 
             $query->bind_param(
                 "iiss",
-                $objet->question_id,
-                $objet->user_id,
+                $objet->question_uri,
+                $objet->username,
                 $objet->reponse,
                 $objet->conteneur
             );
@@ -87,8 +87,8 @@ class AvancementSysDAO extends EntitéDAO
             throw $exception;
         }
         return AvancementSysDAO::get_avancement(
-            $objet->question_id,
-            $objet->user_id
+            $objet->question_uri,
+            $objet->username
         );
     }
 }

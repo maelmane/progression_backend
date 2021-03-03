@@ -20,10 +20,6 @@ namespace progression\domaine\entité;
 
 class QuestionProg extends Question
 {
-	const PYTHON3 = 1;
-	const CPP = 8;
-	const JAVA = 10;
-
 	public $exécutables = [];
 	public $tests = [];
 }

@@ -56,6 +56,7 @@ catégorie/
 
 ** Composantes d'une question
 - un fichier ~info.yml~ comportant les attributs suivants :
+  - type : «prog|sys|bd», le type de question (programmation, administration système ou base de données).
   - titre : le titre de la question
   - description : description courte de la question
   - énoncé : énoncé de la question (en format Markdown)
@@ -65,8 +66,10 @@ catégorie/
   - feedback+ : feedback positif général (facultatif, en format Markdown)
   - feedback- : feedback négatif général (facultatif, en format Markdown)
   - tests : liste des fichiers de tests
-
-** Le fichier d'ébauche de programme
+    
+** Questions Prog: 
+    
+*** Le fichier d'ébauche de programme
 Pour chaque question, un fichier de départ est fourni. Le programme entier doit résider dans ce seul fichier (pas d'import/include possible autre que ceux des librairies standard); c'est ce fichier qui sera exécuté.
 
 En commentaire (quelque soit le style de commentaire du langage utilisé), les étiquettes suivantes peuvent être utilisées pour contrôler l'affichage et la modification du code par l'étudiant :
@@ -75,13 +78,14 @@ En commentaire (quelque soit le style de commentaire du langage utilisé), les �
 
 Tout ce qui se trouve hors des sections VISIBLE sera invisible à l'étudiant (et donc immuable) mais sera tout de même exécuté normalement.
 
-** fichiers de tests
+*** fichiers de tests
 Les fichiers de tests sont dans le format yaml et comportent une ou plusieurs sections correspondant chacune à un test effectué. Les sections sont séparées par trois tirets (---) et elles contiennent les attributs suivants :
   - nom : nom du test
   - in : les entrées textuelles passés directement à l'entrée standard du programme
   - out : les sorties textuelles attendues sur la sortie standard du programme
   - feedback+ : feedback positif spécifique à la question (facultatif, en format Markdown)
   - feedback- : feedback négatif spécifique à la question (facultatif, en format Markdown)
+
 
 * Exemple
 

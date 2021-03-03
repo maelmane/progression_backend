@@ -26,13 +26,13 @@ class AvancementBD extends Avancement
     public $code;
 
     public function __construct(
-        $question_id,
-        $user_id,
+        $question_uri,
+        $username,
         $conteneur,
         $reponse = null,
         $code = null
     ) {
-        parent::__construct($question_id, $user_id);
+        parent::__construct($question_uri, $username);
         $this->reponse = $reponse;
         $this->conteneur = $conteneur;
         $this->code = $code;

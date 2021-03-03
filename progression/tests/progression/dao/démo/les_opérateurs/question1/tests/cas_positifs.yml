@@ -1,0 +1,23 @@
+nom: Deux petits positifs
+in: |
+    3
+    5
+out: 8
+feedback+: bravo!
+feedback-: avez-vous pensé à utiliser l'opérateur + ?
+
+---
+
+nom: Deux plus grands positifs
+in: |
+    22
+    43
+out: 65
+
+---
+
+nom: Deux nuls
+in: |
+    0
+    0
+out: 0
