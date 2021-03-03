@@ -106,7 +106,7 @@ CREATE TABLE `question_systeme` (
 CREATE TABLE `avancement` (
   `userID`       int(11) NOT NULL,
   `questionID`   int(11) NOT NULL,
-  `etat`	     int DEFAULT 1,
+  `etat`	       int DEFAULT 1,
   `type`         int NOT NULL,
   PRIMARY KEY (`userID`, `questionID`)
 );
@@ -127,10 +127,11 @@ CREATE TABLE `reponse_sys` (
 );
 
 CREATE TABLE `reponse_prog` (
-  `userID`       int(11) NOT NULL,
-  `questionID`   int(11) NOT NULL,
-  `lang`         int NOT NULL,
-  `code`	     text,
+  `userID`       	int(11) NOT NULL,
+  `questionID`   	int(11) NOT NULL,
+  `lang`         	int NOT NULL,
+  `date_soumission` int(10) NOT NULL,
+  `code`	       	text,
   PRIMARY KEY (`userID`, `questionID`, `lang`)
   );
 
