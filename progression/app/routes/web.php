@@ -35,7 +35,7 @@ $router->group(["middleware" => "auth"], function () use ($router) {
 		"NotImplementedCtl@get"
 	);
 	// Avancement
-	$router->get("/avancement/{username}/{chemin}", "AvancementCtl@get");
+	$router->get("/avancement/{username}/{uri}", "AvancementCtl@get");
 	$router->get(
 		"/avancement/{username}/{chemin}/relationships/{relation}",
 		"NotImplementedCtl@get"

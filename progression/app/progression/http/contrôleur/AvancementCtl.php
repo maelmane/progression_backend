@@ -25,9 +25,9 @@ use progression\domaine\entité\{Avancement, AvancementProg, AvancementSys, Avan
 
 class AvancementCtl extends Contrôleur
 {
-	public function get(Request $request, $username, $chemin)
+	public function get(Request $request, $username, $uri)
 	{
-		$chemin = Encodage::base64_decode_url($chemin);
+		$chemin = Encodage::base64_decode_url($uri);
 		$avancement = null;
 
 		if ($chemin != null && $chemin != "" && $username != null && $username != "") {
@@ -36,19 +36,17 @@ class AvancementCtl extends Contrôleur
 			$avancement = $avancementInt->get_avancement($username, $chemin);
 		}
 
-        $réponse = null;
+		$réponse = null;
 
-        if ($avancement instanceof AvancementProg) {
-            $réponse = $this->item($avancement, new AvancementProgTransformer());
-        }
-        elseif ($avancement instanceof AvancementSys) {
+		if ($avancement instanceof AvancementProg) {
+			$réponse = $this->item($avancement, new AvancementProgTransformer());
+		} elseif ($avancement instanceof AvancementSys) {
 			Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["message" => "Question système non implémentée."], 501);
-        }
-        elseif ($avancement instanceof AvancementBD) {
+		} elseif ($avancement instanceof AvancementBD) {
 			Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["message" => "Question BD non implémentée."], 501);
-        }
+		}
 
 		return $this->préparer_réponse($réponse);
 	}

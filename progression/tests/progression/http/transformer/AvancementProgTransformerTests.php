@@ -25,20 +25,18 @@ final class AvancementProgTransformerTests extends TestCase
 {
 	public function test_étant_donné_un_avancement_instancié_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
 	{
-		$user_id = "jdoe";
-		$question_id = "prog1/les_fonctions_01/appeler_une_fonction_paramétrée";
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$avancementProgTransformer = new AvancementProgTransformer();
-		$avancement = new AvancementProg("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
+		$avancement = new AvancementProg("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "jdoe");
 
 		$résultat = [
-			"id" => "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
+			"id" => "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 			"user_id" => "jdoe",
 			"état" => 0,
 			"links" => [
 				"self" =>
-					"https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
+				"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 			],
 		];
 
