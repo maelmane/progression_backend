@@ -35,7 +35,7 @@ final class ÉbaucheCtlTests extends TestCase
 		$question->type = Question::TYPE_PROG;
 		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->chemin =
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction/ebauche.py";
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		$question->titre = "Appeler une fonction paramétrée";
 		$question->description =
 			"Appel d'une fonction existante recevant un paramètre";
@@ -49,14 +49,14 @@ final class ÉbaucheCtlTests extends TestCase
 		$résultat_attendu = [
 			"data" => [
 				"type" => "ebauche",
-				"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24vZWJhdWNoZS5weQ/python",
+				"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
 				"attributes" => [
 					"langage" => "python",
 					"code" => "print(\"Hello world\")",
 				],
 				"links" => [
-					"self" => "https://example.com/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24vZWJhdWNoZS5weQ/python",
-					"related" => "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24vZWJhdWNoZS5weQ",
+					"self" => "https://example.com/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+					"related" => "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				],
 			],
 		];
@@ -68,7 +68,7 @@ final class ÉbaucheCtlTests extends TestCase
 		$mockObtenirQuestionInt
 			->allows()
 			->get_question(
-				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction/ebauche.py"
+				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
 			)
 			->andReturn($question);
 
@@ -95,7 +95,7 @@ final class ÉbaucheCtlTests extends TestCase
 			->allows()
 			->path()
 			->andReturn(
-				"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24vZWJhdWNoZS5weQ/python"
+				"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python"
 			);
 		$mockRequest
 			->allows()
@@ -114,7 +114,7 @@ final class ÉbaucheCtlTests extends TestCase
 				$ctl
 					->get(
 						$mockRequest,
-						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24vZWJhdWNoZS5weQ",
+						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 						"python"
 					)
 					->getContent(),
