@@ -20,11 +20,9 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use progression\domaine\entité\{
-    Question,
-    QuestionProg,
-    QuestionSys,
-    QuestionBD,
-    Test
+	QuestionProg,
+	QuestionSys,
+	QuestionBD,
 };
 use progression\util\Encodage;
 use progression\http\transformer\QuestionProgTransformer;
@@ -32,16 +30,45 @@ use Illuminate\Support\Facades\Log;
 
 class QuestionCtl extends Contrôleur
 {
-    public function get(Request $request, $chemin)
-    {
-        $question = null;
+	public function get(Request $request, $uri)
+	{
+		$question = null;
 
-        $chemin = Encodage::base64_decode_url($chemin);
+		$chemin = Encodage::base64_decode_url($uri);
 
-        if ($chemin != null && $chemin != "") {
-            $questionInt = $this->intFactory->getObtenirQuestionInt();
-            $question = $questionInt->get_question($chemin);
-        }
+		if ($chemin != null && $chemin != "") {
+			$questionInt = $this->intFactory->getObtenirQuestionInt();
+			$question = $questionInt->get_question($chemin);
+		}
+
+		$réponse = null;
+
+		if ($question instanceof QuestionProg) {
+			$réponse = $this->item(
+				["question" => $question, "username" => $request["username"]],
+				new QuestionProgTransformer()
+			);
+		} elseif ($question instanceof QuestionSys) {
+			Log::warning(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					__CLASS__ .
+					")"
+			);
+			return $this->réponse_json(
+				["message" => "Question système non implémentée."],
+				501
+			);
+		} elseif ($question instanceof QuestionBD) {
+			Log::warning(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					__CLASS__ .
+					")"
+			);
+			return $this->réponse_json(
+				["message" => "Question BD non implémentée."],
+				501
+			);
+		}
 
         $réponse = null;
 

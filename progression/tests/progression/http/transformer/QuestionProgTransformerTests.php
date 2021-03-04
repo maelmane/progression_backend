@@ -27,49 +27,44 @@ final class QuestionProgTransformerTests extends TestCase
 {
 	public function test_étant_donné_une_questionprog_instanciée_avec_des_valeurs_lorsquon_le_transforme_on_obtient_un_tableau_d_objets_identique_avec_les_liens_avancement_et_catégorie()
 	{
-		$_ENV['APP_URL'] = 'https://example.com/';
+		$_ENV["APP_URL"] = "https://example.com/";
 		$username = "jdoe";
 
 		$question = new QuestionProg();
 		$question->nom = "appeler_une_fonction_paramétrée";
-		$question->chemin =
-			"prog1/les_fonctions/appeler_une_fonction_paramétrée";
+		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		$question->titre = "Appeler une fonction paramétrée";
-		$question->description =
-			"Appel d\'une fonction existante recevant un paramètre";
+		$question->description = "Appel d\'une fonction existante recevant un paramètre";
 		$question->enonce =
 			"La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
 
-		$résultats_attendus = [
-			"id" =>
-			"cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
+		$résultat = [
+			"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 			"titre" => "Appeler une fonction paramétrée",
-			"description" =>
-			"Appel d\'une fonction existante recevant un paramètre",
+			"description" => "Appel d\'une fonction existante recevant un paramètre",
 			"énoncé" =>
-			"La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.",
-			'links' => [
-				'self' =>
-				'https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU',
-				'avancement' =>
-				'https://example.com/avancement/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU',
+				"La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.",
+			"links" => [
+				"self" =>
+					"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				"avancement" =>
+					"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 			],
 		];
 
-		$résultat_obtenu = (new QuestionProgTransformer())->transform([
+		$item = (new QuestionProgTransformer())->transform([
 			"question" => $question,
 			"username" => $username,
 		]);
-		$this->assertEquals($résultats_attendus, $résultat_obtenu);
+		$this->assertEquals($résultat, $item);
 	}
 
 	public function test_étant_donné_une_question_avec_ses_tests_lorsquon_inclut_les_tests_on_reçoit_un_tableau_de_tests_numérotés_dans_le_même_ordre()
 	{
-		$_ENV['APP_URL'] = 'https://example.com/';
+		$_ENV["APP_URL"] = "https://example.com/";
 
 		$question = new QuestionProg();
-		$question->chemin =
-			"prog1/les_fonctions/appeler_une_fonction_paramétrée";
+		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		$question->tests = [
 			new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
@@ -79,30 +74,30 @@ final class QuestionProgTransformerTests extends TestCase
 		$résultats_attendus = [
 			[
 				"id" =>
-				"cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0",
+					"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 				"numéro" => 0,
 				"nom" => "2 salutations",
 				"entrée" => "2",
 				"sortie_attendue" => "Bonjour\nBonjour\n",
 				"links" => [
 					"self" =>
-					"https://example.com/test/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0",
+						"https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 					"related" =>
-					"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
+						"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				],
 			],
 			[
 				"id" =>
-				"cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1",
+					"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1",
 				"numéro" => 1,
 				"nom" => "Aucune salutation",
 				"entrée" => "0",
 				"sortie_attendue" => "",
 				"links" => [
 					"self" =>
-					"https://example.com/test/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1",
+						"https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1",
 					"related" =>
-					"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
+						"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				],
 			],
 		];
@@ -117,9 +112,7 @@ final class QuestionProgTransformerTests extends TestCase
 		foreach ($résultats_obtenus->getData() as $i => $résultat_obtenu) {
 			$this->assertEquals(
 				$résultats_attendus[$i],
-				$résultats_obtenus
-					->getTransformer()
-					->transform($résultat_obtenu)
+				$résultats_obtenus->getTransformer()->transform($résultat_obtenu),
 			);
 		}
 	}
@@ -142,8 +135,7 @@ final class QuestionProgTransformerTests extends TestCase
 	public function test_étant_donné_une_question_avec_ses_ébauches_lorsquon_inclut_les_ébauches_on_reçoit_un_tableau_débauches()
 	{
 		$question = new QuestionProg();
-		$question->chemin =
-			"prog1/les_fonctions/appeler_une_fonction_paramétrée";
+		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		$question->exécutables = [
 			new Exécutable("print(\"Hello world\")", "python"),
@@ -153,26 +145,26 @@ final class QuestionProgTransformerTests extends TestCase
 		$résultats_attendus = [
 			[
 				"id" =>
-				"cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python",
+					"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
 				"langage" => "python",
 				"code" => "print(\"Hello world\")",
 				"links" => [
 					"self" =>
-					"https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python",
+						"https://example.com/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
 					"related" =>
-					"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
+						"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				],
 			],
 			[
 				"id" =>
-				"cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java",
+					"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/java",
 				"langage" => "java",
 				"code" => "System.out.println(\"Hello world\")",
 				"links" => [
 					"self" =>
-					"https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java",
+						"https://example.com/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/java",
 					"related" =>
-					"https://example.com/question/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
+						"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				],
 			],
 		];
@@ -187,9 +179,7 @@ final class QuestionProgTransformerTests extends TestCase
 		foreach ($résultats_obtenus->getData() as $i => $résultat_obtenu) {
 			$this->assertEquals(
 				$résultats_attendus[$i],
-				$résultats_obtenus
-					->getTransformer()
-					->transform($résultat_obtenu)
+				$résultats_obtenus->getTransformer()->transform($résultat_obtenu),
 			);
 		}
 	}
