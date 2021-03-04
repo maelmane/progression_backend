@@ -19,13 +19,13 @@
 namespace progression\http\transformer;
 
 use League\Fractal;
-use progression\domaine\entité\RéponseProg;
 use progression\domaine\entité\TentativeProg;
 use progression\util\Encodage;
 
 class TentativeTransformer extends Fractal\TransformerAbstract
 {
 	public $type = "tentative";
+	protected $availableIncludes = ["reponses"];
 
 	public function transform(TentativeProg $tentative)
 	{
@@ -47,5 +47,24 @@ class TentativeTransformer extends Fractal\TransformerAbstract
 		];
 
 		return $data_out;
+	}
+
+	public function includeReponses(TentativeProg $tentative)
+	{
+		foreach ($tentative->réponses as $réponse) {
+			$réponse->id =
+				Encodage::base64_encode_url($tentative->question_id . "/{$réponse->numéro}");
+			$réponse->links = [
+				"related" =>
+				$_ENV["APP_URL"] .
+					"tentative/" .
+					Encodage::base64_encode_url($tentative->user_id) . "/{$tentative->question_id}" . "/{$tentative->date_soumission}",
+			];
+		}
+		return $this->collection(
+			$tentative->réponses,
+			new RéponseProgTransformer(),
+			"reponse"
+		);
 	}
 }

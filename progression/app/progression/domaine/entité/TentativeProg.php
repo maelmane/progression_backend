@@ -27,8 +27,9 @@ class TentativeProg
 	public $feedback;
 	public $user_id;
 	public $question_id;
+	public $réponses;
 
-	public function __construct($langid, $code, $date_soumission, $tests_réussis = null, $feedback = null)
+	public function __construct($langid, $code, $date_soumission, $tests_réussis = null, $feedback = null, $réponses = [])
 	{
 		$this->langid = $langid;
 		$this->code = $code;

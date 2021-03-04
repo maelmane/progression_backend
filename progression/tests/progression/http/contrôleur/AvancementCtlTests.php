@@ -11,7 +11,7 @@
 */
 require_once __DIR__ . '/../../../TestCase.php';
 
-use progression\domaine\entité\{Question, AvancementProg, TentativeProg, QuestionProg};
+use progression\domaine\entité\{Question, AvancementProg, RéponseProg, TentativeProg};
 use progression\http\contrôleur\AvancementCtl;
 use Illuminate\Http\Request;
 
@@ -74,6 +74,14 @@ final class AvancementCtlTests extends TestCase
 						],
 						"links" => [
 							"self" => "https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490"
+						],
+						"relationships" => [
+							"reponses" => [
+								"links" => [
+									'self' => 'https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/relationships/reponses',
+									'related' => 'https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/reponses'
+								]
+							]
 						]
 					]
 				]

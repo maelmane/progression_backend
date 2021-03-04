@@ -16,18 +16,29 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\http\transformer;
 
-class RéponseProg extends Entité
+use progression\domaine\entité\RéponseProg;
+use League\Fractal;
+
+class RéponseProgTransformer extends Fractal\TransformerAbstract
 {
-  public $numéro;
-  public $sortie_observée;
-  public $sortie_erreur;
-  public $résultat;
-  public $feedback;
+	public $type = "reponse";
 
-  public function __construct($numéro)
-  {
-    $this->numéro = $numéro;
-  }
+	public function transform(RéponseProg $réponse)
+	{
+		$data = [
+			"id" => $réponse->id,
+			"numéro" => $réponse->numéro,
+			"sortie_observée" => $réponse->sortie_observée,
+			"sortie_erreur" => $réponse->sortie_erreur,
+			"résultat" => $réponse->résultat,
+			"feedback" => $réponse->feedback,
+			"links" => [
+				"self" => "{$_ENV["APP_URL"]}reponse/{$réponse->id}",
+			],
+		];
+
+		return $data;
+	}
 }

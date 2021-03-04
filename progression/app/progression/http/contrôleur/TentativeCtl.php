@@ -36,6 +36,27 @@ class TentativeCtl extends Contrôleur
 			if ($tentative) {
 				$tentative->user_id = $username;
 				$tentative->question_id = $chemin;
+				$tentative->réponses = [];
+			}
+		}
+
+		$réponse = $this->item($tentative, new TentativeTransformer());
+
+		return $this->préparer_réponse($réponse);
+	}
+
+	public function post(Request $request, $username, $question, $timestamp)
+	{
+		$chemin = Encodage::base64_decode_url($question);
+		$tentative = null;
+
+		if ($chemin != null && $chemin != "" && $username != null && $username != "" && $timestamp != null) {
+			$avancementInt = $this->intFactory->getObtenirAvancementInt();
+
+			$tentative = $avancementInt->get_tentative($username, $chemin, $timestamp);
+			if ($tentative) {
+				$tentative->user_id = $username;
+				$tentative->question_id = $chemin;
 			}
 		}
 

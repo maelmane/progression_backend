@@ -44,6 +44,15 @@ final class TentativeCtlTests extends TestCase
 					],
 					"links" => [
 						"self" => "https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490"
+					],
+					"relationships" => [
+						"reponses" => [
+							"links" => [
+								"self" => "https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/relationships/reponses",
+								"related" => "https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/reponses"
+							],
+							"data" => []
+						]
 					]
 				]
 			];
