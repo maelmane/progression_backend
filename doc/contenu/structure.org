@@ -51,6 +51,7 @@ catégorie/
 - un fichier ~info.yml~ comportant les attributs suivants :
   - titre : le titre de la série
   - description : description courte de la série
+  - catégories : liste des répertoires contenant une sous-catégorie
   - questions : liste des répertoires contenant une question
 - un sous-répertoire par question
 
