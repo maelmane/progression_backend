@@ -17,35 +17,34 @@
 */
 
 namespace progression\http\transformer;
+
 use progression\domaine\entité\Test;
 use PHPUnit\Framework\TestCase;
 
 final class TestTransformerTests extends TestCase
 {
-    public function test_étant_donné_un_test_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
-    {
-        $testTransformer = new TestTransformer();
-        $test = new Test("Somme de deux nombres", "21\n21\n", "42");
-        $test->id =
-            "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0";
-        $test->type = "Test";
-        $test->numéro = 0;
-        $résultat_attendu = [
-            "id" =>
-                "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0",
-            "numéro" => 0,
-            "nom" => "Somme de deux nombres",
-            "entrée" => "21\n21\n",
-            "sortie_attendue" => "42",
-            "links" => [
-                "self" =>
-                    "https://example.com/test/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0",
-            ],
-        ];
-        $résultat_obtenu = $testTransformer->transform($test);
+	public function test_étant_donné_un_test_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+	{
+		$testTransformer = new TestTransformer();
+		$test = new Test("Somme de deux nombres", "21\n21\n", "42");
+		$test->numéro = 0;
+		$test->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0";
 
-        $this->assertEquals($résultat_attendu, $résultat_obtenu);
-    }
+		$résultat_attendu = [
+			"id" =>
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+			"numéro" => 0,
+			"nom" => "Somme de deux nombres",
+			"entrée" => "21\n21\n",
+			"sortie_attendue" => "42",
+			"links" => [
+				"self" =>
+				"https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+			],
+		];
+		$résultat_obtenu = $testTransformer->transform($test);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
 }
-
-?>
