@@ -29,7 +29,7 @@ final class QuestionCtlTests extends \TestCase
 	{
         $question = new QuestionProg();
         $question->type = Question::TYPE_PROG;
-        $question->uri = "file:///var/www/progression/tests/progression/dao/démo/boucles/boucle_énumérée";
+        $question->uri = "file://". __DIR__ ."/démo/boucles/boucle_énumérée";
         $question->titre = "Affichage répété";
         $question->description = "Exercice simple sur les itérations à nombre d'itérations fixe";
         $question->enonce = "Saisissez un nombre sur l'entrée standard puis faites afficher la phrase «Bonjour le monde!» autant de fois.";
@@ -64,7 +64,7 @@ final class QuestionCtlTests extends \TestCase
         ];
 
 		$résultat_obtenu = (new QuestionDAO())->get_question(
-			"file:///var/www/progression/tests/progression/dao/démo/boucles/boucle_énumérée"
+			"file://". __DIR__ ."/démo/boucles/boucle_énumérée"
 		);
 
         $this->assertEquals($question, $résultat_obtenu);
