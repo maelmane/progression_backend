@@ -33,14 +33,8 @@ final class ÉbaucheCtlTests extends TestCase
 		// Question
 		$question = new QuestionProg();
 		$question->type = Question::TYPE_PROG;
-		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->chemin =
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
-		$question->titre = "Appeler une fonction paramétrée";
-		$question->description =
-			"Appel d'une fonction existante recevant un paramètre";
-		$question->enonce =
-			"La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
 
 		// Ébauches
 		$question->exécutables["python"] = new Exécutable("print(\"Hello world\")", "python");

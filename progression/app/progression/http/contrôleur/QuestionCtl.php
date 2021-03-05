@@ -19,11 +19,7 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use progression\domaine\entité\{
-	QuestionProg,
-	QuestionSys,
-	QuestionBD,
-};
+use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
 use progression\util\Encodage;
 use progression\http\transformer\QuestionProgTransformer;
 use Illuminate\Support\Facades\Log;
@@ -41,35 +37,21 @@ class QuestionCtl extends Contrôleur
 			$question = $questionInt->get_question($chemin);
 		}
 
-        $réponse = null;
+		$réponse = null;
 
-        if ($question instanceof QuestionProg) {
-            $réponse = $this->item(
-                ["question" => $question, "username" => $request["username"]],
-                new QuestionProgTransformer()
-            );
-        } elseif ($question instanceof QuestionSys) {
-            Log::warning(
-                "({$request->ip()}) - {$request->method()} {$request->path()} (" .
-                    __CLASS__ .
-                    ")"
-            );
-            return $this->réponse_json(
-                ["message" => "Question système non implémentée."],
-                501
-            );
-        } elseif ($question instanceof QuestionBD) {
-            Log::warning(
-                "({$request->ip()}) - {$request->method()} {$request->path()} (" .
-                    __CLASS__ .
-                    ")"
-            );
-            return $this->réponse_json(
-                ["message" => "Question BD non implémentée."],
-                501
-            );
-        }
+		if ($question instanceof QuestionProg) {
+			$réponse = $this->item(
+				["question" => $question, "username" => $request["username"]],
+				new QuestionProgTransformer(),
+			);
+		} elseif ($question instanceof QuestionSys) {
+			Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			return $this->réponse_json(["message" => "Question système non implémentée."], 501);
+		} elseif ($question instanceof QuestionBD) {
+			Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			return $this->réponse_json(["message" => "Question BD non implémentée."], 501);
+		}
 
-        return $this->préparer_réponse($réponse);
-    }
+		return $this->préparer_réponse($réponse);
+	}
 }
