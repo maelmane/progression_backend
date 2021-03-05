@@ -18,14 +18,17 @@
 
 namespace progression\domaine\entité;
 
-class Entité
-{
-    public $id;
-    public $actif;
+use PHPUnit\Framework\TestCase;
 
-    public function __construct($id = null)
-    {
-        $this->id = $id;
+final class AvancementProgTests extends TestCase
+{
+    public function test_étant_donné_un_AvancementProg_instancié_avec_questionuri_lorsquon_récupère_ses_réponses_on_obtient_un_tableau_vide(){
+        $avancementTest = new AvancementProg("http://example.com/maquestion", "jdoe");
+
+        $réponses = $avancementTest->réponses;
+
+        $this->assertEquals( [], $réponses );
     }
 }
+
 ?>

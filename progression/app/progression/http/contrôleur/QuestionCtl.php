@@ -19,40 +19,30 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use progression\domaine\interacteur\ObtenirQuestionInt;
 use progression\domaine\entité\{
-    Question,
-    QuestionProg,
-    QuestionSys,
-    QuestionBD,
-    Test
+	QuestionProg,
+	QuestionSys,
+	QuestionBD,
 };
 use progression\util\Encodage;
-use progression\dao\DAOFactory;
 use progression\http\transformer\QuestionProgTransformer;
-use League\Fractal\Resource\Item;
 use Illuminate\Support\Facades\Log;
-use Firebase\JWT\JWT;
-use Firebase\JWT\SignatureInvalidException;
-use UnexpectedValueException;
-use DomainException;
-use Exception;
 
 class QuestionCtl extends Contrôleur
 {
-    public function get(Request $request, $chemin)
-    {
-        $question = null;
+	public function get(Request $request, $uri)
+	{
+		$question = null;
 
-        $chemin = Encodage::base64_decode_url($chemin);
+		$chemin = Encodage::base64_decode_url($uri);
 
-        if ($chemin != null && $chemin != "") {
-            $questionInt = $this->intFactory->getObtenirQuestionInt();
-            $question = $questionInt->get_question($chemin);
-        }
+		if ($chemin != null && $chemin != "") {
+			$questionInt = $this->intFactory->getObtenirQuestionInt();
+			$question = $questionInt->get_question($chemin);
+		}
 
         $réponse = null;
-        
+
         if ($question instanceof QuestionProg) {
             $réponse = $this->item(
                 ["question" => $question, "username" => $request["username"]],
@@ -79,8 +69,7 @@ class QuestionCtl extends Contrôleur
                 501
             );
         }
-        
+
         return $this->préparer_réponse($réponse);
-        
     }
 }

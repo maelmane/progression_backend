@@ -1,3 +1,4 @@
+#+SETUPFILE: https://plafrance.pages.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg.setup
 #+TITLE: Schéma de séquence de résolution d'un exercice
 
 #+begin_src napkin-puml :eval yes :file images/sequence.png :results output :exports results

@@ -20,23 +20,24 @@ namespace progression\domaine\entité;
 
 class Test
 {
-    public function __construct($nom, $stdin, $solution, $params = null, $fbp=null, $fbn=null)
-    {
-        $this->nom = $nom;
-        $this->stdin = $stdin;
-        $this->solution = $solution;
-        $this->params = $params;
-        $this->feedback_pos = $fbp;
-        $this->feedback_neg = $fbn;
-    }
 
     public $nom;
     public $numéro=0;
-    public $stdin;
+    public $entrée;
     public $params = null;
-    public $solution;
+    public $sortie_attendue;
     public $feedback_pos;
     public $feedback_neg;
+
+    public function __construct($nom, $entrée, $sortie_attendue, $params = null, $feedback_pos=null, $feedback_neg=null)
+    {
+        $this->nom = $nom;
+        $this->entrée = $entrée;
+        $this->sortie_attendue = $sortie_attendue;
+        $this->params = $params;
+        $this->feedback_pos = $feedback_pos;
+        $this->feedback_neg = $feedback_neg;
+    }
 
 }
 

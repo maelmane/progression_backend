@@ -21,48 +21,24 @@ use progression\domaine\entité\User;
 
 class UserDAO extends EntitéDAO
 {
-    public function existe($username)
+
+    public function get_user($username)
     {
-        return !is_null($this->trouver_par_nomusager($username));
-    }
-
-    public function trouver_par_nomusager($username)
-    {
-        $id = null;
-
-        $query = $this->conn->prepare(
-            'SELECT userID FROM users WHERE username = ?'
-        );
-        $query->bind_param("s", $username);
-        $query->execute();
-        $query->bind_result($id);
-        $query->fetch();
-        $query->close();
-
-        if ($id == null) {
-            return null;
-        } else {
-            return $this->get_user($id);
-        }
-    }
-
-    public function get_user($user_id)
-    {
-        $user = new User($user_id);
+        $user = new User($username);
         $this->load($user);
 
-        return $user->id ? $user : null;
+        return $user->username ? $user : null;
     }
 
     protected function load($objet)
     {
         $query = $this->conn->prepare(
-            'SELECT userID, username, role FROM users WHERE userID = ? '
+            'SELECT user_id, role FROM users WHERE user_id = ? '
         );
-        $query->bind_param("i", $objet->id);
+        $query->bind_param("i", $objet->username);
         $query->execute();
 
-        $query->bind_result($objet->id, $objet->username, $objet->role);
+        $query->bind_result($objet->username, $objet->role);
         $res = $query->fetch();
         $query->close();
     }
@@ -70,7 +46,7 @@ class UserDAO extends EntitéDAO
     public function save($objet)
     {
         $query = $this->conn->prepare(
-            'INSERT INTO users( username, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )'
+            'INSERT INTO users( user_id, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )'
         );
         $query->bind_param("si", $objet->username, $objet->role);
         $query->execute();

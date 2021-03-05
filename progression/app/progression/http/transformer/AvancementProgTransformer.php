@@ -27,8 +27,8 @@ class AvancementProgTransformer extends AvancementTransformer
         $tentatives = $avancement->réponses;
         foreach ($tentatives as $tentative) {
             $tentative->id =
-                "{$avancement->user_id}/" .
-                Encodage::base64_encode_url($avancement->question_id) .
+                "{$avancement->username}/" .
+                           Encodage::base64_encode_url($avancement->question_uri) .
                 "/" .
                 $tentative->date_soumission;
             $tentative->user_id = $avancement->user_id;

@@ -1,4 +1,4 @@
-#+SETUPFILE: http://plafrance.pages.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg-local.setup
+#+SETUPFILE: https://plafrance.pages.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg.setup
 #+TITLE: API Progression
 #+PROPERTY: header-args:sh :results output
 #+PROPERTY: header-args:sh :exports both

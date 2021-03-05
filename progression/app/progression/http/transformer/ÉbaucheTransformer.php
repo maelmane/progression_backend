@@ -18,24 +18,24 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\Exécutable;
 use League\Fractal;
+use progression\domaine\entité\Exécutable;
 
 class ÉbaucheTransformer extends Fractal\TransformerAbstract
 {
-    public $type = "ebauche";
+	public $type = "ebauche";
 
-    public function transform(Exécutable $ébauche)
-    {
-        $data = [
-            "id" => $ébauche->id,
-            "langage" => $ébauche->lang,
-            "code" => $ébauche->code_exec,
-            "links" => (isset($ébauche->links) ? $ébauche->links : []) + [
-                "self" => "{$_ENV["APP_URL"]}ebauche/{$ébauche->id}",
-            ],
-        ];
+	public function transform(Exécutable $ébauche)
+	{
+		$data_out = [
+			"id" => $ébauche->id,
+			"langage" => $ébauche->lang,
+			"code" => $ébauche->code_exec,
+			"links" => (isset($ébauche->links) ? $ébauche->links : []) + [
+				"self" => "{$_ENV["APP_URL"]}ebauche/{$ébauche->id}",
+			],
+		];
 
-        return $data;
-    }
+		return $data_out;
+	}
 }

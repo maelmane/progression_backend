@@ -17,35 +17,35 @@
 */
 
 namespace progression\http\transformer;
+
 use progression\domaine\entité\Exécutable;
 use PHPUnit\Framework\TestCase;
 
 final class ÉbaucheTransformerTests extends TestCase
 {
-    public function test_étant_donné_une_ébauche_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
-    {
-        $_ENV["APP_URL"] = "https://example.com/";
-        $ébaucheTransformer = new ÉbaucheTransformer();
+	public function test_étant_donné_une_ébauche_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
+		$ébaucheTransformer = new ÉbaucheTransformer();
 
-        $exécutable = new Exécutable("return nb1 + nb2;", "java");
-        $exécutable->id =
-            "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java";
-        $exécutable->type = "Exécutable";
+		$ébauche = new Exécutable("return nb1 + nb2;", "python");
+		$ébauche->lang = "python";
+		$ébauche->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+			. "/python";
 
-        $résultat_attendu = [
-            "id" =>
-                "cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java",
-            "langage" => "java",
-            "code" => "return nb1 + nb2;",
-            "links" => [
-                "self" =>
-                    "https://example.com/ebauche/cHJvZzEvbGVzX2ZvbmN0aW9ucy9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/java",
-            ],
-        ];
-        $résultat_obtenu = $ébaucheTransformer->transform($exécutable);
+		$résultat_attendu = [
+			"id" =>
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+			"langage" => "python",
+			"code" => "return nb1 + nb2;",
+			"links" => [
+				"self" =>
+				"https://example.com/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+			],
+		];
+		$résultat_obtenu = $ébaucheTransformer->transform($ébauche);
 
-        $this->assertEquals($résultat_attendu, $résultat_obtenu);
-    }
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
 }
-
-?>

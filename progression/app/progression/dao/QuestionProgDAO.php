@@ -21,47 +21,41 @@ use progression\domaine\entité\{QuestionProg, Exécutable, Test};
 
 class QuestionProgDAO extends QuestionDAO
 {
-    protected function load($objet)
-    {
-        parent::load($objet);
 
-        $objet->exécutables = $this->load_exécutables($objet->id);
-        $objet->tests = $this->load_tests($objet->id);
-    }
+    public $type = QuestionProg::TYPE_PROG;
+    
+	protected function load($question, $infos_question)
+	{
+		parent::load($question, $infos_question);
 
-    private function load_exécutables($id)
-    {
-        $query = $this->conn->prepare(
-            'SELECT code, lang FROM executable WHERE questionID=?'
-        );
-        $query->bind_param("i", $id);
-        $query->execute();
-        $query->bind_result($code, $lang);
+		$question->exécutables = $this->load_exécutables($question, $infos_question);
+		$question->tests = $this->load_tests($question, $infos_question);
+	}
 
-        $exécutables = [];
-        while ($query->fetch()) {
-            $exécutables[$lang] = new Exécutable($code, $lang);
-        }
-        $query->close();
+	protected function load_exécutables($question, $infos_question)
+	{
+		$exécutables = [];
+		foreach ($infos_question["execs"] as $lang => $code) {
+			$exécutables[$lang] = new Exécutable($code, $lang);
+		}
 
-        return $exécutables;
-    }
+		return $exécutables;
+	}
 
-    private function load_tests($id)
-    {
-        $query = $this->conn->prepare(
-            'SELECT nom, stdin, params, solution, feedback_pos, feedback_neg FROM test WHERE questionID=?'
-        );
-        $query->bind_param("i", $id);
-        $query->execute();
-        $query->bind_result($nom, $stdin, $params, $solution, $feedback_pos, $feedback_neg);
+	protected function load_tests($question, $infos_question)
+	{
+		$tests = [];
+		foreach ($infos_question["tests"] as $test) {
+			$tests[] = new Test(
+				$test["nom"],
+				$test["in"],
+				$test["out"],
+				isset($test["params"])?$test["params"]:"" ,
+				isset($test["feedback+"])?$test["feedback+"]:"",
+				isset($test["feedback-"])?$test["feedback-"]:"",
+			);
+		}
 
-        $tests = [];
-        while ($query->fetch()) {
-            $tests[] = new Test($nom, $stdin, $solution, $params, $feedback_pos, $feedback_neg);
-        }
-        $query->close();
-
-        return $tests;
-    }
+		return $tests;
+	}
 }

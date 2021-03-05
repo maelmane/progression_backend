@@ -20,158 +20,81 @@ namespace progression\dao;
 
 use progression\domaine\entité\{Question, QuestionProg, QuestionSys, QuestionBD};
 
-class QuestionDAO extends EntitéDAO
+class QuestionDAO
 {
-	public function get_type($id)
-	{
-		$query = $this->conn->prepare(
-			"SELECT type FROM question WHERE questionID = ?"
-		);
-		$query->bind_param("i", $id);
-		$query->execute();
-		$query->bind_result($type);
-		if (is_null($query->fetch())) {
-			error_log($query->error);
-			$type = null;
-		}
-		$query->close();
+    public function get_question($uri)
+    {
+        $infos_question = $this->récupérer_question($uri);
 
-		return $type;
-	}
-
-	public function get_question($chemin)
-	{
-		$type = $this->get_type($chemin);
+        $type = $infos_question["type"];
 
 		if ($type == null) {
 			return null;
 		} else {
 			if ($type == Question::TYPE_PROG) {
-				$question = new QuestionProg(null);
-				$question->chemin = $chemin;
-				(new QuestionProgDAO())->load($question);
+                $question = new QuestionProg();
+				(new QuestionProgDAO())->load($question, $infos_question);
 			} elseif ($type == Question::TYPE_SYS) {
-				$question = new QuestionSys(null);
-				$question->chemin = $chemin;
-				(new QuestionSysDAO())->load($question);
+                $question = new QuestionSys();
+                (new QuestionSysDAO())->load($question, $infos_question);
 			} elseif ($type == Question::TYPE_BD) {
-				$question = new QuestionBD(null);
-				$question->chemin = $chemin;
-				(new QuestionBDDAO())->load($question);
+                $question = new QuestionBD();
+                (new QuestionBDDAO())->load($question, $infos_question);
 			}
 
 			return $question;
 		}
 	}
 
-	protected function load($objet)
-	{
-		$query = $this->conn->prepare('SELECT question.questionID,
-                                            question.nom,
-                                            question.chemin,
-	                                        question.actif,
-	                                        question.serieID as s,
-	                                        question.numero as n,
-	                                        ( select questionID from question where serieID=s and numero=n+1 ) as suivante,
-	                                        question.titre,
-	                                        question.description,
-	                                        question.enonce,
-	                                        question.feedback_pos,
-	                                        question.feedback_neg,
-	                                        question.code_validation
-	                                        FROM question
-	                                        WHERE question.chemin = ?');
-		$query->bind_param("s", $objet->chemin);
-		$query->execute();
-		$query->bind_result(
-			$objet->id,
-			$objet->nom,
-			$objet->chemin,
-			$objet->actif,
-			$objet->serieID,
-			$objet->numero,
-			$objet->suivante,
-			$objet->titre,
-			$objet->description,
-			$objet->enonce,
-			$objet->feedback_pos,
-			$objet->feedback_neg,
-			$objet->code_validation
-		);
-		if (is_null($query->fetch())) {
-			error_log($query->error);
-			$objet->id = null;
-		}
-		$query->close();
-	}
+    protected function load($question, $infos_question)
+    {
+        $question->uri = $infos_question["uri"];
+        $question->type = $this->type;
+        $question->titre = $infos_question["titre"];
+        $question->description = $infos_question["description"];
+        $question->enonce = $infos_question["énoncé"];
+        $question->feedback_pos = $infos_question["feedback+"];
+        $question->feedback_neg = $infos_question["feedback-"];
+    }
 
-	public function save($objet)
-	{
-		if (!$objet->id) {
-			$query = $this->conn->prepare("INSERT INTO question( serieID,
-                                                              nom,
-                                                              chemin,
-	                                                          actif,
-	                                                          titre,
-	                                                          description,
-	                                                          numero,
-	                                                          enonce,
-	                                                          feedback_pos,
-	                                                          feedback_neg,
-	                                                          code_validation ) 
-	                                 VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )");
+    protected function récupérer_question($uri){
+        $data = file_get_contents($uri . "/info.yml");
+        $info = yaml_parse($data);
+        
+        if(isset($info["type"]) && $info["type"] == Question::TYPE_PROG)
+        {
+            $info["execs"] = $this->récupérer_execs($uri, $info["execs"]);
+            $info["tests"] = $this->récupérer_tests($uri, $info["tests"]);
+        }
 
-			$query->bind_param(
-				"iiississss",
-				$objet->serieID,
-				$objet->nom,
-				$objet->chemin,
-				$objet->actif,
-				$objet->titre,
-				$objet->description,
-				$objet->numero,
-				$objet->enonce,
-				$objet->feedback_pos,
-				$objet->feedback_neg,
-				$objet->code_validation
-			);
-			$query->execute();
-			$query->close();
+        $info['uri'] = $uri;
+        return $info;
+    }
 
-			$objet->id = mysqli_insert_id();
-		} else {
-			$query = $this->conn->prepare("UPDATE question set 
-	                                            serieID=?,
-                                                nom=?,
-                                                chemin=?,
-	                                            actif=?,
-	                                            titre=?,
-	                                            description=?,
-	                                            numero=?,
-	                                            enonce=?,
-	                                            feedback_pos=?,
-	                                            feedback_neg=?,
-	                                            code_validation=? WHERE questionID = ?");
+    protected function récupérer_execs($uri, $execs){
+        $items=[];
 
-			$query->bind_param(
-				"iiississssi",
-				$objet->serieID,
-				$objet->nom,
-				$objet->chemin,
-				$objet->actif,
-				$objet->titre,
-				$objet->description,
-				$objet->numero,
-				$objet->enonce,
-				$objet->feedback_pos,
-				$objet->feedback_neg,
-				$objet->code_validation,
-				$objet->id
-			);
-			$query->execute();
-			$query->close();
-		}
+        foreach($execs as $exec){
+            $items[$exec["langage"]] = $this->récupérer_exec($uri, $exec["fichier"]);
+        }
 
-		return $objet;
-	}
+        return $items;
+    }
+
+    protected function récupérer_exec($uri, $exec){
+        $data = file_get_contents($uri . "/" . $exec);
+        return $data;
+    }
+
+    protected function récupérer_tests($uri, $tests){
+        $items=[];
+
+        foreach($tests as $test){
+            $data = file_get_contents($uri . "/" . $test);
+            $items = array_merge($items, yaml_parse($data,-1));
+        }
+
+        return $items;
+    }
+    
 }

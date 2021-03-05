@@ -29,14 +29,12 @@
 			 )
        (list "démo"
              :base-directory "doc/contenu/démo"
-             :recursive t
              :base-extension 'any
              :publishing-directory "progression/app/html/doc/contenu/démo/"
              :publishing-function 'org-publish-attachment
              :recursive t)
        (list "thème"
              :base-directory "doc/src"
-             :recursive t
              :base-extension 'any
              :publishing-directory "progression/app/html/doc/src/"
              :publishing-function 'org-publish-attachment

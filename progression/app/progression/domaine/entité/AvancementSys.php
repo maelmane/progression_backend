@@ -24,12 +24,12 @@ class AvancementSys extends Avancement
     public $reponse;
 
     public function __construct(
-        $question_id,
-        $user_id,
+        $question_uri,
+        $username,
         $conteneur = null,
         $reponse = null
     ) {
-        parent::__construct($question_id, $user_id);
+        parent::__construct($question_uri, $username);
         $this->reponse = $reponse;
         $this->conteneur = $conteneur;
     }

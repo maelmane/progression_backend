@@ -18,23 +18,21 @@
 
 namespace progression\domaine\entité;
 
-class Question extends Entité
+class Question
 {
     const ETAT_CACHE = -1;
     const ETAT_DEBUT = 0;
     const ETAT_NONREUSSI = 1;
     const ETAT_REUSSI = 2;
 
-    const TYPE_PROG_EVAL = 0;
-    const TYPE_SYS = 1;
-    const TYPE_BD = 2;
-    const TYPE_PROG = 3;
+    const TYPE_PROG_EVAL = "prog_eval";
+    const TYPE_SYS = "sys";
+    const TYPE_BD = "bd";
+    const TYPE_PROG = "prog";
 
-    public $serieID;
     public $nom;
-    public $chemin;
+    public $uri;
     public $actif;
-    public $numero;
     public $titre;
     public $description;
     public $enonce;
