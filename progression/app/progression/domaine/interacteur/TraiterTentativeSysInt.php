@@ -20,7 +20,7 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Question;
 
-class TraiterRésultatsSysInt extends Interacteur
+class TraiterTentativeSysInt extends Interacteur
 {
     function vérifier_réussite($infos)
     {
@@ -68,5 +68,3 @@ class TraiterRésultatsSysInt extends Interacteur
         return $réussi;
     }
 }
-
-?>

@@ -20,7 +20,7 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use progression\http\transformer\AvancementProgTransformer;
-use progression\domaine\entité\{Avancement, AvancementProg, AvancementSys, AvancementBD};
+use progression\domaine\entité\{AvancementProg, AvancementSys, AvancementBD};
 use Illuminate\Support\Facades\Log;
 use progression\util\Encodage;
 
@@ -33,8 +33,11 @@ class AvancementCtl extends Contrôleur
 
 		if ($chemin != null && $chemin != "" && $username != null && $username != "") {
 			$avancementInt = $this->intFactory->getObtenirAvancementInt();
-
 			$avancement = $avancementInt->get_avancement($username, $chemin);
+		}
+
+		if ($avancement != null) {
+			$avancement->id = $username . "/{$uri}";
 		}
 
 		$réponse = null;

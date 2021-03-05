@@ -22,49 +22,44 @@ use League\Fractal;
 use progression\domaine\entité\TentativeProg;
 use progression\util\Encodage;
 
-class TentativeTransformer extends Fractal\TransformerAbstract
+class TentativeProgTransformer extends Fractal\TransformerAbstract
 {
 	public $type = "tentative";
-	protected $availableIncludes = ["reponses"];
+	protected $availableIncludes = ["resultats"];
 
 	public function transform(TentativeProg $tentative)
 	{
 		$data_out = [
-			"id" => "{$tentative->user_id}/" .
-				Encodage::base64_encode_url($tentative->question_id) .
-				"/" .
-				$tentative->date_soumission,
+			"id" => $tentative->id,
 			"date_soumission" => $tentative->date_soumission,
 			"tests_réussis" => $tentative->tests_réussis,
 			"feedback" => $tentative->feedback,
-			"langage" => $tentative->langid,
+			"langage" => $tentative->langage,
 			"code" => $tentative->code,
-			"links" => [
-				"self" => "{$_ENV["APP_URL"]}tentative/{$tentative->user_id}/" .
-					Encodage::base64_encode_url($tentative->question_id) .
-					"/{$tentative->date_soumission}",
+			"links" => (isset($tentative->links) ? $tentative->links : []) + [
+				"self" => "{$_ENV["APP_URL"]}tentative/{$tentative->id}"
 			]
 		];
 
 		return $data_out;
 	}
 
-	public function includeReponses(TentativeProg $tentative)
+	public function includeResultats(TentativeProg $tentative)
 	{
-		foreach ($tentative->réponses as $réponse) {
-			$réponse->id =
-				Encodage::base64_encode_url($tentative->question_id . "/{$réponse->numéro}");
-			$réponse->links = [
+		foreach ($tentative->résultats as $résultat) {
+			$résultat->id =
+				Encodage::base64_encode_url($tentative->question_uri .
+					"/{$résultat->numéro}");
+			$résultat->links = [
 				"related" =>
 				$_ENV["APP_URL"] .
-					"tentative/" .
-					Encodage::base64_encode_url($tentative->user_id) . "/{$tentative->question_id}" . "/{$tentative->date_soumission}",
+					"tentative/{$résultat->id}",
 			];
 		}
 		return $this->collection(
-			$tentative->réponses,
+			$tentative->résultats,
 			new RéponseProgTransformer(),
-			"reponse"
+			"resultats"
 		);
 	}
 }

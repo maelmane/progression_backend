@@ -25,17 +25,10 @@ class ObtenirAvancementInt extends Interacteur
 		$this->_source = $source;
 	}
 
-	function get_avancement($user_id, $question_id)
+	function get_avancement($username, $question_uri)
 	{
 		return $this->_source
 			->get_avancement_dao()
-			->get_avancement($user_id, $question_id);
-	}
-
-	function get_tentative($user_id, $question_id, $date)
-	{
-		return $this->_source
-			->get_avancement_dao()
-			->get_tentative($user_id, $question_id, $date);
+			->get_avancement($username, $question_uri);
 	}
 }

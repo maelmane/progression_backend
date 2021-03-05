@@ -22,18 +22,18 @@ use PHPUnit\Framework\TestCase;
 
 final class TentativeProgTests extends TestCase
 {
-	public function test_étant_donné_une_TentativeProg_instanciée_avec_langid_2_lorsquon_récupère_son_langid_on_obtient_2()
+	public function test_étant_donné_une_TentativeProg_instanciée_avec_langage_python_lorsquon_récupère_son_langage_on_obtient_python()
 	{
-		$TentativeProgTest = new TentativeProg(2, 5, 8);
+		$TentativeProgTest = new TentativeProg("python", 5, 8);
 
-		$langid = $TentativeProgTest->langid;
+		$langage = $TentativeProgTest->langage;
 
-		$this->assertEquals(2, $langid);
+		$this->assertEquals("python", $langage);
 	}
 
 	public function test_étant_donné_une_TentativeProg_instanciée_avec_code_5_lorsquon_récupère_son_code_on_obtient_5()
 	{
-		$TentativeProgTest = new TentativeProg(2, 5, 8);
+		$TentativeProgTest = new TentativeProg("python", 5, 8);
 
 		$code = $TentativeProgTest->code;
 
@@ -42,7 +42,7 @@ final class TentativeProgTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_instanciée_avec_date_soumission_8_lorsquon_récupère_sa_date_soumission_on_obtient_8()
 	{
-		$TentativeProgTest = new TentativeProg(2, 5, 8);
+		$TentativeProgTest = new TentativeProg("python", 5, 8);
 
 		$date_soumission = $TentativeProgTest->date_soumission;
 

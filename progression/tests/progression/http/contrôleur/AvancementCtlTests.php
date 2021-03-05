@@ -35,36 +35,36 @@ final class AvancementCtlTests extends TestCase
 		$avancement->lang = 10;
 		$avancement->type = Question::TYPE_PROG;
 		$avancement->etat = 1;
-		$avancement->réponses = [new TentativeProg(10, "codeTest", 1614965817)];
-		$avancement->réponses[0]->tests_réussis = 2;
-		$avancement->réponses[0]->feedback = "feedbackTest";
+		$avancement->résultats = [new TentativeProg(10, "codeTest", 1614965817)];
+		$avancement->résultats[0]->tests_réussis = 2;
+		$avancement->résultats[0]->feedback = "feedbackTest";
 
 		$résultat_attendu = [
 			"data" => [
 				"type" => "avancement",
 				"id" =>
-					"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				"attributes" => [
 					"username" => "jdoe",
 					"état" => 1,
 				],
 				"links" => [
 					"self" =>
-						"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+					"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				],
 				"relationships" => [
 					"tentatives" => [
 						"links" => [
 							"self" =>
-								"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/relationships/tentatives",
+							"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/relationships/tentatives",
 							"related" =>
-								"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
+							"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
 						],
 						"data" => [
 							[
 								"type" => "tentative",
 								"id" =>
-									"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
+								"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
 							],
 						],
 					],
@@ -74,7 +74,7 @@ final class AvancementCtlTests extends TestCase
 				[
 					"type" => "tentative",
 					"id" =>
-						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
+					"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
 					"attributes" => [
 						"date_soumission" => 1614965817,
 						"tests_réussis" => 2,
@@ -84,18 +84,19 @@ final class AvancementCtlTests extends TestCase
 					],
 					"links" => [
 						"self" =>
-							"https://example.com/tentative/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817/1614965817",
+						"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
 					],
-				],
-			],
+					"relationships" => [
+						"resultats" => [
+							"links" => [
+								'self' => 'https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817/relationships/resultats',
+								'related' => 'https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817/resultats'
+							]
+						]
+					]
+				]
+			]
 		];
-
-		// Intéracteur
-		$mockObtenirAvancementInt = Mockery::mock('progression\domaine\interacteur\ObtenirAvancementInt');
-		$mockObtenirAvancementInt
-			->allows()
-			->get_avancement("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée")
-			->andReturn($avancement);
 
 		// Intéracteur
 		$mockObtenirQuestionInt = Mockery::mock('progression\domaine\interacteur\ObtenirQuestionInt');

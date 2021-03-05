@@ -29,6 +29,7 @@ final class AvancementTransformerTests extends TestCase
 
 		$avancementProgTransformer = new AvancementProgTransformer();
 		$avancement = new AvancementProg("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "jdoe");
+		$avancement->id = "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$résultat = [
 			"id" => "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
@@ -47,14 +48,16 @@ final class AvancementTransformerTests extends TestCase
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$tentativeTransformer = new TentativeTransformer();
+		$username = "jdoe";
+		$tentativeTransformer = new TentativeProgTransformer();
 		$tentative = new TentativeProg(10, "codeTest", 1614711760);
 		$tentative->tests_réussis = 2;
 		$tentative->feedback = "feedbackTest";
+		$tentative->id = "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760";
 
 		$résultat = [
-			"id" => "{$tentative->user_id}/" .
-				$tentative->question_id .
+			"id" => "{$username}/" .
+				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24" .
 				"/" .
 				$tentative->date_soumission,
 			"date_soumission" => 1614711760,
@@ -63,7 +66,7 @@ final class AvancementTransformerTests extends TestCase
 			"langage" => 10,
 			"code" => "codeTest",
 			"links" => [
-				"self" => "{$_ENV["APP_URL"]}tentative/{$tentative->user_id}/{$tentative->question_id}/{$tentative->date_soumission}",
+				"self" => "{$_ENV["APP_URL"]}tentative/{$username}/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/{$tentative->date_soumission}",
 			]
 		];
 

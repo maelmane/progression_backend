@@ -46,10 +46,10 @@ final class TentativeCtlTests extends TestCase
 						"self" => "https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490"
 					],
 					"relationships" => [
-						"reponses" => [
+						"resultats" => [
 							"links" => [
-								"self" => "https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/relationships/reponses",
-								"related" => "https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/reponses"
+								"self" => "https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/relationships/resultats",
+								"related" => "https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/resultats"
 							],
 							"data" => []
 						]
@@ -59,10 +59,10 @@ final class TentativeCtlTests extends TestCase
 
 
 		// Intéracteur
-		$mockObtenirAvancementInt = Mockery::mock(
-			'progression\domaine\interacteur\ObtenirAvancementInt'
+		$mockObtenirTentativeInt = Mockery::mock(
+			'progression\domaine\interacteur\ObtenirTentativeInt'
 		);
-		$mockObtenirAvancementInt
+		$mockObtenirTentativeInt
 			->allows()
 			->get_tentative("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", 1614374490)
 			->andReturn($tentative);
@@ -73,8 +73,8 @@ final class TentativeCtlTests extends TestCase
 		);
 		$mockIntFactory
 			->allows()
-			->getObtenirAvancementInt()
-			->andReturn($mockObtenirAvancementInt);
+			->getObtenirTentativeInt()
+			->andReturn($mockObtenirTentativeInt);
 
 		// Requête
 		$mockRequest = Mockery::mock('Illuminate\Http\Request');
@@ -95,7 +95,7 @@ final class TentativeCtlTests extends TestCase
 		$mockRequest
 			->allows()
 			->query("include")
-			->andReturn("reponses");
+			->andReturn("resultats");
 		$this->app->bind(Request::class, function () use ($mockRequest) {
 			return $mockRequest;
 		});

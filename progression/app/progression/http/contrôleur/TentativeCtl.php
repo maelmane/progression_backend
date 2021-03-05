@@ -19,48 +19,33 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use progression\http\transformer\TentativeTransformer;
+use progression\http\transformer\TentativeProgTransformer;
 use progression\util\Encodage;
 
 class TentativeCtl extends Contrôleur
 {
 	public function get(Request $request, $username, $question, $timestamp)
 	{
-		$chemin = Encodage::base64_decode_url($question);
+		$uri = Encodage::base64_decode_url($question);
 		$tentative = null;
 
-		if ($chemin != null && $chemin != "" && $username != null && $username != "" && $timestamp != null) {
-			$avancementInt = $this->intFactory->getObtenirAvancementInt();
+		if ($uri != null && $uri != "" && $username != null && $username != "" && $timestamp != null) {
+			$avancementInt = $this->intFactory->getObtenirTentativeInt();
 
-			$tentative = $avancementInt->get_tentative($username, $chemin, $timestamp);
+			$tentative = $avancementInt->get_tentative($username, $uri, $timestamp);
 			if ($tentative) {
-				$tentative->user_id = $username;
-				$tentative->question_id = $chemin;
-				$tentative->réponses = [];
+				$tentative->id = "{$username}/" . Encodage::base64_encode_url($question) . "/{$tentative->date_soumission}";
+				$tentative->links = [
+					"related" =>
+					$_ENV['APP_URL'] .
+						"avancement/{$username}/" .
+						Encodage::base64_encode_url($question),
+				];
+				$tentative->résultats = $tentative->résultats == null ? [] : $tentative->résultats;
 			}
 		}
 
-		$réponse = $this->item($tentative, new TentativeTransformer());
-
-		return $this->préparer_réponse($réponse);
-	}
-
-	public function post(Request $request, $username, $question, $timestamp)
-	{
-		$chemin = Encodage::base64_decode_url($question);
-		$tentative = null;
-
-		if ($chemin != null && $chemin != "" && $username != null && $username != "" && $timestamp != null) {
-			$avancementInt = $this->intFactory->getObtenirAvancementInt();
-
-			$tentative = $avancementInt->get_tentative($username, $chemin, $timestamp);
-			if ($tentative) {
-				$tentative->user_id = $username;
-				$tentative->question_id = $chemin;
-			}
-		}
-
-		$réponse = $this->item($tentative, new TentativeTransformer());
+		$réponse = $this->item($tentative, new TentativeProgTransformer());
 
 		return $this->préparer_réponse($réponse);
 	}

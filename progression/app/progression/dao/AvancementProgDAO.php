@@ -22,10 +22,31 @@ use progression\domaine\entité\{Question, TentativeProg};
 
 class AvancementProgDAO extends EntitéDAO
 {
+    public function get_tentative($username, $question_uri, $timestamp)
+    {
+        $tentative = null;
+        $query = $this->conn->prepare(
+            'SELECT lang, code, date_soumission
+             FROM reponse_prog
+             WHERE user_id = ? AND question_uri = ?
+             AND date_soumission = ?',
+        );
+        $query->bind_param("iii", $username, $question_uri, $timestamp);
+        $query->execute();
+        $query->bind_result($lang, $code, $date_soumission);
+
+        if ($lang && $code) {
+            $tentative = new TentativeProg($lang, $code, $date_soumission);
+        }
+        $query->close();
+
+        return $tentative;
+    }
+
     protected function load($objet)
     {
         parent::load($objet);
-        
+
         $query = $this->conn->prepare(
             'SELECT avancement.user_id, avancement.question_uri, etat, code, langage, date_soumission
              FROM avancement 
@@ -51,9 +72,9 @@ class AvancementProgDAO extends EntitéDAO
             $réponses[$lang] = new TentativeProg($lang, $code, $date);
         }
 
-		$objet->réponses = $réponses;
-		$query->close();
-	}
+        $objet->réponses = $réponses;
+        $query->close();
+    }
 
     public function save($objet)
     {
@@ -88,9 +109,9 @@ class AvancementProgDAO extends EntitéDAO
             }
             $query->close();
 
-			$this->conn->commit();
-		} catch (\mysqli_sql_exception $exception) {
-			$this->conn->rollback();
+            $this->conn->commit();
+        } catch (\mysqli_sql_exception $exception) {
+            $this->conn->rollback();
 
             throw $exception;
         }

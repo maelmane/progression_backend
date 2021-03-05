@@ -28,11 +28,9 @@ class AvancementProgTransformer extends AvancementTransformer
         foreach ($tentatives as $tentative) {
             $tentative->id =
                 "{$avancement->username}/" .
-                           Encodage::base64_encode_url($avancement->question_uri) .
+                Encodage::base64_encode_url($avancement->question_uri) .
                 "/" .
                 $tentative->date_soumission;
-            $tentative->username = $avancement->username;
-            $tentative->question_uri = $avancement->question_uri;
             $tentative->links = [
                 "related" => $_ENV["APP_URL"] . "tentative/" . $tentative->id,
             ];
@@ -40,7 +38,7 @@ class AvancementProgTransformer extends AvancementTransformer
 
         return $this->collection(
             $tentatives,
-            new TentativeTransformer(),
+            new TentativeProgTransformer(),
             "tentative"
         );
     }

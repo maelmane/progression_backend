@@ -18,7 +18,7 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Avancement, AvancementProg, AvancementSys, AvancementBD, Question};
+use progression\domaine\entité\{AvancementProg, AvancementSys, AvancementBD, Question};
 
 class AvancementDAO extends EntitéDAO
 {
@@ -43,31 +43,6 @@ class AvancementDAO extends EntitéDAO
 
 			return $avancement;
 		}
-	}
-
-	public function get_tentative($userid, $questionid, $timestamp)
-	{
-		$tentative = null;
-		$query = $this->conn->prepare(
-			'SELECT lang, code, date_soumission
-             FROM reponse_prog
-             WHERE userID = ? AND questionID = ?
-             AND date_soumission = ?',
-		);
-		$query->bind_param("iii", $userid, $questionid, $timestamp);
-		$query->execute();
-		$query->bind_result($lang, $code, $date_soumission);
-
-		if (is_null($query->fetch())) {
-			error_log($query->error);
-		}
-
-		if ($lang && $code) {
-			$tentative = new TentativeProg($lang, $code, $date_soumission);
-		}
-		$query->close();
-
-		return $tentative;
 	}
 
 	protected function load($objet)

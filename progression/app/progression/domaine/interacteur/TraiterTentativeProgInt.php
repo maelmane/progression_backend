@@ -20,7 +20,7 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{Question, TentativeProg};
 
-class TraiterRésultatsProgInt extends Interacteur
+class TraiterTentativeProgInt extends Interacteur
 {
 	function __construct($source, $user_id)
 	{

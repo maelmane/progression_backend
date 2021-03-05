@@ -20,27 +20,28 @@ namespace progression\http\transformer;
 
 use PHPUnit\Framework\TestCase;
 use progression\domaine\entité\TentativeProg;
-use progression\util\Encodage;
 
 final class TentativeTransformerTests extends TestCase
 {
 	public function test_étant_donné_une_tentative_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
 		$tentative = new TentativeProg(10, "codeTest", "dateSoumissionTest", "testsRéussisTest", "feedBackTest");
-		$tentativeTransformer = new TentativeTransformer();
-
+		$tentative->id = "roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760";
+		$tentativeTransformer = new TentativeProgTransformer();
+		$username = "roger";
+		$question = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		$résultat = [
-			"id" => "{$tentative->user_id}/" .
-				$tentative->question_id .
+			"id" => "{$username}/" .
+				$question .
 				"/" .
 				$tentative->date_soumission,
 			'date_soumission' => $tentative->date_soumission,
 			'tests_réussis' => $tentative->tests_réussis,
 			'feedback' => $tentative->feedback,
-			'langage' => $tentative->langid,
+			'langage' => $tentative->langage,
 			'code' => $tentative->code,
 			"links" => [
-				"self" => "{$_ENV["APP_URL"]}tentative/{$tentative->user_id}/{$tentative->question_id}/{$tentative->date_soumission}",
+				"self" => "{$_ENV["APP_URL"]}tentative/{$username}/{$question}/{$tentative->date_soumission}",
 			]
 		];
 

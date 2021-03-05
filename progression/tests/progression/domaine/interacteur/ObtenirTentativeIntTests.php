@@ -18,32 +18,33 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Question, AvancementProg, TentativeProg};
+use progression\domaine\entité\TentativeProg;
 use PHPUnit\Framework\TestCase;
 use \Mockery;
 
-final class ObtenirAvancementIntTests extends TestCase
+final class ObtenirTentativeIntTests extends TestCase
 {
-	public function test_étant_donné_un_avancement_avec_un_user_id_et_question_id_existant_lorsque_cherché_par_user_id_et_question_id_on_obtient_un_objet_avancementprog_correspondant()
+	public function test_étant_donné_une_tentative_avec_des_attributs_lorsque_cherché_par_user_id_question_id_et_date_soumission_on_obtient_un_objet_tentative_correspondant()
 	{
-		$résultat_attendu = new AvancementProg("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
+		$résultat_attendu = new TentativeProg("java", "System.out.println();", 1614711760);
 
-		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
-		$mockAvancementDAO
-			->shouldReceive("get_avancement")
-			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée")
+		$mockAvancementProgDAO = Mockery::mock("progression\dao\AvancementProgDAO");
+		$mockAvancementProgDAO
+			->shouldReceive("get_tentative")
+			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", 1614711760)
 			->andReturn($résultat_attendu);
 
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
 			->allows()
-			->get_avancement_dao()
-			->andReturn($mockAvancementDAO);
+			->get_avancement_prog_dao()
+			->andReturn($mockAvancementProgDAO);
 
-		$interacteur = new ObtenirAvancementInt($mockDAOFactory);
-		$résultat_obtenu = $interacteur->get_avancement(
+		$interacteur = new ObtenirTentativeInt($mockDAOFactory);
+		$résultat_obtenu = $interacteur->get_tentative(
 			"jdoe",
-			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée"
+			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
+			1614711760
 		);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
