@@ -23,34 +23,34 @@ use PHPUnit\Framework\TestCase;
 final class TestTests extends TestCase{
     // nom
     public function test_étant_donné_un_test_instancié_avec_nom_testNom_lorsquon_récupère_son_nom_on_obtient_testNom(){
-        $testTest = new Test("testNom", "testStdIn", "testSolution", array("testParam0", "testParam1"), "testFbp", "testFbn");
+        $testTest = new Test("testNom", "testEntrée", "testSortie", array("testParam0", "testParam1"), "testFbp", "testFbn");
 
         $nom = $testTest->nom;
 
         $this->assertEquals( "testNom", $nom );
     }
 
-    // stdin
-    public function test_étant_donné_un_test_instancié_avec_stdin_testStdIn_lorsquon_récupère_son_stdin_on_obtient_testStdIn(){
-        $testTest = new Test("testNom", "testStdIn", "testSolution", array("testParam0", "testParam1"), "testFbp", "testFbn");
+    // entrée
+    public function test_étant_donné_un_test_instancié_avec_entrée_testEntrée_lorsquon_récupère_son_entrée_on_obtient_testEntrée(){
+        $testTest = new Test("testNom", "testEntrée", "testSortie", array("testParam0", "testParam1"), "testFbp", "testFbn");
 
-        $stdin = $testTest->stdin;
+        $entrée = $testTest->entrée;
 
-        $this->assertEquals( "testStdIn", $stdin );
+        $this->assertEquals( "testEntrée", $entrée );
     }
 
-    // solution
-    public function test_étant_donné_un_test_instancié_avec_solution_testSolution_lorsquon_récupère_sa_solution_on_obtient_testSolution(){
-        $testTest = new Test("testNom", "testStdIn", "testSolution", array("testParam0", "testParam1"), "testFbp", "testFbn");
+    // sortie
+    public function test_étant_donné_un_test_instancié_avec_sortie_testSortie_lorsquon_récupère_sa_sortie_on_obtient_testSortie(){
+        $testTest = new Test("testNom", "testEntrée", "testSortie", array("testParam0", "testParam1"), "testFbp", "testFbn");
 
-        $solution = $testTest->solution;
+        $sortie = $testTest->sortie_attendue;
 
-        $this->assertEquals( "testSolution", $solution );
+        $this->assertEquals( "testSortie", $sortie );
     }
 
     // params
     public function test_étant_donné_un_test_instancié_avec_params_array_testParam0_testParam1_lorsquon_récupère_son_premier_item_on_obtient_testParam0(){
-        $testTest = new Test("testNom", "testStdIn", "testSolution", array("testParam0", "testParam1"), "testFbp", "testFbn");
+        $testTest = new Test("testNom", "testEntrée", "testSortie", array("testParam0", "testParam1"), "testFbp", "testFbn");
 
         $params = $testTest->params;
 
@@ -59,7 +59,7 @@ final class TestTests extends TestCase{
 
     // feedback_pos
     public function test_étant_donné_un_test_instancié_avec_fbp_testFbp_et_fbn_testFbn_lorsquon_récupère_son_fbp_on_obtient_testFbp(){
-        $testTest = new Test("testNom", "testStdIn", "testSolution", array("testParam0", "testParam1"), "testFbp", "testFbn");
+        $testTest = new Test("testNom", "testEntrée", "testSortie", array("testParam0", "testParam1"), "testFbp", "testFbn");
 
         $fbp = $testTest->feedback_pos;
 
@@ -68,7 +68,7 @@ final class TestTests extends TestCase{
 
     // feedback_neg
     public function test_étant_donné_un_test_instancié_fbn_testFbn_lorsquon_récupère_son_fbn_on_obtient_testFbn(){
-        $testTest = new Test("testNom", "testStdIn", "testSolution", array("testParam0", "testParam1"), "testFbp", "testFbn");
+        $testTest = new Test("testNom", "testEntrée", "testSortie", array("testParam0", "testParam1"), "testFbp", "testFbn");
 
         $fbn = $testTest->feedback_neg;
 

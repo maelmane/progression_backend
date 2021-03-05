@@ -21,20 +21,20 @@ namespace progression\domaine\entité;
 use PHPUnit\Framework\TestCase;
 
 final class AvancementTests extends TestCase{
-    public function test_étant_donné_un_avancement_instancié_avec_questionid_5_lorsquon_récupère_son_questionid_on_obtient_5(){
-        $avancementTest = new Avancement(5, 3);
+    public function test_étant_donné_un_avancement_instancié_avec_questionuri_lorsquon_récupère_son_questionid_on_obtient_luri_original(){
+        $avancementTest = new Avancement("http://example.com/maquestion", "jdoe");
 
-        $questionid = $avancementTest->question_id;
+        $questionuri = $avancementTest->question_uri;
 
-        $this->assertEquals( 5, $questionid );
+        $this->assertEquals( "http://example.com/maquestion", $questionuri );
     }
 
-    public function test_étant_donné_un_avancement_instancié_avec_userid_3_lorsquon_récupère_son_userid_on_obtient_3(){
-        $avancementTest = new Avancement(5, 3);
+    public function test_étant_donné_un_avancement_instancié_avec_username_jdoe_lorsquon_récupère_son_username_on_obtient_jdoe(){
+        $avancementTest = new Avancement("http://example.com/maquestion", "jdoe");
 
-        $userid = $avancementTest->user_id;
+        $username = $avancementTest->username;
 
-        $this->assertEquals( 3, $userid );
+        $this->assertEquals( "jdoe", $username );
     }
 
 }

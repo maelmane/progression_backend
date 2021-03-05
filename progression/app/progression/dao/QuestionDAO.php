@@ -48,6 +48,7 @@ class QuestionDAO
     protected function load($question, $infos_question)
     {
         $question->uri = $infos_question["uri"];
+        $question->type = $this->type;
         $question->titre = $infos_question["titre"];
         $question->description = $infos_question["description"];
         $question->enonce = $infos_question["énoncé"];
@@ -81,9 +82,7 @@ class QuestionDAO
 
     protected function récupérer_exec($uri, $exec){
         $data = file_get_contents($uri . "/" . $exec);
-        $info = yaml_parse($data);
-
-        return $info;
+        return $data;
     }
 
     protected function récupérer_tests($uri, $tests){

@@ -32,7 +32,7 @@ final class AvancementProgTransformerTests extends TestCase
 
 		$résultat = [
 			"id" => "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-			"user_id" => "jdoe",
+			"username" => "jdoe",
 			"état" => 0,
 			"links" => [
 				"self" =>

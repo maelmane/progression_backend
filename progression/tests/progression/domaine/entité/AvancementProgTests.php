@@ -20,23 +20,15 @@ namespace progression\domaine\entité;
 
 use PHPUnit\Framework\TestCase;
 
-final class EntitéTests extends TestCase{
-    public function test_étant_donné_une_entité_instancié_avec_id_3_lorsquon_récupère_son_id_on_obtient_3(){
-        $entitéTest = new Entité(3);
+final class AvancementProgTests extends TestCase
+{
+    public function test_étant_donné_un_AvancementProg_instancié_avec_questionuri_lorsquon_récupère_ses_réponses_on_obtient_un_tableau_vide(){
+        $avancementTest = new AvancementProg("http://example.com/maquestion", "jdoe");
 
-        $id = $entitéTest->id;
+        $réponses = $avancementTest->réponses;
 
-        $this->assertEquals( 3, $id );
+        $this->assertEquals( [], $réponses );
     }
-
-    public function test_étant_donné_une_entité_instancié_sans_paramètre_lorsquon_récupère_son_id_on_obtient_null(){
-        $entitéTest = new Entité();
-
-        $id = $entitéTest->id;
-
-        $this->assertEquals( null, $id );
-    }
-    
 }
 
 ?>

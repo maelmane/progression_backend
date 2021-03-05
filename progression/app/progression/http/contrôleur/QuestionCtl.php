@@ -41,35 +41,6 @@ class QuestionCtl extends Contrôleur
 			$question = $questionInt->get_question($chemin);
 		}
 
-		$réponse = null;
-
-		if ($question instanceof QuestionProg) {
-			$réponse = $this->item(
-				["question" => $question, "username" => $request["username"]],
-				new QuestionProgTransformer()
-			);
-		} elseif ($question instanceof QuestionSys) {
-			Log::warning(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					__CLASS__ .
-					")"
-			);
-			return $this->réponse_json(
-				["message" => "Question système non implémentée."],
-				501
-			);
-		} elseif ($question instanceof QuestionBD) {
-			Log::warning(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					__CLASS__ .
-					")"
-			);
-			return $this->réponse_json(
-				["message" => "Question BD non implémentée."],
-				501
-			);
-		}
-
         $réponse = null;
 
         if ($question instanceof QuestionProg) {

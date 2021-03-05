@@ -21,6 +21,9 @@ use progression\domaine\entité\{QuestionProg, Exécutable, Test};
 
 class QuestionProgDAO extends QuestionDAO
 {
+
+    public $type = QuestionProg::TYPE_PROG;
+    
 	protected function load($question, $infos_question)
 	{
 		parent::load($question, $infos_question);
@@ -33,7 +36,7 @@ class QuestionProgDAO extends QuestionDAO
 	{
 		$exécutables = [];
 		foreach ($infos_question["execs"] as $lang => $code) {
-			$exécutables[] = new Exécutable($code, $lang);
+			$exécutables[$lang] = new Exécutable($code, $lang);
 		}
 
 		return $exécutables;
