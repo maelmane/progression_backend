@@ -11,7 +11,7 @@
 */
 require_once __DIR__ . '/../../../TestCase.php';
 
-use progression\domaine\entité\{Question, AvancementProg, RéponseProg, TentativeProg};
+use progression\domaine\entité\{Question, QuestionProg, AvancementProg, TentativeProg};
 use progression\http\contrôleur\AvancementCtl;
 use Illuminate\Http\Request;
 
@@ -25,98 +25,93 @@ final class AvancementCtlTests extends TestCase
 
 		// Question
 		$question = new QuestionProg();
-		$question->chemin =
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		// Avancement
-		$avancement = new AvancementProg("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "jdoe");
+		$avancement = new AvancementProg(
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+			"jdoe",
+		);
 		$avancement->lang = 10;
 		$avancement->type = Question::TYPE_PROG;
 		$avancement->etat = 1;
-		$avancement->réponses = [
-			new RéponseProg(10, "codeTest")
-		];
-		$avancement->réponses[0]->date_soumission = "dateTest";
+		$avancement->réponses = [new TentativeProg(10, "codeTest", 1614965817)];
 		$avancement->réponses[0]->tests_réussis = 2;
 		$avancement->réponses[0]->feedback = "feedbackTest";
 
-		$résultat_attendu =
-			[
-				"data" => [
-					"type" => "avancement",
-					"id" => "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		$résultat_attendu = [
+			"data" => [
+				"type" => "avancement",
+				"id" =>
+					"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				"attributes" => [
+					"username" => "jdoe",
+					"état" => 1,
+				],
+				"links" => [
+					"self" =>
+						"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				],
+				"relationships" => [
+					"tentatives" => [
+						"links" => [
+							"self" =>
+								"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/relationships/tentatives",
+							"related" =>
+								"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
+						],
+						"data" => [
+							[
+								"type" => "tentative",
+								"id" =>
+									"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
+							],
+						],
+					],
+				],
+			],
+			"included" => [
+				[
+					"type" => "tentative",
+					"id" =>
+						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
 					"attributes" => [
-						"username" => "jdoe",
-						"état" => 1
+						"date_soumission" => 1614965817,
+						"tests_réussis" => 2,
+						"feedback" => "feedbackTest",
+						"langage" => 10,
+						"code" => "codeTest",
 					],
 					"links" => [
-						"self" => "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+						"self" =>
+							"https://example.com/tentative/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817/1614965817",
 					],
-					"relationships" => [
-						"tentatives" => [
-							"links" => [
-								"self" => "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/relationships/tentatives",
-								"related" => "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives"
-							],
-							"data" => [
-								[
-									"type" => "tentative",
-									"id" => "dateTest"
-								]
-							]
-						]
-					]
 				],
-				"included" => [
-					[
-						"type" => "tentative",
-						"id" => "dateTest",
-						"attributes" => [
-							"date_soumission" => "dateTest",
-							"tests_réussis" => 2,
-							"feedback" => "feedbackTest",
-							"langage" => 10,
-							"code" => "codeTest"
-						],
-						"links" => [
-							"self" => "https://example.com/tentative/dateTest"
-						]
-					]
-				]
-			];
+			],
+		];
 
 		// Intéracteur
-		$mockObtenirAvancementInt = Mockery::mock(
-			'progression\domaine\interacteur\ObtenirAvancementInt'
-		);
+		$mockObtenirAvancementInt = Mockery::mock('progression\domaine\interacteur\ObtenirAvancementInt');
 		$mockObtenirAvancementInt
 			->allows()
 			->get_avancement("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée")
 			->andReturn($avancement);
 
 		// Intéracteur
-		$mockObtenirQuestionInt = Mockery::mock(
-			'progression\domaine\interacteur\ObtenirQuestionInt'
-		);
+		$mockObtenirQuestionInt = Mockery::mock('progression\domaine\interacteur\ObtenirQuestionInt');
 		$mockObtenirQuestionInt
 			->allows()
-			->get_question(
-				'https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction'
-			)
+			->get_question('https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction')
 			->andReturn($question);
 
-		$mockObtenirAvancementInt = Mockery::mock(
-			'progression\domaine\interacteur\ObtenirAvancementInt'
-		);
+		$mockObtenirAvancementInt = Mockery::mock('progression\domaine\interacteur\ObtenirAvancementInt');
 		$mockObtenirAvancementInt
 			->allows()
 			->get_avancement("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($avancement);
 
 		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			'progression\domaine\interacteur\InteracteurFactory'
-		);
+		$mockIntFactory = Mockery::mock('progression\domaine\interacteur\InteracteurFactory');
 		$mockIntFactory
 			->allows()
 			->getObtenirQuestionInt()
@@ -141,7 +136,7 @@ final class AvancementCtlTests extends TestCase
 			->allows()
 			->path()
 			->andReturn(
-				"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+				"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 			);
 		$mockRequest
 			->allows()
@@ -160,10 +155,11 @@ final class AvancementCtlTests extends TestCase
 					->get(
 						$mockRequest,
 						"jdoe",
-						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
-					)->getContent(),
-				true
-			)
+						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+					)
+					->getContent(),
+				true,
+			),
 		);
 	}
 }

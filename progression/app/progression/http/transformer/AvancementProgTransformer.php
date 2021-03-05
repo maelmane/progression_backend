@@ -31,8 +31,8 @@ class AvancementProgTransformer extends AvancementTransformer
                            Encodage::base64_encode_url($avancement->question_uri) .
                 "/" .
                 $tentative->date_soumission;
-            $tentative->user_id = $avancement->user_id;
-            $tentative->question_id = $avancement->question_id;
+            $tentative->username = $avancement->username;
+            $tentative->question_uri = $avancement->question_uri;
             $tentative->links = [
                 "related" => $_ENV["APP_URL"] . "tentative/" . $tentative->id,
             ];

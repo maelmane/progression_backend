@@ -54,8 +54,8 @@ final class ObtenirAvancementIntTests extends TestCase
 	{
 		$résultat_attendu = new TentativeProg("java", "System.out.println();", 1614711760);
 
-		$mockTentativeDAO = Mockery::mock("progression\dao\TentativeDAO");
-		$mockTentativeDAO
+		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
+		$mockAvancementDAO
 			->shouldReceive("get_tentative")
 			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", 1614711760)
 			->andReturn($résultat_attendu);
