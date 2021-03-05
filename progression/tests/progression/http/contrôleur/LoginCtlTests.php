@@ -23,11 +23,9 @@ use progression\domaine\entité\User;
 use Illuminate\Http\Request;
 use Firebase\JWT\JWT;
 
-use Mockery;
-
 final class LoginCtlTests extends TestCase
 {
-	public function test_étant_donné_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_token_pour_l_utilisateur_Bob()
+	public function test_étant_donné_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Bob()
 	{
 		$_ENV['AUTH_TYPE'] = "no";
 		$_ENV['JWT_SECRET'] = "secret";
@@ -104,7 +102,7 @@ final class LoginCtlTests extends TestCase
 		$this->assertLessThan($tokenDécodé->expired, $tokenDécodé->current);
 	}
 
-	public function test_étant_donné_une_authentification_de_type_ldap_lorsquon_appelle_login_on_obtient_un_token_pour_l_utilisateur_jdoe()
+	public function test_étant_donné_une_authentification_de_type_ldap_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_jdoe()
 	{
 		$_ENV['AUTH_TYPE'] = "ldap";
 
@@ -179,7 +177,7 @@ final class LoginCtlTests extends TestCase
 		$this->assertLessThan($tokenDécodé->expired, $tokenDécodé->current);
 	}
 
-	public function test_étant_donné_une_authentification_de_type_local_lorsquon_appelle_login_on_obtient_un_token_pour_l_utilisateur_Fred()
+	public function test_étant_donné_une_authentification_de_type_local_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Fred()
 	{
 		// L'authentification locale n'est pas implémentée.
 		$_ENV['AUTH_TYPE'] = "local";
