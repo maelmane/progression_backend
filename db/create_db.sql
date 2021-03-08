@@ -10,7 +10,7 @@ CREATE DATABASE quiz
 USE quiz;
 
 CREATE TABLE `user` (
-  `user_id`  varchar(255),
+  `username`  varchar(255),
   `courriel` varchar(255),
   `actif`    int NOT NULL DEFAULT 1,
   `role`     int NOT NULL DEFAULT 0,
@@ -19,30 +19,31 @@ CREATE TABLE `user` (
 );
 
 CREATE TABLE `avancement` (
-  `user_id`      int(11) NOT NULL,
-  `question_uri` varchar(4096) NOT NULL,
+  `username`      varchar(255) NOT NULL,
+  `question_uri` varchar(2048) CHARACTER SET latin1 NOT NULL,
   `etat`	     int DEFAULT 1,
   `sous_type`    int NOT NULL,
-  PRIMARY KEY (`user_id`, `question_uri`),
-  FOREIGN KEY ( `user_id`) REFERENCES `user`.`id`
+  PRIMARY KEY (`username`, `question_uri`),
+  FOREIGN KEY ( `username`) REFERENCES `user`(`username`)
 );
 
 CREATE TABLE `reponse_sys` (
-  `user_id`      int(11) NOT NULL,
-  `question_uri` varchar(4096) NOT NULL,
+  `username`      varchar(255) NOT NULL,
+  `question_uri` varchar(2048) CHARACTER SET latin1,
   `conteneur`    varchar(64),
   `reponse`      varchar(255),
-  PRIMARY KEY (`user_id`, `question_uri`),
-  FOREIGN KEY ( `user_id`) REFERENCES `user`.`id`
+  PRIMARY KEY (`username`, `question_uri`),
+  FOREIGN KEY ( `username`) REFERENCES `user`(`username`),
+  FOREIGN KEY (`username`, `question_uri`) REFERENCES avancement(`username`, `question_uri`)
 );
 
 CREATE TABLE `reponse_prog` (
-  `user_id`      int(11) NOT NULL,
-  `question_uri` varchar(4096) NOT NULL,
+  `username`      varchar(255) NOT NULL,
+  `question_uri` varchar(2048) CHARACTER SET latin1,
   `langage`      int NOT NULL,
   `code`	     text,
-  PRIMARY KEY (`user_id`, `question_uri`, `langage`),
-  FOREIGN KEY ( `user_id`) REFERENCES `user`.`id`
+  PRIMARY KEY (`username`, `question_uri`, `langage`),
+  FOREIGN KEY (`username`, `question_uri`) REFERENCES avancement(`username`, `question_uri`)
   );
 
 /*Admin*/

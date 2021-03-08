@@ -36,12 +36,13 @@ class AvancementBDDAO extends EntitéDAO
 	protected static function load($objet)
 	{
 		$query = AvancementBDDAO::$conn->prepare(
-			'SELECT id, etat, reponse, code, conteneur FROM avancement WHERE question_uri = ? AND name = ?'
+			'SELECT question_uri, username, etat, reponse, code, conteneur FROM avancement WHERE question_uri = ? AND username = ?'
 		);
 		$query->bind_param("ii", $objet->question_uri, $objet->username);
 		$query->execute();
 		$query->bind_result(
-            $objet->id,
+            $objet->question_uri,
+            $objet->username,
 			$objet->etat,
 			$objet->reponse,
 			$objet->code_utilisateur,

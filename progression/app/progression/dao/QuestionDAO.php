@@ -25,25 +25,30 @@ class QuestionDAO
     {
         $infos_question = $this->récupérer_question($uri);
 
-        $type = $infos_question["type"];
+        if ($infos_question === FALSE ){
+            return null;
+        }
 
-		if ($type == null) {
-			return null;
-		} else {
-			if ($type == Question::TYPE_PROG) {
+        $question = null;
+		if (key_exists("type", $infos_question)) {
+            $type = $infos_question["type"];
+
+            if ($type == Question::TYPE_PROG) {
                 $question = new QuestionProg();
-				(new QuestionProgDAO())->load($question, $infos_question);
-			} elseif ($type == Question::TYPE_SYS) {
+                (new QuestionProgDAO())->load($question, $infos_question);
+            } elseif ($type == Question::TYPE_SYS) {
                 $question = new QuestionSys();
                 (new QuestionSysDAO())->load($question, $infos_question);
-			} elseif ($type == Question::TYPE_BD) {
+            } elseif ($type == Question::TYPE_BD) {
                 $question = new QuestionBD();
                 (new QuestionBDDAO())->load($question, $infos_question);
-			}
-
-            return $question;
-		}
-	}
+            }
+        }
+        else{
+            return null;
+        }
+        return $question;
+    }
 
     protected function load($question, $infos_question)
     {
@@ -52,18 +57,41 @@ class QuestionDAO
         $question->titre = $infos_question["titre"];
         $question->description = $infos_question["description"];
         $question->enonce = $infos_question["énoncé"];
-        $question->feedback_pos = $infos_question["feedback+"];
-        $question->feedback_neg = $infos_question["feedback-"];
+        $question->feedback_pos = key_exists("feedback+", $infos_question) ? $infos_question["feedback+"] : null;
+        $question->feedback_neg = key_exists("feedback-", $infos_question) ? $infos_question["feedback-"] : null;
     }
 
     protected function récupérer_question($uri){
         $data = file_get_contents($uri . "/info.yml");
+
+        if($data === FALSE){
+            error_log( "$uri ne peut pas être chargé" );
+            return null;
+        }
+
         $info = yaml_parse($data);
-        
+        if($info == false){
+            error_log( "$uri ne peut pas être décodé" );
+            return null;
+        }
+
         if(isset($info["type"]) && $info["type"] == Question::TYPE_PROG)
         {
-            $info["execs"] = $this->récupérer_execs($uri, $info["execs"]);
-            $info["tests"] = $this->récupérer_tests($uri, $info["tests"]);
+            $exécutables = $this->récupérer_execs($uri, $info["execs"]);
+            if ($exécutables == null){
+                return null;
+            }
+            else {
+                $info["execs"] = $exécutables;
+            }
+
+            $tests = $this->récupérer_tests($uri, $info["tests"]);
+            if  ($tests == null){
+                return null;
+            }
+            else {
+                $info["tests"] = $tests;
+            }
         }
 
         $info['uri'] = $uri;
@@ -74,7 +102,13 @@ class QuestionDAO
         $items=[];
 
         foreach($execs as $exec){
-            $items[$exec["langage"]] = $this->récupérer_exec($uri, $exec["fichier"]);
+            $exécutable = $this->récupérer_exec($uri, $exec["fichier"]);
+
+            if ($exécutable == null){
+                return null;
+            }
+            
+            $items[$exec["langage"]] = $exécutable;
         }
 
         return $items;
@@ -82,7 +116,14 @@ class QuestionDAO
 
     protected function récupérer_exec($uri, $exec){
         $data = file_get_contents($uri . "/" . $exec);
-        return $data;
+
+        if ($data === FALSE){
+            error_log( "$uri/$exec ne peut pas être chargé" );
+            return null;
+        }
+        else { 
+            return $data;
+        }
     }
 
     protected function récupérer_tests($uri, $tests){
@@ -90,7 +131,17 @@ class QuestionDAO
 
         foreach($tests as $test){
             $data = file_get_contents($uri . "/" . $test);
+
+            if($data === FALSE) {
+                error_log( "$uri/$test ne peut pas être chargé" );
+                return null;
+            }
+            
             $items = array_merge($items, yaml_parse($data,-1));
+            if($items == false) {
+                error_log( "$uri/$test ne peut pas être décodé" );
+                return null;
+            }
         }
 
         return $items;

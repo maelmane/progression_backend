@@ -26,7 +26,7 @@ class CréerUserInt extends Interacteur
     {
         $user_dao = $this->_source->get_user_dao();
 
-        $user = $user_dao->trouver_par_nomusager($username);
+        $user = $user_dao->get_user($username);
 
         if ($user == null) {
             $user = new User(null);

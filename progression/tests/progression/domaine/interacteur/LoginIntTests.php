@@ -28,13 +28,12 @@ final class LoginIntTests extends TestCase
 	{
 		$_ENV['AUTH_TYPE'] = 'no';
 
-		$résultat_attendu = new User();
-		$résultat_attendu->username = 'Bob';
+		$résultat_attendu = new User("Bob");
 
 		$mockUserDao = Mockery::mock('progression\dao\UserDAO');
 		$mockUserDao
 			->allows()
-			->trouver_par_nomusager('Bob')
+			->get_user('Bob')
 			->andReturn($résultat_attendu);
 
 		$mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
@@ -51,13 +50,12 @@ final class LoginIntTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_Banane_inexistant_lorsquon_le_cherche_par_username_il_est_créé_et_on_obtient_un_objet_user()
 	{
-		$résultat_attendu = new User();
-		$résultat_attendu->username = 'Banane';
+		$résultat_attendu = new User("Banane");
 
 		$mockUserDao = Mockery::mock('progression\dao\UserDAO');
 		$mockUserDao
 			->allows()
-			->trouver_par_nomusager('Banane')
+			->get_user('Banane')
 			->andReturn(null);
 
 		$mockUserDao->shouldReceive('save')->andReturn($résultat_attendu);

@@ -36,7 +36,7 @@ final class QuestionProgCtlTests extends \TestCase
 		$question = new QuestionProg();
 		$question->type = Question::TYPE_PROG;
 		$question->nom = "appeler_une_fonction_paramétrée";
-		$question->chemin =
+		$question->uri =
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		$question->titre = "Appeler une fonction paramétrée";
 		$question->description =

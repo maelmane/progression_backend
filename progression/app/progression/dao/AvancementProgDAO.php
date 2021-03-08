@@ -27,22 +27,22 @@ class AvancementProgDAO extends EntitéDAO
         parent::load($objet);
         
         $query = $this->conn->prepare(
-            'SELECT avancement.user_id, avancement.question_uri, etat, code, langage
+            'SELECT avancement.username, avancement.question_uri, etat, code, langage
              FROM avancement 
              LEFT JOIN reponse_prog 
              ON avancement.question_uri = reponse_prog.question_uri AND
-                avancement.user_id = reponse_prog.user_id
-             WHERE avancement.question_uri = ? AND avancement.user_id = ?'
+                avancement.username = reponse_prog.username
+             WHERE avancement.question_uri = ? AND avancement.username = ?'
         );
         $query->bind_param("ii", $objet->question_uri, $objet->username);
         $query->execute();
         $query->bind_result(
             $objet->username,
+            $objet->question_uri,
             $objet->etat,
             $code,
             $lang,
-            $objet->lang,
-            $objet->question_uri
+            $objet->lang
         );
 
         $objet->username = null;
