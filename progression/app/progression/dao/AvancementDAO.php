@@ -22,11 +22,10 @@ use progression\domaine\entité\{AvancementProg, AvancementSys, AvancementBD, Qu
 
 class AvancementDAO extends EntitéDAO
 {
-	public function get_avancement($question_uri, $username)
+	public function get_avancement($username, $question_uri)
 	{
-		$type = (new QuestionDAO())->get_type($question_uri);
+		$type = ((new QuestionDAO())->get_question($question_uri))->type;
 		$avancement = null;
-
 		if ($type == null) {
 			return null;
 		} else {

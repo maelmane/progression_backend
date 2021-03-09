@@ -47,9 +47,6 @@ class TentativeProgTransformer extends Fractal\TransformerAbstract
 	public function includeResultats(TentativeProg $tentative)
 	{
 		foreach ($tentative->résultats as $résultat) {
-			$résultat->id =
-				Encodage::base64_encode_url($tentative->question_uri .
-					"/{$résultat->numéro}");
 			$résultat->links = [
 				"related" =>
 				$_ENV["APP_URL"] .

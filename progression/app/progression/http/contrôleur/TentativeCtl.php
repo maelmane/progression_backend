@@ -34,13 +34,8 @@ class TentativeCtl extends Contrôleur
 
 			$tentative = $avancementInt->get_tentative($username, $uri, $timestamp);
 			if ($tentative) {
-				$tentative->id = "{$username}/" . Encodage::base64_encode_url($question) . "/{$tentative->date_soumission}";
-				$tentative->links = [
-					"related" =>
-					$_ENV['APP_URL'] .
-						"avancement/{$username}/" .
-						Encodage::base64_encode_url($question),
-				];
+				$tentative->id = "{$username}/{$question}/{$tentative->date_soumission}";
+
 				$tentative->résultats = $tentative->résultats == null ? [] : $tentative->résultats;
 			}
 		}

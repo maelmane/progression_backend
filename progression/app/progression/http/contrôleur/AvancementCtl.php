@@ -37,7 +37,7 @@ class AvancementCtl extends Contrôleur
 		}
 
 		if ($avancement != null) {
-			$avancement->id = $username . "/{$uri}";
+			$avancement->id = "{$username}/{$uri}";
 		}
 
 		$réponse = null;

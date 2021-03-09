@@ -25,10 +25,9 @@ final class TentativeCtlTests extends TestCase
 
 		// Tentative
 		$tentative = new TentativeProg(10, "codeTest", 1614374490);
+		$tentative->id = "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490";
 		$tentative->tests_réussis = 2;
 		$tentative->feedback = "feedbackTest";
-		$tentative->user_id = "jdoe";
-		$tentative->question_id = "prog1/les_fonctions_01/appeler_une_fonction_paramétrée";
 
 		$résultat_attendu =
 			[

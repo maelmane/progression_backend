@@ -32,6 +32,7 @@ final class AvancementCtlTests extends TestCase
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 			"jdoe",
 		);
+		$avancement->id = "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 		$avancement->lang = 10;
 		$avancement->type = Question::TYPE_PROG;
 		$avancement->etat = 1;
@@ -46,7 +47,7 @@ final class AvancementCtlTests extends TestCase
 				"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				"attributes" => [
 					"username" => "jdoe",
-					"état" => 1,
+					"état" => 1
 				],
 				"links" => [
 					"self" =>
@@ -65,10 +66,10 @@ final class AvancementCtlTests extends TestCase
 								"type" => "tentative",
 								"id" =>
 								"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
-							],
-						],
-					],
-				],
+							]
+						]
+					]
+				]
 			],
 			"included" => [
 				[
@@ -80,7 +81,7 @@ final class AvancementCtlTests extends TestCase
 						"tests_réussis" => 2,
 						"feedback" => "feedbackTest",
 						"langage" => 10,
-						"code" => "codeTest",
+						"code" => "codeTest"
 					],
 					"links" => [
 						"self" =>
