@@ -50,9 +50,9 @@ class QuestionProgDAO extends QuestionDAO
 				$test["nom"],
 				$test["in"],
 				$test["out"],
-				isset($test["params"])?$test["params"]:"" ,
-				isset($test["feedback+"])?$test["feedback+"]:"",
-				isset($test["feedback-"])?$test["feedback-"]:"",
+				key_exists("params", $test) ? $test["params"] : null,
+				key_exists("feedback+", $test) ? $test["feedback+"] : null,
+                key_exists("feedback-", $test) ? $test["feedback-"] : null,
 			);
 		}
 

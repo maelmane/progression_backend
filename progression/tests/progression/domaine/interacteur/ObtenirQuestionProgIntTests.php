@@ -27,7 +27,7 @@ final class ObtenirQuestionProgIntTests extends TestCase
     public function test_étant_donné_une_questionprog_avec_un_chemin_existant_lorsque_cherché_par_chemin_on_obtient_un_objet_questionprog_correspondant()
     {
         $résultat_attendu = new QuestionProg();
-        $résultat_attendu->chemin = "prog1/les_fonctions/appeler_une_fonction";
+        $résultat_attendu->uri = "prog1/les_fonctions/appeler_une_fonction";
 
         $mockQuestionDao = Mockery::mock("progression\dao\QuestionDAO");
         $mockQuestionDao

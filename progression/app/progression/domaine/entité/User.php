@@ -25,6 +25,10 @@ class User
 
     public $username;
     public $role = User::ROLE_NORMAL;
+
+    public function __construct($username){
+        $this->username = $username;
+    }
 }
 
 ?>

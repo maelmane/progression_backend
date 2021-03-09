@@ -16,17 +16,20 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+namespace progression\http\contrôleur;
+
 require_once __DIR__ . '/../../../TestCase.php';
 
-use progression\domaine\entité\{Question, QuestionProg, Exécutable, Test};
-use progression\http\contrôleur\ÉbaucheCtl;
+use progression\domaine\entité\{QuestionProg, Question, Test};
+use progression\http\contrôleur\TestCtl;
 use Illuminate\Http\Request;
 
+use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-final class ÉbaucheCtlTests extends TestCase
+final class TestCtlTests extends \TestCase
 {
-	public function test_étant_donné_le_chemin_dune_ébauche_lorsquon_appelle_get_on_obtient_lébauche_et_ses_relations_sous_forme_json()
+	public function test_étant_donné_le_chemin_dune_question_et_son_test_numero_0_lorsquon_appelle_get_on_obtient_le_test_numero_0_et_ses_relations_sous_forme_json()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
@@ -36,23 +39,28 @@ final class ÉbaucheCtlTests extends TestCase
 		$question->chemin =
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
-		// Ébauches
-		$question->exécutables["python"] = new Exécutable("print(\"Hello world\")", "python");
-		$question->exécutables["java"] = new Exécutable("System.out.println(\"Hello world\")", "java");
+		// Tests
+		$question->tests = [
+			new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
+			new Test("Aucune salutation", "0", ""),
+		];
 
 		$résultat_attendu = [
 			"data" => [
-				"type" => "ebauche",
-				"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+				"type" => "test",
+				"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 				"attributes" => [
-					"langage" => "python",
-					"code" => "print(\"Hello world\")",
+					"numéro" => "0",
+					"nom" => "2 salutations",
+					"entrée" => "2",
+					"sortie_attendue" => "Bonjour\nBonjour\n",
+
 				],
 				"links" => [
-					"self" => "https://example.com/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+					"self" => "https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 					"related" => "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				],
-			],
+			]
 		];
 
 		// Intéracteur
@@ -89,7 +97,7 @@ final class ÉbaucheCtlTests extends TestCase
 			->allows()
 			->path()
 			->andReturn(
-				"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python"
+				"/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0"
 			);
 		$mockRequest
 			->allows()
@@ -100,7 +108,7 @@ final class ÉbaucheCtlTests extends TestCase
 		});
 
 		// Contrôleur
-		$ctl = new ÉbaucheCtl($mockIntFactory);
+		$ctl = new TestCtl($mockIntFactory);
 
 		$this->assertEquals(
 			$résultat_attendu,
@@ -109,7 +117,7 @@ final class ÉbaucheCtlTests extends TestCase
 					->get(
 						$mockRequest,
 						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-						"python"
+						"0"
 					)
 					->getContent(),
 				true

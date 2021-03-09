@@ -32,7 +32,7 @@ final class QuestionProgTransformerTests extends TestCase
 
 		$question = new QuestionProg();
 		$question->nom = "appeler_une_fonction_paramétrée";
-		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		$question->titre = "Appeler une fonction paramétrée";
 		$question->description = "Appel d\'une fonction existante recevant un paramètre";
 		$question->enonce =
@@ -64,7 +64,7 @@ final class QuestionProgTransformerTests extends TestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$question = new QuestionProg();
-		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		$question->tests = [
 			new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
@@ -135,7 +135,7 @@ final class QuestionProgTransformerTests extends TestCase
 	public function test_étant_donné_une_question_avec_ses_ébauches_lorsquon_inclut_les_ébauches_on_reçoit_un_tableau_débauches()
 	{
 		$question = new QuestionProg();
-		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		$question->exécutables = [
 			new Exécutable("print(\"Hello world\")", "python"),

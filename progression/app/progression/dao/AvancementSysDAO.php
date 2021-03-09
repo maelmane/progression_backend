@@ -35,7 +35,7 @@ class AvancementSysDAO extends EntitéDAO
     protected static function load($objet)
     {
         $query = AvancementSysDAO::$conn->prepare(
-            'SELECT id, etat, reponse, conteneur 
+            'SELECT question_uri, username, etat, reponse, conteneur 
              FROM avancement LEFT JOIN reponse_sys 
              ON avancement.questionID = reponse_sys.questionID AND
                 avancement.userID = reponse_sys.userID
@@ -43,7 +43,7 @@ class AvancementSysDAO extends EntitéDAO
         );
         $query->bind_param("ii", $objet->question_uri, $objet->username);
         $query->execute();
-        $query->bind_result($objet->id, $objet->etat, $objet->reponse, $objet->conteneur);
+        $query->bind_result($objet->question_uri, $objet->username, $objet->etat, $objet->reponse, $objet->conteneur);
         $query->fetch();
 
         $query->close();

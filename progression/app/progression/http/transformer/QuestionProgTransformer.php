@@ -30,12 +30,12 @@ class QuestionProgTransformer extends QuestionTransformer
 
         foreach ($question->tests as $i => $test) {
             $test->numéro = $i;
-            $test->id = Encodage::base64_encode_url($question->chemin) . "/$i";
+            $test->id = Encodage::base64_encode_url($question->uri) . "/$i";
             $test->links = [
                 "related" =>
                     $_ENV["APP_URL"] .
                     "question/" .
-                    Encodage::base64_encode_url($question->chemin),
+                    Encodage::base64_encode_url($question->uri),
             ];
         }
 
@@ -53,12 +53,12 @@ class QuestionProgTransformer extends QuestionTransformer
 
         foreach ($question->exécutables as $ébauche) {
             $ébauche->id =
-                Encodage::base64_encode_url($question->chemin) . "/{$ébauche->lang}";
+                Encodage::base64_encode_url($question->uri) . "/{$ébauche->lang}";
             $ébauche->links = [
                 "related" =>
                     $_ENV["APP_URL"] .
                     "question/" .
-                    Encodage::base64_encode_url($question->chemin),
+                    Encodage::base64_encode_url($question->uri),
             ];
         }
 
