@@ -26,15 +26,16 @@ class TentativeCtl extends Contrôleur
 {
 	public function get(Request $request, $username, $question, $timestamp)
 	{
-		$uri = Encodage::base64_decode_url($question);
+		$uri = "https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_paramétrée"; //Encodage::base64_decode_url($question);
 		$tentative = null;
 
 		if ($uri != null && $uri != "" && $username != null && $username != "" && $timestamp != null) {
-			$avancementInt = $this->intFactory->getObtenirTentativeInt();
+			$tentativeInt = $this->intFactory->getObtenirTentativeInt();
 
-			$tentative = $avancementInt->get_tentative($username, $uri, $timestamp);
+			$tentative = $tentativeInt->get_tentative($username, $uri, $timestamp);
+
 			if ($tentative) {
-				$tentative->id = "{$username}/{$question}/{$tentative->date_soumission}";
+				$tentative->id = "{$username}/{$question}/{$timestamp}";
 
 				$tentative->résultats = $tentative->résultats == null ? [] : $tentative->résultats;
 			}

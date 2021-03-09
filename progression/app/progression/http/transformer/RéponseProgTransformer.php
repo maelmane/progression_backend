@@ -23,7 +23,7 @@ use League\Fractal;
 
 class RéponseProgTransformer extends Fractal\TransformerAbstract
 {
-	public $type = "reponse";
+	public $type = "resultat";
 
 	public function transform(RéponseProg $réponse)
 	{
@@ -35,7 +35,7 @@ class RéponseProgTransformer extends Fractal\TransformerAbstract
 			"résultat" => $réponse->résultat,
 			"feedback" => $réponse->feedback,
 			"links" => [
-				"self" => "{$_ENV["APP_URL"]}reponse/{$réponse->id}",
+				"self" => "{$_ENV["APP_URL"]}resultat/{$réponse->id}",
 			],
 		];
 

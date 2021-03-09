@@ -20,7 +20,6 @@ namespace progression\http\transformer;
 
 use League\Fractal;
 use progression\domaine\entité\TentativeProg;
-use progression\util\Encodage;
 
 class TentativeProgTransformer extends Fractal\TransformerAbstract
 {

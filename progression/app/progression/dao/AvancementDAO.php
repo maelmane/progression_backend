@@ -24,7 +24,7 @@ class AvancementDAO extends EntitéDAO
 {
 	public function get_avancement($username, $question_uri)
 	{
-		$type = (new QuestionDAO())->get_type($question_uri);
+		$type = ((new QuestionDAO())->get_question($question_uri))->type;
 		$avancement = null;
 		if ($type == null) {
 			return null;
@@ -47,7 +47,7 @@ class AvancementDAO extends EntitéDAO
 	protected function load($objet)
 	{
 		$query = $this->conn->prepare("SELECT username, etat FROM avancement WHERE question_uri = ? AND username = ?");
-		$query->bind_param("ii", $objet->question_uri, $objet->username);
+		$query->bind_param("si", $objet->question_uri, $objet->username);
 		$query->execute();
 		$query->bind_result($objet->id, $objet->etat);
 		$query->fetch();

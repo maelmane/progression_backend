@@ -36,7 +36,7 @@ final class AvancementCtlTests extends TestCase
 		$avancement->lang = 10;
 		$avancement->type = Question::TYPE_PROG;
 		$avancement->etat = 1;
-		$avancement->résultats = [new TentativeProg(10, "codeTest", 1614965817)];
+		$avancement->résultats = [new TentativeProg("python", "codeTest", "1614965817")];
 		$avancement->résultats[0]->tests_réussis = 2;
 		$avancement->résultats[0]->feedback = "feedbackTest";
 

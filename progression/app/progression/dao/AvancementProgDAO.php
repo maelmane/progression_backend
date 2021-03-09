@@ -20,24 +20,29 @@ namespace progression\dao;
 
 use progression\domaine\entité\{Question, TentativeProg};
 
-class AvancementProgDAO extends EntitéDAO
+class AvancementProgDAO extends AvancementDAO
 {
 	public function get_tentative($username, $question_uri, $timestamp)
 	{
 		$tentative = null;
 		$query = $this->conn->prepare(
-			'SELECT lang, code, date_soumission
-             FROM reponse_prog
-             WHERE user_id = ? AND question_uri = ?
-             AND date_soumission = ?',
+			'SELECT reponse_prog.langage,
+				reponse_prog.code,
+				reponse_prog.date_soumission
+			 FROM reponse_prog
+			 WHERE username = ? 
+			 	AND question_uri = ?
+			 	AND date_soumission = ?'
 		);
-		$query->bind_param("iii", $username, $question_uri, $timestamp);
+		$query->bind_param("ssi", $username, $question_uri, $timestamp);
 		$query->execute();
-		$query->bind_result($lang, $code, $date_soumission);
+		$query->bind_result($langage, $code, $date_soumission);
+		print_r($query);
 
-		if ($lang && $code) {
-			$tentative = new TentativeProg($lang, $code, $date_soumission);
+		if ($langage && $code && $date_soumission) {
+			$tentative = new TentativeProg($langage, $code, $date_soumission);
 		}
+
 		$query->close();
 
 		return $tentative;
@@ -48,14 +53,20 @@ class AvancementProgDAO extends EntitéDAO
 		parent::load($objet);
 
 		$query = $this->conn->prepare(
-			'SELECT avancement.user_id, avancement.question_uri, etat, code, langage, date_soumission
+			'SELECT avancement.username, 
+				avancement.question_uri, 
+				avancement.etat, 
+				reponse_prog.code, 
+				reponse_prog.langage, 
+				reponse_prog.date_soumission
              FROM avancement 
              LEFT JOIN reponse_prog 
-             ON avancement.question_uri = reponse_prog.question_uri AND
-                avancement.username = reponse_prog.username
-             WHERE avancement.question_uri = ? AND avancement.username = ?'
+             ON avancement.question_uri = reponse_prog.question_uri 
+			 	AND avancement.username = reponse_prog.username
+             WHERE avancement.question_uri = ? 
+			 	AND avancement.username = ?'
 		);
-		$query->bind_param("ii", $objet->question_uri, $objet->username);
+		$query->bind_param("ss", $objet->question_uri, $objet->username);
 		$query->execute();
 		$query->bind_result(
 			$objet->username,
@@ -85,7 +96,7 @@ class AvancementProgDAO extends EntitéDAO
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 
 			$query->bind_param(
-				"iii",
+				"iss",
 				$objet->etat,
 				$objet->question_uri,
 				$objet->username,
@@ -99,7 +110,7 @@ class AvancementProgDAO extends EntitéDAO
                                               ON DUPLICATE KEY UPDATE code=VALUES( code )');
 			foreach ($objet->réponses as $réponse) {
 				$query->bind_param(
-					"iiis",
+					"ssis",
 					$objet->question_uri,
 					$objet->username,
 					$réponse->langid,
