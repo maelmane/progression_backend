@@ -14,6 +14,7 @@ services:
     restart: always
 
   progression:
+    image: progression_backend_progression
     build: progression/
     container_name: progression
     networks:
@@ -43,6 +44,7 @@ services:
       DESTINATION: mysql://quiz:password@172.20.0.2/quiz
 
   tests:
+    image: progression_backend_progression
     build: progression/
     container_name: progression_tests
     volumes:

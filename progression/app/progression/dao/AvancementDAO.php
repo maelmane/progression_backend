@@ -46,7 +46,7 @@ class AvancementDAO extends EntitéDAO
 
 	protected function load($objet)
 	{
-		$query = $this->conn->prepare("SELECT user_id, etat FROM avancement WHERE question_uri = ? AND user_id = ?");
+		$query = $this->conn->prepare("SELECT username, etat FROM avancement WHERE question_uri = ? AND username = ?");
 		$query->bind_param("ii", $objet->question_uri, $objet->username);
 		$query->execute();
 		$query->bind_result($objet->id, $objet->etat);

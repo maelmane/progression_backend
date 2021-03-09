@@ -30,7 +30,7 @@ class QuestionTransformer extends Fractal\TransformerAbstract
         $question = $data_in["question"];
         $username = $data_in["username"];
 
-        $chemin_encodé = Encodage::base64_encode_url($question->chemin);
+        $chemin_encodé = Encodage::base64_encode_url($question->uri);
 
         $data_out = [
             "id" => $chemin_encodé,

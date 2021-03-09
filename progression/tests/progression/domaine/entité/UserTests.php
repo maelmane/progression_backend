@@ -22,8 +22,7 @@ use PHPUnit\Framework\TestCase;
 
 final class UserTests extends TestCase{
     public function test_étant_donné_un_utilisateur_instancié_avec_username_bob_lorsquon_récupère_son_username_on_obtient_bob(){
-        $userTest = new User();
-        $userTest->username = "bob";
+        $userTest = new User("bob");
 
         $username = $userTest->username;
 
@@ -31,20 +30,11 @@ final class UserTests extends TestCase{
     }
 
     public function test_étant_donné_un_utilisateur_instancié_avec_role_par_défaut_lorsquon_récupère_son_role_on_obtient_User_ROLE_NORMAL(){
-        $userTest = new User();
+        $userTest = new User("bob");
 
         $role = $userTest->role;
 
         $this->assertEquals( $userTest::ROLE_NORMAL, $role );
-    }
-
-    public function test_étant_donné_un_utilisateur_instancié_avec_id_1_lorsquon_récupère_son_id_on_obtient_1(){
-        $userTest = new User();
-        $userTest->id = 1;
-
-        $id = $userTest->id;
-
-        $this->assertEquals( 1, $id );
     }
 
 }

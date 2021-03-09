@@ -27,13 +27,13 @@ class UserDAO extends EntitéDAO
         $user = new User($username);
         $this->load($user);
 
-        return $user->username ? $user : null;
+        return $user->username == null ? null : $user;
     }
 
     protected function load($objet)
     {
         $query = $this->conn->prepare(
-            'SELECT user_id, role FROM users WHERE user_id = ? '
+            'SELECT username, role FROM user WHERE username = ? '
         );
         $query->bind_param("i", $objet->username);
         $query->execute();
@@ -46,13 +46,13 @@ class UserDAO extends EntitéDAO
     public function save($objet)
     {
         $query = $this->conn->prepare(
-            'INSERT INTO users( user_id, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )'
+            'INSERT INTO user( username, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )'
         );
         $query->bind_param("si", $objet->username, $objet->role);
         $query->execute();
         $query->close();
 
-        return $this->trouver_par_nomusager($objet->username);
+        return $this->get_user($objet->username);
     }
 }
 ?>

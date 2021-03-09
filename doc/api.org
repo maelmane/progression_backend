@@ -282,31 +282,31 @@ curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/
 ** Obtenir la question «appeler_une_fonction_paramétrée» et ses tests: ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl https://progression.dti.crosemont.quebec/api/v1/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=?include=tests -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ?include=tests -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir la question «appeler_une_fonction_paramétrée», ses tests et ses ébauches: ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl https://progression.dti.crosemont.quebec/api/v1/question/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=?include=tests,ébauches -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ?include=tests,ébauches -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir l'avancement de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
+** Obtenir l'avancement de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl https://progression.dti.crosemont.quebec/api/v1/avancement/1/Mg== -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction_paramétrée» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never
-curl https://progression.dti.crosemont.quebec/api/v1/ébauche/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/python -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/ébauche/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/python -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Soumettre une tentative de solution à la question «appeler_une_fonction_paramétrée» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never
-curl --data '{"langage":"python","code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU= -H "Authorization: Bearer $TOKEN"
+curl --data '{"langage":"python","code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 #+RESULTS:
@@ -341,5 +341,5 @@ curl --data '{"langage":"python","code":"ma_fonction(\"Allo le monde\")"  }' htt
 ** Obtenir une tentative de solution préalablement soumise pour la question «appeler_une_fonction_paramétrée» : ~PROTOTYPE~
 
 #+BEGIN_SRC sh :eval never
-curl https://progression.dti.crosemont.quebec/api/v1/user/jdoe/tentative/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU=/1612834148 -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/user/jdoe/tentative/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/1612834148 -H "Authorization: Bearer $TOKEN"
 #+END_SRC

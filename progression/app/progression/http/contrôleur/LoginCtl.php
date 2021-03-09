@@ -42,6 +42,18 @@ class LoginCtl extends Contrôleur
 			$token = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
 		}
 
-		return $this->préparer_réponse(["Token" => $token]);
+		if ($token == null) {
+			Log::warning(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					get_class($this) .
+					") Accès interdit. username: $username"
+			);
+			return $this->réponse_json(
+				["message" => "Accès interdit"],
+				403
+			);
+		} else {
+			return $this->préparer_réponse(["Token" => $token]);
+		}
 	}
 }
