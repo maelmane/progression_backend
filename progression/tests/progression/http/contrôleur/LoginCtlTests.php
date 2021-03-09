@@ -70,9 +70,7 @@ final class LoginCtlTests extends TestCase
 		$mockRequest
 			->allows()
 			->path()
-			->andReturn(
-				"/auth/"
-			);
+			->andReturn("/auth/");
 		$mockRequest
 			->allows()
 			->query("include")
@@ -145,9 +143,7 @@ final class LoginCtlTests extends TestCase
 		$mockRequest
 			->allows()
 			->path()
-			->andReturn(
-				"/auth/"
-			);
+			->andReturn("/auth/");
 		$mockRequest
 			->allows()
 			->query("include")

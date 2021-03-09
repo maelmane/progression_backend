@@ -78,9 +78,7 @@ final class UserCtlTests extends TestCase
 		$mockRequest
 			->allows()
 			->path()
-			->andReturn(
-				"/user"
-			);
+			->andReturn("/user");
 		$mockRequest
 			->allows()
 			->all()
