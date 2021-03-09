@@ -25,16 +25,15 @@ use Firebase\JWT\JWT;
 
 final class LoginCtlTests extends TestCase
 {
-	public function test_étant_donné_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Bob()
+	public function test_étant_donné_lutilisateur_Bob_et_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Bob()
 	{
 		$_ENV['AUTH_TYPE'] = "no";
 		$_ENV['JWT_SECRET'] = "secret";
 		$_ENV['JWT_TTL'] = 33333;
 
-		$user = new User(null);
-		$user->username = "Bob";
+		$user = new User("Bob");
 
-		$résultat_attendu = "Bob";
+		$username_attendu = "Bob";
 
 		// Intéracteur
 		$mockLoginInt = Mockery::mock(
@@ -93,21 +92,20 @@ final class LoginCtlTests extends TestCase
 
 		$token = json_decode($ctl->login($mockRequest)->getContent(), true);
 		$tokenDécodé = JWT::decode($token["Token"], $_ENV['JWT_SECRET'], array('HS256'));
-		$résultat_obtenu = ($tokenDécodé->user)->username;
+		$username_obtenu = ($tokenDécodé->user)->username;
 
-		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+		$this->assertEquals($username_attendu, $username_obtenu);
 		$this->assertGreaterThan(time(), $tokenDécodé->expired);
 		$this->assertLessThan($tokenDécodé->expired, $tokenDécodé->current);
 	}
 
-	public function test_étant_donné_une_authentification_de_type_ldap_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_jdoe()
+	public function test_étant_donné_lutilisateur_jdoe_et_une_authentification_de_type_ldap_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_jdoe()
 	{
 		$_ENV['AUTH_TYPE'] = "ldap";
 
-		$user = new User(null);
-		$user->username = "jdoe";
+		$user = new User("jdoe");
 
-		$résultat_attendu = "jdoe";
+		$username_attendu = "jdoe";
 
 		// Intéracteur
 		$mockLoginInt = Mockery::mock(
@@ -166,22 +164,45 @@ final class LoginCtlTests extends TestCase
 
 		$token = json_decode($ctl->login($mockRequest)->getContent(), true);
 		$tokenDécodé = JWT::decode($token["Token"], $_ENV['JWT_SECRET'], array('HS256'));
-		$résultat_obtenu = ($tokenDécodé->user)->username;
+		$username_obtenu = ($tokenDécodé->user)->username;
 
-		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+		$this->assertEquals($username_attendu, $username_obtenu);
 		$this->assertGreaterThan(time(), $tokenDécodé->expired);
 		$this->assertLessThan($tokenDécodé->expired, $tokenDécodé->current);
 	}
 
-	public function test_étant_donné_une_authentification_de_type_local_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Fred()
+	public function test_étant_donné_lutilisateur_Marcel_inexistant_et_une_authentification_de_type_ldap_lorsquon_appelle_login_on_obtient_Accès_interdit()
 	{
-		// L'authentification locale n'est pas implémentée.
+		// À faire
+		$_ENV["AUTH_TYPE"] = "ldap";
+
+		$user = new User("Marcel");
+
+		$résultat_attendu = ["message" => "Accès interdit"];
+
+		$this->assertEquals(null, null);
+	}
+
+	public function test_étant_donné_lutilisateur_Fred_et_une_authentification_de_type_local_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Fred()
+	{
+		// À faire
 		$_ENV['AUTH_TYPE'] = "local";
 
-		$user = new User(null);
-		$user->username = "Fred";
+		$user = new User("Fred");
 
-		$résultat_attendu = "Fred";
+		$résultat_attendu = "";
+
+		$this->assertEquals(null, null);
+	}
+
+	public function test_étant_donné_lutilisateur_Lea_inexistant_et_une_authentification_de_type_local_lorsquon_appelle_login_on_obtient_Accès_interdit()
+	{
+		// À faire
+		$_ENV['AUTH_TYPE'] = "local";
+
+		$user = new User("Lea");
+
+		$résultat_attendu = ["message" => "Accès interdit"];
 
 		$this->assertEquals(null, null);
 	}
