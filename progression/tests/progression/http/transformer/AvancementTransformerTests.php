@@ -50,7 +50,7 @@ final class AvancementTransformerTests extends TestCase
 
 		$username = "jdoe";
 		$tentativeTransformer = new TentativeProgTransformer();
-		$tentative = new TentativeProg(10, "codeTest", 1614711760);
+		$tentative = new TentativeProg("python", "codeTest", "1614711760");
 		$tentative->tests_réussis = 2;
 		$tentative->feedback = "feedbackTest";
 		$tentative->id = "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760";
@@ -60,10 +60,10 @@ final class AvancementTransformerTests extends TestCase
 				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24" .
 				"/" .
 				$tentative->date_soumission,
-			"date_soumission" => 1614711760,
+			"date_soumission" => "1614711760",
 			"tests_réussis" => 2,
 			"feedback" => "feedbackTest",
-			"langage" => 10,
+			"langage" => "python",
 			"code" => "codeTest",
 			"links" => [
 				"self" => "{$_ENV["APP_URL"]}tentative/{$username}/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/{$tentative->date_soumission}",

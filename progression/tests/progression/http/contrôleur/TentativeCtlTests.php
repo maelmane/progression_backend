@@ -24,7 +24,7 @@ final class TentativeCtlTests extends TestCase
 		$_ENV['APP_URL'] = 'https://example.com/';
 
 		// Tentative
-		$tentative = new TentativeProg(10, "codeTest", 1614374490);
+		$tentative = new TentativeProg("python", "codeTest", "1614374490");
 		$tentative->id = "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490";
 		$tentative->tests_réussis = 2;
 		$tentative->feedback = "feedbackTest";
@@ -35,10 +35,10 @@ final class TentativeCtlTests extends TestCase
 					"type" => "tentative",
 					"id" => "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
 					"attributes" => [
-						"date_soumission" => 1614374490,
+						"date_soumission" => "1614374490",
 						"tests_réussis" => 2,
 						"feedback" => "feedbackTest",
-						"langage" => 10,
+						"langage" => "python",
 						"code" => "codeTest"
 					],
 					"links" => [
@@ -63,7 +63,7 @@ final class TentativeCtlTests extends TestCase
 		);
 		$mockObtenirTentativeInt
 			->allows()
-			->get_tentative("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", 1614374490)
+			->get_tentative("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "1614374490")
 			->andReturn($tentative);
 
 		// InteracteurFactory
@@ -109,7 +109,7 @@ final class TentativeCtlTests extends TestCase
 						$mockRequest,
 						"jdoe",
 						"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
-						1614374490
+						"1614374490"
 					)->getContent(),
 				true
 			)
