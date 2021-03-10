@@ -27,12 +27,10 @@ class AvancementSys extends Avancement
         $question_uri,
         $username,
         $conteneur = null,
-        $reponse = null
+        $résultat = null
     ) {
         parent::__construct($question_uri, $username);
-        $this->reponse = $reponse;
+        $this->résultat = $résultat;
         $this->conteneur = $conteneur;
     }
 }
-
-?>

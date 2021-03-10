@@ -33,10 +33,10 @@ final class AvancementCtlTests extends TestCase
 			"jdoe",
 		);
 		$avancement->id = "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
-		$avancement->lang = 10;
+		$avancement->lang = "python";
 		$avancement->type = Question::TYPE_PROG;
 		$avancement->etat = 1;
-		$avancement->résultats = [new TentativeProg("python", "codeTest", "1614965817")];
+		$avancement->résultats = [new TentativeProg("python", "codeTest", 1614965817)];
 		$avancement->résultats[0]->tests_réussis = 2;
 		$avancement->résultats[0]->feedback = "feedbackTest";
 
@@ -51,7 +51,7 @@ final class AvancementCtlTests extends TestCase
 				],
 				"links" => [
 					"self" =>
-					"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+					"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
 				],
 				"relationships" => [
 					"tentatives" => [
@@ -80,12 +80,13 @@ final class AvancementCtlTests extends TestCase
 						"date_soumission" => 1614965817,
 						"tests_réussis" => 2,
 						"feedback" => "feedbackTest",
-						"langage" => 10,
+						"langage" => "python",
 						"code" => "codeTest"
 					],
 					"links" => [
 						"self" =>
 						"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
+						"related" => "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817"
 					],
 					"relationships" => [
 						"resultats" => [

@@ -29,14 +29,12 @@ class AvancementBD extends Avancement
         $question_uri,
         $username,
         $conteneur,
-        $reponse = null,
+        $résultat = null,
         $code = null
     ) {
         parent::__construct($question_uri, $username);
-        $this->reponse = $reponse;
+        $this->résultat = $résultat;
         $this->conteneur = $conteneur;
         $this->code = $code;
     }
 }
-
-?>

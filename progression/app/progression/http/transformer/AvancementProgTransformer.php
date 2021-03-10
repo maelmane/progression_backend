@@ -24,7 +24,7 @@ class AvancementProgTransformer extends AvancementTransformer
 {
     public function includeTentatives($avancement)
     {
-        $tentatives = $avancement->réponses;
+        $tentatives = $avancement->résultats;
         foreach ($tentatives as $tentative) {
             $tentative->id =
                 "{$avancement->username}/" .
