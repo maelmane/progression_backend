@@ -41,7 +41,7 @@ final class ObtenirUserIntTests extends TestCase
 			->andReturn($mockUserDao);
 
 		$interacteur = new ObtenirUserInt($mockDAOFactory);
-		$résultat_obtenu = $interacteur->get_user_par_nomusager('Bob');
+		$résultat_obtenu = $interacteur->get_user('Bob');
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
@@ -63,7 +63,7 @@ final class ObtenirUserIntTests extends TestCase
 			->andReturn($mockUserDao);
 
 		$interacteur = new ObtenirUserInt($mockDAOFactory);
-		$résultat_obtenu = $interacteur->get_user_par_nomusager('Banane');
+		$résultat_obtenu = $interacteur->get_user('Banane');
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
