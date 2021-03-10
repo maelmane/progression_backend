@@ -21,15 +21,15 @@ namespace progression\domaine\entité;
 use PHPUnit\Framework\TestCase;
 
 final class RéponseProgTests extends TestCase{
-    public function test_étant_donné_une_réponseProg_instanciée_avec_langid_2_et_code_5_lorsquon_récupère_son_langid_on_obtient_2(){
+    public function test_étant_donné_une_réponseProg_instanciée_avec_langage_2_et_code_5_lorsquon_récupère_son_langage_on_obtient_2(){
         $réponseProgTest = new RéponseProg(2, 5);
 
-        $langid = $réponseProgTest->langid;
+        $langage = $réponseProgTest->langage;
 
-        $this->assertEquals( 2, $langid );
+        $this->assertEquals( 2, $langage );
     }
 
-    public function test_étant_donné_une_réponseProg_instanciée_avec_langid_2_et_code_5_lorsquon_récupère_son_code_on_obtient_5(){
+    public function test_étant_donné_une_réponseProg_instanciée_avec_langage_2_et_code_5_lorsquon_récupère_son_code_on_obtient_5(){
         $réponseProgTest = new RéponseProg(2, 5);
 
         $code = $réponseProgTest->code;
