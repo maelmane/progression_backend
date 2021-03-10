@@ -23,19 +23,19 @@ use League\Fractal;
 
 class UserTransformer extends Fractal\TransformerAbstract
 {
-    public $type = "user";
+	public $type = "user";
 
-    public function transform(User $user)
-    {
-        $data = [
-            "id" => $user->username,
-            "username" => $user->username,
-            "rôle" => $user->role,
-            "links" => (isset($test->links) ? $test->links : []) + [
-                "self" => "{$_ENV["APP_URL"]}user/{$user->username}",
-            ],
-        ];
+	public function transform(User $user)
+	{
+		$data = [
+			"id" => $user->username,
+			"username" => $user->username,
+			"rôle" => $user->role,
+			"links" => (isset($user->links) ? $user->links : []) + [
+				"self" => "{$_ENV["APP_URL"]}user/{$user->username}",
+			],
+		];
 
-        return $data;
-    }
+		return $data;
+	}
 }

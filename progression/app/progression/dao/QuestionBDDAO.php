@@ -15,4 +15,10 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
-?>
+namespace progression\dao;
+
+use progression\domaine\entité\QuestionBD;
+
+class QuestionBDDAO extends QuestionDAO
+{
+}

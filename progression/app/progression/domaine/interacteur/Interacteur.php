@@ -22,10 +22,12 @@ use progression\domaine\entité;
 
 class Interacteur
 {
-    function __construct($source)
-    {
-        $this->_source = $source;
-    }
+	protected $_source;
+
+	function __construct($source)
+	{
+		$this->_source = $source;
+	}
 }
 
 ?>

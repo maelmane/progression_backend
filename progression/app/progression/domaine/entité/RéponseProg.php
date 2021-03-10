@@ -18,16 +18,18 @@
 
 namespace progression\domaine\entité;
 
-class RéponseProg{
-    public $langage;
-    public $code;
-    public $date_soumission;
-    public $tests_réussis;
-    public $feedback;
+class RéponseProg
+{
+	public $langage;
+	public $code;
+	public $date_soumission;
+	public $tests_réussis;
+	public $feedback;
 
-    public function __construct($langage, $code, $date_soumission = null, $tests_réussis = null, $feedback = null){
-        $this->langid=$langage;
-        $this->code=$code;
-        $this->date_soumission=$date_soumission;
-    }
+	public function __construct($langage, $code, $date_soumission = null, $tests_réussis = null, $feedback = null)
+	{
+		$this->langage = $langage;
+		$this->code = $code;
+		$this->date_soumission = $date_soumission;
+	}
 }

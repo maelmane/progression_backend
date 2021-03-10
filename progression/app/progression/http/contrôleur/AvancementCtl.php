@@ -19,6 +19,7 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use progression\util\Encodage;
 use progression\http\transformer\AvancementProgTransformer;
 use progression\domaine\entité\{Avancement, AvancementProg, AvancementSys, AvancementBD};

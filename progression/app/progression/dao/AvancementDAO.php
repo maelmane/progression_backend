@@ -25,6 +25,7 @@ class AvancementDAO extends EntitéDAO
 	public function get_avancement($question_uri, $username)
 	{
 		$type = (new QuestionDAO())->get_type($question_uri);
+		$avancement = null;
 
 		if ($type == null) {
 			return null;

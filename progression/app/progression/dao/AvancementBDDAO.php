@@ -20,12 +20,12 @@ namespace progression\dao;
 
 use progression\domaine\entité\{AvancementBD, Question};
 
-class AvancementBDDAO extends EntitéDAO
+class AvancementBDDAO extends AvancementDAO
 {
-	static function get_avancement($question_id, $username)
+	function get_avancement($question_id, $username)
 	{
 		$avancement = new AvancementBD($question_id, $username);
-		AvancementBDDAO::load($avancement);
+		$avancement->load($avancement);
 		if (is_null($avancement->etat)) {
 			$avancement->etat = Question::ETAT_DEBUT;
 		}
@@ -33,80 +33,59 @@ class AvancementBDDAO extends EntitéDAO
 		return $avancement->id ? $avancement : null;
 	}
 
-	protected static function load($objet)
+	protected function load($objet)
 	{
-		$query = AvancementBDDAO::$conn->prepare(
-			'SELECT question_uri, username, etat, reponse, code, conteneur FROM avancement WHERE question_uri = ? AND username = ?'
+		$query = $this->conn->prepare(
+			"SELECT question_uri, username, etat, reponse, code, conteneur FROM avancement WHERE question_uri = ? AND username = ?",
 		);
 		$query->bind_param("ii", $objet->question_uri, $objet->username);
 		$query->execute();
 		$query->bind_result(
-            $objet->question_uri,
-            $objet->username,
+			$objet->question_uri,
+			$objet->username,
 			$objet->etat,
 			$objet->reponse,
 			$objet->code_utilisateur,
-			$objet->conteneur
+			$objet->conteneur,
 		);
 		$query->fetch();
 
 		$query->close();
 	}
 
-    public static function save($objet)
-    {
-        $mysql->begin_transaction();
-        try {
-            $query = AvancementBDDAO::$conn
-                ->prepare('INSERT INTO avancement ( etat, question_uri, username ) VALUES ( ?, ?, ? )
+	public function save($objet)
+	{
+		mysqli_begin_transaction($this->conn);
+		try {
+			$query = $this->conn->prepare('INSERT INTO avancement ( etat, question_uri, username ) VALUES ( ?, ?, ? )
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 
-            $query->bind_param(
-                "iii",
-                $objet->etat,
-                $objet->question_uri,
-                $objet->username
-            );
-            $query->execute();
-            $query->close();
+			$query->bind_param("iii", $objet->etat, $objet->question_uri, $objet->username);
+			$query->execute();
+			$query->close();
 
-            $query = AvancementBDDAO::$conn
-                ->prepare('INSERT INTO reponse_sys ( question_uri, username, reponse, conteneur ) VALUES ( ?, ?, ?, ?  )
+			$query = $this->conn
+				->prepare('INSERT INTO reponse_sys ( question_uri, username, reponse, conteneur ) VALUES ( ?, ?, ?, ?  )
                                               ON DUPLICATE KEY UPDATE reponse=VALUES( reponse ), conteneur=VALUES( conteneur )');
 
-            $query->bind_param(
-                "iiss",
-                $objet->question_uri,
-                $objet->username,
-                $objet->reponse,
-                $objet->conteneur
-            );
-            $query->execute();
-            $query->close();
+			$query->bind_param("iiss", $objet->question_uri, $objet->username, $objet->reponse, $objet->conteneur);
+			$query->execute();
+			$query->close();
 
-            $query = AvancementBDDAO::$conn
-                ->prepare('INSERT INTO reponse_prog ( question_uri, username, lang, code ) VALUES ( ?, ?, ?, ?  )
+			$query = $this->conn
+				->prepare('INSERT INTO reponse_prog ( question_uri, username, lang, code ) VALUES ( ?, ?, ?, ?  )
                                               ON DUPLICATE KEY UPDATE lang=VALUES( lang ), code=VALUES( code )');
 
-            $query->bind_param(
-                "iiss",
-                $objet->question_uri,
-                $objet->username,
-                "mysql",
-                $objet->code
-            );
-            $query->execute();
+			$query->bind_param("iiss", $objet->question_uri, $objet->username, "mysql", $objet->code);
+			$query->execute();
 
-            $mysqli->commit();
-        } catch (\mysqli_sql_exception $exception) {
-            $mysqli->rollback();
+			mysqli_commit($this->conn);
+		} catch (\mysqli_sql_exception $exception) {
+			mysqli_rollback($this->conn);
 
-            throw $exception;
-        }
-        return AvancementBDDAO::get_avancement(
-            $objet->question_uri,
-            $objet->username
-        );
-    }
+			throw $exception;
+		}
+		return $this->get_avancement($objet->question_uri, $objet->username);
+	}
 }
 ?>
