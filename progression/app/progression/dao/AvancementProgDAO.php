@@ -37,7 +37,6 @@ class AvancementProgDAO extends AvancementDAO
 		$query->bind_param("ssi", $username, $question_uri, $timestamp);
 		$query->execute();
 		$query->bind_result($langage, $code, $date_soumission);
-		print_r($query);
 
 		if ($langage && $code && $date_soumission) {
 			$tentative = new TentativeProg($langage, $code, $date_soumission);
@@ -78,12 +77,12 @@ class AvancementProgDAO extends AvancementDAO
 		);
 
 		$objet->username = null;
-		$réponses = [];
+		$résultats = [];
 		while ($query->fetch()) {
-			$réponses[$lang] = new TentativeProg($lang, $code, $date);
+			$résultats[$lang] = new TentativeProg($lang, $code, $date);
 		}
 
-		$objet->réponses = $réponses;
+		$objet->résultats = $résultats;
 		$query->close();
 	}
 

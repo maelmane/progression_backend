@@ -40,16 +40,16 @@ class AvancementDAO extends EntitéDAO
 				(new AvancementBDDAO())->load($avancement);
 			}
 
-			return $avancement;
+			return $avancement->username == null ? null : $avancement;
 		}
 	}
 
 	protected function load($objet)
 	{
 		$query = $this->conn->prepare("SELECT username, etat FROM avancement WHERE question_uri = ? AND username = ?");
-		$query->bind_param("si", $objet->question_uri, $objet->username);
+		$query->bind_param("ss", $objet->question_uri, $objet->username);
 		$query->execute();
-		$query->bind_result($objet->id, $objet->etat);
+		$query->bind_result($objet->username, $objet->etat);
 		$query->fetch();
 
 		$query->close();
