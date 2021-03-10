@@ -14,7 +14,7 @@ before_script:
 test:
   script:
   - progression/vendor/bin/phpunit --configuration progression/phpunit.xml --coverage-text
-  - php -d memory_limit=3G vendor/bin/phpstan analyse -c phpstan.neon 
+  - php -d memory_limit=3G progression/vendor/bin/phpstan analyse -c progression/phpstan.neon 
   except:
   - master
   - documentation
