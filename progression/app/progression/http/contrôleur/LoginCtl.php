@@ -15,14 +15,12 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 namespace progression\http\contrôleur;
 
-use Exception;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use progression\domaine\interacteur\LoginInt;
-use progression\dao\DAOFactory;
 
 class LoginCtl extends Contrôleur
 {
@@ -45,21 +43,18 @@ class LoginCtl extends Contrôleur
 			$token = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
 		}
 
-        if ($token == null){
-            Log::warning(
-                "({$request->ip()}) - {$request->method()} {$request->path()} (" .
-                get_class($this) .
-                ") Accès interdit. username: $username"
-            );
-            return $this->réponse_json(
-                ["message" => "Accès interdit"],
-                403
-            );
-        }
-        else {
-            return $this->préparer_réponse(["Token" => $token]);
-        }
+		if ($token == null) {
+			Log::warning(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					get_class($this) .
+					") Accès interdit. username: $username"
+			);
+			return $this->réponse_json(
+				["message" => "Accès interdit"],
+				403
+			);
+		} else {
+			return $this->préparer_réponse(["Token" => $token]);
+		}
 	}
 }
-
-?>
