@@ -31,10 +31,8 @@ class AvancementCtl extends Contrôleur
 		$chemin = Encodage::base64_decode_url($uri);
 		$avancement = null;
 
-		if ($chemin != null && $chemin != "" && $username != null && $username != "") {
-			$avancementInt = $this->intFactory->getObtenirAvancementInt();
-			$avancement = $avancementInt->get_avancement($username, $chemin);
-		}
+		$avancementInt = $this->intFactory->getObtenirAvancementInt();
+		$avancement = $avancementInt->get_avancement($username, $chemin);
 
 		if ($avancement != null) {
 			$avancement->id = "{$username}/{$uri}";

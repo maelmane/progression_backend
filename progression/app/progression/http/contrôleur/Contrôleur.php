@@ -31,104 +31,104 @@ use progression\domaine\interacteur\InteracteurFactory;
 
 class Contrôleur extends BaseController
 {
-    public function __construct(InteracteurFactory $intFactory = null)
-    {
-        if ($intFactory == null) {
-            $this->intFactory = new InteracteurFactory();
-        } else {
-            $this->intFactory = $intFactory;
-        }
-    }
+	public function __construct(InteracteurFactory $intFactory = null)
+	{
+		if ($intFactory == null) {
+			$this->intFactory = new InteracteurFactory();
+		} else {
+			$this->intFactory = $intFactory;
+		}
+	}
 
-    protected function réponse_json($réponse, $code = 200)
-    {
-        return response()->json(
-            $réponse,
-            $code,
-            [
-                "Content-Type" => "application/vnd.api+json",
-                "Charset" => "utf-8",
-            ],
-            JSON_UNESCAPED_UNICODE
-        );
-    }
+	protected function réponse_json($réponse, $code = 200)
+	{
+		return response()->json(
+			$réponse,
+			$code,
+			[
+				"Content-Type" => "application/vnd.api+json",
+				"Charset" => "utf-8",
+			],
+			JSON_UNESCAPED_UNICODE
+		);
+	}
 
-    protected function getFractalManager()
-    {
-        $request = app(Request::class);
-        $manager = new Manager();
+	protected function getFractalManager()
+	{
+		$request = app(Request::class);
+		$manager = new Manager();
 
-        // On redéfinit le Serializer pour avoir des liens «relationship» personnalisés
+		// On redéfinit le Serializer pour avoir des liens «relationship» personnalisés
 
-        //JsonApiSerializer ajoute un slash à l'URL de base, on s'assure d'enlèver le slash ultime
-        $urlBase = preg_replace("/\/+$/", "", $_ENV["APP_URL"]);
-        //$manager->setSerializer(new JsonApiSerializer($urlBase));
-        $manager->setSerializer(new JsonApiSerializer($urlBase));
-        if (!empty($request->query("include"))) {
-            $manager->parseIncludes($request->query("include"));
-        }
-        return $manager;
-    }
+		//JsonApiSerializer ajoute un slash à l'URL de base, on s'assure d'enlèver le slash ultime
+		$urlBase = preg_replace("/\/+$/", "", $_ENV["APP_URL"]);
+		//$manager->setSerializer(new JsonApiSerializer($urlBase));
+		$manager->setSerializer(new JsonApiSerializer($urlBase));
+		if (!empty($request->query("include"))) {
+			$manager->parseIncludes($request->query("include"));
+		}
+		return $manager;
+	}
 
-    public function item($data, $transformer)
-    {
-        if ($data == null) {
-            return [null];
-        }
+	public function item($data, $transformer)
+	{
+		if ($data == null) {
+			return [null];
+		}
 
-        $manager = $this->getFractalManager();
-        $resource = new Item($data, $transformer, $transformer->type);
-        $item = $manager->createData($resource)->toArray();
+		$manager = $this->getFractalManager();
+		$resource = new Item($data, $transformer, $transformer->type);
+		$item = $manager->createData($resource)->toArray();
 
-        return $item;
-    }
+		return $item;
+	}
 
-    public function collection($data, $transformer)
-    {
-        if ($data == null) {
-            return [null];
-        }
+	public function collection($data, $transformer)
+	{
+		if ($data == null) {
+			return [null];
+		}
 
-        $manager = $this->getFractalManager();
-        $resource = new Collection($data, $transformer, $transformer->type);
-        $item = $manager->createData($resource)->toArray();
+		$manager = $this->getFractalManager();
+		$resource = new Collection($data, $transformer, $transformer->type);
+		$item = $manager->createData($resource)->toArray();
 
-        return $item;
-    }
+		return $item;
+	}
 
-    /**
-     * @param LengthAwarePaginator $data
-     * @param $transformer
-     * @return array
-     */
-    public function paginate($data, $transformer)
-    {
-        $manager = $this->getFractalManager();
-        $resource = new Collection($data, $transformer, $transformer->type);
-        $resource->setPaginator(new IlluminatePaginatorAdapter($data));
-        return $manager->createData($resource)->toArray();
-    }
+	/**
+	 * @param LengthAwarePaginator $data
+	 * @param $transformer
+	 * @return array
+	 */
+	public function paginate($data, $transformer)
+	{
+		$manager = $this->getFractalManager();
+		$resource = new Collection($data, $transformer, $transformer->type);
+		$resource->setPaginator(new IlluminatePaginatorAdapter($data));
+		return $manager->createData($resource)->toArray();
+	}
 
-    protected function préparer_réponse(array|null $réponse)
-    {
-        $request = app(Request::class);
-        if ($réponse != null && $réponse != [null]) {
-            Log::info(
-                "({$request->ip()}) - {$request->method()} {$request->path()} (" .
-                    get_class($this) .
-                    ")"
-            );
-            return $this->réponse_json($réponse, 200);
-        } else {
-            Log::warning(
-                "({$request->ip()}) - {$request->method()} {$request->path()} (" .
-                    get_class($this) .
-                    ")"
-            );
-            return $this->réponse_json(
-                ["message" => "Ressource non trouvée."],
-                404
-            );
-        }
-    }
+	protected function préparer_réponse(array|null $réponse)
+	{
+		$request = app(Request::class);
+		if ($réponse != null && $réponse != [null]) {
+			Log::info(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					get_class($this) .
+					")"
+			);
+			return $this->réponse_json($réponse, 200);
+		} else {
+			Log::warning(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					get_class($this) .
+					")"
+			);
+			return $this->réponse_json(
+				["message" => "Ressource non trouvée."],
+				404
+			);
+		}
+	}
 }

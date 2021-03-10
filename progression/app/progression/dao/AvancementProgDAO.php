@@ -25,6 +25,10 @@ class AvancementProgDAO extends AvancementDAO
 	public function get_tentative($username, $question_uri, $timestamp)
 	{
 		$tentative = null;
+		$langage = null;
+		$code = null;
+		$date_soumission = null;
+
 		$query = $this->conn->prepare(
 			'SELECT reponse_prog.langage,
 				reponse_prog.code,
@@ -38,7 +42,7 @@ class AvancementProgDAO extends AvancementDAO
 		$query->execute();
 		$query->bind_result($langage, $code, $date_soumission);
 
-		if ($langage && $code && $date_soumission) {
+		if ($query->fetch()) {
 			$tentative = new TentativeProg($langage, $code, $date_soumission);
 		}
 

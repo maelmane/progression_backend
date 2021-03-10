@@ -30,10 +30,8 @@ class TestCtl extends Contrôleur
 		$question = null;
 		$réponse = null;
 
-		if ($chemin != null && $chemin != "") {
-			$questionInt = $this->intFactory->getObtenirQuestionInt();
-			$question = $questionInt->get_question($chemin);
-		}
+		$questionInt = $this->intFactory->getObtenirQuestionInt();
+		$question = $questionInt->get_question($chemin);
 
 		if ($question != null) {
 
