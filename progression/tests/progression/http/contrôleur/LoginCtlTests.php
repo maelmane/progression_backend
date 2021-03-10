@@ -171,39 +171,75 @@ final class LoginCtlTests extends TestCase
 		$this->assertLessThan($tokenDécodé->expired, $tokenDécodé->current);
 	}
 
-	public function test_étant_donné_lutilisateur_Marcel_inexistant_et_une_authentification_de_type_ldap_lorsquon_appelle_login_on_obtient_Accès_interdit()
+	public function test_étant_donné_lutilisateur_Marcel_inexistant_lorsquon_appelle_login_on_obtient_Accès_interdit()
 	{
-		// À faire
-		$_ENV["AUTH_TYPE"] = "ldap";
-
-		$user = new User("Marcel");
-
 		$résultat_attendu = ["message" => "Accès interdit"];
 
-		$this->assertEquals(null, null);
-	}
+		// Intéracteur
+		$mockLoginInt = Mockery::mock(
+			"progression\domaine\interacteur\LoginInt"
+		);
+		$mockLoginInt
+			->allows()
+			->effectuer_login(
+				"Marcel",
+				"123",
+			)
+			->andReturn(null);
 
-	public function test_étant_donné_lutilisateur_Fred_et_une_authentification_de_type_local_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Fred()
-	{
-		// À faire
-		$_ENV['AUTH_TYPE'] = "local";
+		// InteracteurFactory
+		$mockIntFactory = Mockery::mock(
+			"progression\domaine\interacteur\InteracteurFactory"
+		);
+		$mockIntFactory
+			->allows()
+			->getLoginInt()
+			->andReturn($mockLoginInt);
 
-		$user = new User("Fred");
+		// Requête
+		$mockRequest = Mockery::mock("Illuminate\Http\Request");
+		$mockRequest
+			->allows()
+			->ip()
+			->andReturn("127.0.0.1");
+		$mockRequest
+			->allows()
+			->method()
+			->andReturn("GET");
+		$mockRequest
+			->allows()
+			->path()
+			->andReturn("/auth/");
+		$mockRequest
+			->allows()
+			->query("include")
+			->andReturn();
+		$mockRequest
+			->allows()
+			->input("username")
+			->andReturn("Marcel");
+		$mockRequest
+			->allows()
+			->input("password")
+			->andReturn("123");
 
-		$résultat_attendu = "";
+		$this->app->bind(Request::class, function () use ($mockRequest) {
+			return $mockRequest;
+		});
 
-		$this->assertEquals(null, null);
-	}
+		// Contrôleur
+		$ctl = new LoginCtl($mockIntFactory);
 
-	public function test_étant_donné_lutilisateur_Lea_inexistant_et_une_authentification_de_type_local_lorsquon_appelle_login_on_obtient_Accès_interdit()
-	{
-		// À faire
-		$_ENV['AUTH_TYPE'] = "local";
-
-		$user = new User("Lea");
-
-		$résultat_attendu = ["message" => "Accès interdit"];
-
-		$this->assertEquals(null, null);
+		$this->assertEquals(
+			$résultat_attendu,
+			json_decode(
+				$ctl
+					->login(
+						$mockRequest
+					)
+					->getContent(),
+				true
+			)
+		);
 	}
 }

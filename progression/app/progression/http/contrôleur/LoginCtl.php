@@ -20,6 +20,7 @@ namespace progression\http\contrôleur;
 
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class LoginCtl extends Contrôleur
 {
