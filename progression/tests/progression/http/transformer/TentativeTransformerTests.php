@@ -33,7 +33,7 @@ final class TentativeTransformerTests extends TestCase
             'date_soumission' => $tentative->date_soumission,
             'tests_réussis' => $tentative->tests_réussis,
             'feedback' => $tentative->feedback,
-            'langage' => $tentative->langid,
+            'langage' => $tentative->langage,
             'code' => $tentative->code
         ];
 

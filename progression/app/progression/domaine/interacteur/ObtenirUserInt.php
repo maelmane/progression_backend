@@ -20,14 +20,10 @@ namespace progression\domaine\interacteur;
 
 class ObtenirUserInt extends Interacteur
 {
-    function get_user_par_nomusager($username)
-    {
-        return $this->_source->get_user_dao()->get_user($username);
-    }
-    function get_user($user_id)
-    {
-        return $this->_source->get_user_dao()->get_user($user_id);
-    }
+	function get_user($username)
+	{
+		return $this->_source->get_user_dao()->get_user($username);
+	}
 }
 
 ?>

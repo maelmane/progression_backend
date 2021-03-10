@@ -21,75 +21,60 @@ use progression\domaine\entité\{AvancementSys, Question, RéponseSys};
 
 class AvancementSysDAO extends EntitéDAO
 {
-    static function get_avancement($question_uri, $username)
-    {
-        $avancement = new AvancementSys($question_uri, $username, null, null);
-        AvancementSysDAO::load($avancement);
-        if (is_null($avancement->etat)) {
-            $avancement->etat = Question::ETAT_DEBUT;
-        }
+	function get_avancement($question_uri, $username)
+	{
+		$avancement = new AvancementSys($question_uri, $username, null, null);
+		$avancement->load($avancement);
+		if (is_null($avancement->etat)) {
+			$avancement->etat = Question::ETAT_DEBUT;
+		}
 
 		return $avancement->id ? $avancement : null;
-    }
+	}
 
-    protected static function load($objet)
-    {
-        $query = AvancementSysDAO::$conn->prepare(
-            'SELECT question_uri, username, etat, reponse, conteneur 
+	protected function load($objet)
+	{
+		$query = $this->conn->prepare(
+			'SELECT question_uri, username, etat, reponse, conteneur 
              FROM avancement LEFT JOIN reponse_sys 
              ON avancement.questionID = reponse_sys.questionID AND
                 avancement.userID = reponse_sys.userID
-             WHERE avancement.questionID = ? AND avancement.userID = ?'
-        );
-        $query->bind_param("ii", $objet->question_uri, $objet->username);
-        $query->execute();
-        $query->bind_result($objet->question_uri, $objet->username, $objet->etat, $objet->reponse, $objet->conteneur);
-        $query->fetch();
+             WHERE avancement.questionID = ? AND avancement.userID = ?',
+		);
+		$query->bind_param("ii", $objet->question_uri, $objet->username);
+		$query->execute();
+		$query->bind_result($objet->question_uri, $objet->username, $objet->etat, $objet->reponse, $objet->conteneur);
+		$query->fetch();
 
-        $query->close();
-    }
+		$query->close();
+	}
 
-    public static function save($objet)
-    {
-        AvancementSysDAO::$conn->begin_transaction();
-        try {
-            $query = AvancementSysDAO::$conn
-                ->prepare('INSERT INTO avancement ( etat, question_uri, username ) VALUES ( ?, ?, ? )
+	public function save($objet)
+	{
+		$this->conn->begin_transaction();
+		try {
+			$query = $this->conn->prepare('INSERT INTO avancement ( etat, question_uri, username ) VALUES ( ?, ?, ? )
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 
-            $query->bind_param(
-                "iii",
-                $objet->etat,
-                $objet->question_uri,
-                $objet->username
-            );
-            $query->execute();
-            $query->close();
+			$query->bind_param("iii", $objet->etat, $objet->question_uri, $objet->username);
+			$query->execute();
+			$query->close();
 
-            $query = AvancementSysDAO::$conn
-                ->prepare('INSERT INTO reponse_sys ( question_uri, username, reponse, conteneur ) VALUES ( ?, ?, ?, ?  )
+			$query = $this->conn
+				->prepare('INSERT INTO reponse_sys ( question_uri, username, reponse, conteneur ) VALUES ( ?, ?, ?, ?  )
                                               ON DUPLICATE KEY UPDATE reponse=VALUES( reponse ), conteneur=VALUES( conteneur )');
 
-            $query->bind_param(
-                "iiss",
-                $objet->question_uri,
-                $objet->username,
-                $objet->reponse,
-                $objet->conteneur
-            );
-            $query->execute();
-            $query->close();
+			$query->bind_param("iiss", $objet->question_uri, $objet->username, $objet->reponse, $objet->conteneur);
+			$query->execute();
+			$query->close();
 
-            AvancementProgDAO::$conn->commit();
-        } catch (\mysqli_sql_exception $exception) {
-            AvancementProgDAO::$conn->rollback();
+			$this->conn->commit();
+		} catch (\mysqli_sql_exception $exception) {
+			$this->conn->rollback();
 
-            throw $exception;
-        }
-        return AvancementSysDAO::get_avancement(
-            $objet->question_uri,
-            $objet->username
-        );
-    }
+			throw $exception;
+		}
+		return $this->get_avancement($objet->question_uri, $objet->username);
+	}
 }
 ?>

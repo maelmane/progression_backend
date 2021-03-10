@@ -18,20 +18,9 @@
 
 namespace progression\domaine\entité;
 
-class RéponseProg
+class QuestionBD extends Question
 {
-	public $langage;
-	public $code;
-	public $date_soumission;
-	public $tests_réussis;
-	public $feedback;
 
-	public function __construct($langage, $code, $date_soumission = null, $tests_réussis = null, $feedback = null)
-	{
-		$this->langage = $langage;
-		$this->code = $code;
-		$this->date_soumission = $date_soumission;
-        $this->feedback = $feedback;
-        $this->tests_réussis = $tests_réussis;
-	}
 }
+
+?>

@@ -27,11 +27,6 @@ class InteracteurFactory
 		return new LoginInt(new DAOFactory());
 	}
 
-	public function getUserInt()
-	{
-		return new UserInt(new DAOFactory());
-	}
-
 	public function getObtenirQuestionInt()
 	{
 		return new ObtenirQuestionInt(new DAOFactory());
