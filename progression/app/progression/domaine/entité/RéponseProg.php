@@ -31,5 +31,7 @@ class RéponseProg
 		$this->langage = $langage;
 		$this->code = $code;
 		$this->date_soumission = $date_soumission;
+        $this->feedback = $feedback;
+        $this->tests_réussis = $tests_réussis;
 	}
 }

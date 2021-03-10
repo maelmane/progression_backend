@@ -26,7 +26,7 @@ class TraiterRésultatsProgInt extends Interacteur
 	{
 		$résultats = [];
 
-		$avancement = (new ObtenirAvancementInt($this->_source, $username))->get_avancement($question->id, $username);
+		$avancement = (new ObtenirAvancementInt($this->_source))->get_avancement($question->id, $username);
 
 		$avancement->réponses[$exécutable->lang] = new RéponseProg($exécutable->lang, $exécutable->code_utilisateur);
 
@@ -67,7 +67,7 @@ class TraiterRésultatsProgInt extends Interacteur
 
 	private function sauvegarder_avancement($avancement)
 	{
-		$interacteur = new SauvegarderAvancementProgInt($this->_source, $avancement->username);
+		$interacteur = new SauvegarderAvancementProgInt($this->_source);
 		$interacteur->sauvegarder($avancement);
 	}
 }
