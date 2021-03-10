@@ -26,9 +26,9 @@ use progression\domaine\entité\{Avancement, AvancementProg, AvancementSys, Avan
 
 class AvancementCtl extends Contrôleur
 {
-	public function get(Request $request, $username, $uri)
+	public function get(Request $request, $username, $question_uri)
 	{
-		$chemin = Encodage::base64_decode_url($uri);
+		$chemin = Encodage::base64_decode_url($question_uri);
 		$avancement = null;
 
 		if ($chemin != null && $chemin != "" && $username != null && $username != "") {

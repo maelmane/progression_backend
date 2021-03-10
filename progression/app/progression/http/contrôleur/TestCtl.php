@@ -24,9 +24,9 @@ use Illuminate\Http\Request;
 
 class TestCtl extends Contrôleur
 {
-	public function get(Request $request, $uri, $numero)
+	public function get(Request $request, $question_uri, $numero)
 	{
-		$chemin = Encodage::base64_decode_url($uri);
+		$chemin = Encodage::base64_decode_url($question_uri);
 		$question = null;
 		$réponse = null;
 
@@ -40,12 +40,12 @@ class TestCtl extends Contrôleur
 			if (array_key_exists($numero, $question->tests)) {
 				$test = $question->tests[$numero];
 				$test->numéro = $numero;
-				$test->id = Encodage::base64_encode_url($question->chemin) . "/{$test->numéro}";
+				$test->id = $question_uri . "/{$test->numéro}";
 				$test->links = [
 					"related" =>
 					$_ENV['APP_URL'] .
 						"question/" .
-						Encodage::base64_encode_url($question->chemin),
+						$question_uri,
 				];
 
 				$réponse = $this->item(
