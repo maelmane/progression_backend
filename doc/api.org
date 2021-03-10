@@ -24,9 +24,10 @@ Les versions de l'api sont accessibles à des URL distincts pour assurer la rét
 ** Privés
 Les points d'entrée privés requierent un token dans l'entête : «Authentification: Bearer <token>»
 
-| Méthode | URL                | Description                       | Réponse |
-| GET     | ~/user~            | Obtient l'utilisateur authentifié | User    |
-| GET     | ~/user/{username}~ | Obtient l'utilisateur /username/  | User    |
+| Méthode | URL                | Description                            | Réponse  |
+| GET     | ~/user~            | Obtient l'utilisateur authentifié      | User     |
+| GET     | ~/user/{username}~ | Obtient l'utilisateur /username/       | User     |
+| GET     | ~/question/{uri}~  | Obtient la question disponible à <uri> | Question |
 
 * Ressources
 
@@ -42,48 +43,21 @@ Un utilisateur du système.
 |             | rôle       | int  | 0=normal,1=admin |
 |-------------+------------+------+------------------|
 
-Relations :
-| Nom         | Cardinalité | Type       | Description         |
-|-------------+-------------+------------+---------------------|
-| catégories  | 1-n         | Catégorie  | liste de Catégories |
-
-** Catégorie
-
-Une catégorie de questions
-
-| Identifiant         | Propriétés  | Type | Valeurs |
-|---------------------+-------------+------+---------|
-| catǵorie parent/nom | titre       | str  |         |
-|                     | description | str  |         |
-|---------------------+-------------+------+---------|
-
-Relations :
-| Nom                    | Cardinalité | Type                        | Description                                            |
-|------------------------+-------------+-----------------------------+--------------------------------------------------------|
-| catégories             | 1-n         | Catégorie                   | liste de sous-catégories                               |
-| questions              | 1-n         | Question                    | liste de Questions                                     |
-| pourcentage_avancement | 1-1         | float(AvancementCatégorie?) | pourcentage d'avancement dans cette catégorie          |
-| accessibilité          | 1-1         | bool(AvancementCatégorie?)  | Vrai si la catégorie est accessible pour l'utilisateur |
-
-Liens :
-| Nom                    | Description                                            |
-|------------------------+--------------------------------------------------------|
-| parent                 | Catégorie parent                                       |
-
 ** Question
 
 Une question générique
 
 
-| Hiérarchie         | Identifiant          | Propriétés  | Type | Valeurs      |
-|--------------------+----------------------+-------------+------+--------------|
-| Question           | catégorie parent/nom | titre       | str  |              |
-| ▲                  |                      | description | str  |              |
-| │                  |                      | énoncé      | str  |              |
-| ├ QuestionProg     |                      | sous-type   | str  | questionProg |
-| ├ QuestionProgEval |                      |             |      | (obsolète)   |
-| ├ QuestionSys      |                      |             |      | questionSys  |
-| └ QuestionBD       |                      |             |      | questionBD   |
+| Hiérarchie         | Identifiant | Propriétés  | Type | Valeurs      |
+|--------------------+-------------+-------------+------+--------------|
+| Question           | uri         | uri         | str  |              |
+| ▲                  |             | titre       | str  |              |
+| │                  |             | description | str  |              |
+| │                  |             | énoncé      | str  |              |
+| ├ QuestionProg     |             | sous-type   | str  | questionProg |
+| ├ QuestionProgEval |             |             |      | (obsolète)   |
+| ├ QuestionSys      |             |             |      | questionSys  |
+| └ QuestionBD       |             |             |      | questionBD   |
 
 
 Liens :
@@ -91,7 +65,6 @@ Liens :
 |---------------------------------------+---------------------------------------------------------------|
 | avancement                            | avancement pour cette question pour l'utilisateur courant     |
 | suivantes                             | liste de questions suivantes pour l'utilisateur courant       |
-| catégorie                             | Catégorie parent                                              |
 | accessibilité (relation? lien? meta?) | Vrai si la question est accessible pour l'utilisateur courant |
 
 ** Question (sous-type QuestionProg)
@@ -108,9 +81,9 @@ Relations :
 
 L'avancement d'un utilisateur pour une question
 
-| Identifiant       | Propriétés | Type | Valeurs                          |
-|-------------------+------------+------+----------------------------------|
-| username/question | état       | int  | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) |
+| Identifiant           | Propriétés | Type | Valeurs                          |
+|-----------------------+------------+------+----------------------------------|
+| username/question_uri | état       | int  | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) |
 
 Relations :
 | Nom        | Cardinalité | Type       | Description                    |
@@ -126,10 +99,10 @@ Liens :
 
 Une ébauche de solution fournie comme point de départ à la résolution de l'exercice
 
-| Identifiant      | Propriétés | Type | Valeurs |
-|------------------+------------+------+---------|
-| question/langage | langage    | str  |         |
-|                  | code       | str  |         |
+| Identifiant          | Propriétés | Type | Valeurs |
+|----------------------+------------+------+---------|
+| question_uri/langage | langage    | str  |         |
+|                      | code       | str  |         |
 
 Liens :
 
@@ -141,13 +114,13 @@ Liens :
 
 Une tentative de réponse à une question.
 
-| Hiérarchie      | Identifiant                | Propriétés      | Type | Valeurs       |
-|-----------------+----------------------------+-----------------+------+---------------|
-| Tentative       | avancement/date_soumission | date_soumission | int  | timestamp     |
-| ▲               |                            | feedback        | str  |               |
-| ├ TentativeProg |                            | sous-type       | str  | tentativeProg |
-| ├ TentativeSys  |                            |                 |      | tentativeSys  |
-| ├ TentativeBD   |                            |                 |      | tentativeBD   |
+| Hiérarchie      | Identifiant                           | Propriétés      | Type | Valeurs       |
+|-----------------+---------------------------------------+-----------------+------+---------------|
+| Tentative       | username/question_uri/date_soumission | date_soumission | int  | timestamp     |
+| ▲               |                                       | feedback        | str  |               |
+| ├ TentativeProg |                                       | sous-type       | str  | tentativeProg |
+| ├ TentativeSys  |                                       |                 |      | tentativeSys  |
+| ├ TentativeBD   |                                       |                 |      | tentativeBD   |
   
 
 Liens :
@@ -181,24 +154,24 @@ Liens :
 
 Un test de validation d'une question auquel sont soumises les solutions proposées.
 
-| Identifiant     | Propriétés      | Type | Valeurs |
-|-----------------+-----------------+------+---------|
-| question/numéro | numéro          | int  |         |
-|                 | nom             | str  |         |
-|                 | entrée          | str  |         |
-|                 | sortie_attendue | str  |         |
+| Identifiant         | Propriétés      | Type | Valeurs |
+|---------------------+-----------------+------+---------|
+| question_uri/numéro | numéro          | int  |         |
+|                     | nom             | str  |         |
+|                     | entrée          | str  |         |
+|                     | sortie_attendue | str  |         |
 
 ** Résultat
 
 Le résultat d'un test pour une solution proposée.
 
-| Identifiant     | Propriétés      | Type | Valeurs   |
-|-----------------+-----------------+------+-----------|
-| question/numéro | numéro          | int  | # du test |
-|                 | sortie_observée | str  |           |
-|                 | sortie_erreur   | str  |           |
-|                 | résultat        | bool |           |
-|                 | feedback        | str  |           |
+| Identifiant         | Propriétés      | Type | Valeurs   |
+|---------------------+-----------------+------+-----------|
+| question_uri/numéro | numéro          | int  | # du test |
+|                     | sortie_observée | str  |           |
+|                     | sortie_erreur   | str  |           |
+|                     | résultat        | bool |           |
+|                     | feedback        | str  |           |
 
 * Exemples
 
@@ -235,51 +208,9 @@ curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=jdoe&
 curl https://progression.dti.crosemont.quebec/api/v1/user -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir la liste des catégories disponibles pour l'utilisateur ~jdoe~ : ~PROTOTYPE~
-
-#+BEGIN_SRC sh :eval never :var TOKEN=get_token :results output
-curl https://progression.dti.crosemont.quebec/api/v1/user/jdoe/catégories -H "Authorization: Bearer $TOKEN"
-#+END_SRC
-
-#+RESULTS:
-: {
-:   "links": {
-:     "self": "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/catégories"
-:   },
-:   "data": { [
-:     "type": "Catégorie",
-:     "id": "programmation_1",
-:     "attributes": {
-:       "nom": "programmation_1",
-:       "titre": "Introduction à la programmation",
-:       "description": "Exercices d'introduction à la programmation."
-:     },
-:     "relationships": {
-:       "catégories": {
-:         "self": "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/relationships/catégories"
-:         "related": "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/catégories"
-:       },
-:       "questions": {
-:         "self": "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/relationships/questions"
-:         "related": "https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/questions"
-:       }
-:     }],
-:   }
-: }
-
-** Obtenir la catégorie «programmation_1» : ~PROTOTYPE~
-
-#+BEGIN_SRC sh :eval never
-curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1?links=true -H "Authorization: Bearer $TOKEN"
-#+END_SRC
-
-** Obtenir la sous-catégorie «les_fonctions» : ~PROTOTYPE~
-
-#+BEGIN_SRC sh :eval never
-curl https://progression.dti.crosemont.quebec/api/v1/catégorie/programmation_1/les_fonctions?links=true -H "Authorization: Bearer $TOKEN"
-#+END_SRC
-
 ** Obtenir la question «appeler_une_fonction_paramétrée» et ses tests: ~LIVE~
+
+Cette question est disponible à l'URL suivant : https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_param%C3%A9tr%C3%A9e
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 curl https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ?include=tests -H "Authorization: Bearer $TOKEN"
