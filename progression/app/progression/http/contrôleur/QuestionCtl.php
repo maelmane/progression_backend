@@ -19,10 +19,10 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
-use progression\util\Encodage;
-use progression\http\transformer\QuestionProgTransformer;
 use Illuminate\Support\Facades\Log;
+use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
+use progression\http\transformer\QuestionProgTransformer;
+use progression\util\Encodage;
 
 class QuestionCtl extends Contrôleur
 {

@@ -22,11 +22,13 @@ use progression\domaine\entité\{Question, QuestionProg, QuestionSys, QuestionBD
 
 class QuestionDAO
 {
+	public $type;
+
 	public function get_question($uri)
 	{
 		$infos_question = $this->récupérer_question($uri);
 
-		if ($infos_question === FALSE) {
+		if ($infos_question === false) {
 			return null;
 		}
 
@@ -65,7 +67,7 @@ class QuestionDAO
 	{
 		$data = file_get_contents($uri . "/info.yml");
 
-		if ($data === FALSE) {
+		if ($data === false) {
 			error_log("$uri ne peut pas être chargé");
 			return null;
 		}
@@ -92,7 +94,7 @@ class QuestionDAO
 			}
 		}
 
-		$info['uri'] = $uri;
+		$info["uri"] = $uri;
 		return $info;
 	}
 
@@ -117,7 +119,7 @@ class QuestionDAO
 	{
 		$data = file_get_contents($uri . "/" . $exec);
 
-		if ($data === FALSE) {
+		if ($data === false) {
 			error_log("$uri/$exec ne peut pas être chargé");
 			return null;
 		} else {
@@ -132,7 +134,7 @@ class QuestionDAO
 		foreach ($tests as $test) {
 			$data = file_get_contents($uri . "/" . $test);
 
-			if ($data === FALSE) {
+			if ($data === false) {
 				error_log("$uri/$test ne peut pas être chargé");
 				return null;
 			}

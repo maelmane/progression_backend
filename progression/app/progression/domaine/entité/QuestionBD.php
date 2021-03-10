@@ -16,17 +16,11 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\interacteur;
+namespace progression\domaine\entité;
 
-class ObtenirAvancementInt extends Interacteur
+class QuestionBD extends Question
 {
-  function __construct($source)
-  {
-    parent::__construct($source);
-  }
 
-  function get_avancement($question_id, $username)
-  {
-    return $this->_source->get_avancement_dao()->get_avancement($question_id, $username);
-  }
 }
+
+?>

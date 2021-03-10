@@ -16,17 +16,22 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\interacteur;
+namespace progression\domaine\entité;
 
-class ObtenirAvancementInt extends Interacteur
+class RéponseProg
 {
-  function __construct($source)
-  {
-    parent::__construct($source);
-  }
+	public $langage;
+	public $code;
+	public $date_soumission;
+	public $tests_réussis;
+	public $feedback;
 
-  function get_avancement($question_id, $username)
-  {
-    return $this->_source->get_avancement_dao()->get_avancement($question_id, $username);
-  }
+	public function __construct($langage, $code, $date_soumission = null, $tests_réussis = null, $feedback = null)
+	{
+		$this->langage = $langage;
+		$this->code = $code;
+		$this->date_soumission = $date_soumission;
+		$this->feedback = $feedback;
+		$this->tests_réussis = $tests_réussis;
+	}
 }

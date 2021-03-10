@@ -20,37 +20,25 @@ namespace progression\domaine\interacteur;
 
 class ExécuterProgInt extends Interacteur
 {
-	function __construct($source, $user_id)
-	{
-		parent::__construct($source);
-		$this->_user_id = $user_id;
-	}
-
 	function exécuter($exécutable, $test)
 	{
 		ExécuterProgInt::loguer_code($exécutable);
 
 		//post le code à remotecompiler
-		$url_rc =
-			'http://' .
-                $_ENV['COMPILEBOX_HOTE'] .
-                ':' .
-                $_ENV['COMPILEBOX_PORT'] .
-			'/compile'; //TODO à changer ?
+		$url_rc = "http://" . $_ENV["COMPILEBOX_HOTE"] . ":" . $_ENV["COMPILEBOX_PORT"] . "/compile"; //TODO à changer ?
 		$data_rc = [
-			'language' => $exécutable->lang,
-			'code' => $exécutable->code_exec,
-			'parameters' => "\"" . $test->params . "\"",
-			'stdin' => $test->stdin,
-			'vm_name' => 'remotecompiler',
+			"language" => $exécutable->lang,
+			"code" => $exécutable->code_exec,
+			"parameters" => "\"" . $test->params . "\"",
+			"stdin" => $test->stdin,
+			"vm_name" => "remotecompiler",
 		];
 
 		$options_rc = [
-			'http' => [
-				'header' =>
-					"Content-type: application/x-www-form-urlencoded\r\n",
-				'method' => 'POST',
-				'content' => http_build_query($data_rc),
+			"http" => [
+				"header" => "Content-type: application/x-www-form-urlencoded\r\n",
+				"method" => "POST",
+				"content" => http_build_query($data_rc),
 			],
 		];
 		$context = stream_context_create($options_rc);
@@ -66,7 +54,7 @@ class ExécuterProgInt extends Interacteur
 	protected function loguer_code($exécutable)
 	{
 		$com_log =
-			$_SERVER['REMOTE_ADDR'] .
+			$_SERVER["REMOTE_ADDR"] .
 			" - " .
 			$_SERVER["PHP_SELF"] .
 			" : lang : " .
@@ -78,11 +66,11 @@ class ExécuterProgInt extends Interacteur
 
 	protected function extraire_sortie_standard($sorties)
 	{
-		return str_replace("\r", "", json_decode($sorties, true)['output']);
+		return str_replace("\r", "", json_decode($sorties, true)["output"]);
 	}
 
 	protected function extraire_sortie_erreur($sorties)
 	{
-		return json_decode($sorties, true)['errors'];
+		return json_decode($sorties, true)["errors"];
 	}
 }

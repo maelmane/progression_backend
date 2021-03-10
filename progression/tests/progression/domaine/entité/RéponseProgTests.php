@@ -18,17 +18,25 @@
 
 namespace progression\domaine\entité;
 
-class AvancementBD extends Avancement
-{
-  public $conteneur;
-  public $résultat;
-  public $code;
+use PHPUnit\Framework\TestCase;
 
-  public function __construct($question_uri, $username, $conteneur = null, $résultat = null, $code = null)
-  {
-    parent::__construct($question_uri, $username);
-    $this->résultat = $résultat;
-    $this->conteneur = $conteneur;
-    $this->code = $code;
-  }
+final class RéponseProgTests extends TestCase{
+    public function test_étant_donné_une_réponseProg_instanciée_avec_langage_2_et_code_5_lorsquon_récupère_son_langage_on_obtient_2(){
+        $réponseProgTest = new RéponseProg(2, 5);
+
+        $langage = $réponseProgTest->langage;
+
+        $this->assertEquals( 2, $langage );
+    }
+
+    public function test_étant_donné_une_réponseProg_instanciée_avec_langage_2_et_code_5_lorsquon_récupère_son_code_on_obtient_5(){
+        $réponseProgTest = new RéponseProg(2, 5);
+
+        $code = $réponseProgTest->code;
+
+        $this->assertEquals( 5, $code );
+    }
+
 }
+
+?>

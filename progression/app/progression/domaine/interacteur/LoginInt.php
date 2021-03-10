@@ -32,6 +32,8 @@ class LoginInt extends Interacteur
     {
         syslog(LOG_INFO, "Tentative de connexion : " . $username);
 
+        $user = null;
+        
         if ($_ENV['AUTH_TYPE'] == "no") {
             $user = $this->login_sans_authentification($username);
         } elseif ($_ENV['AUTH_TYPE'] == "local") {

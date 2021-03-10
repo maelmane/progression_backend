@@ -18,19 +18,22 @@
 
 namespace progression\http\contrôleur;
 
-use InvalidArgumentException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use League\Fractal\Manager;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
-use League\Fractal\Resource\ResourceInterface;
 use League\Fractal\Resource\Item;
+use League\Fractal\Resource\ResourceInterface;
 use League\Fractal\Serializer\JsonApiSerializer;
 use progression\domaine\interacteur\InteracteurFactory;
 
 class Contrôleur extends BaseController
 {
+	protected $intFactory;
+
 	public function __construct(InteracteurFactory $intFactory = null)
 	{
 		if ($intFactory == null) {
@@ -49,7 +52,7 @@ class Contrôleur extends BaseController
 				"Content-Type" => "application/vnd.api+json",
 				"Charset" => "utf-8",
 			],
-			JSON_UNESCAPED_UNICODE
+			JSON_UNESCAPED_UNICODE,
 		);
 	}
 
@@ -113,22 +116,11 @@ class Contrôleur extends BaseController
 	{
 		$request = app(Request::class);
 		if ($réponse != null && $réponse != [null]) {
-			Log::info(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					get_class($this) .
-					")"
-			);
+			Log::info("({$request->ip()}) - {$request->method()} {$request->path()} (" . get_class($this) . ")");
 			return $this->réponse_json($réponse, 200);
 		} else {
-			Log::warning(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					get_class($this) .
-					")"
-			);
-			return $this->réponse_json(
-				["message" => "Ressource non trouvée."],
-				404
-			);
+			Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . get_class($this) . ")");
+			return $this->réponse_json(["message" => "Ressource non trouvée."], 404);
 		}
 	}
 }

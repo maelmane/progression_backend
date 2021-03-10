@@ -22,20 +22,11 @@ use progression\domaine\entité\{Question, TentativeProg};
 
 class TraiterTentativeProgInt extends Interacteur
 {
-	function __construct($source, $user_id)
-	{
-		parent::__construct($source);
-		$this->_user_id = $user_id;
-	}
-
-	function traiter_résultats($exécutable, $tests, $question)
+	function traiter_résultats($exécutable, $tests, $question, $username)
 	{
 		$résultats = [];
 
-		$avancement = (new ObtenirAvancementProgInt(
-			$this->_source,
-			$this->_user_id
-		))->get_avancement($question->id, $this->_user_id);
+		$avancement = (new ObtenirAvancementInt($this->_source))->get_avancement($question->id, $username);
 
 		$avancement->réponses[$exécutable->lang] = new TentativeProg($exécutable->lang, $exécutable->code_utilisateur);
 
@@ -43,10 +34,7 @@ class TraiterTentativeProgInt extends Interacteur
 
 		$réussi = true;
 		foreach ($tests as $test) {
-			$test->réussi = $this->vérifier_solution(
-				$test->sorties,
-				$test->solution
-			);
+			$test->réussi = $this->vérifier_solution($test->sorties, $test->solution);
 			if (!$test->réussi) {
 				$réussi = false;
 			}
@@ -79,10 +67,7 @@ class TraiterTentativeProgInt extends Interacteur
 
 	private function sauvegarder_avancement($avancement)
 	{
-		$interacteur = new SauvegarderAvancementProgInt(
-			$this->_source,
-			$this->_user_id
-		);
+		$interacteur = new SauvegarderAvancementProgInt($this->_source);
 		$interacteur->sauvegarder($avancement);
 	}
 }
