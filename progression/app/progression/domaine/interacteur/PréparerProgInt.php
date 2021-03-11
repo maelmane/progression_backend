@@ -24,7 +24,7 @@ class PréparerProgInt
     {
         $exécutable = $question->exécutables[$langage];
 
-        $exécutable->code_utilisateur = PréparerProgInt::sélectionner_code_utilisateur(
+        $exécutable->code_utilisateur = $this->sélectionner_code_utilisateur(
             $exécutable,
             $avancement,
             $code
@@ -40,7 +40,7 @@ class PréparerProgInt
         $code
     ) {
         if ($code != null) {
-            return PréparerProgInt::composer_code_à_exécuter(
+            return $this->composer_code_à_exécuter(
                 $exécutable->code_utilisateur,
                 $code
             );
@@ -84,4 +84,3 @@ class PréparerProgInt
         return $res;
     }
 }
-?>
