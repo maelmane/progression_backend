@@ -24,51 +24,54 @@ use \Mockery;
 
 final class LoginIntTests extends TestCase
 {
-	public function test_étant_donné_un_utilisateur_Bob_lorsquon_le_cherche_par_username_on_obtient_un_objet_user_nommé_Bob()
+	public function test_étant_donné_lutilisateur_Bob_et_une_authentification_de_type_no_lorsquon_login_sans_authentification_on_obtient_un_objet_user_nommé_Bob()
 	{
-		$_ENV['AUTH_TYPE'] = 'no';
+		$_ENV["AUTH_TYPE"] = "no";
 
 		$résultat_attendu = new User("Bob");
 
-		$mockUserDao = Mockery::mock('progression\dao\UserDAO');
+		$mockUserDao = Mockery::mock("progression\dao\UserDAO");
 		$mockUserDao
 			->allows()
-			->get_user('Bob')
+			->get_user("Bob")
 			->andReturn($résultat_attendu);
 
-		$mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_user_dao()
 			->andReturn($mockUserDao);
 
 		$interacteur = new LoginInt($mockDAOFactory);
-		$résultat_obtenu = $interacteur->effectuer_login('Bob', '');
+		$résultat_obtenu = $interacteur->effectuer_login("Bob", "");
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
-	public function test_étant_donné_un_utilisateur_Banane_inexistant_lorsquon_le_cherche_par_username_il_est_créé_et_on_obtient_un_objet_user()
+	public function test_étant_donné_lutilisateur_Banane_inexistant_et_une_authentification_de_type_no_lorsquon_login_sans_authentification_il_est_créé_et_on_obtient_un_objet_user_nommé_Banane()
 	{
+		$_ENV["AUTH_TYPE"] = "no";
+
 		$résultat_attendu = new User("Banane");
 
-		$mockUserDao = Mockery::mock('progression\dao\UserDAO');
+		$mockUserDao = Mockery::mock("progression\dao\UserDAO");
 		$mockUserDao
 			->allows()
-			->get_user('Banane')
+			->get_user("Banane")
 			->andReturn(null);
 
-		$mockUserDao->shouldReceive('save')->andReturn($résultat_attendu);
+		$mockUserDao->allows("save")->andReturn($résultat_attendu);
 
-		$mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_user_dao()
 			->andReturn($mockUserDao);
 
 		$interacteur = new LoginInt($mockDAOFactory);
-		$résultat_obtenu = $interacteur->effectuer_login('Banane', '');
+		$résultat_obtenu = $interacteur->effectuer_login("Banane", "");
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
+
 }
