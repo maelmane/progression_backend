@@ -24,7 +24,7 @@ use \Mockery;
 
 final class ObtenirTentativeIntTests extends TestCase
 {
-	public function test_étant_donné_un_avancement_avec_un_user_id_et_question_id_existant_lorsque_cherché_par_user_id_et_question_id_on_obtient_un_objet_avancementprog_correspondant()
+	public function test_étant_donné_une_tentative_avec_un_username_question_id_et_date_existant_lorsque_cherché_par_username_question_id_et_date_on_obtient_un_objet_tentativeprog_correspondant()
 	{
 		$username = "bob";
 		$question_uri =
