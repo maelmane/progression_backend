@@ -32,7 +32,7 @@ CREATE TABLE `reponse_sys` (
 );
 CREATE TABLE `reponse_prog` (
 	`username`			varchar(255) NOT NULL,
-	`question_uri` 		varchar(2048) character set latin1,
+	`question_uri` 		varchar(2048) CHARACTER SET latin1,
 	`date_soumission` 	int(10) NOT NULL,
 	`langage`			int NOT NULL,
 	`code`				text,
