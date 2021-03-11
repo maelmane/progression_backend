@@ -29,7 +29,7 @@ final class LoginCtlTests extends TestCase
 	{
 		$_ENV['AUTH_TYPE'] = "no";
 		$_ENV['JWT_SECRET'] = "secret";
-		$_ENV['JWT_TTL'] = 33333;
+		$_ENV['JWT_TTL'] = 3333;
 
 		$user = new User("Bob");
 
@@ -96,12 +96,14 @@ final class LoginCtlTests extends TestCase
 
 		$this->assertEquals($username_attendu, $username_obtenu);
 		$this->assertGreaterThan(time(), $tokenDécodé->expired);
-		$this->assertLessThan($tokenDécodé->expired, $tokenDécodé->current);
+		$this->assertEquals(3333, $tokenDécodé->expired - $tokenDécodé->current);
 	}
 
 	public function test_étant_donné_lutilisateur_jdoe_et_une_authentification_de_type_ldap_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_jdoe()
 	{
 		$_ENV['AUTH_TYPE'] = "ldap";
+		$_ENV['JWT_SECRET'] = "secret";
+		$_ENV['JWT_TTL'] = 3333;
 
 		$user = new User("jdoe");
 
@@ -168,7 +170,7 @@ final class LoginCtlTests extends TestCase
 
 		$this->assertEquals($username_attendu, $username_obtenu);
 		$this->assertGreaterThan(time(), $tokenDécodé->expired);
-		$this->assertLessThan($tokenDécodé->expired, $tokenDécodé->current);
+		$this->assertEquals(3333, $tokenDécodé->expired - $tokenDécodé->current);
 	}
 
 	public function test_étant_donné_lutilisateur_Marcel_inexistant_lorsquon_appelle_login_on_obtient_Accès_interdit()
