@@ -55,6 +55,10 @@ class AvancementProgDAO extends AvancementDAO
 	{
 		parent::load($objet);
 
+		$code = null;
+		$lang = null;
+		$date = null;
+
 		$query = $this->conn->prepare(
 			'SELECT avancement.username, 
 				avancement.question_uri, 

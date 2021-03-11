@@ -32,5 +32,8 @@ class TentativeProg
 		$this->langage = $langage;
 		$this->code = $code;
 		$this->date_soumission = $date_soumission;
+		$this->tests_réussis = $tests_réussis;
+		$this->feedback = $feedback;
+		$this->résultats = $résultats;
 	}
 }

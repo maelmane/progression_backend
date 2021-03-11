@@ -22,13 +22,13 @@ use progression\domaine\entité\{Question, TentativeProg};
 
 class TraiterTentativeProgInt extends Interacteur
 {
-	function traiter_résultats($exécutable, $tests, $question, $username)
+	function traiter_résultats($exécutable, $tests, $question, $username, $date_soumission)
 	{
 		$résultats = [];
 
 		$avancement = (new ObtenirAvancementInt($this->_source))->get_avancement($question->id, $username);
 
-		$avancement->réponses[$exécutable->lang] = new TentativeProg($exécutable->lang, $exécutable->code_utilisateur);
+		$avancement->réponses[$exécutable->lang] = new TentativeProg($exécutable->lang, $exécutable->code_utilisateur, $date_soumission);
 
 		$résultats["essayé"] = "true";
 

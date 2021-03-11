@@ -21,7 +21,7 @@ namespace progression\domaine\entité;
 class AvancementSys extends Avancement
 {
     public $conteneur;
-    public $reponse;
+    public $résultat;
 
     public function __construct(
         $question_uri,
