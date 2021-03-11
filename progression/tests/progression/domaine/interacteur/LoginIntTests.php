@@ -74,43 +74,4 @@ final class LoginIntTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
-	public function test_étant_donné_lutilisateur_jdoe_et_une_authentification_de_type_ldap_lorsquon_login_ldap_on_obtient_un_objet_user_nommé_jdoe()
-	{
-		// À faire
-		$_ENV["AUTH_TYPE"] = "ldap";
-
-		$résultat_attendu = new User("jdoe");
-
-		$this->assertEquals(null, null);
-	}
-
-	public function test_étant_donné_lutilisateur_Marcel_inexistant_et_une_authentification_de_type_ldap_lorsquon_login_ldap_on_obtient_null()
-	{
-		// À faire
-		$_ENV["AUTH_TYPE"] = "ldap";
-
-		$résultat_attendu = null;
-
-		$this->assertEquals(null, null);
-	}
-
-	public function test_étant_donné_lutilisateur_Fred_et_une_authentification_de_type_local_lorsquon_login_local_on_obtient_un_objet_user_nommé_Fred()
-	{
-		// À faire
-		$_ENV["AUTH_TYPE"] = "local";
-
-		$résultat_attendu = new User("Fred");
-
-		$this->assertEquals(null, null);
-	}
-
-	public function test_étant_donné_lutilisateur_Lea_inexistant_et_une_authentification_de_type_local_lorsquon_login_local_on_obtient_null()
-	{
-		// À faire
-		$_ENV["AUTH_TYPE"] = "local";
-
-		$résultat_attendu = null;
-
-		$this->assertEquals(null, null);
-	}
 }
