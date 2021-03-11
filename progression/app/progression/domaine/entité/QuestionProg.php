@@ -23,5 +23,3 @@ class QuestionProg extends Question
 	public $exécutables = [];
 	public $tests = [];
 }
-
-?>

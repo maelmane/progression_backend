@@ -20,23 +20,41 @@ namespace progression\domaine\entité;
 
 use PHPUnit\Framework\TestCase;
 
-final class RéponseProgTests extends TestCase{
-    public function test_étant_donné_une_réponseProg_instanciée_avec_langage_2_et_code_5_lorsquon_récupère_son_langage_on_obtient_2(){
-        $réponseProgTest = new RéponseProg(2, 5);
+final class RéponseProgTests extends TestCase
+{
+	public function test_étant_donné_une_RéponseProg_instanciée_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
+	{
+		$langage_attendu = "python";
+		$code_attendu = "print('Hello, world!')";
+		$date_soumission_attendu = 1111;
+		$tests_réussis_attendu = "exemple_test_réussis";
+		$feedback_attendu = "exemple_feedback";
 
-        $langage = $réponseProgTest->langage;
+		$résultat_obtenu  = new RéponseProg(
+			"python",
+			"print('Hello, world!')",
+			1111,
+			"exemple_test_réussis",
+			"exemple_feedback"
+		);
 
-        $this->assertEquals( 2, $langage );
-    }
+		$this->assertEquals($langage_attendu, $résultat_obtenu->langage);
+		$this->assertEquals($code_attendu, $résultat_obtenu->code);
+		$this->assertEquals($date_soumission_attendu, $résultat_obtenu->date_soumission);
+		$this->assertEquals($tests_réussis_attendu, $résultat_obtenu->tests_réussis);
+		$this->assertEquals($feedback_attendu, $résultat_obtenu->feedback);
+	}
 
-    public function test_étant_donné_une_réponseProg_instanciée_avec_langage_2_et_code_5_lorsquon_récupère_son_code_on_obtient_5(){
-        $réponseProgTest = new RéponseProg(2, 5);
+	public function test_étant_donné_une_RéponseProg_instanciée_avec_ses_paramètres_null_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_nulles()
+	{
+		$date_soumission_attendu = null;
+		$tests_réussis_attendu = null;
+		$feedback_attendu = null;
 
-        $code = $réponseProgTest->code;
+		$résultat_obtenu  = new RéponseProg("python", "print('Hello, world!')");
 
-        $this->assertEquals( 5, $code );
-    }
-
+		$this->assertEquals($date_soumission_attendu, $résultat_obtenu->date_soumission);
+		$this->assertEquals($tests_réussis_attendu, $résultat_obtenu->tests_réussis);
+		$this->assertEquals($feedback_attendu, $résultat_obtenu->feedback);
+	}
 }
-
-?>

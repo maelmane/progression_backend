@@ -32,5 +32,3 @@ class AvancementBD extends Avancement
 		$this->code = $code;
 	}
 }
-
-?>

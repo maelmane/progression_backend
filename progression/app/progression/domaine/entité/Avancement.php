@@ -20,16 +20,14 @@ namespace progression\domaine\entité;
 
 class Avancement
 {
-    public $username;
-    public $question_uri;
-    public $etat;
+	public $username;
+	public $question_uri;
+	public $etat;
 
-    public function __construct($question_uri, $username)
-    {
-        $this->question_uri = $question_uri;
-        $this->username = $username;
-        $this->etat = Question::ETAT_DEBUT;
-    }
+	public function __construct($question_uri, $username)
+	{
+		$this->question_uri = $question_uri;
+		$this->username = $username;
+		$this->etat = Question::ETAT_DEBUT;
+	}
 }
-
-?>
