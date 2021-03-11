@@ -26,12 +26,13 @@ class LoginCtl extends Contrôleur
 {
 	public function login(Request $request)
 	{
-		$loginInt = $this->intFactory->getLoginInt();
-		$username = $request->input("username");
-		$password = $request->input("password");
 		$user = null;
 		$token = null;
 
+		$username = $request->input("username");
+		$password = $request->input("password");
+
+		$loginInt = $this->intFactory->getLoginInt();
 		$user = $loginInt->effectuer_login($username, $password);
 
 		if ($user != null) {

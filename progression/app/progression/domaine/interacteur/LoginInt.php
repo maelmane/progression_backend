@@ -18,115 +18,115 @@
 
 namespace progression\domaine\interacteur;
 
-class AuthException extends \Exception{};
+class AuthException extends \Exception
+{
+};
 
 class LoginInt extends Interacteur
 {
-    
-    function __construct($source)
-    {
-        parent::__construct($source);
-    }
 
-    function effectuer_login($username, $password)
-    {
-        syslog(LOG_INFO, "Tentative de connexion : " . $username);
+	function __construct($source)
+	{
+		parent::__construct($source);
+	}
 
-        $user = null;
-        
-        if ($_ENV['AUTH_TYPE'] == "no") {
-            $user = $this->login_sans_authentification($username);
-        } elseif ($_ENV['AUTH_TYPE'] == "local") {
-            $user = $this->login_local($username, $password);
-        } elseif ($_ENV['AUTH_TYPE'] == "ldap") {
-            $user = $this->login_ldap($username, $password);
-        }
+	function effectuer_login($username, $password)
+	{
+		syslog(LOG_INFO, "Tentative de connexion : " . $username);
 
-        if ($user != null) {
-            syslog(LOG_INFO, "Connexion réussie: " . $username);
-        }
+		$user = null;
 
-        return $user;
-    }
+		if ($_ENV['AUTH_TYPE'] == "no") {
+			$user = $this->login_sans_authentification($username);
+		} elseif ($_ENV['AUTH_TYPE'] == "local") {
+			$user = $this->login_local($username, $password);
+		} elseif ($_ENV['AUTH_TYPE'] == "ldap") {
+			$user = $this->login_ldap($username, $password);
+		}
 
-    function login_local($username, $password)
-    {
-        throw new AuthException(
-            "L'authentification locale n'est pas implémentée."
-        );
-    }
+		if ($user != null) {
+			syslog(LOG_INFO, "Connexion réussie: " . $username);
+		}
 
-    function login_ldap($username, $password)
-    {
-        $user = null;
+		return $user;
+	}
 
-        if ($this->vérifier_champs_valides($username, $password)) {
-            $user_ldap = LoginInt::get_username_ldap($username, $password);
+	function login_local($username, $password)
+	{
+		throw new AuthException(
+			"L'authentification locale n'est pas implémentée."
+		);
+	}
 
-            if ($user_ldap != null) {
-                $user = (new CréerUserInt(
-                    $this->_source
-                ))->obtenir_ou_créer_user($username);
-            }
-        }
+	function login_ldap($username, $password)
+	{
+		$user = null;
 
-        return $user;
-    }
+		if ($this->vérifier_champs_valides($username, $password)) {
+			$user_ldap = LoginInt::get_username_ldap($username, $password);
 
-    function vérifier_champs_valides($username, $password)
-    {
-        return ! (empty(trim($username)) || empty($password));
-    }
+			if ($user_ldap != null) {
+				$user = (new CréerUserInt(
+					$this->_source
+				))->obtenir_ou_créer_user($username);
+			}
+		}
 
-    function get_username_ldap($username, $password)
-    {
-        #Tentative de connexion à AD
-        define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
+		return $user;
+	}
 
-        ($ldap = ldap_connect(
-            "ldap://" . $_ENV['HOTE_AD'],
-            $_ENV['PORT_AD']
-        )) or die("Configuration de serveur LDAP invalide.");
-        ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
-        ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-        $bind = @ldap_bind(
-            $ldap,
-            $_ENV['DN_BIND'],
-            $_ENV['PW_BIND']
-        );
+	function vérifier_champs_valides($username, $password)
+	{
+		return !(empty(trim($username)) || empty($password));
+	}
 
-        if (!$bind) {
-            ldap_get_option(
-                $ldap,
-                LDAP_OPT_DIAGNOSTIC_MESSAGE,
-                $extended_error
-            );
-            throw new AuthException(
-                "Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extended_error"
-            );
-        }
-        $result = ldap_search(
-            $ldap,
-            $_ENV['LDAP_BASE'],
-            "(sAMAccountName=$username)",
-            ['dn', 'cn', 1]
-        );
-        $user = ldap_get_entries($ldap, $result);
-        if (
-            $user["count"] != 1 ||
-            !@ldap_bind($ldap, $user[0]['dn'], $password)
-        ) {
-            return null;
-        }
-        return $user[0];
-    }
+	function get_username_ldap($username, $password)
+	{
+		#Tentative de connexion à AD
+		define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
 
-    function login_sans_authentification($username)
-    {
-        return (new CréerUserInt($this->_source))->obtenir_ou_créer_user(
-            $username
-        );
-    }
+		($ldap = ldap_connect(
+			"ldap://" . $_ENV['HOTE_AD'],
+			$_ENV['PORT_AD']
+		)) or die("Configuration de serveur LDAP invalide.");
+		ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+		ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
+		$bind = @ldap_bind(
+			$ldap,
+			$_ENV['DN_BIND'],
+			$_ENV['PW_BIND']
+		);
+
+		if (!$bind) {
+			ldap_get_option(
+				$ldap,
+				LDAP_OPT_DIAGNOSTIC_MESSAGE,
+				$extended_error
+			);
+			throw new AuthException(
+				"Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extended_error"
+			);
+		}
+		$result = ldap_search(
+			$ldap,
+			$_ENV['LDAP_BASE'],
+			"(sAMAccountName=$username)",
+			['dn', 'cn', 1]
+		);
+		$user = ldap_get_entries($ldap, $result);
+		if (
+			$user["count"] != 1 ||
+			!@ldap_bind($ldap, $user[0]['dn'], $password)
+		) {
+			return null;
+		}
+		return $user[0];
+	}
+
+	function login_sans_authentification($username)
+	{
+		return (new CréerUserInt($this->_source))->obtenir_ou_créer_user(
+			$username
+		);
+	}
 }
-
-?>
