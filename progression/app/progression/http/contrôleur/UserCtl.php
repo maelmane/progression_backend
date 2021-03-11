@@ -18,14 +18,8 @@
 
 namespace progression\http\contrôleur;
 
-use Exception;
 use Illuminate\Http\Request;
-use progression\domaine\interacteur\ObtenirUserInt;
-use progression\dao\DAOFactory;
 use progression\http\transformer\UserTransformer;
-use League\Fractal\Manager;
-use League\Fractal\Resource\Item;
-use Illuminate\Support\Facades\Log;
 
 class UserCtl extends Contrôleur
 {
@@ -39,7 +33,7 @@ class UserCtl extends Contrôleur
 		}
 
 		if ($username != null && $username != "") {
-			$user = $userInt->get_user_par_nomusager($username);
+			$user = $userInt->get_user($username);
 		}
 
 		$réponse = $this->item($user, new UserTransformer());
@@ -47,5 +41,3 @@ class UserCtl extends Contrôleur
 		return $this->préparer_réponse($réponse);
 	}
 }
-
-?>
