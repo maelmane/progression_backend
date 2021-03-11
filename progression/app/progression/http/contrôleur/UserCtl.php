@@ -33,7 +33,7 @@ class UserCtl extends Contrôleur
 		}
 
 		if ($username != null && $username != "") {
-			$user = $userInt->get_user_par_nomusager($username);
+			$user = $userInt->get_user($username);
 		}
 
 		$réponse = $this->item($user, new UserTransformer());

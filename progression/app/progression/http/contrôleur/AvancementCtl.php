@@ -26,16 +26,16 @@ use progression\util\Encodage;
 
 class AvancementCtl extends Contrôleur
 {
-	public function get(Request $request, $username, $uri)
+	public function get(Request $request, $username, $question_uri)
 	{
-		$chemin = Encodage::base64_decode_url($uri);
+		$chemin = Encodage::base64_decode_url($question_uri);
 		$avancement = null;
 
 		$avancementInt = $this->intFactory->getObtenirAvancementInt();
 		$avancement = $avancementInt->get_avancement($username, $chemin);
 
 		if ($avancement != null) {
-			$avancement->id = "{$username}/{$uri}";
+			$avancement->id = "{$username}/{$question_uri}";
 		}
 
 		$réponse = null;

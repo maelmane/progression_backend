@@ -24,9 +24,9 @@ use progression\util\Encodage;
 
 class TentativeCtl extends Contrôleur
 {
-	public function get(Request $request, $username, $question, $timestamp)
+	public function get(Request $request, $username, $question_uri, $timestamp)
 	{
-		$chemin = Encodage::base64_decode_url($question);
+		$chemin = Encodage::base64_decode_url($question_uri);
 		$tentative = null;
 
 		$tentativeInt = $this->intFactory->getObtenirTentativeInt();
@@ -34,7 +34,7 @@ class TentativeCtl extends Contrôleur
 		$tentative = $tentativeInt->get_tentative($username, $chemin, $timestamp);
 
 		if ($tentative) {
-			$tentative->id = "{$username}/{$question}/{$timestamp}";
+			$tentative->id = "{$username}/{$question_uri}/{$timestamp}";
 
 			$tentative->résultats = $tentative->résultats == null ? [] : $tentative->résultats;
 		}

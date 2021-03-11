@@ -24,9 +24,9 @@ use Illuminate\Http\Request;
 
 class ÉbaucheCtl extends Contrôleur
 {
-	public function get(Request $request, $uri, $langage)
+	public function get(Request $request, $question_uri, $langage)
 	{
-		$chemin = Encodage::base64_decode_url($uri);
+		$chemin = Encodage::base64_decode_url($question_uri);
 		$question = null;
 		$réponse = null;
 
@@ -37,12 +37,12 @@ class ÉbaucheCtl extends Contrôleur
 
 			if (array_key_exists($langage, $question->exécutables)) {
 				$ébauche = $question->exécutables[$langage];
-				$ébauche->id = Encodage::base64_encode_url($question->chemin) . "/{$ébauche->lang}";
+				$ébauche->id = $question_uri . "/{$ébauche->lang}";
 				$ébauche->links = [
 					"related" =>
 					$_ENV['APP_URL'] .
 						"question/" .
-						Encodage::base64_encode_url($question->chemin),
+						$question_uri,
 				];
 
 				$réponse = $this->item($ébauche, new ÉbaucheTransformer);
