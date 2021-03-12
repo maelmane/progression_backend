@@ -114,14 +114,14 @@ Liens :
 
 Une tentative de réponse à une question.
 
-| Hiérarchie      | Identifiant                           | Propriétés      | Type | Valeurs       |
-|-----------------+---------------------------------------+-----------------+------+---------------|
-| Tentative       | username/question_uri/date_soumission | date_soumission | int  | timestamp     |
-| ▲               |                                       | feedback        | str  |               |
-| ├ TentativeProg |                                       | sous-type       | str  | tentativeProg |
-| ├ TentativeSys  |                                       |                 |      | tentativeSys  |
-| ├ TentativeBD   |                                       |                 |      | tentativeBD   |
-|                 |                                       | réussi          | bool |               |
+| Hiérarchie      | Identifiant                           | Propriétés      | Type | Valeurs                                                    |
+|-----------------+---------------------------------------+-----------------+------+------------------------------------------------------------|
+| Tentative       | username/question_uri/date_soumission | date_soumission | int  | timestamp                                                  |
+| ▲               |                                       | feedback        | str  |                                                            |
+| ├ TentativeProg |                                       | sous-type       | str  | tentativeProg                                              |
+| ├ TentativeSys  |                                       |                 |      | tentativeSys                                               |
+| ├ TentativeBD   |                                       |                 |      | tentativeBD                                                |
+|                 |                                       | réussi          | bool | vrai ssi la tentative a correctement répondu à la question |
   
 
 Liens :
@@ -134,11 +134,11 @@ Liens :
 
 Une tentative de réponse à une question.
 
-| Identifiant                | Propriétés      | Type | Valeurs             |
-|----------------------------+-----------------+------+---------------------|
-|                            | langage         | str  |                     |
-|                            | code            | str  |                     |
-|                            | tests_réussis   | int  | nb de tests réussis |
+| Identifiant | Propriétés    | Type | Valeurs             |
+|-------------+---------------+------+---------------------|
+|             | langage       | str  |                     |
+|             | code          | str  |                     |
+|             | tests_réussis | int  | nb de tests réussis |
 
 Relations :
 | Nom       | Cardinalité | Type     | Description           |
