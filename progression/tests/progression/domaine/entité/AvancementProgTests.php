@@ -22,15 +22,25 @@ use PHPUnit\Framework\TestCase;
 
 final class AvancementProgTests extends TestCase
 {
-    public function test_étant_donné_un_AvancementProg_instancié_avec_questionuri_lorsquon_récupère_ses_réponses_on_obtient_un_tableau_vide()
-    {
-        $avancementTest = new AvancementProg(
-            "http://example.com/maquestion",
-            "jdoe"
-        );
+	public function test_étant_donné_un_AvancementProg_instancié_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
+	{
+		$question_uri_attendu = "http://exemple.com/maquestion";
+		$username_attendu = "jdoe";
+		$tentatives_attendu = ["exemple_tentative"];
 
-        $tentatives = $avancementTest->tentatives;
+		$résultat_obtenu = new AvancementProg("http://exemple.com/maquestion", "jdoe", ["exemple_tentative"]);
 
-        $this->assertEquals([], $tentatives);
-    }
+		$this->assertEquals($question_uri_attendu, $résultat_obtenu->question_uri);
+		$this->assertEquals($username_attendu, $résultat_obtenu->username);
+		$this->assertEquals($tentatives_attendu, $résultat_obtenu->tentatives);
+	}
+	public function test_étant_donné_un_AvancementProg_instancié_sans_tentatives_lorsquon_récupère_ses_tentatives_on_obtient_un_tableau_vide()
+	{
+		$résultat_attendu = [];
+		$résultat_obtenu =
+			(new AvancementProg("http://exemple.com/maquestion", "jdoe"))
+			->tentatives;
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
 }

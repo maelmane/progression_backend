@@ -51,7 +51,7 @@ final class UserCtlTests extends TestCase
 		);
 		$mockObtenirUserInt
 			->allows()
-			->get_user_par_nomusager(
+			->get_user(
 				"Bob"
 			)
 			->andReturn($user);

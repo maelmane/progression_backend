@@ -20,31 +20,18 @@ namespace progression\domaine\entité;
 
 use PHPUnit\Framework\TestCase;
 
-final class ExécutableTests extends TestCase{
-    public function test_étant_donné_un_exécutable_instancié_avec_code_helloworld_et_lang_1_lorsquon_récupère_son_code_utilisateur_on_obtient_helloworld(){
-        $exécutableTest = new Exécutable("helloworld", 1);
+final class ExécutableTests extends TestCase
+{
+	public function test_étant_donné_un_Exécutable_instancié_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
+	{
+		$code_utilisateur_attendu = "print('Hello, world!')";
+		$code_exec_attendu = "print('Hello, world!')";
+		$lang_attendu = "python";
 
-        $codeUtilisateur = $exécutableTest->code_utilisateur;
+		$résultat_obtenu = new Exécutable("print('Hello, world!')", "python");
 
-        $this->assertEquals( "helloworld", $codeUtilisateur );
-    }
-
-    public function test_étant_donné_un_exécutable_instancié_avec_code_helloworld_et_lang_1_lorsquon_récupère_son_code_exec_on_obtient_helloworld(){
-        $exécutableTest = new Exécutable("helloworld", 1);
-
-        $codeExec = $exécutableTest->code_exec;
-
-        $this->assertEquals( "helloworld", $codeExec );
-    }
-
-    public function test_étant_donné_un_exécutable_instancié_avec_code_helloworld_et_lang_1_lorsquon_récupère_son_lang_on_obtient_1(){
-        $exécutableTest = new Exécutable("helloworld", 1);
-
-        $lang = $exécutableTest->lang;
-
-        $this->assertEquals( 1, $lang );
-    }
-
+		$this->assertEquals($code_utilisateur_attendu, $résultat_obtenu->code_utilisateur);
+		$this->assertEquals($code_exec_attendu, $résultat_obtenu->code_exec);
+		$this->assertEquals($lang_attendu, $résultat_obtenu->lang);
+	}
 }
-
-?>

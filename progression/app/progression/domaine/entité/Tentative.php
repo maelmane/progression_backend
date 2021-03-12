@@ -20,17 +20,14 @@ namespace progression\domaine\entité;
 
 class Tentative
 {
-    public $date_soumission;
-    public $réussi;
-    public $feedback;
+	public $date_soumission;
+	public $réussi;
+	public $feedback;
 
-    public function __construct(
-        $date_soumission,
-        $réussi = false,
-        $feedback = null
-    ) {
-        $this->date_soumission = $date_soumission;
-        $this->réussi = $réussi;
-        $this->feedback = $feedback;
-    }
+	public function __construct($date_soumission, $réussi = false, $feedback = null)
+	{
+		$this->date_soumission = $date_soumission;
+		$this->réussi = $réussi;
+		$this->feedback = $feedback;
+	}
 }
