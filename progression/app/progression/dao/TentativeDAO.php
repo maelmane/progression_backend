@@ -16,22 +16,16 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\dao;
 
-class RéponseProg
+class TentativeDAO extends EntitéDAO
 {
-	public $langage;
-	public $code;
-	public $date_soumission;
-	public $tests_réussis;
-	public $feedback;
-
-	public function __construct($langage, $code, $date_soumission = null, $tests_réussis = null, $feedback = null)
-	{
-		$this->langage = $langage;
-		$this->code = $code;
-		$this->date_soumission = $date_soumission;
-		$this->feedback = $feedback;
-		$this->tests_réussis = $tests_réussis;
-	}
+    public function get_tentative($username, $question_uri, $timestamp)
+    {
+        return (new TentativeProgDAO())->get_tentative(
+            $username,
+            $question_uri,
+            $timestamp
+        );
+    }
 }

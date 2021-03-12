@@ -18,19 +18,19 @@
 
 namespace progression\domaine\entité;
 
-use PHPUnit\Framework\TestCase;
-
-final class AvancementProgTests extends TestCase
+class Tentative
 {
-    public function test_étant_donné_un_AvancementProg_instancié_avec_questionuri_lorsquon_récupère_ses_réponses_on_obtient_un_tableau_vide()
-    {
-        $avancementTest = new AvancementProg(
-            "http://example.com/maquestion",
-            "jdoe"
-        );
+    public $date_soumission;
+    public $réussi;
+    public $feedback;
 
-        $tentatives = $avancementTest->tentatives;
-
-        $this->assertEquals([], $tentatives);
+    public function __construct(
+        $date_soumission,
+        $réussi = false,
+        $feedback = null
+    ) {
+        $this->date_soumission = $date_soumission;
+        $this->réussi = $réussi;
+        $this->feedback = $feedback;
     }
 }

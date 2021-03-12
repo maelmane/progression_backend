@@ -19,43 +19,37 @@
 namespace progression\http\transformer;
 
 use League\Fractal;
-use progression\domaine\entité\TentativeProg;
+use progression\domaine\entité\{Tentative, TentativeProg};
 
-class TentativeProgTransformer extends Fractal\TransformerAbstract
+class TentativeProgTransformer extends TentativeTransformer
 {
-	public $type = "tentative";
-	protected $availableIncludes = ["resultats"];
+    public $type = "tentative";
+    protected $availableIncludes = ["resultats"];
 
-	public function transform(TentativeProg $tentative)
-	{
-		$data_out = [
-			"id" => $tentative->id,
-			"date_soumission" => $tentative->date_soumission,
-			"tests_réussis" => $tentative->tests_réussis,
-			"feedback" => $tentative->feedback,
-			"langage" => $tentative->langage,
-			"code" => $tentative->code,
-			"links" => (isset($tentative->links) ? $tentative->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}tentative/{$tentative->id}"
-			]
-		];
+    public function transform(Tentative $tentative)
+    {
+        $data_out = parent::transform($tentative);
+        $data_out = array_merge($data_out, [
+            "sous-type" => "tentativeProg",
+            "tests_réussis" => $tentative->tests_réussis,
+            "langage" => $tentative->langage,
+            "code" => $tentative->code,
+        ]);
 
-		return $data_out;
-	}
+        return $data_out;
+    }
 
-	public function includeResultats(TentativeProg $tentative)
-	{
-		foreach ($tentative->résultats as $résultat) {
-			$résultat->links = [
-				"related" =>
-				$_ENV["APP_URL"] .
-					"tentative/{$résultat->id}",
-			];
-		}
-		return $this->collection(
-			$tentative->résultats,
-			new RéponseProgTransformer(),
-			"resultats"
-		);
-	}
+    public function includeResultats(Tentative $tentative)
+    {
+        foreach ($tentative->résultats as $résultat) {
+            $résultat->links = [
+                "related" => $_ENV["APP_URL"] . "tentative/{$résultat->id}",
+            ];
+        }
+        return $this->collection(
+            $tentative->résultats,
+            new RésultatProgTransformer(),
+            "resultats"
+        );
+    }
 }

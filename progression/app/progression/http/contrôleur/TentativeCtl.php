@@ -24,23 +24,25 @@ use progression\util\Encodage;
 
 class TentativeCtl extends Contrôleur
 {
-	public function get(Request $request, $username, $question_uri, $timestamp)
-	{
-		$chemin = Encodage::base64_decode_url($question_uri);
-		$tentative = null;
+    public function get(Request $request, $username, $question_uri, $timestamp)
+    {
+        $chemin = Encodage::base64_decode_url($question_uri);
+        $tentative = null;
 
-		$tentativeInt = $this->intFactory->getObtenirTentativeInt();
+        $tentativeInt = $this->intFactory->getObtenirTentativeInt();
 
-		$tentative = $tentativeInt->get_tentative($username, $chemin, $timestamp);
+        $tentative = $tentativeInt->get_tentative(
+            $username,
+            $chemin,
+            $timestamp
+        );
 
-		if ($tentative) {
-			$tentative->id = "{$username}/{$question_uri}/{$timestamp}";
+        if ($tentative) {
+            $tentative->id = "{$username}/{$question_uri}/{$timestamp}";
+        }
 
-			$tentative->résultats = $tentative->résultats == null ? [] : $tentative->résultats;
-		}
+        $réponse = $this->item($tentative, new TentativeProgTransformer());
 
-		$réponse = $this->item($tentative, new TentativeProgTransformer());
-
-		return $this->préparer_réponse($réponse);
-	}
+        return $this->préparer_réponse($réponse);
+    }
 }

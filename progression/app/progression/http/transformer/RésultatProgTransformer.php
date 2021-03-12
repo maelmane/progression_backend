@@ -18,14 +18,14 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\RéponseProg;
+use progression\domaine\entité\RésultatProg;
 use League\Fractal;
 
-class RéponseProgTransformer extends Fractal\TransformerAbstract
+class RésultatProgTransformer extends Fractal\TransformerAbstract
 {
     public $type = "resultat";
 
-    public function transform(RéponseProg $réponse)
+    public function transform(RésultatProg $réponse)
     {
         $data = [
             "id" => $réponse->id,

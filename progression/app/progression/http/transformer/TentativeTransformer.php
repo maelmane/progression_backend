@@ -16,21 +16,27 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\http\transformer;
 
-class RéponseBD{
+use League\Fractal;
+use progression\domaine\entité\Tentative;
 
-	public $conteneur;
-    public $réponse;
-    public $langid;
-    public $code;
+class TentativeTransformer extends Fractal\TransformerAbstract
+{
+    public $type = "tentative";
 
-    public function __construct($langid, $code, $conteneur, $réponse){
-        $this->langid=$langid;
-        $this->code=$code;
-        $this->conteneur=$conteneur;
-        $this->réponse=$réponse;
+    public function transform(Tentative $tentative)
+    {
+        $data_out = [
+            "id" => $tentative->id,
+            "date_soumission" => $tentative->date_soumission,
+            "réussi" => $tentative->réussi,
+            "feedback" => $tentative->feedback,
+            "links" => (isset($tentative->links) ? $tentative->links : []) + [
+                "self" => "{$_ENV["APP_URL"]}tentative/{$tentative->id}",
+            ],
+        ];
+
+        return $data_out;
     }
-
 }
-?>

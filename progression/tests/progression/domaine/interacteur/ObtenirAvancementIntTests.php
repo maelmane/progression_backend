@@ -24,28 +24,62 @@ use \Mockery;
 
 final class ObtenirAvancementIntTests extends TestCase
 {
-	public function test_étant_donné_un_avancement_avec_un_user_id_et_question_id_existant_lorsque_cherché_par_user_id_et_question_id_on_obtient_un_objet_avancementprog_correspondant()
-	{
-		$résultat_attendu = new AvancementProg("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
+    public function test_étant_donné_un_avancement_avec_un_user_id_et_question_id_existant_lorsque_cherché_par_user_id_et_question_id_on_obtient_un_objet_avancementprog_correspondant()
+    {
+        $résultat_attendu = new AvancementProg(
+            "prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
+            "jdoe"
+        );
 
-		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
-		$mockAvancementDAO
-			->shouldReceive("get_avancement")
-			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée")
-			->andReturn($résultat_attendu);
+        $mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
+        $mockAvancementDAO
+            ->shouldReceive("get_avancement")
+            ->with(
+                "jdoe",
+                "prog1/les_fonctions_01/appeler_une_fonction_paramétrée"
+            )
+            ->andReturn($résultat_attendu);
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_avancement_dao()
-			->andReturn($mockAvancementDAO);
+        $mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+        $mockDAOFactory
+            ->allows()
+            ->get_avancement_dao()
+            ->andReturn($mockAvancementDAO);
 
-		$interacteur = new ObtenirAvancementInt($mockDAOFactory);
-		$résultat_obtenu = $interacteur->get_avancement(
-			"jdoe",
-			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée"
-		);
+        $interacteur = new ObtenirAvancementInt($mockDAOFactory);
+        $résultat_obtenu = $interacteur->get_avancement(
+            "jdoe",
+            "prog1/les_fonctions_01/appeler_une_fonction_paramétrée"
+        );
 
-		$this->assertEquals($résultat_attendu, $résultat_obtenu);
-	}
+        $this->assertEquals($résultat_attendu, $résultat_obtenu);
+    }
+
+    public function test_étant_donné_un_avancement_avec_un_user_id_et_question_uri_existant_lorsque_cherché_par_user_id_et_question_id_inexistant_on_obtient_null()
+    {
+        $résultat_attendu = new AvancementProg(
+            "prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
+            "jdoe"
+        );
+
+        $mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
+        $mockAvancementDAO
+            ->shouldReceive("get_avancement")
+            ->with(Mockery::any(), Mockery::any())
+            ->andReturn($résultat_attendu);
+
+        $mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+        $mockDAOFactory
+            ->allows()
+            ->get_avancement_dao()
+            ->andReturn($mockAvancementDAO);
+
+        $interacteur = new ObtenirAvancementInt($mockDAOFactory);
+        $résultat_obtenu = $interacteur->get_avancement(
+            "patate",
+            "une_question_inexistante"
+        );
+
+        $this->assertEquals($résultat_attendu, $résultat_obtenu);
+    }
 }

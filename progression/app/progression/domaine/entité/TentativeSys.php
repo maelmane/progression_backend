@@ -18,25 +18,15 @@
 
 namespace progression\domaine\entité;
 
-use PHPUnit\Framework\TestCase;
+class TentativeSys
+{
+    public $conteneur;
+    public $réponse;
 
-final class RéponseProgTests extends TestCase{
-    public function test_étant_donné_une_réponseProg_instanciée_avec_langage_2_et_code_5_lorsquon_récupère_son_langage_on_obtient_2(){
-        $réponseProgTest = new RéponseProg(2, 5);
-
-        $langage = $réponseProgTest->langage;
-
-        $this->assertEquals( 2, $langage );
+    public function __construct($conteneur, $réponse)
+    {
+        $this->conteneur = $conteneur;
+        $this->réponse = $réponse;
     }
-
-    public function test_étant_donné_une_réponseProg_instanciée_avec_langage_2_et_code_5_lorsquon_récupère_son_code_on_obtient_5(){
-        $réponseProgTest = new RéponseProg(2, 5);
-
-        $code = $réponseProgTest->code;
-
-        $this->assertEquals( 5, $code );
-    }
-
 }
-
 ?>
