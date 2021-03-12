@@ -19,10 +19,10 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
+use progression\http\transformer\AvancementProgTransformer;
+use progression\domaine\entité\{AvancementProg, AvancementSys, AvancementBD};
 use Illuminate\Support\Facades\Log;
 use progression\util\Encodage;
-use progression\http\transformer\AvancementProgTransformer;
-use progression\domaine\entité\{Avancement, AvancementProg, AvancementSys, AvancementBD};
 
 class AvancementCtl extends Contrôleur
 {
@@ -31,10 +31,11 @@ class AvancementCtl extends Contrôleur
 		$chemin = Encodage::base64_decode_url($question_uri);
 		$avancement = null;
 
-		if ($chemin != null && $chemin != "" && $username != null && $username != "") {
-			$avancementInt = $this->intFactory->getObtenirAvancementInt();
+		$avancementInt = $this->intFactory->getObtenirAvancementInt();
+		$avancement = $avancementInt->get_avancement($username, $chemin);
 
-			$avancement = $avancementInt->get_avancement($username, $chemin);
+		if ($avancement != null) {
+			$avancement->id = "{$username}/{$question_uri}";
 		}
 
 		$réponse = null;

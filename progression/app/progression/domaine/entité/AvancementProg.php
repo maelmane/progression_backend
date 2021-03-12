@@ -20,16 +20,11 @@ namespace progression\domaine\entité;
 
 class AvancementProg extends Avancement
 {
-    public $réponses;
+    public $tentatives;
 
-    public function __construct(
-        $question_uri,
-        $username,
-        $réponses = []
-    ) {
+    public function __construct($question_uri, $username, $tentatives = [])
+    {
         parent::__construct($question_uri, $username);
-        $this->réponses = $réponses;
+        $this->tentatives = $tentatives;
     }
 }
-
-?>

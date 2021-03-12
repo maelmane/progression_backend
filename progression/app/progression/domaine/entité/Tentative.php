@@ -18,19 +18,19 @@
 
 namespace progression\domaine\entité;
 
-class AvancementSys extends Avancement
+class Tentative
 {
-    public $conteneur;
-    public $résultat;
+    public $date_soumission;
+    public $réussi;
+    public $feedback;
 
     public function __construct(
-        $question_uri,
-        $username,
-        $conteneur = null,
-        $résultat = null
+        $date_soumission,
+        $réussi = false,
+        $feedback = null
     ) {
-        parent::__construct($question_uri, $username);
-        $this->résultat = $résultat;
-        $this->conteneur = $conteneur;
+        $this->date_soumission = $date_soumission;
+        $this->réussi = $réussi;
+        $this->feedback = $feedback;
     }
 }

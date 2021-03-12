@@ -29,15 +29,12 @@ class QuestionCtl extends Contrôleur
 	public function get(Request $request, $uri)
 	{
 		$question = null;
+		$réponse = null;
 
 		$chemin = Encodage::base64_decode_url($uri);
 
-		if ($chemin != null && $chemin != "") {
-			$questionInt = $this->intFactory->getObtenirQuestionInt();
-			$question = $questionInt->get_question($chemin);
-		}
-
-		$réponse = null;
+		$questionInt = $this->intFactory->getObtenirQuestionInt();
+		$question = $questionInt->get_question($chemin);
 
 		if ($question instanceof QuestionProg) {
 			$réponse = $this->item(

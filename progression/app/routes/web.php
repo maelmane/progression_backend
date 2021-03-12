@@ -32,7 +32,7 @@ $router->group(["middleware" => "auth"], function () use ($router) {
 	$router->get("/avancement/{username}/{question_uri}", "AvancementCtl@get");
 	$router->get("/avancement/{username}/{chemin}/relationships/{relation}", "NotImplementedCtl@get");
 	// Tentative
-	$router->get("/tentative/{username}/{question_uri}/{timestamp:[[:digit:]]+}", "NotImplementedCtl@get");
+	$router->get("/tentative/{username}/{question_uri}/{timestamp:[[:digit:]]+}", "TentativeCtl@get");
 	$router->get(
 		"/tentative/{username}/{question_uri}/{timestamp:[[:digit:]]+}/relationships/{relation}",
 		"NotImplementedCtl@get",

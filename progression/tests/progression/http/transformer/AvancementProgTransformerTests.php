@@ -18,50 +18,113 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\{AvancementProg, RéponseProg};
+use progression\domaine\entité\{AvancementProg, TentativeProg};
 use PHPUnit\Framework\TestCase;
 
 final class AvancementProgTransformerTests extends TestCase
 {
-	public function test_étant_donné_un_avancement_instancié_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
-	{
-		$_ENV["APP_URL"] = "https://example.com/";
+    public function test_étant_donné_un_avancement_avec_ses_tentatives_lorsquon_inclut_les_tentatives_on_reçoit_un_tableau_de_tentatives()
+    {
+        $_ENV["APP_URL"] = "https://example.com/";
 
-		$avancementProgTransformer = new AvancementProgTransformer();
-		$avancement = new AvancementProg("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "jdoe");
+        $avancement = new AvancementProg(
+            "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+            "jdoe"
+        );
+        $avancement->id =
+            "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+        $avancement->tentatives = [];
+        $avancement->tentatives[] = new TentativeProg(
+            "python",
+            "codeTestPython",
+            1614711760,
+            2,
+            false,
+            "feedbackTest Python"
+        );
+        $avancement->tentatives[] = new TentativeProg(
+            "java",
+            "codeTestJava",
+            1614711761,
+            2,
+            true,
+            "feedbackTest Java"
+        );
 
-		$résultat = [
-			"id" => "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-			"username" => "jdoe",
-			"état" => 0,
-			"links" => [
-				"self" =>
-				"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-			],
-		];
+        $résultats_attendus = [
+            [
+                "id" =>
+                    "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
+                "date_soumission" => 1614711760,
+                "tests_réussis" => 2,
+                "feedback" => "feedbackTest Python",
+                "langage" => "python",
+                "code" => "codeTestPython",
+                "réussi" => false,
+                "sous-type" => "tentativeProg",
+                "links" => [
+                    "self" =>
+                        "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
+                    "related" =>
+                        "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+                ],
+            ],
+            [
+                "id" =>
+                    "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711761",
+                "date_soumission" => 1614711761,
+                "tests_réussis" => 2,
+                "feedback" => "feedbackTest Java",
+                "langage" => "java",
+                "code" => "codeTestJava",
+                "réussi" => true,
+                "sous-type" => "tentativeProg",
+                "links" => [
+                    "self" =>
+                        "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711761",
+                    "related" =>
+                        "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+                ],
+            ],
+        ];
 
-		$this->assertEquals($résultat, $avancementProgTransformer->transform($avancement));
-	}
+        $avancementProgTransformer = new AvancementProgTransformer();
+        $résultats_obtenus = $avancementProgTransformer->includeTentatives(
+            $avancement
+        );
 
-	public function test_étant_donné_un_avancement_avec_ses_tentatives_lorsquon_inclut_les_tentatives_on_reçoit_un_tableau_de_tentatives()
-	{
-		$_ENV["APP_URL"] = "https://example.com/";
+        $i = 0;
+        foreach ($résultats_obtenus->getData() as $résultat_obtenu) {
+            $this->assertEquals(
+                $résultats_attendus[$i++],
+                $résultats_obtenus
+                    ->getTransformer()
+                    ->transform($résultat_obtenu)
+            );
+        }
+        $this->assertEquals(2, $i);
+    }
 
-		$tentativeTransformer = new TentativeTransformer();
-		$tentative = new RéponseProg(10, "codeTest");
-		$tentative->date_soumission = "dateTest";
-		$tentative->tests_réussis = 2;
-		$tentative->feedback = "feedbackTest";
+    public function test_étant_donné_un_avancement_sans_tentative_lorsquon_inclut_les_tentatives_on_reçoit_un_tableau_vide()
+    {
+        $_ENV["APP_URL"] = "https://example.com/";
 
-		$résultat = [
-			"id" => "dateTest",
-			"date_soumission" => "dateTest",
-			"tests_réussis" => 2,
-			"feedback" => "feedbackTest",
-			"langage" => 10,
-			"code" => "codeTest",
-		];
+        $avancementProgTransformer = new AvancementProgTransformer();
+        $avancement = new AvancementProg(
+            "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+            "jdoe"
+        );
+        $avancement->id =
+            "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+        $avancement->tentatives = [];
 
-		$this->assertEquals($résultat, $tentativeTransformer->transform($tentative));
-	}
+        $résultat = [];
+
+        $this->assertEquals(
+            $résultat,
+            $avancementProgTransformer
+                ->includeTentatives($avancement)
+                ->getData()
+        );
+    }
 }

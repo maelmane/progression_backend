@@ -18,42 +18,40 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Avancement, AvancementProg, AvancementSys, AvancementBD, Question};
+use progression\domaine\entité\{AvancementProg, AvancementSys, AvancementBD, Question};
 
 class AvancementDAO extends EntitéDAO
 {
-	public function get_avancement($question_uri, $username)
+	public function get_avancement($username, $question_uri)
 	{
-		$type = (new QuestionDAO())->get_type($question_uri);
+		$type = ((new QuestionDAO())->get_question($question_uri))->type;
 		$avancement = null;
-
 		if ($type == null) {
 			return null;
 		} else {
 			if ($type == Question::TYPE_PROG) {
 				$avancement = new AvancementProg($question_uri, $username);
-				return (new AvancementProgDAO())->load($avancement);
+				(new AvancementProgDAO())->load($avancement);
 			} elseif ($type == Question::TYPE_SYS) {
 				$avancement = new AvancementSys($question_uri, $username);
-				return (new AvancementSysDAO())->load($avancement);
+				(new AvancementSysDAO())->load($avancement);
 			} elseif ($type == Question::TYPE_BD) {
 				$avancement = new AvancementBD($question_uri, $username);
-				return (new AvancementBDDAO())->load($avancement);
+				(new AvancementBDDAO())->load($avancement);
 			}
 
-			return $avancement;
+			return $avancement->username == null ? null : $avancement;
 		}
 	}
 
 	protected function load($objet)
 	{
 		$query = $this->conn->prepare("SELECT username, etat FROM avancement WHERE question_uri = ? AND username = ?");
-		$query->bind_param("ii", $objet->question_uri, $objet->username);
+		$query->bind_param("ss", $objet->question_uri, $objet->username);
 		$query->execute();
-		$query->bind_result($objet->id, $objet->etat);
+		$query->bind_result($objet->username, $objet->etat);
 		$query->fetch();
 
 		$query->close();
 	}
 }
-?>

@@ -18,30 +18,29 @@
 
 namespace progression\http\transformer;
 
-use League\Fractal;
-use progression\domaine\entité\AvancementProg;
 use progression\util\Encodage;
 
 class AvancementProgTransformer extends AvancementTransformer
 {
     public function includeTentatives($avancement)
     {
-        $tentatives = $avancement->réponses;
+        $tentatives = $avancement->tentatives;
         foreach ($tentatives as $tentative) {
             $tentative->id =
                 "{$avancement->username}/" .
-                           Encodage::base64_encode_url($avancement->question_uri) .
+                Encodage::base64_encode_url($avancement->question_uri) .
                 "/" .
                 $tentative->date_soumission;
-
             $tentative->links = [
-                "related" => $_ENV["APP_URL"] . "tentative/" . $tentative->id,
+                "related" =>
+                    "{$_ENV["APP_URL"]}avancement/{$avancement->username}/" .
+                    Encodage::base64_encode_url($avancement->question_uri),
             ];
         }
 
         return $this->collection(
             $tentatives,
-            new TentativeTransformer(),
+            new TentativeProgTransformer(),
             "tentative"
         );
     }

@@ -24,6 +24,15 @@ class QuestionProgTransformer extends QuestionTransformer
 {
     protected $availableIncludes = ["tests", "ebauches"];
 
+    public function transform($data_in)
+    {
+        $data_out = array_merge(parent::transform($data_in), [
+            "sous-type" => "questionProg",
+        ]);
+
+        return $data_out;
+    }
+
     public function includeTests($data_in)
     {
         $question = $data_in["question"];
@@ -53,7 +62,8 @@ class QuestionProgTransformer extends QuestionTransformer
 
         foreach ($question->exécutables as $ébauche) {
             $ébauche->id =
-                Encodage::base64_encode_url($question->uri) . "/{$ébauche->lang}";
+                Encodage::base64_encode_url($question->uri) .
+                "/{$ébauche->lang}";
             $ébauche->links = [
                 "related" =>
                     $_ENV["APP_URL"] .

@@ -19,25 +19,44 @@
 namespace progression\http\transformer;
 
 use PHPUnit\Framework\TestCase;
-use progression\domaine\entité\RéponseProg;
+use progression\domaine\entité\TentativeProg;
 
 final class TentativeTransformerTests extends TestCase
 {
-    public function test_étant_donné_une_tentative_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+    public function test_étant_donné_une_tentative_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_tableau_d_objet_correspondant()
     {
-        $tentative = new RéponseProg(10, "codeTest", "dateSoumissionTest", "testsRéussisTest", "feedBackTest");
-        $tentativeTransformer = new TentativeTransformer();
+        $_ENV["APP_URL"] = "https://example.com/";
 
+        $tentative = new TentativeProg(
+            "python",
+            "codeTest",
+            1614711760,
+            2,
+            false,
+            "feedBackTest"
+        );
+        $tentative->id =
+            "roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760";
+        $tentativeTransformer = new TentativeProgTransformer();
         $résultat = [
-            'id' => $tentative->date_soumission,
-            'date_soumission' => $tentative->date_soumission,
-            'tests_réussis' => $tentative->tests_réussis,
-            'feedback' => $tentative->feedback,
-            'langage' => $tentative->langage,
-            'code' => $tentative->code
+            "id" =>
+                "roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
+            "date_soumission" => 1614711760,
+            "sous-type" => "tentativeProg",
+            "réussi" => false,
+            "tests_réussis" => 2,
+            "feedback" => "feedBackTest",
+            "langage" => "python",
+            "code" => "codeTest",
+            "links" => [
+                "self" =>
+                    "https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
+            ],
         ];
 
-        $this->assertEquals($résultat, $tentativeTransformer->transform($tentative));
+        $this->assertEquals(
+            $résultat,
+            $tentativeTransformer->transform($tentative)
+        );
     }
-
 }

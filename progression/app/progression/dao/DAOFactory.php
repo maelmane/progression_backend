@@ -20,40 +20,45 @@ namespace progression\dao;
 
 class DAOFactory
 {
-	function get_avancement_dao()
-	{
-		return new AvancementDAO();
-	}
+    function get_avancement_dao()
+    {
+        return new AvancementDAO();
+    }
 
-	function get_avancement_prog_dao()
-	{
-		return new AvancementProgDAO();
-	}
+    function get_avancement_prog_dao()
+    {
+        return new AvancementProgDAO();
+    }
 
-	function get_avancement_sys_dao()
-	{
-		return new AvancementSysDAO();
-	}
+    function get_avancement_sys_dao()
+    {
+        return new AvancementSysDAO();
+    }
 
-	function get_question_dao()
-	{
-		return new QuestionDAO();
-	}
+    function get_question_dao()
+    {
+        return new QuestionDAO();
+    }
 
-	function get_question_prog_dao()
-	{
-		return new QuestionProgDAO();
-	}
+    function get_question_prog_dao()
+    {
+        return new QuestionProgDAO();
+    }
 
-	function get_question_sys_dao()
-	{
-		return new QuestionSysDAO();
-	}
+    function get_question_sys_dao()
+    {
+        return new QuestionSysDAO();
+    }
 
-	function get_user_dao()
-	{
-		return new UserDAO();
-	}
+    function get_tentative_dao()
+    {
+        return new TentativeDAO();
+    }
+
+    function get_user_dao()
+    {
+        return new UserDAO();
+    }
 }
 
 ?>

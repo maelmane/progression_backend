@@ -16,21 +16,19 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\interacteur;
 
-class RéponseBD{
-
-	public $conteneur;
-    public $réponse;
-    public $langid;
-    public $code;
-
-    public function __construct($langid, $code, $conteneur, $réponse){
-        $this->langid=$langid;
-        $this->code=$code;
-        $this->conteneur=$conteneur;
-        $this->réponse=$réponse;
+class ObtenirTentativeInt extends Interacteur
+{
+    function __construct($source)
+    {
+        $this->_source = $source;
     }
 
+    function get_tentative($username, $question_uri, $date)
+    {
+        return $this->_source
+            ->get_tentative_dao()
+            ->get_tentative($username, $question_uri, $date);
+    }
 }
-?>

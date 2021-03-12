@@ -20,17 +20,15 @@ namespace progression\domaine\entité;
 
 class AvancementBD extends Avancement
 {
-	public $conteneur;
-	public $reponse;
-	public $code;
+  public $conteneur;
+  public $résultat;
+  public $code;
 
-	public function __construct($question_uri, $username, $conteneur = null, $reponse = null, $code = null)
-	{
-		parent::__construct($question_uri, $username);
-		$this->reponse = $reponse;
-		$this->conteneur = $conteneur;
-		$this->code = $code;
-	}
+  public function __construct($question_uri, $username, $conteneur = null, $résultat = null, $code = null)
+  {
+    parent::__construct($question_uri, $username);
+    $this->résultat = $résultat;
+    $this->conteneur = $conteneur;
+    $this->code = $code;
+  }
 }
-
-?>

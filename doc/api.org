@@ -121,6 +121,7 @@ Une tentative de réponse à une question.
 | ├ TentativeProg |                                       | sous-type       | str  | tentativeProg |
 | ├ TentativeSys  |                                       |                 |      | tentativeSys  |
 | ├ TentativeBD   |                                       |                 |      | tentativeBD   |
+|                 |                                       | réussi          | bool |               |
   
 
 Liens :

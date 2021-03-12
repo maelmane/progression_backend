@@ -32,14 +32,14 @@ class AvancementTransformer extends Fractal\TransformerAbstract
     {
         $data_out = [
             "id" =>
-                "{$avancement->username}/" .
+            "{$avancement->username}/" .
                 Encodage::base64_encode_url($avancement->question_uri),
             "username" => $avancement->username,
             "état" => $avancement->etat,
             "links" => [
                 "self" =>
-                    "{$_ENV["APP_URL"]}avancement/{$avancement->username}/" .
-                    Encodage::base64_encode_url($avancement->question_uri),
+                "{$_ENV["APP_URL"]}avancement/{$avancement->username}/" .
+                    Encodage::base64_encode_url($avancement->question_uri)
             ],
         ];
 
