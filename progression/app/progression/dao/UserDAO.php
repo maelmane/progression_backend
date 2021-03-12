@@ -15,44 +15,43 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 namespace progression\dao;
 
 use progression\domaine\entité\User;
 
 class UserDAO extends EntitéDAO
 {
+	public function get_user($username)
+	{
+		$user = new User($username);
+		$this->load($user);
 
-    public function get_user($username)
-    {
-        $user = new User($username);
-        $this->load($user);
+		return $user->username == null ? null : $user;
+	}
 
-        return $user->username == null ? null : $user;
-    }
+	protected function load($objet)
+	{
+		$query = $this->conn->prepare('SELECT username, role FROM user WHERE username = ? ');
+		$query->bind_param("s", $objet->username);
+		$query->execute();
 
-    protected function load($objet)
-    {
-        $query = $this->conn->prepare(
-            'SELECT username, role FROM user WHERE username = ? '
-        );
-        $query->bind_param("i", $objet->username);
-        $query->execute();
+		$query->bind_result($objet->username, $objet->role);
+		if (!$query->fetch()) {
+			$objet->username = null;
+		}
+		$query->close();
+	}
 
-        $query->bind_result($objet->username, $objet->role);
-        $res = $query->fetch();
-        $query->close();
-    }
+	public function save($objet)
+	{
+		$query = $this->conn->prepare(
+			'INSERT INTO user( username, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )',
+		);
+		$query->bind_param("si", $objet->username, $objet->role);
+		$query->execute();
+		$query->close();
 
-    public function save($objet)
-    {
-        $query = $this->conn->prepare(
-            'INSERT INTO user( username, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )'
-        );
-        $query->bind_param("si", $objet->username, $objet->role);
-        $query->execute();
-        $query->close();
-
-        return $this->get_user($objet->username);
-    }
+		return $this->get_user($objet->username);
+	}
 }
-?>
