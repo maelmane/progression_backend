@@ -20,23 +20,16 @@ namespace progression\domaine\entité;
 
 use PHPUnit\Framework\TestCase;
 
-final class UserTests extends TestCase{
-    public function test_étant_donné_un_utilisateur_instancié_avec_username_bob_lorsquon_récupère_son_username_on_obtient_bob(){
-        $userTest = new User("bob");
+final class UserTests extends TestCase
+{
+	public function test_étant_donné_un_User_instancié_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
+	{
+		$username_attendu = "bob";
+		$role_attendu = 0;
 
-        $username = $userTest->username;
+		$résultat_obtenu = new User("bob");
 
-        $this->assertEquals( "bob", $username );
-    }
-
-    public function test_étant_donné_un_utilisateur_instancié_avec_role_par_défaut_lorsquon_récupère_son_role_on_obtient_User_ROLE_NORMAL(){
-        $userTest = new User("bob");
-
-        $role = $userTest->role;
-
-        $this->assertEquals( $userTest::ROLE_NORMAL, $role );
-    }
-
+		$this->assertEquals($username_attendu, $résultat_obtenu->username);
+		$this->assertEquals($role_attendu, $résultat_obtenu->role);
+	}
 }
-
-?>

@@ -20,11 +20,9 @@ namespace progression\domaine\entité;
 
 class QuestionSys extends Question
 {
-    //Données
-    public $image;
-    public $user;
-    public $verification;
-    public $solution_courte;
+	//Données
+	public $image;
+	public $user;
+	public $verification;
+	public $solution_courte;
 }
-
-?>

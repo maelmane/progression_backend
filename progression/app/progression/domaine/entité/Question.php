@@ -20,26 +20,24 @@ namespace progression\domaine\entité;
 
 class Question
 {
-    const ETAT_CACHE = -1;
-    const ETAT_DEBUT = 0;
-    const ETAT_NONREUSSI = 1;
-    const ETAT_REUSSI = 2;
+	const ETAT_CACHE = -1;
+	const ETAT_DEBUT = 0;
+	const ETAT_NONREUSSI = 1;
+	const ETAT_REUSSI = 2;
 
-    const TYPE_PROG_EVAL = "prog_eval";
-    const TYPE_SYS = "sys";
-    const TYPE_BD = "bd";
-    const TYPE_PROG = "prog";
+	const TYPE_PROG_EVAL = "prog_eval";
+	const TYPE_SYS = "sys";
+	const TYPE_BD = "bd";
+	const TYPE_PROG = "prog";
 
-    public $nom;
-    public $uri;
-    public $actif;
-    public $titre;
-    public $description;
-    public $enonce;
-    public $feedback_pos;
-    public $feedback_neg;
-    public $etat;
-    public $code_validation;
+	public $nom;
+	public $uri;
+	public $actif;
+	public $titre;
+	public $description;
+	public $enonce;
+	public $feedback_pos;
+	public $feedback_neg;
+	public $etat;
+	public $code_validation;
 }
-
-?>
