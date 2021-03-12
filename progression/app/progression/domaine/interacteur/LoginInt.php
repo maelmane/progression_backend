@@ -61,7 +61,7 @@ class LoginInt extends Interacteur
         $user = null;
 
         if ($this->vérifier_champs_valides($username, $password)) {
-            $user_ldap = LoginInt::get_username_ldap($username, $password);
+            $user_ldap = $this->get_username_ldap($username, $password);
 
             if ($user_ldap != null) {
                 $user = (new CréerUserInt(
@@ -128,5 +128,3 @@ class LoginInt extends Interacteur
         );
     }
 }
-
-?>
