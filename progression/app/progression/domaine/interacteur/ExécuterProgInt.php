@@ -20,7 +20,7 @@ namespace progression\domaine\interacteur;
 
 class ExécuterProgInt extends Interacteur
 {
-	function exécuter($exécutable, $test)
+	public function exécuter($exécutable, $test)
 	{
 		$this->loguer_code($exécutable);
 
