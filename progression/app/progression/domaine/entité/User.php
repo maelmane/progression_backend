@@ -20,15 +20,14 @@ namespace progression\domaine\entité;
 
 class User
 {
-    const ROLE_NORMAL = 0;
-    const ROLE_ADMIN = 1;
+	const ROLE_NORMAL = 0;
+	const ROLE_ADMIN = 1;
 
-    public $username;
-    public $role = User::ROLE_NORMAL;
+	public $username;
+	public $role = User::ROLE_NORMAL;
 
-    public function __construct($username){
-        $this->username = $username;
-    }
+	public function __construct($username)
+	{
+		$this->username = $username;
+	}
 }
-
-?>

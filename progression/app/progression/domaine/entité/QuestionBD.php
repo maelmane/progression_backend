@@ -20,7 +20,4 @@ namespace progression\domaine\entité;
 
 class QuestionBD extends Question
 {
-
 }
-
-?>

@@ -20,26 +20,18 @@ namespace progression\domaine\entité;
 
 use PHPUnit\Framework\TestCase;
 
-final class QuestionProgTests extends TestCase{
-    public function test_étant_donné_une_questionProg_instanciée_avec_exécutables_array_execTest0_execTest1_lorsquon_récupère_le_premier_item_d_exécutables_on_obtient_execTest0(){
-        $questionProgTest = new QuestionProg();
-        $questionProgTest->exécutables = array("execTest0", "execTest1");
+final class QuestionProgTests extends TestCase
+{
+	public function test_étant_donné_une_QuestionProg_instanciée_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
+	{
+		$exécutables_attendu = ["execTest0", "execTest1"];
+		$tests_attendu = ["testTest0", "testTest1"];
 
-        $exécutables = $questionProgTest->exécutables;
+		$résultat_obtenu = new QuestionProg();
+		$résultat_obtenu->exécutables = ["execTest0", "execTest1"];
+		$résultat_obtenu->tests = ["testTest0", "testTest1"];
 
-        $this->assertEquals( "execTest0", $exécutables[0] );
-    }
-
-    public function test_étant_donné_une_questionProg_instanciée_avec_tests_testTest0_testTest1_lorsquon_récupère_le_premier_item_de_tests_on_obtient_testTest0(){
-        $questionProgTest = new QuestionProg();
-        $questionProgTest->tests = array("testTest0", "testTest1");
-
-        $tests = $questionProgTest->tests;
-
-        $this->assertEquals( "testTest0", $tests[0] );
-    }
-
-
+		$this->assertEquals($exécutables_attendu, $résultat_obtenu->exécutables);
+		$this->assertEquals($tests_attendu, $résultat_obtenu->tests);
+	}
 }
-
-?>

@@ -20,25 +20,21 @@ namespace progression\domaine\entité;
 
 class Test
 {
+	public $nom;
+	public $numéro = 0;
+	public $entrée;
+	public $params = null;
+	public $sortie_attendue;
+	public $feedback_pos;
+	public $feedback_neg;
 
-    public $nom;
-    public $numéro=0;
-    public $entrée;
-    public $params = null;
-    public $sortie_attendue;
-    public $feedback_pos;
-    public $feedback_neg;
-
-    public function __construct($nom, $entrée, $sortie_attendue, $params = null, $feedback_pos=null, $feedback_neg=null)
-    {
-        $this->nom = $nom;
-        $this->entrée = $entrée;
-        $this->sortie_attendue = $sortie_attendue;
-        $this->params = $params;
-        $this->feedback_pos = $feedback_pos;
-        $this->feedback_neg = $feedback_neg;
-    }
-
+	public function __construct($nom, $entrée, $sortie_attendue, $params = null, $feedback_pos = null, $feedback_neg = null)
+	{
+		$this->nom = $nom;
+		$this->entrée = $entrée;
+		$this->sortie_attendue = $sortie_attendue;
+		$this->params = $params;
+		$this->feedback_pos = $feedback_pos;
+		$this->feedback_neg = $feedback_neg;
+	}
 }
-
-?>

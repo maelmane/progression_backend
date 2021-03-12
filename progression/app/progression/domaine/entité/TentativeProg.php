@@ -20,24 +20,24 @@ namespace progression\domaine\entité;
 
 class TentativeProg extends Tentative
 {
-    public $langage;
-    public $code;
-    public $tests_réussis;
-    public $résultats;
+	public $langage;
+	public $code;
+	public $tests_réussis;
+	public $résultats;
 
-    public function __construct(
-        $langage,
-        $code,
-        $date_soumission,
-        $tests_réussis = 0,
-        $réussi = false,
-        $feedback = null,
-        $résultats = []
-    ) {
-        parent::__construct($date_soumission, $réussi, $feedback);
-        $this->langage = $langage;
-        $this->code = $code;
-        $this->tests_réussis = $tests_réussis;
-        $this->résultats = $résultats;
-    }
+	public function __construct(
+		$langage,
+		$code,
+		$date_soumission,
+		$tests_réussis = 0,
+		$réussi = false,
+		$feedback = null,
+		$résultats = []
+	) {
+		parent::__construct($date_soumission, $réussi, $feedback);
+		$this->langage = $langage;
+		$this->code = $code;
+		$this->tests_réussis = $tests_réussis;
+		$this->résultats = $résultats;
+	}
 }

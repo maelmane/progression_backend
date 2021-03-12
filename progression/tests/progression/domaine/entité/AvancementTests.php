@@ -20,23 +20,18 @@ namespace progression\domaine\entité;
 
 use PHPUnit\Framework\TestCase;
 
-final class AvancementTests extends TestCase{
-    public function test_étant_donné_un_avancement_instancié_avec_questionuri_lorsquon_récupère_son_questionid_on_obtient_luri_original(){
-        $avancementTest = new Avancement("http://example.com/maquestion", "jdoe");
+final class AvancementTests extends TestCase
+{
+	public function test_étant_donné_un_Avancement_instancié_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
+	{
+		$question_uri_attendu = "http://exemple.com/maquestion";
+		$username_attendu = "jdoe";
+		$etat_attendu = 0;
 
-        $questionuri = $avancementTest->question_uri;
+		$résultat_obtenu = new Avancement("http://exemple.com/maquestion", "jdoe");
 
-        $this->assertEquals( "http://example.com/maquestion", $questionuri );
-    }
-
-    public function test_étant_donné_un_avancement_instancié_avec_username_jdoe_lorsquon_récupère_son_username_on_obtient_jdoe(){
-        $avancementTest = new Avancement("http://example.com/maquestion", "jdoe");
-
-        $username = $avancementTest->username;
-
-        $this->assertEquals( "jdoe", $username );
-    }
-
+		$this->assertEquals($question_uri_attendu, $résultat_obtenu->question_uri);
+		$this->assertEquals($username_attendu, $résultat_obtenu->username);
+		$this->assertEquals($etat_attendu, $résultat_obtenu->etat);
+	}
 }
-
-?>

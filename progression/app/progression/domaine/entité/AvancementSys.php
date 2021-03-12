@@ -20,17 +20,13 @@ namespace progression\domaine\entité;
 
 class AvancementSys extends Avancement
 {
-    public $conteneur;
-    public $résultat;
+	public $conteneur;
+	public $résultat;
 
-    public function __construct(
-        $question_uri,
-        $username,
-        $conteneur = null,
-        $résultat = null
-    ) {
-        parent::__construct($question_uri, $username);
-        $this->résultat = $résultat;
-        $this->conteneur = $conteneur;
-    }
+	public function __construct($question_uri, $username, $conteneur = null, $résultat = null)
+	{
+		parent::__construct($question_uri, $username);
+		$this->résultat = $résultat;
+		$this->conteneur = $conteneur;
+	}
 }

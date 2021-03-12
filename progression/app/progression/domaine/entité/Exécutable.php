@@ -33,5 +33,3 @@ class Exécutable
 	public $params = null;
 	public $résultats = null;
 }
-
-?>
