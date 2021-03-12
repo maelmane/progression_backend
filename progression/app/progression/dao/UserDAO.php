@@ -22,7 +22,6 @@ use progression\domaine\entité\User;
 
 class UserDAO extends EntitéDAO
 {
-
 	public function get_user($username)
 	{
 		$user = new User($username);
@@ -33,9 +32,7 @@ class UserDAO extends EntitéDAO
 
 	protected function load($objet)
 	{
-		$query = $this->conn->prepare(
-			'SELECT username, role FROM user WHERE username = ? '
-		);
+		$query = $this->conn->prepare('SELECT username, role FROM user WHERE username = ? ');
 		$query->bind_param("s", $objet->username);
 		$query->execute();
 
@@ -49,7 +46,7 @@ class UserDAO extends EntitéDAO
 	public function save($objet)
 	{
 		$query = $this->conn->prepare(
-			'INSERT INTO user( username, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )'
+			'INSERT INTO user( username, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )',
 		);
 		$query->bind_param("si", $objet->username, $objet->role);
 		$query->execute();

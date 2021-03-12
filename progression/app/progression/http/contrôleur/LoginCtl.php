@@ -48,12 +48,9 @@ class LoginCtl extends Contrôleur
 			Log::warning(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
 					get_class($this) .
-					") Accès interdit. username: $username"
+					") Accès interdit. username: $username",
 			);
-			return $this->réponse_json(
-				["message" => "Accès interdit"],
-				403
-			);
+			return $this->réponse_json(["message" => "Accès interdit"], 403);
 		} else {
 			return $this->préparer_réponse(["Token" => $token]);
 		}

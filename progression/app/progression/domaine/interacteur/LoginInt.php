@@ -20,11 +20,10 @@ namespace progression\domaine\interacteur;
 
 class AuthException extends \Exception
 {
-};
+}
 
 class LoginInt extends Interacteur
 {
-
 	function __construct($source)
 	{
 		parent::__construct($source);
@@ -53,9 +52,7 @@ class LoginInt extends Interacteur
 
 	function login_local($username, $password)
 	{
-		throw new AuthException(
-			"L'authentification locale n'est pas implémentée."
-		);
+		throw new AuthException("L'authentification locale n'est pas implémentée.");
 	}
 
 	function login_ldap($username, $password)
@@ -66,9 +63,7 @@ class LoginInt extends Interacteur
 			$user_ldap = LoginInt::get_username_ldap($username, $password);
 
 			if ($user_ldap != null) {
-				$user = (new CréerUserInt(
-					$this->_source
-				))->obtenir_ou_créer_user($username);
+				$user = (new CréerUserInt($this->_source))->obtenir_ou_créer_user($username);
 			}
 		}
 
@@ -85,39 +80,21 @@ class LoginInt extends Interacteur
 		#Tentative de connexion à AD
 		define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
 
-		($ldap = ldap_connect(
-			"ldap://" . $_ENV['HOTE_AD'],
-			$_ENV['PORT_AD']
-		)) or die("Configuration de serveur LDAP invalide.");
+		($ldap = ldap_connect("ldap://" . $_ENV['HOTE_AD'], $_ENV['PORT_AD'])) or
+			die("Configuration de serveur LDAP invalide.");
 		ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-		$bind = @ldap_bind(
-			$ldap,
-			$_ENV['DN_BIND'],
-			$_ENV['PW_BIND']
-		);
+		$bind = @ldap_bind($ldap, $_ENV['DN_BIND'], $_ENV['PW_BIND']);
 
 		if (!$bind) {
-			ldap_get_option(
-				$ldap,
-				LDAP_OPT_DIAGNOSTIC_MESSAGE,
-				$extended_error
-			);
+			ldap_get_option($ldap, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
 			throw new AuthException(
-				"Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extended_error"
+				"Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extended_error",
 			);
 		}
-		$result = ldap_search(
-			$ldap,
-			$_ENV['LDAP_BASE'],
-			"(sAMAccountName=$username)",
-			['dn', 'cn', 1]
-		);
+		$result = ldap_search($ldap, $_ENV['LDAP_BASE'], "(sAMAccountName=$username)", ['dn', 'cn', 1]);
 		$user = ldap_get_entries($ldap, $result);
-		if (
-			$user["count"] != 1 ||
-			!@ldap_bind($ldap, $user[0]['dn'], $password)
-		) {
+		if ($user["count"] != 1 || !@ldap_bind($ldap, $user[0]['dn'], $password)) {
 			return null;
 		}
 		return $user[0];
@@ -125,8 +102,6 @@ class LoginInt extends Interacteur
 
 	function login_sans_authentification($username)
 	{
-		return (new CréerUserInt($this->_source))->obtenir_ou_créer_user(
-			$username
-		);
+		return (new CréerUserInt($this->_source))->obtenir_ou_créer_user($username);
 	}
 }
