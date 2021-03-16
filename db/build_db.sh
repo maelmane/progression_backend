@@ -1,4 +1,4 @@
-mysql --default-character-set=utf8 -v -h$DB_SERVERNAME -uroot -p$DB_ROOT_PASSWORD <<EOF 
+mysql --default-character-set=utf8 -v -h$DB_SERVERNAME -uroot -p$DB_PASSWORD <<EOF 
 DROP DATABASE IF EXISTS $DB_DBNAME;
 DROP USER IF EXISTS $DB_USERNAME@'localhost';
 DROP USER IF EXISTS $DB_USERNAME@'%';
