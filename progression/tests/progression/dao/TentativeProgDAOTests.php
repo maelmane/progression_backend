@@ -34,7 +34,7 @@ final class TentativeProgDAOTests extends TestCase
 		EntitéDAO::get_connexion()->rollback();
 	}
 
-	public function test_étant_donné_une_tentative_existante_lorsquon_get_tentative_on_obtient_un_object_tentative_correspondant()
+	public function test_étant_donné_une_tentative_existante_lorsquon_récupère_la_tentative_on_obtient_la_tentative_correspondant()
 	{
 		$réponse_attendue = new TentativeProg(
 			"python",
