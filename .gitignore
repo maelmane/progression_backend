@@ -9,3 +9,4 @@ progression/app/CodeMirror/
 progression/vendor/
 progression/composer.lock
 progression/app/.env
+progression/tests/.env
