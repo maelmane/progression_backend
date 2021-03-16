@@ -34,7 +34,7 @@ final class UserDAOTests extends TestCase
 		EntitéDAO::get_connexion()->rollback();
 	}
 
-	public function test_étant_donné_un_joueur_existant_lorsquon_cherche_par_son_username_on_obtient_son_profil()
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_on_obtient_son_profil()
 	{
 		$réponse_attendue = new User("bob");
 
