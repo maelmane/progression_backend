@@ -35,7 +35,7 @@ final class TentativeDAOTests extends TestCase
 		EntitéDAO::get_connexion()->rollback();
 	}
 
-	public function test_étant_donné_une_TentativeProg_existante_lorsquon_get_tentative_on_obtient_un_object_tentative_de_type_prog()
+	public function test_étant_donné_une_TentativeProg_existante_lorsquon_récupère_la_tentative_on_obtient_une_tentative_de_type_prog()
 	{
 		$tentativeProg = (new TentativeDAO())->get_tentative(
 			"bob",
