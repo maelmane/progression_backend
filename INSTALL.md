@@ -40,7 +40,12 @@ COMPILEBOX_HOTE = 172.20.0.1
 docker-compose build
 ```
 
-### 2.4 Initialiser la base de données
+### 2.4 Exécuter les tests (facultatif)
+```
+docker-compose up tests
+```
+
+### 2.5 Initialiser la base de données
 - Création (ou réinitialisation) de la base de données
 ```
 docker-compose up -d db
@@ -52,7 +57,7 @@ cd /tmp/ && ./build_db.sh
 ```
 Fermer le terminal avec Ctrl-D ou `exit`
 
-### 2.5 Importer des exercices (facultatif)
+### 2.6 Importer des exercices (facultatif)
 
 - Spécifier la source des exercices et la BD de destination via les variables SOURCE et DESTINATION dans docker-compose.yml (les valeurs par défaut fournissent les questions démos)
 - Effectuer l'importation :
@@ -60,13 +65,13 @@ Fermer le terminal avec Ctrl-D ou `exit`
 docker-compose up importeur
 ```
 
-### 2.6 Obtenir les questions système, dépendantes de conteneurs propres (facultatif)
+### 2.7 Obtenir les questions système, dépendantes de conteneurs propres (facultatif)
 - Construire les conteneurs :
 ```
 cd conteneurs && ./build_all
 ```
 
-### 2.7 Démarrer l'application
+### 2.8 Démarrer l'application
 - Démarrage des conteneurs progression et progression_db
 ```
 docker-compose up -d progression
