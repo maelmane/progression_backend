@@ -86,13 +86,13 @@ class AvancementProgDAO extends AvancementDAO
 			$query = EntitéDAO::get_connexion()
 				->prepare('INSERT INTO reponse_prog ( question_uri, username, lang, code ) VALUES ( ?, ?, ?, ?  )
                                               ON DUPLICATE KEY UPDATE code=VALUES( code )');
-			foreach ($objet->réponses as $réponse) {
+			foreach ($objet->tentatives as $tentative) {
 				$query->bind_param(
 					"ssss",
 					$objet->question_uri,
 					$objet->username,
-					$réponse->langid,
-					$réponse->code
+					$tentative->langid,
+					$tentative->code
 				);
 				$query->execute();
 			}
