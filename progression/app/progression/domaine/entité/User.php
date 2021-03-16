@@ -24,10 +24,11 @@ class User
 	const ROLE_ADMIN = 1;
 
 	public $username;
-	public $role = User::ROLE_NORMAL;
+	public $rôle = User::ROLE_NORMAL;
 
-	public function __construct($username)
+	public function __construct($username, $rôle = User::ROLE_NORMAL)
 	{
 		$this->username = $username;
+        $this->rôle = $rôle;
 	}
 }

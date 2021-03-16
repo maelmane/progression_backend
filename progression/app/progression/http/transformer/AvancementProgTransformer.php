@@ -33,15 +33,11 @@ class AvancementProgTransformer extends AvancementTransformer
 				$tentative->date_soumission;
 			$tentative->links = [
 				"related" =>
-				"{$_ENV["APP_URL"]}avancement/{$avancement->username}/" .
+					"{$_ENV["APP_URL"]}avancement/{$avancement->username}/" .
 					Encodage::base64_encode_url($avancement->question_uri),
 			];
 		}
 
-		return $this->collection(
-			$tentatives,
-			new TentativeProgTransformer(),
-			"tentative"
-		);
+		return $this->collection($tentatives, new TentativeProgTransformer(), "tentative");
 	}
 }

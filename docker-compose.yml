@@ -47,13 +47,21 @@ services:
     image: progression_backend_progression
     build: progression/
     container_name: progression_tests
+    env_file: progression/tests/.env
     volumes:
+      - "./db/build_db.sh/:/var/www/db/build_db.sh"
+      - "./db/create_db.sql/:/var/www/db/create_db.sql"
       - "./progression/app/:/var/www/progression/app/"
       - "./progression/tests/:/var/www/progression/tests/"
       - "./progression/phpunit.xml:/var/www/progression/phpunit.xml"
       - "./progression/phpstan.neon:/var/www/progression/phpstan.neon"
+    networks:
+      progressionnet:
+        ipv4_address: 172.20.0.5
+    depends_on:
+      - db
     restart: "no"
-    command: bash -c "/var/www/progression/vendor/bin/phpunit --configuration /var/www/progression/phpunit.xml --coverage-text && php -d memory_limit=1G /var/www/progression/vendor/bin/phpstan analyse -c /var/www/progression/phpstan.neon"
+    command: /var/www/progression/tests/exec_tests.sh
 
   doc:
     image: git.dti.crosemont.quebec:5050/progression/progression_backend:latest 

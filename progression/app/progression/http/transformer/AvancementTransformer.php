@@ -44,5 +44,8 @@ class AvancementTransformer extends Fractal\TransformerAbstract
 		];
 
 		return $data_out;
-	}
+
+             }
+
+
 }

@@ -1,14 +1,5 @@
-DROP DATABASE IF EXISTS quiz;
-DROP USER IF EXISTS quiz@localhost;
-DROP USER IF EXISTS 'quiz'@'%';
-CREATE USER 'quiz'@'%' IDENTIFIED BY 'password';
-CREATE DATABASE quiz
-	CHARACTER SET utf8mb4
-	COLLATE utf8mb4_general_ci;
-USE quiz;
 CREATE TABLE `user` (
 	`username`	varchar(255),
-	`courriel` 	varchar(255),
 	`actif`		int NOT NULL DEFAULT 1,
 	`role`		int NOT NULL DEFAULT 0,
 	PRIMARY KEY (`username`)
@@ -39,5 +30,3 @@ CREATE TABLE `reponse_prog` (
 	PRIMARY KEY (`username`, `question_uri`, `date_soumission`),
 	FOREIGN KEY (`username`, `question_uri`) REFERENCES avancement(`username`, `question_uri`)
 );
-/*Admin*/
-GRANT ALL PRIVILEGES ON quiz.* TO quiz@'%';

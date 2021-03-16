@@ -25,11 +25,11 @@ final class UserTests extends TestCase
 	public function test_étant_donné_un_User_instancié_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
 	{
 		$username_attendu = "bob";
-		$role_attendu = 0;
+		$rôle_attendu = 0;
 
 		$résultat_obtenu = new User("bob");
 
 		$this->assertEquals($username_attendu, $résultat_obtenu->username);
-		$this->assertEquals($role_attendu, $résultat_obtenu->role);
+		$this->assertEquals($rôle_attendu, $résultat_obtenu->rôle);
 	}
 }
