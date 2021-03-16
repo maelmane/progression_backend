@@ -88,7 +88,7 @@ class AvancementProgDAO extends AvancementDAO
                                               ON DUPLICATE KEY UPDATE code=VALUES( code )');
 			foreach ($objet->réponses as $réponse) {
 				$query->bind_param(
-					"ssis",
+					"ssss",
 					$objet->question_uri,
 					$objet->username,
 					$réponse->langid,
