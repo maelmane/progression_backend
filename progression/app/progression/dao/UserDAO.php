@@ -20,35 +20,31 @@ namespace progression\dao;
 
 use progression\domaine\entité\User;
 
-class UserDAO extends EntitéDAO
+class UserDAO
 {
 	public function get_user($username)
 	{
-		$user = new User($username);
-		$this->load($user);
+		$objet = new User($username);
 
-		return $user->username == null ? null : $user;
-	}
-
-	protected function load($objet)
-	{
-		$query = $this->conn->prepare('SELECT username, role FROM user WHERE username = ? ');
+		$query = EntitéDAO::get_connexion()->prepare("SELECT username, role FROM user WHERE username = ? ");
 		$query->bind_param("s", $objet->username);
+
 		$query->execute();
 
-		$query->bind_result($objet->username, $objet->role);
-		if (!$query->fetch()) {
-			$objet->username = null;
-		}
+		$query->bind_result($objet->username, $objet->rôle);
+
+		$résultat = $query->fetch();
 		$query->close();
+
+		return $résultat != null ? $objet : null;
 	}
 
 	public function save($objet)
 	{
-		$query = $this->conn->prepare(
-			'INSERT INTO user( username, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )',
+		$query = EntitéDAO::get_connexion()->prepare(
+			"INSERT INTO user( username, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )",
 		);
-		$query->bind_param("si", $objet->username, $objet->role);
+		$query->bind_param("si", $objet->username, $objet->rôle);
 		$query->execute();
 		$query->close();
 

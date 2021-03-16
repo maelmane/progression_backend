@@ -30,7 +30,7 @@ class UserTransformer extends Fractal\TransformerAbstract
 		$data = [
 			"id" => $user->username,
 			"username" => $user->username,
-			"rôle" => $user->role,
+			"rôle" => $user->rôle,
 			"links" => (isset($user->links) ? $user->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}user/{$user->username}",
 			],

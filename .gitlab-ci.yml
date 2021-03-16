@@ -10,11 +10,20 @@ before_script:
 # Install all project dependencies
 - php /composer.phar install --dev -d progression/
 
+services:
+  - mariadb:latest
+
+variables:
+  MYSQL_DATABASE: $DB_DBNAME
+  MYSQL_USER: $DB_USERNAME
+  MYSQL_PASSWORD: $DB_PASSWORD
+  MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD
+
 # We test PHP7
-test:
+test_unitaires:
+  stage: test
   script:
-  - progression/vendor/bin/phpunit --configuration progression/phpunit.xml --coverage-text
-  - php -d memory_limit=3G progression/vendor/bin/phpstan analyse -c progression/phpstan.neon 
+  - progression/tests/exec_tests.sh
   except:
   - master
   - documentation
@@ -29,6 +38,7 @@ test:
 
 pages:
   <<: *doc
+  stage: build
   only:
   - dev
   - documentation
