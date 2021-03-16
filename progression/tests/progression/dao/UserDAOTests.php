@@ -18,24 +18,22 @@
 
 namespace progression\dao;
 
-require_once __DIR__ . "/../../TestCase.php";
-
 use progression\domaine\entité\User;
 use progression\dao\UserDAO;
+use PHPUnit\Framework\TestCase;
 
-use Mockery;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-
-final class UserDAOTests extends \TestCase
+final class UserDAOTests extends TestCase
 {
-    public function setUp() : void{
-        EntitéDAO::get_connexion()->begin_transaction();
-    }
+	public function setUp(): void
+	{
+		EntitéDAO::get_connexion()->begin_transaction();
+	}
 
-    public function tearDown() : void{
-        EntitéDAO::get_connexion()->rollback();
-    }
-    
+	public function tearDown(): void
+	{
+		EntitéDAO::get_connexion()->rollback();
+	}
+
 	public function test_étant_donné_un_joueur_existant_lorsquon_cherche_par_son_username_on_obtient_son_profil()
 	{
 		$réponse_attendue = new User("bob");
@@ -76,6 +74,5 @@ final class UserDAOTests extends \TestCase
 
 		$résponse_observée = (new UserDAO())->get_user("bob");
 		$this->assertEquals($réponse_attendue, $résponse_observée);
-
 	}
 }
