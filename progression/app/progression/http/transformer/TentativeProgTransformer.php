@@ -18,38 +18,33 @@
 
 namespace progression\http\transformer;
 
-use League\Fractal;
 use progression\domaine\entité\{Tentative, TentativeProg};
 
 class TentativeProgTransformer extends TentativeTransformer
 {
-    public $type = "tentative";
-    protected $availableIncludes = ["resultats"];
+	public $type = "tentative";
+	protected $availableIncludes = ["resultats"];
 
-    public function transform(Tentative $tentative)
-    {
-        $data_out = parent::transform($tentative);
-        $data_out = array_merge($data_out, [
-            "sous-type" => "tentativeProg",
-            "tests_réussis" => $tentative->tests_réussis,
-            "langage" => $tentative->langage,
-            "code" => $tentative->code,
-        ]);
+	public function transform(Tentative $tentative)
+	{
+		$data_out = parent::transform($tentative);
+		$data_out = array_merge($data_out, [
+			"sous-type" => "tentativeProg",
+			"tests_réussis" => $tentative->tests_réussis,
+			"langage" => $tentative->langage,
+			"code" => $tentative->code,
+		]);
 
-        return $data_out;
-    }
+		return $data_out;
+	}
 
-    public function includeResultats(Tentative $tentative)
-    {
-        foreach ($tentative->résultats as $résultat) {
-            $résultat->links = [
-                "related" => $_ENV["APP_URL"] . "tentative/{$résultat->id}",
-            ];
-        }
-        return $this->collection(
-            $tentative->résultats,
-            new RésultatProgTransformer(),
-            "resultats"
-        );
-    }
+	public function includeResultats(TentativeProg $tentative)
+	{
+		foreach ($tentative->résultats as $résultat) {
+			$résultat->links = [
+				"related" => $_ENV["APP_URL"] . "tentative/{$résultat->id}",
+			];
+		}
+		return $this->collection($tentative->résultats, new RésultatProgTransformer(), "resultats");
+	}
 }

@@ -24,25 +24,28 @@ use progression\util\Encodage;
 
 class AvancementTransformer extends Fractal\TransformerAbstract
 {
-    public $type = "avancement";
+	public $type = "avancement";
 
-    protected $availableIncludes = ["tentatives"];
+	protected $availableIncludes = ["tentatives"];
 
-    public function transform(Avancement $avancement)
-    {
-        $data_out = [
-            "id" =>
-            "{$avancement->username}/" .
-                Encodage::base64_encode_url($avancement->question_uri),
-            "username" => $avancement->username,
-            "état" => $avancement->etat,
-            "links" => [
-                "self" =>
-                "{$_ENV["APP_URL"]}avancement/{$avancement->username}/" .
-                    Encodage::base64_encode_url($avancement->question_uri)
-            ],
-        ];
+	public function transform(Avancement $avancement)
+	{
+		$data_out = [
+			"id" =>
+			"{$avancement->username}/" .
+				Encodage::base64_encode_url($avancement->question_uri),
+			"username" => $avancement->username,
+			"état" => $avancement->etat,
+			"links" => [
+				"self" =>
+				"{$_ENV["APP_URL"]}avancement/{$avancement->username}/" .
+					Encodage::base64_encode_url($avancement->question_uri)
+			],
+		];
 
-        return $data_out;
-    }
+		return $data_out;
+
+             }
+
+
 }
