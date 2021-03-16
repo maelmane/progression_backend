@@ -52,7 +52,7 @@ final class TentativeProgDAOTests extends TestCase
 		$this->assertEquals($réponse_attendue, $résponse_observée);
 	}
 
-	public function test_étant_donné_une_tentative_inexistante_lorsquon_get_tentative_on_obtient_null()
+	public function test_étant_donné_une_tentative_inexistante_lorsquon_récupère_la_tentative_on_obtient_null()
 	{
 		$réponse_attendue = null;
 

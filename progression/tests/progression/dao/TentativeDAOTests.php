@@ -50,4 +50,13 @@ final class TentativeDAOTests extends TestCase
 
 		assertEquals($réponse_attendue, $résponse_observée);
 	}
+
+	public function test_étant_donné_une_tentative_inexistante_lorsquon_récupère_la_tentative_on_obtient_null()
+	{
+		$réponse_attendue = null;
+
+		$résponse_observée = (new TentativeDAO())->get_tentative("exemple", "exemple", 0);
+
+		$this->assertEquals($réponse_attendue, $résponse_observée);
+	}
 }
