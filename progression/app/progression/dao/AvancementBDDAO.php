@@ -25,7 +25,7 @@ class AvancementBDDAO extends AvancementDAO
 	function get_avancement($question_id, $username)
 	{
 		$avancement = new AvancementBD($question_id, $username);
-		$avancement->load($avancement);
+		$this->load($avancement);
 		if (is_null($avancement->etat)) {
 			$avancement->etat = Question::ETAT_DEBUT;
 		}
@@ -35,7 +35,7 @@ class AvancementBDDAO extends AvancementDAO
 
 	protected function load($objet)
 	{
-		$query = $this->conn->prepare(
+		$query = EntitéDAO::get_connexion()->prepare(
 			"SELECT question_uri, username, etat, reponse, code, conteneur FROM avancement WHERE question_uri = ? AND username = ?",
 		);
 		$query->bind_param("ii", $objet->question_uri, $objet->username);
@@ -55,16 +55,16 @@ class AvancementBDDAO extends AvancementDAO
 
 	public function save($objet)
 	{
-		mysqli_begin_transaction($this->conn);
+		mysqli_begin_transaction(EntitéDAO::get_connexion());
 		try {
-			$query = $this->conn->prepare('INSERT INTO avancement ( etat, question_uri, username ) VALUES ( ?, ?, ? )
+			$query = EntitéDAO::get_connexion()->prepare('INSERT INTO avancement ( etat, question_uri, username ) VALUES ( ?, ?, ? )
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 
 			$query->bind_param("iii", $objet->etat, $objet->question_uri, $objet->username);
 			$query->execute();
 			$query->close();
 
-			$query = $this->conn
+			$query = EntitéDAO::get_connexion()
 				->prepare('INSERT INTO reponse_sys ( question_uri, username, reponse, conteneur ) VALUES ( ?, ?, ?, ?  )
                                               ON DUPLICATE KEY UPDATE reponse=VALUES( reponse ), conteneur=VALUES( conteneur )');
 
@@ -72,20 +72,19 @@ class AvancementBDDAO extends AvancementDAO
 			$query->execute();
 			$query->close();
 
-			$query = $this->conn
+			$query = EntitéDAO::get_connexion()
 				->prepare('INSERT INTO reponse_prog ( question_uri, username, lang, code ) VALUES ( ?, ?, ?, ?  )
                                               ON DUPLICATE KEY UPDATE lang=VALUES( lang ), code=VALUES( code )');
 
 			$query->bind_param("iiss", $objet->question_uri, $objet->username, "mysql", $objet->code);
 			$query->execute();
 
-			mysqli_commit($this->conn);
+			mysqli_commit(EntitéDAO::get_connexion());
 		} catch (\mysqli_sql_exception $exception) {
-			mysqli_rollback($this->conn);
+			mysqli_rollback(EntitéDAO::get_connexion());
 
 			throw $exception;
 		}
 		return $this->get_avancement($objet->question_uri, $objet->username);
 	}
 }
-?>

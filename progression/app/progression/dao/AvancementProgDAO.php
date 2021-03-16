@@ -30,7 +30,7 @@ class AvancementProgDAO extends AvancementDAO
 		$lang = null;
 		$date = null;
 
-		$query = $this->conn->prepare(
+		$query = EntitéDAO::get_connexion()->prepare(
 			'SELECT avancement.username, 
 				avancement.question_uri, 
 				avancement.etat, 
@@ -67,9 +67,9 @@ class AvancementProgDAO extends AvancementDAO
 
 	public function save($objet)
 	{
-		$this->conn->begin_transaction();
+		EntitéDAO::get_connexion()->begin_transaction();
 		try {
-			$query = $this->conn
+			$query = EntitéDAO::get_connexion()
 				->prepare('INSERT INTO avancement ( etat, question_uri, username, type ) VALUES ( ?, ?, ? )
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 
@@ -83,7 +83,7 @@ class AvancementProgDAO extends AvancementDAO
 			$query->execute();
 			$query->close();
 
-			$query = $this->conn
+			$query = EntitéDAO::get_connexion()
 				->prepare('INSERT INTO reponse_prog ( question_uri, username, lang, code ) VALUES ( ?, ?, ?, ?  )
                                               ON DUPLICATE KEY UPDATE code=VALUES( code )');
 			foreach ($objet->réponses as $réponse) {
@@ -98,9 +98,9 @@ class AvancementProgDAO extends AvancementDAO
 			}
 			$query->close();
 
-			$this->conn->commit();
+			EntitéDAO::get_connexion()->commit();
 		} catch (\mysqli_sql_exception $exception) {
-			$this->conn->rollback();
+			EntitéDAO::get_connexion()->rollback();
 
 			throw $exception;
 		}

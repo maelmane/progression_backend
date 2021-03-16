@@ -24,7 +24,7 @@ class AvancementSysDAO extends EntitéDAO
 	function get_avancement($question_uri, $username)
 	{
 		$avancement = new AvancementSys($question_uri, $username, null, null);
-		$avancement->load($avancement);
+		$this->load($avancement);
 		if (is_null($avancement->etat)) {
 			$avancement->etat = Question::ETAT_DEBUT;
 		}
@@ -34,7 +34,7 @@ class AvancementSysDAO extends EntitéDAO
 
 	protected function load($objet)
 	{
-		$query = $this->conn->prepare(
+		$query = EntitéDAO::get_connexion()->prepare(
 			'SELECT question_uri, username, etat, reponse, conteneur 
              FROM avancement LEFT JOIN reponse_sys 
              ON avancement.questionID = reponse_sys.questionID AND
@@ -51,16 +51,16 @@ class AvancementSysDAO extends EntitéDAO
 
 	public function save($objet)
 	{
-		$this->conn->begin_transaction();
+		EntitéDAO::get_connexion()->begin_transaction();
 		try {
-			$query = $this->conn->prepare('INSERT INTO avancement ( etat, question_uri, username ) VALUES ( ?, ?, ? )
+			$query = EntitéDAO::get_connexion()->prepare('INSERT INTO avancement ( etat, question_uri, username ) VALUES ( ?, ?, ? )
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 
 			$query->bind_param("iii", $objet->etat, $objet->question_uri, $objet->username);
 			$query->execute();
 			$query->close();
 
-			$query = $this->conn
+			$query = EntitéDAO::get_connexion()
 				->prepare('INSERT INTO reponse_sys ( question_uri, username, reponse, conteneur ) VALUES ( ?, ?, ?, ?  )
                                               ON DUPLICATE KEY UPDATE reponse=VALUES( reponse ), conteneur=VALUES( conteneur )');
 
@@ -68,13 +68,12 @@ class AvancementSysDAO extends EntitéDAO
 			$query->execute();
 			$query->close();
 
-			$this->conn->commit();
+			EntitéDAO::get_connexion()->commit();
 		} catch (\mysqli_sql_exception $exception) {
-			$this->conn->rollback();
+			EntitéDAO::get_connexion()->rollback();
 
 			throw $exception;
 		}
 		return $this->get_avancement($objet->question_uri, $objet->username);
 	}
 }
-?>

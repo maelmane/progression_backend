@@ -26,7 +26,7 @@ class TentativeProgDAO extends TentativeDAO
     {
         $tentative = null;
 
-        $query = $this->conn->prepare(
+        $query = EntitéDAO::get_connexion()->prepare(
             'SELECT reponse_prog.langage,
 				reponse_prog.code,
 				reponse_prog.date_soumission,
