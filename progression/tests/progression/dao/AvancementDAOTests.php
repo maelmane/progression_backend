@@ -38,7 +38,7 @@ final class AvancementDAOTests extends \TestCase
 		EntitéDAO::get_connexion()->rollback();
 	}
 
-	public function test_étant_donné_un_avancementprog_existant_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_objet_avancement_correspondant()
+	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_objet_avancement_correspondant()
 	{
 		$résultat_attendu = new Avancement("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "bob");
 		$résultat_attendu->type = 3;
@@ -59,7 +59,7 @@ final class AvancementDAOTests extends \TestCase
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
 
-	public function test_étant_donné_un_avancementprog_inexistant_lorsquon_le_cherche_par_username_et_question_uri_on_obtient_null()
+	public function test_étant_donné_un_avancement_inexistant_lorsquon_le_cherche_par_username_et_question_uri_on_obtient_null()
 	{
 		$réponse_attendue = null;
 
