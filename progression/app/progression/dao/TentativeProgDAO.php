@@ -18,6 +18,7 @@
 
 namespace progression\dao;
 
+use progression\domaine\entité\TentativeBD;
 use progression\domaine\entité\TentativeProg;
 
 class TentativeProgDAO extends TentativeDAO
