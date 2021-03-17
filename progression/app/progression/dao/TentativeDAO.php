@@ -18,14 +18,38 @@
 
 namespace progression\dao;
 
+use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, TentativeBD, Question};
+
 class TentativeDAO extends EntitéDAO
 {
-    public function get_tentative($username, $question_uri, $timestamp)
-    {
-        return (new TentativeProgDAO())->get_tentative(
-            $username,
-            $question_uri,
-            $timestamp
-        );
-    }
+	public function get_tentative($username, $question_uri, $date)
+	{
+		$type = $this->get_type($username, $question_uri);
+
+		if ($type == Question::TYPE_PROG) {
+			return $this->_source->get_tentative_prog_dao()->get_tentative($username, $question_uri, $date);
+		} elseif ($type == Question::TYPE_SYS) {
+			return $this->_source->get_tentative_sys_dao()->get_tentative($username, $question_uri, $date);
+		} elseif ($type == Question::TYPE_BD) {
+			return $this->_source->get_tentative_bd_dao()->get_tentative($username, $question_uri, $date);
+		} else {
+			return null;
+		}
+	}
+
+	private function get_type($username, $question_uri)
+	{
+		$type = null;
+
+		$query = EntitéDAO::get_connexion()->prepare(
+			"SELECT type FROM avancement WHERE question_uri = ? AND username = ?",
+		);
+		$query->bind_param("ss", $question_uri, $username);
+		$query->execute();
+		$query->bind_result($type);
+		$query->fetch();
+		$query->close();
+
+		return $type;
+	}
 }

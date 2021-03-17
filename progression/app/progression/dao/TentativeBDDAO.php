@@ -16,17 +16,25 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\dao;
 
-class AvancementSys extends Avancement
+use progression\domaine\entité\TentativeBD;
+
+class TentativeBDDAO extends TentativeDAO
 {
-	public $conteneur;
-	public $résultat;
-
-	public function __construct($question_uri, $username, $conteneur = null, $résultat = null)
+	public function get_toutes($username, $question_uri)
 	{
-		parent::__construct($question_uri, $username);
-		$this->résultat = $résultat;
-		$this->conteneur = $conteneur;
+		$tentatives = [];
+		return $tentatives;
+	}
+
+	public function get_tentative($username, $question_uri, $timestamp)
+	{
+		$tentative = null;
+		return $tentative;
+	}
+
+	public function save($objet)
+	{
 	}
 }

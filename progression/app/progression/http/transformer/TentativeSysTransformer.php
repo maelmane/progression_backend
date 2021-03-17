@@ -16,19 +16,10 @@
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\http\transformer;
 
-class AvancementBD extends Avancement
+use progression\domaine\entité\{Tentative, TentativeSys};
+
+class TentativeSysTransformer extends TentativeTransformer
 {
-  public $conteneur;
-  public $résultat;
-  public $code;
-
-  public function __construct($question_uri, $username, $conteneur = null, $résultat = null, $code = null)
-  {
-    parent::__construct($question_uri, $username);
-    $this->résultat = $résultat;
-    $this->conteneur = $conteneur;
-    $this->code = $code;
-  }
 }

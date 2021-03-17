@@ -19,30 +19,35 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use progression\http\transformer\TentativeProgTransformer;
+use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransformer, TentativeBDTransformer};
+use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, TentativeBD};
 use progression\util\Encodage;
 
 class TentativeCtl extends Contrôleur
 {
-    public function get(Request $request, $username, $question_uri, $timestamp)
-    {
-        $chemin = Encodage::base64_decode_url($question_uri);
-        $tentative = null;
+	public function get(Request $request, $username, $question_uri, $timestamp)
+	{
+		$chemin = Encodage::base64_decode_url($question_uri);
+		$tentative = null;
 
-        $tentativeInt = $this->intFactory->getObtenirTentativeInt();
+		$tentativeInt = $this->intFactory->getObtenirTentativeInt();
 
-        $tentative = $tentativeInt->get_tentative(
-            $username,
-            $chemin,
-            $timestamp
-        );
+		$tentative = $tentativeInt->get_tentative($username, $chemin, $timestamp);
 
-        if ($tentative) {
-            $tentative->id = "{$username}/{$question_uri}/{$timestamp}";
-        }
+		if ($tentative != null) {
+			$tentative->id = "{$username}/{$question_uri}/{$timestamp}";
+		}
 
-        $réponse = $this->item($tentative, new TentativeProgTransformer());
+		$réponse = null;
 
-        return $this->préparer_réponse($réponse);
-    }
+		if ($tentative instanceof TentativeProg) {
+			$réponse = $this->item($tentative, new TentativeProgTransformer());
+		} elseif ($tentative instanceof TentativeSys) {
+			$réponse = $this->item($tentative, new TentativeSysTransformer());
+		} elseif ($tentative instanceof TentativeBD) {
+			$réponse = $this->item($tentative, new TentativeBDTransformer());
+		}
+
+		return $this->préparer_réponse($réponse);
+	}
 }

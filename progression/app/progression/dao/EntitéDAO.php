@@ -17,35 +17,42 @@
 */
 namespace progression\dao;
 
-class ConnexionException extends \Exception{};
+class ConnexionException extends \Exception
+{
+}
 
 class EntitéDAO
 {
-    private static $conn = null;
+	private static $conn = null;
+	protected $_source = null;
 
-    public static function get_connexion()
-    {
-        if ( EntitéDAO::$conn == null ){
-            EntitéDAO::create_connection();
-            if ( mysqli_connect_errno() != 0 ){
-                throw new ConnexionException( mysqli_connect_error() . "(".mysqli_connect_errno().")" );
-            }
-        }
+	public function __construct($source = null)
+	{
+		$this->_source = $source;
+	}
 
-        return EntitéDAO::$conn;
-    }
+	public static function get_connexion()
+	{
+		if (EntitéDAO::$conn == null) {
+			EntitéDAO::create_connection();
+			if (mysqli_connect_errno() != 0) {
+				throw new ConnexionException(mysqli_connect_error() . "(" . mysqli_connect_errno() . ")");
+			}
+		}
 
-    private static function create_connection()
-    {
-        EntitéDAO::$conn = new \mysqli(
-            $_ENV["DB_SERVERNAME"],
-            $_ENV["DB_USERNAME"],
-            $_ENV["DB_PASSWORD"],
-            $_ENV["DB_DBNAME"]
-        );
-        EntitéDAO::$conn->set_charset("utf8");
-    }
+		return EntitéDAO::$conn;
+	}
 
+	private static function create_connection()
+	{
+		EntitéDAO::$conn = new \mysqli(
+			$_ENV["DB_SERVERNAME"],
+			$_ENV["DB_USERNAME"],
+			$_ENV["DB_PASSWORD"],
+			$_ENV["DB_DBNAME"],
+		);
+		EntitéDAO::$conn->set_charset("utf8");
+	}
 }
 
 ?>

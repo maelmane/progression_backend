@@ -24,11 +24,6 @@ class AuthException extends \Exception
 
 class LoginInt extends Interacteur
 {
-	function __construct($source)
-	{
-		parent::__construct($source);
-	}
-
 	function effectuer_login($username, $password)
 	{
 		syslog(LOG_INFO, "Tentative de connexion : " . $username);
