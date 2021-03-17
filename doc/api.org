@@ -55,16 +55,17 @@ Une question générique
 *** Identifiant :
 URI
 
-| Hiérarchie         |
-|--------------------+
-| Question           |
-| ▲                  |
-| │                  |
-| │                  |
-| ├ QuestionProg     |
-| ├ QuestionProgEval |
-| ├ QuestionSys      |
-| └ QuestionBD       |
+*** Hiérarchie
+
+#+begin_src text
+Question          
+▲                 
+├ QuestionProg    
+├ QuestionProgEval
+├ QuestionSys     
+└ QuestionBD
+#+end_src
+
 
 *** Propriétés :
 
@@ -149,13 +150,15 @@ Une tentative de réponse à une question.
 username/question_uri/date_soumission
 
 
-| Hiérarchie      |
-|-----------------|
-| Tentative       |
-| ▲               |
-| ├ TentativeProg |
-| ├ TentativeSys  |
-| ├ TentativeBD   |
+*** Hiérarchie
+
+#+begin_src text
+Tentative 
+▲ 
+├ TentativeProg 
+├ TentativeSys 
+├ TentativeBD 
+#+end_src
 
 *** Propriétés :
 
