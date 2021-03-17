@@ -29,8 +29,8 @@ class TentativeProg extends Tentative
 		$langage,
 		$code,
 		$date_soumission,
-		$tests_réussis = 0,
 		$réussi = false,
+		$tests_réussis = 0,
 		$feedback = null,
 		$résultats = []
 	) {

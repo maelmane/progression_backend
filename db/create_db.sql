@@ -8,6 +8,7 @@ CREATE TABLE `avancement` (
 	`username`		varchar(255) NOT NULL,
 	`question_uri` 	varchar(2048) CHARACTER SET latin1 NOT NULL,
 	`etat`			int DEFAULT 1,
+	`type`          int NOT NULL,
 	PRIMARY KEY (`username`, `question_uri`),
 	FOREIGN KEY ( `username`) REFERENCES `user`(`username`)
 );

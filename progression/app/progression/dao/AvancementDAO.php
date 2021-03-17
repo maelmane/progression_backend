@@ -18,40 +18,43 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{AvancementProg, AvancementSys, AvancementBD, Question};
+use progression\domaine\entité\{Avancement, Question};
 
 class AvancementDAO extends EntitéDAO
 {
 	public function get_avancement($username, $question_uri)
 	{
-		$type = ((new QuestionDAO())->get_question($question_uri))->type;
-		$avancement = null;
-		if ($type == null) {
-			return null;
-		} else {
-			if ($type == Question::TYPE_PROG) {
-				$avancement = new AvancementProg($question_uri, $username);
-				(new AvancementProgDAO())->load($avancement);
-			} elseif ($type == Question::TYPE_SYS) {
-				$avancement = new AvancementSys($question_uri, $username);
-				(new AvancementSysDAO())->load($avancement);
-			} elseif ($type == Question::TYPE_BD) {
-				$avancement = new AvancementBD($question_uri, $username);
-				(new AvancementBDDAO())->load($avancement);
-			}
-
-			return $avancement->username == null ? null : $avancement;
+		$avancement = new Avancement($question_uri, $username);
+		$this->load($avancement);
+		if ($avancement->type == Question::TYPE_PROG) {
+			$avancement->tentatives = $this->_source->get_tentative_prog_dao()->get_toutes($username, $question_uri);
 		}
+		return $avancement;
 	}
 
 	protected function load($objet)
 	{
-		$query = $this->conn->prepare("SELECT username, etat FROM avancement WHERE question_uri = ? AND username = ?");
+		$query = EntitéDAO::get_connexion()->prepare(
+			"SELECT username, question_uri, etat, type FROM avancement WHERE question_uri = ? AND username = ?",
+		);
 		$query->bind_param("ss", $objet->question_uri, $objet->username);
 		$query->execute();
-		$query->bind_result($objet->username, $objet->etat);
+		$query->bind_result($objet->username, $objet->question_uri, $objet->etat, $objet->type);
 		$query->fetch();
 
 		$query->close();
+	}
+
+	public function save($objet)
+	{
+		$query = EntitéDAO::get_connexion()
+			->prepare('INSERT INTO avancement ( etat, question_uri, username, type ) VALUES ( ?, ?, ? )
+                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
+
+		$query->bind_param("iss", $objet->etat, $objet->question_uri, $objet->username, Question::TYPE_PROG);
+		$query->execute();
+		$query->close();
+
+		return $this->get_avancement($objet->question_uri, $objet->username);
 	}
 }

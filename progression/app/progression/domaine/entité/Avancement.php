@@ -23,11 +23,15 @@ class Avancement
 	public $username;
 	public $question_uri;
 	public $etat;
-
-	public function __construct($question_uri, $username)
+    public $type;
+    public $tentatives;
+    
+	public function __construct($question_uri, $username, $tentatives = [])
 	{
 		$this->question_uri = $question_uri;
 		$this->username = $username;
+        $this->tentatives = $tentatives;
 		$this->etat = Question::ETAT_DEBUT;
+        $this->type = Question::TYPE_INCONNU;
 	}
 }
