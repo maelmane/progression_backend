@@ -1,0 +1,70 @@
+#+SETUPFILE: https://plafrance.pages.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg.setup
+#+TITLE: Schéma de séquence de soumission d'une tentative
+
+#+begin_src napkin-puml :eval yes :file images/soumettre.png :results output :exports results
+@startuml
+
+participant tentativectl as "TentativeCtl"
+participant soumissionInt as "SoumettreTentativeInt"
+participant preparerExecInt as "PréparerProgInt"
+participant exécuterInt as "ExécuterProgInt"
+participant traiterInt as "TraiterTentativeProgInt"
+participant sauveragarderInt as "SauvegarderAvancementProgInt"
+
+tentativectl -> soumissionInt : question_uri, username, tentative
+soumissionInt -> preparerExecInt : question, tentative
+preparerExecInt -> soumissionInt : exécutable
+
+group itération [ pour chaque test de question.test ]
+  soumissionInt -> exécuterInt : exécutable, test
+  exécuterInt -> soumissionInt : résultat
+end
+  
+soumissionInt -> traiterInt : tests, résultats
+traiterInt -> soumissionInt : résultats
+
+traiterInt -> sauveragarderInt
+soumissionInt -> tentativectl : tentative
+
+@enduml
+#+end_src
+
+#+RESULTS:
+[[file:images/soumettre.png]]
+
+** Exécutable
+
+Propriétés :
+| Nom     | Type | Valeur |
+|---------+------+--------|
+| code    | str  |        |
+| langage | str  |        |
+| params  | str  |        |
+
+** Test
+
+Un test de validation d'une question auquel sont soumises les solutions proposées.
+
+*** Propriétés :
+
+| Nom             | Type | Valeurs |
+|-----------------+------+---------|
+| numéro          | int  |         |
+| nom             | str  |         |
+| entrée          | str  |         |
+| sortie_attendue | str  |         |
+
+** Résultat
+
+Le résultat d'un test pour une solution proposée.
+
+*** Propriétés:
+
+| Nom             | Type | Valeurs   |
+|-----------------+------+-----------|
+| numéro          | int  | # du test |
+| sortie_observée | str  |           |
+| sortie_erreur   | str  |           |
+| résultat        | bool |           |
+| feedback        | str  |           |
+
