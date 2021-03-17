@@ -20,7 +20,7 @@ namespace progression\dao;
 
 use progression\domaine\entité\User;
 
-class UserDAO
+class UserDAO extends EntitéDAO
 {
 	public function get_user($username)
 	{

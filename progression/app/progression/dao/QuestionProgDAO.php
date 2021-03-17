@@ -19,15 +19,11 @@ namespace progression\dao;
 
 use progression\domaine\entité\{QuestionProg, Exécutable, Test};
 
-class QuestionProgDAO extends QuestionDAO
+class QuestionProgDAO extends EntitéDAO
 {
-
-    public $type = QuestionProg::TYPE_PROG;
-    
-	protected function load($question, $infos_question)
+	public function load($question, $infos_question)
 	{
-		parent::load($question, $infos_question);
-
+		$question->type = QuestionProg::TYPE_PROG;
 		$question->exécutables = $this->load_exécutables($question, $infos_question);
 		$question->tests = $this->load_tests($question, $infos_question);
 	}
@@ -52,10 +48,81 @@ class QuestionProgDAO extends QuestionDAO
 				$test["out"],
 				key_exists("params", $test) ? $test["params"] : null,
 				key_exists("feedback+", $test) ? $test["feedback+"] : null,
-                key_exists("feedback-", $test) ? $test["feedback-"] : null,
+				key_exists("feedback-", $test) ? $test["feedback-"] : null,
 			);
 		}
 
 		return $tests;
+	}
+
+	public function récupérer_question($uri, $info)
+	{
+		$exécutables = $this->récupérer_execs($uri, $info["execs"]);
+
+		if ($exécutables == null) {
+			return null;
+		} else {
+			$info["execs"] = $exécutables;
+		}
+
+		$tests = $this->récupérer_tests($uri, $info["tests"]);
+		if ($tests == null) {
+			return null;
+		} else {
+			$info["tests"] = $tests;
+		}
+
+		return $info;
+	}
+
+	protected function récupérer_execs($uri, $execs)
+	{
+		$items = [];
+
+		foreach ($execs as $exec) {
+			$exécutable = $this->récupérer_exec($uri, $exec["fichier"]);
+
+			if ($exécutable == null) {
+				return null;
+			}
+
+			$items[$exec["langage"]] = $exécutable;
+		}
+
+		return $items;
+	}
+
+	protected function récupérer_exec($uri, $exec)
+	{
+		$data = file_get_contents($uri . "/" . $exec);
+
+		if ($data === false) {
+			error_log("$uri/$exec ne peut pas être chargé");
+			return null;
+		} else {
+			return $data;
+		}
+	}
+
+	protected function récupérer_tests($uri, $tests)
+	{
+		$items = [];
+
+		foreach ($tests as $test) {
+			$data = file_get_contents($uri . "/" . $test);
+
+			if ($data === false) {
+				error_log("$uri/$test ne peut pas être chargé");
+				return null;
+			}
+
+			$items = array_merge($items, yaml_parse($data, -1));
+			if ($items == false) {
+				error_log("$uri/$test ne peut pas être décodé");
+				return null;
+			}
+		}
+
+		return $items;
 	}
 }

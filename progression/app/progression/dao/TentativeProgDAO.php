@@ -22,6 +22,37 @@ use progression\domaine\entité\TentativeProg;
 
 class TentativeProgDAO
 {
+	public function get_toutes($username, $question_uri)
+	{
+		$tentatives = [];
+
+		$query = EntitéDAO::get_connexion()->prepare(
+			'SELECT reponse_prog.langage,
+				reponse_prog.code,
+				reponse_prog.date_soumission,
+                reponse_prog.reussi
+			 FROM reponse_prog
+			 WHERE username = ? 
+			 	AND question_uri = ?',
+		);
+		$query->bind_param("ss", $username, $question_uri);
+		$query->execute();
+
+		$langage = null;
+		$code = null;
+		$date_soumission = null;
+		$réussi = null;
+		$query->bind_result($langage, $code, $date_soumission, $réussi);
+
+		while ($query->fetch()) {
+			$tentatives[] = new TentativeProg($langage, $code, $date_soumission, $réussi);
+		}
+
+		$query->close();
+
+		return $tentatives;
+	}
+
 	public function get_tentative($username, $question_uri, $timestamp)
 	{
 		$tentative = null;
@@ -34,7 +65,7 @@ class TentativeProgDAO
 			 FROM reponse_prog
 			 WHERE username = ? 
 			 	AND question_uri = ?
-			 	AND date_soumission = ?'
+			 	AND date_soumission = ?',
 		);
 		$query->bind_param("ssi", $username, $question_uri, $timestamp);
 		$query->execute();
@@ -46,17 +77,30 @@ class TentativeProgDAO
 		$query->bind_result($langage, $code, $date_soumission, $réussi);
 
 		if ($query->fetch()) {
-			$tentative = new TentativeProg(
-				$langage,
-				$code,
-				$date_soumission,
-				0,
-				$réussi
-			);
+			$tentative = new TentativeProg($langage, $code, $date_soumission, 0, $réussi);
 		}
 
 		$query->close();
 
 		return $tentative;
+	}
+
+	public function save($objet)
+	{
+		$query = EntitéDAO::get_connexion()->prepare(
+			"INSERT INTO reponse_prog ( question_uri, username, lang, code, date_soumission, reussi ) VALUES ( ?, ?, ?, ?, ?, ?  )",
+		);
+		$query->bind_param(
+			"ssssii",
+			$objet->question_uri,
+			$objet->username,
+			$objet->lang,
+			$objet->code,
+			$objet->date_soumission,
+			$objet->réussi,
+		);
+		$query->execute();
+
+		$query->close();
 	}
 }

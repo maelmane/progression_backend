@@ -37,7 +37,7 @@ final class TentativeDAOTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_existante_lorsquon_récupère_la_tentative_on_obtient_une_tentative_de_type_prog()
 	{
-		$tentativeProg = (new TentativeDAO())->get_tentative(
+		$tentativeProg = (new TentativeDAO(new DAOFactory()))->get_tentative(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 			1615696276
@@ -55,7 +55,7 @@ final class TentativeDAOTests extends TestCase
 	{
 		$réponse_attendue = null;
 
-		$résponse_observée = (new TentativeDAO())->get_tentative("exemple", "exemple", 0);
+		$résponse_observée = (new TentativeDAO(new DAOFactory()))->get_tentative("exemple", "exemple", 0);
 
 		$this->assertEquals($réponse_attendue, $résponse_observée);
 	}

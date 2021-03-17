@@ -27,47 +27,56 @@ final class QuestionCtlTests extends \TestCase
 {
 	public function test_get_question()
 	{
-        $question = new QuestionProg();
-        $question->type = Question::TYPE_PROG;
-        $question->uri = "file://". __DIR__ ."/démo/boucles/boucle_énumérée";
-        $question->titre = "Affichage répété";
-        $question->description = "Exercice simple sur les itérations à nombre d'itérations fixe";
-        $question->enonce = "Saisissez un nombre sur l'entrée standard puis faites afficher la phrase «Bonjour le monde!» autant de fois.";
-        $question->feedback_neg = "Pour tout savoir sur les itérations énumérées : [clique ici](http://unlien.com)";
-        $question->feedback_pos = "Bravo! tu es prêt à passer à un type de boucles plus complexe";
-        
-        // Ébauches
-        $question->exécutables = [];
-        $question->exécutables["python"] = new Exécutable("#+VISIBLE\nnb_répétitions = int( input() )\n\n#+TODO\n\nprint( \"Bonjour le monde\" )\n\n#-TODO\n\n#-VISIBLE\n", "python");
-        $question->exécutables["java"] = new Exécutable("import java.util.Scanner;\n\npublic class exec {\n\n//+VISIBLE\n\npublic static void main(String[] args) {\n\n	Scanner input = new Scanner( System.in );\n		\n	nb_répétitions = input.nextInt();\n\n//+TODO\n\n	System.out.println( \"Bonjour le monde\" );\n\n//-TODO\n\n	}\n	\n//-VISIBLE\n\n}\n", "java");
+		$question = new QuestionProg();
+		$question->type = Question::TYPE_PROG;
+		$question->uri = "file://" . __DIR__ . "/démo/boucles/boucle_énumérée";
+		$question->titre = "Affichage répété";
+		$question->description = "Exercice simple sur les itérations à nombre d'itérations fixe";
+		$question->enonce =
+			"Saisissez un nombre sur l'entrée standard puis faites afficher la phrase «Bonjour le monde!» autant de fois.";
+		$question->feedback_neg = "Pour tout savoir sur les itérations énumérées : [clique ici](http://unlien.com)";
+		$question->feedback_pos = "Bravo! tu es prêt à passer à un type de boucles plus complexe";
 
-        // Tests
-        $question->tests = [
-            new Test("10 fois",
-                     "10",
-                     "Bonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\n"),
-            new Test("1 fois",
-                     "1",
-                     "Bonjour le monde"),
-            new Test("0 fois",
-                     "0",
-                     "",
-                     "",
-                     "Bien joué! 0 est aussi une entrée valable.",
-                     "N'oublie pas les cas limites, 0 est aussi une entrée valable!"),
-            new Test("2 fois",
-                     "2",
-                     "Bonjour\nBonjour\n",
-                     "",
-                     "Bien joué!",
-                     "Rien à dire"),
-        ];
-
-		$résultat_obtenu = (new QuestionDAO())->get_question(
-			"file://". __DIR__ ."/démo/boucles/boucle_énumérée"
+		// Ébauches
+		$question->exécutables = [];
+		$question->exécutables["python"] = new Exécutable(
+			"#+VISIBLE\nnb_répétitions = int( input() )\n\n#+TODO\n\nprint( \"Bonjour le monde\" )\n\n#-TODO\n\n#-VISIBLE\n",
+			"python",
+		);
+		$question->exécutables["java"] = new Exécutable(
+			"import java.util.Scanner;\n\npublic class exec {\n\n//+VISIBLE\n\npublic static void main(String[] args) {\n\n	Scanner input = new Scanner( System.in );\n		\n	nb_répétitions = input.nextInt();\n\n//+TODO\n\n	System.out.println( \"Bonjour le monde\" );\n\n//-TODO\n\n	}\n	\n//-VISIBLE\n\n}\n",
+			"java",
 		);
 
-        $this->assertEquals($question, $résultat_obtenu);
+		// Tests
+		$question->tests = [
+			new Test(
+				"10 fois",
+				"10",
+				"Bonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\n",
+			),
+			new Test("1 fois", "1", "Bonjour le monde"),
+			new Test(
+				"0 fois",
+				"0",
+				"",
+				"",
+				"Bien joué! 0 est aussi une entrée valable.",
+				"N'oublie pas les cas limites, 0 est aussi une entrée valable!",
+			),
+			new Test("2 fois", "2", "Bonjour\nBonjour\n", "", "Bien joué!", "Rien à dire"),
+		];
 
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory
+			->allows()
+			->get_question_prog_dao()
+			->andReturn(new QuestionProgDAO());
+
+		$résultat_obtenu = (new QuestionDAO($mockDAOFactory))->get_question(
+			"file://" . __DIR__ . "/démo/boucles/boucle_énumérée",
+		);
+
+		$this->assertEquals($question, $résultat_obtenu);
 	}
 }

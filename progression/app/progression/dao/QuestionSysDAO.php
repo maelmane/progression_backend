@@ -19,6 +19,6 @@ namespace progression\dao;
 
 use progression\domaine\entité\QuestionSys;
 
-class QuestionSysDAO extends QuestionDAO
+class QuestionSysDAO extends EntitéDAO
 {
 }

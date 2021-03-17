@@ -27,11 +27,20 @@ final class AvancementTests extends TestCase
 		$question_uri_attendu = "http://exemple.com/maquestion";
 		$username_attendu = "jdoe";
 		$etat_attendu = 0;
+		$tentatives_attendu = ["exemple_tentative"];
 
-		$résultat_obtenu = new Avancement("http://exemple.com/maquestion", "jdoe");
+		$résultat_obtenu = new Avancement("http://exemple.com/maquestion", "jdoe", ["exemple_tentative"]);
 
 		$this->assertEquals($question_uri_attendu, $résultat_obtenu->question_uri);
 		$this->assertEquals($username_attendu, $résultat_obtenu->username);
 		$this->assertEquals($etat_attendu, $résultat_obtenu->etat);
+	}
+
+	public function test_étant_donné_un_AvancementProg_instancié_sans_tentatives_lorsquon_récupère_ses_tentatives_on_obtient_un_tableau_vide()
+	{
+		$résultat_attendu = [];
+		$résultat_obtenu = (new Avancement("http://exemple.com/maquestion", "jdoe"))->tentatives;
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 }
