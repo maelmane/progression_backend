@@ -20,7 +20,7 @@ namespace progression\dao;
 
 use progression\domaine\entité\TentativeProg;
 
-class TentativeProgDAO
+class TentativeProgDAO extends TentativeDAO
 {
 	public function get_toutes($username, $question_uri)
 	{
