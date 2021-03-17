@@ -60,4 +60,35 @@ final class TentativeProgDAOTests extends TestCase
 
 		$this->assertEquals($réponse_attendue, $résponse_observée);
 	}
+
+	public function test_étant_donné_une_TentativeProg_lorsquon_récupère_toutes_les_tentatives_on_obtient_un_tableau_de_tentatives()
+	{
+
+		$réponse_attendue = [
+			new TentativeProg("python", "print(\"Allo le monde!\")", 1615696286, 0),
+			new TentativeProg("python", "print(\"Allo tout le monde!\")", 1615696296, 1)
+		];
+
+		$résponse_observée = (new TentativeProgDAO())->get_toutes(
+			"bob",
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction"
+		);
+
+		$this->assertEquals($réponse_attendue, $résponse_observée);
+	}
+
+	public function test_étant_donné_une_TentativeProg_lorsquon_sauvegarde_la_tentative_on_obtient_une_nouvelle_insertion_dans_la_table_reponse_prog()
+	{
+		$réponse_attendue = new TentativeProg("python", "testCode", 123456789);
+
+		$tentative_test = new TentativeProg("python", "testCode", 123456789);
+		$tentative_test->question_uri = "https://exemple.com";
+		$tentative_test->username = "Stefany";
+
+		$résponse_observée = (new TentativeProgDAO())->save($tentative_test);
+		$this->assertEquals($réponse_attendue, $résponse_observée);
+
+		$résponse_observée = (new TentativeProgDAO())->get_tentative("Stefany", "https://exemple.com", 123456789);
+		$this->assertEquals($réponse_attendue, $résponse_observée);
+	}
 }

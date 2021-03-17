@@ -14,6 +14,12 @@ INSERT INTO user VALUES (
   1
 );
 
+INSERT INTO user VALUES (
+  "Stefany",
+  1,
+  0
+);
+
 INSERT INTO avancement VALUES (
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
@@ -24,6 +30,13 @@ INSERT INTO avancement VALUES (
 INSERT INTO avancement VALUES (
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction",
+  1,
+  3
+);
+
+INSERT INTO avancement VALUES (
+  "Stefany",
+  "https://exemple.com",
   1,
   3
 );
