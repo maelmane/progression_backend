@@ -37,30 +37,49 @@ Les ressources échangées sont représentée en format [[https://jsonapi.org][J
 
 Un utilisateur du système.
 
-| Identifiant | Propriétés | Type | Valeurs          |
-|-------------+------------+------+------------------|
-| username    | username   | str  |                  |
-|             | rôle       | int  | 0=normal,1=admin |
-|-------------+------------+------+------------------|
+*** Identifiant :
+username
+
+*** Propriétés:
+
+| Nom      | Type | Valeurs          |
+|----------+------+------------------|
+| username | str  |                  |
+| rôle     | int  | 0=normal,1=admin |
+|----------+------+------------------|
 
 ** Question
 
 Une question générique
 
+*** Identifiant :
+URI
 
-| Hiérarchie         | Identifiant | Propriétés  | Type | Valeurs      |
-|--------------------+-------------+-------------+------+--------------|
-| Question           | uri         | uri         | str  |              |
-| ▲                  |             | titre       | str  |              |
-| │                  |             | description | str  |              |
-| │                  |             | énoncé      | str  |              |
-| ├ QuestionProg     |             | sous-type   | str  | questionProg |
-| ├ QuestionProgEval |             |             |      | (obsolète)   |
-| ├ QuestionSys      |             |             |      | questionSys  |
-| └ QuestionBD       |             |             |      | questionBD   |
+| Hiérarchie         |
+|--------------------+
+| Question           |
+| ▲                  |
+| │                  |
+| │                  |
+| ├ QuestionProg     |
+| ├ QuestionProgEval |
+| ├ QuestionSys      |
+| └ QuestionBD       |
 
+*** Propriétés :
 
-Liens :
+| Nom         | Type | Valeurs      |
+|-------------+------+--------------|
+| uri         | str  |              |
+| titre       | str  |              |
+| description | str  |              |
+| énoncé      | str  |              |
+| sous-type   | str  | questionProg |
+|             |      | (obsolète)   |
+|             |      | questionSys  |
+|             |      | questionBD   |
+
+*** Liens :
 | Nom                                   | Description                                                   |
 |---------------------------------------+---------------------------------------------------------------|
 | avancement                            | avancement pour cette question pour l'utilisateur courant     |
@@ -71,7 +90,7 @@ Liens :
 
 Une question spécifiquement de programmation
 
-Relations :
+*** Relations :
 | Nom      | Cardinalité | Type    | description                  |
 |----------+-------------+---------+------------------------------|
 | ebauches | 1-n         | Ébauche | liste d'ébauches de Solution |
@@ -81,16 +100,23 @@ Relations :
 
 L'avancement d'un utilisateur pour une question
 
-| Identifiant           | Propriétés | Type | Valeurs                          |
-|-----------------------+------------+------+----------------------------------|
-| username/question_uri | état       | int  | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) |
+*** Identifiant :
+username/question_uri
 
-Relations :
+*** Propriétés:
+
+| Nom  | Type | Valeurs                          |
+|------+------+----------------------------------|
+| état | int  | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) |
+
+*** Relations :
+
 | Nom        | Cardinalité | Type       | Description                    |
 |------------+-------------+------------+--------------------------------|
 | tentatives | 1-n         | Tentatives | liste de Tentatives effectuées |
 
-Liens :
+*** Liens :
+
 | Nom       | Description                      |
 |-----------+----------------------------------|
 | tentative | Soumettre une nouvelle tentative |
@@ -99,12 +125,17 @@ Liens :
 
 Une ébauche de solution fournie comme point de départ à la résolution de l'exercice
 
-| Identifiant          | Propriétés | Type | Valeurs |
-|----------------------+------------+------+---------|
-| question_uri/langage | langage    | str  |         |
-|                      | code       | str  |         |
+*** Identifiant :
+question_uri/langage
 
-Liens :
+*** Propriétés:
+
+| Nom     | Type | Valeurs |
+|---------+------+---------|
+| langage | str  |         |
+| code    | str  |         |
+
+*** Liens :
 
 | Nom      | Description                                                   |
 |----------+---------------------------------------------------------------|
@@ -114,17 +145,31 @@ Liens :
 
 Une tentative de réponse à une question.
 
-| Hiérarchie      | Identifiant                           | Propriétés      | Type | Valeurs                                                    |
-|-----------------+---------------------------------------+-----------------+------+------------------------------------------------------------|
-| Tentative       | username/question_uri/date_soumission | date_soumission | int  | timestamp                                                  |
-| ▲               |                                       | feedback        | str  |                                                            |
-| ├ TentativeProg |                                       | sous-type       | str  | tentativeProg                                              |
-| ├ TentativeSys  |                                       |                 |      | tentativeSys                                               |
-| ├ TentativeBD   |                                       |                 |      | tentativeBD                                                |
-|                 |                                       | réussi          | bool | vrai ssi la tentative a correctement répondu à la question |
+*** Identifiant :
+username/question_uri/date_soumission
+
+
+| Hiérarchie      |
+|-----------------|
+| Tentative       |
+| ▲               |
+| ├ TentativeProg |
+| ├ TentativeSys  |
+| ├ TentativeBD   |
+
+*** Propriétés :
+
+| Nom             | Type | Valeurs                                                    |
+|-----------------+------+------------------------------------------------------------|
+| date_soumission | int  | timestamp                                                  |
+| feedback        | str  |                                                            |
+| sous-type       | str  | tentativeProg                                              |
+|                 |      | tentativeSys                                               |
+|                 |      | tentativeBD                                                |
+| réussi          | bool | vrai ssi la tentative a correctement répondu à la question |
   
 
-Liens :
+*** Liens :
 
 | Nom      | Description                                                     |
 |----------+-----------------------------------------------------------------|
@@ -134,18 +179,21 @@ Liens :
 
 Une tentative de réponse à une question.
 
-| Identifiant | Propriétés    | Type | Valeurs             |
-|-------------+---------------+------+---------------------|
-|             | langage       | str  |                     |
-|             | code          | str  |                     |
-|             | tests_réussis | int  | nb de tests réussis |
+*** Propriétés:
 
-Relations :
+| Nom           | Type | Valeurs             |
+|---------------+------+---------------------|
+| langage       | str  |                     |
+| code          | str  |                     |
+| tests_réussis | int  | nb de tests réussis |
+
+*** Relations :
+.
 | Nom       | Cardinalité | Type     | Description           |
 |-----------+-------------+----------+-----------------------|
 | résultats | 1-n         | Résultat | les résultats de test |
 
-Liens :
+*** Liens :
 
 | Nom      | Description                                                     |
 |----------+-----------------------------------------------------------------|
@@ -155,24 +203,34 @@ Liens :
 
 Un test de validation d'une question auquel sont soumises les solutions proposées.
 
-| Identifiant         | Propriétés      | Type | Valeurs |
-|---------------------+-----------------+------+---------|
-| question_uri/numéro | numéro          | int  |         |
-|                     | nom             | str  |         |
-|                     | entrée          | str  |         |
-|                     | sortie_attendue | str  |         |
+*** Identifiant :
+question_uri/numéro
+
+*** Propriétés :
+
+| Nom             | Type | Valeurs |
+|-----------------+------+---------|
+| numéro          | int  |         |
+| nom             | str  |         |
+| entrée          | str  |         |
+| sortie_attendue | str  |         |
 
 ** Résultat
 
 Le résultat d'un test pour une solution proposée.
 
-| Identifiant         | Propriétés      | Type | Valeurs   |
-|---------------------+-----------------+------+-----------|
-| question_uri/numéro | numéro          | int  | # du test |
-|                     | sortie_observée | str  |           |
-|                     | sortie_erreur   | str  |           |
-|                     | résultat        | bool |           |
-|                     | feedback        | str  |           |
+*** Identifiant :
+question_uri/numéro
+
+*** Propriétés:
+
+| Nom             | Type | Valeurs   |
+|-----------------+------+-----------|
+| numéro          | int  | # du test |
+| sortie_observée | str  |           |
+| sortie_erreur   | str  |           |
+| résultat        | bool |           |
+| feedback        | str  |           |
 
 * Exemples
 
