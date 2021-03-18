@@ -46,4 +46,16 @@ class InteracteurFactory
 	{
 		return new SoumettreTentativeInt(new DAOFactory());
 	}
+	public function getPréparerProgInt()
+	{
+		return new PréparerProgInt(new DAOFactory());
+	}
+	public function getExécuterProgInt()
+	{
+		return new ExécuterProgInt(new DAOFactory());
+	}
+	public function getTraiterTentativeProgInt()
+	{
+		return new TraiterTentativeProgInt(new DAOFactory());
+	}
 }
