@@ -38,7 +38,7 @@ class AvancementDAO extends EntitéDAO
 		$avancement = new Avancement();
 
 		$query = EntitéDAO::get_connexion()->prepare(
-			"SELECT username, question_uri, etat, type FROM avancement WHERE question_uri = ? AND username = ?",
+			"SELECT etat, type FROM avancement WHERE question_uri = ? AND username = ?",
 		);
 		$query->bind_param("ss", $question_uri, $username);
 		$query->execute();
