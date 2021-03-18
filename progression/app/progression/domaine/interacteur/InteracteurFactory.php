@@ -43,4 +43,8 @@ class InteracteurFactory
 	{
 		return new ObtenirTentativeInt(new DAOFactory());
 	}
+	public function getSoumettreTentativeInt()
+	{
+		return new SoumettreTentativeInt(new DAOFactory());
+	}
 }

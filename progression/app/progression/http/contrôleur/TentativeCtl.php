@@ -27,8 +27,9 @@ class TentativeCtl extends Contrôleur
 {
 	public function get(Request $request, $username, $question_uri, $timestamp)
 	{
-		$chemin = Encodage::base64_decode_url($question_uri);
 		$tentative = null;
+
+		$chemin = Encodage::base64_decode_url($question_uri);
 
 		$tentativeInt = $this->intFactory->getObtenirTentativeInt();
 
@@ -36,6 +37,34 @@ class TentativeCtl extends Contrôleur
 
 		if ($tentative != null) {
 			$tentative->id = "{$username}/{$question_uri}/{$timestamp}";
+		}
+
+		$réponse = null;
+
+		if ($tentative instanceof TentativeProg) {
+			$réponse = $this->item($tentative, new TentativeProgTransformer());
+		} elseif ($tentative instanceof TentativeSys) {
+			$réponse = $this->item($tentative, new TentativeSysTransformer());
+		} elseif ($tentative instanceof TentativeBD) {
+			$réponse = $this->item($tentative, new TentativeBDTransformer());
+		}
+
+		return $this->préparer_réponse($réponse);
+	}
+
+	public function post(Request $request, $username, $question_uri)
+	{
+		$langage = $request->langage;
+		$code = $request->code;
+		$tentative = null;
+
+		$chemin = Encodage::base64_decode_url($question_uri);
+
+		$tentativeInt = $this->intFactory->getSoumettreTentativeInt();
+		$tentative = $tentativeInt->soumettre_tentative();
+
+		if ($tentative != null) {
+			$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
 		}
 
 		$réponse = null;
