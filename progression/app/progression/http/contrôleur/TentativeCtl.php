@@ -54,14 +54,14 @@ class TentativeCtl extends Contrôleur
 
 	public function post(Request $request, $username, $question_uri)
 	{
-		$langage = $request->langage;
-		$code = $request->code;
+		$langage = $request->input("langage");
+		$code = $request->input("code");
 		$tentative = null;
 
 		$chemin = Encodage::base64_decode_url($question_uri);
 
 		$tentativeInt = $this->intFactory->getSoumettreTentativeInt();
-		$tentative = $tentativeInt->soumettre_tentative();
+		$tentative = $tentativeInt->soumettre_tentative($username, $chemin, $langage, $code);
 
 		if ($tentative != null) {
 			$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
