@@ -20,11 +20,9 @@ $router->get("/", function () use ($router) {
 $router->post("/auth/", "LoginCtl@login");
 
 $router->group(["middleware" => "auth"], function () use ($router) {
+    // User
 	$router->get("/user[/{username}]", "UserCtl@get");
 	$router->get("/user/{username}/relationships/{relation}", "NotImplementedCtl@get");
-
-	// catégories
-	$router->get("/catégorie/{chemin}", "NotImplementedCtl@get");
 	// Question
 	$router->get("/question/{uri}", "QuestionCtl@get");
 	$router->get("/question/{chemin}/relationships/{relation}", "NotImplementedCtl@get");
