@@ -191,7 +191,7 @@ Une tentative de réponse à une question.
 | tests_réussis | int  | nb de tests réussis |
 
 *** Relations :
-.
+
 | Nom       | Cardinalité | Type     | Description           |
 |-----------+-------------+----------+-----------------------|
 | résultats | 1-n         | Résultat | les résultats de test |
