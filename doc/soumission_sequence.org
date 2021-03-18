@@ -6,25 +6,28 @@
 
 participant tentativectl as "TentativeCtl"
 participant soumissionInt as "SoumettreTentativeInt"
+participant obtenirQuestionInt as "ObtenirQuestionInt"
 participant preparerExecInt as "PréparerProgInt"
 participant exécuterInt as "ExécuterProgInt"
 participant traiterInt as "TraiterTentativeProgInt"
 participant sauveragarderInt as "SauvegarderAvancementProgInt"
 
-tentativectl -> soumissionInt : question_uri, username, tentative
-soumissionInt -> preparerExecInt : question, tentative
-preparerExecInt -> soumissionInt : exécutable
+tentativectl -> soumissionInt : question_uri, username, Tentative
+soumissionInt -> obtenirQuestionInt : question_uri
+obtenirQuestionInt -> soumissionInt : Question
+soumissionInt -> preparerExecInt : Question, Tentative
+preparerExecInt -> soumissionInt : Exécutable
 
-group itération [ pour chaque test de question.test ]
-  soumissionInt -> exécuterInt : exécutable, test
-  exécuterInt -> soumissionInt : résultat
+group itération [ pour chaque Test de Question.tests ]
+  soumissionInt -> exécuterInt : Exécutable, Test
+  exécuterInt -> soumissionInt : Résultat
 end
   
 soumissionInt -> traiterInt : tests, résultats
 traiterInt -> soumissionInt : résultats
 
 traiterInt -> sauveragarderInt
-soumissionInt -> tentativectl : tentative
+soumissionInt -> tentativectl : Tentative
 
 @enduml
 #+end_src
