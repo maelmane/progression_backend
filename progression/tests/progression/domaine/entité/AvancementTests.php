@@ -24,22 +24,23 @@ final class AvancementTests extends TestCase
 {
 	public function test_étant_donné_un_Avancement_instancié_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
 	{
-		$question_uri_attendu = "http://exemple.com/maquestion";
-		$username_attendu = "jdoe";
-		$etat_attendu = 0;
+		$etat_attendu = Question::ETAT_REUSSI;
+		$type_attendu = Question::TYPE_PROG;
 		$tentatives_attendu = ["exemple_tentative"];
 
-		$résultat_obtenu = new Avancement("http://exemple.com/maquestion", "jdoe", ["exemple_tentative"]);
+		$résultat_obtenu = new Avancement(["exemple_tentative"], $etat_attendu, $type_attendu);
 
-		$this->assertEquals($question_uri_attendu, $résultat_obtenu->question_uri);
-		$this->assertEquals($username_attendu, $résultat_obtenu->username);
+		$this->assertEquals($type_attendu, $résultat_obtenu->type);
+		$this->assertEquals($tentatives_attendu, $résultat_obtenu->tentatives);
 		$this->assertEquals($etat_attendu, $résultat_obtenu->etat);
 	}
 
 	public function test_étant_donné_un_AvancementProg_instancié_sans_tentatives_lorsquon_récupère_ses_tentatives_on_obtient_un_tableau_vide()
 	{
+		$etat_attendu = Question::ETAT_DEBUT;
+		$type_attendu = Question::TYPE_INCONNU;
 		$résultat_attendu = [];
-		$résultat_obtenu = (new Avancement("http://exemple.com/maquestion", "jdoe"))->tentatives;
+		$résultat_obtenu = (new Avancement())->tentatives;
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}

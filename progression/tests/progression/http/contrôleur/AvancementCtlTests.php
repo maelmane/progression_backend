@@ -28,13 +28,7 @@ final class AvancementCtlTests extends TestCase
 		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		// Avancement
-		$avancement = new Avancement(
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			"jdoe",
-			[new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest")],
-		);
-		$avancement->id =
-			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$avancement = new Avancement([new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest")]);
 		$avancement->etat = 1;
 		$avancement->type = Question::TYPE_PROG;
 
@@ -44,7 +38,6 @@ final class AvancementCtlTests extends TestCase
 				"id" =>
 					"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				"attributes" => [
-					"username" => "jdoe",
 					"état" => 1,
 				],
 				"links" => [

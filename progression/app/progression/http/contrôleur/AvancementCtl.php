@@ -19,8 +19,8 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use progression\http\transformer\AvancementProgTransformer;
-use progression\domaine\entité\{AvancementProg, AvancementSys, AvancementBD, Question};
+use progression\http\transformer\AvancementTransformer;
+use progression\domaine\entité\{Avancement, Question};
 use Illuminate\Support\Facades\Log;
 use progression\util\Encodage;
 
@@ -35,13 +35,13 @@ class AvancementCtl extends Contrôleur
 		$avancement = $avancementInt->get_avancement($username, $chemin);
 
 		if ($avancement != null) {
-			$avancement->id = "{$username}/{$question_uri}";
+			$avancement->id = "{$username}/$question_uri";
 		}
 
 		$réponse = null;
 
 		if ($avancement->type == Question::TYPE_PROG) {
-			$réponse = $this->item($avancement, new AvancementProgTransformer());
+			$réponse = $this->item($avancement, new AvancementTransformer());
 		} elseif ($avancement->type == Question::TYPE_SYS) {
 			Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["message" => "Question système non implémentée."], 501);

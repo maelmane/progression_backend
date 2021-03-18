@@ -19,7 +19,7 @@
 namespace progression\http\transformer;
 
 use League\Fractal;
-use progression\domaine\entité\Avancement;
+use progression\domaine\entité\{Avancement, Question};
 use progression\util\Encodage;
 
 class AvancementTransformer extends Fractal\TransformerAbstract
@@ -31,21 +31,32 @@ class AvancementTransformer extends Fractal\TransformerAbstract
 	public function transform(Avancement $avancement)
 	{
 		$data_out = [
-			"id" =>
-			"{$avancement->username}/" .
-				Encodage::base64_encode_url($avancement->question_uri),
-			"username" => $avancement->username,
+			"id" => $avancement->id,
 			"état" => $avancement->etat,
 			"links" => [
-				"self" =>
-				"{$_ENV["APP_URL"]}avancement/{$avancement->username}/" .
-					Encodage::base64_encode_url($avancement->question_uri)
+				"self" => "{$_ENV["APP_URL"]}avancement/{$avancement->id}",
 			],
 		];
 
 		return $data_out;
+	}
 
-             }
+	public function includeTentatives($avancement)
+	{
+		$tentatives = $avancement->tentatives;
+		foreach ($tentatives as $tentative) {
+			$tentative->id = "{$avancement->id}/{$tentative->date_soumission}";
+			$tentative->links = [
+				"related" => "{$_ENV["APP_URL"]}avancement/{$avancement->id}",
+			];
+		}
 
-
+		if ($avancement->type == Question::TYPE_PROG) {
+			return $this->collection($tentatives, new TentativeProgTransformer(), "tentative");
+		} elseif ($avancement->type == Question::TYPE_SYS) {
+			return $this->collection($tentatives, new TentativeSysTransformer(), "tentative");
+		} elseif ($avancement->type == Question::TYPE_BD) {
+			return $this->collection($tentatives, new TentativeBDTransformer(), "tentative");
+		}
+	}
 }

@@ -24,34 +24,35 @@ class AvancementDAO extends EntitéDAO
 {
 	public function get_avancement($username, $question_uri)
 	{
-		$avancement = new Avancement($question_uri, $username);
-		$this->load($avancement);
+		$avancement = $this->load($question_uri, $username);
 		if ($avancement->type == Question::TYPE_PROG) {
 			$avancement->tentatives = $this->_source->get_tentative_prog_dao()->get_toutes($username, $question_uri);
 		}
 		return $avancement;
 	}
 
-	protected function load($objet)
+	protected function load($question_uri, $username)
 	{
+		$avancement = new Avancement();
+
 		$query = EntitéDAO::get_connexion()->prepare(
 			"SELECT username, question_uri, etat, type FROM avancement WHERE question_uri = ? AND username = ?",
 		);
-		$query->bind_param("ss", $objet->question_uri, $objet->username);
+		$query->bind_param("ss", $question_uri, $username);
 		$query->execute();
-		$query->bind_result($objet->username, $objet->question_uri, $objet->etat, $objet->type);
+		$query->bind_result($avancement->etat, $avancement->type);
 		$query->fetch();
 
 		$query->close();
 	}
 
-	public function save($objet)
+	public function save($question_uri, $username, $objet)
 	{
 		$query = EntitéDAO::get_connexion()
 			->prepare('INSERT INTO avancement ( etat, question_uri, username, type ) VALUES ( ?, ?, ? )
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 
-		$query->bind_param("iss", $objet->etat, $objet->question_uri, $objet->username, Question::TYPE_PROG);
+		$query->bind_param("iss", $objet->etat, $question_uri, $username, Question::TYPE_PROG);
 		$query->execute();
 		$query->close();
 
