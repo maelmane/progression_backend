@@ -18,6 +18,7 @@
 
 namespace progression\dao;
 
+use progression\domaine\entité\TentativeBD;
 use progression\domaine\entité\TentativeProg;
 
 class TentativeProgDAO extends TentativeDAO
@@ -85,22 +86,23 @@ class TentativeProgDAO extends TentativeDAO
 		return $tentative;
 	}
 
-	public function save($objet, $question_uri, $username)
+	public function save($objet, $username, $question_uri)
 	{
 		$query = EntitéDAO::get_connexion()->prepare(
-			"INSERT INTO reponse_prog ( question_uri, username, lang, code, date_soumission, reussi ) VALUES ( ?, ?, ?, ?, ?, ?  )",
+			"INSERT INTO reponse_prog ( question_uri, username, langage, code, date_soumission, reussi ) VALUES ( ?, ?, ?, ?, ?, ?  )",
 		);
 		$query->bind_param(
 			"ssssii",
 			$question_uri,
 			$username,
-			$objet->lang,
+			$objet->langage,
 			$objet->code,
 			$objet->date_soumission,
 			$objet->réussi,
 		);
 		$query->execute();
-
 		$query->close();
+
+		return $this->get_tentative($username, $question_uri, $objet->date_soumission);
 	}
 }

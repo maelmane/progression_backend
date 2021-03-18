@@ -5,16 +5,16 @@
 @startuml
 
 participant tentativectl as "TentativeCtl"
-participant soumissionInt as "SoumettreTentativeInt"
+participant soumissionInt as "SoumettreTentativeProgInt"
 participant obtenirQuestionInt as "ObtenirQuestionInt"
 participant preparerExecInt as "PréparerProgInt"
 participant exécuterInt as "ExécuterProgInt"
 participant traiterInt as "TraiterTentativeProgInt"
 participant sauveragarderInt as "SauvegarderAvancementProgInt"
 
-tentativectl -> soumissionInt : question_uri, username, Tentative
-soumissionInt -> obtenirQuestionInt : question_uri
-obtenirQuestionInt -> soumissionInt : Question
+tentativectl -> obtenirQuestionInt : question_uri
+obtenirQuestionInt -> tentativectl : Question
+tentativectl -> soumissionInt : username, Question, Tentative
 soumissionInt -> preparerExecInt : Question, Tentative
 preparerExecInt -> soumissionInt : Exécutable
 
@@ -23,10 +23,9 @@ group itération [ pour chaque Test de Question.tests ]
   exécuterInt -> soumissionInt : Résultat
 end
   
-soumissionInt -> traiterInt : tests, résultats
-traiterInt -> soumissionInt : résultats
-
+soumissionInt -> traiterInt : tests, résultats, username
 traiterInt -> sauveragarderInt
+traiterInt -> soumissionInt : résultats
 soumissionInt -> tentativectl : Tentative
 
 @enduml
