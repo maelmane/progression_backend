@@ -22,24 +22,26 @@ use progression\domaine\entité\{QuestionBD, QuestionProg, QuestionSys, Résulta
 
 class SoumettreTentativeInt extends Interacteur
 {
+
 	public function soumettre_tentative($username, $question_uri, $langage, $code)
 	{
-		$questionInt = $this->intFactory->getObtenirQuestionInt();
+		$intFactory = new InteracteurFactory();
+		$questionInt = $intFactory->getObtenirQuestionInt();
 		$question = $questionInt->get_question($question_uri);
 		$exécutable = null;
 
 		if ($question instanceof QuestionProg) {
 			$tentative = new TentativeProg($langage, $code);
-			$préparerProgInt = $this->intFactory->getPréparerProgInt();
+			$préparerProgInt = $intFactory->getPréparerProgInt();
 			$exécutable = $préparerProgInt->préparer_exécutable($question, $tentative);
 
 			if ($exécutable) {
 				foreach ($question->tests as $i => $test) {
-					$exécuterProgInt = $this->intFactory->getExécuterProgInt();
+					$exécuterProgInt = $intFactory->getExécuterProgInt();
 					$sorties = $exécuterProgInt->exécuter($exécutable, $test);
 					$tentative->résultats[$i] = new RésultatProg(true, null, $sorties["stdout"], $sorties["stderr"]);
 				}
-				$traiterTentativeProgInt = $this->intFactory->getTraiterTentativeProgInt();
+				$traiterTentativeProgInt = $intFactory->getTraiterTentativeProgInt();
 				$traiterTentativeProgInt->traiter_résultats($exécutable, $question->tests, $question_uri, $username);
 			}
 		} elseif ($question instanceof QuestionSys) {
