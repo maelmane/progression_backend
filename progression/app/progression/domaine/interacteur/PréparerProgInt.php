@@ -20,12 +20,12 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Exécutable;
 
-class PréparerProgInt
+class PréparerProgInt extends Interacteur
 {
 	public function préparer_exécutable($question, $tentative)
 	{
 		if (array_key_exists($tentative->langage, $question->exécutables)) {
-			$code = PréparerProgInt::composer_code_à_exécuter(
+			$code = $this->composer_code_à_exécuter(
 				$question->exécutables[$tentative->langage]->code,
 				$tentative->code,
 			);
