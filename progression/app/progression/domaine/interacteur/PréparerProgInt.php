@@ -24,12 +24,17 @@ class PréparerProgInt
 {
 	public function préparer_exécutable($question, $tentative)
 	{
-		$code = PréparerProgInt::composer_code_à_exécuter(
-			$tentative->code,
-			$question->exécutables[$tentative->langage],
-		);
+        if (array_key_exists($tentative->langage, $question->exécutables)){
+            $code = PréparerProgInt::composer_code_à_exécuter(
+                $question->exécutables[$tentative->langage]->code,
+                $tentative->code,
+            );
+            return new Exécutable($code, $tentative->langage);
+        }
+        else{
+            return null;
+        }
 
-		return new Exécutable($code, $tentative->langage);
 	}
 
 	private function composer_code_à_exécuter($code_utilisateur, $code)
@@ -38,9 +43,8 @@ class PréparerProgInt
 		$orig = explode("\n", $code_utilisateur);
 		$code = $code;
 
-		error_log($code);
 		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code, $todos);
-		error_log($todos[1][0]);
+
 		$n = 0;
 		$res = [];
 		$todo = false;
