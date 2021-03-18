@@ -28,14 +28,13 @@ class RésultatProgTransformer extends Fractal\TransformerAbstract
     public function transform(RésultatProg $réponse)
     {
         $data = [
-            "id" => $réponse->numéro,
-            "numéro" => $réponse->numéro,
+            "id" => $réponse->id,
             "sortie_observée" => $réponse->sortie_observée,
             "sortie_erreur" => $réponse->sortie_erreur,
             "résultat" => $réponse->résultat,
             "feedback" => $réponse->feedback,
             "links" => [
-                "self" => "{$_ENV["APP_URL"]}resultat/{$réponse->numéro}",
+                "self" => "{$_ENV["APP_URL"]}resultat/{$réponse->id}",
             ],
         ];
 

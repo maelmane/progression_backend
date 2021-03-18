@@ -137,8 +137,10 @@ final class TentativeCtlTests extends TestCase
 		$tentative = new TentativeProg("python", "codeTest", 1614374490);
 		$tentative->feedback = "feedbackTest";
 		$tentative->tests_réussis = 1;
+		$résultat = new RésultatProg(true, "Bon travail!", "itération 0\n", "");
+		$résultat->id = 0;
 		$tentative->résultats = [
-			new RésultatProg(0, true, "Bon travail!", "itération 0\n")
+			$résultat,
 		];
 
 		$résultat_attendu = [
@@ -185,7 +187,6 @@ final class TentativeCtlTests extends TestCase
 						"sortie_erreur" => "",
 						"sortie_observée" => "itération 0\n",
 						"feedback" => "Bon travail!",
-						"numéro" => 0,
 					],
 					"links" => [
 						'self' => 'https://example.com/resultat/0',

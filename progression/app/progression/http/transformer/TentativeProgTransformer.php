@@ -42,7 +42,7 @@ class TentativeProgTransformer extends TentativeTransformer
 	{
 		foreach ($tentative->résultats as $résultat) {
 			$résultat->links = [
-				"related" => $_ENV["APP_URL"] . "tentative/{$résultat->numéro}",
+				"related" => $_ENV["APP_URL"] . "tentative/{$résultat->id}",
 			];
 		}
 		return $this->collection($tentative->résultats, new RésultatProgTransformer(), "resultat");

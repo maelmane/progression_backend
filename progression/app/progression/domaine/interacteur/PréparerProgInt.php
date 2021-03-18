@@ -20,7 +20,7 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Exécutable;
 
-class PréparerProgInt extends Interacteur
+class PréparerProgInt
 {
 	public function préparer_exécutable($question, $tentative)
 	{
