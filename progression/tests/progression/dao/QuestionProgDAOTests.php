@@ -42,12 +42,6 @@ final class QuestionProgDAOTests extends \TestCase
 	{
 		$résultat_attendu = new QuestionProg();
 		$résultat_attendu->type = Question::TYPE_PROG;
-		$résultat_attendu->uri = "file://" . __DIR__ . "/démo/boucles/boucle_énumérée";
-		$résultat_attendu->titre = "Affichage répété";
-		$résultat_attendu->description = "Exercice simple sur les itérations à nombre d'itérations fixe";
-		$résultat_attendu->enonce = "Saisissez un nombre sur l'entrée standard puis faites afficher la phrase «Bonjour le monde!» autant de fois.";
-		$résultat_attendu->feedback_pos = "Bravo! tu es prêt à passer à un type de boucles plus complexe";
-		$résultat_attendu->feedback_neg = "Pour tout savoir sur les itérations énumérées : [clique ici](http://unlien.com)";
 		$résultat_attendu->exécutables = [
 			"python" => new Exécutable(
 				'#+VISIBLE
@@ -132,30 +126,89 @@ Bonjour
 			),
 		];
 
+		$info["execs"] = [
+			"python" => '#+VISIBLE
+nb_répétitions = int( input() )
+
+#+TODO
+
+print( "Bonjour le monde" )
+
+#-TODO
+
+#-VISIBLE
+',
+			"java" => 'import java.util.Scanner;
+
+public class exec {
+
+//+VISIBLE
+
+public static void main(String[] args) {
+
+	Scanner input = new Scanner( System.in );
+		
+	nb_répétitions = input.nextInt();
+
+//+TODO
+
+	System.out.println( "Bonjour le monde" );
+
+//-TODO
+
+	}
+	
+//-VISIBLE
+
+}
+',
+		];
+		$info["tests"] = [
+
+			[
+				"nom" => "10 fois",
+				"in" => 10,
+				"out" => "Bonjour le monde
+Bonjour le monde
+Bonjour le monde
+Bonjour le monde
+Bonjour le monde
+Bonjour le monde
+Bonjour le monde
+Bonjour le monde
+Bonjour le monde
+Bonjour le monde
+",
+			],
+
+			[
+				"nom" => "1 fois",
+				"in" => 1,
+				"out" => "Bonjour le monde",
+			],
+
+			[
+				"nom" => "0 fois",
+				"in" => 0,
+				"out" => "",
+				"params" => null,
+				"feedback+" => "Bien joué! 0 est aussi une entrée valable.",
+				"feedback-" => "N'oublie pas les cas limites, 0 est aussi une entrée valable!",
+			],
+
+			[
+				"nom" => "2 fois",
+				"in" => 2,
+				"out" => "Bonjour
+Bonjour
+",
+				"params" => null,
+				"feedback+" => "Bien joué!",
+				"feedback-" => "Rien à dire",
+			],
+		];
+
 		$résultat_observé = new QuestionProg();
-		// Analyse de fichier
-		$data = file_get_contents("file://" . __DIR__ . "/démo/boucles/boucle_énumérée/info.yml");
-		if ($data === false) {
-			error_log("file://" . __DIR__ . "/démo/boucles/boucle_énumérée ne peut pas être chargé");
-			return null;
-		}
-		$info = yaml_parse($data);
-		if ($info == false) {
-			error_log("file://" . __DIR__ . "/démo/boucles/boucle_énumérée ne peut pas être décodé");
-			return null;
-		}
-		if (isset($info["type"]) && $info["type"] == "prog") {
-			$info = (new QuestionProgDAO())->récupérer_question("file://" . __DIR__ . "/démo/boucles/boucle_énumérée", $info);
-		}
-		$info["uri"] = "file://" . __DIR__ . "/démo/boucles/boucle_énumérée";
-		$résultat_observé->uri = $info["uri"];
-		$résultat_observé->titre = $info["titre"];
-		$résultat_observé->description = $info["description"];
-		$résultat_observé->enonce = $info["énoncé"];
-		$résultat_observé->feedback_pos = key_exists("feedback+", $info) ? $info["feedback+"] : null;
-		$résultat_observé->feedback_neg = key_exists("feedback-", $info) ? $info["feedback-"] : null;
-
-
 		(new QuestionProgDAO())->load($résultat_observé, $info);
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
