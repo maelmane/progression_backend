@@ -20,7 +20,7 @@ namespace progression\dao;
 
 require_once __DIR__ . "/../../TestCase.php";
 
-use progression\domaine\entité\{Avancement, QuestionProg, Question};
+use progression\domaine\entité\{Avancement, QuestionProg, Question, TentativeProg};
 use progression\dao\AvancementDAO;
 
 use Mockery;
@@ -40,14 +40,18 @@ final class AvancementDAOTests extends \TestCase
 
 	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_objet_avancement_correspondant()
 	{
-		$résultat_attendu = new Avancement("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "bob");
-		$résultat_attendu->type = 3;
+		$résultat_attendu = new Avancement([
+			new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)
+		]);
+		$résultat_attendu->type = Question::TYPE_PROG;
 
 		$mockTentativeProgDao = Mockery::mock('progression\dao\TentativeProgDAO');
 		$mockTentativeProgDao
 			->allows()
 			->get_toutes("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
-			->andReturn([]);
+			->andReturn([
+				new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)
+			]);
 
 		$mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
 		$mockDAOFactory
