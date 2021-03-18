@@ -20,9 +20,9 @@ namespace progression\domaine\interacteur;
 
 class ExécuterProgInt extends Interacteur
 {
-	function exécuter($exécutable, $test)
+	public function exécuter($exécutable, $test)
 	{
-		ExécuterProgInt::loguer_code($exécutable);
+		$this->loguer_code($exécutable);
 
 		//post le code à remotecompiler
 		$url_rc = "http://" . $_ENV["COMPILEBOX_HOTE"] . ":" . $_ENV["COMPILEBOX_PORT"] . "/compile"; //TODO à changer ?
@@ -46,8 +46,8 @@ class ExécuterProgInt extends Interacteur
 		$comp_resp = file_get_contents($url_rc, false, $context);
 
 		return [
-			"stdout" => ExécuterProgInt::extraire_sortie_standard($comp_resp),
-			"stderr" => ExécuterProgInt::extraire_sortie_erreur($comp_resp),
+			"stdout" => $this->extraire_sortie_standard($comp_resp),
+			"stderr" => $this->extraire_sortie_erreur($comp_resp),
 		];
 	}
 

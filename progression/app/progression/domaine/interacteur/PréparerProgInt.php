@@ -63,4 +63,3 @@ class PréparerProgInt
         return $res;
     }
 }
-?>
