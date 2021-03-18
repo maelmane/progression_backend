@@ -79,13 +79,11 @@ final class TentativeProgDAOTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_lorsquon_sauvegarde_la_tentative_on_obtient_une_nouvelle_insertion_dans_la_table_reponse_prog()
 	{
+		$tentative_test = new TentativeProg("python", "testCode", 123456789);
+
 		$réponse_attendue = new TentativeProg("python", "testCode", 123456789);
 
-		$tentative_test = new TentativeProg("python", "testCode", 123456789);
-		$tentative_test->question_uri = "https://exemple.com";
-		$tentative_test->username = "Stefany";
-
-		$résponse_observée = (new TentativeProgDAO())->save($tentative_test);
+		$résponse_observée = (new TentativeProgDAO())->save($tentative_test, "https://exemple.com", "Stefany");
 		$this->assertEquals($réponse_attendue, $résponse_observée);
 
 		$résponse_observée = (new TentativeProgDAO())->get_tentative("Stefany", "https://exemple.com", 123456789);

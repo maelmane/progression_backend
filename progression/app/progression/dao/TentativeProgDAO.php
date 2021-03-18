@@ -95,7 +95,7 @@ class TentativeProgDAO extends TentativeDAO
 			"ssssii",
 			$question_uri,
 			$username,
-			$objet->lang,
+			$objet->langage,
 			$objet->code,
 			$objet->date_soumission,
 			$objet->réussi,
@@ -103,6 +103,6 @@ class TentativeProgDAO extends TentativeDAO
 		$query->execute();
 		$query->close();
 
-		return $this->get_tentative($objet->username, $objet->question_uri, $objet->date_soumission);
+		return $this->get_tentative($username, $question_uri, $objet->date_soumission);
 	}
 }
