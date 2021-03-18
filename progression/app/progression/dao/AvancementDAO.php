@@ -27,8 +27,10 @@ class AvancementDAO extends EntitéDAO
 		$avancement = $this->load($question_uri, $username);
 		if ($avancement->type == Question::TYPE_PROG) {
 			$avancement->tentatives = $this->_source->get_tentative_prog_dao()->get_toutes($username, $question_uri);
+			return $avancement;
+		} else {
+			return null;
 		}
-		return $avancement;
 	}
 
 	protected function load($question_uri, $username)
@@ -36,7 +38,7 @@ class AvancementDAO extends EntitéDAO
 		$avancement = new Avancement();
 
 		$query = EntitéDAO::get_connexion()->prepare(
-			"SELECT username, question_uri, etat, type FROM avancement WHERE question_uri = ? AND username = ?",
+			"SELECT etat, type FROM avancement WHERE question_uri = ? AND username = ?",
 		);
 		$query->bind_param("ss", $question_uri, $username);
 		$query->execute();
@@ -44,6 +46,7 @@ class AvancementDAO extends EntitéDAO
 		$query->fetch();
 
 		$query->close();
+		return $avancement;
 	}
 
 	public function save($question_uri, $username, $objet)
