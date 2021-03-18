@@ -18,48 +18,50 @@
 
 namespace progression\domaine\interacteur;
 
+use progression\domaine\entité\Exécutable;
+
 class PréparerProgInt
 {
-    public function préparer_exécutable($question, $tentative)
-    {
-        $code = PréparerProgInt::composer_code_à_exécuter(
-            $tentative->code,
-            $question->exécutables[$tentative->langage]
-        );
+	public function préparer_exécutable($question, $tentative)
+	{
+		$code = PréparerProgInt::composer_code_à_exécuter(
+			$tentative->code,
+			$question->exécutables[$tentative->langage],
+		);
 
-        return new Exécutable($code, $tentative->langage);
-    }
+		return new Exécutable($code, $tentative->langage);
+	}
 
-    private function composer_code_à_exécuter($code_utilisateur, $code)
-    {
-        //Insère les TODOs de code dans code_utilisateur
-        $orig = explode("\n", $code_utilisateur);
-        $code = $code;
+	private function composer_code_à_exécuter($code_utilisateur, $code)
+	{
+		//Insère les TODOs de code dans code_utilisateur
+		$orig = explode("\n", $code_utilisateur);
+		$code = $code;
 
-        error_log($code);
-        preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code, $todos);
-        error_log($todos[1][0]);
-        $n = 0;
-        $res = [];
-        $todo = false;
+		error_log($code);
+		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code, $todos);
+		error_log($todos[1][0]);
+		$n = 0;
+		$res = [];
+		$todo = false;
 
-        foreach ($orig as $ligne) {
-            if ($todo && strpos($ligne, "-TODO")) {
-                $todo = false;
-            }
+		foreach ($orig as $ligne) {
+			if ($todo && strpos($ligne, "-TODO")) {
+				$todo = false;
+			}
 
-            if (!$todo) {
-                $res[] = $ligne;
-            }
+			if (!$todo) {
+				$res[] = $ligne;
+			}
 
-            if (!$todo && strpos($ligne, "+TODO")) {
-                $todo = true;
-                $res[] = $todos[1][$n++];
-            }
-        }
+			if (!$todo && strpos($ligne, "+TODO")) {
+				$todo = true;
+				$res[] = $todos[1][$n++];
+			}
+		}
 
-        $res= implode("\n", $res);
+		$res = implode("\n", $res);
 
-        return $res;
-    }
+		return $res;
+	}
 }
