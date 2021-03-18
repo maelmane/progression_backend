@@ -20,15 +20,13 @@ namespace progression\domaine\entité;
 
 class RésultatProg
 {
-	public $numéro;
 	public $sortie_observée;
 	public $sortie_erreur;
 	public $résultat;
 	public $feedback;
 
-	public function __construct($numéro, $résultat, $feedback, $sortie_observée, $sortie_erreur = "")
+	public function __construct($résultat, $feedback, $sortie_observée, $sortie_erreur)
 	{
-		$this->numéro = $numéro;
 		$this->résultat = $résultat;
 		$this->feedback = $feedback;
 		$this->sortie_observée = $sortie_observée;
