@@ -12,10 +12,10 @@
 require_once __DIR__ . "/../../../TestCase.php";
 
 use progression\domaine\entité\{
-    Question,
-    AvancementProg,
-    TentativeProg,
-    QuestionProg
+	Question,
+	AvancementProg,
+	TentativeProg,
+	QuestionProg
 };
 use progression\http\contrôleur\TentativeCtl;
 use Illuminate\Http\Request;
@@ -24,110 +24,220 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 final class TentativeCtlTests extends TestCase
 {
-    public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_get_on_obtient_la_tentative_et_ses_relations_sous_forme_json()
-    {
-        $_ENV["APP_URL"] = "https://example.com/";
+	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_get_on_obtient_la_tentative_et_ses_relations_sous_forme_json()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
 
-        // Tentative
-        $tentative = new TentativeProg("python", "codeTest", "1614374490");
-        $tentative->id =
-            "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490";
-        $tentative->tests_réussis = 2;
-        $tentative->feedback = "feedbackTest";
+		// Tentative
+		$tentative = new TentativeProg("python", "codeTest", "1614374490");
+		$tentative->id =
+			"jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490";
+		$tentative->tests_réussis = 2;
+		$tentative->feedback = "feedbackTest";
 
-        $résultat_attendu = [
-            "data" => [
-                "type" => "tentative",
-                "id" =>
-                    "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
-                "attributes" => [
-                    "date_soumission" => "1614374490",
-                    "tests_réussis" => 2,
-                    "réussi" => false,
-                    "sous-type" => "tentativeProg",
-                    "feedback" => "feedbackTest",
-                    "langage" => "python",
-                    "code" => "codeTest",
-                ],
-                "links" => [
-                    "self" =>
-                        "https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
-                ],
-                "relationships" => [
-                    "resultats" => [
-                        "links" => [
-                            "self" =>
-                                "https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/relationships/resultats",
-                            "related" =>
-                                "https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/resultats",
-                        ],
-                        "data" => [],
-                    ],
-                ],
-            ],
-        ];
+		$résultat_attendu = [
+			"data" => [
+				"type" => "tentative",
+				"id" =>
+				"jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
+				"attributes" => [
+					"date_soumission" => "1614374490",
+					"tests_réussis" => 2,
+					"réussi" => false,
+					"sous-type" => "tentativeProg",
+					"feedback" => "feedbackTest",
+					"langage" => "python",
+					"code" => "codeTest",
+				],
+				"links" => [
+					"self" =>
+					"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
+				],
+				"relationships" => [
+					"resultats" => [
+						"links" => [
+							"self" =>
+							"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/relationships/resultats",
+							"related" =>
+							"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/resultats",
+						],
+						"data" => [],
+					],
+				],
+			],
+		];
 
-        // Intéracteur
-        $mockObtenirTentativeInt = Mockery::mock(
-            "progression\domaine\interacteur\ObtenirTentativeInt"
-        );
-        $mockObtenirTentativeInt
-            ->allows()
-            ->get_tentative(
-                "jdoe",
-                "prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
-                "1614374490"
-            )
-            ->andReturn($tentative);
+		// Intéracteur
+		$mockObtenirTentativeInt = Mockery::mock(
+			"progression\domaine\interacteur\ObtenirTentativeInt"
+		);
+		$mockObtenirTentativeInt
+			->allows()
+			->get_tentative(
+				"jdoe",
+				"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
+				"1614374490"
+			)
+			->andReturn($tentative);
 
-        // InteracteurFactory
-        $mockIntFactory = Mockery::mock(
-            "progression\domaine\interacteur\InteracteurFactory"
-        );
-        $mockIntFactory
-            ->allows()
-            ->getObtenirTentativeInt()
-            ->andReturn($mockObtenirTentativeInt);
+		// InteracteurFactory
+		$mockIntFactory = Mockery::mock(
+			"progression\domaine\interacteur\InteracteurFactory"
+		);
+		$mockIntFactory
+			->allows()
+			->getObtenirTentativeInt()
+			->andReturn($mockObtenirTentativeInt);
 
-        // Requête
-        $mockRequest = Mockery::mock("Illuminate\Http\Request");
-        $mockRequest
-            ->allows()
-            ->ip()
-            ->andReturn("127.0.0.1");
-        $mockRequest
-            ->allows()
-            ->method()
-            ->andReturn("GET");
-        $mockRequest
-            ->allows()
-            ->path()
-            ->andReturn(
-                "/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490"
-            );
-        $mockRequest
-            ->allows()
-            ->query("include")
-            ->andReturn("resultats");
-        $this->app->bind(Request::class, function () use ($mockRequest) {
-            return $mockRequest;
-        });
+		// Requête
+		$mockRequest = Mockery::mock("Illuminate\Http\Request");
+		$mockRequest
+			->allows()
+			->ip()
+			->andReturn("127.0.0.1");
+		$mockRequest
+			->allows()
+			->method()
+			->andReturn("GET");
+		$mockRequest
+			->allows()
+			->path()
+			->andReturn(
+				"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490"
+			);
+		$mockRequest
+			->allows()
+			->query("include")
+			->andReturn("resultats");
+		$this->app->bind(Request::class, function () use ($mockRequest) {
+			return $mockRequest;
+		});
 
-        // Contrôleur
-        $ctl = new TentativeCtl($mockIntFactory);
-        $this->assertEquals(
-            $résultat_attendu,
-            json_decode(
-                $ctl
-                    ->get(
-                        $mockRequest,
-                        "jdoe",
-                        "cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
-                        "1614374490"
-                    )
-                    ->getContent(),
-                true
-            )
-        );
-    }
+		// Contrôleur
+		$ctl = new TentativeCtl($mockIntFactory);
+		$this->assertEquals(
+			$résultat_attendu,
+			json_decode(
+				$ctl
+					->get(
+						$mockRequest,
+						"jdoe",
+						"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
+						"1614374490"
+					)
+					->getContent(),
+				true
+			)
+		);
+	}
+
+	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_avec_langage_et_code_on_obtient_la_tentative_et_ses_relations_sous_forme_json()
+	{
+		$tentative = new TentativeProg("python", "codeTest", 1614374490);
+		$tentative->feedback = "feedbackTest";
+		$tentative->tests_réussis = 1;
+
+		$résultat_attendu = [
+			"data" => [
+				"type" => "tentative",
+				"id" =>
+				"jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
+				"attributes" => [
+					"date_soumission" => 1614374490,
+					"tests_réussis" => 1,
+					"réussi" => false,
+					"sous-type" => "tentativeProg",
+					"feedback" => "feedbackTest",
+					"langage" => "python",
+					"code" => "codeTest",
+				],
+				"links" => [
+					"self" =>
+					"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
+				],
+				"relationships" => [
+					"resultats" => [
+						"links" => [
+							"self" =>
+							"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/relationships/resultats",
+							"related" =>
+							"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/resultats",
+						],
+						"data" => [],
+					],
+				],
+			],
+		];
+
+		// Intéracteur
+		$mockSoumettreTentativeInt = Mockery::mock(
+			"progression\domaine\interacteur\SoumettreTentativeInt"
+		);
+		$mockSoumettreTentativeInt
+			->allows()
+			->soumettre_tentative(
+				"jdoe",
+				"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
+				"python",
+				"codeTest",
+			)
+			->andReturn($tentative);
+
+		// InteracteurFactory
+		$mockIntFactory = Mockery::mock(
+			"progression\domaine\interacteur\InteracteurFactory"
+		);
+		$mockIntFactory
+			->allows()
+			->getSoumettreTentativeInt()
+			->andReturn($mockSoumettreTentativeInt);
+
+		// Requête
+		$mockRequest = Mockery::mock("Illuminate\Http\Request");
+		$mockRequest
+			->allows()
+			->ip()
+			->andReturn("127.0.0.1");
+		$mockRequest
+			->allows()
+			->method()
+			->andReturn("POST");
+		$mockRequest
+			->allows()
+			->input("langage")
+			->andReturn("python");
+		$mockRequest
+			->allows()
+			->input("code")
+			->andReturn("codeTest");
+		$mockRequest
+			->allows()
+			->path()
+			->andReturn(
+				"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU"
+			);
+		$mockRequest
+			->allows()
+			->query("include")
+			->andReturn("resultats");
+		$this->app->bind(Request::class, function () use ($mockRequest) {
+			return $mockRequest;
+		});
+
+		// Contrôleur
+		$ctl = new TentativeCtl($mockIntFactory);
+		$this->assertEquals(
+			$résultat_attendu,
+			json_decode(
+				$ctl
+					->post(
+						$mockRequest,
+						"jdoe",
+						"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
+					)
+					->getContent(),
+				true
+			)
+		);
+	}
 }
