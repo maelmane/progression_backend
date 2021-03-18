@@ -20,35 +20,14 @@ namespace progression\domaine\interacteur;
 
 class PréparerProgInt
 {
-    public function préparer_exécutable($question, $avancement, $langage, $code)
+    public function préparer_exécutable($question, $tentative)
     {
-        $exécutable = $question->exécutables[$langage];
-
-        $exécutable->code_utilisateur = PréparerProgInt::sélectionner_code_utilisateur(
-            $exécutable,
-            $avancement,
-            $code
+        $code = PréparerProgInt::composer_code_à_exécuter(
+            $tentative->code,
+            $question->exécutables[$tentative->langage]
         );
-        $exécutable->code_exec = $exécutable->code_utilisateur;
 
-        return $exécutable;
-    }
-
-    private function sélectionner_code_utilisateur(
-        $exécutable,
-        $avancement,
-        $code
-    ) {
-        if ($code != null) {
-            return PréparerProgInt::composer_code_à_exécuter(
-                $exécutable->code_utilisateur,
-                $code
-            );
-        } elseif ($code == null && array_key_exists($exécutable->lang, $avancement->réponses )) {
-            return $avancement->réponses[$exécutable->lang]->code;
-        } else {
-            return $exécutable->code_utilisateur;
-        }
+        return new Exécutable($code, $tentative->langage);
     }
 
     private function composer_code_à_exécuter($code_utilisateur, $code)
