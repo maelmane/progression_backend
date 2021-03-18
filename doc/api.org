@@ -20,6 +20,7 @@ Les versions de l'api sont accessibles à des URL distincts pour assurer la rét
 | Méthode | URL     | Description      | Paramètres         | Réponse             |
 | GET     | ~/doc~  | Documentation    |                    | str (HTML)          |
 | POST    | ~/auth~ | Authentification | username, password | token, un token JWT |
+| GET     | ~/question/{uri}~  | Obtient la question disponible à <uri> | Question |
 
 ** Privés
 Les points d'entrée privés requierent un token dans l'entête : «Authentification: Bearer <token>»
@@ -27,7 +28,6 @@ Les points d'entrée privés requierent un token dans l'entête : «Authentifica
 | Méthode | URL                | Description                            | Réponse  |
 | GET     | ~/user~            | Obtient l'utilisateur authentifié      | User     |
 | GET     | ~/user/{username}~ | Obtient l'utilisateur /username/       | User     |
-| GET     | ~/question/{uri}~  | Obtient la question disponible à <uri> | Question |
 
 * Ressources
 

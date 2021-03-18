@@ -24,14 +24,13 @@ final class ExécutableTests extends TestCase
 {
 	public function test_étant_donné_un_Exécutable_instancié_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
 	{
-		$code_utilisateur_attendu = "print('Hello, world!')";
+		$code_attendu = "print('Hello, world!')";
 		$code_exec_attendu = "print('Hello, world!')";
 		$lang_attendu = "python";
 
 		$résultat_obtenu = new Exécutable("print('Hello, world!')", "python");
 
-		$this->assertEquals($code_utilisateur_attendu, $résultat_obtenu->code_utilisateur);
-		$this->assertEquals($code_exec_attendu, $résultat_obtenu->code_exec);
+		$this->assertEquals($code_attendu, $résultat_obtenu->code);
 		$this->assertEquals($lang_attendu, $résultat_obtenu->lang);
 	}
 }
