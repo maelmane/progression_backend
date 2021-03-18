@@ -41,7 +41,6 @@ final class QuestionProgDAOTests extends \TestCase
 	public function test_étant_donné_une_question_prog_existante_lorsquon_donne_une_question_et_les_infos_on_obtient_un_objet_question_prog_correspondant()
 	{
 		$résultat_attendu = new QuestionProg();
-		$résultat_attendu->type = Question::TYPE_PROG;
 		$résultat_attendu->exécutables = [
 			"python" => new Exécutable(
 				'#+VISIBLE

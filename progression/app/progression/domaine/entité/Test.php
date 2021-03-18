@@ -21,7 +21,6 @@ namespace progression\domaine\entité;
 class Test
 {
 	public $nom;
-	public $numéro = 0;
 	public $entrée;
 	public $params = null;
 	public $sortie_attendue;
