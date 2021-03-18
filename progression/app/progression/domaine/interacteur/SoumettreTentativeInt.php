@@ -20,8 +20,8 @@ namespace progression\domaine\interacteur;
 
 class SoumettreTentativeInt extends Interacteur
 {
-  public function soumettre_tentative($username, $question_uri, $langage, $code)
-  {
-    return null;
-  }
+	public function soumettre_tentative($username, $question_uri, $langage, $code)
+	{
+		return null;
+	}
 }
