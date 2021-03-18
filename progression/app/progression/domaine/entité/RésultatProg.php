@@ -25,7 +25,7 @@ class RésultatProg
 	public $résultat;
 	public $feedback;
 
-	public function __construct($résultat, $feedback, $sortie_observée, $sortie_erreur)
+	public function __construct($sortie_observée, $sortie_erreur, $résultat=false, $feedback=null)
 	{
 		$this->résultat = $résultat;
 		$this->feedback = $feedback;
