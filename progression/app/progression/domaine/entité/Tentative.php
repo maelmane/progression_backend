@@ -24,7 +24,7 @@ class Tentative
 	public $réussi;
 	public $feedback;
 
-	public function __construct($date_soumission, $réussi = false, $feedback = null)
+	public function __construct($date_soumission = null, $réussi = false, $feedback = null)
 	{
 		$this->date_soumission = $date_soumission;
 		$this->réussi = $réussi;
