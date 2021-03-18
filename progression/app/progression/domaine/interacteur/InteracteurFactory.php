@@ -48,7 +48,7 @@ class InteracteurFactory
 	}
 	public function getPréparerProgInt()
 	{
-		return new PréparerProgInt(new DAOFactory());
+		return new PréparerProgInt();
 	}
 	public function getExécuterProgInt()
 	{
