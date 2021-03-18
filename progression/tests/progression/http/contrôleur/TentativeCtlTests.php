@@ -15,7 +15,8 @@ use progression\domaine\entité\{
 	Question,
 	AvancementProg,
 	TentativeProg,
-	QuestionProg
+	QuestionProg,
+	RésultatProg
 };
 use progression\http\contrôleur\TentativeCtl;
 use Illuminate\Http\Request;
@@ -136,6 +137,9 @@ final class TentativeCtlTests extends TestCase
 		$tentative = new TentativeProg("python", "codeTest", 1614374490);
 		$tentative->feedback = "feedbackTest";
 		$tentative->tests_réussis = 1;
+		$tentative->résultats = [
+			new RésultatProg(0, true, "Bon travail!", "itération 0\n")
+		];
 
 		$résultat_attendu = [
 			"data" => [
@@ -163,9 +167,30 @@ final class TentativeCtlTests extends TestCase
 							"related" =>
 							"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/resultats",
 						],
-						"data" => [],
+						"data" => [
+							[
+								'type' => 'resultat',
+								'id' => '0',
+							]
+						],
 					],
 				],
+			],
+			"included" => [
+				[
+					"type" => "resultat",
+					"id" => "0",
+					"attributes" => [
+						"résultat" => true,
+						"sortie_erreur" => "",
+						"sortie_observée" => "itération 0\n",
+						"feedback" => "Bon travail!",
+						"numéro" => 0,
+					],
+					"links" => [
+						'self' => 'https://example.com/resultat/0',
+					],
+				]
 			],
 		];
 
