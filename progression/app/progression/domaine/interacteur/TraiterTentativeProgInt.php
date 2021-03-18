@@ -39,6 +39,7 @@ class TraiterTentativeProgInt extends Interacteur
         $résultats["essayé"] = "true";
 
         $réussi = true;
+        $nb_tests_réussis = 0;
         foreach ($tests as $test) {
             $test->réussi = $this->vérifier_solution(
                 $test->sorties,
@@ -46,8 +47,12 @@ class TraiterTentativeProgInt extends Interacteur
             );
             if (!$test->réussi) {
                 $réussi = false;
+            } else {
+                $nb_tests_réussis++;
             }
         }
+
+        $résultats["tests_réussis"] = $nb_tests_réussis;
 
         if ($réussi) {
             $avancement->etat = Question::ETAT_REUSSI;
