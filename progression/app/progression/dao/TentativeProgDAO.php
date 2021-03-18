@@ -86,7 +86,7 @@ class TentativeProgDAO extends TentativeDAO
 		return $tentative;
 	}
 
-	public function save($objet, $question_uri, $username)
+	public function save($objet, $username, $question_uri)
 	{
 		$query = EntitéDAO::get_connexion()->prepare(
 			"INSERT INTO reponse_prog ( question_uri, username, langage, code, date_soumission, reussi ) VALUES ( ?, ?, ?, ?, ?, ?  )",

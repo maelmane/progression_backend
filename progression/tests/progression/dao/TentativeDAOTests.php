@@ -39,7 +39,7 @@ final class TentativeDAOTests extends TestCase
 		$résponse_observée = (new TentativeDAO(new DAOFactory()))->get_tentative(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			1615696276
+			1615696276,
 		);
 
 		$this->assertInstanceOf(TentativeProg::class, $résponse_observée);
