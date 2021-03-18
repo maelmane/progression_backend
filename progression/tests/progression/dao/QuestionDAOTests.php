@@ -28,7 +28,6 @@ final class QuestionCtlTests extends \TestCase
 	public function test_get_question()
 	{
 		$question = new QuestionProg();
-		$question->type = Question::TYPE_PROG;
 		$question->uri = "file://" . __DIR__ . "/démo/boucles/boucle_énumérée";
 		$question->titre = "Affichage répété";
 		$question->description = "Exercice simple sur les itérations à nombre d'itérations fixe";

@@ -23,7 +23,6 @@ class QuestionProgDAO extends EntitéDAO
 {
 	public function load($question, $infos_question)
 	{
-		$question->type = QuestionProg::TYPE_PROG;
 		$question->exécutables = $this->load_exécutables($question, $infos_question);
 		$question->tests = $this->load_tests($question, $infos_question);
 	}
