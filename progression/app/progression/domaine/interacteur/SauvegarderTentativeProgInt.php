@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Question;
+use progression\domaine\entité\{Avancement, Question};
 
 class SauvegarderTentativeProgInt extends Interacteur
 {
