@@ -24,16 +24,16 @@ use \Mockery;
 
 final class ExécuterProgIntTests extends TestCase
 {
-	public function test_étant_donné_un_exécutable_python_correct_et_un_test_lorsquon_les_soumet_pour_exécution_on_obtient_un_résultat_de_test_avec_ses_sorties_observées()
+	public function test_étant_donné_un_exécutable_python_et_un_test_lorsquon_les_soumet_pour_exécution_on_obtient_un_résultat_de_test_avec_ses_sorties_standards()
 	{
-		$_ENV['COMPILEBOX_URL'] = "file://" . __DIR__ . "/résultats_exécution/test_exec_prog_int_1";
+		$_ENV['COMPILEBOX_URL'] = "file://" . __DIR__ . "/ExécuterProgIntTests_fichiers/test_exec_prog_int_python";
 		$_SERVER["REMOTE_ADDR"] = "";
 		$_SERVER["PHP_SELF"] = "";
 
 		$exécutable = new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
 		$test = new Test("premier test", "1", "ok\n");
 
-		$résultat_attendu = new RésultatProg("ok\n", "");
+		$résultat_attendu = new RésultatProg("ok\n", "erreurs\n");
 
         $résultat_observé = (new ExécuterProgInt(null))->exécuter($exécutable, $test);
 
