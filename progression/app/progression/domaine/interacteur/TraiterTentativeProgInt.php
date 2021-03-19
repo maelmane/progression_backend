@@ -33,6 +33,7 @@ class TraiterTentativeProgInt extends Interacteur
 		}
 
 		$résultats["tests_réussis"] = $nb_tests_réussis;
+		$résultats["résultat_prog"] = $résultats;
 
 		return $résultats;
 	}

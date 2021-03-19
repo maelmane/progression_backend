@@ -12,6 +12,8 @@
 require_once __DIR__ . "/../../../TestCase.php";
 
 use progression\domaine\entité\{
+	Test,
+	Exécutable,
 	Question,
 	AvancementProg,
 	TentativeProg,
@@ -134,14 +136,29 @@ final class TentativeCtlTests extends TestCase
 
 	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_avec_langage_et_code_on_obtient_la_tentative_et_ses_relations_sous_forme_json()
 	{
+		// Tentative
 		$tentative = new TentativeProg("python", "codeTest", 1614374490);
-		$tentative->feedback = "feedbackTest";
-		$tentative->tests_réussis = 1;
-		$résultat = new RésultatProg("itération 0\n", "", true, "Bon travail!");
-		$résultat->id = 0;
-		$tentative->résultats = [
-			$résultat,
+
+		// Question
+		$question = new QuestionProg();
+		$question->type = Question::TYPE_PROG;
+		$question->nom = "appeler_une_fonction_paramétrée";
+		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+		// Ébauches
+		$question->exécutables["python"] = new Exécutable(
+			"print(\"Hello world\")",
+			"python"
+		);
+		$question->exécutables["java"] = new Exécutable(
+			"System.out.println(\"Hello world\")",
+			"java"
+		);
+		// Tests
+		$question->tests = [
+			new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
+			new Test("Aucune salutation", "0", ""),
 		];
+
 
 		$résultat_attendu = [
 			"data" => [
@@ -196,18 +213,27 @@ final class TentativeCtlTests extends TestCase
 		];
 
 		// Intéracteur
-		$mockSoumettreTentativeInt = Mockery::mock(
-			"progression\domaine\interacteur\SoumettreTentativeInt"
+		$mockSoumettreTentativeProgInt = Mockery::mock(
+			"progression\domaine\interacteur\SoumettreTentativeProgInt"
 		);
-		$mockSoumettreTentativeInt
+		$mockSoumettreTentativeProgInt
 			->allows()
 			->soumettre_tentative(
 				"jdoe",
-				"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
-				"python",
-				"codeTest",
+				$question,
+				$tentative,
 			)
 			->andReturn($tentative);
+
+		$mockObtenirQuestionInt = Mockery::mock(
+			"progression\domaine\interacteur\ObtenirQuestionInt"
+		);
+		$mockObtenirQuestionInt
+			->allows()
+			->get_question(
+				"prog1/les_fonctions_01/appeler_une_fonction_paramétrée"
+			)
+			->andReturn($question);
 
 		// InteracteurFactory
 		$mockIntFactory = Mockery::mock(
@@ -215,8 +241,12 @@ final class TentativeCtlTests extends TestCase
 		);
 		$mockIntFactory
 			->allows()
-			->getSoumettreTentativeInt()
-			->andReturn($mockSoumettreTentativeInt);
+			->getSoumettreTentativeProgInt()
+			->andReturn($mockSoumettreTentativeProgInt);
+		$mockIntFactory
+			->allows()
+			->getObtenirQuestionInt()
+			->andReturn($mockObtenirQuestionInt);
 
 		// Requête
 		$mockRequest = Mockery::mock("Illuminate\Http\Request");
@@ -236,6 +266,10 @@ final class TentativeCtlTests extends TestCase
 			->allows()
 			->input("code")
 			->andReturn("codeTest");
+		$mockRequest
+			->allows()
+			->only([0 => 'langage', 1 => 'code'])
+			->andReturn(["python", "codeTest"]);
 		$mockRequest
 			->allows()
 			->path()

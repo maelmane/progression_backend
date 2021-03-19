@@ -21,6 +21,7 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\Request;
 use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransformer, TentativeBDTransformer};
 use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, TentativeBD};
+use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
 use progression\util\Encodage;
 
 class TentativeCtl extends Contrôleur
@@ -54,14 +55,27 @@ class TentativeCtl extends Contrôleur
 
 	public function post(Request $request, $username, $question_uri)
 	{
-		$langage = $request->input("langage");
-		$code = $request->input("code");
-		$tentative = null;
-
 		$chemin = Encodage::base64_decode_url($question_uri);
 
-		$tentativeInt = $this->intFactory->getSoumettreTentativeInt();
-		$tentative = $tentativeInt->soumettre_tentative($username, $chemin, $langage, $code);
+		$questionInt = $this->intFactory->getObtenirQuestionInt();
+		$question = $questionInt->get_question($chemin);
+
+		$tentative = null;
+
+		if ($question instanceof QuestionProg) {
+			$input = $request->only(["langage", "code"]);
+
+			if (count(array_filter($input)) == 2) {
+				$tentative = new TentativeProg($input[0], $input[1], (new \DateTime())->getTimestamp());
+
+				$tentativeInt = $this->intFactory->getSoumettreTentativeProgInt();
+				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
+			}
+		} elseif ($question instanceof QuestionSys) {
+			return $this->réponse_json(["message" => "Question système non implémentée."], 501);
+		} elseif ($question instanceof QuestionBD) {
+			return $this->réponse_json(["message" => "Question BD non implémentée."], 501);
+		}
 
 		if ($tentative != null) {
 			$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
