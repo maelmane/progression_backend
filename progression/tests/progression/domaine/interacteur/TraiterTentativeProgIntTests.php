@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Test, RésultatProg, TentativeProg};
+use progression\domaine\entité\{Test, RésultatProg};
 use PHPUnit\Framework\TestCase;
 
 final class TraiterTentativeProgIntTests extends TestCase
@@ -33,6 +33,7 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new Test("premier test", "1", "ok\n"),
 			new Test("premier test", "5", "ok\nok\nok\nok\nok\n"),
 		];
+
 		$résultat_attendu = [
 			"tests_réussis" => 2,
 			"résultat_prog" => [
@@ -40,7 +41,10 @@ final class TraiterTentativeProgIntTests extends TestCase
 				new RésultatProg("ok\nok\nok\nok\nok\n", "", true)
 			]
 		];
+
 		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($résultats, $tests);
+
+		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 
 	public function test_étant_donné_des_résultats_nonvalides_et_des_tests_dune_question_lorsquon_les_traites_on_obtient_des_résultats()
@@ -55,6 +59,7 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new Test("deuxième test", "5", "ok\nok\nok\nok\nok\n"),
 			new Test("troisième test", "10", "ok\nok\nok\nok\nok\nok\nok\nok\nok\nok\n")
 		];
+
 		$résultat_attendu = [
 			"tests_réussis" => 1,
 			"résultat_prog" => [
@@ -63,6 +68,9 @@ final class TraiterTentativeProgIntTests extends TestCase
 				new RésultatProg("ok\nok\nok", "", false)
 			]
 		];
+
 		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($résultats, $tests);
+
+		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 }

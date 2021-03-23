@@ -22,12 +22,12 @@ use progression\domaine\entité\Question;
 
 class SauvegarderAvancementInt extends Interacteur
 {
-	public function sauvegarder($avancement, $username)
+	public function sauvegarder($question_uri, $username, $avancement)
 	{
 		$dao = $this->_source->get_avancement_dao();
 		if ($avancement->etat == Question::ETAT_DEBUT) {
 			$avancement->etat = Question::ETAT_NONREUSSI;
 		}
-		$dao->save($avancement, $username);
+		$dao->save($question_uri, $username, $avancement);
 	}
 }
