@@ -40,7 +40,7 @@ class SoumettreTentativeProgInt extends Interacteur
 			}
 
 			$traiterTentativeProgInt = $intFactory->getTraiterTentativeProgInt();
-			$traiterTentativeRésultats = $traiterTentativeProgInt->traiter_résultats($question->tests, $tentative->résultats, $username);
+			$traiterTentativeRésultats = $traiterTentativeProgInt->traiter_résultats($tentative->résultats, $question->tests, $username);
 
 			$tentative->tests_réussis = $traiterTentativeRésultats["tests_réussis"];
 			$tentative->résultats = $traiterTentativeRésultats["résultat_prog"];
