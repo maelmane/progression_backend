@@ -39,6 +39,7 @@ class DAOFactory
 	{
 		return new QuestionSysDAO($this);
 	}
+
 	function get_tentative_dao()
 	{
 		return new TentativeDAO($this);

@@ -24,7 +24,7 @@ class AvancementDAO extends EntitéDAO
 {
 	public function get_avancement($username, $question_uri)
 	{
-		$avancement = $this->load($question_uri, $username);
+		$avancement = $this->load($username, $question_uri);
 		if ($avancement->type == Question::TYPE_PROG) {
 			$avancement->tentatives = $this->_source->get_tentative_prog_dao()->get_toutes($username, $question_uri);
 			return $avancement;
@@ -33,7 +33,7 @@ class AvancementDAO extends EntitéDAO
 		}
 	}
 
-	protected function load($question_uri, $username)
+	protected function load($username, $question_uri)
 	{
 		$avancement = new Avancement();
 
@@ -49,7 +49,7 @@ class AvancementDAO extends EntitéDAO
 		return $avancement;
 	}
 
-	public function save($question_uri, $username, $objet)
+	public function save($username, $question_uri, $objet)
 	{
 		$query = EntitéDAO::get_connexion()
 			->prepare('INSERT INTO avancement ( etat, question_uri, username, type ) VALUES ( ?, ?, ? )
