@@ -30,9 +30,9 @@ class TentativeProgTransformer extends TentativeTransformer
 		$data_out = parent::transform($tentative);
 		$data_out = array_merge($data_out, [
 			"sous-type" => "tentativeProg",
-			"tests_réussis" => $tentative->tests_réussis,
 			"langage" => $tentative->langage,
 			"code" => $tentative->code,
+			"tests_réussis" => $tentative->tests_réussis,
 		]);
 
 		return $data_out;

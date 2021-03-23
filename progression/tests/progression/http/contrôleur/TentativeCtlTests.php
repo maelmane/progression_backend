@@ -27,7 +27,7 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 final class TentativeCtlTests extends TestCase
 {
-	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_get_on_obtient_la_tentative_et_ses_relations_sous_forme_json()
+	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_get_on_obtient_la_TentativeProg_et_ses_relations_sous_forme_json()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
@@ -134,8 +134,10 @@ final class TentativeCtlTests extends TestCase
 		);
 	}
 
-	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_avec_langage_et_code_on_obtient_la_tentative_et_ses_relations_sous_forme_json()
+	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_on_obtient_la_TentativeProg_avec_ses_résultats_et_ses_relations_sous_forme_json()
 	{
+		$_ENV["APP_URL"] = "https://example.com/";
+
 		// Tentative
 		$tentative = new TentativeProg("python", "codeTest", 1614374490);
 		$tentative->tests_réussis = 1;

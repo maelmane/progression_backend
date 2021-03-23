@@ -33,7 +33,6 @@ class TentativeCtl extends Contrôleur
 		$chemin = Encodage::base64_decode_url($question_uri);
 
 		$tentativeInt = $this->intFactory->getObtenirTentativeInt();
-
 		$tentative = $tentativeInt->get_tentative($username, $chemin, $timestamp);
 
 		if ($tentative != null) {
@@ -55,12 +54,13 @@ class TentativeCtl extends Contrôleur
 
 	public function post(Request $request, $username, $question_uri)
 	{
+		$tentative = null;
+		$réponse = null;
+
 		$chemin = Encodage::base64_decode_url($question_uri);
 
 		$questionInt = $this->intFactory->getObtenirQuestionInt();
 		$question = $questionInt->get_question($chemin);
-
-		$tentative = null;
 
 		if ($question instanceof QuestionProg) {
 			$input = $request->only(["langage", "code"]);
@@ -71,24 +71,15 @@ class TentativeCtl extends Contrôleur
 				$tentativeInt = $this->intFactory->getSoumettreTentativeProgInt();
 				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
 			}
+
+			if ($tentative != null) {
+				$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
+				$réponse = $this->item($tentative, new TentativeProgTransformer());
+			}
 		} elseif ($question instanceof QuestionSys) {
 			return $this->réponse_json(["message" => "Question système non implémentée."], 501);
 		} elseif ($question instanceof QuestionBD) {
 			return $this->réponse_json(["message" => "Question BD non implémentée."], 501);
-		}
-
-		if ($tentative != null) {
-			$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
-		}
-
-		$réponse = null;
-
-		if ($tentative instanceof TentativeProg) {
-			$réponse = $this->item($tentative, new TentativeProgTransformer());
-		} elseif ($tentative instanceof TentativeSys) {
-			$réponse = $this->item($tentative, new TentativeSysTransformer());
-		} elseif ($tentative instanceof TentativeBD) {
-			$réponse = $this->item($tentative, new TentativeBDTransformer());
 		}
 
 		return $this->préparer_réponse($réponse);
