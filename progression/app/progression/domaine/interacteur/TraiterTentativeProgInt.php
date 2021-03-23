@@ -27,7 +27,7 @@ class TraiterTentativeProgInt extends Interacteur
 		$nb_tests_réussis = 0;
 		foreach ($tests as $i => $test) {
 			if ($this->vérifier_solution($test->sorties, $test->sortie_attendue)) {
-				$résultats[$i]->réussi = true;
+				$résultats[$i]->résultat = true;
 				$nb_tests_réussis++;
 			}
 		}
