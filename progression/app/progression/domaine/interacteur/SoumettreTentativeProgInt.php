@@ -25,24 +25,23 @@ class SoumettreTentativeProgInt extends Interacteur
 
 	public function soumettre_tentative($username, $question, $tentative)
 	{
-		$intFactory = new InteracteurFactory();
 		$exécutable = null;
 
-		$préparerProgInt = $intFactory->getPréparerProgInt();
+		$préparerProgInt = $this->_source->getPréparerProgInt();
 		$exécutable = $préparerProgInt->préparer_exécutable($question, $tentative);
 
 		if ($exécutable) {
-			$exécuterProgInt = $intFactory->getExécuterProgInt();
+			$exécuterProgInt = $this->_source->getExécuterProgInt();
 
 			foreach ($question->tests as $i => $test) {
 				$résultat = $exécuterProgInt->exécuter($exécutable, $test);
 				$tentative->résultats[$i] = $résultat;
 			}
 
-			$traiterTentativeProgInt = $intFactory->getTraiterTentativeProgInt();
+			$traiterTentativeProgInt = $this->_source->getTraiterTentativeProgInt();
 			$tentativeTraité = $traiterTentativeProgInt->traiter_résultats($question, $tentative);
 
-			$sauvegarderTentativeProgInt = $intFactory->getSauvegarderAvancementProgIntTests();
+			$sauvegarderTentativeProgInt = $this->_source->getSauvegarderAvancementProgIntTests();
 			// $sauvegarderTentativeProgInt->save($tentativeTraité, $username, $question->uri);
 
 			return $tentativeTraité;
