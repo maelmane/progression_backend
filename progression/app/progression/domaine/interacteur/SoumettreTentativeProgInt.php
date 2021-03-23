@@ -40,12 +40,12 @@ class SoumettreTentativeProgInt extends Interacteur
 			}
 
 			$traiterTentativeProgInt = $intFactory->getTraiterTentativeProgInt();
-			$traiterTentativeRésultats = $traiterTentativeProgInt->traiter_résultats($question->tests, $tentative->résultats, $username);
+			$tentativeTraité = $traiterTentativeProgInt->traiter_résultats($question, $tentative);
 
-			$tentative->tests_réussis = $traiterTentativeRésultats["tests_réussis"];
-			$tentative->résultats = $traiterTentativeRésultats["résultat_prog"];
+			$sauvegarderTentativeProgInt = $intFactory->getSauvegarderAvancementProgIntTests();
+			// $sauvegarderTentativeProgInt->save($tentativeTraité, $username, $question->uri);
 
-			return $tentative;
+			return $tentativeTraité;
 		}
 
 		return null;

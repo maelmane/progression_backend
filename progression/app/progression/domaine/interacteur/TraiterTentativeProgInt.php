@@ -18,30 +18,31 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Question, TentativeProg};
-
 class TraiterTentativeProgInt extends Interacteur
 {
-	function traiter_résultats($résultats, $tests)
+	function traiter_résultats($question, $tentative)
 	{
 		$nb_tests_réussis = 0;
-		foreach ($tests as $i => $test) {
-			if ($this->vérifier_solution($test->sorties, $test->sortie_attendue)) {
-				$résultats[$i]->résultat = true;
+		foreach ($question->tests as $i => $test) {
+			if ($this->vérifier_solution($tentative->résultats[$i], $test->sortie_attendue)) {
+				$tentative->résultats[$i]->résultat = true;
 				$nb_tests_réussis++;
 			}
 		}
 
-		$résultats["tests_réussis"] = $nb_tests_réussis;
-		$résultats["résultat_prog"] = $résultats;
+		$tentative->tests_réussis = $nb_tests_réussis;
 
-		return $résultats;
+		if ($nb_tests_réussis = count($question->tests)) {
+			$tentative->réussi = true;
+		}
+
+		return $tentative;
 	}
 
-	private function vérifier_solution($sorties, $solution)
+	private function vérifier_solution($résultat, $solution)
 	{
-		$sortie_standard = $sorties["output"];
-		$erreur = $sorties["erreurs"];
+		$sortie_standard = $résultat->sortie_observée;
+		$erreur = $résultat->sortie_erreur;
 		return $sortie_standard == $solution && $erreur == "";
 	}
 }
