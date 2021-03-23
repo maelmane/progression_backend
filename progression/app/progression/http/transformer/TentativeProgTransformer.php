@@ -40,9 +40,10 @@ class TentativeProgTransformer extends TentativeTransformer
 
 	public function includeResultats(TentativeProg $tentative)
 	{
-		foreach ($tentative->résultats as $résultat) {
+		foreach ($tentative->résultats as $i => $résultat) {
+			$résultat->numéro = $i;
 			$résultat->links = [
-				"related" => $_ENV["APP_URL"] . "tentative/{$résultat->id}",
+				"related" => $_ENV["APP_URL"] . "tentative/{$i}",
 			];
 		}
 		return $this->collection($tentative->résultats, new RésultatProgTransformer(), "resultat");
