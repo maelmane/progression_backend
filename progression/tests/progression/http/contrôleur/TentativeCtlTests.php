@@ -138,6 +138,11 @@ final class TentativeCtlTests extends TestCase
 	{
 		// Tentative
 		$tentative = new TentativeProg("python", "codeTest", 1614374490);
+		$tentative->tests_réussis = 1;
+		$tentative->feedback = "feedbackTest";
+		$tentative->résultats = [
+			new RésultatProg("itération 0\n", "", true, "Bon travail!"),
+		];
 
 		// Question
 		$question = new QuestionProg();
@@ -159,12 +164,11 @@ final class TentativeCtlTests extends TestCase
 			new Test("Aucune salutation", "0", ""),
 		];
 
-
 		$résultat_attendu = [
 			"data" => [
 				"type" => "tentative",
 				"id" =>
-				"jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
+				"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
 				"attributes" => [
 					"date_soumission" => 1614374490,
 					"tests_réussis" => 1,
@@ -176,15 +180,15 @@ final class TentativeCtlTests extends TestCase
 				],
 				"links" => [
 					"self" =>
-					"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
+					"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
 				],
 				"relationships" => [
 					"resultats" => [
 						"links" => [
 							"self" =>
-							"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/relationships/resultats",
+							"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/relationships/resultats",
 							"related" =>
-							"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/resultats",
+							"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/resultats",
 						],
 						"data" => [
 							[
@@ -221,7 +225,7 @@ final class TentativeCtlTests extends TestCase
 			->soumettre_tentative(
 				"jdoe",
 				$question,
-				$tentative,
+				Mockery::any(),
 			)
 			->andReturn($tentative);
 
@@ -231,7 +235,7 @@ final class TentativeCtlTests extends TestCase
 		$mockObtenirQuestionInt
 			->allows()
 			->get_question(
-				"prog1/les_fonctions_01/appeler_une_fonction_paramétrée"
+				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
 			)
 			->andReturn($question);
 
@@ -241,12 +245,12 @@ final class TentativeCtlTests extends TestCase
 		);
 		$mockIntFactory
 			->allows()
-			->getSoumettreTentativeProgInt()
-			->andReturn($mockSoumettreTentativeProgInt);
-		$mockIntFactory
-			->allows()
 			->getObtenirQuestionInt()
 			->andReturn($mockObtenirQuestionInt);
+		$mockIntFactory
+			->allows()
+			->getSoumettreTentativeProgInt()
+			->andReturn($mockSoumettreTentativeProgInt);
 
 		// Requête
 		$mockRequest = Mockery::mock("Illuminate\Http\Request");
@@ -260,21 +264,13 @@ final class TentativeCtlTests extends TestCase
 			->andReturn("POST");
 		$mockRequest
 			->allows()
-			->input("langage")
-			->andReturn("python");
-		$mockRequest
-			->allows()
-			->input("code")
-			->andReturn("codeTest");
-		$mockRequest
-			->allows()
 			->only([0 => 'langage', 1 => 'code'])
 			->andReturn(["python", "codeTest"]);
 		$mockRequest
 			->allows()
 			->path()
 			->andReturn(
-				"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU"
+				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
 			);
 		$mockRequest
 			->allows()
@@ -293,7 +289,7 @@ final class TentativeCtlTests extends TestCase
 					->post(
 						$mockRequest,
 						"jdoe",
-						"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
+						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 					)
 					->getContent(),
 				true
