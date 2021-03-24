@@ -73,7 +73,7 @@ class TentativeCtl extends Contrôleur
 				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
 			}
 
-			if ($tentative instanceof Exception || $tentative != null) {
+			if ($tentative != null) {
 				$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
 				$réponse = $this->item($tentative, new TentativeProgTransformer());
 			} else {
