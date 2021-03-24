@@ -24,6 +24,10 @@ use \Mockery;
 
 final class ObtenirQuestionProgIntTests extends TestCase
 {
+    public function tearDown() : void {
+        Mockery::close();
+    }
+
     public function test_étant_donné_une_questionprog_avec_un_chemin_existant_lorsque_cherché_par_chemin_on_obtient_un_objet_questionprog_correspondant()
     {
         $résultat_attendu = new QuestionProg();
