@@ -18,67 +18,31 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Question, TentativeProg};
-
 class TraiterTentativeProgInt extends Interacteur
 {
-    function traiter_résultats($exécutable, $tests, $question_uri, $username)
-    {
-        $résultats = [];
+	function traiter_résultats($question, $tentative)
+	{
+		$nb_tests_réussis = 0;
+		foreach ($question->tests as $i => $test) {
+			if ($this->vérifier_solution($tentative->résultats[$i], $test->sortie_attendue)) {
+				$tentative->résultats[$i]->résultat = true;
+				$nb_tests_réussis++;
+			}
+		}
 
-        $avancement = (new ObtenirAvancementInt(
-            $this->_source
-        ))->get_avancement($question_uri, $username);
+		$tentative->tests_réussis = $nb_tests_réussis;
 
-        $avancement->tentatives[$exécutable->lang] = new TentativeProg(
-            $exécutable->lang,
-            $exécutable->code_utilisateur,
-            (new \DateTime())->getTimestamp()
-        );
+		if ($nb_tests_réussis == count($question->tests)) {
+			$tentative->réussi = true;
+		}
 
-        $résultats["essayé"] = "true";
+		return $tentative;
+	}
 
-        $réussi = true;
-        foreach ($tests as $test) {
-            $test->réussi = $this->vérifier_solution(
-                $test->sorties,
-                $test->solution
-            );
-            if (!$test->réussi) {
-                $réussi = false;
-            }
-        }
-
-        if ($réussi) {
-            $avancement->etat = Question::ETAT_REUSSI;
-            $this->sauvegarder_avancement($avancement);
-            $résultats["réussi"] = "true";
-        } else {
-            if ($avancement->etat != Question::ETAT_REUSSI) {
-                $avancement->etat = Question::ETAT_NONREUSSI;
-                $this->sauvegarder_avancement($avancement);
-            }
-            $résultats["nonréussi"] = "true";
-        }
-
-        $résultats["état_réussi"] = $avancement->etat == Question::ETAT_REUSSI;
-
-        return $résultats;
-    }
-
-    private function vérifier_solution($sorties, $solution)
-    {
-        $sortie_standard = $sorties["output"];
-        $erreur = $sorties["erreurs"];
-        //en PHP, "" == NULL ( arg!!! )
-        return $solution != "null" &&
-            $sortie_standard == $solution &&
-            $erreur == "";
-    }
-
-    private function sauvegarder_avancement($avancement)
-    {
-        $interacteur = new SauvegarderAvancementProgInt($this->_source);
-        $interacteur->sauvegarder($avancement);
-    }
+	private function vérifier_solution($résultat, $solution)
+	{
+		$sortie_standard = $résultat->sortie_observée;
+		$erreur = $résultat->sortie_erreur;
+		return $sortie_standard == $solution && $erreur == "";
+	}
 }

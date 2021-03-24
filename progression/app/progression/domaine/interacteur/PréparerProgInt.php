@@ -25,7 +25,7 @@ class PréparerProgInt
 	public function préparer_exécutable($question, $tentative)
 	{
 		if (array_key_exists($tentative->langage, $question->exécutables)) {
-			$code = PréparerProgInt::composer_code_à_exécuter(
+			$code = $this->composer_code_à_exécuter(
 				$question->exécutables[$tentative->langage]->code,
 				$tentative->code,
 			);
@@ -40,9 +40,7 @@ class PréparerProgInt
 		//Insère les TODOs de code dans code_utilisateur
 		$orig = explode("\n", $code_utilisateur);
 		$code = $code;
-
 		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code, $todos);
-
 		$n = 0;
 		$res = [];
 		$todo = false;

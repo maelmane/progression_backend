@@ -19,6 +19,11 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 final class AvancementCtlTests extends TestCase
 {
+	public function tearDown(): void
+	{
+		Mockery::close();
+	}
+
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_l_avancement_et_ses_relations_sous_forme_json()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
@@ -36,27 +41,27 @@ final class AvancementCtlTests extends TestCase
 			"data" => [
 				"type" => "avancement",
 				"id" =>
-					"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				"attributes" => [
 					"état" => 1,
 				],
 				"links" => [
 					"self" =>
-						"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+					"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				],
 				"relationships" => [
 					"tentatives" => [
 						"links" => [
 							"self" =>
-								"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/relationships/tentatives",
+							"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/relationships/tentatives",
 							"related" =>
-								"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
+							"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
 						],
 						"data" => [
 							[
 								"type" => "tentative",
 								"id" =>
-									"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
+								"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
 							],
 						],
 					],
@@ -66,7 +71,7 @@ final class AvancementCtlTests extends TestCase
 				[
 					"type" => "tentative",
 					"id" =>
-						"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
+					"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
 					"attributes" => [
 						"date_soumission" => 1614965817,
 						"tests_réussis" => 2,
@@ -78,17 +83,17 @@ final class AvancementCtlTests extends TestCase
 					],
 					"links" => [
 						"self" =>
-							"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
+						"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
 						"related" =>
-							"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+						"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 					],
 					"relationships" => [
 						"resultats" => [
 							"links" => [
 								"self" =>
-									"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817/relationships/resultats",
+								"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817/relationships/resultats",
 								"related" =>
-									"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817/resultats",
+								"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817/resultats",
 							],
 						],
 					],
@@ -97,12 +102,6 @@ final class AvancementCtlTests extends TestCase
 		];
 
 		// Intéracteur
-		$mockObtenirQuestionInt = Mockery::mock("progression\domaine\interacteur\ObtenirQuestionInt");
-		$mockObtenirQuestionInt
-			->allows()
-			->get_question("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
-			->andReturn($question);
-
 		$mockObtenirAvancementInt = Mockery::mock("progression\domaine\interacteur\ObtenirAvancementInt");
 		$mockObtenirAvancementInt
 			->allows()
@@ -111,11 +110,6 @@ final class AvancementCtlTests extends TestCase
 
 		// InteracteurFactory
 		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
-		$mockIntFactory
-			->allows()
-			->getObtenirQuestionInt()
-			->andReturn($mockObtenirQuestionInt);
-
 		$mockIntFactory
 			->allows()
 			->getObtenirAvancementInt()
@@ -171,12 +165,6 @@ final class AvancementCtlTests extends TestCase
 		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		// Intéracteur
-		$mockObtenirQuestionInt = Mockery::mock("progression\domaine\interacteur\ObtenirQuestionInt");
-		$mockObtenirQuestionInt
-			->allows()
-			->get_question("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
-			->andReturn($question);
-
 		$mockObtenirAvancementInt = Mockery::mock("progression\domaine\interacteur\ObtenirAvancementInt");
 		$mockObtenirAvancementInt
 			->allows()
@@ -185,11 +173,6 @@ final class AvancementCtlTests extends TestCase
 
 		// InteracteurFactory
 		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
-		$mockIntFactory
-			->allows()
-			->getObtenirQuestionInt()
-			->andReturn($mockObtenirQuestionInt);
-
 		$mockIntFactory
 			->allows()
 			->getObtenirAvancementInt()

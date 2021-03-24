@@ -10,7 +10,7 @@ participant obtenirQuestionInt as "ObtenirQuestionInt"
 participant preparerExecInt as "PréparerProgInt"
 participant exécuterInt as "ExécuterProgInt"
 participant traiterInt as "TraiterTentativeProgInt"
-participant sauveragarderInt as "SauvegarderAvancementProgInt"
+participant sauveragarderInt as "SauvegarderTentativeProgInt"
 
 tentativectl -> obtenirQuestionInt : question_uri
 obtenirQuestionInt -> tentativectl : Question
@@ -23,9 +23,9 @@ group itération [ pour chaque Test de Question.tests ]
   exécuterInt -> soumissionInt : Résultat
 end
   
-soumissionInt -> traiterInt : tests, résultats, username
-traiterInt -> sauveragarderInt
+soumissionInt -> traiterInt : tests, résultats
 traiterInt -> soumissionInt : résultats
+soumissionInt -> sauveragarderInt : Tentative, username, question_uri
 soumissionInt -> tentativectl : Tentative
 
 @enduml
@@ -51,7 +51,6 @@ Un test de validation d'une question auquel sont soumises les solutions proposé
 
 | Nom             | Type | Valeurs |
 |-----------------+------+---------|
-| numéro          | int  |         |
 | nom             | str  |         |
 | entrée          | str  |         |
 | sortie_attendue | str  |         |
@@ -64,7 +63,6 @@ Le résultat d'un test pour une solution proposée.
 
 | Nom             | Type | Valeurs   |
 |-----------------+------+-----------|
-| numéro          | int  | # du test |
 | sortie_observée | str  |           |
 | sortie_erreur   | str  |           |
 | résultat        | bool |           |

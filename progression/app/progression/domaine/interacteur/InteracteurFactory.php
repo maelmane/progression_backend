@@ -26,7 +26,6 @@ class InteracteurFactory
 	{
 		return new LoginInt(new DAOFactory());
 	}
-
 	public function getObtenirQuestionInt()
 	{
 		return new ObtenirQuestionInt(new DAOFactory());
@@ -42,5 +41,25 @@ class InteracteurFactory
 	public function getObtenirTentativeInt()
 	{
 		return new ObtenirTentativeInt(new DAOFactory());
+	}
+	public function getSoumettreTentativeProgInt()
+	{
+		return new SoumettreTentativeProgInt(new DAOFactory(), new InteracteurFactory());
+	}
+	public function getPréparerProgInt()
+	{
+		return new PréparerProgInt();
+	}
+	public function getExécuterProgInt()
+	{
+		return new ExécuterProgInt(new DAOFactory());
+	}
+	public function getTraiterTentativeProgInt()
+	{
+		return new TraiterTentativeProgInt(new DAOFactory());
+	}
+	public function getSauvegarderTentativeProgInt()
+	{
+		return new SauvegarderTentativeProgInt(new DAOFactory());
 	}
 }
