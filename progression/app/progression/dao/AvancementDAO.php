@@ -52,13 +52,13 @@ class AvancementDAO extends EntitéDAO
 	public function save($username, $question_uri, $objet)
 	{
 		$query = EntitéDAO::get_connexion()
-			->prepare('INSERT INTO avancement ( etat, question_uri, username, type ) VALUES ( ?, ?, ? )
+			->prepare('INSERT INTO avancement ( etat, question_uri, username, type ) VALUES ( ?, ?, ?, ' . Question::TYPE_PROG . ')
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
 
-		$query->bind_param("iss", $objet->etat, $question_uri, $username, Question::TYPE_PROG);
+		$query->bind_param("iss", $objet->etat, $question_uri, $username);
 		$query->execute();
 		$query->close();
 
-		return $this->get_avancement($objet->question_uri, $objet->username);
+		return $this->get_avancement($username, $question_uri);
 	}
 }

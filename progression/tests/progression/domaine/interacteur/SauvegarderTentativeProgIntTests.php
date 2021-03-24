@@ -40,10 +40,8 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->andReturn(null);
 		$mockAvancementDao
 			->shouldReceive("save")
-			->withArgs(function ($user, $uri, $av) {
-				return $user == "Bob" &&
-					$uri == "https://example.com/question" &&
-					$av->etat == Question::ETAT_NONREUSSI;
+			->withArgs(function ($user, $uri, $av) use ($avancement) {
+				return $user == "Bob" && $uri == "https://example.com/question" && $av == $avancement;
 			})
 			->andReturn($avancement);
 
@@ -87,8 +85,8 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->andReturn(null);
 		$mockAvancementDao
 			->shouldReceive("save")
-			->withArgs(function ($user, $uri, $av) {
-				return $user == "Bob" && $uri == "https://example.com/question" && $av->etat == Question::ETAT_REUSSI;
+			->withArgs(function ($user, $uri, $av) use ($avancement) {
+				return $user == "Bob" && $uri == "https://example.com/question" && $av == $avancement;
 			})
 			->andReturn($avancement);
 
@@ -167,7 +165,11 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, true, 1, "feedback", []);
 
-		$avancement = new Avancement([$tentative], Question::ETAT_REUSSI, Question::TYPE_PROG);
+		$avancement = new Avancement(
+			[new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", []), $tentative],
+			Question::ETAT_REUSSI,
+			Question::TYPE_PROG,
+		);
 
 		$mockAvancementDao = Mockery::mock("progression\dao\AvancementDAO");
 		$mockAvancementDao
@@ -182,8 +184,8 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			);
 		$mockAvancementDao
 			->shouldReceive("save")
-			->withArgs(function ($user, $uri, $av) {
-				return $user == "Bob" && $uri == "https://example.com/question" && $av->etat == Question::ETAT_REUSSI;
+			->withArgs(function ($user, $uri, $av) use ($avancement) {
+				return $user == "Bob" && $uri == "https://example.com/question" && $av == $avancement;
 			})
 			->andReturn($avancement);
 

@@ -27,22 +27,22 @@ class SoumettreTentativeProgInt extends Interacteur
 	{
 		$exécutable = null;
 
-		$préparerProgInt = $this->_source->getPréparerProgInt();
+		$préparerProgInt = (new InteracteurFactory())->getPréparerProgInt();
 		$exécutable = $préparerProgInt->préparer_exécutable($question, $tentative);
 
 		if ($exécutable) {
-			$exécuterProgInt = $this->_source->getExécuterProgInt();
+			$exécuterProgInt = (new InteracteurFactory())->getExécuterProgInt();
 
 			foreach ($question->tests as $i => $test) {
 				$résultat = $exécuterProgInt->exécuter($exécutable, $test);
 				$tentative->résultats[$i] = $résultat;
 			}
 
-			$traiterTentativeProgInt = $this->_source->getTraiterTentativeProgInt();
+			$traiterTentativeProgInt = (new InteracteurFactory())->getTraiterTentativeProgInt();
 			$tentativeTraité = $traiterTentativeProgInt->traiter_résultats($question, $tentative);
 
-			$sauvegarderTentativeProgInt = $this->_source->getSauvegarderAvancementProgIntTests();
-			// $sauvegarderTentativeProgInt->save($tentativeTraité, $username, $question->uri);
+			$interacteurSauvegarde = (new InteracteurFactory())->getSauvegarderTentativeProgInt();
+			$interacteurSauvegarde->sauvegarder($username, $question->uri, $tentativeTraité);
 
 			return $tentativeTraité;
 		}

@@ -58,8 +58,8 @@ class InteracteurFactory
 	{
 		return new TraiterTentativeProgInt(new DAOFactory());
 	}
-	public function getSauvegarderAvancementProgIntTests()
+	public function getSauvegarderTentativeProgInt()
 	{
-		return null;
+		return new SauvegarderTentativeProgInt(new DAOFactory());
 	}
 }

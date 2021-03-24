@@ -64,9 +64,9 @@ class TentativeCtl extends Contrôleur
 
 		if ($question instanceof QuestionProg) {
 			$input = $request->only(["langage", "code"]);
-
+			print_r($input);
 			if (count(array_filter($input)) == 2) {
-				$tentative = new TentativeProg($input[0], $input[1], (new \DateTime())->getTimestamp());
+				$tentative = new TentativeProg($input["langage"], $input["code"], (new \DateTime())->getTimestamp());
 
 				$tentativeInt = $this->intFactory->getSoumettreTentativeProgInt();
 				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);

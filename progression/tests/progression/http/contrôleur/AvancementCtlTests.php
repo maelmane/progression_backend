@@ -161,4 +161,78 @@ final class AvancementCtlTests extends TestCase
 			),
 		);
 	}
+
+	public function test_étant_donné_un_avancement_inexistant_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
+
+		// Question
+		$question = new QuestionProg();
+		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+
+		// Intéracteur
+		$mockObtenirQuestionInt = Mockery::mock("progression\domaine\interacteur\ObtenirQuestionInt");
+		$mockObtenirQuestionInt
+			->allows()
+			->get_question("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->andReturn($question);
+
+		$mockObtenirAvancementInt = Mockery::mock("progression\domaine\interacteur\ObtenirAvancementInt");
+		$mockObtenirAvancementInt
+			->allows()
+			->get_avancement("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->andReturn(null);
+
+		// InteracteurFactory
+		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
+		$mockIntFactory
+			->allows()
+			->getObtenirQuestionInt()
+			->andReturn($mockObtenirQuestionInt);
+
+		$mockIntFactory
+			->allows()
+			->getObtenirAvancementInt()
+			->andReturn($mockObtenirAvancementInt);
+
+		// Requête
+		$mockRequest = Mockery::mock("Illuminate\Http\Request");
+		$mockRequest
+			->allows()
+			->ip()
+			->andReturn("127.0.0.1");
+		$mockRequest
+			->allows()
+			->method()
+			->andReturn("GET");
+		$mockRequest
+			->allows()
+			->path()
+			->andReturn(
+				"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			);
+		$mockRequest
+			->allows()
+			->query("include")
+			->andReturn(null);
+		$this->app->bind(Request::class, function () use ($mockRequest) {
+			return $mockRequest;
+		});
+
+		// Contrôleur
+		$ctl = new AvancementCtl($mockIntFactory);
+
+		$résultat_attendu = '{"message":"Ressource non trouvée."}';
+
+		$this->assertEquals(
+			$résultat_attendu,
+			$ctl
+				->get(
+					$mockRequest,
+					"jdoe",
+					"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				)
+				->getContent(),
+		);
+	}
 }

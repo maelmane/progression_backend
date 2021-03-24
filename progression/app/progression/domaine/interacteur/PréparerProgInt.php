@@ -40,9 +40,9 @@ class PréparerProgInt
 		//Insère les TODOs de code dans code_utilisateur
 		$orig = explode("\n", $code_utilisateur);
 		$code = $code;
-
+        print_r($code);
 		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code, $todos);
-
+        print_r($todos);
 		$n = 0;
 		$res = [];
 		$todo = false;

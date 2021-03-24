@@ -28,10 +28,11 @@ class SauvegarderTentativeProgInt extends Interacteur
 		$avancement = $dao_avancement->get_avancement($username, $question_uri);
 
 		if ($avancement == null) {
-			$avancement = new Avancement([$tentative], Question::ETAT_DEBUT, Question::TYPE_PROG);
+			$avancement = new Avancement([], Question::ETAT_DEBUT, Question::TYPE_PROG);
 		}
 
 		$avancement->etat = $tentative->réussi ? Question::ETAT_REUSSI : Question::ETAT_NONREUSSI;
+		$avancement->tentatives[] = $tentative;
 
 		$dao_avancement->save($username, $question_uri, $avancement);
 
