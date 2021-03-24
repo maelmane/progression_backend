@@ -44,7 +44,7 @@ class InteracteurFactory
 	}
 	public function getSoumettreTentativeProgInt()
 	{
-		return new SoumettreTentativeProgInt(new DAOFactory());
+		return new SoumettreTentativeProgInt(new DAOFactory(), new InteracteurFactory());
 	}
 	public function getPréparerProgInt()
 	{
