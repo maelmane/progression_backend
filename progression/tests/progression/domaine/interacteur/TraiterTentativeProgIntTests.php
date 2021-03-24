@@ -18,59 +18,79 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Test, RésultatProg};
+use progression\domaine\entité\{QuestionProg, TentativeProg, Test, RésultatProg};
 use PHPUnit\Framework\TestCase;
 
 final class TraiterTentativeProgIntTests extends TestCase
 {
-	public function test_étant_donné_des_résultats_valides_et_des_tests_dune_question_lorsquon_les_traites_on_obtient_des_résultats()
+	public function test_étant_donné_une_TentativeProg_valides_et_une_QuestionProg_lorsquon_les_traites_on_obtient_une_TentativeProg_traitée_et_réussie()
 	{
-		$résultats = [
-			new RésultatProg("ok\n", ""),
-			new RésultatProg("ok\nok\nok\nok\nok\nok\n", "")
-		];
-		$tests = [
+		$question = new QuestionProg();
+		$question->tests = [
 			new Test("premier test", "1", "ok\n"),
-			new Test("premier test", "5", "ok\nok\nok\nok\nok\n"),
+			new Test("deuxième test", "5", "ok\nok\nok\nok\nok\n"),
 		];
 
-		$résultat_attendu = [
-			"tests_réussis" => 2,
-			"résultat_prog" => [
-				new RésultatProg("ok\n", "", true),
-				new RésultatProg("ok\nok\nok\nok\nok\n", "", true)
-			]
+		$tentative = new TentativeProg("python", "testCode");
+		$tentative->résultats = [
+			new RésultatProg("ok\n", ""),
+			new RésultatProg("ok\nok\nok\nok\nok\n", "")
 		];
 
-		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($résultats, $tests);
+		$tests_réussis_attendu = 2;
+		$tentative_réussi_attendu = true;
 
-		$this->assertEquals($résultat_attendu, $résultat_observé);
+		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($question, $tentative);
+
+		$this->assertEquals($tests_réussis_attendu, $résultat_observé->tests_réussis);
+		$this->assertEquals($tentative_réussi_attendu, $résultat_observé->réussi);
 	}
 
-	public function test_étant_donné_des_résultats_nonvalides_et_des_tests_dune_question_lorsquon_les_traites_on_obtient_des_résultats()
+	public function test_étant_donné_une_TentativeProg_nonvalides_et_une_QuestionProg_lorsquon_les_traites_on_obtient_une_TentativeProg_traitée_et_nonréussie()
 	{
-		$résultats = [
-			new RésultatProg("ok\n", ""),
-			new RésultatProg("ok\nok", ""),
-			new RésultatProg("ok\nok\nok", "")
-		];
-		$tests = [
+		$question = new QuestionProg();
+		$question->tests = [
 			new Test("premier test", "1", "ok\n"),
 			new Test("deuxième test", "5", "ok\nok\nok\nok\nok\n"),
 			new Test("troisième test", "10", "ok\nok\nok\nok\nok\nok\nok\nok\nok\nok\n")
 		];
 
-		$résultat_attendu = [
-			"tests_réussis" => 1,
-			"résultat_prog" => [
-				new RésultatProg("ok\n", "", true),
-				new RésultatProg("ok\nok", "", false),
-				new RésultatProg("ok\nok\nok", "", false)
-			]
+		$tentative = new TentativeProg("python", "testCode");
+		$tentative->résultats = [
+			new RésultatProg("ok\n", ""),
+			new RésultatProg("ok\nok\nok\n", ""),
+			new RésultatProg("ok\nok\nok\nok\nok\n", "")
 		];
 
-		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($résultats, $tests);
+		$tests_réussis_attendu = 1;
+		$tentative_réussi_attendu = false;
 
-		$this->assertEquals($résultat_attendu, $résultat_observé);
+		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($question, $tentative);
+
+		$this->assertEquals($tests_réussis_attendu, $résultat_observé->tests_réussis);
+		$this->assertEquals($tentative_réussi_attendu, $résultat_observé->réussi);
+	}
+
+	public function test_étant_donné_une_TentativeProg_avec_une_erreur_et_une_QuestionProg_lorsquon_les_traites_on_obtient_une_TentativeProg_traitée_et_nonréussie()
+	{
+		$question = new QuestionProg();
+		$question->tests = [
+			new Test("premier test", "1", "ok\n"),
+			new Test("deuxième test", "5", "ok\nok\nok\nok\nok\n"),
+		];
+
+		$tentative = new TentativeProg("python", "testCode");
+		$tentative->résultats = [
+			new RésultatProg("ok\n", ""),
+			new RésultatProg("", "testErreur")
+		];
+
+		$tests_réussis_attendu = 1;
+		$tentative_réussi_attendu = false;
+
+		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($question, $tentative);
+
+		$this->assertEquals($tests_réussis_attendu, $résultat_observé->tests_réussis);
+		$this->assertEquals($tentative_réussi_attendu, $résultat_observé->réussi);
 	}
 }
