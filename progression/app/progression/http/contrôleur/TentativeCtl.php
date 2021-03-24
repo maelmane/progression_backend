@@ -18,6 +18,7 @@
 
 namespace progression\http\contrôleur;
 
+use Exception;
 use Illuminate\Http\Request;
 use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransformer, TentativeBDTransformer};
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
@@ -72,7 +73,9 @@ class TentativeCtl extends Contrôleur
 				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
 			}
 
-			if ($tentative != null) {
+			if ($tentative instanceof Exception) {
+				return $this->réponse_json(["message" => "Service non disponible."], 503);
+			} elseif ($tentative != null) {
 				$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
 				$réponse = $this->item($tentative, new TentativeProgTransformer());
 			}
