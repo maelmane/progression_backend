@@ -77,7 +77,7 @@ final class TentativeProgDAOTests extends TestCase
 
 		$réponse_attendue = new TentativeProg("python", "testCode", 123456789);
 
-		$résponse_observée = (new TentativeProgDAO())->save($tentative_test, "Stefany", "https://exemple.com");
+		$résponse_observée = (new TentativeProgDAO())->save("Stefany", "https://exemple.com", $tentative_test);
 		$this->assertEquals($réponse_attendue, $résponse_observée);
 
 		$résponse_observée = (new TentativeProgDAO())->get_tentative("Stefany", "https://exemple.com", 123456789);

@@ -20,11 +20,11 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Question;
 
-class SauvegarderAvancementInt extends Interacteur
+class SauvegarderTentativeSysInt extends Interacteur
 {
 	public function sauvegarder($avancement, $username)
 	{
-		$dao = $this->_source->get_avancement_dao();
+		$dao = $this->_source->get_avancement_sys_dao();
 		if ($avancement->etat == Question::ETAT_DEBUT) {
 			$avancement->etat = Question::ETAT_NONREUSSI;
 		}

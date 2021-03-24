@@ -35,7 +35,7 @@ $router->group(["middleware" => "auth"], function () use ($router) {
 		"/tentative/{username}/{question_uri}/{timestamp:[[:digit:]]+}/relationships/{relation}",
 		"NotImplementedCtl@get",
 	);
-	$router->post("/tentative/{username}/{question_uri}", "NotImplementedCtl@get");
+	$router->post("/tentative/{username}/{question_uri}", "TentativeCtl@post");
 	// Ébauche
 	$router->get("/ebauche/{question_uri}/{langage}", "ÉbaucheCtl@get");
 	// Test

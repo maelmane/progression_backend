@@ -23,20 +23,20 @@ use progression\domaine\entité\Tentative;
 
 class TentativeTransformer extends Fractal\TransformerAbstract
 {
-    public $type = "tentative";
+	public $type = "tentative";
 
-    public function transform(Tentative $tentative)
-    {
-        $data_out = [
-            "id" => $tentative->id,
-            "date_soumission" => $tentative->date_soumission,
-            "réussi" => $tentative->réussi,
-            "feedback" => $tentative->feedback,
-            "links" => (isset($tentative->links) ? $tentative->links : []) + [
-                "self" => "{$_ENV["APP_URL"]}tentative/{$tentative->id}",
-            ],
-        ];
+	public function transform(Tentative $tentative)
+	{
+		$data_out = [
+			"id" => $tentative->id,
+			"date_soumission" => $tentative->date_soumission,
+			"feedback" => $tentative->feedback,
+			"réussi" => $tentative->réussi,
+			"links" => (isset($tentative->links) ? $tentative->links : []) + [
+				"self" => "{$_ENV["APP_URL"]}tentative/{$tentative->id}",
+			],
+		];
 
-        return $data_out;
-    }
+		return $data_out;
+	}
 }

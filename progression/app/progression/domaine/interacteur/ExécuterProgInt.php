@@ -18,19 +18,39 @@
 
 namespace progression\domaine\interacteur;
 
+use progression\domaine\entité\RésultatProg;
+
 class ExécuterProgInt extends Interacteur
 {
+    const langages = [
+        "python2" => 0,
+        "python" => 1,
+        "ruby" => 2,
+        "clojure" => 3,
+        "php" => 4,
+        "nodejs" => 5,
+        "scala" => 6,
+        "go" => 7,
+        "cpp" => 8,
+        "c" => 9,
+        "java" => 10,
+        "bash" => 11,
+        "perl" => 12,
+        "sshd" => 13,
+        "mysql" => 14,
+    ];
+
 	public function exécuter($exécutable, $test)
 	{
 		$this->loguer_code($exécutable);
 
 		//post le code à remotecompiler
-		$url_rc = "http://" . $_ENV["COMPILEBOX_HOTE"] . ":" . $_ENV["COMPILEBOX_PORT"] . "/compile"; //TODO à changer ?
+		$url_rc = $_ENV["COMPILEBOX_URL"];
 		$data_rc = [
-			"language" => $exécutable->lang,
-			"code" => $exécutable->code_exec,
+			"language" => ExécuterProgInt::langages[$exécutable->lang],
+			"code" => $exécutable->code,
 			"parameters" => "\"" . $test->params . "\"",
-			"stdin" => $test->stdin,
+			"stdin" => $test->entrée,
 			"vm_name" => "remotecompiler",
 		];
 
@@ -45,10 +65,10 @@ class ExécuterProgInt extends Interacteur
 
 		$comp_resp = file_get_contents($url_rc, false, $context);
 
-		return [
-			"stdout" => $this->extraire_sortie_standard($comp_resp),
-			"stderr" => $this->extraire_sortie_erreur($comp_resp),
-		];
+		return new RésultatProg(
+			$this->extraire_sortie_standard($comp_resp),
+			$this->extraire_sortie_erreur($comp_resp)
+        );
 	}
 
 	protected function loguer_code($exécutable)
@@ -60,7 +80,7 @@ class ExécuterProgInt extends Interacteur
 			" : lang : " .
 			$exécutable->lang .
 			" Code : " .
-			$exécutable->code_utilisateur;
+			$exécutable->code;
 		syslog(LOG_INFO, $com_log);
 	}
 
