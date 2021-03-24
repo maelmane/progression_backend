@@ -24,6 +24,10 @@ use \Mockery;
 
 final class SoumettreTentativeProgIntTests extends TestCase
 {
+    public function tearDown() : void {
+        Mockery::close();
+    }
+
 	public function test_étant_donné_une_questionprog_et_une_tentativeprog_lorsqu_on_appelle_soumettre_tentative_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
 	{
 		$résultat_attendu = new TentativeProg(
