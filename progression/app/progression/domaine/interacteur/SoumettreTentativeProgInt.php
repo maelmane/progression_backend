@@ -18,8 +18,6 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{RésultatProg, TentativeBD, TentativeProg, TentativeSys};
-
 class SoumettreTentativeProgInt extends Interacteur
 {
 
