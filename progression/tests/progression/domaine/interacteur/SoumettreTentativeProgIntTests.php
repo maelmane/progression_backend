@@ -50,7 +50,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		);
 
 		$question = new QuestionProg();
-		$question->question_uri =
+		$question->uri =
 			"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour";
 		$question->tests = [
 			$test,
@@ -100,14 +100,11 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		$mockTraiterTentativeProgInt
 			->allows()
 			->traiter_résultats(
-				$tentative->résultats,
-				$question->tests,
-				"jdoe",
+				$question,
+				$tentative,
 			)
 			->andReturn(
-				[
-					$résultat,
-				]
+				$résultat_attendu,
 			);
 		$mockExécuterProgInt = Mockery::mock(
 			"progression\domaine\interacteur\ExécuterProgInt"
@@ -120,6 +117,19 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			)
 			->andReturn(
 				$résultat,
+			);
+		$mockSauvegarderTentativeProgInt = Mockery::mock(
+			"progression\domaine\interacteur\SauvegarderTentativeProgInt"
+		);
+		$mockSauvegarderTentativeProgInt
+			->allows()
+			->sauvegarder(
+				"jdoe",
+				"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour",
+				$résultat_attendu,
+			)
+			->andReturn(
+				$résultat_attendu,
 			);
 
 		// InteracteurFactory
@@ -138,8 +148,12 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			->allows()
 			->getExécuterProgInt()
 			->andReturn($mockExécuterProgInt);
+		$mockIntFactory
+			->allows()
+			->getSauvegarderTentativeProgInt()
+			->andReturn($mockSauvegarderTentativeProgInt);
 
-		$interacteur = new SoumettreTentativeProgInt($mockIntFactory);
+		$interacteur = new SoumettreTentativeProgInt(null, $mockIntFactory);
 		$interacteur->intFactory = $mockIntFactory;
 		$résultat_obtenu = $interacteur->soumettre_tentative(
 			"jdoe",
@@ -153,7 +167,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 	public function test_étant_donné_une_questionprog_et_une_tentativeprog_lorsqu_on_appelle_soumettre_tentative_on_obtient_null()
 	{
 		$question = new QuestionProg();
-		$question->question_uri =
+		$question->uri =
 			"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour";
 		$question->exécutables["python"] = new Exécutable(
 			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
