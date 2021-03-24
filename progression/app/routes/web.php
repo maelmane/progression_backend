@@ -20,7 +20,7 @@ $router->get("/", function () use ($router) {
 $router->post("/auth/", "LoginCtl@login");
 
 $router->group(["middleware" => "auth"], function () use ($router) {
-    // User
+	// User
 	$router->get("/user[/{username}]", "UserCtl@get");
 	$router->get("/user/{username}/relationships/{relation}", "NotImplementedCtl@get");
 	// Question
