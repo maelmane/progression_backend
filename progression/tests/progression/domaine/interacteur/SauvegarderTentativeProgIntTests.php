@@ -24,6 +24,10 @@ use \Mockery;
 
 final class SauvegarderTentativeProgIntTests extends TestCase
 {
+    public function tearDown() : void {
+        Mockery::close();
+    }
+    
 	public function test_étant_donné_une_première_tentative_ratée_lorsquon_la_sauvegarde_lavancement_est_aussi_sauvegardé_et_on_obtient_la_tentative()
 	{
 		$username = "Bob";

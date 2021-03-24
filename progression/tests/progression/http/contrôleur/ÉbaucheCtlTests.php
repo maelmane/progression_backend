@@ -26,6 +26,10 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 final class ÉbaucheCtlTests extends TestCase
 {
+    public function tearDown() : void {
+        Mockery::close();
+    }
+
 	public function test_étant_donné_le_chemin_dune_ébauche_lorsquon_appelle_get_on_obtient_lébauche_et_ses_relations_sous_forme_json()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";

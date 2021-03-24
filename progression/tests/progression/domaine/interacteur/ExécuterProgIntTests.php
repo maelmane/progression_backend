@@ -24,6 +24,10 @@ use \Mockery;
 
 final class ExécuterProgIntTests extends TestCase
 {
+    public function tearDown() : void {
+        Mockery::close();
+    }
+
 	public function test_étant_donné_un_exécutable_python_et_un_test_lorsquon_les_soumet_pour_exécution_on_obtient_un_résultat_de_test_avec_ses_sorties_standards()
 	{
 		$_ENV['COMPILEBOX_URL'] = "file://" . __DIR__ . "/ExécuterProgIntTests_fichiers/test_exec_prog_int_python";

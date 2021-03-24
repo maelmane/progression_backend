@@ -36,6 +36,7 @@ final class AvancementDAOTests extends \TestCase
 	public function tearDown(): void
 	{
 		EntitéDAO::get_connexion()->rollback();
+        Mockery::close();
 	}
 
 	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_objet_avancement_correspondant()

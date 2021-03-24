@@ -24,6 +24,10 @@ use \Mockery;
 
 final class LoginIntTests extends TestCase
 {
+    public function tearDown() : void {
+        Mockery::close();
+    }
+
 	public function test_étant_donné_lutilisateur_Bob_et_une_authentification_de_type_no_lorsquon_login_sans_authentification_on_obtient_un_objet_user_nommé_Bob()
 	{
 		$_ENV["AUTH_TYPE"] = "no";

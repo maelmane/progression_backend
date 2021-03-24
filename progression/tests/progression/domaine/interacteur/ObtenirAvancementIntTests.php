@@ -24,6 +24,10 @@ use \Mockery;
 
 final class ObtenirAvancementIntTests extends TestCase
 {
+    public function tearDown() : void {
+        Mockery::close();
+    }
+
 	public function test_étant_donné_un_avancement_avec_un_user_id_et_question_id_existant_lorsque_cherché_par_user_id_et_question_id_on_obtient_un_objet_avancementprog_correspondant()
 	{
 		$résultat_attendu = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
