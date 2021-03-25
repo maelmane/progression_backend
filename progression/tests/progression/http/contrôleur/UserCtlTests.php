@@ -107,6 +107,84 @@ final class UserCtlTests extends TestCase
 						$mockRequest
 					)
 					->getContent(),
+				true,
+			)
+		);
+	}
+
+	public function test_étant_donné_le_nom_dun_utilisateur_inexistant_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
+
+		$user = new User(null);
+		$user->username = "Jean-Yves";
+
+		$résultat_attendu = [
+			"message" => "Ressource non trouvée."
+		];
+
+		// Intéracteur
+		$mockObtenirUserInt = Mockery::mock(
+			"progression\domaine\interacteur\ObtenirUserInt"
+		);
+		$mockObtenirUserInt
+			->allows()
+			->get_user(
+				"Jean-Yves"
+			)
+			->andReturn(null);
+
+		// InteracteurFactory
+		$mockIntFactory = Mockery::mock(
+			"progression\domaine\interacteur\InteracteurFactory"
+		);
+		$mockIntFactory
+			->allows()
+			->getObtenirUserInt()
+			->andReturn($mockObtenirUserInt);
+
+		// Requête
+		$mockRequest = Mockery::mock("Illuminate\Http\Request");
+		$mockRequest
+			->allows()
+			->ip()
+			->andReturn("127.0.0.1");
+		$mockRequest
+			->allows()
+			->method()
+			->andReturn("GET");
+		$mockRequest
+			->allows()
+			->path()
+			->andReturn("/user");
+		$mockRequest
+			->allows()
+			->all()
+			->andReturn();
+		$mockRequest
+			->allows()
+			->route("username")
+			->andReturn("Jean-Yves");
+		$mockRequest
+			->allows()
+			->query("include")
+			->andReturn();
+
+		$this->app->bind(Request::class, function () use ($mockRequest) {
+			return $mockRequest;
+		});
+
+		// Contrôleur
+		$ctl = new UserCtl($mockIntFactory);
+
+		$this->assertEquals(
+			$résultat_attendu,
+			json_decode(
+				$ctl
+					->get(
+						$mockRequest
+					)
+					->getContent(),
 				true
 			)
 		);
