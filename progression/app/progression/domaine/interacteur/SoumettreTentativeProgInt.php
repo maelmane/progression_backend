@@ -18,8 +18,6 @@
 
 namespace progression\domaine\interacteur;
 
-use Exception;
-
 class SoumettreTentativeProgInt extends Interacteur
 {
 
@@ -34,12 +32,8 @@ class SoumettreTentativeProgInt extends Interacteur
 			$exécuterProgInt = $this->_source_int->getExécuterProgInt();
 
 			foreach ($question->tests as $i => $test) {
-				try {
-					$résultat = $exécuterProgInt->exécuter($exécutable, $test);
-					$tentative->résultats[$i] = $résultat;
-				} catch (Exception $e) {
-					return $e;
-				}
+				$résultat = $exécuterProgInt->exécuter($exécutable, $test);
+				$tentative->résultats[$i] = $résultat;
 			}
 
 			$traiterTentativeProgInt = $this->_source_int->getTraiterTentativeProgInt();
