@@ -42,7 +42,6 @@ class SoumettreTentativeProgInt extends Interacteur
 			$interacteurSauvegarde = $this->_source_int->getSauvegarderTentativeProgInt();
 			$interacteurSauvegarde->sauvegarder($username, $question->uri, $tentativeTraité);
 
-			return $tentativeTraité;
 		}
 
 		return null;
