@@ -22,60 +22,60 @@ use progression\util\Encodage;
 
 class QuestionProgTransformer extends QuestionTransformer
 {
-    protected $availableIncludes = ["tests", "ebauches"];
+	protected $availableIncludes = ["tests", "ebauches"];
 
-    public function transform($data_in)
-    {
-        $data_out = array_merge(parent::transform($data_in), [
-            "sous-type" => "questionProg",
-        ]);
+	public function transform($data_in)
+	{
+		$data_out = array_merge(parent::transform($data_in), [
+			"sous-type" => "questionProg",
+		]);
 
-        return $data_out;
-    }
+		return $data_out;
+	}
 
-    public function includeTests($data_in)
-    {
-        $question = $data_in["question"];
+	public function includeTests($data_in)
+	{
+		$question = $data_in["question"];
 
-        foreach ($question->tests as $i => $test) {
-            $test->numéro = $i;
-            $test->id = Encodage::base64_encode_url($question->uri) . "/$i";
-            $test->links = [
-                "related" =>
-                    $_ENV["APP_URL"] .
-                    "question/" .
-                    Encodage::base64_encode_url($question->uri),
-            ];
-        }
+		foreach ($question->tests as $i => $test) {
+			$test->numéro = $i;
+			$test->id = Encodage::base64_encode_url($question->uri) . "/$i";
+			$test->links = [
+				"related" =>
+				$_ENV["APP_URL"] .
+					"question/" .
+					Encodage::base64_encode_url($question->uri),
+			];
+		}
 
-        return $this->collection(
-            $question->tests,
-            new TestTransformer(),
-            "test"
-        );
-    }
+		return $this->collection(
+			$question->tests,
+			new TestTransformer(),
+			"test"
+		);
+	}
 
-    //Doit être en minuscules à cause de l'accent (É n'est pas transformé en é)
-    public function includeEbauches($data_in)
-    {
-        $question = $data_in["question"];
+	//Doit être en minuscules à cause de l'accent (É n'est pas transformé en é)
+	public function includeEbauches($data_in)
+	{
+		$question = $data_in["question"];
 
-        foreach ($question->exécutables as $ébauche) {
-            $ébauche->id =
-                Encodage::base64_encode_url($question->uri) .
-                "/{$ébauche->lang}";
-            $ébauche->links = [
-                "related" =>
-                    $_ENV["APP_URL"] .
-                    "question/" .
-                    Encodage::base64_encode_url($question->uri),
-            ];
-        }
+		foreach ($question->exécutables as $ébauche) {
+			$ébauche->id =
+				Encodage::base64_encode_url($question->uri) .
+				"/{$ébauche->lang}";
+			$ébauche->links = [
+				"related" =>
+				$_ENV["APP_URL"] .
+					"question/" .
+					Encodage::base64_encode_url($question->uri),
+			];
+		}
 
-        return $this->collection(
-            $question->exécutables,
-            new ÉbaucheTransformer(),
-            "ebauche"
-        );
-    }
+		return $this->collection(
+			$question->exécutables,
+			new ÉbaucheTransformer(),
+			"ebauche"
+		);
+	}
 }

@@ -37,13 +37,10 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new RésultatProg("ok\nok\nok\nok\nok\n", "")
 		];
 
-		$tests_réussis_attendu = 2;
-		$tentative_réussi_attendu = true;
-
 		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($question, $tentative);
 
-		$this->assertEquals($tests_réussis_attendu, $résultat_observé->tests_réussis);
-		$this->assertEquals($tentative_réussi_attendu, $résultat_observé->réussi);
+		$this->assertEquals(2, $résultat_observé->tests_réussis);
+		$this->assertTrue($résultat_observé->réussi);
 	}
 
 	public function test_étant_donné_une_TentativeProg_nonvalides_et_une_QuestionProg_lorsquon_les_traites_on_obtient_une_TentativeProg_traitée_et_nonréussie()
@@ -62,13 +59,10 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new RésultatProg("ok\nok\nok\nok\nok\n", "")
 		];
 
-		$tests_réussis_attendu = 1;
-		$tentative_réussi_attendu = false;
-
 		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($question, $tentative);
 
-		$this->assertEquals($tests_réussis_attendu, $résultat_observé->tests_réussis);
-		$this->assertEquals($tentative_réussi_attendu, $résultat_observé->réussi);
+		$this->assertEquals(1, $résultat_observé->tests_réussis);
+		$this->assertFalse($résultat_observé->réussi);
 	}
 
 	public function test_étant_donné_une_TentativeProg_avec_une_erreur_et_une_QuestionProg_lorsquon_les_traites_on_obtient_une_TentativeProg_traitée_et_nonréussie()
@@ -85,12 +79,9 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new RésultatProg("", "testErreur")
 		];
 
-		$tests_réussis_attendu = 1;
-		$tentative_réussi_attendu = false;
-
 		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($question, $tentative);
 
-		$this->assertEquals($tests_réussis_attendu, $résultat_observé->tests_réussis);
-		$this->assertEquals($tentative_réussi_attendu, $résultat_observé->réussi);
+		$this->assertEquals(1, $résultat_observé->tests_réussis);
+		$this->assertFalse($résultat_observé->réussi);
 	}
 }

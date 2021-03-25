@@ -74,6 +74,7 @@ class TentativeCtl extends Contrôleur
 
 			if ($tentative != null) {
 				$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
+				$tentative->question_uri = $question_uri;
 				$réponse = $this->item($tentative, new TentativeProgTransformer());
 			}
 		} elseif ($question instanceof QuestionSys) {
