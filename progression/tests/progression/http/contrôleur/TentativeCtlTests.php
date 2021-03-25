@@ -141,11 +141,6 @@ final class TentativeCtlTests extends TestCase
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		// Tentative
-		$tentative = new TentativeProg("python", "codeTest", "9999999999");
-		$tentative->tests_réussis = 2;
-		$tentative->feedback = "feedbackTest";
-
 		$résultat_attendu = [
 			"message" => "Ressource non trouvée."
 		];

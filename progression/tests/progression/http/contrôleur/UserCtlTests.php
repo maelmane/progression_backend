@@ -116,9 +116,6 @@ final class UserCtlTests extends TestCase
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$user = new User(null);
-		$user->username = "Jean-Yves";
-
 		$résultat_attendu = [
 			"message" => "Ressource non trouvée."
 		];

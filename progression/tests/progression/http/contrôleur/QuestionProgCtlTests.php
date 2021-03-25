@@ -264,13 +264,6 @@ final class QuestionProgCtlTests extends \TestCase
     {
         $_ENV["APP_URL"] = "https://example.com/";
 
-        // Question
-        $question = new QuestionProg();
-        $question->type = Question::TYPE_PROG;
-        $question->nom = "appeler_une_fonction_paramétrée";
-        $question->uri =
-            "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction_inexistante";
-
         $résultat_attendu = [
             "message" => "Ressource non trouvée."
         ];
