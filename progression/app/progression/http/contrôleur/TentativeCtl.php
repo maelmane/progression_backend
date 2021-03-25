@@ -18,6 +18,7 @@
 
 namespace progression\http\contrôleur;
 
+use ErrorException;
 use Exception;
 use Illuminate\Http\Request;
 use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransformer, TentativeBDTransformer};
@@ -61,10 +62,20 @@ class TentativeCtl extends Contrôleur
 		$chemin = Encodage::base64_decode_url($question_uri);
 
 		$questionInt = $this->intFactory->getObtenirQuestionInt();
-		$question = $questionInt->get_question($chemin);
+		$question = null;
+
+		try {
+			$question = $questionInt->get_question($chemin);
+		} catch (ErrorException $erreur) {
+			return $this->réponse_json(["message" => "Ressource non trouvée."], 404);
+		}
 
 		if ($question instanceof QuestionProg) {
 			$input = $request->only(["langage", "code"]);
+
+			if (!key_exists("langage", $input) || !key_exists("code", $input)) {
+				return $this->réponse_json(["message" => "Requête invalide."], 400);
+			}
 
 			if (count(array_filter($input)) == 2) {
 				$tentative = new TentativeProg($input["langage"], $input["code"], (new \DateTime())->getTimestamp());
