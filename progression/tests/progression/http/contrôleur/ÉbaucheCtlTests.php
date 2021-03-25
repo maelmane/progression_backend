@@ -26,9 +26,10 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 final class ÉbaucheCtlTests extends TestCase
 {
-    public function tearDown() : void {
-        Mockery::close();
-    }
+	public function tearDown(): void
+	{
+		Mockery::close();
+	}
 
 	public function test_étant_donné_le_chemin_dune_ébauche_lorsquon_appelle_get_on_obtient_lébauche_et_ses_relations_sous_forme_json()
 	{
@@ -114,6 +115,86 @@ final class ÉbaucheCtlTests extends TestCase
 						$mockRequest,
 						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 						"python"
+					)
+					->getContent(),
+				true
+			)
+		);
+	}
+
+	public function test_étant_donné_le_chemin_dune_ébauche_inexistante_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
+
+		// Question
+		$question = new QuestionProg();
+		$question->type = Question::TYPE_PROG;
+		$question->chemin =
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+
+		// Ébauches
+		$question->exécutables["python"] = new Exécutable("print(\"Hello world\")", "python");
+		$question->exécutables["java"] = new Exécutable("System.out.println(\"Hello world\")", "java");
+
+		$résultat_attendu = [
+			"message" => "Ressource non trouvée."
+		];
+
+		// Intéracteur
+		$mockObtenirQuestionInt = Mockery::mock(
+			"progression\domaine\interacteur\ObtenirQuestionInt"
+		);
+		$mockObtenirQuestionInt
+			->allows()
+			->get_question(
+				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
+			)
+			->andReturn($question);
+
+		// InteracteurFactory
+		$mockIntFactory = Mockery::mock(
+			"progression\domaine\interacteur\InteracteurFactory"
+		);
+		$mockIntFactory
+			->allows()
+			->getObtenirQuestionInt()
+			->andReturn($mockObtenirQuestionInt);
+
+		// Requête
+		$mockRequest = Mockery::mock("Illuminate\Http\Request");
+		$mockRequest
+			->allows()
+			->ip()
+			->andReturn("127.0.0.1");
+		$mockRequest
+			->allows()
+			->method()
+			->andReturn("GET");
+		$mockRequest
+			->allows()
+			->path()
+			->andReturn(
+				"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/unlangageinexistant"
+			);
+		$mockRequest
+			->allows()
+			->query("include")
+			->andReturn();
+		$this->app->bind(Request::class, function () use ($mockRequest) {
+			return $mockRequest;
+		});
+
+		// Contrôleur
+		$ctl = new ÉbaucheCtl($mockIntFactory);
+
+		$this->assertEquals(
+			$résultat_attendu,
+			json_decode(
+				$ctl
+					->get(
+						$mockRequest,
+						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+						"unlangageinexistant"
 					)
 					->getContent(),
 				true
