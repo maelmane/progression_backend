@@ -216,7 +216,7 @@ final class TentativeCtlTests extends TestCase
 						"feedback" => "Bon travail!",
 					],
 					"links" => [
-						'self' => 'https://example.com/resultat/0',
+						'self' => 'https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0',
 					],
 				]
 			],
