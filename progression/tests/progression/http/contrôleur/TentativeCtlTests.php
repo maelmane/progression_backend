@@ -137,6 +137,83 @@ final class TentativeCtlTests extends TestCase
 		);
 	}
 
+	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
+
+		// Tentative
+		$tentative = new TentativeProg("python", "codeTest", "9999999999");
+		$tentative->tests_réussis = 2;
+		$tentative->feedback = "feedbackTest";
+
+		$résultat_attendu = [
+			"message" => "Ressource non trouvée."
+		];
+
+		// Intéracteur
+		$mockObtenirTentativeInt = Mockery::mock(
+			"progression\domaine\interacteur\ObtenirTentativeInt"
+		);
+		$mockObtenirTentativeInt
+			->allows()
+			->get_tentative(
+				"jdoe",
+				"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
+				"9999999999"
+			)
+			->andReturn(null);
+
+		// InteracteurFactory
+		$mockIntFactory = Mockery::mock(
+			"progression\domaine\interacteur\InteracteurFactory"
+		);
+		$mockIntFactory
+			->allows()
+			->getObtenirTentativeInt()
+			->andReturn($mockObtenirTentativeInt);
+
+		// Requête
+		$mockRequest = Mockery::mock("Illuminate\Http\Request");
+		$mockRequest
+			->allows()
+			->ip()
+			->andReturn("127.0.0.1");
+		$mockRequest
+			->allows()
+			->method()
+			->andReturn("GET");
+		$mockRequest
+			->allows()
+			->path()
+			->andReturn(
+				"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/9999999999"
+			);
+		$mockRequest
+			->allows()
+			->query("include")
+			->andReturn("resultats");
+		$this->app->bind(Request::class, function () use ($mockRequest) {
+			return $mockRequest;
+		});
+
+		// Contrôleur
+		$ctl = new TentativeCtl($mockIntFactory);
+		$this->assertEquals(
+			$résultat_attendu,
+			json_decode(
+				$ctl
+					->get(
+						$mockRequest,
+						"jdoe",
+						"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
+						"9999999999"
+					)
+					->getContent(),
+				true
+			)
+		);
+	}
+
 	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_on_obtient_la_TentativeProg_avec_ses_résultats_et_ses_relations_sous_forme_json()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
