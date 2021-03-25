@@ -27,9 +27,10 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 final class TentativeCtlTests extends TestCase
 {
-    public function tearDown() : void {
-        Mockery::close();
-    }
+	public function tearDown(): void
+	{
+		Mockery::close();
+	}
 
 	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_get_on_obtient_la_TentativeProg_et_ses_relations_sous_forme_json()
 	{
@@ -37,8 +38,6 @@ final class TentativeCtlTests extends TestCase
 
 		// Tentative
 		$tentative = new TentativeProg("python", "codeTest", "1614374490");
-		$tentative->id =
-			"jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490";
 		$tentative->tests_réussis = 2;
 		$tentative->feedback = "feedbackTest";
 
@@ -146,8 +145,9 @@ final class TentativeCtlTests extends TestCase
 		$tentative = new TentativeProg("python", "codeTest", 1614374490);
 		$tentative->tests_réussis = 1;
 		$tentative->feedback = "feedbackTest";
+		$tentative->réussi = true;
 		$tentative->résultats = [
-			new RésultatProg("itération 0\n", "", true, "Bon travail!"),
+			new RésultatProg("Bonjour\nBonjour\n", "", true, "Bon travail!"),
 		];
 
 		// Question
@@ -167,7 +167,6 @@ final class TentativeCtlTests extends TestCase
 		// Tests
 		$question->tests = [
 			new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
-			new Test("Aucune salutation", "0", ""),
 		];
 
 		$résultat_attendu = [
@@ -178,7 +177,7 @@ final class TentativeCtlTests extends TestCase
 				"attributes" => [
 					"date_soumission" => 1614374490,
 					"tests_réussis" => 1,
-					"réussi" => false,
+					"réussi" => true,
 					"sous-type" => "tentativeProg",
 					"feedback" => "feedbackTest",
 					"langage" => "python",
@@ -199,7 +198,7 @@ final class TentativeCtlTests extends TestCase
 						"data" => [
 							[
 								'type' => 'resultat',
-								'id' => '0',
+								'id' => 'aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0',
 							]
 						],
 					],
@@ -208,15 +207,16 @@ final class TentativeCtlTests extends TestCase
 			"included" => [
 				[
 					"type" => "resultat",
-					"id" => "0",
+					"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 					"attributes" => [
 						"résultat" => true,
 						"sortie_erreur" => "",
-						"sortie_observée" => "itération 0\n",
+						"sortie_observée" => "Bonjour\nBonjour\n",
 						"feedback" => "Bon travail!",
 					],
 					"links" => [
-						'self' => 'https://example.com/resultat/0',
+						'self' => 'https://example.com/resultat/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0',
+						"related" => 'https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490'
 					],
 				]
 			],

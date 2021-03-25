@@ -88,6 +88,7 @@ class TentativeCtl extends Contrôleur
 				return $this->réponse_json(["message" => "Service non disponible."], 503);
 			} elseif ($tentative != null) {
 				$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
+				$tentative->question_uri = $question_uri;
 				$réponse = $this->item($tentative, new TentativeProgTransformer());
 			} else {
 				return $this->réponse_json(["message" => "Tentative intraitable."], 422);

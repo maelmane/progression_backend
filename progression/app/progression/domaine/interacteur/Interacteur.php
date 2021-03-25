@@ -25,7 +25,7 @@ class Interacteur
 	protected $_source;
 	protected $_source_int;
 
-	function __construct($sourceDAO, $sourceInt = null)
+	function __construct($sourceDAO = null, $sourceInt = null)
 	{
 		$this->_source = $sourceDAO;
 		$this->_source_int = $sourceInt;
