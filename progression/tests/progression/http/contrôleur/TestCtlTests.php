@@ -29,6 +29,10 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 final class TestCtlTests extends \TestCase
 {
+    public function tearDown() : void {
+        Mockery::close();
+    }
+
 	public function test_étant_donné_le_chemin_dune_question_et_son_test_numero_0_lorsquon_appelle_get_on_obtient_le_test_numero_0_et_ses_relations_sous_forme_json()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";

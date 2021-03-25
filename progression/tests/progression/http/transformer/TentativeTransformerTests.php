@@ -23,7 +23,7 @@ use progression\domaine\entité\TentativeProg;
 
 final class TentativeTransformerTests extends TestCase
 {
-	public function test_étant_donné_une_tentative_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_tableau_d_objet_correspondant()
+	public function test_étant_donné_une_TentativeProg_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
@@ -33,7 +33,7 @@ final class TentativeTransformerTests extends TestCase
 		$tentativeTransformer = new TentativeProgTransformer();
 		$résultat = [
 			"id" =>
-				"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
+			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
 			"date_soumission" => 1614711760,
 			"sous-type" => "tentativeProg",
 			"réussi" => false,
@@ -43,7 +43,7 @@ final class TentativeTransformerTests extends TestCase
 			"code" => "codeTest",
 			"links" => [
 				"self" =>
-					"https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
+				"https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
 			],
 		];
 

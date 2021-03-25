@@ -24,6 +24,10 @@ use \Mockery;
 
 final class PréparerProgIntTests extends TestCase
 {
+    public function tearDown() : void {
+        Mockery::close();
+    }
+
 	public function test_étant_donné_une_questionprog_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_seulement_code_utilisateur_entre_todos()
 	{
 		$résultat_attendu = new Exécutable(
