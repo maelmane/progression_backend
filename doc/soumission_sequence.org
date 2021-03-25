@@ -10,7 +10,7 @@ participant obtenirQuestionInt as "ObtenirQuestionInt"
 participant preparerExecInt as "PréparerProgInt"
 participant exécuterInt as "ExécuterProgInt"
 participant traiterInt as "TraiterTentativeProgInt"
-participant sauveragarderInt as "SauvegarderTentativeProgInt"
+participant sauvegarderInt as "SauvegarderTentativeProgInt"
 
 tentativectl -> obtenirQuestionInt : question_uri
 obtenirQuestionInt -> tentativectl : Question
@@ -25,7 +25,7 @@ end
   
 soumissionInt -> traiterInt : tests, résultats
 traiterInt -> soumissionInt : résultats
-soumissionInt -> sauveragarderInt : Tentative, username, question_uri
+soumissionInt -> sauvegarderInt : Tentative, username, question_uri
 soumissionInt -> tentativectl : Tentative
 
 @enduml
