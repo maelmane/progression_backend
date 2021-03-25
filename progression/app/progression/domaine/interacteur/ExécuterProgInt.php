@@ -18,27 +18,28 @@
 
 namespace progression\domaine\interacteur;
 
+use Exception;
 use progression\domaine\entité\RésultatProg;
 
 class ExécuterProgInt extends Interacteur
 {
-    const langages = [
-        "python2" => 0,
-        "python" => 1,
-        "ruby" => 2,
-        "clojure" => 3,
-        "php" => 4,
-        "nodejs" => 5,
-        "scala" => 6,
-        "go" => 7,
-        "cpp" => 8,
-        "c" => 9,
-        "java" => 10,
-        "bash" => 11,
-        "perl" => 12,
-        "sshd" => 13,
-        "mysql" => 14,
-    ];
+	const langages = [
+		"python2" => 0,
+		"python" => 1,
+		"ruby" => 2,
+		"clojure" => 3,
+		"php" => 4,
+		"nodejs" => 5,
+		"scala" => 6,
+		"go" => 7,
+		"cpp" => 8,
+		"c" => 9,
+		"java" => 10,
+		"bash" => 11,
+		"perl" => 12,
+		"sshd" => 13,
+		"mysql" => 14,
+	];
 
 	public function exécuter($exécutable, $test)
 	{
@@ -65,10 +66,14 @@ class ExécuterProgInt extends Interacteur
 
 		$comp_resp = file_get_contents($url_rc, false, $context);
 
+		if ($comp_resp === false) {
+			throw new Exception("Erreur file_get_contents");
+		}
+
 		return new RésultatProg(
 			$this->extraire_sortie_standard($comp_resp),
 			$this->extraire_sortie_erreur($comp_resp)
-        );
+		);
 	}
 
 	protected function loguer_code($exécutable)

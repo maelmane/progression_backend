@@ -29,10 +29,11 @@ class PréparerProgInt
 				$question->exécutables[$tentative->langage]->code,
 				$tentative->code,
 			);
-			return new Exécutable($code, $tentative->langage);
-		} else {
-			return null;
+			if ($code != null) {
+				return new Exécutable($code, $tentative->langage);
+			}
 		}
+		return null;
 	}
 
 	private function composer_code_à_exécuter($code_utilisateur, $code)
@@ -44,6 +45,10 @@ class PréparerProgInt
 		$n = 0;
 		$res = [];
 		$todo = false;
+
+		if ($todos[0] == null) {
+			return null;
+		}
 
 		foreach ($orig as $ligne) {
 			if ($todo && strpos($ligne, "-TODO")) {
