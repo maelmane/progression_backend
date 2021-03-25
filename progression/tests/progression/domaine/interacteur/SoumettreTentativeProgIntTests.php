@@ -24,9 +24,10 @@ use \Mockery;
 
 final class SoumettreTentativeProgIntTests extends TestCase
 {
-    public function tearDown() : void {
-        Mockery::close();
-    }
+	public function tearDown(): void
+	{
+		Mockery::close();
+	}
 
 	public function test_étant_donné_une_questionprog_et_une_tentativeprog_lorsqu_on_appelle_soumettre_tentative_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
 	{
@@ -166,40 +167,5 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
-	}
-
-	public function test_étant_donné_une_questionprog_et_une_tentativeprog_lorsqu_on_appelle_soumettre_tentative_on_obtient_null()
-	{
-		$question = new QuestionProg();
-		$question->uri =
-			"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour";
-		$question->exécutables["python"] = new Exécutable(
-			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
-			"python",
-		);
-		$tentative = new TentativeProg("java", "sans importance");
-		$exécutable = new Exécutable(
-			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
-			"python",
-		);
-
-		// Mock interacteurs
-		$mockPréparerProgInt = Mockery::mock(
-			"progression\domaine\interacteur\PréparerProgInt"
-		);
-		$mockPréparerProgInt
-			->allows()
-			->préparer_exécutable(
-				$question,
-				$tentative,
-			)
-			->andReturn($exécutable);
-
-
-		$interacteur = new PréparerProgInt();
-
-		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
-
-		$this->assertNull($résultat_obtenu);
 	}
 }
