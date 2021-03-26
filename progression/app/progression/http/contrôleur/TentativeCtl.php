@@ -19,10 +19,11 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransformer, TentativeBDTransformer};
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
-use progression\exceptions\ExécutionException;
+use progression\domaine\interacteur\ExécutionException;
 use progression\util\Encodage;
 
 class TentativeCtl extends Contrôleur
@@ -74,7 +75,8 @@ class TentativeCtl extends Contrôleur
 				try {
 					$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
 				} catch (ExécutionException $e) {
-					return $this->réponse_json(["message" => $e->getMessage()], 503);
+					Log::error($e->getMessage());
+					return $this->réponse_json(["message" => "Service non disponible"], 503);
 				}
 			}
 
