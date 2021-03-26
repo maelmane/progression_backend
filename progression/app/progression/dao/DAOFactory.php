@@ -40,6 +40,11 @@ class DAOFactory
 		return new QuestionSysDAO($this);
 	}
 
+	function get_tentative_dao()
+	{
+		return new TentativeDAO($this);
+	}
+
 	function get_tentative_prog_dao()
 	{
 		return new TentativeProgDAO($this);
@@ -60,5 +65,3 @@ class DAOFactory
 		return new UserDAO($this);
 	}
 }
-
-?>

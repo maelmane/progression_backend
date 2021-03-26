@@ -23,22 +23,22 @@ use League\Fractal;
 
 class RésultatProgTransformer extends Fractal\TransformerAbstract
 {
-    public $type = "resultat";
+	public $type = "resultat";
 
-    public function transform(RésultatProg $réponse)
-    {
-        $data = [
-            "id" => $réponse->id,
-            "numéro" => $réponse->numéro,
-            "sortie_observée" => $réponse->sortie_observée,
-            "sortie_erreur" => $réponse->sortie_erreur,
-            "résultat" => $réponse->résultat,
-            "feedback" => $réponse->feedback,
-            "links" => [
-                "self" => "{$_ENV["APP_URL"]}resultat/{$réponse->id}",
-            ],
-        ];
+	public function transform(RésultatProg $réponse)
+	{
+		$data = [
+			"id" => $réponse->id,
+			"numéro" => $réponse->numéro,
+			"sortie_observée" => $réponse->sortie_observée,
+			"sortie_erreur" => $réponse->sortie_erreur,
+			"résultat" => $réponse->résultat,
+			"feedback" => $réponse->feedback,
+			"links" => (isset($réponse->links) ? $réponse->links : []) + [
+				"self" => "{$_ENV["APP_URL"]}resultat/{$réponse->id}",
+			],
+		];
 
-        return $data;
-    }
+		return $data;
+	}
 }

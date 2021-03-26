@@ -1,0 +1,1 @@
+{"output":"ok\n","langid":"1","code":"a=int(input())\nfor i in range(a):print('ok')","errors":"erreurs\n","time":" .02\n"}

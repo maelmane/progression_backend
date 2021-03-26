@@ -30,9 +30,9 @@ class TentativeProgTransformer extends TentativeTransformer
 		$data_out = parent::transform($tentative);
 		$data_out = array_merge($data_out, [
 			"sous-type" => "tentativeProg",
-			"tests_réussis" => $tentative->tests_réussis,
 			"langage" => $tentative->langage,
 			"code" => $tentative->code,
+			"tests_réussis" => $tentative->tests_réussis,
 		]);
 
 		return $data_out;
@@ -40,11 +40,11 @@ class TentativeProgTransformer extends TentativeTransformer
 
 	public function includeResultats(TentativeProg $tentative)
 	{
-		foreach ($tentative->résultats as $résultat) {
-			$résultat->links = [
-				"related" => $_ENV["APP_URL"] . "tentative/{$résultat->id}",
-			];
+		foreach ($tentative->résultats as $i => $résultat) {
+			$résultat->numéro = $i;
+			$résultat->id = $tentative->id . "/" . $i;
+			$résultat->links = ["related" => $_ENV["APP_URL"] . "tentative/" . $tentative->id];
 		}
-		return $this->collection($tentative->résultats, new RésultatProgTransformer(), "resultats");
+		return $this->collection($tentative->résultats, new RésultatProgTransformer(), "resultat");
 	}
 }

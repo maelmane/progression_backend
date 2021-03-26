@@ -20,18 +20,19 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransformer, TentativeBDTransformer};
-use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, TentativeBD};
+use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
+use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
 use progression\util\Encodage;
 
 class TentativeCtl extends Contrôleur
 {
 	public function get(Request $request, $username, $question_uri, $timestamp)
 	{
-		$chemin = Encodage::base64_decode_url($question_uri);
 		$tentative = null;
 
-		$tentativeInt = $this->intFactory->getObtenirTentativeInt();
+		$chemin = Encodage::base64_decode_url($question_uri);
 
+		$tentativeInt = $this->intFactory->getObtenirTentativeInt();
 		$tentative = $tentativeInt->get_tentative($username, $chemin, $timestamp);
 
 		if ($tentative != null) {
@@ -46,6 +47,40 @@ class TentativeCtl extends Contrôleur
 			$réponse = $this->item($tentative, new TentativeSysTransformer());
 		} elseif ($tentative instanceof TentativeBD) {
 			$réponse = $this->item($tentative, new TentativeBDTransformer());
+		}
+
+		return $this->préparer_réponse($réponse);
+	}
+
+	public function post(Request $request, $username, $question_uri)
+	{
+		$tentative = null;
+		$réponse = null;
+
+		$chemin = Encodage::base64_decode_url($question_uri);
+
+		$questionInt = $this->intFactory->getObtenirQuestionInt();
+		$question = $questionInt->get_question($chemin);
+
+		if ($question instanceof QuestionProg) {
+			$input = $request->only(["langage", "code"]);
+
+			if (count(array_filter($input)) == 2) {
+				$tentative = new TentativeProg($input["langage"], $input["code"], (new \DateTime())->getTimestamp());
+
+				$tentativeInt = $this->intFactory->getSoumettreTentativeProgInt();
+				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
+			}
+
+			if ($tentative != null) {
+				$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
+				$tentative->question_uri = $question_uri;
+				$réponse = $this->item($tentative, new TentativeProgTransformer());
+			}
+		} elseif ($question instanceof QuestionSys) {
+			return $this->réponse_json(["message" => "Question système non implémentée."], 501);
+		} elseif ($question instanceof QuestionBD) {
+			return $this->réponse_json(["message" => "Question BD non implémentée."], 501);
 		}
 
 		return $this->préparer_réponse($réponse);

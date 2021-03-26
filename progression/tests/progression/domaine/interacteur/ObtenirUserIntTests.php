@@ -24,6 +24,10 @@ use \Mockery;
 
 final class ObtenirUserIntTests extends TestCase
 {
+    public function tearDown() : void {
+        Mockery::close();
+    }
+
 	public function test_étant_donné_un_utilisateur_Bob_lorsquon_le_cherche_par_username_on_obtient_un_objet_user_nommé_Bob()
 	{
 		$résultat_attendu = new User("Bob");

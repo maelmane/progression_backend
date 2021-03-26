@@ -23,11 +23,11 @@ use progression\domaine\entité;
 class Interacteur
 {
 	protected $_source;
+	protected $_source_int;
 
-	function __construct($source)
+	function __construct($sourceDAO = null, $sourceInt = null)
 	{
-		$this->_source = $source;
+		$this->_source = $sourceDAO;
+		$this->_source_int = $sourceInt;
 	}
 }
-
-?>

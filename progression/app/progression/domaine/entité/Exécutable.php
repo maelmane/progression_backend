@@ -28,6 +28,6 @@ class Exécutable
 
 	public $lang;
 	public $code;
-	public $params = null;
-	public $résultats = null;
+	public $params = "";
+
 }
