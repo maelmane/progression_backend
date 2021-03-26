@@ -19,9 +19,10 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 final class AvancementCtlTests extends TestCase
 {
-    public function tearDown() : void {
-        Mockery::close();
-    }
+	public function tearDown(): void
+	{
+		Mockery::close();
+	}
 
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_l_avancement_et_ses_relations_sous_forme_json()
 	{
@@ -158,10 +159,6 @@ final class AvancementCtlTests extends TestCase
 	public function test_étant_donné_un_avancement_inexistant_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
-
-		// Question
-		$question = new QuestionProg();
-		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		// Intéracteur
 		$mockObtenirAvancementInt = Mockery::mock("progression\domaine\interacteur\ObtenirAvancementInt");
