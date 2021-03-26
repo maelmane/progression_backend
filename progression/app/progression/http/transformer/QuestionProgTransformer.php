@@ -55,7 +55,6 @@ class QuestionProgTransformer extends QuestionTransformer
 		);
 	}
 
-	//Doit être en minuscules à cause de l'accent (É n'est pas transformé en é)
 	public function includeEbauches($data_in)
 	{
 		$question = $data_in["question"];

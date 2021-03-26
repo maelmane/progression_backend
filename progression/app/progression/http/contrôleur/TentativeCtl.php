@@ -64,11 +64,7 @@ class TentativeCtl extends Contrôleur
 		$questionInt = $this->intFactory->getObtenirQuestionInt();
 		$question = null;
 
-		try {
-			$question = $questionInt->get_question($chemin);
-		} catch (ErrorException $erreur) {
-			return $this->réponse_json(["message" => "Ressource non trouvée."], 404);
-		}
+		$question = $questionInt->get_question($chemin);
 
 		if ($question instanceof QuestionProg) {
 			$input = $request->only(["langage", "code"]);
