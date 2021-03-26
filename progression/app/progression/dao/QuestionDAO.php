@@ -26,7 +26,7 @@ class QuestionDAO extends EntitéDAO
 	{
 		$infos_question = $this->récupérer_question($uri);
 
-		if ($infos_question === false) {
+		if ($infos_question === null) {
 			return null;
 		}
 
@@ -64,7 +64,7 @@ class QuestionDAO extends EntitéDAO
 
 	protected function récupérer_question($uri)
 	{
-		$data = file_get_contents($uri . "/info.yml");
+		$data = @file_get_contents($uri . "/info.yml");
 
 		if ($data === false) {
 			error_log("$uri ne peut pas être chargé");
@@ -72,7 +72,7 @@ class QuestionDAO extends EntitéDAO
 		}
 
 		$info = yaml_parse($data);
-		if ($info == false) {
+		if ($info === false) {
 			error_log("$uri ne peut pas être décodé");
 			return null;
 		}

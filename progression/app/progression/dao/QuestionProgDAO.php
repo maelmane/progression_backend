@@ -15,6 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 namespace progression\dao;
 
 use progression\domaine\entité\{QuestionProg, Exécutable, Test};
@@ -58,14 +59,14 @@ class QuestionProgDAO extends EntitéDAO
 	{
 		$exécutables = $this->récupérer_execs($uri, $info["execs"]);
 
-		if ($exécutables == null) {
+		if ($exécutables === null) {
 			return null;
 		} else {
 			$info["execs"] = $exécutables;
 		}
 
 		$tests = $this->récupérer_tests($uri, $info["tests"]);
-		if ($tests == null) {
+		if ($tests === null) {
 			return null;
 		} else {
 			$info["tests"] = $tests;
@@ -81,7 +82,7 @@ class QuestionProgDAO extends EntitéDAO
 		foreach ($execs as $exec) {
 			$exécutable = $this->récupérer_exec($uri, $exec["fichier"]);
 
-			if ($exécutable == null) {
+			if ($exécutable === null) {
 				return null;
 			}
 
@@ -93,7 +94,7 @@ class QuestionProgDAO extends EntitéDAO
 
 	protected function récupérer_exec($uri, $exec)
 	{
-		$data = file_get_contents($uri . "/" . $exec);
+		$data = @file_get_contents($uri . "/" . $exec);
 
 		if ($data === false) {
 			error_log("$uri/$exec ne peut pas être chargé");
@@ -108,7 +109,7 @@ class QuestionProgDAO extends EntitéDAO
 		$items = [];
 
 		foreach ($tests as $test) {
-			$data = file_get_contents($uri . "/" . $test);
+			$data = @file_get_contents($uri . "/" . $test);
 
 			if ($data === false) {
 				error_log("$uri/$test ne peut pas être chargé");
@@ -116,7 +117,7 @@ class QuestionProgDAO extends EntitéDAO
 			}
 
 			$items = array_merge($items, yaml_parse($data, -1));
-			if ($items == false) {
+			if ($items === false) {
 				error_log("$uri/$test ne peut pas être décodé");
 				return null;
 			}

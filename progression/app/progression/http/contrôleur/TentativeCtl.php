@@ -69,10 +69,6 @@ class TentativeCtl extends Contrôleur
 		if ($question instanceof QuestionProg) {
 			$input = $request->only(["langage", "code"]);
 
-			if (!key_exists("langage", $input) || !key_exists("code", $input)) {
-				return $this->réponse_json(["message" => "Requête invalide."], 400);
-			}
-
 			if (count(array_filter($input)) == 2) {
 				$tentative = new TentativeProg($input["langage"], $input["code"], (new \DateTime())->getTimestamp());
 
@@ -84,6 +80,8 @@ class TentativeCtl extends Contrôleur
 					Log::error($e->getMessage());
 					return $this->réponse_json(["message" => "Service non disponible"], 503);
 				}
+			} else {
+				return $this->réponse_json(["message" => "Requête invalide."], 400);
 			}
 
 			if ($tentative != null) {
