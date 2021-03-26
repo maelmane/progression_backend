@@ -46,11 +46,12 @@ class PréparerProgInt
 		$res = [];
 		$todo = false;
 
-		if ($todos[0] == null) {
-			return null;
-		}
-
 		foreach ($orig as $ligne) {
+
+			if (count($todos[1]) == 0) {
+				return null;
+			}
+
 			if ($todo && strpos($ligne, "-TODO")) {
 				$todo = false;
 			}
