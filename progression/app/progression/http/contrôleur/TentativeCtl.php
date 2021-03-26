@@ -18,12 +18,12 @@
 
 namespace progression\http\contrôleur;
 
-use ErrorException;
-use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransformer, TentativeBDTransformer};
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
+use progression\domaine\interacteur\ExécutionException;
 use progression\util\Encodage;
 
 class TentativeCtl extends Contrôleur
@@ -77,12 +77,16 @@ class TentativeCtl extends Contrôleur
 				$tentative = new TentativeProg($input["langage"], $input["code"], (new \DateTime())->getTimestamp());
 
 				$tentativeInt = $this->intFactory->getSoumettreTentativeProgInt();
-				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
+
+				try {
+					$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
+				} catch (ExécutionException $e) {
+					Log::error($e->getMessage());
+					return $this->réponse_json(["message" => "Service non disponible"], 503);
+				}
 			}
 
-			if ($tentative instanceof Exception) {
-				return $this->réponse_json(["message" => "Service non disponible."], 503);
-			} elseif ($tentative != null) {
+			if ($tentative != null) {
 				$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
 				$tentative->question_uri = $question_uri;
 				$réponse = $this->item($tentative, new TentativeProgTransformer());

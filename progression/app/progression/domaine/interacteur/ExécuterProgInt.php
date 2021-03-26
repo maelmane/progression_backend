@@ -18,8 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-use Exception;
 use progression\domaine\entité\RésultatProg;
+use Exception;
 
 class ExécuterProgInt extends Interacteur
 {
@@ -64,10 +64,11 @@ class ExécuterProgInt extends Interacteur
 		];
 		$context = stream_context_create($options_rc);
 
-		$comp_resp = file_get_contents($url_rc, false, $context);
+		$comp_resp = @file_get_contents($url_rc, false, $context);
 
 		if ($comp_resp === false) {
-			throw new Exception("Erreur file_get_contents");
+			$erreur = error_get_last();
+			throw new ExécutionException($erreur, $url_rc);
 		}
 
 		return new RésultatProg(
@@ -97,5 +98,15 @@ class ExécuterProgInt extends Interacteur
 	protected function extraire_sortie_erreur($sorties)
 	{
 		return json_decode($sorties, true)["errors"];
+	}
+}
+
+class ExécutionException extends Exception
+{
+	public function __construct($erreur, $url)
+	{
+		$erreurMsg = (isset($erreur) && isset($erreur["message"]) && $erreur["message"] != "") ?
+			$erreur["message"] : "Échec de l'ouverture du fichier a l'adresse : {$url}";
+		parent::__construct($erreurMsg);
 	}
 }
