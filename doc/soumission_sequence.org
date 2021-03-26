@@ -23,10 +23,10 @@ group itération [ pour chaque Test de Question.tests ]
   exécuterInt -> soumissionInt : Résultat
 end
   
-soumissionInt -> traiterInt : tests, résultats
-traiterInt -> soumissionInt : résultats
-soumissionInt -> sauvegarderInt : Tentative, username, question_uri
-soumissionInt -> tentativectl : Tentative
+soumissionInt -> traiterInt : Question, Tentative
+traiterInt -> soumissionInt : TentativeTraité
+soumissionInt -> sauvegarderInt : username, question_uri, TentativeTraité
+soumissionInt -> tentativectl : TentativeTraité
 
 @enduml
 #+end_src
