@@ -65,10 +65,11 @@ class ExécuterProgInt extends Interacteur
 		];
 		$context = stream_context_create($options_rc);
 
-		try {
-			$comp_resp = file_get_contents($url_rc, false, $context);
-		} catch (Exception $e) {
-			throw new ExécutionException($url_rc);
+		$comp_resp = @file_get_contents($url_rc, false, $context);
+
+		if ($comp_resp === false) {
+			$erreur = error_get_last();
+			throw new ExécutionException($erreur, $url_rc);
 		}
 
 		return new RésultatProg(

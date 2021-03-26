@@ -7,13 +7,12 @@ use Illuminate\Support\Facades\Log;
 
 class ExécutionException extends Exception
 {
-	public function __construct($url)
+	public function __construct($erreur, $url)
 	{
-		$errorMsg =
-			"Erreur à la ligne " . $this->getLine() .
-			" dans le ficher " . $this->getFile() .
-			" : Échec de l'ouverture du fichier a l'adresse " . $url;
-		Log::error($errorMsg);
+		$erreurMsg = (isset($erreur) && isset($erreur["message"]) && $erreur["message"] != "") ?
+			$erreur["message"] : "Échec de l'ouverture du fichier a l'adresse : {$url}";
+
+		Log::error($erreurMsg);
 		parent::__construct("Service non disponible");
 	}
 }
