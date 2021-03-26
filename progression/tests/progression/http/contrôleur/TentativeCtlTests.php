@@ -209,9 +209,10 @@ final class TentativeCtlTests extends TestCase
 					"type" => "resultat",
 					"id" => "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
 					"attributes" => [
-						"résultat" => true,
+						"numéro" => 0,
 						"sortie_erreur" => "",
 						"sortie_observée" => "Bonjour\nBonjour\n",
+						"résultat" => true,
 						"feedback" => "Bon travail!",
 					],
 					"links" => [
