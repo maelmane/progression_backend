@@ -223,7 +223,7 @@ question_uri/numéro
 Le résultat d'un test pour une solution proposée.
 
 *** Identifiant :
-question_uri/numéro
+username/question_uri/date_soumission/numéro
 
 *** Propriétés:
 
@@ -234,6 +234,12 @@ question_uri/numéro
 | sortie_erreur   | str  |           |
 | résultat        | bool |           |
 | feedback        | str  |           |
+
+*** Liens :
+
+| Nom      | Description                                                     |
+|----------+-----------------------------------------------------------------|
+| tentative| Tentative pour laquelle le résultat d'un test selon sa solution |
 
 * Exemples
 

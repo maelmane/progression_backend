@@ -30,17 +30,15 @@ class SoumettreTentativeProgInt extends Interacteur
 
 		if ($exécutable) {
 			$exécuterProgInt = $this->_source_int->getExécuterProgInt();
-
 			foreach ($question->tests as $i => $test) {
 				$résultat = $exécuterProgInt->exécuter($exécutable, $test);
 				$tentative->résultats[$i] = $résultat;
 			}
-
 			$traiterTentativeProgInt = $this->_source_int->getTraiterTentativeProgInt();
 			$tentativeTraité = $traiterTentativeProgInt->traiter_résultats($question, $tentative);
-
 			$interacteurSauvegarde = $this->_source_int->getSauvegarderTentativeProgInt();
-			return $interacteurSauvegarde->sauvegarder($username, $question->uri, $tentativeTraité);
+			$interacteurSauvegarde->sauvegarder($username, $question->uri, $tentativeTraité);
+			return $tentativeTraité;
 		}
 
 		return null;

@@ -160,10 +160,6 @@ final class AvancementCtlTests extends TestCase
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		// Question
-		$question = new QuestionProg();
-		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
-
 		// Intéracteur
 		$mockObtenirAvancementInt = Mockery::mock("progression\domaine\interacteur\ObtenirAvancementInt");
 		$mockObtenirAvancementInt

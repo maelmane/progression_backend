@@ -29,6 +29,7 @@ class RésultatProgTransformer extends Fractal\TransformerAbstract
 	{
 		$data = [
 			"id" => $réponse->id,
+			"numéro" => $réponse->numéro,
 			"sortie_observée" => $réponse->sortie_observée,
 			"sortie_erreur" => $réponse->sortie_erreur,
 			"résultat" => $réponse->résultat,
