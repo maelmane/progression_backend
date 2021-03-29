@@ -39,12 +39,6 @@ class QuestionTransformer extends Fractal\TransformerAbstract
             "énoncé" => $question->enonce,
             "links" => [
                 "self" => $_ENV["APP_URL"] . "question/" . $chemin_encodé,
-                "avancement" =>
-                    $_ENV["APP_URL"] .
-                    "avancement/" .
-                    $username .
-                    "/" .
-                    $chemin_encodé,
             ],
         ];
 

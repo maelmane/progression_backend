@@ -20,22 +20,42 @@ namespace progression\http\transformer;
 
 use progression\domaine\entité\User;
 use League\Fractal;
+use progression\util\Encodage;
 
 class UserTransformer extends Fractal\TransformerAbstract
 {
-	public $type = "user";
+    public $type = "user";
 
-	public function transform(User $user)
-	{
-		$data = [
-			"id" => $user->username,
-			"username" => $user->username,
-			"rôle" => $user->rôle,
-			"links" => (isset($user->links) ? $user->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}user/{$user->username}",
-			],
-		];
+    protected $availableIncludes = ["avancements"];
 
-		return $data;
-	}
+    public function transform(User $user)
+    {
+        $data = [
+            "id" => $user->username,
+            "username" => $user->username,
+            "rôle" => $user->rôle,
+            "links" => (isset($user->links) ? $user->links : []) + [
+                "self" => "{$_ENV["APP_URL"]}user/{$user->username}",
+            ],
+        ];
+
+        return $data;
+    }
+
+    public function includeAvancements(User $user)
+    {
+        foreach ($user->avancements as $uri => $avancement) {
+            $avancement->id =
+                "{$user->username}/" . Encodage::base64_encode_url($uri);
+            $avancement->links = [
+                "related" => $_ENV["APP_URL"] . "user/{$user->username}",
+            ];
+        }
+
+        return $this->collection(
+            $user->avancements,
+            new AvancementTransformer(),
+            "avancement"
+        );
+    }
 }

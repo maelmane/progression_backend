@@ -22,6 +22,27 @@ use progression\domaine\entité\{Avancement, Question};
 
 class AvancementDAO extends EntitéDAO
 {
+	public function get_tous($username)
+	{
+		$avancements = [];
+
+		$query = EntitéDAO::get_connexion()->prepare(
+			"SELECT question_uri, etat, type FROM avancement WHERE username = ?",
+		);
+		$query->bind_param("s", $username);
+		$query->execute();
+
+		$uri = null;
+		$etat = 0;
+		$type = 0;
+		$query->bind_result($uri, $etat, $type);
+		while ($query->fetch()) {
+			$avancements[$uri] = new Avancement([], $etat, $type);
+		}
+
+		return $avancements;
+	}
+
 	public function get_avancement($username, $question_uri)
 	{
 		$avancement = $this->load($username, $question_uri);
@@ -51,9 +72,12 @@ class AvancementDAO extends EntitéDAO
 
 	public function save($username, $question_uri, $objet)
 	{
-		$query = EntitéDAO::get_connexion()
-			->prepare('INSERT INTO avancement ( etat, question_uri, username, type ) VALUES ( ?, ?, ?, ' . Question::TYPE_PROG . ')
-                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ');
+		$query = EntitéDAO::get_connexion()->prepare(
+			"INSERT INTO avancement ( etat, question_uri, username, type ) VALUES ( ?, ?, ?, " .
+				Question::TYPE_PROG .
+				')
+                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ',
+		);
 
 		$query->bind_param("iss", $objet->etat, $question_uri, $username);
 		$query->execute();

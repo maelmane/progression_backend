@@ -28,7 +28,12 @@ class EntitéDAO
 
 	public function __construct($source = null)
 	{
-		$this->_source = $source;
+        if( $source == null ){
+            $this->_source = new DAOFactory();
+        }
+        else{
+            $this->_source = $source;
+        }
 	}
 
 	public static function get_connexion()

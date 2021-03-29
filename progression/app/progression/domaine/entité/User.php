@@ -25,10 +25,12 @@ class User
 
 	public $username;
 	public $rôle = User::ROLE_NORMAL;
+    public $avancements;
 
 	public function __construct($username, $rôle = User::ROLE_NORMAL)
 	{
 		$this->username = $username;
         $this->rôle = $rôle;
+        $this->avancements = [];
 	}
 }

@@ -36,6 +36,10 @@ class UserDAO extends EntitéDAO
 		$résultat = $query->fetch();
 		$query->close();
 
+        if($résultat != null){
+            $objet->avancements = $this->_source->get_avancement_dao()->get_tous($username);
+        }
+
 		return $résultat != null ? $objet : null;
 	}
 

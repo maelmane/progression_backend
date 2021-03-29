@@ -39,15 +39,7 @@ class AvancementCtl extends Contrôleur
 		if ($avancement != null) {
 			$avancement->id = "{$username}/$question_uri";
 
-			if ($avancement->type == Question::TYPE_PROG) {
-				$réponse = $this->item($avancement, new AvancementTransformer());
-			} elseif ($avancement->type == Question::TYPE_SYS) {
-				Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-				return $this->réponse_json(["message" => "Question système non implémentée."], 501);
-			} elseif ($avancement->type == Question::TYPE_BD) {
-				Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-				return $this->réponse_json(["message" => "Question BD non implémentée."], 501);
-			}
+            $réponse = $this->item($avancement, new AvancementTransformer());
 		}
 
 		return $this->préparer_réponse($réponse);

@@ -18,7 +18,7 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\User;
+use progression\domaine\entité\{Avancement, User};
 use progression\dao\UserDAO;
 use PHPUnit\Framework\TestCase;
 
@@ -37,6 +37,10 @@ final class UserDAOTests extends TestCase
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_on_obtient_son_profil()
 	{
 		$réponse_attendue = new User("bob");
+        $réponse_attendue->avancements = [
+            "https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement([], 1, 3),
+            "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement([], 0, 3)
+        ];
 
 		$résponse_observée = (new UserDAO())->get_user("bob");
 		$this->assertEquals($réponse_attendue, $résponse_observée);
@@ -65,6 +69,10 @@ final class UserDAOTests extends TestCase
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_le_sauvegarde_il_est_modifié_dans_la_BD_et_on_obtient_son_profil_modifié()
 	{
 		$réponse_attendue = new User("bob", User::ROLE_ADMIN);
+        $réponse_attendue->avancements = [
+            "https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement([], 1, 3),
+            "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement([], 0, 3)
+        ];
 
 		$user_test = (new UserDAO())->get_user("bob");
 		$user_test->rôle = User::ROLE_ADMIN;

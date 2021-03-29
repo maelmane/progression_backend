@@ -48,6 +48,17 @@ username
 | rôle     | int  | 0=normal,1=admin |
 |----------+------+------------------|
 
+*** Relations :
+
+| Nom         | Cardinalité | Type       | description         |
+|-------------+-------------+------------+---------------------|
+| avancements | 1-n         | Avancement | Liste d'avancements |
+
+*** Liens :
+| Nom                                   | Description                                                   |
+|---------------------------------------+---------------------------------------------------------------|
+| suivantes                             | liste de questions suivantes pour l'utilisateur courant       |
+
 ** Question
 
 Une question générique
@@ -79,13 +90,6 @@ Question
 |             |      | (obsolète)   |
 |             |      | questionSys  |
 |             |      | questionBD   |
-
-*** Liens :
-| Nom                                   | Description                                                   |
-|---------------------------------------+---------------------------------------------------------------|
-| avancement                            | avancement pour cette question pour l'utilisateur courant     |
-| suivantes                             | liste de questions suivantes pour l'utilisateur courant       |
-| accessibilité (relation? lien? meta?) | Vrai si la question est accessible pour l'utilisateur courant |
 
 ** Question (sous-type QuestionProg)
 

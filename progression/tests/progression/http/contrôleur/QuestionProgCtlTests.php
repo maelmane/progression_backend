@@ -81,8 +81,6 @@ final class QuestionProgCtlTests extends \TestCase
                 "links" => [
                     "self" =>
                     "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-                    "avancement" =>
-                    "https://example.com/avancement/Bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
                 ],
                 "relationships" => [
                     "tests" => [
