@@ -306,45 +306,26 @@ curl https://progression.dti.crosemont.quebec/api/v1/avancement/jdoe/aHR0cHM6Ly9
 curl https://progression.dti.crosemont.quebec/api/v1/ebauche/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/python -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Soumettre une tentative de solution à la question «appeler_une_fonction_paramétrée» : ~PROTOTYPE~
+** Soumettre une tentative de solution à la question «appeler_une_fonction_paramétrée» et récupérer les résultats : ~LIVE~
 
-#+BEGIN_SRC sh :eval never
-curl --data '{"langage":"python","code":"ma_fonction(\"Allo le monde\")"  }' https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ -H "Authorization: Bearer $TOKEN"
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+CODE=$(cat <<EOF
+#+TODO
+print(1)
+#-TODO
+EOF
+)
+
+curl --data "langage=python" --data-urlencode "code=$CODE" https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ?include=resultats -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 #+RESULTS:
-: {
-:  "data": {
-:    "type": "Tentative",
-:    "id": ... ,
-:    "attributes": {
-:      "tests_réussis":"1",
-:      "feedback":"Sers-toi d'un for pour itérer"
-:    },
-:  "included": [ {
-:    "type": "Résultat",
-:    "id": "0",
-:    "attributes": {
-:      "résultat":"true",
-:      "sortie_erreur":"",
-:      "sortie_observée":"itération 0\n",
-:      "feedback":"Bravo!"
-:     },
-:    "type": "Résultat",
-:    "id": "1",
-:    "attributes": {
-:      "résultat":"false",
-:      "sortie_erreur":"x is not defined int the current context",
-:      "sortie_observée":"",
-:      "feedback":"Mmmm... il va falloir réessayer"
-:      } ]
-:   }
-: }
+: nil
 
 ** Obtenir une tentative de solution préalablement soumise pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/1612834148 -H "Authorization: Bearer $TOKEN"
+curl https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/1617040175 -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir le test numéro 0 pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
