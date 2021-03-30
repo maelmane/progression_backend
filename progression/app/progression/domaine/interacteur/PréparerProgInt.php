@@ -36,21 +36,22 @@ class PréparerProgInt
 		return null;
 	}
 
-	private function composer_code_à_exécuter($code_utilisateur, $code)
+	private function composer_code_à_exécuter($ébauche, $code_utilisateur)
 	{
-		//Insère les TODOs de code dans code_utilisateur
-		$orig = explode("\n", $code_utilisateur);
-		$code = $code;
-		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code, $todos);
+		//Insère les TODOs de code_utilisateur dans ébauche
+		$orig = explode("\n", $ébauche);
+		$code_utilisateur = $code_utilisateur;
+		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code_utilisateur, $todos_utilisateur);
+		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $ébauche, $todos_ébauche);
 		$n = 0;
 		$res = [];
 		$todo = false;
 
-		foreach ($orig as $ligne) {
+		if (count($todos_utilisateur[1]) != count($todos_ébauche[1])) {
+			return null;
+		}
 
-			if (count($todos[1]) == 0) {
-				return null;
-			}
+		foreach ($orig as $ligne) {
 
 			if ($todo && strpos($ligne, "-TODO")) {
 				$todo = false;
@@ -62,7 +63,7 @@ class PréparerProgInt
 
 			if (!$todo && strpos($ligne, "+TODO")) {
 				$todo = true;
-				$res[] = $todos[1][$n++];
+				$res[] = $todos_utilisateur[1][$n++];
 			}
 		}
 
