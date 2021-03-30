@@ -20,6 +20,7 @@ cd progression_backend/progression
 ### 2.2 Créer et adapter le fichier de configuration
 - Copier le ficher **.env** dans le répertoire **/progression/app**
 ```
+cd app
 cp .env.exemple .env
 ```
 - Modifier le type d\'authentification et l\'hôte pour le compilebox du fichier **.env** 
