@@ -30,7 +30,7 @@ COPY app /var/www/progression/app/
 
 RUN mkdir -p /var/www/progression/vendor
 COPY --from=composer  /var/www/vendor/ /var/www/progression/vendor/
-#RUN mkdir /var/www/progression/app/storage
+RUN mkdir -p /var/www/progression/app/storage
 RUN chown -R www-data:www-data /var/www/progression/app/storage
 
 RUN echo AddDefaultCharset utf-8 >> /etc/apache2/apache2.conf
