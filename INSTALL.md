@@ -20,8 +20,7 @@ cd progression_backend/progression
 ### 2.2 Créer et adapter le fichier de configuration
 - Copier le ficher **.env** dans le répertoire **/progression/app**
 ```
-cd app
-cp .env.exemple .env
+cp app/.env.exemple app/.env
 ```
 - Modifier le type d\'authentification et l\'hôte pour le compilebox du fichier **.env** 
 
@@ -38,10 +37,16 @@ COMPILEBOX_HOTE=172.20.0.1
 ### 2.3 Construire les images docker
 - Compilation des images docker
 ```
-docker-compose build
+docker-compose build progression
 ```
 
 ### 2.4 Exécuter les tests (facultatif)
+#### 2.4.1 Copier le fichier .env
+```
+cp app/.env tests/.env
+```
+
+#### 2.4.2 Lancer les tests
 ```
 docker-compose up tests
 ```
