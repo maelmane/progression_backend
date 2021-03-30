@@ -27,11 +27,11 @@ cp .env.exemple .env
 #### En développement :
 - Désactiver l'authentification
 ```
-AUTH_TYPE = "no"
+AUTH_TYPE=no
 ```
 - Effectuer les compilations sur la machine de développement
 ```
-COMPILEBOX_HOTE = 172.20.0.1
+COMPILEBOX_HOTE=172.20.0.1
 ```
 
 ### 2.3 Construire les images docker
