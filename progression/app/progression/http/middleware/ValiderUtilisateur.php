@@ -29,24 +29,25 @@ class ValiderUtilisateur
 		if ($nomUtilisateur != null && $nomUtilisateur != "") {
 			$utilisateurRecherché = $utilisateurInt->get_user($nomUtilisateur);
 
-			if ($utilisateurConnecté->rôle == User::ROLE_ADMIN) {
-				return $next($request);
-			} elseif (
-				$utilisateurConnecté->rôle == User::ROLE_NORMAL &&
-				$utilisateurConnecté->username == $utilisateurRecherché->username
-			) {
-				return $next($request);
+			switch ($utilisateurConnecté->rôle) {
+				case User::ROLE_NORMAL:
+					if ($utilisateurRecherché && $utilisateurConnecté->username == $utilisateurRecherché->username) {
+						return $next($request);
+					}
+					break;
+				case User::ROLE_ADMIN:
+					return $next($request);
 			}
+			return response()->json(
+				["message" => "Accès interdit."],
+				403,
+				[
+					"Content-Type" => "application/vnd.api+json",
+					"Charset" => "utf-8",
+				],
+				JSON_UNESCAPED_UNICODE,
+			);
 		}
-
-		return response()->json(
-			["message" => "Accès interdit."],
-			403,
-			[
-				"Content-Type" => "application/vnd.api+json",
-				"Charset" => "utf-8",
-			],
-			JSON_UNESCAPED_UNICODE,
-		);
+		return $next($request);
 	}
 }
