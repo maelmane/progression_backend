@@ -88,7 +88,7 @@ $app->routeMiddleware([
 ]);
 
 $app->routeMiddleware([
-    'validerUtilisateur' => progression\http\middleware\ValiderUtilisateur::class,
+    'validationPermissions' => progression\http\middleware\ValidationPermissions::class,
 ]);
 
 /*
