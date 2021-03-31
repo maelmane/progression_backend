@@ -15,6 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 namespace progression\domaine\interacteur;
 
 use progression\config;
@@ -22,12 +23,12 @@ use progression\domaine\entité;
 
 class Interacteur
 {
-	protected $_source;
-	protected $_source_int;
+	protected $source_dao;
+	protected $source_int;
 
 	function __construct($sourceDAO = null, $sourceInt = null)
 	{
-		$this->_source = $sourceDAO;
-		$this->_source_int = $sourceInt;
+		$this->source_dao = $sourceDAO;
+		$this->source_int = $sourceInt;
 	}
 }

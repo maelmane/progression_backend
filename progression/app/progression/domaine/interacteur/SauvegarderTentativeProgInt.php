@@ -24,7 +24,7 @@ class SauvegarderTentativeProgInt extends Interacteur
 {
 	public function sauvegarder($username, $question_uri, $tentative)
 	{
-		$dao_avancement = $this->_source->get_avancement_dao();
+		$dao_avancement = $this->source_dao->get_avancement_dao();
 		$avancement = $dao_avancement->get_avancement($username, $question_uri);
 
 		if ($avancement == null) {
@@ -40,7 +40,7 @@ class SauvegarderTentativeProgInt extends Interacteur
 			$dao_avancement->save($username, $question_uri, $avancement);
 		}
 
-		$dao_tentative = $this->_source->get_tentative_prog_dao();
+		$dao_tentative = $this->source_dao->get_tentative_prog_dao();
 		return $dao_tentative->save($username, $question_uri, $tentative);
 	}
 }

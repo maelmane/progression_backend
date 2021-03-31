@@ -151,10 +151,6 @@ final class UserCtlTests extends TestCase
 			->andReturn();
 		$mockRequest
 			->allows()
-			->route("username")
-			->andReturn("jdoe");
-		$mockRequest
-			->allows()
 			->query("include")
 			->andReturn("avancements");
 
@@ -164,8 +160,10 @@ final class UserCtlTests extends TestCase
 
 		// Contrôleur
 		$ctl = new UserCtl($mockIntFactory);
+		$résultat_obtenu = $ctl->get($mockRequest, "jdoe");
 
-		$this->assertEquals($résultat_attendu, json_decode($ctl->get($mockRequest)->getContent(), true));
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
 	}
 
 	public function test_étant_donné_le_nom_dun_utilisateur_inexistant_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
@@ -173,7 +171,7 @@ final class UserCtlTests extends TestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$résultat_attendu = [
-			"message" => "Ressource non trouvée.",
+			"erreur" => "Ressource non trouvée.",
 		];
 
 		// Intéracteur
@@ -210,10 +208,6 @@ final class UserCtlTests extends TestCase
 			->andReturn();
 		$mockRequest
 			->allows()
-			->route("username")
-			->andReturn("Jean-Yves");
-		$mockRequest
-			->allows()
 			->query("include")
 			->andReturn();
 
@@ -223,7 +217,9 @@ final class UserCtlTests extends TestCase
 
 		// Contrôleur
 		$ctl = new UserCtl($mockIntFactory);
+		$résultat_obtenu = $ctl->get($mockRequest, "Jean-Yves");
 
-		$this->assertEquals($résultat_attendu, json_decode($ctl->get($mockRequest)->getContent(), true));
+		$this->assertEquals(404, $résultat_obtenu->status());
+		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
 	}
 }

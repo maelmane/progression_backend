@@ -43,7 +43,7 @@ class Contrôleur extends BaseController
 		}
 	}
 
-	protected function réponse_json($réponse, $code = 200)
+	protected function réponse_json($réponse, $code)
 	{
 		return response()->json(
 			$réponse,
@@ -112,15 +112,15 @@ class Contrôleur extends BaseController
 		return $manager->createData($resource)->toArray();
 	}
 
-	protected function préparer_réponse(array|null $réponse)
+	protected function préparer_réponse(array|null $réponse, $code = 200)
 	{
 		$request = app(Request::class);
 		if ($réponse != null && $réponse != [null]) {
 			Log::info("({$request->ip()}) - {$request->method()} {$request->path()} (" . get_class($this) . ")");
-			return $this->réponse_json($réponse, 200);
+			return $this->réponse_json($réponse, $code);
 		} else {
 			Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . get_class($this) . ")");
-			return $this->réponse_json(["message" => "Ressource non trouvée."], 404);
+			return $this->réponse_json(["erreur" => "Ressource non trouvée."], 404);
 		}
 	}
 }

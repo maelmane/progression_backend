@@ -50,7 +50,7 @@ class LoginCtl extends Contrôleur
 					get_class($this) .
 					") Accès interdit. username: $username",
 			);
-			return $this->réponse_json(["message" => "Accès interdit"], 403);
+			return $this->réponse_json(["erreur" => "Accès interdit."], 401);
 		} else {
 			return $this->préparer_réponse(["Token" => $token]);
 		}

@@ -38,8 +38,7 @@ final class ÉbaucheCtlTests extends TestCase
 		// Question
 		$question = new QuestionProg();
 		$question->type = Question::TYPE_PROG;
-		$question->chemin =
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		// Ébauches
 		$question->exécutables["python"] = new Exécutable("print(\"Hello world\")", "python");
@@ -48,33 +47,30 @@ final class ÉbaucheCtlTests extends TestCase
 		$résultat_attendu = [
 			"data" => [
 				"type" => "ebauche",
-				"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+				"id" =>
+					"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
 				"attributes" => [
 					"langage" => "python",
 					"code" => "print(\"Hello world\")",
 				],
 				"links" => [
-					"self" => "https://example.com/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
-					"related" => "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+					"self" =>
+						"https://example.com/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+					"related" =>
+						"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				],
 			],
 		];
 
 		// Intéracteur
-		$mockObtenirQuestionInt = Mockery::mock(
-			"progression\domaine\interacteur\ObtenirQuestionInt"
-		);
+		$mockObtenirQuestionInt = Mockery::mock("progression\domaine\interacteur\ObtenirQuestionInt");
 		$mockObtenirQuestionInt
 			->allows()
-			->get_question(
-				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
-			)
+			->get_question("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 
 		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			"progression\domaine\interacteur\InteracteurFactory"
-		);
+		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
 		$mockIntFactory
 			->allows()
 			->getObtenirQuestionInt()
@@ -94,7 +90,7 @@ final class ÉbaucheCtlTests extends TestCase
 			->allows()
 			->path()
 			->andReturn(
-				"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python"
+				"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
 			);
 		$mockRequest
 			->allows()
@@ -106,20 +102,14 @@ final class ÉbaucheCtlTests extends TestCase
 
 		// Contrôleur
 		$ctl = new ÉbaucheCtl($mockIntFactory);
-
-		$this->assertEquals(
-			$résultat_attendu,
-			json_decode(
-				$ctl
-					->get(
-						$mockRequest,
-						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-						"python"
-					)
-					->getContent(),
-				true
-			)
+		$résultat_obtenu = $ctl->get(
+			$mockRequest,
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"python",
 		);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
 	}
 
 	public function test_étant_donné_le_chemin_dune_ébauche_inexistante_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
@@ -129,32 +119,21 @@ final class ÉbaucheCtlTests extends TestCase
 		// Question
 		$question = new QuestionProg();
 		$question->type = Question::TYPE_PROG;
-		$question->chemin =
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		// Ébauches
 		$question->exécutables["python"] = new Exécutable("print(\"Hello world\")", "python");
 		$question->exécutables["java"] = new Exécutable("System.out.println(\"Hello world\")", "java");
 
-		$résultat_attendu = [
-			"message" => "Ressource non trouvée."
-		];
-
 		// Intéracteur
-		$mockObtenirQuestionInt = Mockery::mock(
-			"progression\domaine\interacteur\ObtenirQuestionInt"
-		);
+		$mockObtenirQuestionInt = Mockery::mock("progression\domaine\interacteur\ObtenirQuestionInt");
 		$mockObtenirQuestionInt
 			->allows()
-			->get_question(
-				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
-			)
+			->get_question("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 
 		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			"progression\domaine\interacteur\InteracteurFactory"
-		);
+		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
 		$mockIntFactory
 			->allows()
 			->getObtenirQuestionInt()
@@ -174,7 +153,7 @@ final class ÉbaucheCtlTests extends TestCase
 			->allows()
 			->path()
 			->andReturn(
-				"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/unlangageinexistant"
+				"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/unlangageinexistant",
 			);
 		$mockRequest
 			->allows()
@@ -187,18 +166,13 @@ final class ÉbaucheCtlTests extends TestCase
 		// Contrôleur
 		$ctl = new ÉbaucheCtl($mockIntFactory);
 
-		$this->assertEquals(
-			$résultat_attendu,
-			json_decode(
-				$ctl
-					->get(
-						$mockRequest,
-						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-						"unlangageinexistant"
-					)
-					->getContent(),
-				true
-			)
+		$résultat_obtenu = $ctl->get(
+			$mockRequest,
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"unlangageinexistant",
 		);
+
+		$this->assertEquals(404, $résultat_obtenu->status());
+		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_obtenu->getContent());
 	}
 }
