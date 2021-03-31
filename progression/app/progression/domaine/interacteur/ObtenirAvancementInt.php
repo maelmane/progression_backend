@@ -15,6 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{Avancement, Question};
@@ -28,17 +29,16 @@ class ObtenirAvancementInt extends Interacteur
 
 	function get_avancement($username, $question_uri)
 	{
-        if ($this->_source->get_user_dao()->get_user($username) == null){
-            return null;
-        }
-        
-		$avancement = $this->_source->get_avancement_dao()->get_avancement($username, $question_uri);
+		if ($this->source_dao->get_user_dao()->get_user($username) == null) {
+			return null;
+		}
 
-        if ($avancement == null){
-            $avancement = new Avancement();
-        }
-        
-        return $avancement;
+		$avancement = $this->source_dao->get_avancement_dao()->get_avancement($username, $question_uri);
 
+		if ($avancement == null) {
+			$avancement = new Avancement();
+		}
+
+		return $avancement;
 	}
 }

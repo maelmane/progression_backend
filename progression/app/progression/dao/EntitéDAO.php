@@ -15,6 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 namespace progression\dao;
 
 class ConnexionException extends \Exception
@@ -24,16 +25,15 @@ class ConnexionException extends \Exception
 class EntitéDAO
 {
 	private static $conn = null;
-	protected $_source = null;
+	protected $source = null;
 
 	public function __construct($source = null)
 	{
-        if( $source == null ){
-            $this->_source = new DAOFactory();
-        }
-        else{
-            $this->_source = $source;
-        }
+		if ($source == null) {
+			$this->source = new DAOFactory();
+		} else {
+			$this->source = $source;
+		}
 	}
 
 	public static function get_connexion()
@@ -59,5 +59,3 @@ class EntitéDAO
 		EntitéDAO::$conn->set_charset("utf8");
 	}
 }
-
-?>
