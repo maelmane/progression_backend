@@ -20,12 +20,22 @@ $router->get("/", function () use ($router) {
 $router->post("/auth/", "LoginCtl@login");
 
 $router->group(["middleware" => "auth"], function () use ($router) {
-	// User
-	$router->get("/user[/{username}]", "UserCtl@get");
-	$router->get("/user/{username}/relationships/{relation}", "NotImplementedCtl@get");
 	// Question
 	$router->get("/question/{uri}", "QuestionCtl@get");
 	$router->get("/question/{chemin}/relationships/{relation}", "NotImplementedCtl@get");
+	$router->post("/tentative/{username}/{question_uri}", "TentativeCtl@post");
+	// Ébauche
+	$router->get("/ebauche/{question_uri}/{langage}", "ÉbaucheCtl@get");
+	// Test
+	$router->get("/test/{question_uri}/{numero:[[:digit:]]+}", "TestCtl@get");
+	// Résultat
+	$router->post("/test/{username}/{question_uri}/{numero:[[:digit:]]+}", "NotImplementedCtl@get");
+});
+
+$router->group(["middleware" => ["auth", "validerUtilisateur"]], function () use ($router) {
+	// User
+	$router->get("/user[/{username}]", "UserCtl@get");
+	$router->get("/user/{username}/relationships/{relation}", "NotImplementedCtl@get");
 	// Avancement
 	$router->get("/avancement/{username}/{question_uri}", "AvancementCtl@get");
 	$router->get("/avancement/{username}/{chemin}/relationships/{relation}", "NotImplementedCtl@get");
@@ -35,11 +45,4 @@ $router->group(["middleware" => "auth"], function () use ($router) {
 		"/tentative/{username}/{question_uri}/{timestamp:[[:digit:]]+}/relationships/{relation}",
 		"NotImplementedCtl@get",
 	);
-	$router->post("/tentative/{username}/{question_uri}", "TentativeCtl@post");
-	// Ébauche
-	$router->get("/ebauche/{question_uri}/{langage}", "ÉbaucheCtl@get");
-	// Test
-	$router->get("/test/{question_uri}/{numero:[[:digit:]]+}", "TestCtl@get");
-	// Résultat
-	$router->post("/test/{username}/{question_uri}/{numero:[[:digit:]]+}", "NotImplementedCtl@get");
 });
