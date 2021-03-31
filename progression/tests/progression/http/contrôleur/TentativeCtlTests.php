@@ -24,6 +24,7 @@ use progression\http\contrôleur\TentativeCtl;
 use Illuminate\Http\Request;
 
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use progression\domaine\interacteur\ExécutionException;
 
 final class TentativeCtlTests extends TestCase
 {
@@ -307,6 +308,275 @@ final class TentativeCtlTests extends TestCase
 				Mockery::any(),
 			)
 			->andReturn($tentative);
+
+		$mockObtenirQuestionInt = Mockery::mock(
+			"progression\domaine\interacteur\ObtenirQuestionInt"
+		);
+		$mockObtenirQuestionInt
+			->allows()
+			->get_question(
+				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
+			)
+			->andReturn($question);
+
+		// InteracteurFactory
+		$mockIntFactory = Mockery::mock(
+			"progression\domaine\interacteur\InteracteurFactory"
+		);
+		$mockIntFactory
+			->allows()
+			->getObtenirQuestionInt()
+			->andReturn($mockObtenirQuestionInt);
+		$mockIntFactory
+			->allows()
+			->getSoumettreTentativeProgInt()
+			->andReturn($mockSoumettreTentativeProgInt);
+
+		// Requête
+		$mockRequest = Mockery::mock("Illuminate\Http\Request");
+		$mockRequest
+			->allows()
+			->ip()
+			->andReturn("127.0.0.1");
+		$mockRequest
+			->allows()
+			->method()
+			->andReturn("POST");
+		$mockRequest
+			->allows()
+			->only(['langage', 'code'])
+			->andReturn(["langage" => "python", "code" => "codeTest"]);
+		$mockRequest
+			->allows()
+			->path()
+			->andReturn(
+				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+			);
+		$mockRequest
+			->allows()
+			->query("include")
+			->andReturn("resultats");
+		$this->app->bind(Request::class, function () use ($mockRequest) {
+			return $mockRequest;
+		});
+
+		// Contrôleur
+		$ctl = new TentativeCtl($mockIntFactory);
+		$this->assertEquals(
+			$résultat_attendu,
+			json_decode(
+				$ctl
+					->post(
+						$mockRequest,
+						"jdoe",
+						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+					)
+					->getContent(),
+				true
+			)
+		);
+	}
+
+	public function test_étant_donné_une_soumission_sans_code_lorsquon_appelle_post_on_obtient_Requête_invalide()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
+
+		$résultat_attendu = [
+			"message" => "Requête invalide."
+		];
+
+		// Question
+		$question = new QuestionProg();
+		$question->type = Question::TYPE_PROG;
+		$question->nom = "appeler_une_fonction_paramétrée";
+		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+
+		// Intéracteur
+		$mockObtenirQuestionInt = Mockery::mock(
+			"progression\domaine\interacteur\ObtenirQuestionInt"
+		);
+		$mockObtenirQuestionInt
+			->allows()
+			->get_question(
+				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
+			)
+			->andReturn($question);
+
+		// InteracteurFactory
+		$mockIntFactory = Mockery::mock(
+			"progression\domaine\interacteur\InteracteurFactory"
+		);
+		$mockIntFactory
+			->allows()
+			->getObtenirQuestionInt()
+			->andReturn($mockObtenirQuestionInt);
+
+		// Requête
+		$mockRequest = Mockery::mock("Illuminate\Http\Request");
+		$mockRequest
+			->allows()
+			->ip()
+			->andReturn("127.0.0.1");
+		$mockRequest
+			->allows()
+			->method()
+			->andReturn("POST");
+		$mockRequest
+			->allows()
+			->only(['langage', 'code'])
+			->andReturn(["langage" => "python"]);
+		$mockRequest
+			->allows()
+			->path()
+			->andReturn(
+				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+			);
+		$mockRequest
+			->allows()
+			->query("include")
+			->andReturn("resultats");
+		$this->app->bind(Request::class, function () use ($mockRequest) {
+			return $mockRequest;
+		});
+
+		// Contrôleur
+		$ctl = new TentativeCtl($mockIntFactory);
+		$this->assertEquals(
+			$résultat_attendu,
+			json_decode(
+				$ctl
+					->post(
+						$mockRequest,
+						"jdoe",
+						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+					)
+					->getContent(),
+				true
+			)
+		);
+	}
+
+	public function test_étant_donné_un_url_de_compilebox_inaccessible_lorsquon_appelle_post_on_obtient_Service_non_disponible()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
+
+		$résultat_attendu = [
+			"message" => "Service non disponible."
+		];
+
+		// Question
+		$question = new QuestionProg();
+		$question->type = Question::TYPE_PROG;
+		$question->nom = "appeler_une_fonction_paramétrée";
+		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+
+		// Intéracteur
+		$mockSoumettreTentativeProgInt = Mockery::mock(
+			"progression\domaine\interacteur\SoumettreTentativeProgInt"
+		);
+		$mockSoumettreTentativeProgInt
+			->allows()
+			->soumettre_tentative(
+				"jdoe",
+				$question,
+				Mockery::any(),
+			)
+			->andThrow(new ExécutionException("erreur", "compilebox_url_invalide"));
+
+		$mockObtenirQuestionInt = Mockery::mock(
+			"progression\domaine\interacteur\ObtenirQuestionInt"
+		);
+		$mockObtenirQuestionInt
+			->allows()
+			->get_question(
+				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
+			)
+			->andReturn($question);
+
+		// InteracteurFactory
+		$mockIntFactory = Mockery::mock(
+			"progression\domaine\interacteur\InteracteurFactory"
+		);
+		$mockIntFactory
+			->allows()
+			->getObtenirQuestionInt()
+			->andReturn($mockObtenirQuestionInt);
+		$mockIntFactory
+			->allows()
+			->getSoumettreTentativeProgInt()
+			->andReturn($mockSoumettreTentativeProgInt);
+
+		// Requête
+		$mockRequest = Mockery::mock("Illuminate\Http\Request");
+		$mockRequest
+			->allows()
+			->ip()
+			->andReturn("127.0.0.1");
+		$mockRequest
+			->allows()
+			->method()
+			->andReturn("POST");
+		$mockRequest
+			->allows()
+			->only(['langage', 'code'])
+			->andReturn(["langage" => "python", "code" => "codeTest"]);
+		$mockRequest
+			->allows()
+			->path()
+			->andReturn(
+				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+			);
+		$mockRequest
+			->allows()
+			->query("include")
+			->andReturn("resultats");
+		$this->app->bind(Request::class, function () use ($mockRequest) {
+			return $mockRequest;
+		});
+
+		// Contrôleur
+		$ctl = new TentativeCtl($mockIntFactory);
+		$this->assertEquals(
+			$résultat_attendu,
+			json_decode(
+				$ctl
+					->post(
+						$mockRequest,
+						"jdoe",
+						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+					)
+					->getContent(),
+				true
+			)
+		);
+	}
+
+	public function test_étant_donné_une_tentative_invalide_lorsquon_appelle_post_on_obtient_Tentative_intraitable()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
+
+		$résultat_attendu = [
+			"message" => "Tentative intraitable."
+		];
+
+		// Question
+		$question = new QuestionProg();
+		$question->type = Question::TYPE_PROG;
+		$question->nom = "appeler_une_fonction_paramétrée";
+		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+
+		// Intéracteur
+		$mockSoumettreTentativeProgInt = Mockery::mock(
+			"progression\domaine\interacteur\SoumettreTentativeProgInt"
+		);
+		$mockSoumettreTentativeProgInt
+			->allows()
+			->soumettre_tentative(
+				"jdoe",
+				$question,
+				Mockery::any(),
+			)
+			->andReturn(null);
 
 		$mockObtenirQuestionInt = Mockery::mock(
 			"progression\domaine\interacteur\ObtenirQuestionInt"

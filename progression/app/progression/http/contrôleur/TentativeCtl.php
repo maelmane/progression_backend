@@ -78,7 +78,7 @@ class TentativeCtl extends Contrôleur
 					$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
 				} catch (ExécutionException $e) {
 					Log::error($e->getMessage());
-					return $this->réponse_json(["message" => "Service non disponible"], 503);
+					return $this->réponse_json(["message" => "Service non disponible."], 503);
 				}
 			} else {
 				return $this->réponse_json(["message" => "Requête invalide."], 400);
