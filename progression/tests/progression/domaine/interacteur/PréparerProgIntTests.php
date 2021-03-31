@@ -33,24 +33,21 @@ final class PréparerProgIntTests extends TestCase
 	{
 		$résultat_attendu = new Exécutable(
 			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"Allo le monde\")\n#-TODO\n# Rien à faire ici\n#+TODO\n\nprint(\"Test 123\")",
-			"python",
+			"python"
 		);
 
 		$question = new QuestionProg();
-		$question->question_uri =
-			"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour";
 		$question->exécutables["python"] = new Exécutable(
 			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
-			"python",
+			"python"
 		);
 
 		$tentative = new TentativeProg(
 			"python",
-			"#Commentaire invisible\n#+VISIBLE\n#Ne devrait pas être ici\n#+TODO\nprint(\"Allo le monde\")\n#-TODO\n# Rien à faire ici\n#+TODO\n\nprint(\"Test 123\")",
+			"#Commentaire invisible\n#+VISIBLE\n#Ne devrait pas être ici\n#+TODO\nprint(\"Allo le monde\")\n#-TODO\n# Rien à faire ici\n#+TODO\n\nprint(\"Test 123\")"
 		);
 
 		$interacteur = new PréparerProgInt();
-
 		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
@@ -59,17 +56,70 @@ final class PréparerProgIntTests extends TestCase
 	public function test_étant_donné_une_question_et_une_tentative_pour_un_langage_sans_ébauche_lorsquon_prépare_lexécutable_on_obtient_null()
 	{
 		$question = new QuestionProg();
-		$question->question_uri =
-			"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour";
 		$question->exécutables["python"] = new Exécutable(
 			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
-			"python",
+			"python"
 		);
 
 		$tentative = new TentativeProg("java", "sans importance");
 
 		$interacteur = new PréparerProgInt();
+		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
 
+		$this->assertNull($résultat_obtenu);
+	}
+
+	public function test_étant_donné_une_ébauche_avec_2_todo_et_tentative_avec_1_todo_lorsquon_prépare_lexécutable_on_obtient_null()
+	{
+		$question = new QuestionProg();
+		$question->exécutables["python"] = new Exécutable(
+			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
+			"python"
+		);
+
+		$tentative = new TentativeProg(
+			"python",
+			"#+TODO\nprint(1)\n#-TODO"
+		);
+
+		$interacteur = new PréparerProgInt();
+		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
+
+		$this->assertNull($résultat_obtenu);
+	}
+
+	public function test_étant_donné_une_ébauche_avec_1_todo_et_tentative_avec_2_todo_lorsquon_prépare_lexécutable_on_obtient_null()
+	{
+		$question = new QuestionProg();
+		$question->exécutables["python"] = new Exécutable(
+			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO",
+			"python"
+		);
+
+		$tentative = new TentativeProg(
+			"python",
+			"#+TODO\nprint(1)\n#-TODO\n#+TODO\nprint(1)\n#-TODO"
+		);
+
+		$interacteur = new PréparerProgInt();
+		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
+
+		$this->assertNull($résultat_obtenu);
+	}
+	public function test_étant_donné_une_ébauche_avec_2_todo_et_tentative_avec_1_todo_invalide_lorsquon_prépare_lexécutable_on_obtient_null()
+	{
+		$question = new QuestionProg();
+		$question->exécutables["python"] = new Exécutable(
+			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO",
+			"python"
+		);
+
+		$tentative = new TentativeProg(
+			"python",
+			"#%2BTODO\nprint(1)\n#-TODO"
+		);
+
+		$interacteur = new PréparerProgInt();
 		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
 
 		$this->assertNull($résultat_obtenu);
