@@ -24,7 +24,7 @@ class CréerUserInt extends Interacteur
 {
 	function obtenir_ou_créer_user($username)
 	{
-		$user_dao = $this->_source->get_user_dao();
+		$user_dao = $this->source_dao->get_user_dao();
 
 		$user = $user_dao->get_user($username);
 		if ($user == null) {

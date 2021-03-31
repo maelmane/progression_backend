@@ -37,14 +37,14 @@ class QuestionDAO extends EntitéDAO
 			if ($type == "prog") {
 				$question = new QuestionProg();
 				$this->load($question, $infos_question);
-				$this->_source->get_question_prog_dao()->load($question, $infos_question);
+				$this->source->get_question_prog_dao()->load($question, $infos_question);
 			} elseif ($type == "sys") {
 				$question = new QuestionSys();
 				$this->load($question, $infos_question);
-				$this->_source->get_question_sys_dao()->load($question, $infos_question);
+				$this->source->get_question_sys_dao()->load($question, $infos_question);
 			} elseif ($type == "bd") {
 				$question = new QuestionBD();
-				$this->_source->get_question_bd_dao()->load($question, $infos_question);
+				$this->source->get_question_bd_dao()->load($question, $infos_question);
 			}
 		} else {
 			return null;
@@ -78,7 +78,7 @@ class QuestionDAO extends EntitéDAO
 		}
 
 		if (isset($info["type"]) && $info["type"] == "prog") {
-			$info = $this->_source->get_question_prog_dao()->récupérer_question($uri, $info);
+			$info = $this->source->get_question_prog_dao()->récupérer_question($uri, $info);
 		}
 
 		$info["uri"] = $uri;
