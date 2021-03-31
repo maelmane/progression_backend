@@ -47,7 +47,7 @@ class AvancementDAO extends EntitéDAO
 	{
 		$avancement = $this->load($username, $question_uri);
 		if ($avancement->type == Question::TYPE_PROG) {
-			$avancement->tentatives = $this->_source->get_tentative_prog_dao()->get_toutes($username, $question_uri);
+			$avancement->tentatives = $this->source->get_tentative_prog_dao()->get_toutes($username, $question_uri);
 			return $avancement;
 		} else {
 			return null;

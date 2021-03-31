@@ -27,11 +27,11 @@ class TentativeDAO extends EntitéDAO
 		$type = $this->get_type($username, $question_uri);
 
 		if ($type == Question::TYPE_PROG) {
-			return $this->_source->get_tentative_prog_dao()->get_tentative($username, $question_uri, $date);
+			return $this->source->get_tentative_prog_dao()->get_tentative($username, $question_uri, $date);
 		} elseif ($type == Question::TYPE_SYS) {
-			return $this->_source->get_tentative_sys_dao()->get_tentative($username, $question_uri, $date);
+			return $this->source->get_tentative_sys_dao()->get_tentative($username, $question_uri, $date);
 		} elseif ($type == Question::TYPE_BD) {
-			return $this->_source->get_tentative_bd_dao()->get_tentative($username, $question_uri, $date);
+			return $this->source->get_tentative_bd_dao()->get_tentative($username, $question_uri, $date);
 		} else {
 			return null;
 		}
