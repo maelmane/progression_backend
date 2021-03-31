@@ -41,8 +41,7 @@ final class TestCtlTests extends \TestCase
 		// Question
 		$question = new QuestionProg();
 		$question->type = Question::TYPE_PROG;
-		$question->chemin =
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		// Tests
 		$question->tests = [
@@ -53,36 +52,32 @@ final class TestCtlTests extends \TestCase
 		$résultat_attendu = [
 			"data" => [
 				"type" => "test",
-				"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+				"id" =>
+					"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 				"attributes" => [
 					"numéro" => "0",
 					"nom" => "2 salutations",
 					"entrée" => "2",
 					"sortie_attendue" => "Bonjour\nBonjour\n",
-
 				],
 				"links" => [
-					"self" => "https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
-					"related" => "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+					"self" =>
+						"https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+					"related" =>
+						"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				],
-			]
+			],
 		];
 
 		// Intéracteur
-		$mockObtenirQuestionInt = Mockery::mock(
-			"progression\domaine\interacteur\ObtenirQuestionInt"
-		);
+		$mockObtenirQuestionInt = Mockery::mock("progression\domaine\interacteur\ObtenirQuestionInt");
 		$mockObtenirQuestionInt
 			->allows()
-			->get_question(
-				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
-			)
+			->get_question("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 
 		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			"progression\domaine\interacteur\InteracteurFactory"
-		);
+		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
 		$mockIntFactory
 			->allows()
 			->getObtenirQuestionInt()
@@ -102,7 +97,7 @@ final class TestCtlTests extends \TestCase
 			->allows()
 			->path()
 			->andReturn(
-				"/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0"
+				"/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 			);
 		$mockRequest
 			->allows()
@@ -114,20 +109,14 @@ final class TestCtlTests extends \TestCase
 
 		// Contrôleur
 		$ctl = new TestCtl($mockIntFactory);
-
-		$this->assertEquals(
-			$résultat_attendu,
-			json_decode(
-				$ctl
-					->get(
-						$mockRequest,
-						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-						"0"
-					)
-					->getContent(),
-				true
-			)
+		$résultat_obtenu = $ctl->get(
+			$mockRequest,
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"0",
 		);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
 	}
 
 	public function test_étant_donné_le_chemin_dune_question_et_son_test_numero_abc_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
@@ -137,8 +126,7 @@ final class TestCtlTests extends \TestCase
 		// Question
 		$question = new QuestionProg();
 		$question->type = Question::TYPE_PROG;
-		$question->chemin =
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		// Tests
 		$question->tests = [
@@ -147,24 +135,18 @@ final class TestCtlTests extends \TestCase
 		];
 
 		$résultat_attendu = [
-			"message" => "Ressource non trouvée."
+			"erreur" => "Ressource non trouvée.",
 		];
 
 		// Intéracteur
-		$mockObtenirQuestionInt = Mockery::mock(
-			"progression\domaine\interacteur\ObtenirQuestionInt"
-		);
+		$mockObtenirQuestionInt = Mockery::mock("progression\domaine\interacteur\ObtenirQuestionInt");
 		$mockObtenirQuestionInt
 			->allows()
-			->get_question(
-				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
-			)
+			->get_question("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 
 		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			"progression\domaine\interacteur\InteracteurFactory"
-		);
+		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
 		$mockIntFactory
 			->allows()
 			->getObtenirQuestionInt()
@@ -184,7 +166,7 @@ final class TestCtlTests extends \TestCase
 			->allows()
 			->path()
 			->andReturn(
-				"/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/999"
+				"/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/999",
 			);
 		$mockRequest
 			->allows()
@@ -196,19 +178,13 @@ final class TestCtlTests extends \TestCase
 
 		// Contrôleur
 		$ctl = new TestCtl($mockIntFactory);
-
-		$this->assertEquals(
-			$résultat_attendu,
-			json_decode(
-				$ctl
-					->get(
-						$mockRequest,
-						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-						999
-					)
-					->getContent(),
-				true
-			)
+		$résultat_obtenu = $ctl->get(
+			$mockRequest,
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			999,
 		);
+
+		$this->assertEquals(404, $résultat_obtenu->status());
+		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
 	}
 }
