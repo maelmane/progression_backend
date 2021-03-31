@@ -39,7 +39,7 @@ $router->group(["middleware" => "auth"], function () use ($router) {
 	// Ébauche
 	$router->get("/ebauche/{question_uri}/{langage}", "ÉbaucheCtl@get");
 	// Test
-	$router->get("/test/{question_uri}/{numero:[[:digit:]]+}", "TestCtl@get");
+	$router->get("/test/{question_uri}/{numero}", "TestCtl@get");
 	// Résultat
 	$router->post("/test/{username}/{question_uri}/{numero:[[:digit:]]+}", "NotImplementedCtl@get");
 });
