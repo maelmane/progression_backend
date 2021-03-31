@@ -30,7 +30,6 @@ class AvancementCtl extends Contrôleur
 	{
 		$chemin = Encodage::base64_decode_url($question_uri);
 		$avancement = null;
-
 		$avancementInt = $this->intFactory->getObtenirAvancementInt();
 		$avancement = $avancementInt->get_avancement($username, $chemin);
 
@@ -39,7 +38,7 @@ class AvancementCtl extends Contrôleur
 		if ($avancement != null) {
 			$avancement->id = "{$username}/$question_uri";
 
-            $réponse = $this->item($avancement, new AvancementTransformer());
+			$réponse = $this->item($avancement, new AvancementTransformer());
 		}
 
 		return $this->préparer_réponse($réponse);
