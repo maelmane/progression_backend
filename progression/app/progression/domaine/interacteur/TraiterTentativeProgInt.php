@@ -34,6 +34,9 @@ class TraiterTentativeProgInt extends Interacteur
 
 		if ($nb_tests_réussis == count($question->tests)) {
 			$tentative->réussi = true;
+			$tentative->feedback = $question->feedback_pos;
+		} else {
+			$tentative->feedback = $question->feedback_neg;
 		}
 
 		return $tentative;
