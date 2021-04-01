@@ -81,7 +81,7 @@ class TentativeCtl extends Contrôleur
 					return $this->réponse_json(["message" => "Service non disponible."], 503);
 				}
 			} else {
-				return $this->réponse_json(["message" => "Requête invalide."], 400);
+				return $this->réponse_json(["message" => "Requête invalide."], 422);
 			}
 
 			if ($tentative != null) {

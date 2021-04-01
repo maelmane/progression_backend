@@ -38,37 +38,39 @@ class PréparerProgInt
 
 	private function composer_code_à_exécuter($ébauche, $code_utilisateur)
 	{
-		//Insère les TODOs de code_utilisateur dans ébauche
-		$orig = explode("\n", $ébauche);
-		$code_utilisateur = $code_utilisateur;
 		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code_utilisateur, $todos_utilisateur);
 		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $ébauche, $todos_ébauche);
-		$n = 0;
-		$res = [];
-		$todo = false;
 
-		if (count($todos_utilisateur[1]) != count($todos_ébauche[1])) {
+		$nb_todos_utilisateur = count($todos_utilisateur[1]);
+		$nb_todos_ébauche = count($todos_ébauche[1]);
+
+		$codeÉbauche = explode("\n", $ébauche);
+		$codeExécutable = [];
+		$todoStatut = false;
+		$todoIndex = 0;
+
+		if ($nb_todos_utilisateur != $nb_todos_ébauche) {
 			return null;
 		}
 
-		foreach ($orig as $ligne) {
+		foreach ($codeÉbauche as $ligne) {
 
-			if ($todo && strpos($ligne, "-TODO")) {
-				$todo = false;
+			if ($todoStatut  && strpos($ligne, "-TODO")) {
+				$todoStatut = false;
 			}
 
-			if (!$todo) {
-				$res[] = $ligne;
+			if (!$todoStatut) {
+				$codeExécutable[] = $ligne;
 			}
 
-			if (!$todo && strpos($ligne, "+TODO")) {
-				$todo = true;
-				$res[] = $todos_utilisateur[1][$n++];
+			if (!$todoStatut  && strpos($ligne, "+TODO")) {
+				$codeExécutable[] = $todos_utilisateur[1][$todoIndex++];
+				$todoStatut = true;
 			}
 		}
 
-		$res = implode("\n", $res);
+		$codeExécutable = implode("\n", $codeExécutable);
 
-		return $res;
+		return $codeExécutable;
 	}
 }

@@ -49,15 +49,15 @@ final class TentativeCtlTests extends TestCase
 				],
 				"links" => [
 					"self" =>
-						"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
+					"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
 				],
 				"relationships" => [
 					"resultats" => [
 						"links" => [
 							"self" =>
-								"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/relationships/resultats",
+							"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/relationships/resultats",
 							"related" =>
-								"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/resultats",
+							"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/resultats",
 						],
 						"data" => [],
 					],
@@ -201,7 +201,7 @@ final class TentativeCtlTests extends TestCase
 			"data" => [
 				"type" => "tentative",
 				"id" =>
-					"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
+				"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
 				"attributes" => [
 					"date_soumission" => 1614374490,
 					"tests_réussis" => 1,
@@ -213,21 +213,21 @@ final class TentativeCtlTests extends TestCase
 				],
 				"links" => [
 					"self" =>
-						"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
+					"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
 				],
 				"relationships" => [
 					"resultats" => [
 						"links" => [
 							"self" =>
-								"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/relationships/resultats",
+							"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/relationships/resultats",
 							"related" =>
-								"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/resultats",
+							"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/resultats",
 						],
 						"data" => [
 							[
 								'type' => 'resultat',
 								'id' =>
-									'jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0',
+								'jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0',
 							],
 						],
 					],
@@ -237,7 +237,7 @@ final class TentativeCtlTests extends TestCase
 				[
 					"type" => "resultat",
 					"id" =>
-						"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
+					"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
 					"attributes" => [
 						"numéro" => 0,
 						"sortie_erreur" => "",
@@ -247,9 +247,9 @@ final class TentativeCtlTests extends TestCase
 					],
 					"links" => [
 						'self' =>
-							'https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0',
+						'https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0',
 						"related" =>
-							'https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490',
+						'https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490',
 					],
 				],
 			],
@@ -373,29 +373,20 @@ final class TentativeCtlTests extends TestCase
 			->andReturn(
 				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
 			);
-		$mockRequest
-			->allows()
-			->query("include")
-			->andReturn("resultats");
 		$this->app->bind(Request::class, function () use ($mockRequest) {
 			return $mockRequest;
 		});
 
 		// Contrôleur
 		$ctl = new TentativeCtl($mockIntFactory);
-		$this->assertEquals(
-			$résultat_attendu,
-			json_decode(
-				$ctl
-					->post(
-						$mockRequest,
-						"jdoe",
-						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-					)
-					->getContent(),
-				true
-			)
+		$résultat_obtenu = $ctl->post(
+			$mockRequest,
+			"jdoe",
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 		);
+
+		$this->assertEquals(422, $résultat_obtenu->status());
+		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
 	}
 
 	public function test_étant_donné_un_url_de_compilebox_inaccessible_lorsquon_appelle_post_on_obtient_Service_non_disponible()
@@ -468,29 +459,20 @@ final class TentativeCtlTests extends TestCase
 			->andReturn(
 				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
 			);
-		$mockRequest
-			->allows()
-			->query("include")
-			->andReturn("resultats");
 		$this->app->bind(Request::class, function () use ($mockRequest) {
 			return $mockRequest;
 		});
 
 		// Contrôleur
 		$ctl = new TentativeCtl($mockIntFactory);
-		$this->assertEquals(
-			$résultat_attendu,
-			json_decode(
-				$ctl
-					->post(
-						$mockRequest,
-						"jdoe",
-						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-					)
-					->getContent(),
-				true
-			)
+		$résultat_obtenu = $ctl->post(
+			$mockRequest,
+			"jdoe",
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 		);
+
+		$this->assertEquals(503, $résultat_obtenu->status());
+		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
 	}
 
 	public function test_étant_donné_une_tentative_invalide_lorsquon_appelle_post_on_obtient_Tentative_intraitable()
@@ -563,28 +545,19 @@ final class TentativeCtlTests extends TestCase
 			->andReturn(
 				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
 			);
-		$mockRequest
-			->allows()
-			->query("include")
-			->andReturn("resultats");
 		$this->app->bind(Request::class, function () use ($mockRequest) {
 			return $mockRequest;
 		});
 
 		// Contrôleur
 		$ctl = new TentativeCtl($mockIntFactory);
-		$this->assertEquals(
-			$résultat_attendu,
-			json_decode(
-				$ctl
-					->post(
-						$mockRequest,
-						"jdoe",
-						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-					)
-					->getContent(),
-				true
-			)
+		$résultat_obtenu = $ctl->post(
+			$mockRequest,
+			"jdoe",
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 		);
+
+		$this->assertEquals(422, $résultat_obtenu->status());
+		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
 	}
 }
