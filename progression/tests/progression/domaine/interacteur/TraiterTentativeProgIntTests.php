@@ -31,7 +31,6 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new Test("deuxième test", "5", "ok\nok\nok\nok\nok\n"),
 		];
 		$question->feedback_pos = "Bravo!";
-		$question->feedback_neg = "As-tu essayé de ne pas faire ça?";
 
 		$tentative = new TentativeProg("python", "testCode");
 		$tentative->résultats = [
@@ -54,8 +53,6 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new Test("deuxième test", "5", "ok\nok\nok\nok\nok\n"),
 			new Test("troisième test", "10", "ok\nok\nok\nok\nok\nok\nok\nok\nok\nok\n")
 		];
-		$question->feedback_pos = "Bravo!";
-		$question->feedback_neg = "As-tu essayé de ne pas faire ça?";
 
 		$tentative = new TentativeProg("python", "testCode");
 		$tentative->résultats = [
@@ -77,7 +74,6 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new Test("premier test", "1", "ok\n"),
 			new Test("deuxième test", "5", "ok\nok\nok\nok\nok\n"),
 		];
-		$question->feedback_pos = "Bravo!";
 		$question->feedback_neg = "As-tu essayé de ne pas faire ça?";
 
 		$tentative = new TentativeProg("python", "testCode");
