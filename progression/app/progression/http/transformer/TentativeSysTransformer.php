@@ -18,8 +18,6 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\{Tentative, TentativeSys};
-
 class TentativeSysTransformer extends TentativeTransformer
 {
 }
