@@ -18,8 +18,6 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Série, Question};
-
 class ObtenirQuestionInt extends Interacteur
 {
 	function get_question($question_id)

@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Avancement, Question};
+use progression\domaine\entité\Avancement;
 
 class ObtenirAvancementInt extends Interacteur
 {

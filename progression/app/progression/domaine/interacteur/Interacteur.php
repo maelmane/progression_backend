@@ -18,9 +18,6 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\config;
-use progression\domaine\entité;
-
 class Interacteur
 {
 	protected $source_dao;
