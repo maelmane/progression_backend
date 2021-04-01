@@ -17,17 +17,17 @@ Les versions de l'api sont accessibles à des URL distincts pour assurer la rét
 
 * Points d'entrée
 ** Publics
-| Méthode | URL     | Description      | Paramètres         | Réponse             |
-| GET     | ~/doc~  | Documentation    |                    | str (HTML)          |
-| POST    | ~/auth~ | Authentification | username, password | token, un token JWT |
-| GET     | ~/question/{uri}~  | Obtient la question disponible à <uri> | Question |
+| Méthode | URL               | Description                            | Paramètres         | Réponse             |
+| GET     | ~/doc~            | Documentation                          |                    | str (HTML)          |
+| POST    | ~/auth~           | Authentification                       | username, password | token, un token JWT |
+| GET     | ~/question/{uri}~ | Obtient la question disponible à <uri> | uri                | Question            |
 
 ** Privés
 Les points d'entrée privés requierent un token dans l'entête : «Authentification: Bearer <token>»
 
-| Méthode | URL                | Description                            | Réponse  |
-| GET     | ~/user~            | Obtient l'utilisateur authentifié      | User     |
-| GET     | ~/user/{username}~ | Obtient l'utilisateur /username/       | User     |
+| Méthode | URL                | Description                       | Paramètres | Réponse |
+| GET     | ~/user~            | Obtient l'utilisateur authentifié |            | User    |
+| GET     | ~/user/{username}~ | Obtient l'utilisateur /username/  | username   | User    |
 
 * Ressources
 
@@ -53,11 +53,6 @@ username
 | Nom         | Cardinalité | Type       | description         |
 |-------------+-------------+------------+---------------------|
 | avancements | 1-n         | Avancement | Liste d'avancements |
-
-*** Liens :
-| Nom                                   | Description                                                   |
-|---------------------------------------+---------------------------------------------------------------|
-| suivantes                             | liste de questions suivantes pour l'utilisateur courant       |
 
 ** Question
 
@@ -110,9 +105,11 @@ username/question_uri
 
 *** Propriétés:
 
-| Nom  | Type | Valeurs                          |
-|------+------+----------------------------------|
-| état | int  | DÉBUT(0),NON-RÉUSSI(1),RÉUSSI(2) |
+| Nom  | Type | Valeurs       |
+|------+------+---------------|
+| état | int  | 0=non débutée |
+|      |      | 1=non réussie |
+|      |      | 2=réussie     |
 
 *** Relations :
 
@@ -139,12 +136,6 @@ question_uri/langage
 |---------+------+---------|
 | langage | str  |         |
 | code    | str  |         |
-
-*** Liens :
-
-| Nom      | Description                                                   |
-|----------+---------------------------------------------------------------|
-| question | Question pour laquelle cette ébauche de solution est proposée |
 
 ** Tentative
 
@@ -174,13 +165,6 @@ Tentative
 |                 |      | tentativeSys                                               |
 |                 |      | tentativeBD                                                |
 | réussi          | bool | vrai ssi la tentative a correctement répondu à la question |
-  
-
-*** Liens :
-
-| Nom      | Description                                                     |
-|----------+-----------------------------------------------------------------|
-| question | Question pour laquelle cette tentative de solution est proposée |
 
 ** Tentative (sous-type tentativeProg)
 
@@ -199,12 +183,6 @@ Une tentative de réponse à une question.
 | Nom       | Cardinalité | Type     | Description           |
 |-----------+-------------+----------+-----------------------|
 | résultats | 1-n         | Résultat | les résultats de test |
-
-*** Liens :
-
-| Nom      | Description                                                     |
-|----------+-----------------------------------------------------------------|
-| question | Question pour laquelle cette tentative de solution est proposée |
 
 ** Test
 
@@ -238,12 +216,6 @@ username/question_uri/date_soumission/numéro
 | sortie_erreur   | str  |           |
 | résultat        | bool |           |
 | feedback        | str  |           |
-
-*** Liens :
-
-| Nom      | Description                                                     |
-|----------+-----------------------------------------------------------------|
-| tentative| Tentative pour laquelle le résultat d'un test selon sa solution |
 
 * Exemples
 

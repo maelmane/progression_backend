@@ -44,6 +44,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->andReturn(null);
 		$mockAvancementDao
 			->shouldReceive("save")
+            ->once()
 			->withArgs(function ($user, $uri, $av) use ($avancement) {
 				return $user == "Bob" && $uri == "https://example.com/question" && $av == $avancement;
 			})
@@ -52,6 +53,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 		$mockTentativeDao
 			->shouldReceive("save")
+            ->once()
 			->with("Bob", "https://example.com/question", $tentative)
 			->andReturn($tentative);
 
@@ -89,6 +91,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->andReturn(null);
 		$mockAvancementDao
 			->shouldReceive("save")
+            ->once()
 			->withArgs(function ($user, $uri, $av) use ($avancement) {
 				return $user == "Bob" && $uri == "https://example.com/question" && $av == $avancement;
 			})
@@ -97,6 +100,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 		$mockTentativeDao
 			->shouldReceive("save")
+            ->once()
 			->with("Bob", "https://example.com/question", $tentative)
 			->andReturn($tentative);
 
@@ -141,6 +145,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 		$mockTentativeDao
 			->shouldReceive("save")
+            ->once()
 			->with("Bob", "https://example.com/question", $tentative)
 			->andReturn($tentative);
 
@@ -188,6 +193,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			);
 		$mockAvancementDao
 			->shouldReceive("save")
+            ->once()
 			->withArgs(function ($user, $uri, $av) use ($avancement) {
 				return $user == "Bob" && $uri == "https://example.com/question" && $av == $avancement;
 			})
@@ -196,6 +202,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 		$mockTentativeDao
 			->shouldReceive("save")
+            ->once()
 			->with("Bob", "https://example.com/question", $tentative)
 			->andReturn($tentative);
 
@@ -240,6 +247,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 		$mockTentativeDao
 			->shouldReceive("save")
+            ->once()
 			->with("Bob", "https://example.com/question", $tentative)
 			->andReturn($tentative);
 
@@ -286,6 +294,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 		$mockTentativeDao
 			->shouldReceive("save")
+            ->once()
 			->with("Bob", "https://example.com/question", $tentative)
 			->andReturn($tentative);
 

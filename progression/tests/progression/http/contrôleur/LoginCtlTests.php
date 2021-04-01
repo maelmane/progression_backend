@@ -33,24 +33,15 @@ final class LoginCtlTests extends TestCase
 
 		$user = new User("Bob");
 
-		$username_attendu = "Bob";
-
 		// Intéracteur
-		$mockLoginInt = Mockery::mock(
-			"progression\domaine\interacteur\LoginInt"
-		);
+		$mockLoginInt = Mockery::mock("progression\domaine\interacteur\LoginInt");
 		$mockLoginInt
 			->allows()
-			->effectuer_login(
-				"Bob",
-				"",
-			)
+			->effectuer_login("Bob", "")
 			->andReturn($user);
 
 		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			"progression\domaine\interacteur\InteracteurFactory"
-		);
+		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
 		$mockIntFactory
 			->allows()
 			->getLoginInt()
@@ -89,12 +80,14 @@ final class LoginCtlTests extends TestCase
 
 		// Contrôleur
 		$ctl = new LoginCtl($mockIntFactory);
+		$résultat_observé = $ctl->login($mockRequest);
 
-		$token = json_decode($ctl->login($mockRequest)->getContent(), true);
-		$tokenDécodé = JWT::decode($token["Token"], $_ENV['JWT_SECRET'], array('HS256'));
-		$username_obtenu = ($tokenDécodé->user)->username;
+		$token = json_decode($résultat_observé->getContent(), true);
+		$tokenDécodé = JWT::decode($token["Token"], $_ENV['JWT_SECRET'], ['HS256']);
+		$username_obtenu = $tokenDécodé->user->username;
 
-		$this->assertEquals($username_attendu, $username_obtenu);
+		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertEquals("Bob", $username_obtenu);
 		$this->assertGreaterThan(time(), $tokenDécodé->expired);
 		$this->assertEquals(3333, $tokenDécodé->expired - $tokenDécodé->current);
 	}
@@ -107,24 +100,15 @@ final class LoginCtlTests extends TestCase
 
 		$user = new User("jdoe");
 
-		$username_attendu = "jdoe";
-
 		// Intéracteur
-		$mockLoginInt = Mockery::mock(
-			"progression\domaine\interacteur\LoginInt"
-		);
+		$mockLoginInt = Mockery::mock("progression\domaine\interacteur\LoginInt");
 		$mockLoginInt
 			->allows()
-			->effectuer_login(
-				"jdoe",
-				"Crosemont2021!",
-			)
+			->effectuer_login("jdoe", "Crosemont2021!")
 			->andReturn($user);
 
 		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			"progression\domaine\interacteur\InteracteurFactory"
-		);
+		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
 		$mockIntFactory
 			->allows()
 			->getLoginInt()
@@ -163,36 +147,29 @@ final class LoginCtlTests extends TestCase
 
 		// Contrôleur
 		$ctl = new LoginCtl($mockIntFactory);
+		$résultat_observé = $ctl->login($mockRequest);
 
-		$token = json_decode($ctl->login($mockRequest)->getContent(), true);
-		$tokenDécodé = JWT::decode($token["Token"], $_ENV['JWT_SECRET'], array('HS256'));
-		$username_obtenu = ($tokenDécodé->user)->username;
+		$token = json_decode($résultat_observé->getContent(), true);
+		$tokenDécodé = JWT::decode($token["Token"], $_ENV['JWT_SECRET'], ['HS256']);
+		$username_obtenu = $tokenDécodé->user->username;
 
-		$this->assertEquals($username_attendu, $username_obtenu);
+		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertEquals("jdoe", $username_obtenu);
 		$this->assertGreaterThan(time(), $tokenDécodé->expired);
 		$this->assertEquals(3333, $tokenDécodé->expired - $tokenDécodé->current);
 	}
 
 	public function test_étant_donné_lutilisateur_Marcel_inexistant_lorsquon_appelle_login_on_obtient_Accès_interdit()
 	{
-		$résultat_attendu = ["message" => "Accès interdit"];
-
 		// Intéracteur
-		$mockLoginInt = Mockery::mock(
-			"progression\domaine\interacteur\LoginInt"
-		);
+		$mockLoginInt = Mockery::mock("progression\domaine\interacteur\LoginInt");
 		$mockLoginInt
 			->allows()
-			->effectuer_login(
-				"Marcel",
-				"123",
-			)
+			->effectuer_login("Marcel", "123")
 			->andReturn(null);
 
 		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			"progression\domaine\interacteur\InteracteurFactory"
-		);
+		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
 		$mockIntFactory
 			->allows()
 			->getLoginInt()
@@ -231,17 +208,9 @@ final class LoginCtlTests extends TestCase
 
 		// Contrôleur
 		$ctl = new LoginCtl($mockIntFactory);
+		$résultat_obtenu = $ctl->login($mockRequest);
 
-		$this->assertEquals(
-			$résultat_attendu,
-			json_decode(
-				$ctl
-					->login(
-						$mockRequest
-					)
-					->getContent(),
-				true
-			)
-		);
+		$this->assertEquals(401, $résultat_obtenu->status());
+		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_obtenu->getContent());
 	}
 }

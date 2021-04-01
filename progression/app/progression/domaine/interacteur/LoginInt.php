@@ -58,7 +58,7 @@ class LoginInt extends Interacteur
 			$user_ldap = $this->get_username_ldap($username, $password);
 
 			if ($user_ldap != null) {
-				$user = (new CréerUserInt($this->_source))->obtenir_ou_créer_user($username);
+				$user = (new CréerUserInt($this->source_dao))->obtenir_ou_créer_user($username);
 			}
 		}
 
@@ -97,6 +97,6 @@ class LoginInt extends Interacteur
 
 	function login_sans_authentification($username)
 	{
-		return (new CréerUserInt($this->_source))->obtenir_ou_créer_user($username);
+		return (new CréerUserInt($this->source_dao))->obtenir_ou_créer_user($username);
 	}
 }

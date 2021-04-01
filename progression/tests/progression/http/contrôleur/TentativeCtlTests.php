@@ -11,15 +11,7 @@
 */
 require_once __DIR__ . "/../../../TestCase.php";
 
-use progression\domaine\entité\{
-	Test,
-	Exécutable,
-	Question,
-	AvancementProg,
-	TentativeProg,
-	QuestionProg,
-	RésultatProg
-};
+use progression\domaine\entité\{Test, Exécutable, Question, AvancementProg, TentativeProg, QuestionProg, RésultatProg};
 use progression\http\contrôleur\TentativeCtl;
 use Illuminate\Http\Request;
 
@@ -45,8 +37,7 @@ final class TentativeCtlTests extends TestCase
 		$résultat_attendu = [
 			"data" => [
 				"type" => "tentative",
-				"id" =>
-				"jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
+				"id" => "jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
 				"attributes" => [
 					"date_soumission" => "1614374490",
 					"tests_réussis" => 2,
@@ -58,15 +49,15 @@ final class TentativeCtlTests extends TestCase
 				],
 				"links" => [
 					"self" =>
-					"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
+						"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
 				],
 				"relationships" => [
 					"resultats" => [
 						"links" => [
 							"self" =>
-							"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/relationships/resultats",
+								"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/relationships/resultats",
 							"related" =>
-							"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/resultats",
+								"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/resultats",
 						],
 						"data" => [],
 					],
@@ -75,22 +66,14 @@ final class TentativeCtlTests extends TestCase
 		];
 
 		// Intéracteur
-		$mockObtenirTentativeInt = Mockery::mock(
-			"progression\domaine\interacteur\ObtenirTentativeInt"
-		);
+		$mockObtenirTentativeInt = Mockery::mock("progression\domaine\interacteur\ObtenirTentativeInt");
 		$mockObtenirTentativeInt
 			->allows()
-			->get_tentative(
-				"jdoe",
-				"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
-				"1614374490"
-			)
+			->get_tentative("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "1614374490")
 			->andReturn($tentative);
 
 		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			"progression\domaine\interacteur\InteracteurFactory"
-		);
+		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
 		$mockIntFactory
 			->allows()
 			->getObtenirTentativeInt()
@@ -110,7 +93,7 @@ final class TentativeCtlTests extends TestCase
 			->allows()
 			->path()
 			->andReturn(
-				"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490"
+				"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
 			);
 		$mockRequest
 			->allows()
@@ -122,20 +105,15 @@ final class TentativeCtlTests extends TestCase
 
 		// Contrôleur
 		$ctl = new TentativeCtl($mockIntFactory);
-		$this->assertEquals(
-			$résultat_attendu,
-			json_decode(
-				$ctl
-					->get(
-						$mockRequest,
-						"jdoe",
-						"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
-						"1614374490"
-					)
-					->getContent(),
-				true
-			)
+		$résultat_obtenu = $ctl->get(
+			$mockRequest,
+			"jdoe",
+			"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
+			"1614374490",
 		);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
 	}
 
 	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
@@ -143,26 +121,18 @@ final class TentativeCtlTests extends TestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$résultat_attendu = [
-			"message" => "Ressource non trouvée."
+			"erreur" => "Ressource non trouvée.",
 		];
 
 		// Intéracteur
-		$mockObtenirTentativeInt = Mockery::mock(
-			"progression\domaine\interacteur\ObtenirTentativeInt"
-		);
+		$mockObtenirTentativeInt = Mockery::mock("progression\domaine\interacteur\ObtenirTentativeInt");
 		$mockObtenirTentativeInt
 			->allows()
-			->get_tentative(
-				"jdoe",
-				"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
-				"9999999999"
-			)
+			->get_tentative("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "9999999999")
 			->andReturn(null);
 
 		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			"progression\domaine\interacteur\InteracteurFactory"
-		);
+		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
 		$mockIntFactory
 			->allows()
 			->getObtenirTentativeInt()
@@ -182,7 +152,7 @@ final class TentativeCtlTests extends TestCase
 			->allows()
 			->path()
 			->andReturn(
-				"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/9999999999"
+				"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/9999999999",
 			);
 		$mockRequest
 			->allows()
@@ -194,20 +164,15 @@ final class TentativeCtlTests extends TestCase
 
 		// Contrôleur
 		$ctl = new TentativeCtl($mockIntFactory);
-		$this->assertEquals(
-			$résultat_attendu,
-			json_decode(
-				$ctl
-					->get(
-						$mockRequest,
-						"jdoe",
-						"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
-						"9999999999"
-					)
-					->getContent(),
-				true
-			)
+		$résultat_obtenu = $ctl->get(
+			$mockRequest,
+			"jdoe",
+			"cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU",
+			"9999999999",
 		);
+
+		$this->assertEquals(404, $résultat_obtenu->status());
+		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
 	}
 
 	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_on_obtient_la_TentativeProg_avec_ses_résultats_et_ses_relations_sous_forme_json()
@@ -219,9 +184,7 @@ final class TentativeCtlTests extends TestCase
 		$tentative->tests_réussis = 1;
 		$tentative->feedback = "feedbackTest";
 		$tentative->réussi = true;
-		$tentative->résultats = [
-			new RésultatProg("Bonjour\nBonjour\n", "", true, "Bon travail!"),
-		];
+		$tentative->résultats = [new RésultatProg("Bonjour\nBonjour\n", "", true, "Bon travail!")];
 
 		// Question
 		$question = new QuestionProg();
@@ -229,24 +192,16 @@ final class TentativeCtlTests extends TestCase
 		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		// Ébauches
-		$question->exécutables["python"] = new Exécutable(
-			"print(\"Hello world\")",
-			"python"
-		);
-		$question->exécutables["java"] = new Exécutable(
-			"System.out.println(\"Hello world\")",
-			"java"
-		);
+		$question->exécutables["python"] = new Exécutable("print(\"Hello world\")", "python");
+		$question->exécutables["java"] = new Exécutable("System.out.println(\"Hello world\")", "java");
 		// Tests
-		$question->tests = [
-			new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
-		];
+		$question->tests = [new Test("2 salutations", "2", "Bonjour\nBonjour\n")];
 
 		$résultat_attendu = [
 			"data" => [
 				"type" => "tentative",
 				"id" =>
-				"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
+					"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
 				"attributes" => [
 					"date_soumission" => 1614374490,
 					"tests_réussis" => 1,
@@ -258,21 +213,22 @@ final class TentativeCtlTests extends TestCase
 				],
 				"links" => [
 					"self" =>
-					"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
+						"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
 				],
 				"relationships" => [
 					"resultats" => [
 						"links" => [
 							"self" =>
-							"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/relationships/resultats",
+								"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/relationships/resultats",
 							"related" =>
-							"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/resultats",
+								"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/resultats",
 						],
 						"data" => [
 							[
 								'type' => 'resultat',
-								'id' => 'jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0',
-							]
+								'id' =>
+									'jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0',
+							],
 						],
 					],
 				],
@@ -280,7 +236,8 @@ final class TentativeCtlTests extends TestCase
 			"included" => [
 				[
 					"type" => "resultat",
-					"id" => "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
+					"id" =>
+						"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
 					"attributes" => [
 						"numéro" => 0,
 						"sortie_erreur" => "",
@@ -289,40 +246,30 @@ final class TentativeCtlTests extends TestCase
 						"feedback" => "Bon travail!",
 					],
 					"links" => [
-						'self' => 'https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0',
-						"related" => 'https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490'
+						'self' =>
+							'https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0',
+						"related" =>
+							'https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490',
 					],
-				]
+				],
 			],
 		];
 
 		// Intéracteur
-		$mockSoumettreTentativeProgInt = Mockery::mock(
-			"progression\domaine\interacteur\SoumettreTentativeProgInt"
-		);
+		$mockSoumettreTentativeProgInt = Mockery::mock("progression\domaine\interacteur\SoumettreTentativeProgInt");
 		$mockSoumettreTentativeProgInt
 			->allows()
-			->soumettre_tentative(
-				"jdoe",
-				$question,
-				Mockery::any(),
-			)
+			->soumettre_tentative("jdoe", $question, Mockery::any())
 			->andReturn($tentative);
 
-		$mockObtenirQuestionInt = Mockery::mock(
-			"progression\domaine\interacteur\ObtenirQuestionInt"
-		);
+		$mockObtenirQuestionInt = Mockery::mock("progression\domaine\interacteur\ObtenirQuestionInt");
 		$mockObtenirQuestionInt
 			->allows()
-			->get_question(
-				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
-			)
+			->get_question("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 
 		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			"progression\domaine\interacteur\InteracteurFactory"
-		);
+		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
 		$mockIntFactory
 			->allows()
 			->getObtenirQuestionInt()
@@ -350,7 +297,7 @@ final class TentativeCtlTests extends TestCase
 			->allows()
 			->path()
 			->andReturn(
-				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 			);
 		$mockRequest
 			->allows()
@@ -362,19 +309,14 @@ final class TentativeCtlTests extends TestCase
 
 		// Contrôleur
 		$ctl = new TentativeCtl($mockIntFactory);
-		$this->assertEquals(
-			$résultat_attendu,
-			json_decode(
-				$ctl
-					->post(
-						$mockRequest,
-						"jdoe",
-						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-					)
-					->getContent(),
-				true
-			)
+		$résultat_obtenu = $ctl->post(
+			$mockRequest,
+			"jdoe",
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 		);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
 	}
 
 	public function test_étant_donné_une_soumission_sans_code_lorsquon_appelle_post_on_obtient_Requête_invalide()
