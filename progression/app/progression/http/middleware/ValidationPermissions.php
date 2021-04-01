@@ -19,7 +19,6 @@
 namespace progression\http\middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Log;
 use progression\domaine\entité\User;
 use progression\domaine\interacteur\InteracteurFactory;
 
