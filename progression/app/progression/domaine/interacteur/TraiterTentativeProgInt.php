@@ -23,10 +23,14 @@ class TraiterTentativeProgInt extends Interacteur
 	function traiter_résultats($question, $tentative)
 	{
 		$nb_tests_réussis = 0;
+		$erreur = false;
 		foreach ($question->tests as $i => $test) {
 			if ($this->vérifier_solution($tentative->résultats[$i], $test->sortie_attendue)) {
 				$tentative->résultats[$i]->résultat = true;
 				$nb_tests_réussis++;
+			}
+			elseif ($tentative->résultats[$i]->sortie_erreur != "") {
+				$erreur = true;
 			}
 		}
 
@@ -35,12 +39,13 @@ class TraiterTentativeProgInt extends Interacteur
 		if ($nb_tests_réussis == count($question->tests)) {
 			$tentative->réussi = true;
 			$tentative->feedback = $question->feedback_pos;
-		} elseif ($résultat->sortie_erreur == "") {
-			$tentative->réussi = false;
-			$tentative->feedback = $question->feedback_neg;
 		} else {
 			$tentative->réussi = false;
-			$tentative->feedback = null;
+			if ($erreur) {
+				$tentative->feedback = null;
+			} else {
+				$tentative->feedback = $question->feedback_neg;
+			}
 		}
 
 		return $tentative;
