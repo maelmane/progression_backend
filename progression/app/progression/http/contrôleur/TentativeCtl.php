@@ -20,6 +20,7 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransformer, TentativeBDTransformer};
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
@@ -67,21 +68,19 @@ class TentativeCtl extends Contrôleur
 		$question = $questionInt->get_question($chemin);
 
 		if ($question instanceof QuestionProg) {
-			$input = $request->only(["langage", "code"]);
+			$validation = $this->validationTentativeProg($request);
+			if ($validation->fails()) {
+				return $this->réponse_json(["message" => $validation->errors()], 422);
+			}
 
-			if (count(array_filter($input)) == 2) {
-				$tentative = new TentativeProg($input["langage"], $input["code"], (new \DateTime())->getTimestamp());
+			$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
 
+			try {
 				$tentativeInt = $this->intFactory->getSoumettreTentativeProgInt();
-
-				try {
-					$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
-				} catch (ExécutionException $e) {
-					Log::error($e->getMessage());
-					return $this->réponse_json(["message" => "Service non disponible"], 503);
-				}
-			} else {
-				return $this->réponse_json(["message" => "Requête invalide."], 400);
+				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
+			} catch (ExécutionException $e) {
+				Log::error($e->getMessage());
+				return $this->réponse_json(["message" => "Service non disponible"], 503);
 			}
 
 			if ($tentative != null) {
@@ -98,5 +97,20 @@ class TentativeCtl extends Contrôleur
 		}
 
 		return $this->préparer_réponse($réponse);
+	}
+
+	public function validationTentativeProg($request)
+	{
+		return Validator::make(
+			$request->all(),
+			[
+				"langage" => "required|in:python2,python,ruby,clojure,php,js,scala,go,cpp,c,java,bash,perl",
+				"code" => "required"
+			],
+			[
+				"required" => "Le champ :attribute est obligatoire.",
+				"in" => "Le langage {$request->langage} n'est pas supporté."
+			]
+		);
 	}
 }
