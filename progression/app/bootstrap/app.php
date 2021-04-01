@@ -10,8 +10,8 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 // Vérification des variables d'environnement
 if (
     isset($_ENV['APP_URL']) &&
-    $_ENV['APP_URL'] != "" )
-{
+    $_ENV['APP_URL'] != ""
+) {
     $_ENV['APP_URL'] = preg_replace("/\/+$/", "/", $_ENV['APP_URL']);
 }
 
@@ -85,6 +85,10 @@ $app->configure('app');
 
 $app->routeMiddleware([
     'auth' => progression\http\middleware\Authenticate::class,
+]);
+
+$app->routeMiddleware([
+    'validationPermissions' => progression\http\middleware\ValidationPermissions::class,
 ]);
 
 /*
