@@ -25,43 +25,42 @@ use progression\domaine\interacteur\InteracteurFactory;
 
 class ValidationPermissions
 {
-	/**
-	 * Handle an incoming request.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \Closure  $next
-	 * @return mixed
-	 */
-	public function handle($request, Closure $next)
-	{
-		$nomUtilisateur = $request->username;
-		$utilisateurConnecté = $request->request->get("utilisateurConnecté");
-		$intFactory = new InteracteurFactory();
-		$utilisateurInt = $intFactory->getObtenirUserInt();
+    public function handle($request, Closure $next)
+    {
+        $nomUtilisateur = $request->username;
+        $utilisateurConnecté = $request->request->get("utilisateurConnecté");
 
-		if ($nomUtilisateur) {
-			$utilisateurRecherché = $utilisateurInt->get_user($nomUtilisateur);
+        $intFactory = new InteracteurFactory();
+        $utilisateurInt = $intFactory->getObtenirUserInt();
 
-			switch ($utilisateurConnecté->rôle) {
-				case User::ROLE_NORMAL:
-					if ($utilisateurRecherché && $utilisateurConnecté->username == $utilisateurRecherché->username) {
-						return $next($request);
-					}
-					break;
-				case User::ROLE_ADMIN:
-					return $next($request);
-					break;
-			}
-			return response()->json(
-				["message" => "Accès interdit."],
-				403,
-				[
-					"Content-Type" => "application/vnd.api+json",
-					"Charset" => "utf-8",
-				],
-				JSON_UNESCAPED_UNICODE,
-			);
-		}
-		return $next($request);
-	}
+        $utilisateurRecherché = $utilisateurInt->get_user($nomUtilisateur);
+
+        $réponse = response()->json(
+            ["erreur" => "Accès interdit."],
+            403,
+            [
+                "Content-Type" => "application/vnd.api+json",
+                "Charset" => "utf-8",
+            ],
+            JSON_UNESCAPED_UNICODE
+        );
+
+        if ($utilisateurRecherché) {
+            switch ($utilisateurConnecté->rôle) {
+                case User::ROLE_NORMAL:
+                    if (
+                        $utilisateurConnecté->username ==
+                        $utilisateurRecherché->username
+                    ) {
+                        $réponse = $next($request);
+                    }
+                    break;
+                case User::ROLE_ADMIN:
+                    $réponse = $next($request);
+                    break;
+            }
+        }
+
+        return $réponse;
+    }
 }
