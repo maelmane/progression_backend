@@ -20,8 +20,6 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use progression\http\transformer\AvancementTransformer;
-use progression\domaine\entité\{Avancement, Question};
-use Illuminate\Support\Facades\Log;
 use progression\util\Encodage;
 
 class AvancementCtl extends Contrôleur
