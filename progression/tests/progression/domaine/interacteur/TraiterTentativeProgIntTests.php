@@ -30,6 +30,8 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new Test("premier test", "1", "ok\n"),
 			new Test("deuxième test", "5", "ok\nok\nok\nok\nok\n"),
 		];
+		$question->feedback_pos = "Bravo!";
+		$question->feedback_neg = "As-tu essayé de ne pas faire ça?";
 
 		$tentative = new TentativeProg("python", "testCode");
 		$tentative->résultats = [
@@ -41,6 +43,7 @@ final class TraiterTentativeProgIntTests extends TestCase
 
 		$this->assertEquals(2, $résultat_observé->tests_réussis);
 		$this->assertTrue($résultat_observé->réussi);
+		$this->assertEquals("Bravo!", $résultat_observé->feedback);
 	}
 
 	public function test_étant_donné_une_TentativeProg_nonvalides_et_une_QuestionProg_lorsquon_les_traites_on_obtient_une_TentativeProg_traitée_et_nonréussie()
@@ -51,6 +54,8 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new Test("deuxième test", "5", "ok\nok\nok\nok\nok\n"),
 			new Test("troisième test", "10", "ok\nok\nok\nok\nok\nok\nok\nok\nok\nok\n")
 		];
+		$question->feedback_pos = "Bravo!";
+		$question->feedback_neg = "As-tu essayé de ne pas faire ça?";
 
 		$tentative = new TentativeProg("python", "testCode");
 		$tentative->résultats = [
@@ -72,6 +77,8 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new Test("premier test", "1", "ok\n"),
 			new Test("deuxième test", "5", "ok\nok\nok\nok\nok\n"),
 		];
+		$question->feedback_pos = "Bravo!";
+		$question->feedback_neg = "As-tu essayé de ne pas faire ça?";
 
 		$tentative = new TentativeProg("python", "testCode");
 		$tentative->résultats = [
@@ -83,5 +90,6 @@ final class TraiterTentativeProgIntTests extends TestCase
 
 		$this->assertEquals(1, $résultat_observé->tests_réussis);
 		$this->assertFalse($résultat_observé->réussi);
+		$this->assertEquals("As-tu essayé de ne pas faire ça?", $résultat_observé->feedback);
 	}
 }
