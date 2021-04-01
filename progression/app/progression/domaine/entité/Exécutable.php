@@ -29,5 +29,4 @@ class Exécutable
 	public $lang;
 	public $code;
 	public $params = "";
-
 }
