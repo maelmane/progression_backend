@@ -18,7 +18,7 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{QuestionProg, Exécutable, Test};
+use progression\domaine\entité\{Exécutable, Test};
 
 class QuestionProgDAO extends EntitéDAO
 {

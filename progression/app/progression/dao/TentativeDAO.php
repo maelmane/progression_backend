@@ -18,7 +18,7 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, TentativeBD, Question};
+use progression\domaine\entité\{Question};
 
 class TentativeDAO extends EntitéDAO
 {
