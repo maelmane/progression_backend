@@ -1,58 +1,43 @@
 # Progression backend
+Voici la procédure d'installation pour le backend de Progression. 
 
-## 1. Dépendances obligatoires
+## 1. Installation & Configuration 
+
+### Dépendances obligatoires
 - [git](https://git-scm.com/downloads)
 - [docker](https://www.docker.com/)
 - [compilebox (modifié)](https://git.dti.crosemont.quebec/progression/compilebox)
 
-## 2. Installation & Configuration 
-### 2.1 Obtenir le code source
-- Cloner le projet
+### Obtenir le code source
+Cloner le projet **progression_backend**
 ```
-git clone https://git.dti.crosemont.quebec/progression/progression_backend.git
-```
-
-Les commandes suivantes doivent être faites à partir du répertoire `progression_backend/progression`
-```
-cd progression_backend/progression
+git clone https://git.dti.crosemont.quebec/progression/progression_backend.git (HTTPS)
+git clone git@git.dti.crosemont.quebec:progression/progression_backend.git (SSH)
 ```
 
-### 2.2 Créer et adapter le fichier de configuration
-- Copier le ficher **.env** dans le répertoire **/progression/app**
+### Créer et adapter le fichier de configuration
+Créer le fichier .env ou copier le ficher d'exemple `.env.exemple` du répertoire `/progression/app`
 ```
 cp app/.env.exemple app/.env
 ```
-- Modifier le type d\'authentification et l\'hôte pour le compilebox du fichier **.env** 
+Modifier le type d'authentification et l'hôte pour le compilebox du fichier `.env`
 
-#### En développement :
-- Désactiver l'authentification
+### En développement
+Désactiver **l'authentification** et effectuer les compilations avec l'exécuteur **compilebox** localement.
 ```
 AUTH_TYPE=no
-```
-- Effectuer les compilations sur la machine de développement
-```
 COMPILEBOX_HOTE=172.20.0.1
 ```
+Sans authentification, les utilisateurs sont automatiquement créés dès leur connexion sans mot de passe.
 
-### 2.3 Construire les images docker
-- Compilation des images docker
+### Construire les images docker
+Compilation des images docker
 ```
 docker-compose build progression
 ```
 
-### 2.4 Exécuter les tests (facultatif)
-#### 2.4.1 Copier le fichier .env
-```
-cp app/.env tests/.env
-```
-
-#### 2.4.2 Lancer les tests
-```
-docker-compose up tests
-```
-
-### 2.5 Initialiser la base de données
-- Création (ou réinitialisation) de la base de données
+### Initialiser la base de données
+Création (ou réinitialisation) de la base de données
 ```
 docker-compose up -d db
 ```
@@ -63,37 +48,29 @@ cd /tmp/ && ./build_db.sh
 ```
 Fermer le terminal avec Ctrl-D ou `exit`
 
-### 2.6 Importer des exercices (facultatif)
-
-- Spécifier la source des exercices et la BD de destination via les variables SOURCE et DESTINATION dans docker-compose.yml (les valeurs par défaut fournissent les questions démos)
-- Effectuer l'importation :
-```
-docker-compose up importeur
-```
-
-### 2.7 Obtenir les questions système, dépendantes de conteneurs propres (facultatif)
-- Construire les conteneurs :
-```
-cd conteneurs && ./build_all
-```
-
-### 2.8 Démarrer l'application
-- Démarrage des conteneurs progression et progression_db
+## 2. Démarrer l'application
+Démarrage des conteneurs `progression` et `progression_db`
 ```
 docker-compose up -d progression
 ```
-- Pour voir ce qui est en cours d\'exécution
+Pour voir ce qui est en cours d'exécution
 ```
 docker-compose ps
 ```
-Les conteneurs `progression`et `progression_db` devraient être «Up»
+L'application est accessible via: http://172.20.0.3/
 
-L\'application est accessible via:
-- http://172.20.0.3/
+## 3. Exécution des tests (facultatif)
+Copier le ficher `.env.exemple` du répertoire `/progression/tests`
+```
+cp app/.env tests/.env
+```
 
-Sans authentification, les utilisateurs sont automatiquement créés dès leur connexion sans mot de passe.
+Lancer les tests
+```
+docker-compose up tests
+```
 
-## 3. FAQ
+## 4. FAQ
 Q: Pourquoi `docker-compose build` me donne des erreurs ?
 - Assurez-vous que votre utilisateur fait partie du groupe docker. Le résultat de la commande `groups` devrait inclure le groupe `docker`.
 
@@ -101,5 +78,13 @@ Q: Pourquoi `docker-compose build` me donne des erreurs ?
 ```
 systemctl enable docker
 systemctl start docker
+```
+
+Q: Comment supprimer les images et les conteneurs inutiles ?
+- Utiliser ce script :
+```
+docker images --no-trunc | grep '<none>' | awk '{ print $3 }' | xargs -r docker rmi                                                                
+docker ps --filter status=dead --filter status=exited -aq | xargs -r docker rm
+docker volume ls -qf dangling=true | xargs -r docker volume rm
 ```
 
