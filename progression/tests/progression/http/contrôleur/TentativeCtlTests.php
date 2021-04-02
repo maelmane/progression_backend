@@ -401,7 +401,7 @@ final class TentativeCtlTests extends TestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$résultat_attendu = [
-			"message" => "Service non disponible."
+			"erreur" => "Service non disponible."
 		];
 
 		// Question
@@ -487,7 +487,7 @@ final class TentativeCtlTests extends TestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$résultat_attendu = [
-			"message" => "Tentative intraitable."
+			"erreur" => "Tentative intraitable."
 		];
 
 		// Question
