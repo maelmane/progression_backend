@@ -18,6 +18,7 @@
 
 namespace progression\dao;
 
+use ErrorException;
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
 
 class QuestionDAO extends EntitéDAO
@@ -64,9 +65,8 @@ class QuestionDAO extends EntitéDAO
 
 	protected function récupérer_question($uri)
 	{
-		$entêtes = get_headers($uri."/info.yml", 1);
-
-		if ($entêtes["Content-Length"]>$_ENV["LIMITE_YML"]) {
+		$entêtes = @get_headers($uri."/info.yml", 1);
+		if ($entêtes !== false && $entêtes["Content-Length"] > $_ENV["LIMITE_YML"]) {
 			error_log("$uri/info.yml est trop volumineux pour être chargé");
 			return null;
 		}
