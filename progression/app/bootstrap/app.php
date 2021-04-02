@@ -4,15 +4,15 @@ require_once __DIR__ . '/../autoload.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
-    dirname(__DIR__)
+	dirname(__DIR__)
 ))->bootstrap();
 
 // Vérification des variables d'environnement
 if (
-    isset($_ENV['APP_URL']) &&
-    $_ENV['APP_URL'] != "" )
-{
-    $_ENV['APP_URL'] = preg_replace("/\/+$/", "/", $_ENV['APP_URL']);
+	isset($_ENV['APP_URL']) &&
+	$_ENV['APP_URL'] != ""
+) {
+	$_ENV['APP_URL'] = preg_replace("/\/+$/", "/", $_ENV['APP_URL']);
 }
 
 date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
@@ -46,13 +46,13 @@ $app->withFacades();
 */
 
 $app->singleton(
-    Illuminate\Contracts\Debug\ExceptionHandler::class,
-    progression\exceptions\Handler::class
+	Illuminate\Contracts\Debug\ExceptionHandler::class,
+	progression\exceptions\Handler::class
 );
 
 $app->singleton(
-    Illuminate\Contracts\Console\Kernel::class,
-    progression\console\Kernel::class
+	Illuminate\Contracts\Console\Kernel::class,
+	progression\console\Kernel::class
 );
 
 /*
@@ -84,7 +84,11 @@ $app->configure('app');
 //]);
 
 $app->routeMiddleware([
-    'auth' => progression\http\middleware\Authenticate::class,
+	'auth' => progression\http\middleware\Authenticate::class,
+]);
+
+$app->routeMiddleware([
+	'validationPermissions' => progression\http\middleware\ValidationPermissions::class,
 ]);
 
 /*
@@ -115,12 +119,12 @@ $app->register(progression\providers\AuthServiceProvider::class);
 */
 
 $app->router->group(
-    [
-        'namespace' => 'progression\http\contrôleur',
-    ],
-    function ($router) {
-        require __DIR__ . '/../routes/web.php';
-    }
+	[
+		'namespace' => 'progression\http\contrôleur',
+	],
+	function ($router) {
+		require __DIR__ . '/../routes/web.php';
+	}
 );
 
 return $app;
