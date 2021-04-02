@@ -56,15 +56,15 @@ final class TentativeCtlTests extends TestCase
 				],
 				"links" => [
 					"self" =>
-					"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
+						"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
 				],
 				"relationships" => [
 					"resultats" => [
 						"links" => [
 							"self" =>
-							"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/relationships/resultats",
+								"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/relationships/resultats",
 							"related" =>
-							"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/resultats",
+								"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/resultats",
 						],
 						"data" => [],
 					],
@@ -208,7 +208,7 @@ final class TentativeCtlTests extends TestCase
 			"data" => [
 				"type" => "tentative",
 				"id" =>
-				"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
+					"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
 				"attributes" => [
 					"date_soumission" => 1614374490,
 					"tests_réussis" => 1,
@@ -220,21 +220,21 @@ final class TentativeCtlTests extends TestCase
 				],
 				"links" => [
 					"self" =>
-					"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
+						"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
 				],
 				"relationships" => [
 					"resultats" => [
 						"links" => [
 							"self" =>
-							"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/relationships/resultats",
+								"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/relationships/resultats",
 							"related" =>
-							"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/resultats",
+								"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/resultats",
 						],
 						"data" => [
 							[
 								'type' => 'resultat',
 								'id' =>
-								'jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0',
+									'jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0',
 							],
 						],
 					],
@@ -244,7 +244,7 @@ final class TentativeCtlTests extends TestCase
 				[
 					"type" => "resultat",
 					"id" =>
-					"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
+						"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
 					"attributes" => [
 						"numéro" => 0,
 						"sortie_erreur" => "",
@@ -254,9 +254,9 @@ final class TentativeCtlTests extends TestCase
 					],
 					"links" => [
 						'self' =>
-						'https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0',
+							'https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0',
 						"related" =>
-						'https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490',
+							'https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490',
 					],
 				],
 			],
@@ -300,9 +300,7 @@ final class TentativeCtlTests extends TestCase
 			->allows()
 			->all()
 			->andReturn(["langage" => "python", "code" => "codeTest"]);
-		$mockRequest
-			->allows()
-			->only(["langage", "code"]);
+		$mockRequest->allows()->only(["langage", "code"]);
 		$mockRequest
 			->allows()
 			->path()
@@ -329,12 +327,14 @@ final class TentativeCtlTests extends TestCase
 		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
 	}
 
-	public function test_étant_donné_une_soumission_sans_code_lorsquon_appelle_post_on_obtient_Requête_invalide()
+	public function test_étant_donné_une_soumission_sans_code_lorsquon_appelle_post_on_obtient_une_erreur_de_validation()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$résultat_attendu = [
-			"erreur" => "Requête invalide."
+			"erreur" => [
+				"code" => ["Le champ code est obligatoire."],
+			],
 		];
 
 		// Question
@@ -344,20 +344,14 @@ final class TentativeCtlTests extends TestCase
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		// Intéracteur
-		$mockObtenirQuestionInt = Mockery::mock(
-			"progression\domaine\interacteur\ObtenirQuestionInt"
-		);
+		$mockObtenirQuestionInt = Mockery::mock("progression\domaine\interacteur\ObtenirQuestionInt");
 		$mockObtenirQuestionInt
 			->allows()
-			->get_question(
-				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
-			)
+			->get_question("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 
 		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			"progression\domaine\interacteur\InteracteurFactory"
-		);
+		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
 		$mockIntFactory
 			->allows()
 			->getObtenirQuestionInt()
@@ -375,13 +369,13 @@ final class TentativeCtlTests extends TestCase
 			->andReturn("POST");
 		$mockRequest
 			->allows()
-			->only(['langage', 'code'])
+			->all()
 			->andReturn(["langage" => "python"]);
 		$mockRequest
 			->allows()
 			->path()
 			->andReturn(
-				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 			);
 		$this->app->bind(Request::class, function () use ($mockRequest) {
 			return $mockRequest;
@@ -404,7 +398,7 @@ final class TentativeCtlTests extends TestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$résultat_attendu = [
-			"erreur" => "Service non disponible."
+			"erreur" => "Service non disponible.",
 		];
 
 		// Question
@@ -414,32 +408,20 @@ final class TentativeCtlTests extends TestCase
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		// Intéracteur
-		$mockSoumettreTentativeProgInt = Mockery::mock(
-			"progression\domaine\interacteur\SoumettreTentativeProgInt"
-		);
+		$mockSoumettreTentativeProgInt = Mockery::mock("progression\domaine\interacteur\SoumettreTentativeProgInt");
 		$mockSoumettreTentativeProgInt
 			->allows()
-			->soumettre_tentative(
-				"jdoe",
-				$question,
-				Mockery::any(),
-			)
+			->soumettre_tentative("jdoe", $question, Mockery::any())
 			->andThrow(new ExécutionException("erreur", "compilebox_url_invalide"));
 
-		$mockObtenirQuestionInt = Mockery::mock(
-			"progression\domaine\interacteur\ObtenirQuestionInt"
-		);
+		$mockObtenirQuestionInt = Mockery::mock("progression\domaine\interacteur\ObtenirQuestionInt");
 		$mockObtenirQuestionInt
 			->allows()
-			->get_question(
-				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
-			)
+			->get_question("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 
 		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			"progression\domaine\interacteur\InteracteurFactory"
-		);
+		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
 		$mockIntFactory
 			->allows()
 			->getObtenirQuestionInt()
@@ -461,13 +443,13 @@ final class TentativeCtlTests extends TestCase
 			->andReturn("POST");
 		$mockRequest
 			->allows()
-			->only(['langage', 'code'])
+			->all()
 			->andReturn(["langage" => "python", "code" => "codeTest"]);
 		$mockRequest
 			->allows()
 			->path()
 			->andReturn(
-				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 			);
 		$this->app->bind(Request::class, function () use ($mockRequest) {
 			return $mockRequest;
@@ -490,7 +472,7 @@ final class TentativeCtlTests extends TestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$résultat_attendu = [
-			"erreur" => "Tentative intraitable."
+			"erreur" => "Tentative intraitable.",
 		];
 
 		// Question
@@ -500,32 +482,20 @@ final class TentativeCtlTests extends TestCase
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		// Intéracteur
-		$mockSoumettreTentativeProgInt = Mockery::mock(
-			"progression\domaine\interacteur\SoumettreTentativeProgInt"
-		);
+		$mockSoumettreTentativeProgInt = Mockery::mock("progression\domaine\interacteur\SoumettreTentativeProgInt");
 		$mockSoumettreTentativeProgInt
 			->allows()
-			->soumettre_tentative(
-				"jdoe",
-				$question,
-				Mockery::any(),
-			)
+			->soumettre_tentative("jdoe", $question, Mockery::any())
 			->andReturn(null);
 
-		$mockObtenirQuestionInt = Mockery::mock(
-			"progression\domaine\interacteur\ObtenirQuestionInt"
-		);
+		$mockObtenirQuestionInt = Mockery::mock("progression\domaine\interacteur\ObtenirQuestionInt");
 		$mockObtenirQuestionInt
 			->allows()
-			->get_question(
-				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
-			)
+			->get_question("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 
 		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			"progression\domaine\interacteur\InteracteurFactory"
-		);
+		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
 		$mockIntFactory
 			->allows()
 			->getObtenirQuestionInt()
@@ -547,13 +517,13 @@ final class TentativeCtlTests extends TestCase
 			->andReturn("POST");
 		$mockRequest
 			->allows()
-			->only(['langage', 'code'])
+			->all()
 			->andReturn(["langage" => "python", "code" => "codeTest"]);
 		$mockRequest
 			->allows()
 			->path()
 			->andReturn(
-				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+				"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 			);
 		$this->app->bind(Request::class, function () use ($mockRequest) {
 			return $mockRequest;
