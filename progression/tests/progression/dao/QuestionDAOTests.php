@@ -23,7 +23,7 @@ use progression\domaine\entité\{Question, QuestionProg, Exécutable, Test};
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-final class QuestionCtlTests extends \TestCase
+final class QuestionDAOTests extends \TestCase
 {
 	public function test_get_question()
 	{
