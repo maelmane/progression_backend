@@ -78,10 +78,10 @@ class TentativeCtl extends Contrôleur
 					$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
 				} catch (ExécutionException $e) {
 					Log::error($e->getMessage());
-					return $this->réponse_json(["message" => "Service non disponible"], 503);
+					return $this->réponse_json(["erreur" => "Service non disponible."], 503);
 				}
 			} else {
-				return $this->réponse_json(["message" => "Requête invalide."], 400);
+				return $this->réponse_json(["erreur" => "Requête invalide."], 422);
 			}
 
 			if ($tentative != null) {
@@ -89,12 +89,12 @@ class TentativeCtl extends Contrôleur
 				$tentative->question_uri = $question_uri;
 				$réponse = $this->item($tentative, new TentativeProgTransformer());
 			} else {
-				return $this->réponse_json(["message" => "Tentative intraitable."], 422);
+				return $this->réponse_json(["erreur" => "Tentative intraitable."], 422);
 			}
 		} elseif ($question instanceof QuestionSys) {
-			return $this->réponse_json(["message" => "Question système non implémentée."], 501);
+			return $this->réponse_json(["erreur" => "Question système non implémentée."], 501);
 		} elseif ($question instanceof QuestionBD) {
-			return $this->réponse_json(["message" => "Question BD non implémentée."], 501);
+			return $this->réponse_json(["erreur" => "Question BD non implémentée."], 501);
 		}
 
 		return $this->préparer_réponse($réponse);
