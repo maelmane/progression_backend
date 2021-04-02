@@ -64,8 +64,14 @@ class QuestionDAO extends EntitéDAO
 
 	protected function récupérer_question($uri)
 	{
-		$data = @file_get_contents($uri . "/info.yml");
+		$entêtes = get_headers($uri."/info.yml", 1);
 
+		if ($entêtes["Content-Length"]>$_ENV["LIMITE_YML"]) {
+			error_log("$uri/info.yml est trop volumineux pour être chargé");
+			return null;
+		}
+
+		$data = @file_get_contents($uri . "/info.yml");
 		if ($data === false) {
 			error_log("$uri ne peut pas être chargé");
 			return null;
