@@ -298,8 +298,11 @@ final class TentativeCtlTests extends TestCase
 			->andReturn("POST");
 		$mockRequest
 			->allows()
-			->only(['langage', 'code'])
+			->all()
 			->andReturn(["langage" => "python", "code" => "codeTest"]);
+		$mockRequest
+			->allows()
+			->only(["langage", "code"]);
 		$mockRequest
 			->allows()
 			->path()
