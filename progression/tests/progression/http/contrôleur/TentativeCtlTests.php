@@ -331,7 +331,7 @@ final class TentativeCtlTests extends TestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$résultat_attendu = [
-			"message" => "Requête invalide."
+			"erreur" => "Requête invalide."
 		];
 
 		// Question
