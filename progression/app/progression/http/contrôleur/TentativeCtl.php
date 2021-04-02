@@ -70,7 +70,7 @@ class TentativeCtl extends Contrôleur
 		if ($question instanceof QuestionProg) {
 			$validation = $this->validationTentativeProg($request);
 			if ($validation->fails()) {
-				return $this->réponse_json(["message" => $validation->errors()], 422);
+				return $this->réponse_json(["erreur" => $validation->errors()], 422);
 			}
 
 			$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
@@ -85,15 +85,14 @@ class TentativeCtl extends Contrôleur
 
 			if ($tentative != null) {
 				$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
-				$tentative->question_uri = $question_uri;
 				$réponse = $this->item($tentative, new TentativeProgTransformer());
 			} else {
-				return $this->réponse_json(["message" => "Tentative intraitable."], 422);
+				return $this->réponse_json(["erreur" => "Tentative intraitable."], 422);
 			}
 		} elseif ($question instanceof QuestionSys) {
-			return $this->réponse_json(["message" => "Question système non implémentée."], 501);
+			return $this->réponse_json(["erreur" => "Question système non implémentée."], 501);
 		} elseif ($question instanceof QuestionBD) {
-			return $this->réponse_json(["message" => "Question BD non implémentée."], 501);
+			return $this->réponse_json(["erreur" => "Question BD non implémentée."], 501);
 		}
 
 		return $this->préparer_réponse($réponse);
@@ -104,12 +103,11 @@ class TentativeCtl extends Contrôleur
 		return Validator::make(
 			$request->all(),
 			[
-				"langage" => "required|in:python2,python,ruby,clojure,php,js,scala,go,cpp,c,java,bash,perl",
+				"langage" => "required",
 				"code" => "required"
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
-				"in" => "Le langage {$request->langage} n'est pas supporté."
 			]
 		);
 	}
