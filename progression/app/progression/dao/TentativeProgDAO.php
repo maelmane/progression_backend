@@ -77,7 +77,7 @@ class TentativeProgDAO extends TentativeDAO
 		$query->bind_result($langage, $code, $date_soumission, $réussi);
 
 		if ($query->fetch()) {
-			$tentative = new TentativeProg($langage, $code, $date_soumission, 0, $réussi);
+			$tentative = new TentativeProg($langage, $code, $date_soumission, $réussi);
 		}
 
 		$query->close();
