@@ -47,7 +47,8 @@ INSERT INTO reponse_prog VALUES (
   1615696276,
   "python",
   "print(\"Tourlou le monde!\")",
-  0
+  0,
+  2
 );
 
 INSERT INTO reponse_prog VALUES (
@@ -56,7 +57,8 @@ INSERT INTO reponse_prog VALUES (
   1615696286,
   "python",
   "print(\"Allo le monde!\")",
-  0
+  0,
+  3
 );
 
 INSERT INTO reponse_prog VALUES (
@@ -65,5 +67,6 @@ INSERT INTO reponse_prog VALUES (
   1615696296,
   "python",
   "print(\"Allo tout le monde!\")",
-  1
+  1,
+  4
 );

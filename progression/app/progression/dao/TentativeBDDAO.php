@@ -32,7 +32,7 @@ class TentativeBDDAO extends TentativeDAO
 		return $tentative;
 	}
 
-	public function save($objet)
+	public function save($username, $questions_uri, $objet)
 	{
 	}
 }

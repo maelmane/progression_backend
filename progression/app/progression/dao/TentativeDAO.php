@@ -18,11 +18,27 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Question};
+use progression\domaine\entité\Question;
+use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 
 class TentativeDAO extends EntitéDAO
 {
-	public function get_tentative($username, $question_uri, $date)
+	public function get_toutes($username, $question_uri)
+	{
+		$type = $this->get_type($username, $question_uri);
+
+		if ($type == Question::TYPE_PROG) {
+			return $this->source->get_tentative_prog_dao()->get_toutes($username, $question_uri);
+		} elseif ($type == Question::TYPE_SYS) {
+			return $this->source->get_tentative_sys_dao()->get_toutes($username, $question_uri);
+		} elseif ($type == Question::TYPE_BD) {
+			return $this->source->get_tentative_bd_dao()->get_toutes($username, $question_uri);
+		} else {
+			return null;
+		}
+	}
+
+    public function get_tentative($username, $question_uri, $date)
 	{
 		$type = $this->get_type($username, $question_uri);
 
@@ -37,6 +53,20 @@ class TentativeDAO extends EntitéDAO
 		}
 	}
 
+    public function save($username, $question_uri, $objet)
+	{
+		if ($objet instanceof TentativeProg) {
+			return $this->source->get_tentative_prog_dao()->save($username, $question_uri, $objet);
+		} elseif ($objet instanceof TentativeSys) {
+			return $this->source->get_tentative_sys_dao()->save($username, $question_uri, $objet);
+		} elseif ($objet instanceof TentativeBD) {
+			return $this->source->get_tentative_bd_dao()->save($username, $question_uri, $objet);
+		} else {
+			return null;
+		}
+	}
+    
+    
 	private function get_type($username, $question_uri)
 	{
 		$type = null;
@@ -52,4 +82,7 @@ class TentativeDAO extends EntitéDAO
 
 		return $type;
 	}
+
+
+    
 }

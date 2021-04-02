@@ -27,7 +27,8 @@ CREATE TABLE `reponse_prog` (
 	`date_soumission` 	int(10) NOT NULL,
 	`langage`			varchar(255) NOT NULL,
 	`code`				text,
-	`reussi`            boolean,
+	`reussi`            boolean NOT NULL DEFAULT false,
+	`tests_reussis`  int NOT NULL DEFAULT 0,
 	PRIMARY KEY (`username`, `question_uri`, `date_soumission`),
 	FOREIGN KEY (`username`, `question_uri`) REFERENCES avancement(`username`, `question_uri`)
 );

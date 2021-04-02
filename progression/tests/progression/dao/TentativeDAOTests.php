@@ -34,32 +34,6 @@ final class TentativeDAOTests extends TestCase
 		EntitéDAO::get_connexion()->rollback();
 	}
 
-	public function test_étant_donné_une_TentativeProg_non_réussie_lorsquon_récupère_la_tentative_on_obtient_une_tentative_de_type_prog()
-	{
-		$résultat_attendu = new TentativeProg("python", "print(\"Tourlou le monde!\")", 1615696276, false);
-
-		$résultat_observé = (new TentativeDAO(new DAOFactory()))->get_tentative(
-			"bob",
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			1615696276,
-		);
-
-		$this->assertEquals($résultat_attendu, $résultat_observé);
-	}
-
-	public function test_étant_donné_une_TentativeProg_réussie_lorsquon_récupère_la_tentative_on_obtient_une_tentative_de_type_prog()
-	{
-		$résultat_attendu = new TentativeProg("python", "print(\"Allo tout le monde!\")", 1615696296, true);
-
-		$résultat_observé = (new TentativeDAO(new DAOFactory()))->get_tentative(
-			"bob",
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction",
-			1615696296,
-		);
-
-		$this->assertEquals($résultat_attendu, $résultat_observé);
-	}
-
 	public function test_étant_donné_une_tentative_inexistante_lorsquon_récupère_la_tentative_on_obtient_null()
 	{
 		$résultat_attendu = null;
