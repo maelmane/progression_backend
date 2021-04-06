@@ -94,7 +94,7 @@ final class ValidationPermissionsTests extends TestCase
 			->allows()
 			->all()
 			->andReturn([
-				"username" => null,
+				"username" => "jdoe",
 			]);
 		$mockRequest->request = $mockRequest;
 
