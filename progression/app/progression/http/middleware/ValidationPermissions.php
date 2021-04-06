@@ -48,8 +48,8 @@ class ValidationPermissions
 			JSON_UNESCAPED_UNICODE
 		);
 
-		if ($utilisateurRecherché) {
-			switch ($utilisateurRecherché->rôle) {
+		if ($utilisateurRecherché && $utilisateurConnecté) {
+			switch ($utilisateurConnecté->rôle) {
 				case User::ROLE_NORMAL:
 					if (
 						$utilisateurConnecté->username ==
