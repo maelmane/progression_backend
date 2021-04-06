@@ -21,22 +21,23 @@ namespace progression\dao;
 require_once __DIR__ . "/../../TestCase.php";
 
 use progression\domaine\entité\{Avancement, Question, TentativeProg};
-use progression\dao\AvancementDAO;
-
 use Mockery;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 final class AvancementDAOTests extends \TestCase
 {
 	public function setUp(): void
 	{
+		$_ENV["DB_SERVERNAME"] = "172.20.0.2";
+		$_ENV["DB_USERNAME"] = "root";
+		$_ENV["DB_PASSWORD"] = "password";
+		$_ENV["DB_DBNAME"] = "quiz_test";
 		EntitéDAO::get_connexion()->begin_transaction();
 	}
 
 	public function tearDown(): void
 	{
 		EntitéDAO::get_connexion()->rollback();
-        Mockery::close();
+		Mockery::close();
 	}
 
 	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_objet_avancement_correspondant()
