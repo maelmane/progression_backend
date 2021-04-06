@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Log;
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
 use progression\http\transformer\QuestionProgTransformer;
 use progression\util\Encodage;
+use DomainException, LengthException, RuntimeException;
 
 class QuestionCtl extends Contrôleur
 {
@@ -34,7 +35,13 @@ class QuestionCtl extends Contrôleur
 		$chemin = Encodage::base64_decode_url($uri);
 
 		$questionInt = $this->intFactory->getObtenirQuestionInt();
-		$question = $questionInt->get_question($chemin);
+
+		try {
+			$question = $questionInt->get_question($chemin);
+		} catch (LengthException | RuntimeException | DomainException $erreur) {
+			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			return $this->réponse_json(["message" => "Mauvaise requête."], 400);
+		}
 
 		if ($question instanceof QuestionProg) {
 			$réponse = $this->item(

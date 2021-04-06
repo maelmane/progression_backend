@@ -21,6 +21,8 @@ namespace progression\http\contrôleur;
 use progression\http\transformer\ÉbaucheTransformer;
 use progression\util\Encodage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use DomainException, LengthException, RuntimeException;
 
 class ÉbaucheCtl extends Contrôleur
 {
@@ -31,7 +33,12 @@ class ÉbaucheCtl extends Contrôleur
 		$réponse = null;
 
 		$questionInt =  $this->intFactory->getObtenirQuestionInt();
-		$question = $questionInt->get_question($chemin);
+		try {
+			$question = $questionInt->get_question($chemin);
+		} catch (LengthException | RuntimeException | DomainException $erreur) {
+			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			return $this->réponse_json(["message" => "Mauvaise requête."], 400);
+		}
 
 		if ($question != null) {
 
