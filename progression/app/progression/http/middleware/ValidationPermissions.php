@@ -52,7 +52,7 @@ class ValidationPermissions
 			switch ($utilisateurRecherché->rôle) {
 				case User::ROLE_NORMAL:
 					if (
-						$utilisateurRecherché->username ==
+						$utilisateurConnecté->username ==
 						$utilisateurRecherché->username
 					) {
 						$réponse = $next($request);
