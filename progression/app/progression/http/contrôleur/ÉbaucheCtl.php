@@ -21,6 +21,8 @@ namespace progression\http\contrôleur;
 use progression\http\transformer\ÉbaucheTransformer;
 use progression\util\Encodage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use DomainException, LengthException, RuntimeException;
 
 class ÉbaucheCtl extends Contrôleur
 {
@@ -31,7 +33,18 @@ class ÉbaucheCtl extends Contrôleur
 		$réponse = null;
 
 		$questionInt =  $this->intFactory->getObtenirQuestionInt();
-		$question = $questionInt->get_question($chemin);
+		try {
+			$question = $questionInt->get_question($chemin);
+		} catch (LengthException $erreur) {
+			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			return $this->réponse_json(["message" => "Limite de volume dépassé."], 509);
+		} catch (RuntimeException $erreur) {
+			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			return $this->réponse_json(["message" => "Ressource indisponible sur le serveur distant."], 502);
+		} catch (DomainException $erreur) {
+			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			return $this->réponse_json(["message" => "Requête intraitable."], 422);
+		}
 
 		if ($question != null) {
 

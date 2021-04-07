@@ -18,6 +18,7 @@
 
 namespace progression\dao;
 
+use DomainException, LengthException, RuntimeException;
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
 
 class QuestionDAO extends EntitéDAO
@@ -27,7 +28,7 @@ class QuestionDAO extends EntitéDAO
 		$infos_question = $this->récupérer_question($uri);
 
 		if ($infos_question === null) {
-			return null;
+			throw new DomainException("Le fichier ne peut pas être décodé");
 		}
 
 		$question = null;
@@ -47,7 +48,7 @@ class QuestionDAO extends EntitéDAO
 				$this->source->get_question_bd_dao()->load($question, $infos_question);
 			}
 		} else {
-			return null;
+			throw new DomainException("Le fichier ne peut pas être décodé");
 		}
 		return $question;
 	}
@@ -64,17 +65,22 @@ class QuestionDAO extends EntitéDAO
 
 	protected function récupérer_question($uri)
 	{
-		$data = @file_get_contents($uri . "/info.yml");
+		$entêtes = @get_headers($uri."/info.yml", 1);
+		if ($entêtes !== false && $entêtes["Content-Length"] > $_ENV["LIMITE_YML"]) {
+			error_log("$uri/info.yml est trop volumineux pour être chargé");
+			throw new LengthException("Le fichier est trop volumineux pour être chargé");
+		}
 
+		$data = @file_get_contents($uri . "/info.yml");
 		if ($data === false) {
 			error_log("$uri ne peut pas être chargé");
-			return null;
+			throw new RuntimeException("Le fichier ne peut pas être chargé");
 		}
 
 		$info = yaml_parse($data);
 		if ($info === false) {
 			error_log("$uri ne peut pas être décodé");
-			return null;
+			throw new DomainException("Le fichier ne peut pas être décodé");
 		}
 
 		if (isset($info["type"]) && $info["type"] == "prog") {
