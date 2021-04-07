@@ -26,6 +26,7 @@ use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\interacteur\ExécutionException;
 use progression\util\Encodage;
+use DomainException, LengthException, RuntimeException;
 
 class TentativeCtl extends Contrôleur
 {
@@ -65,7 +66,18 @@ class TentativeCtl extends Contrôleur
 		$question = null;
 
 		$questionInt = $this->intFactory->getObtenirQuestionInt();
-		$question = $questionInt->get_question($chemin);
+		try {
+			$question = $questionInt->get_question($chemin);
+		} catch (LengthException $erreur) {
+			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			return $this->réponse_json(["message" => "Limite de volume dépassé."], 509);
+		} catch (RuntimeException $erreur) {
+			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			return $this->réponse_json(["message" => "Ressource indisponible sur le serveur distant."], 502);
+		} catch (DomainException $erreur) {
+			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			return $this->réponse_json(["message" => "Requête intraitable."], 422);
+		}
 
 		if ($question instanceof QuestionProg) {
 			$validation = $this->validationTentativeProg($request);

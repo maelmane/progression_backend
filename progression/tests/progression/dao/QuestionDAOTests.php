@@ -23,7 +23,7 @@ require_once __DIR__ . "/../../TestCase.php";
 use progression\domaine\entité\{QuestionProg, Exécutable, Test};
 use Mockery;
 
-final class QuestionCtlTests extends \TestCase
+final class QuestionDAOTests extends \TestCase
 {
 	public function test_get_question()
 	{

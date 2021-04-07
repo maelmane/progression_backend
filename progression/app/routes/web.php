@@ -17,6 +17,13 @@ $router->get("/", function () use ($router) {
 	return $router->app->version();
 });
 
+$router->options("{all:.*}", [
+	"middleware" => "cors",
+	function () {
+		return response("");
+	},
+]);
+
 $router->post("/auth/", "LoginCtl@login");
 
 $router->group(["middleware" => "auth"], function () use ($router) {
