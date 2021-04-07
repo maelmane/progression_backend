@@ -20,6 +20,7 @@ namespace progression\dao;
 
 use DomainException, LengthException, RuntimeException;
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
+use ZipArchive;
 
 class QuestionDAO extends EntitéDAO
 {
@@ -138,7 +139,7 @@ class QuestionDAO extends EntitéDAO
 	private static function téléchargerFichier($uri)
 	{
 		$nomUnique = uniqid("archive_", true);
-		$chemin = sys_get_temp_dir() . $nomUnique;
+		$chemin = sys_get_temp_dir() . "/$nomUnique";
 
 		if (file_put_contents($chemin, file_get_contents($uri))) {
 			return $chemin;
@@ -159,7 +160,7 @@ class QuestionDAO extends EntitéDAO
 
 	private static function extraireZip($archive, $destination)
 	{
-		$zip = new \ZipArchive;
+		$zip = new ZipArchive;
 
 		if ($zip->open($archive) === true) {
 			if (is_writeable($destination . '/')) {
