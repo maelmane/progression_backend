@@ -49,6 +49,7 @@ class QuestionProgDAO extends EntitéDAO
 				key_exists("params", $test) ? $test["params"] : null,
 				key_exists("feedback+", $test) ? $test["feedback+"] : null,
 				key_exists("feedback-", $test) ? $test["feedback-"] : null,
+				key_exists("feedback!", $test) ? $test["feedback!"] : null,
 			);
 		}
 

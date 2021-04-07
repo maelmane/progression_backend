@@ -39,6 +39,7 @@ class Question
 	public $enonce;
 	public $feedback_pos;
 	public $feedback_neg;
+	public $feedback_err;
 	public $etat;
 	public $code_validation;
 }
