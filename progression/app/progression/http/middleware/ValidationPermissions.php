@@ -24,42 +24,45 @@ use progression\domaine\interacteur\InteracteurFactory;
 
 class ValidationPermissions
 {
-    public function handle($request, Closure $next)
-    {
-        $nomUtilisateur = $request->username;
-        $utilisateurConnecté = $request->request->get("utilisateurConnecté");
+	public function handle($request, Closure $next)
+	{
+		$nomUtilisateur = $request->username;
+		$utilisateurConnecté = $request->request->get("utilisateurConnecté");
 
-        $intFactory = new InteracteurFactory();
-        $utilisateurInt = $intFactory->getObtenirUserInt();
+		if (!$nomUtilisateur) {
+			$utilisateurRecherché = $utilisateurConnecté;
+		} else {
+			$intFactory = new InteracteurFactory();
+			$utilisateurInt = $intFactory->getObtenirUserInt();
+			$utilisateurRecherché = $utilisateurInt->get_user($nomUtilisateur);
+		}
 
-        $utilisateurRecherché = $utilisateurInt->get_user($nomUtilisateur);
+		$réponse = response()->json(
+			["erreur" => "Accès interdit."],
+			403,
+			[
+				"Content-Type" => "application/vnd.api+json",
+				"Charset" => "utf-8",
+			],
+			JSON_UNESCAPED_UNICODE
+		);
 
-        $réponse = response()->json(
-            ["erreur" => "Accès interdit."],
-            403,
-            [
-                "Content-Type" => "application/vnd.api+json",
-                "Charset" => "utf-8",
-            ],
-            JSON_UNESCAPED_UNICODE
-        );
+		if ($utilisateurRecherché && $utilisateurConnecté) {
+			switch ($utilisateurConnecté->rôle) {
+				case User::ROLE_NORMAL:
+					if (
+						$utilisateurConnecté->username ==
+						$utilisateurRecherché->username
+					) {
+						$réponse = $next($request);
+					}
+					break;
+				case User::ROLE_ADMIN:
+					$réponse = $next($request);
+					break;
+			}
+		}
 
-        if ($utilisateurRecherché) {
-            switch ($utilisateurConnecté->rôle) {
-                case User::ROLE_NORMAL:
-                    if (
-                        $utilisateurConnecté->username ==
-                        $utilisateurRecherché->username
-                    ) {
-                        $réponse = $next($request);
-                    }
-                    break;
-                case User::ROLE_ADMIN:
-                    $réponse = $next($request);
-                    break;
-            }
-        }
-
-        return $réponse;
-    }
+		return $réponse;
+	}
 }
