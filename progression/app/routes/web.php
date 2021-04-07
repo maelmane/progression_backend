@@ -17,9 +17,13 @@ $router->get("/", function () use ($router) {
 	return $router->app->version();
 });
 
+$router->options('{all:.*}', ['middleware' => 'cors', function() {
+    return response('');
+}]);
+
 $router->post("/auth/", "LoginCtl@login");
 
-$router->group(["middleware" => "auth"], function () use ($router) {
+$router->group(["middleware" => "cors", "auth"], function () use ($router) {
 	// Question
 	$router->get("/question/{uri}", "QuestionCtl@get");
 	$router->get("/question/{uri}/relationships/ebauches", "NotImplementedCtl@get");
@@ -32,7 +36,7 @@ $router->group(["middleware" => "auth"], function () use ($router) {
 	$router->get("/test/{question_uri}/{numero:[[:digit:]]+}", "TestCtl@get");
 });
 
-$router->group(["middleware" => ["auth", "validationPermissions"]], function () use ($router) {
+$router->group(["middleware" => ["cors", "auth", "validationPermissions"]], function () use ($router) {
 	// User
 	$router->get("/user[/{username}]", "UserCtl@get");
 	$router->get("/user/{username}/relationships/avancements", "NotImplementedCtl@get");
