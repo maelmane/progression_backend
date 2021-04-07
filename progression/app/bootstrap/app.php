@@ -92,7 +92,7 @@ $app->routeMiddleware([
 ]);
 
 $app->routeMiddleware([
-	'cors.options' => progression\http\middleware\Cors::class,
+	'cors' => progression\http\middleware\Cors::class,
 ]);
 
 
