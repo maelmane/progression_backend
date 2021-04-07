@@ -227,7 +227,7 @@ Les exemples marqués ~PROTOTYPE~ sont générés manuellement à titre indicati
 
 #+NAME: get_token
 #+BEGIN_SRC sh :eval yes :results output :exports none
-RET=$(curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=jdoe&password=Crosemont2021!" | cut -d '"' -f 4)
+RET=$(curl "https://progression.dti.crosemont.quebec/api/v1/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | cut -d '"' -f 4)
 printf "%s" $RET
 #+END_SRC
 
@@ -243,13 +243,13 @@ print( json.dumps( json.loads(json_str), ensure_ascii=False, indent=4 ) )
 
 
 #+BEGIN_SRC sh :eval yes :results output
-curl https://progression.dti.crosemont.quebec/api/v1/auth --data "username=jdoe&password=Crosemont2021!"
+curl "https://progression.dti.crosemont.quebec/api/v1/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json"
 #+END_SRC
 
 ** Obtenir le profil de l'utilisateur authentifié ~jdoe~ : ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl https://progression.dti.crosemont.quebec/api/v1/user -H "Authorization: Bearer $TOKEN"
+curl "https://progression.dti.crosemont.quebec/api/v1/user" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir la question «appeler_une_fonction_paramétrée» et ses tests: ~LIVE~
@@ -257,51 +257,49 @@ curl https://progression.dti.crosemont.quebec/api/v1/user -H "Authorization: Bea
 Cette question est disponible à l'URL suivant : https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_param%C3%A9tr%C3%A9e
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ?include=tests -H "Authorization: Bearer $TOKEN"
+curl "https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ?include=tests" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir la question «appeler_une_fonction_paramétrée», ses tests et ses ébauches: ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ?include=tests,ebauches -H "Authorization: Bearer $TOKEN"
+curl "https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ?include=tests,ebauches" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir l'avancement de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl https://progression.dti.crosemont.quebec/api/v1/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ -H "Authorization: Bearer $TOKEN"
+curl "https://progression.dti.crosemont.quebec/api/v1/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl https://progression.dti.crosemont.quebec/api/v1/ebauche/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/python -H "Authorization: Bearer $TOKEN"
+curl "https://progression.dti.crosemont.quebec/api/v1/ebauche/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/python" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Soumettre une tentative de solution à la question «appeler_une_fonction_paramétrée» et récupérer les résultats : ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-CODE=$(cat <<EOF
-#+TODO
-print(1)
-#-TODO
+DATA=$(cat <<EOF
+{
+  "langage":"python",
+  "code": "#+TODO\nprint(1)\n#-TODO"
+}
 EOF
 )
 
-curl --data "langage=python" --data-urlencode "code=$CODE" https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ?include=resultats -H "Authorization: Bearer $TOKEN"
+curl -X POST --data "$DATA" https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ?include=resultats -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
-
-#+RESULTS:
-: nil
 
 ** Obtenir une tentative de solution préalablement soumise pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/1617040175 -H "Authorization: Bearer $TOKEN"
+curl "https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/1617040175" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir le test numéro 0 pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl https://progression.dti.crosemont.quebec/api/v1/test/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/0 -H "Authorization: Bearer $TOKEN"
+curl "https://progression.dti.crosemont.quebec/api/v1/test/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/0" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
