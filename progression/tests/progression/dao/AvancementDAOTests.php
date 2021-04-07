@@ -27,10 +27,6 @@ final class AvancementDAOTests extends \TestCase
 {
 	public function setUp(): void
 	{
-		$_ENV["DB_SERVERNAME"] = "172.20.0.2";
-		$_ENV["DB_USERNAME"] = "root";
-		$_ENV["DB_PASSWORD"] = "password";
-		$_ENV["DB_DBNAME"] = "quiz_test";
 		EntitéDAO::get_connexion()->begin_transaction();
 	}
 

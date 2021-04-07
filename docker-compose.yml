@@ -48,6 +48,11 @@ services:
     image: progression_backend_progression
     build: progression/
     container_name: progression_tests
+    environment:
+      - DB_SERVERNAME=172.20.0.2
+      - DB_USERNAME=root
+      - DB_PASSWORD=password
+      - DB_DBNAME=quiz_test
     volumes:
       - "./db/build_db.sh/:/var/www/db/build_db.sh"
       - "./db/create_db.sql/:/var/www/db/create_db.sql"
