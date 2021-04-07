@@ -68,6 +68,7 @@ class QuestionDAO extends EntitéDAO
 		$entêtesInitiales = @get_headers($uri, 1);
 
 		if (!$entêtesInitiales) {
+			// Fichier test local
 			$info = $this->récupérer_fichier_info($uri);
 		} elseif ($format == "auto") {
 
