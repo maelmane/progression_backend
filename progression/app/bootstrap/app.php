@@ -91,6 +91,11 @@ $app->routeMiddleware([
 	'validationPermissions' => progression\http\middleware\ValidationPermissions::class,
 ]);
 
+$app->routeMiddleware([
+	'cors.options' => progression\http\middleware\Cors::class,
+]);
+
+
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers
