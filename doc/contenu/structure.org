@@ -66,6 +66,7 @@ catégorie/
     - fichier: le fichier contenant l'ébauche de programme
   - feedback+ : feedback positif général (facultatif, en format Markdown)
   - feedback- : feedback négatif général (facultatif, en format Markdown)
+  - feedback! : feedback erreur général (facultatif, en format Markdown)
   - tests : liste des fichiers de tests
     
 ** Questions Prog: 
@@ -86,6 +87,7 @@ Les fichiers de tests sont dans le format yaml et comportent une ou plusieurs se
   - out : les sorties textuelles attendues sur la sortie standard du programme
   - feedback+ : feedback positif spécifique à la question (facultatif, en format Markdown)
   - feedback- : feedback négatif spécifique à la question (facultatif, en format Markdown)
+  - feedback! : feedback erreur spécifique à la question (facultatif, en format Markdown)
 
 
 * Exemple
