@@ -28,11 +28,10 @@ class TraiterTentativeProgInt extends Interacteur
 			if ($this->vérifier_solution($tentative->résultats[$i], $test->sortie_attendue)) {
 				$tentative->résultats[$i]->feedback = $test->feedback_pos;
 				$tentative->résultats[$i]->résultat = true;
-				$tentative->résultats[$i]->feedback = $test->feedback_pos;
 				$nb_tests_réussis++;
 			} else {
-				$tentative->résultats[$i]->résultat = false;
 				$tentative->résultats[$i]->feedback = $test->feedback_neg;
+				$tentative->résultats[$i]->résultat = false;
 				if ($tentative->résultats[$i]->sortie_erreur) {
 					$erreur = true;
 					if ($test->feedback_err) {
