@@ -29,12 +29,11 @@ class ValidationPermissions
 		$nomUtilisateur = $request->username;
 		$utilisateurConnecté = $request->request->get("utilisateurConnecté");
 
-		$intFactory = new InteracteurFactory();
-		$utilisateurInt = $intFactory->getObtenirUserInt();
-
 		if (!$nomUtilisateur) {
 			$utilisateurRecherché = $utilisateurConnecté;
 		} else {
+			$intFactory = new InteracteurFactory();
+			$utilisateurInt = $intFactory->getObtenirUserInt();
 			$utilisateurRecherché = $utilisateurInt->get_user($nomUtilisateur);
 		}
 
