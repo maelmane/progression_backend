@@ -26,26 +26,25 @@ class TraiterTentativeProgInt extends Interacteur
 		$erreur = false;
 		foreach ($question->tests as $i => $test) {
 			if ($this->vérifier_solution($tentative->résultats[$i], $test->sortie_attendue)) {
+				$tentative->résultats[$i]->feedback = $test->feedback_pos;
 				$tentative->résultats[$i]->résultat = true;
 				$nb_tests_réussis++;
-			}
-			elseif ($tentative->résultats[$i]->sortie_erreur != "") {
+			} elseif ($tentative->résultats[$i]->sortie_erreur != "") {
+				$tentative->résultats[$i]->feedback = $test->feedback_err;
 				$erreur = true;
+			} else {
+				$tentative->résultats[$i]->feedback = $test->feedback_neg;
 			}
 		}
 
 		$tentative->tests_réussis = $nb_tests_réussis;
 
 		if ($nb_tests_réussis == count($question->tests)) {
-			$tentative->réussi = true;
 			$tentative->feedback = $question->feedback_pos;
+			$tentative->réussi = true;
 		} else {
+			$tentative->feedback = ($erreur) ? $question->feedback_err : $question->feedback_neg;
 			$tentative->réussi = false;
-			if ($erreur) {
-				$tentative->feedback = null;
-			} else {
-				$tentative->feedback = $question->feedback_neg;
-			}
 		}
 
 		return $tentative;
