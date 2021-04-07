@@ -18,7 +18,9 @@
 
 namespace progression\dao;
 
-final class TentativeDAOTests extends \TestCase
+use PHPUnit\Framework\TestCase;
+
+final class TentativeDAOTests extends TestCase
 {
 	public function setUp(): void
 	{

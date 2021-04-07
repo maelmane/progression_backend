@@ -19,8 +19,9 @@
 namespace progression\dao;
 
 use progression\domaine\entité\{Avancement, User};
+use PHPUnit\Framework\TestCase;
 
-final class UserDAOTests extends \TestCase
+final class UserDAOTests extends TestCase
 {
 	public function setUp(): void
 	{

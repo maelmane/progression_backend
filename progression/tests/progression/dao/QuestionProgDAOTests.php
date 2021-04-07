@@ -18,11 +18,10 @@
 
 namespace progression\dao;
 
-require_once __DIR__ . "/../../TestCase.php";
-
 use progression\domaine\entité\{Exécutable, QuestionProg, Test};
+use PHPUnit\Framework\TestCase;
 
-final class QuestionProgDAOTests extends \TestCase
+final class QuestionProgDAOTests extends TestCase
 {
 	public function setUp(): void
 	{

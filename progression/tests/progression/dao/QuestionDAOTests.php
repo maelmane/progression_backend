@@ -18,12 +18,11 @@
 
 namespace progression\dao;
 
-require_once __DIR__ . "/../../TestCase.php";
-
 use progression\domaine\entité\{QuestionProg, Exécutable, Test};
+use PHPUnit\Framework\TestCase;
 use Mockery;
 
-final class QuestionDAOTests extends \TestCase
+final class QuestionDAOTests extends TestCase
 {
 	public function test_get_question()
 	{

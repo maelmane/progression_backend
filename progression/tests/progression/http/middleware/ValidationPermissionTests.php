@@ -21,8 +21,6 @@ require_once __DIR__ . "/../../../TestCase.php";
 use progression\http\middleware\ValidationPermissions;
 use progression\domaine\entité\User;
 
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-
 final class ValidationPermissionsTests extends TestCase
 {
 	public function tearDown(): void

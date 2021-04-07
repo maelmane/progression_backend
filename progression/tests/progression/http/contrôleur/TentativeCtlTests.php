@@ -19,11 +19,9 @@
 require_once __DIR__ . "/../../../TestCase.php";
 
 use progression\domaine\entité\{Test, Exécutable, Question, TentativeProg, QuestionProg, RésultatProg};
+use progression\domaine\interacteur\ExécutionException;
 use progression\http\contrôleur\TentativeCtl;
 use Illuminate\Http\Request;
-
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use progression\domaine\interacteur\ExécutionException;
 
 final class TentativeCtlTests extends TestCase
 {

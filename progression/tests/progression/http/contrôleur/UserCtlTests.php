@@ -18,8 +18,8 @@
 
 require_once __DIR__ . "/../../../TestCase.php";
 
-use progression\http\contrôleur\UserCtl;
 use progression\domaine\entité\{Avancement, User};
+use progression\http\contrôleur\UserCtl;
 use Illuminate\Http\Request;
 
 final class UserCtlTests extends TestCase
