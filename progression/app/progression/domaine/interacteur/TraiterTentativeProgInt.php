@@ -48,7 +48,14 @@ class TraiterTentativeProgInt extends Interacteur
 			if ($question->feedback_err) {
 				$tentative->feedback = $question->feedback_err;
 			} else {
-				$tentative->feedback = $question->feedback_neg;
+				$data = @file_get_contents("../progression/util/FeedBackErreur.json");
+				if ($data === false) {
+					$tentative->feedback = $question->feedback_neg;
+				} else {
+					$feedbacks = json_decode($data, true);
+					$feedback_err = $feedbacks[rand(0, count($feedbacks) - 1)]["FeedBackErreur"];
+					$tentative->feedback = $feedback_err;
+				}
 			}
 		} elseif ($nb_tests_réussis == count($question->tests)) {
 			$tentative->réussi = true;
