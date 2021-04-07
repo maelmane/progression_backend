@@ -71,7 +71,7 @@ class QuestionDAO extends EntitéDAO
 			$info = $this->récupérer_fichier_info($uri);
 		} elseif ($format == "auto") {
 
-			switch (["Content-Type"]) {
+			switch ($entêtesInitiales["Content-Type"]) {
 				case "application/zip":
 					self::vérifierEntêtes($uri);
 					$nomFichier = self::téléchargerFichier($uri);
