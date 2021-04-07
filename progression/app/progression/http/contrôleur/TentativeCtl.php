@@ -68,9 +68,15 @@ class TentativeCtl extends Contrôleur
 		$questionInt = $this->intFactory->getObtenirQuestionInt();
 		try {
 			$question = $questionInt->get_question($chemin);
-		} catch (LengthException | RuntimeException | DomainException $erreur) {
+		} catch (LengthException $erreur) {
 			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			return $this->réponse_json(["message" => "Mauvaise requête."], 400);
+			return $this->réponse_json(["message" => "Limite de volume dépassé."], 509);
+		} catch (RuntimeException $erreur) {
+			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			return $this->réponse_json(["message" => "Ressource indisponible sur le serveur distant."], 502);
+		} catch (DomainException $erreur) {
+			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			return $this->réponse_json(["message" => "Requête intraitable."], 422);
 		}
 
 		if ($question instanceof QuestionProg) {
