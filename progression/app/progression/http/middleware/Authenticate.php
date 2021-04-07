@@ -39,7 +39,7 @@ class Authenticate
     {
         if ($this->auth->guard($guard)->guest()) {
             Log::warning("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
-            return response()->json(['message' => 'Utilisateur non autorisé.'], 401, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']);
+            return response()->json(['erreur' => 'Utilisateur non autorisé.'], 401, ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']);
         }
         Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
         return $next($request);
