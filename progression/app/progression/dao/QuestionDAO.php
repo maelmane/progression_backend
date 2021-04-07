@@ -77,9 +77,8 @@ class QuestionDAO extends EntitéDAO
 				case "application/zip":
 					self::vérifierEntêtes($uri);
 					$nomFichier = self::téléchargerFichier($uri);
-					$archiveExtraite = self::extraireZip(sys_get_temp_dir() .
-						"/$nomFichier", sys_get_temp_dir() . "/" . substr($nomFichier, -3));
-					$info = $this->récupérer_fichier_info($archiveExtraite);
+					$archiveExtraite = self::extraireZip($nomFichier, substr($nomFichier, 0, -4));
+					$info = $this->récupérer_fichier_info("file://" . $archiveExtraite);
 					break;
 
 				case "text/plain":
@@ -139,7 +138,7 @@ class QuestionDAO extends EntitéDAO
 	private static function téléchargerFichier($uri)
 	{
 		$nomUnique = uniqid("archive_", true);
-		$chemin = sys_get_temp_dir() . "/$nomUnique";
+		$chemin = sys_get_temp_dir() . "/$nomUnique.zip";
 
 		if (file_put_contents($chemin, file_get_contents($uri))) {
 			return $chemin;
@@ -163,17 +162,13 @@ class QuestionDAO extends EntitéDAO
 		$zip = new ZipArchive;
 
 		if ($zip->open($archive) === true) {
-			if (is_writeable($destination . '/')) {
-				if (!$zip->extractTo($destination)) {
-					throw new RuntimeException("Le fichier ne peut pas être sauvegardé");
-				} else {
-					self::supprimerFichier($archive);
-					return true;
-				}
-				$zip->close();
-			} else {
+			if (!$zip->extractTo($destination)) {
 				throw new RuntimeException("Le fichier ne peut pas être sauvegardé");
+			} else {
+				self::supprimerFichier($archive);
+				return $destination;
 			}
+			$zip->close();
 		} else {
 			throw new DomainException("Le fichier ne peut pas être décodé");
 		}
