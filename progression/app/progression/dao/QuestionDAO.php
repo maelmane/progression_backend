@@ -105,13 +105,11 @@ class QuestionDAO extends EntitéDAO
 	{
 		$data = @file_get_contents($uri . "/info.yml");
 		if ($data === false) {
-			error_log("$uri ne peut pas être chargé");
 			throw new RuntimeException("Le fichier ne peut pas être chargé");
 		}
 
 		$info = yaml_parse($data);
 		if ($info === false) {
-			error_log("$uri ne peut pas être décodé");
 			throw new DomainException("Le fichier ne peut pas être décodé");
 		}
 
@@ -180,8 +178,6 @@ class QuestionDAO extends EntitéDAO
 	private static function extraireZip($archive, $destination, $test = false)
 	{
 		$zip = new ZipArchive;
-		print_r("DDDDDDD");
-		print_r($destination);
 		if ($zip->open($archive) === true) {
 			if (!$zip->extractTo($destination)) {
 				throw new RuntimeException("Le fichier ne peut pas être sauvegardé");
