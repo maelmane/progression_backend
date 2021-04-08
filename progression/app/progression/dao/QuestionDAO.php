@@ -24,9 +24,9 @@ use ZipArchive;
 
 class QuestionDAO extends EntitéDAO
 {
-	public function get_question($uri, $format = "auto")
+	public function get_question($uri)
 	{
-		$infos_question = $this->récupérer_question($uri, $format);
+		$infos_question = $this->récupérer_question($uri);
 
 		if ($infos_question === null) {
 			throw new DomainException("Le fichier ne peut pas être décodé");
@@ -64,15 +64,14 @@ class QuestionDAO extends EntitéDAO
 		$question->feedback_neg = key_exists("feedback-", $infos_question) ? $infos_question["feedback-"] : null;
 	}
 
-	protected function récupérer_question($uri, $format)
+	protected function récupérer_question($uri)
 	{
 		$entêtesInitiales = @get_headers($uri, 1);
 
 		if (!$entêtesInitiales) {
 			// Fichier test local
 			$info = $this->récupérer_fichier_info($uri);
-		} elseif ($format == "auto") {
-
+		} else {
 			switch ($entêtesInitiales["Content-Type"]) {
 				case "application/zip":
 					self::vérifierEntêtes($uri);
@@ -89,8 +88,6 @@ class QuestionDAO extends EntitéDAO
 				default:
 					$info["uri"] = $uri;
 			}
-		} else {
-			$info["uri"] = $uri;
 		}
 
 		return $info;
