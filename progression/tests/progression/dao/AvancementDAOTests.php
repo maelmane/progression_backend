@@ -18,15 +18,11 @@
 
 namespace progression\dao;
 
-require_once __DIR__ . "/../../TestCase.php";
-
 use progression\domaine\entité\{Avancement, Question, TentativeProg};
-use progression\dao\AvancementDAO;
-
+use PHPUnit\Framework\TestCase;
 use Mockery;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-final class AvancementDAOTests extends \TestCase
+final class AvancementDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
@@ -36,7 +32,7 @@ final class AvancementDAOTests extends \TestCase
 	public function tearDown(): void
 	{
 		EntitéDAO::get_connexion()->rollback();
-        Mockery::close();
+		Mockery::close();
 	}
 
 	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_objet_avancement_correspondant()

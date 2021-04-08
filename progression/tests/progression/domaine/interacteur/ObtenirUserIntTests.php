@@ -20,13 +20,14 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\User;
 use PHPUnit\Framework\TestCase;
-use \Mockery;
+use Mockery;
 
 final class ObtenirUserIntTests extends TestCase
 {
-    public function tearDown() : void {
-        Mockery::close();
-    }
+	public function tearDown(): void
+	{
+		Mockery::close();
+	}
 
 	public function test_étant_donné_un_utilisateur_Bob_lorsquon_le_cherche_par_username_on_obtient_un_objet_user_nommé_Bob()
 	{
@@ -71,5 +72,4 @@ final class ObtenirUserIntTests extends TestCase
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
-
 }

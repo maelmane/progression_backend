@@ -61,11 +61,12 @@ class QuestionDAO extends EntitéDAO
 		$question->enonce = $infos_question["énoncé"];
 		$question->feedback_pos = key_exists("feedback+", $infos_question) ? $infos_question["feedback+"] : null;
 		$question->feedback_neg = key_exists("feedback-", $infos_question) ? $infos_question["feedback-"] : null;
+		$question->feedback_err = key_exists("feedback!", $infos_question) ? $infos_question["feedback!"] : null;
 	}
 
 	protected function récupérer_question($uri)
 	{
-		$entêtes = @get_headers($uri."/info.yml", 1);
+		$entêtes = @get_headers($uri . "/info.yml", 1);
 		if ($entêtes !== false && $entêtes["Content-Length"] > $_ENV["LIMITE_YML"]) {
 			error_log("$uri/info.yml est trop volumineux pour être chargé");
 			throw new LengthException("Le fichier est trop volumineux pour être chargé");

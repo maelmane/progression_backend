@@ -22,42 +22,42 @@ use PHPUnit\Framework\TestCase;
 
 final class TentativeProgTests extends TestCase
 {
-    public function test_étant_donné_une_TentativeProg_instanciée_avec_langage_python_lorsquon_récupère_son_langage_on_obtient_python()
-    {
-        $TentativeProgTest = new TentativeProg(
-            "python",
-            "codeTest",
-            "1234567890"
-        );
+	public function test_étant_donné_une_TentativeProg_instanciée_avec_langage_python_lorsquon_récupère_son_langage_on_obtient_python()
+	{
+		$TentativeProgTest = new TentativeProg(
+			"python",
+			"codeTest",
+			"1234567890"
+		);
 
-        $langage = $TentativeProgTest->langage;
+		$langage = $TentativeProgTest->langage;
 
-        $this->assertEquals("python", $langage);
-    }
+		$this->assertEquals("python", $langage);
+	}
 
-    public function test_étant_donné_une_TentativeProg_instanciée_avec_un_code_lorsquon_récupère_son_code_on_obtient_le_code_identique()
-    {
-        $TentativeProgTest = new TentativeProg(
-            "python",
-            "codeTest",
-            "1234567890"
-        );
+	public function test_étant_donné_une_TentativeProg_instanciée_avec_un_code_lorsquon_récupère_son_code_on_obtient_le_code_identique()
+	{
+		$TentativeProgTest = new TentativeProg(
+			"python",
+			"codeTest",
+			"1234567890"
+		);
 
-        $code = $TentativeProgTest->code;
+		$code = $TentativeProgTest->code;
 
-        $this->assertEquals("codeTest", $code);
-    }
+		$this->assertEquals("codeTest", $code);
+	}
 
-    public function test_étant_donné_une_TentativeProg_instanciée_avec_date_soumission_1234567890_lorsquon_récupère_sa_date_soumission_on_obtient_1234567890()
-    {
-        $TentativeProgTest = new TentativeProg(
-            "python",
-            "codeTest",
-            "1234567890"
-        );
+	public function test_étant_donné_une_TentativeProg_instanciée_avec_date_soumission_1234567890_lorsquon_récupère_sa_date_soumission_on_obtient_1234567890()
+	{
+		$TentativeProgTest = new TentativeProg(
+			"python",
+			"codeTest",
+			"1234567890"
+		);
 
-        $date_soumission = $TentativeProgTest->date_soumission;
+		$date_soumission = $TentativeProgTest->date_soumission;
 
-        $this->assertEquals("1234567890", $date_soumission);
-    }
+		$this->assertEquals("1234567890", $date_soumission);
+	}
 }

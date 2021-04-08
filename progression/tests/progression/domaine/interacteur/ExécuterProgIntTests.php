@@ -20,13 +20,14 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{Exécutable, Test, RésultatProg};
 use PHPUnit\Framework\TestCase;
-use \Mockery;
+use Mockery;
 
 final class ExécuterProgIntTests extends TestCase
 {
-    public function tearDown() : void {
-        Mockery::close();
-    }
+	public function tearDown(): void
+	{
+		Mockery::close();
+	}
 
 	public function test_étant_donné_un_exécutable_python_et_un_test_lorsquon_les_soumet_pour_exécution_on_obtient_un_résultat_de_test_avec_ses_sorties_standards()
 	{
@@ -39,7 +40,7 @@ final class ExécuterProgIntTests extends TestCase
 
 		$résultat_attendu = new RésultatProg("ok\n", "erreurs\n");
 
-        $résultat_observé = (new ExécuterProgInt(null))->exécuter($exécutable, $test);
+		$résultat_observé = (new ExécuterProgInt(null))->exécuter($exécutable, $test);
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}

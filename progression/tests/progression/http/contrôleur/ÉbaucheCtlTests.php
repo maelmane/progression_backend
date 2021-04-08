@@ -22,8 +22,6 @@ use progression\domaine\entité\{Question, QuestionProg, Exécutable};
 use progression\http\contrôleur\ÉbaucheCtl;
 use Illuminate\Http\Request;
 
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-
 final class ÉbaucheCtlTests extends TestCase
 {
 	public function tearDown(): void

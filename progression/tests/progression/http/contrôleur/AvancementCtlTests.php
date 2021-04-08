@@ -22,8 +22,6 @@ use progression\domaine\entité\{Question, QuestionProg, Avancement, TentativePr
 use progression\http\contrôleur\AvancementCtl;
 use Illuminate\Http\Request;
 
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-
 final class AvancementCtlTests extends TestCase
 {
 	public function tearDown(): void
