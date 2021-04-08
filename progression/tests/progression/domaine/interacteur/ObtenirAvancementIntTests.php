@@ -20,7 +20,7 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{Avancement, User};
 use PHPUnit\Framework\TestCase;
-use \Mockery;
+use Mockery;
 
 final class ObtenirAvancementIntTests extends TestCase
 {

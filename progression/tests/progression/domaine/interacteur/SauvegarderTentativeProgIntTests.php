@@ -20,14 +20,15 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{TentativeProg, Avancement, Question};
 use PHPUnit\Framework\TestCase;
-use \Mockery;
+use Mockery;
 
 final class SauvegarderTentativeProgIntTests extends TestCase
 {
-    public function tearDown() : void {
-        Mockery::close();
-    }
-    
+	public function tearDown(): void
+	{
+		Mockery::close();
+	}
+
 	public function test_étant_donné_une_première_tentative_ratée_lorsquon_la_sauvegarde_lavancement_est_aussi_sauvegardé_et_on_obtient_la_tentative()
 	{
 		$username = "Bob";
@@ -44,7 +45,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->andReturn(null);
 		$mockAvancementDao
 			->shouldReceive("save")
-            ->once()
+			->once()
 			->withArgs(function ($user, $uri, $av) use ($avancement) {
 				return $user == "Bob" && $uri == "https://example.com/question" && $av == $avancement;
 			})
@@ -53,7 +54,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 		$mockTentativeDao
 			->shouldReceive("save")
-            ->once()
+			->once()
 			->with("Bob", "https://example.com/question", $tentative)
 			->andReturn($tentative);
 
@@ -91,7 +92,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->andReturn(null);
 		$mockAvancementDao
 			->shouldReceive("save")
-            ->once()
+			->once()
 			->withArgs(function ($user, $uri, $av) use ($avancement) {
 				return $user == "Bob" && $uri == "https://example.com/question" && $av == $avancement;
 			})
@@ -100,7 +101,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 		$mockTentativeDao
 			->shouldReceive("save")
-            ->once()
+			->once()
 			->with("Bob", "https://example.com/question", $tentative)
 			->andReturn($tentative);
 
@@ -145,7 +146,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 		$mockTentativeDao
 			->shouldReceive("save")
-            ->once()
+			->once()
 			->with("Bob", "https://example.com/question", $tentative)
 			->andReturn($tentative);
 
@@ -193,7 +194,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			);
 		$mockAvancementDao
 			->shouldReceive("save")
-            ->once()
+			->once()
 			->withArgs(function ($user, $uri, $av) use ($avancement) {
 				return $user == "Bob" && $uri == "https://example.com/question" && $av == $avancement;
 			})
@@ -202,7 +203,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 		$mockTentativeDao
 			->shouldReceive("save")
-            ->once()
+			->once()
 			->with("Bob", "https://example.com/question", $tentative)
 			->andReturn($tentative);
 
@@ -247,7 +248,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 		$mockTentativeDao
 			->shouldReceive("save")
-            ->once()
+			->once()
 			->with("Bob", "https://example.com/question", $tentative)
 			->andReturn($tentative);
 
@@ -294,7 +295,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 		$mockTentativeDao
 			->shouldReceive("save")
-            ->once()
+			->once()
 			->with("Bob", "https://example.com/question", $tentative)
 			->andReturn($tentative);
 
