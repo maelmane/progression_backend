@@ -64,9 +64,9 @@ catégorie/
   - execs : liste de descriptifs des programmes exécutables. Chaque élément contenant les attributs suivants :
     - langage : langage de programmation
     - fichier: le fichier contenant l'ébauche de programme
-  - feedback+ : feedback positif général (facultatif, en format Markdown)
-  - feedback- : feedback négatif général (facultatif, en format Markdown)
-  - feedback! : feedback erreur général (facultatif, en format Markdown)
+  - feedback+ : rétroaction positive générale (facultatif, en format Markdown)
+  - feedback- : rétroaction négative générale (facultatif, en format Markdown)
+  - feedback! : rétroaction d'erreur générale (facultatif, en format Markdown)
   - tests : liste des fichiers de tests
     
 ** Questions Prog: 
@@ -85,9 +85,9 @@ Les fichiers de tests sont dans le format yaml et comportent une ou plusieurs se
   - nom : nom du test
   - in : les entrées textuelles passés directement à l'entrée standard du programme
   - out : les sorties textuelles attendues sur la sortie standard du programme
-  - feedback+ : feedback positif spécifique à la question (facultatif, en format Markdown)
-  - feedback- : feedback négatif spécifique à la question (facultatif, en format Markdown)
-  - feedback! : feedback erreur spécifique à la question (facultatif, en format Markdown)
+  - feedback+ : rétroaction positive spécifique à la question (facultatif, en format Markdown)
+  - feedback- : rétroaction négative spécifique à la question (facultatif, en format Markdown)
+  - feedback! : rétroaction d'erreur spécifique à la question (facultatif, en format Markdown)
 
 
 * Exemple
