@@ -78,6 +78,7 @@ class QuestionDAO extends EntitéDAO
 					$nomFichier = self::téléchargerFichier($uri);
 					$archiveExtraite = self::extraireZip($nomFichier, substr($nomFichier, 0, -4));
 					$info = $this->récupérer_fichier_info("file://" . $archiveExtraite);
+					self::supprimerFichiers($archiveExtraite);
 					break;
 
 				case "text/plain":
@@ -144,13 +145,28 @@ class QuestionDAO extends EntitéDAO
 		}
 	}
 
-	private static function supprimerFichier($cheminFichier)
+	private static function supprimerFichiers($cheminCible)
 	{
-		$fichierÀSupprimer = unlink($cheminFichier);
-		if (!$fichierÀSupprimer) {
-			throw new RuntimeException("Le fichier ne peut pas être supprimé");
+		if (is_dir($cheminCible)) {
+			$fichiers = glob($cheminCible . "/*", GLOB_MARK);
+
+			foreach ($fichiers as $fichier) {
+				self::supprimerFichiers($fichier);
+			}
+
+			if (!rmdir($cheminCible)) {
+				throw new RuntimeException("Le fichier ne peut pas être supprimé");
+			} else {
+				return true;
+			}
 		} else {
-			return true;
+			$fichierÀSupprimer = unlink($cheminCible);
+
+			if (!$fichierÀSupprimer) {
+				throw new RuntimeException("Le fichier ne peut pas être supprimé");
+			} else {
+				return true;
+			}
 		}
 	}
 
@@ -162,7 +178,7 @@ class QuestionDAO extends EntitéDAO
 			if (!$zip->extractTo($destination)) {
 				throw new RuntimeException("Le fichier ne peut pas être sauvegardé");
 			} else {
-				self::supprimerFichier($archive);
+				self::supprimerFichiers($archive);
 				return $destination;
 			}
 			$zip->close();
