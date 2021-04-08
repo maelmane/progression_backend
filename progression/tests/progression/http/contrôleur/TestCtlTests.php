@@ -16,18 +16,13 @@
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\http\contrôleur;
-
 require_once __DIR__ . '/../../../TestCase.php';
 
 use progression\domaine\entité\{QuestionProg, Question, Test};
 use progression\http\contrôleur\TestCtl;
 use Illuminate\Http\Request;
 
-use Mockery;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-
-final class TestCtlTests extends \TestCase
+final class TestCtlTests extends TestCase
 {
 	public function tearDown(): void
 	{

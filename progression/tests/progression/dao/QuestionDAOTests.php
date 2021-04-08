@@ -15,15 +15,14 @@
 	You should have received a copy of the GNU General Public License
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 namespace progression\dao;
 
-require_once __DIR__ . "/../../TestCase.php";
-use progression\domaine\entité\{Question, QuestionProg, Exécutable, Test};
-
+use progression\domaine\entité\{QuestionProg, Exécutable, Test};
+use PHPUnit\Framework\TestCase;
 use Mockery;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-final class QuestionDAOTests extends \TestCase
+final class QuestionDAOTests extends TestCase
 {
 	public function test_get_question()
 	{

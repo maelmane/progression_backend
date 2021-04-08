@@ -1,8 +1,7 @@
 version: "3"
 services:
-
   db:
-    build: db/ 
+    build: db/
     container_name: progression_db
     env_file: progression/app/.env
     networks:
@@ -22,7 +21,7 @@ services:
     networks:
       progressionnet:
         ipv4_address: 172.20.0.3
-    ports: 
+    ports:
       - 80:80
     #En développement, monte les source directement dans le conteneur
     volumes:
@@ -30,7 +29,7 @@ services:
     extra_hosts:
       - "watson.dept-info.crosemont.quebec:205.237.24.200"
     restart: always
-    depends_on: 
+    depends_on:
       - db
 
   importeur:
@@ -49,7 +48,11 @@ services:
     image: progression_backend_progression
     build: progression/
     container_name: progression_tests
-    env_file: progression/tests/.env
+    environment:
+      - DB_SERVERNAME=172.20.0.2
+      - DB_USERNAME=root
+      - DB_PASSWORD=password
+      - DB_DBNAME=quiz_test
     volumes:
       - "./db/build_db.sh/:/var/www/db/build_db.sh"
       - "./db/create_db.sql/:/var/www/db/create_db.sql"
@@ -66,12 +69,11 @@ services:
     command: /var/www/progression/tests/exec_tests.sh
 
   doc:
-    image: git.dti.crosemont.quebec:5050/progression/progression_backend:latest 
+    image: git.dti.crosemont.quebec:5050/progression/progression_backend:latest
     volumes:
       - "./progression/app/:/progression/app/"
       - "./doc/:/doc/"
     command: emacs --batch --load /root/.emacs.el --load /doc/publish.el --funcall org-publish-all
-
 
 networks:
   progressionnet:

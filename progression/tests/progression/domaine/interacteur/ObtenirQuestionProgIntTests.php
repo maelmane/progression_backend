@@ -20,70 +20,71 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{Question, QuestionProg};
 use PHPUnit\Framework\TestCase;
-use \Mockery;
+use Mockery;
 
 final class ObtenirQuestionProgIntTests extends TestCase
 {
-    public function tearDown() : void {
-        Mockery::close();
-    }
+	public function tearDown(): void
+	{
+		Mockery::close();
+	}
 
-    public function test_étant_donné_une_questionprog_avec_un_chemin_existant_lorsque_cherché_par_chemin_on_obtient_un_objet_questionprog_correspondant()
-    {
-        $résultat_attendu = new QuestionProg();
-        $résultat_attendu->uri = "prog1/les_fonctions/appeler_une_fonction";
+	public function test_étant_donné_une_questionprog_avec_un_chemin_existant_lorsque_cherché_par_chemin_on_obtient_un_objet_questionprog_correspondant()
+	{
+		$résultat_attendu = new QuestionProg();
+		$résultat_attendu->uri = "prog1/les_fonctions/appeler_une_fonction";
 
-        $mockQuestionDao = Mockery::mock("progression\dao\QuestionDAO");
-        $mockQuestionDao
-            ->shouldReceive("get_type")
-            ->with("prog1/les_fonctions/appeler_une_fonction")
-            ->andReturn(Question::TYPE_PROG);
+		$mockQuestionDao = Mockery::mock("progression\dao\QuestionDAO");
+		$mockQuestionDao
+			->shouldReceive("get_type")
+			->with("prog1/les_fonctions/appeler_une_fonction")
+			->andReturn(Question::TYPE_PROG);
 
-        $mockQuestiongDao = Mockery::mock("progression\dao\QuestionDAO");
-        $mockQuestionDao
-            ->shouldReceive("get_question")
-            ->with("prog1/les_fonctions/appeler_une_fonction")
-            ->andReturn($résultat_attendu);
+		$mockQuestiongDao = Mockery::mock("progression\dao\QuestionDAO");
+		$mockQuestionDao
+			->shouldReceive("get_question")
+			->with("prog1/les_fonctions/appeler_une_fonction")
+			->andReturn($résultat_attendu);
 
-        $mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
-        $mockDAOFactory
-            ->allows()
-            ->get_question_dao()
-            ->andReturn($mockQuestionDao);
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory
+			->allows()
+			->get_question_dao()
+			->andReturn($mockQuestionDao);
 
-        $interacteur = new ObtenirQuestionInt($mockDAOFactory);
-        $résultat_obtenu = $interacteur->get_question(
-            "prog1/les_fonctions/appeler_une_fonction"
-        );
+		$interacteur = new ObtenirQuestionInt($mockDAOFactory);
+		$résultat_obtenu = $interacteur->get_question(
+			"prog1/les_fonctions/appeler_une_fonction"
+		);
 
-        $this->assertEquals($résultat_attendu, $résultat_obtenu);
-    }
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
 
-    public function test_étant_donné_une_questionprog_avec_un_chemin_inexistant_lorsque_cherché_par_chemin_on_obtient_null()
-    {
-        $résultat_attendu = null;
+	public function test_étant_donné_une_questionprog_avec_un_chemin_inexistant_lorsque_cherché_par_chemin_on_obtient_null()
+	{
+		$résultat_attendu = null;
 
-        $mockQuestionDao = Mockery::mock("progression\dao\QuestionDAO");
-        $mockQuestionDao
-            ->shouldReceive("get_type")
-            ->with("test/de/chemin/non/valide")
-            ->andReturn(null);
-        $mockQuestionDao
-            ->shouldReceive("get_question")
-            ->with("test/de/chemin/non/valide")
-            ->andReturn(null);
+		$mockQuestionDao = Mockery::mock("progression\dao\QuestionDAO");
+		$mockQuestionDao
+			->shouldReceive("get_type")
+			->with("test/de/chemin/non/valide")
+			->andReturn(null);
+		$mockQuestionDao
+			->shouldReceive("get_question")
+			->with("test/de/chemin/non/valide")
+			->andReturn(null);
 
-        $mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
-        $mockDAOFactory
-            ->allows()
-            ->get_question_dao()
-            ->andReturn($mockQuestionDao);
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory
+			->allows()
+			->get_question_dao()
+			->andReturn($mockQuestionDao);
 
-        $interacteur = new ObtenirQuestionInt($mockDAOFactory);
-        $résultat_obtenu = $interacteur->get_question(
-            "test/de/chemin/non/valide"
-        );
+		$interacteur = new ObtenirQuestionInt($mockDAOFactory);
+		$résultat_obtenu = $interacteur->get_question(
+			"test/de/chemin/non/valide"
+		);
 
-        $this->assertEquals($résultat_attendu, $résultat_obtenu);
-    }
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
 }

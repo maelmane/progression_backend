@@ -19,7 +19,6 @@
 namespace progression\dao;
 
 use progression\domaine\entité\TentativeProg;
-use progression\dao\TentativeProgDAO;
 use PHPUnit\Framework\TestCase;
 
 final class TentativeProgDAOTests extends TestCase
@@ -81,7 +80,7 @@ final class TentativeProgDAOTests extends TestCase
 
 		$résultat_attendue = new TentativeProg("python", "testCode", 123456789, true, 2);
 
-		$résultat_observé = (new TentativeDAO())->save("Stefany", "https://exemple.com", $tentative_test );
+		$résultat_observé = (new TentativeDAO())->save("Stefany", "https://exemple.com", $tentative_test);
 		$this->assertEquals($résultat_attendue, $résultat_observé);
 
 		$résultat_observé = (new TentativeDAO())->get_tentative("Stefany", "https://exemple.com", 123456789);

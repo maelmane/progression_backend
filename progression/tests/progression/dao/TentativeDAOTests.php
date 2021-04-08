@@ -18,8 +18,6 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\TentativeProg;
-use progression\dao\TentativeDAO;
 use PHPUnit\Framework\TestCase;
 
 final class TentativeDAOTests extends TestCase
