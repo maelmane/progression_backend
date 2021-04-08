@@ -19,6 +19,7 @@
 namespace progression\dao;
 
 use DomainException, LengthException, RuntimeException;
+use Exception;
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
 use ZipArchive;
 
@@ -70,7 +71,13 @@ class QuestionDAO extends EntitéDAO
 
 		if (!$entêtesInitiales) {
 			// Fichier test local
-			$info = $this->récupérer_fichier_info($uri);
+			try {
+				$info = $this->récupérer_fichier_info($uri);
+			} catch (Exception) {
+				$archiveExtraite = self::extraireZip($uri, substr($uri, 0, -4), true);
+				$info = $this->récupérer_fichier_info("file://" . $archiveExtraite);
+				self::supprimerFichiers($archiveExtraite);
+			}
 		} else {
 			switch ($entêtesInitiales["Content-Type"]) {
 				case "application/zip":
@@ -170,15 +177,18 @@ class QuestionDAO extends EntitéDAO
 		}
 	}
 
-	private static function extraireZip($archive, $destination)
+	private static function extraireZip($archive, $destination, $test = false)
 	{
 		$zip = new ZipArchive;
-
+		print_r("DDDDDDD");
+		print_r($destination);
 		if ($zip->open($archive) === true) {
 			if (!$zip->extractTo($destination)) {
 				throw new RuntimeException("Le fichier ne peut pas être sauvegardé");
 			} else {
-				self::supprimerFichiers($archive);
+				if (!$test) {
+					self::supprimerFichiers($archive);
+				}
 				return $destination;
 			}
 			$zip->close();
