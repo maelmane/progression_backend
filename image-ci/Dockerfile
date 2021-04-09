@@ -2,11 +2,11 @@ FROM php:8
 
 # Install git, the php image doesn't have installed
 RUN apt update
-RUN DEBIAN_FRONTEND=noninteractive TZ=America/Toronto apt install tzdata git emacs elpa-htmlize unzip python3 python3-pip libyaml-dev default-libmysqlclient-dev default-mysql-client -yqq && apt autoclean
+RUN DEBIAN_FRONTEND=noninteractive TZ=America/Toronto apt install tzdata git emacs elpa-htmlize unzip python3 python3-pip libyaml-dev libzip-dev default-libmysqlclient-dev default-mysql-client -yqq && apt autoclean
 RUN pip3 install napkin
 
 #Ajout d'extensions PHP
-RUN docker-php-ext-install -j$(nproc) mysqli
+RUN docker-php-ext-install -j$(nproc) mysqli zip
 
 COPY docker-php-ext-get /usr/local/bin/
 
