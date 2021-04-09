@@ -34,6 +34,7 @@ class QuestionDAO extends EntitéDAO
 		}
 
 		$question = null;
+
 		if (key_exists("type", $infos_question)) {
 			$type = $infos_question["type"];
 
@@ -80,22 +81,22 @@ class QuestionDAO extends EntitéDAO
 				self::supprimerFichiers($archiveExtraite);
 			}
 		} else {
-			switch ($entêtesInitiales["Content-Type"]) {
-				case "application/zip":
-					self::vérifierEntêtes($uri);
-					$nomFichier = self::téléchargerFichier($uri);
-					$archiveExtraite = self::extraireZip($nomFichier, substr($nomFichier, 0, -4));
-					$info = $this->récupérer_fichier_info("file://" . $archiveExtraite);
-					self::supprimerFichiers($archiveExtraite);
-					break;
+			try {
+				@self::vérifierEntêtes($uri . "/info.yml", true);
+				$info = $this->récupérer_fichier_info($uri);
+			} catch (Exception) {
+				switch ($entêtesInitiales["Content-Type"]) {
+					case "application/zip":
+						self::vérifierEntêtes($uri);
+						$nomFichier = self::téléchargerFichier($uri);
+						$archiveExtraite = self::extraireZip($nomFichier, substr($nomFichier, 0, -4));
+						$info = $this->récupérer_fichier_info("file://" . $archiveExtraite);
+						self::supprimerFichiers($archiveExtraite);
+						break;
 
-				case "text/plain":
-					self::vérifierEntêtes($uri . "/info.yml", true);
-					$info = $this->récupérer_fichier_info($uri);
-					break;
-
-				default:
-					$info["uri"] = $uri;
+					default:
+						$info["uri"] = $uri;
+				}
 			}
 		}
 
