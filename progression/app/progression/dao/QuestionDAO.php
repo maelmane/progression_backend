@@ -63,6 +63,7 @@ class QuestionDAO extends EntitéDAO
 		$question->enonce = $infos_question["énoncé"];
 		$question->feedback_pos = key_exists("feedback+", $infos_question) ? $infos_question["feedback+"] : null;
 		$question->feedback_neg = key_exists("feedback-", $infos_question) ? $infos_question["feedback-"] : null;
+		$question->feedback_err = key_exists("feedback!", $infos_question) ? $infos_question["feedback!"] : null;
 	}
 
 	protected function récupérer_question($uri)
