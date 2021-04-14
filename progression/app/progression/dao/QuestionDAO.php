@@ -75,7 +75,7 @@ class QuestionDAO extends EntitéDAO
 			try {
 				$info = $this->récupérer_fichier_info($uri);
 			} catch (Exception) {
-				$archiveExtraite = self::extraire_zip($uri, substr($uri, 0, -4), true);
+				$archiveExtraite = self::extraire_zip($uri, sys_get_temp_dir() . substr($uri, 0, -4), true);
 				$info = $this->récupérer_fichier_info("file://" . $archiveExtraite);
 				self::supprimer_fichiers($archiveExtraite);
 			}
