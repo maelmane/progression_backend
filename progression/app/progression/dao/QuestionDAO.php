@@ -70,33 +70,21 @@ class QuestionDAO extends EntitéDAO
 	protected function récupérer_question($uri)
 	{
 		$entêtesInitiales = @get_headers($uri, 1);
-
 		if (!$entêtesInitiales) {
 			// Fichier test local
 			try {
 				$info = $this->récupérer_fichier_info($uri);
 			} catch (Exception) {
-				$archiveExtraite = self::extraireZip($uri, substr($uri, 0, -4), true);
+				$archiveExtraite = self::extraire_zip($uri, substr($uri, 0, -4), true);
 				$info = $this->récupérer_fichier_info("file://" . $archiveExtraite);
-				self::supprimerFichiers($archiveExtraite);
+				self::supprimer_fichiers($archiveExtraite);
 			}
 		} else {
-			try {
-				@self::vérifierEntêtes($uri . "/info.yml", true);
+			$entêtesYml = self::vérifier_entêtes($uri . "/info.yml");
+			if ($entêtesYml && $entêtesYml["Content-Type"] == "text/yaml; charset=utf-8") {
 				$info = $this->récupérer_fichier_info($uri);
-			} catch (Exception) {
-				switch ($entêtesInitiales["Content-Type"]) {
-					case "application/zip":
-						self::vérifierEntêtes($uri);
-						$nomFichier = self::téléchargerFichier($uri);
-						$archiveExtraite = self::extraireZip($nomFichier, substr($nomFichier, 0, -4));
-						$info = $this->récupérer_fichier_info("file://" . $archiveExtraite);
-						self::supprimerFichiers($archiveExtraite);
-						break;
-
-					default:
-						$info["uri"] = $uri;
-				}
+			} else {
+				$info = $this->récupérer_archive($uri, $entêtesInitiales["Content-Type"]);
 			}
 		}
 
@@ -123,75 +111,76 @@ class QuestionDAO extends EntitéDAO
 		return $info;
 	}
 
-	private static function vérifierEntêtes($uri, $estUnYml = false)
+	private function récupérer_archive($uri, $typeArchive)
 	{
-		if ($estUnYml) {
-			$entêtes = @get_headers($uri . "/info.yml", 1);
-			if ($entêtes["Content-Length"] > $_ENV["LIMITE_YML"]) {
-				throw new LengthException("Le fichier est trop volumineux pour être chargé");
-			}
-		} else {
-			$entêtes = @get_headers($uri, 1);
-			if ($entêtes["Content-Length"] > $_ENV["LIMITE_ARCHIVE"]) {
-				throw new LengthException("Le fichier est trop volumineux pour être chargé");
-			}
+		if (!self::vérifier_entêtes($uri)) {
+			return null;
+		}
+
+		switch ($typeArchive) {
+			case "application/zip":
+				$nomFichier = self::télécharger_fichier($uri);
+				$archiveExtraite = self::extraire_zip($nomFichier, substr($nomFichier, 0, -4));
+				break;
+			default:
+				return null;
+		}
+
+		$sortie = $this->récupérer_fichier_info("file://" . $archiveExtraite);
+		self::supprimer_fichiers($archiveExtraite);
+
+		return $sortie;
+	}
+
+	private static function vérifier_entêtes($uri)
+	{
+		$entêtes = @get_headers($uri, 1);
+		if ($entêtes["Content-Length"] > $_ENV["QUESTION_TAILLE_MAX"]) {
+			return false;
 		}
 
 		return $entêtes;
 	}
 
-	private static function téléchargerFichier($uri)
+	private static function télécharger_fichier($uri)
 	{
 		$nomUnique = uniqid("archive_", true);
-		$chemin = sys_get_temp_dir() . "/$nomUnique.zip";
+		$chemin = sys_get_temp_dir() . "/$nomUnique.arc";
 
 		if (file_put_contents($chemin, file_get_contents($uri))) {
 			return $chemin;
-		} else {
-			throw new RuntimeException("Le fichier ne peut pas être téléchargé");
 		}
+
+		return false;
 	}
 
-	private static function supprimerFichiers($cheminCible)
+	private static function supprimer_fichiers($cheminCible)
 	{
-		if (is_dir($cheminCible)) {
-			$fichiers = glob($cheminCible . "/*", GLOB_MARK);
-
-			foreach ($fichiers as $fichier) {
-				self::supprimerFichiers($fichier);
-			}
-
-			if (!rmdir($cheminCible)) {
-				throw new RuntimeException("Le fichier ne peut pas être supprimé");
-			} else {
-				return true;
-			}
+		if (PHP_OS === "Windows") {
+			exec(sprintf("rd /s /q %s", escapeshellarg($cheminCible)));
+			return true;
 		} else {
-			$fichierÀSupprimer = unlink($cheminCible);
-
-			if (!$fichierÀSupprimer) {
-				throw new RuntimeException("Le fichier ne peut pas être supprimé");
-			} else {
-				return true;
-			}
+			exec(sprintf("rm -rf %s", escapeshellarg($cheminCible)));
+			return true;
 		}
+		return false;
 	}
 
-	private static function extraireZip($archive, $destination, $test = false)
+	private static function extraire_zip($archive, $destination, $test = false)
 	{
 		$zip = new ZipArchive;
 		if ($zip->open($archive) === true) {
 			if (!$zip->extractTo($destination)) {
-				throw new RuntimeException("Le fichier ne peut pas être sauvegardé");
+				return false;
 			} else {
 				if (!$test) {
-					self::supprimerFichiers($archive);
+					self::supprimer_fichiers($archive);
 				}
 				return $destination;
 			}
 			$zip->close();
-		} else {
-			throw new DomainException("Le fichier ne peut pas être décodé");
 		}
+
+		return false;
 	}
 }
