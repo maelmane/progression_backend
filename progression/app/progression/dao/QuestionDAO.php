@@ -136,7 +136,7 @@ class QuestionDAO extends EntitéDAO
 	{
 		$entêtes = @get_headers($uri, 1);
 		if ($entêtes["Content-Length"] > $_ENV["QUESTION_TAILLE_MAX"]) {
-			return false;
+			throw new LengthException("Le fichier est trop volumineux pour être chargé");
 		}
 
 		return $entêtes;
