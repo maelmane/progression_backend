@@ -20,32 +20,50 @@ require_once __DIR__ . '/../../../TestCase.php';
 
 use progression\http\contrôleur\LoginCtl;
 use progression\domaine\entité\User;
+use progression\dao\DAOFactory;
 use Illuminate\Http\Request;
 use Firebase\JWT\JWT;
 
 final class LoginCtlTests extends TestCase
 {
-	public function test_étant_donné_lutilisateur_Bob_et_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Bob()
+
+    public function setUp() : void
+    {
+        parent::setUp();
+        
+        // UserDAO
+		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO
+		->shouldReceive("get_user")
+		->with("Bob")
+		->andReturn(new User("Bob"));
+		$mockUserDAO
+		->shouldReceive("get_user")
+		->with("jdoe")
+		->andReturn(new User("jdoe"));
+		$mockUserDAO
+		->shouldReceive("get_user")
+		->with("Marcel")
+		->andReturn(null);
+		
+		// DAOFactory
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory
+			->shouldReceive("get_user_dao")
+			->andReturn($mockUserDAO);
+		DAOFactory::setInstance($mockDAOFactory);
+    }
+    
+	public function tearDown(): void
+	{
+		Mockery::close();
+	}
+
+    public function test_étant_donné_lutilisateur_Bob_et_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Bob()
 	{
 		$_ENV['AUTH_TYPE'] = "no";
 		$_ENV['JWT_SECRET'] = "secret";
 		$_ENV['JWT_TTL'] = 3333;
-
-		$user = new User("Bob");
-
-		// Intéracteur
-		$mockLoginInt = Mockery::mock("progression\domaine\interacteur\LoginInt");
-		$mockLoginInt
-			->allows()
-			->effectuer_login("Bob", "")
-			->andReturn($user);
-
-		// InteracteurFactory
-		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
-		$mockIntFactory
-			->allows()
-			->getLoginInt()
-			->andReturn($mockLoginInt);
 
 		// Requête
 		$mockRequest = Mockery::mock("Illuminate\Http\Request");
@@ -77,9 +95,9 @@ final class LoginCtlTests extends TestCase
 		$this->app->bind(Request::class, function () use ($mockRequest) {
 			return $mockRequest;
 		});
-
+        
 		// Contrôleur
-		$ctl = new LoginCtl($mockIntFactory);
+		$ctl = new LoginCtl();
 		$résultat_observé = $ctl->login($mockRequest);
 
 		$token = json_decode($résultat_observé->getContent(), true);
@@ -92,125 +110,4 @@ final class LoginCtlTests extends TestCase
 		$this->assertEquals(3333, $tokenDécodé->expired - $tokenDécodé->current);
 	}
 
-	public function test_étant_donné_lutilisateur_jdoe_et_une_authentification_de_type_ldap_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_jdoe()
-	{
-		$_ENV['AUTH_TYPE'] = "ldap";
-		$_ENV['JWT_SECRET'] = "secret";
-		$_ENV['JWT_TTL'] = 3333;
-
-		$user = new User("jdoe");
-
-		// Intéracteur
-		$mockLoginInt = Mockery::mock("progression\domaine\interacteur\LoginInt");
-		$mockLoginInt
-			->allows()
-			->effectuer_login("jdoe", "Crosemont2021!")
-			->andReturn($user);
-
-		// InteracteurFactory
-		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
-		$mockIntFactory
-			->allows()
-			->getLoginInt()
-			->andReturn($mockLoginInt);
-
-		// Requête
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->ip()
-			->andReturn("127.0.0.1");
-		$mockRequest
-			->allows()
-			->method()
-			->andReturn("GET");
-		$mockRequest
-			->allows()
-			->path()
-			->andReturn("/auth/");
-		$mockRequest
-			->allows()
-			->query("include")
-			->andReturn();
-		$mockRequest
-			->allows()
-			->input("username")
-			->andReturn("jdoe");
-		$mockRequest
-			->allows()
-			->input("password")
-			->andReturn("Crosemont2021!");
-
-		$this->app->bind(Request::class, function () use ($mockRequest) {
-			return $mockRequest;
-		});
-
-		// Contrôleur
-		$ctl = new LoginCtl($mockIntFactory);
-		$résultat_observé = $ctl->login($mockRequest);
-
-		$token = json_decode($résultat_observé->getContent(), true);
-		$tokenDécodé = JWT::decode($token["Token"], $_ENV['JWT_SECRET'], ['HS256']);
-		$username_obtenu = $tokenDécodé->user->username;
-
-		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals("jdoe", $username_obtenu);
-		$this->assertGreaterThan(time(), $tokenDécodé->expired);
-		$this->assertEquals(3333, $tokenDécodé->expired - $tokenDécodé->current);
-	}
-
-	public function test_étant_donné_lutilisateur_Marcel_inexistant_lorsquon_appelle_login_on_obtient_Accès_interdit()
-	{
-		// Intéracteur
-		$mockLoginInt = Mockery::mock("progression\domaine\interacteur\LoginInt");
-		$mockLoginInt
-			->allows()
-			->effectuer_login("Marcel", "123")
-			->andReturn(null);
-
-		// InteracteurFactory
-		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
-		$mockIntFactory
-			->allows()
-			->getLoginInt()
-			->andReturn($mockLoginInt);
-
-		// Requête
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->ip()
-			->andReturn("127.0.0.1");
-		$mockRequest
-			->allows()
-			->method()
-			->andReturn("GET");
-		$mockRequest
-			->allows()
-			->path()
-			->andReturn("/auth/");
-		$mockRequest
-			->allows()
-			->query("include")
-			->andReturn();
-		$mockRequest
-			->allows()
-			->input("username")
-			->andReturn("Marcel");
-		$mockRequest
-			->allows()
-			->input("password")
-			->andReturn("123");
-
-		$this->app->bind(Request::class, function () use ($mockRequest) {
-			return $mockRequest;
-		});
-
-		// Contrôleur
-		$ctl = new LoginCtl($mockIntFactory);
-		$résultat_obtenu = $ctl->login($mockRequest);
-
-		$this->assertEquals(401, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_obtenu->getContent());
-	}
 }

@@ -18,23 +18,47 @@
 
 require_once __DIR__ . "/../../../TestCase.php";
 
+use progression\dao\DAOFactory;
 use progression\domaine\entité\{Avancement, User};
 use progression\http\contrôleur\UserCtl;
 use Illuminate\Http\Request;
 
 final class UserCtlTests extends TestCase
 {
-	public function test_étant_donné_le_nom_dun_utilisateur_lorsquon_appelle_get_on_obtient_lutilisateur_et_ses_relations_sous_forme_json()
-	{
-		$_ENV["APP_URL"] = "https://example.com/";
+    public function setUp() : void
+    {
+        parent::setUp();
 
-		$user = new User(null);
-		$user->username = "jdoe";
+        $_ENV["APP_URL"] = "https://example.com/";
+
+        $user = new User("jdoe");
 		$user->avancements = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement(),
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement(),
 		];
 
+        // UserDAO
+		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO
+            ->shouldReceive("get_user")
+            ->with("jdoe")
+            ->andReturn($user);
+		
+		// DAOFactory
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory
+			->shouldReceive("get_user_dao")
+			->andReturn($mockUserDAO);
+		DAOFactory::setInstance($mockDAOFactory);
+    }
+    
+	public function tearDown(): void
+	{
+		Mockery::close();
+	}
+
+	public function test_étant_donné_le_nom_dun_utilisateur_lorsquon_appelle_get_on_obtient_lutilisateur_et_ses_relations_sous_forme_json()
+	{
 		$résultat_attendu = [
 			"data" => [
 				"type" => "user",
@@ -119,20 +143,6 @@ final class UserCtlTests extends TestCase
 			],
 		];
 
-		// Intéracteur
-		$mockObtenirUserInt = Mockery::mock("progression\domaine\interacteur\ObtenirUserInt");
-		$mockObtenirUserInt
-			->allows()
-			->get_user("jdoe")
-			->andReturn($user);
-
-		// InteracteurFactory
-		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
-		$mockIntFactory
-			->allows()
-			->getObtenirUserInt()
-			->andReturn($mockObtenirUserInt);
-
 		// Requête
 		$mockRequest = Mockery::mock("Illuminate\Http\Request");
 		$mockRequest
@@ -161,67 +171,10 @@ final class UserCtlTests extends TestCase
 		});
 
 		// Contrôleur
-		$ctl = new UserCtl($mockIntFactory);
+		$ctl = new UserCtl();
 		$résultat_obtenu = $ctl->get($mockRequest, "jdoe");
 
 		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
-	}
-
-	public function test_étant_donné_le_nom_dun_utilisateur_inexistant_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
-	{
-		$_ENV["APP_URL"] = "https://example.com/";
-
-		$résultat_attendu = [
-			"erreur" => "Ressource non trouvée.",
-		];
-
-		// Intéracteur
-		$mockObtenirUserInt = Mockery::mock("progression\domaine\interacteur\ObtenirUserInt");
-		$mockObtenirUserInt
-			->allows()
-			->get_user("Jean-Yves")
-			->andReturn(null);
-
-		// InteracteurFactory
-		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
-		$mockIntFactory
-			->allows()
-			->getObtenirUserInt()
-			->andReturn($mockObtenirUserInt);
-
-		// Requête
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->ip()
-			->andReturn("127.0.0.1");
-		$mockRequest
-			->allows()
-			->method()
-			->andReturn("GET");
-		$mockRequest
-			->allows()
-			->path()
-			->andReturn("/user");
-		$mockRequest
-			->allows()
-			->all()
-			->andReturn();
-		$mockRequest
-			->allows()
-			->query("include")
-			->andReturn();
-
-		$this->app->bind(Request::class, function () use ($mockRequest) {
-			return $mockRequest;
-		});
-
-		// Contrôleur
-		$ctl = new UserCtl($mockIntFactory);
-		$résultat_obtenu = $ctl->get($mockRequest, "Jean-Yves");
-
-		$this->assertEquals(404, $résultat_obtenu->status());
 		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
 	}
 }

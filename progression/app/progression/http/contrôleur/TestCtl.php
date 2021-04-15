@@ -19,6 +19,7 @@
 namespace progression\http\contrôleur;
 
 use progression\http\transformer\TestTransformer;
+use progression\domaine\interacteur\ObtenirQuestionInt;
 use progression\util\Encodage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -32,7 +33,7 @@ class TestCtl extends Contrôleur
 		$question = null;
 		$réponse = null;
 
-		$questionInt = $this->intFactory->getObtenirQuestionInt();
+		$questionInt = new ObtenirQuestionInt();
 		try {
 			$question = $questionInt->get_question($chemin);
 		} catch (LengthException $erreur) {

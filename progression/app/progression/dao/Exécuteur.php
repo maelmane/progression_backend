@@ -16,14 +16,12 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\domaine\interacteur;
+namespace progression\dao;
 
-use progression\dao\DAOFactory;
+class Exécuteur{
 
-class ObtenirQuestionInt extends Interacteur
-{
-	function get_question($question_id)
-	{
-		return $this->source_dao->get_question_dao()->get_question($question_id);
+	public function exécuter($exécutable, $test){
+		return null;
 	}
+
 }

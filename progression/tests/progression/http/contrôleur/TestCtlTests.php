@@ -18,32 +18,50 @@
 
 require_once __DIR__ . '/../../../TestCase.php';
 
+use progression\dao\DAOFactory;
 use progression\domaine\entité\{QuestionProg, Question, Test};
 use progression\http\contrôleur\TestCtl;
 use Illuminate\Http\Request;
 
 final class TestCtlTests extends TestCase
 {
-	public function tearDown(): void
+    public function setUp(): void{
+        parent::setUp();
+
+		$_ENV["APP_URL"] = "https://example.com/";
+
+		// Question
+		$question = new QuestionProg();
+		$question->type = Question::TYPE_PROG;
+		$question->nom = "appeler_une_fonction_paramétrée";
+		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+		$question->tests = [
+			new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
+			new Test("Aucune salutation", "0", ""),
+		];
+        
+        $mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
+		$mockQuestionDAO
+            ->shouldReceive("get_question")
+            ->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+            ->andReturn($question);
+
+		// DAOFactory
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory
+			->shouldReceive("get_question_dao")
+			->andReturn($mockQuestionDAO);
+
+		DAOFactory::setInstance($mockDAOFactory);
+    }
+
+    public function tearDown(): void
 	{
 		Mockery::close();
 	}
 
 	public function test_étant_donné_le_chemin_dune_question_et_son_test_numero_0_lorsquon_appelle_get_on_obtient_le_test_numero_0_et_ses_relations_sous_forme_json()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
-
-		// Question
-		$question = new QuestionProg();
-		$question->type = Question::TYPE_PROG;
-		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
-
-		// Tests
-		$question->tests = [
-			new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
-			new Test("Aucune salutation", "0", ""),
-		];
-
 		$résultat_attendu = [
 			"data" => [
 				"type" => "test",
@@ -64,21 +82,6 @@ final class TestCtlTests extends TestCase
 			],
 		];
 
-		// Intéracteur
-		$mockObtenirQuestionInt = Mockery::mock("progression\domaine\interacteur\ObtenirQuestionInt");
-		$mockObtenirQuestionInt
-			->allows()
-			->get_question("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
-			->andReturn($question);
-
-		// InteracteurFactory
-		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
-		$mockIntFactory
-			->allows()
-			->getObtenirQuestionInt()
-			->andReturn($mockObtenirQuestionInt);
-
-		// Requête
 		$mockRequest = Mockery::mock("Illuminate\Http\Request");
 		$mockRequest
 			->allows()
@@ -103,7 +106,7 @@ final class TestCtlTests extends TestCase
 		});
 
 		// Contrôleur
-		$ctl = new TestCtl($mockIntFactory);
+		$ctl = new TestCtl();
 		$résultat_obtenu = $ctl->get(
 			$mockRequest,
 			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
@@ -116,36 +119,9 @@ final class TestCtlTests extends TestCase
 
 	public function test_étant_donné_le_chemin_dune_question_et_son_test_numero_abc_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
-
-		// Question
-		$question = new QuestionProg();
-		$question->type = Question::TYPE_PROG;
-		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
-
-		// Tests
-		$question->tests = [
-			new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
-			new Test("Aucune salutation", "0", ""),
-		];
-
 		$résultat_attendu = [
 			"erreur" => "Ressource non trouvée.",
 		];
-
-		// Intéracteur
-		$mockObtenirQuestionInt = Mockery::mock("progression\domaine\interacteur\ObtenirQuestionInt");
-		$mockObtenirQuestionInt
-			->allows()
-			->get_question("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
-			->andReturn($question);
-
-		// InteracteurFactory
-		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
-		$mockIntFactory
-			->allows()
-			->getObtenirQuestionInt()
-			->andReturn($mockObtenirQuestionInt);
 
 		// Requête
 		$mockRequest = Mockery::mock("Illuminate\Http\Request");
@@ -172,7 +148,7 @@ final class TestCtlTests extends TestCase
 		});
 
 		// Contrôleur
-		$ctl = new TestCtl($mockIntFactory);
+		$ctl = new TestCtl();
 		$résultat_obtenu = $ctl->get(
 			$mockRequest,
 			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",

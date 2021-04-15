@@ -1,24 +1,24 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Exécutable, QuestionProg, RésultatProg, TentativeProg, Test};
+use progression\domaine\entité\{Exécutable, Avancement, QuestionProg, RésultatProg, TentativeProg, Test};
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -31,141 +31,99 @@ final class SoumettreTentativeProgIntTests extends TestCase
 
 	public function test_étant_donné_une_questionprog_et_une_tentativeprog_lorsqu_on_appelle_soumettre_tentative_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
 	{
-		$résultat_attendu = new TentativeProg(
+        // Tentative soumise
+		$tentative = new TentativeProg(
 			"python",
-			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
+			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
 			1615696286,
 			false,
 			0,
 			"feedbackTentativeTest",
 		);
-		$résultat_attendu->résultats = [
-			new RésultatProg(
-				"sortieTest",
-				"erreurTest",
-				false,
-				"feedbackRésultatTest",
-			),
-		];
 
-		$test = new Test(
-			"nomTest",
-			"entréeTest",
-			"sortieTest",
-		);
-
+        // Question
 		$question = new QuestionProg();
 		$question->uri =
 			"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour";
 		$question->tests = [
-			$test,
+			new Test(
+				"nomTest",
+				"entréeTest",
+				"sortieTest",
+				"params",
+				"feedbackPositif",
+				"feedbackNégatif",
+				"feedbackErreur",
+			),
 		];
 		$question->exécutables["python"] = new Exécutable(
 			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
 			"python",
 		);
+		$question->feedback_neg="feedbackGénéralNégatif";
 
-		$tentative = new TentativeProg(
+        // Avancement actuel
+		$avancement = new Avancement();
+
+		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
+		$mockAvancementDAO
+			->shouldReceive("get_avancement")
+			->with(
+				"jdoe",
+				"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour",
+			)
+			->andReturn($avancement);
+		$mockAvancementDAO
+			->shouldReceive("save")
+			->andReturn($avancement);
+
+
+        // Mock TentativeDAO
+		$mockTentativeDAO = Mockery::mock("progression\dao\TentativeProgDAO");
+		$mockTentativeDAO
+			->shouldReceive("save")
+			->with(
+				"jdoe",
+				"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour",
+				$tentative,
+			)
+			->andReturn($tentative);
+
+        // Mock exécuteur
+		$mockExécuteur = Mockery::mock("progression\dao\Exécuteur");
+		$mockExécuteur
+			->shouldReceive("exécuter")
+			->andReturn("{\"output\": \"Patate poil!\", \"errors\":\"\"}");
+
+        // Mock DAOFactory
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory
+			->shouldReceive("get_avancement_dao")
+			->andReturn($mockAvancementDAO);
+		$mockDAOFactory
+			->shouldReceive("get_exécuteur")
+			->andReturn($mockExécuteur);
+		$mockDAOFactory
+			->shouldReceive("get_tentative_prog_dao")
+			->andReturn($mockTentativeDAO);
+
+        // Exécution
+		$interacteur = new SoumettreTentativeProgInt($mockDAOFactory);
+		$résultat_obtenu = $interacteur->soumettre_tentative("jdoe", $question, $tentative);
+
+        // Résultat attendu
+		$résultat_attendu = new TentativeProg(
 			"python",
-			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
+			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
 			1615696286,
 			false,
 			0,
-			"feedbackTentativeTest",
+			"feedbackGénéralNégatif",
 		);
 
-		$exécutable = new Exécutable(
-			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
-			"python",
-		);
-		$résultat = new RésultatProg(
-			"sortieTest",
-			"erreurTest",
-			false,
-			"feedbackRésultatTest",
-		);
+		$résultat_attendu->résultats = [new RésultatProg("Patate poil!", "", false, "feedbackNégatif")];
 
-		// Mock interacteurs
-		$mockPréparerProgInt = Mockery::mock(
-			"progression\domaine\interacteur\PréparerProgInt"
-		);
-		$mockPréparerProgInt
-			->allows()
-			->préparer_exécutable(
-				$question,
-				$tentative,
-			)
-			->andReturn(
-				$exécutable,
-			);
-
-		$mockTraiterTentativeProgInt = Mockery::mock(
-			"progression\domaine\interacteur\TraiterTentativeProgInt"
-		);
-		$mockTraiterTentativeProgInt
-			->allows()
-			->traiter_résultats(
-				$question,
-				$tentative,
-			)
-			->andReturn(
-				$résultat_attendu,
-			);
-		$mockExécuterProgInt = Mockery::mock(
-			"progression\domaine\interacteur\ExécuterProgInt"
-		);
-		$mockExécuterProgInt
-			->allows()
-			->exécuter(
-				$exécutable,
-				$test,
-			)
-			->andReturn(
-				$résultat,
-			);
-		$mockSauvegarderTentativeProgInt = Mockery::mock(
-			"progression\domaine\interacteur\SauvegarderTentativeProgInt"
-		);
-		$mockSauvegarderTentativeProgInt
-			->allows()
-			->sauvegarder(
-				"jdoe",
-				"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour",
-				$résultat_attendu,
-			)
-			->andReturn(
-				$résultat_attendu,
-			);
-
-		// InteracteurFactory
-		$mockIntFactory = Mockery::mock(
-			"progression\domaine\interacteur\InteracteurFactory"
-		);
-		$mockIntFactory
-			->allows()
-			->getPréparerProgInt()
-			->andReturn($mockPréparerProgInt);
-		$mockIntFactory
-			->allows()
-			->getTraiterTentativeProgInt()
-			->andReturn($mockTraiterTentativeProgInt);
-		$mockIntFactory
-			->allows()
-			->getExécuterProgInt()
-			->andReturn($mockExécuterProgInt);
-		$mockIntFactory
-			->allows()
-			->getSauvegarderTentativeProgInt()
-			->andReturn($mockSauvegarderTentativeProgInt);
-
-		$interacteur = new SoumettreTentativeProgInt(null, $mockIntFactory);
-		$interacteur->intFactory = $mockIntFactory;
-		$résultat_obtenu = $interacteur->soumettre_tentative(
-			"jdoe",
-			$question,
-			$tentative,
-		);
-
+        // Assertion
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 }

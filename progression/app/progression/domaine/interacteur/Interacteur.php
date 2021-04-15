@@ -18,14 +18,17 @@
 
 namespace progression\domaine\interacteur;
 
+use progression\dao\DAOFactory;
+
 class Interacteur
 {
 	protected $source_dao;
-	protected $source_int;
 
-	function __construct($sourceDAO = null, $sourceInt = null)
+	function __construct($sourceDAO = null)
 	{
-		$this->source_dao = $sourceDAO;
-		$this->source_int = $sourceInt;
+		if($sourceDAO == null)
+			$this->source_dao = DAOFactory::getInstance();
+		else
+			$this->source_dao = $sourceDAO;
 	}
 }

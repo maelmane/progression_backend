@@ -19,12 +19,14 @@
 namespace progression\dao;
 
 use PHPUnit\Framework\TestCase;
+use progression\dao\DAOFactory;
 
 final class TentativeDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
 		EntitéDAO::get_connexion()->begin_transaction();
+        DAOFactory::setInstance(null);
 	}
 
 	public function tearDown(): void
@@ -36,7 +38,7 @@ final class TentativeDAOTests extends TestCase
 	{
 		$résultat_attendu = null;
 
-		$résultat_observé = (new TentativeDAO(new DAOFactory()))->get_tentative("exemple", "exemple", 0);
+		$résultat_observé = (new TentativeDAO())->get_tentative("exemple", "exemple", 0);
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}

@@ -27,6 +27,21 @@ final class AvancementDAOTests extends TestCase
 	public function setUp(): void
 	{
 		EntitéDAO::get_connexion()->begin_transaction();
+
+		$mockTentativeProgDao = Mockery::mock('progression\dao\TentativeProgDAO');
+		$mockTentativeProgDao
+			->allows()
+			->get_toutes("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->andReturn([
+				new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)
+			]);
+
+		$mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
+		$mockDAOFactory
+			->allows()
+			->get_tentative_prog_dao()
+			->andReturn($mockTentativeProgDao);
+        DAOFactory::setInstance($mockDAOFactory);
 	}
 
 	public function tearDown(): void
@@ -42,21 +57,7 @@ final class AvancementDAOTests extends TestCase
 		]);
 		$résultat_attendu->type = Question::TYPE_PROG;
 
-		$mockTentativeProgDao = Mockery::mock('progression\dao\TentativeProgDAO');
-		$mockTentativeProgDao
-			->allows()
-			->get_toutes("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
-			->andReturn([
-				new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)
-			]);
-
-		$mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
-		$mockDAOFactory
-			->allows()
-			->get_tentative_prog_dao()
-			->andReturn($mockTentativeProgDao);
-
-		$résponse_observée = (new AvancementDAO($mockDAOFactory))->get_avancement("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction");
+		$résponse_observée = (new AvancementDAO())->get_avancement("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction");
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
 

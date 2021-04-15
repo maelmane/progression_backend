@@ -1,20 +1,20 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\domaine\interacteur;
 
@@ -38,9 +38,21 @@ final class ExécuterProgIntTests extends TestCase
 		$exécutable = new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
 		$test = new Test("premier test", "1", "ok\n");
 
-		$résultat_attendu = new RésultatProg("ok\n", "erreurs\n");
+		$résultat_attendu = new RésultatProg("ok", "erreurs");
 
-		$résultat_observé = (new ExécuterProgInt(null))->exécuter($exécutable, $test);
+		$mockExécuteur = Mockery::mock("progression\dao\Exécuteur");
+		$mockExécuteur
+		->shouldReceive("exécuter")
+		->with($exécutable, $test)
+		->andReturn("{\"output\": \"ok\", \"errors\":\"erreurs\"}");
+		
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory
+		->allows()
+		->get_exécuteur()
+		->andReturn($mockExécuteur);
+
+		$résultat_observé = (new ExécuterProgInt($mockDAOFactory))->exécuter($exécutable, $test);
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}

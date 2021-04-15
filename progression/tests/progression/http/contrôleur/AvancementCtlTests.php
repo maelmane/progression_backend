@@ -18,12 +18,72 @@
 
 require_once __DIR__ . "/../../../TestCase.php";
 
-use progression\domaine\entité\{Question, QuestionProg, Avancement, TentativeProg};
+use progression\dao\DAOFactory;
+use progression\domaine\entité\{User, Question, QuestionProg, Avancement, TentativeProg};
 use progression\http\contrôleur\AvancementCtl;
 use Illuminate\Http\Request;
 
 final class AvancementCtlTests extends TestCase
 {
+    public function setUp() : void{
+        parent::setUp();
+
+		$_ENV["APP_URL"] = "https://example.com/";
+
+        // UserDAO
+		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO
+            ->shouldReceive("get_user")
+            ->with("jdoe")
+            ->andReturn(new User("jdoe"));
+		$mockUserDAO
+            ->shouldReceive("get_user")
+            ->with("Marcel")
+            ->andReturn(null);
+
+		// Question
+		$question = new QuestionProg();
+		$question->type = Question::TYPE_PROG;
+		$question->nom = "appeler_une_fonction_paramétrée";
+		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+        
+        $mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
+		$mockQuestionDAO
+            ->shouldReceive("get_question")
+            ->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+            ->andReturn($question);
+
+		// Avancement
+		$avancement = new Avancement([new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest")]);
+		$avancement->etat = 1;
+		$avancement->type = Question::TYPE_PROG;
+
+        $mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
+        $mockAvancementDAO
+            ->shouldReceive("get_avancement")
+            ->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+            ->andReturn($avancement);
+        $mockAvancementDAO
+            ->shouldReceive("get_avancement")
+            ->with("Marcel", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+            ->andReturn(null);
+
+		// DAOFactory
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory
+			->shouldReceive("get_user_dao")
+			->andReturn($mockUserDAO);
+		$mockDAOFactory
+			->shouldReceive("get_question_dao")
+			->andReturn($mockQuestionDAO);
+		$mockDAOFactory
+			->shouldReceive("get_avancement_dao")
+			->andReturn($mockAvancementDAO);
+
+		DAOFactory::setInstance($mockDAOFactory);
+
+    }
+    
 	public function tearDown(): void
 	{
 		Mockery::close();
@@ -31,17 +91,6 @@ final class AvancementCtlTests extends TestCase
 
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_l_avancement_et_ses_relations_sous_forme_json()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
-
-		// Question
-		$question = new QuestionProg();
-		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
-
-		// Avancement
-		$avancement = new Avancement([new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest")]);
-		$avancement->etat = 1;
-		$avancement->type = Question::TYPE_PROG;
-
 		$résultat_attendu = [
 			"data" => [
 				"type" => "avancement",
@@ -107,20 +156,6 @@ final class AvancementCtlTests extends TestCase
 			],
 		];
 
-		// Intéracteur
-		$mockObtenirAvancementInt = Mockery::mock("progression\domaine\interacteur\ObtenirAvancementInt");
-		$mockObtenirAvancementInt
-			->allows()
-			->get_avancement("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
-			->andReturn($avancement);
-
-		// InteracteurFactory
-		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
-		$mockIntFactory
-			->allows()
-			->getObtenirAvancementInt()
-			->andReturn($mockObtenirAvancementInt);
-
 		// Requête
 		$mockRequest = Mockery::mock("Illuminate\Http\Request");
 		$mockRequest
@@ -146,7 +181,7 @@ final class AvancementCtlTests extends TestCase
 		});
 
 		// Contrôleur
-		$ctl = new AvancementCtl($mockIntFactory);
+		$ctl = new AvancementCtl();
 		$this->assertEquals(
 			$résultat_attendu,
 			json_decode(
@@ -164,22 +199,6 @@ final class AvancementCtlTests extends TestCase
 
 	public function test_étant_donné_un_avancement_inexistant_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
-
-		// Intéracteur
-		$mockObtenirAvancementInt = Mockery::mock("progression\domaine\interacteur\ObtenirAvancementInt");
-		$mockObtenirAvancementInt
-			->allows()
-			->get_avancement("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
-			->andReturn(null);
-
-		// InteracteurFactory
-		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
-		$mockIntFactory
-			->allows()
-			->getObtenirAvancementInt()
-			->andReturn($mockObtenirAvancementInt);
-
 		// Requête
 		$mockRequest = Mockery::mock("Illuminate\Http\Request");
 		$mockRequest
@@ -205,14 +224,14 @@ final class AvancementCtlTests extends TestCase
 		});
 
 		// Contrôleur
-		$ctl = new AvancementCtl($mockIntFactory);
+		$ctl = new AvancementCtl();
 
 		$this->assertEquals(
 			'{"erreur":"Ressource non trouvée."}',
 			$ctl
 				->get(
 					$mockRequest,
-					"jdoe",
+					"Marcel",
 					"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				)
 				->getContent(),
