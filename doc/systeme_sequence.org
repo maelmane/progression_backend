@@ -1,0 +1,46 @@
+#+SETUPFILE: https://plafrance.pages.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg.setup
+#+TITLE: Schéma de séquence de résolution d'un exercice
+
+#+begin_src napkin-puml :eval yes :file images/sequence.png :results output :exports results
+@startuml
+participant LMS
+participant frontend
+participant backend
+participant dépôt as "Dépôt de questions"
+participant exécuteur
+
+LMS -> frontend : init
+activate frontend
+
+== Authentification ==
+
+frontend -> backend : identifiants
+backend -> frontend : Token (JWT)
+
+== Exercice ==
+
+frontend -> backend : URI d'une question
+backend -> dépôt : URI d'une question
+dépôt -> backend : Question (yml)
+backend -> frontend : Question (json)
+
+group Soumettre une réponse
+    frontend -> backend : Soumet une tentative
+    backend -> dépôt : URI de la question
+    dépôt -> backend : Question (yml)
+    group itération [ pour chaque test ]
+        backend -> exécuteur : code + test
+        exécuteur -> backend : résultats d'exécution du test
+    end
+    backend -> frontend : Tentative
+    frontend -> LMS : résultat de l'exercice
+end
+
+deactivate frontend
+
+@enduml
+
+#+end_src
+
+#+RESULTS:
+[[file:images/sequence.png]]

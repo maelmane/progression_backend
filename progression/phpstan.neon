@@ -1,0 +1,7 @@
+parameters:
+  paths: 
+    - app
+
+  level: 1
+  excludePaths:
+    - app/bootstrap/*

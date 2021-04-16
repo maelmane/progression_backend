@@ -1,0 +1,26 @@
+nom: 10 fois
+in: 10
+out: |
+    Bonjour le monde
+    Bonjour le monde
+    Bonjour le monde
+    Bonjour le monde
+    Bonjour le monde
+    Bonjour le monde
+    Bonjour le monde
+    Bonjour le monde
+    Bonjour le monde
+    Bonjour le monde
+---
+
+nom: 1 fois
+in: 1
+out: Bonjour le monde
+
+---
+
+nom: 0 fois
+in: 0
+out: ""
+feedback+: Bien joué! 0 est aussi une entrée valable.
+feedback-: N'oublie pas les cas limites, 0 est aussi une entrée valable!
