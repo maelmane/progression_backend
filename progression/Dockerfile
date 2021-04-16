@@ -8,10 +8,10 @@ FROM php:apache
 
 # Mise a jour de la liste de package
 RUN apt update && apt upgrade -y && apt autoclean
-RUN apt update && apt install -y unzip wget default-libmysqlclient-dev default-mysql-client python-yaml git libldap2-dev libyaml-dev && apt autoclean
+RUN apt update && apt install -y unzip wget default-libmysqlclient-dev default-mysql-client python-yaml git libldap2-dev libyaml-dev libzip-dev && apt autoclean
 
 #Ajout d'extensions PHP
-RUN docker-php-ext-install -j$(nproc) mysqli ldap
+RUN docker-php-ext-install -j$(nproc) mysqli ldap zip
 
 COPY docker-php-ext-get /usr/local/bin/
 
