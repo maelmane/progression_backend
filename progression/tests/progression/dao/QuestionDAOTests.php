@@ -81,7 +81,7 @@ final class QuestionDAOTests extends TestCase
 	public function test_étant_donné_un_zip_existant_contenant_une_question_lorsquon_donne_son_chemin_on_obtient_un_objet_question_prog_correspondant()
 	{
 		$question = new QuestionProg();
-		$question->uri = "file:///tmp/var/www/progression/tests/progression/dao/démo/appeler_une_fonction_paramétrée";
+		$question->uri = "file://" . sys_get_temp_dir() . "progression/tests/progression/dao/démo/appeler_une_fonction_paramétrée";
 		$question->titre = "Appeler une fonction paramétrée";
 		$question->description = "Appel d'une fonction existante recevant un paramètre";
 		$question->enonce =
