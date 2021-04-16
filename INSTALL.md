@@ -1,28 +1,113 @@
-Quiz python 1.0 requiert :
- * compilebox modifié (https://git.dept-info.crosemont.quebec/plafrance/compilebox)
- * docker
- * docker-compose v1.13+
- * Pour l'utilisation de LDAP sous Debian : php5-ldap
+# Progression backend
 
-Configuration :
- * La configuration de l'application se fait dans le fichier quiz.conf
- * au besoin, utiliser l'exemple fournit dans quiz.conf.exemple
- * Pour une installation minimale, le type d'authentification peut être sélectionné à "no".
+Voici la procédure d'installation pour le backend de Progression.
 
-Compilation des images docker :
- * docker-compose build (l'avertissement «Do not run Composer as root/super user! » est normal)
+## 1. Installation & Configuration
 
-Démarrage des conteneurs :
- * docker-compose up -d
+### Dépendances obligatoires
 
-Création (ou réinitialisation) de la base de données:
- * docker exec -it progression_db bash
- * cd /tmp/ && ./build_db.sh
- * Ctrl-D
+- [git](https://git-scm.com/downloads)
+- [docker](https://www.docker.com/)
+- [compilebox (modifié)](https://git.dti.crosemont.quebec/progression/compilebox)
 
-L'application est accessible via :
- * https://localhost
- * utilisateur/mdp : admin/admin
- 
-Pour obtenir les questions système, dépendantes de conteneurs propres,
- * cd progression/conteneurs_sys && ./build_all
+### Obtenir le code source
+
+Cloner le projet **progression_backend**
+
+```
+git clone https://git.dti.crosemont.quebec/progression/progression_backend.git (HTTPS)
+git clone git@git.dti.crosemont.quebec:progression/progression_backend.git (SSH)
+```
+
+### Créer et adapter le fichier de configuration
+
+Créer le fichier .env ou copier le ficher d'exemple `.env.exemple` du répertoire `/progression/app`
+
+```
+cp app/.env.exemple app/.env
+```
+
+Modifier le type d'authentification et l'hôte pour le compilebox du fichier `.env`
+
+### En développement
+
+Désactiver **l'authentification** et effectuer les compilations avec l'exécuteur **compilebox** localement.
+
+```
+AUTH_TYPE=no
+COMPILEBOX_HOTE=172.20.0.1
+```
+
+Sans authentification, les utilisateurs sont automatiquement créés dès leur connexion sans mot de passe.
+
+### Construire les images docker
+
+Compilation des images docker
+
+```
+docker-compose build progression
+```
+
+### Initialiser la base de données
+
+Création (ou réinitialisation) de la base de données
+
+```
+docker-compose up -d db
+```
+
+(laissez quelques secondes de démarrage au SGBD)
+
+```
+docker exec -it progression_db bash
+cd /tmp/ && ./build_db.sh
+```
+
+Fermer le terminal avec Ctrl-D ou `exit`
+
+## 2. Démarrer l'application
+
+Démarrage des conteneurs `progression` et `progression_db`
+
+```
+docker-compose up -d progression
+```
+
+Pour voir ce qui est en cours d'exécution
+
+```
+docker-compose ps
+```
+
+L'application est accessible via: http://172.20.0.3/
+
+## 3. Exécution des tests (facultatif)
+
+Lancer les tests
+
+```
+docker-compose up tests
+```
+
+## 4. FAQ
+
+Q: Pourquoi `docker-compose build` me donne des erreurs ?
+
+- Assurez-vous que votre utilisateur fait partie du groupe docker. Le résultat de la commande `groups` devrait inclure le groupe `docker`.
+
+- Assurez-vous que Docker est en marche!
+
+```
+systemctl enable docker
+systemctl start docker
+```
+
+Q: Comment supprimer les images et les conteneurs inutiles ?
+
+- Utiliser ce script :
+
+```
+docker images --no-trunc | grep '<none>' | awk '{ print $3 }' | xargs -r docker rmi
+docker ps --filter status=dead --filter status=exited -aq | xargs -r docker rm
+docker volume ls -qf dangling=true | xargs -r docker volume rm
+```

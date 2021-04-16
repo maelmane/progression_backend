@@ -1,0 +1,46 @@
+# Select image from https://hub.docker.com/_/php/
+image: git.dti.crosemont.quebec:5050/progression/progression_backend:latest 
+
+# Select what we should cache
+cache:
+  paths:
+  - vendor/
+
+before_script:
+# Install all project dependencies
+- php /composer.phar install --dev -d progression/
+
+services:
+  - mariadb:latest
+
+variables:
+  MYSQL_DATABASE: $DB_DBNAME
+  MYSQL_USER: $DB_USERNAME
+  MYSQL_PASSWORD: $DB_PASSWORD
+  MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD
+
+# We test PHP7
+test_unitaires:
+  stage: test
+  script:
+  - progression/tests/exec_tests.sh
+  except:
+  - master
+  - documentation
+
+# Production de la documentation
+.doc: &doc
+  script:
+  - emacs --batch --load $HOME/.emacs.el --load doc/publish.el --funcall org-publish-all && mkdir public && cp -r progression/app/html/doc/* public/
+  artifacts:
+    paths:
+    - public
+
+pages:
+  <<: *doc
+  stage: build
+  only:
+  - dev
+  - documentation
+
+

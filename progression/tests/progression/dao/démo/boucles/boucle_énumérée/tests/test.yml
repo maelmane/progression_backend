@@ -1,0 +1,5 @@
+nom: 2 fois
+in: 2
+out: "Bonjour\nBonjour\n"
+feedback+: Bien joué! 
+feedback-: Rien à dire
