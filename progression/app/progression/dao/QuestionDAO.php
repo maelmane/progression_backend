@@ -19,7 +19,9 @@
 namespace progression\dao;
 
 use DomainException, LengthException, RuntimeException;
+use Exception;
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
+use ZipArchive;
 
 class QuestionDAO extends EntitéDAO
 {
@@ -32,6 +34,7 @@ class QuestionDAO extends EntitéDAO
 		}
 
 		$question = null;
+
 		if (key_exists("type", $infos_question)) {
 			$type = $infos_question["type"];
 
@@ -66,21 +69,37 @@ class QuestionDAO extends EntitéDAO
 
 	protected function récupérer_question($uri)
 	{
-		$entêtes = @get_headers($uri . "/info.yml", 1);
-		if ($entêtes !== false && $entêtes["Content-Length"] > $_ENV["LIMITE_YML"]) {
-			error_log("$uri/info.yml est trop volumineux pour être chargé");
-			throw new LengthException("Le fichier est trop volumineux pour être chargé");
+		$entêtesInitiales = @get_headers($uri, 1);
+		if (!$entêtesInitiales) {
+			// Fichier test local
+			try {
+				$info = $this->récupérer_fichier_info($uri);
+			} catch (Exception) {
+				$archiveExtraite = self::extraire_zip($uri, sys_get_temp_dir() . substr($uri, 0, -4), true);
+				$info = $this->récupérer_fichier_info("file://" . $archiveExtraite);
+				self::supprimer_fichiers($archiveExtraite);
+			}
+		} else {
+			$entêtesYml = self::vérifier_entêtes($uri . "/info.yml");
+			if ($entêtesYml && $entêtesYml["Content-Type"] == "text/yaml; charset=utf-8") {
+				$info = $this->récupérer_fichier_info($uri);
+			} else {
+				$info = $this->récupérer_archive($uri, $entêtesInitiales["Content-Type"]);
+			}
 		}
 
+		return $info;
+	}
+
+	private function récupérer_fichier_info($uri)
+	{
 		$data = @file_get_contents($uri . "/info.yml");
 		if ($data === false) {
-			error_log("$uri ne peut pas être chargé");
 			throw new RuntimeException("Le fichier ne peut pas être chargé");
 		}
 
 		$info = yaml_parse($data);
 		if ($info === false) {
-			error_log("$uri ne peut pas être décodé");
 			throw new DomainException("Le fichier ne peut pas être décodé");
 		}
 
@@ -90,5 +109,78 @@ class QuestionDAO extends EntitéDAO
 
 		$info["uri"] = $uri;
 		return $info;
+	}
+
+	private function récupérer_archive($uri, $typeArchive)
+	{
+		if (!self::vérifier_entêtes($uri)) {
+			return null;
+		}
+
+		switch ($typeArchive) {
+			case "application/zip":
+				$nomFichier = self::télécharger_fichier($uri);
+				$archiveExtraite = self::extraire_zip($nomFichier, substr($nomFichier, 0, -4));
+				break;
+			default:
+				return null;
+		}
+
+		$sortie = $this->récupérer_fichier_info("file://" . $archiveExtraite);
+		self::supprimer_fichiers($archiveExtraite);
+
+		return $sortie;
+	}
+
+	private static function vérifier_entêtes($uri)
+	{
+		$entêtes = @get_headers($uri, 1);
+		if ($entêtes["Content-Length"] > $_ENV["QUESTION_TAILLE_MAX"]) {
+			throw new LengthException("Le fichier est trop volumineux pour être chargé");
+		}
+
+		return $entêtes;
+	}
+
+	private static function télécharger_fichier($uri)
+	{
+		$nomUnique = uniqid("archive_", true);
+		$chemin = sys_get_temp_dir() . "/$nomUnique.arc";
+
+		if (file_put_contents($chemin, file_get_contents($uri))) {
+			return $chemin;
+		}
+
+		return false;
+	}
+
+	private static function supprimer_fichiers($cheminCible)
+	{
+		if (PHP_OS === "Windows") {
+			exec(sprintf("rd /s /q %s", escapeshellarg($cheminCible)));
+			return true;
+		} else {
+			exec(sprintf("rm -rf %s", escapeshellarg($cheminCible)));
+			return true;
+		}
+		return false;
+	}
+
+	private static function extraire_zip($archive, $destination, $test = false)
+	{
+		$zip = new ZipArchive;
+		if ($zip->open($archive) === true) {
+			if (!$zip->extractTo($destination)) {
+				return false;
+			} else {
+				if (!$test) {
+					self::supprimer_fichiers($archive);
+				}
+				return $destination;
+			}
+			$zip->close();
+		}
+
+		return false;
 	}
 }
