@@ -161,7 +161,9 @@ cd "$current_directory"
 
 [fn:1]Certains symboles on une signification particulière en YAML ou en markdown. Le format YAML ayant préséance, pour les utiliser en markdown, utilisez les caractères d'échappement, les guillemets ou le format yaml «bloc» :
 
-** Incorrect : ~feedback+: *Ceci est en gras*~
+** Incorrect :
+~feedback+: *Ceci est en gras*~
+
 ** Correct :
   - ~feedback+: \*Ceci est en gras*~
   - ~feedback+: "*Ceci est en gras*"~
