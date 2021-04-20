@@ -10,3 +10,4 @@ progression/vendor/
 progression/composer.lock
 progression/app/.env
 progression/tests/.env
+progression/app/storage/logs/*.log
