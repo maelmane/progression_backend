@@ -21,6 +21,7 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\Request;
 use progression\http\transformer\AvancementTransformer;
 use progression\util\Encodage;
+use progression\domaine\entité\User;
 
 class AvancementCtl extends Contrôleur
 {
@@ -37,6 +38,36 @@ class AvancementCtl extends Contrôleur
 			$avancement->id = "{$username}/$question_uri";
 
 			$réponse = $this->item($avancement, new AvancementTransformer());
+		}
+
+		return $this->préparer_réponse($réponse);
+	}
+
+	public function post(Request $request, $username, $question_uri)
+	{
+		$avancement = null;
+		$réponse = null;
+
+		$chemin = Encodage::base64_decode_url($question_uri);
+		$userInt = $this->intFactory->getObtenirUserInt();
+		$user = $userInt->get_user($username);
+		if($user != null){
+			if($user->rôle == User::ROLE_NORMAL){
+				$avancementInt = $this->intFactory->getObtenirAvancementInt();
+				$avancement = $avancementInt->get_avancement($username, $chemin);
+			} else{
+				$avancementReq = json_decode($request->avancement);
+				if($avancementReq != null){
+					$avancementInt = $this->intFactory->getSauvegarderAvancementInt();
+					$avancement = $avancementInt->sauvegarderAvancement($username, $chemin, $avancementReq)
+				} else{
+					return $this->réponse_json(["erreur" => "Le format de l'avancement est intraitable."], 422);
+				}
+			}
+			$avancement->id = "{$username}/$question_uri";
+			$réponse = $this->item($avancement, new AvancementTransformer());
+		} else{
+			return $this->réponse_json(["erreur" => "Utilisateur inexistant"], 403);
 		}
 
 		return $this->préparer_réponse($réponse);

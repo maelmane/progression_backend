@@ -38,6 +38,10 @@ class InteracteurFactory
 	{
 		return new ObtenirAvancementInt(new DAOFactory());
 	}
+	public function getSauvegarderAvancementInt()
+	{
+		return new SauvegarderAvancementInt(new DAOFactory());
+	}
 	public function getObtenirTentativeInt()
 	{
 		return new ObtenirTentativeInt(new DAOFactory());
