@@ -19,43 +19,22 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\User;
+use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
 final class ObtenirUserIntTests extends TestCase
 {
-	public function tearDown(): void
-	{
-		Mockery::close();
-	}
+    public function setUp(): void
+    {
+        parent::setUp();
 
-	public function test_étant_donné_un_utilisateur_Bob_lorsquon_le_cherche_par_username_on_obtient_un_objet_user_nommé_Bob()
-	{
-		$résultat_attendu = new User("Bob");
-
-		$mockUserDao = Mockery::mock('progression\dao\UserDAO');
+        $mockUserDao = Mockery::mock('progression\dao\UserDAO');
 		$mockUserDao
 			->allows()
 			->get_user('Bob')
-			->andReturn($résultat_attendu);
+			->andReturn(new User("Bob"));
 
-		$mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
-		$mockDAOFactory
-			->allows()
-			->get_user_dao()
-			->andReturn($mockUserDao);
-
-		$interacteur = new ObtenirUserInt($mockDAOFactory);
-		$résultat_obtenu = $interacteur->get_user('Bob');
-
-		$this->assertEquals($résultat_attendu, $résultat_obtenu);
-	}
-
-	public function test_étant_donné_un_utilisateur_Banane_inexistant_lorsquon_le_cherche_par_username_on_obtient_null()
-	{
-		$résultat_attendu = null;
-
-		$mockUserDao = Mockery::mock('progression\dao\UserDAO');
 		$mockUserDao
 			->allows()
 			->get_user('Banane')
@@ -67,9 +46,29 @@ final class ObtenirUserIntTests extends TestCase
 			->get_user_dao()
 			->andReturn($mockUserDao);
 
-		$interacteur = new ObtenirUserInt($mockDAOFactory);
+        
+        DAOFactory::setInstance($mockDAOFactory);
+    }
+    
+	public function tearDown(): void
+	{
+		Mockery::close();
+	}
+
+	public function test_étant_donné_un_utilisateur_Bob_lorsquon_le_cherche_par_username_on_obtient_un_objet_user_nommé_Bob()
+	{
+		$interacteur = new ObtenirUserInt();
+		$résultat_obtenu = $interacteur->get_user('Bob');
+
+        $résultat_attendu = new User("Bob");
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
+	public function test_étant_donné_un_utilisateur_Banane_inexistant_lorsquon_le_cherche_par_username_on_obtient_null()
+	{
+		$interacteur = new ObtenirUserInt();
 		$résultat_obtenu = $interacteur->get_user('Banane');
 
-		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+		$this->assertNull($résultat_obtenu);
 	}
 }

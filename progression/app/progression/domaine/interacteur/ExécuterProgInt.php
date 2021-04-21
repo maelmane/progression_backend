@@ -18,8 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\RésultatProg;
 use Exception;
+use progression\domaine\entité\RésultatProg;
 
 class ExécuterProgInt extends Interacteur
 {

@@ -91,150 +91,23 @@ final class AvancementCtlTests extends TestCase
 
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_l_avancement_et_ses_relations_sous_forme_json()
 	{
-		$résultat_attendu = [
-			"data" => [
-				"type" => "avancement",
-				"id" =>
-					"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-				"attributes" => [
-					"état" => 1,
-				],
-				"links" => [
-					"self" =>
-						"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-					"tentative" => "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-				],
-				"relationships" => [
-					"tentatives" => [
-						"links" => [
-							"self" =>
-								"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/relationships/tentatives",
-							"related" =>
-								"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
-						],
-						"data" => [
-							[
-								"type" => "tentative",
-								"id" =>
-									"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
-							],
-						],
-					],
-				],
-			],
-			"included" => [
-				[
-					"type" => "tentative",
-					"id" =>
-						"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
-					"attributes" => [
-						"date_soumission" => 1614965817,
-						"tests_réussis" => 2,
-						"réussi" => false,
-						"sous-type" => "tentativeProg",
-						"feedback" => "feedbackTest",
-						"langage" => "python",
-						"code" => "codeTest",
-					],
-					"links" => [
-						"self" =>
-							"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
-						"related" =>
-							"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-					],
-					"relationships" => [
-						"resultats" => [
-							"links" => [
-								"self" =>
-									"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817/relationships/resultats",
-								"related" =>
-									"https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817/resultats",
-							],
-						],
-					],
-				],
-			],
-		];
+        $résultat_observé = $this
+                          ->call(
+                              "GET", "/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+                          );
 
-		// Requête
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->ip()
-			->andReturn("127.0.0.1");
-		$mockRequest
-			->allows()
-			->method()
-			->andReturn("GET");
-		$mockRequest
-			->allows()
-			->path()
-			->andReturn(
-				"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-			);
-		$mockRequest
-			->allows()
-			->query("include")
-			->andReturn("tentatives");
-		$this->app->bind(Request::class, function () use ($mockRequest) {
-			return $mockRequest;
-		});
-
-		// Contrôleur
-		$ctl = new AvancementCtl();
-		$this->assertEquals(
-			$résultat_attendu,
-			json_decode(
-				$ctl
-					->get(
-						$mockRequest,
-						"jdoe",
-						"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-					)
-					->getContent(),
-				true,
-			),
-		);
+        $this->assertEquals( 200, $résultat_observé->status() );
+        $this->assertStringEqualsFile(__DIR__ . "/avancementCtlTests_1.json", $résultat_observé->getContent());
 	}
 
 	public function test_étant_donné_un_avancement_inexistant_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
 	{
-		// Requête
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->ip()
-			->andReturn("127.0.0.1");
-		$mockRequest
-			->allows()
-			->method()
-			->andReturn("GET");
-		$mockRequest
-			->allows()
-			->path()
-			->andReturn(
-				"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-			);
-		$mockRequest
-			->allows()
-			->query("include")
-			->andReturn(null);
-		$this->app->bind(Request::class, function () use ($mockRequest) {
-			return $mockRequest;
-		});
+        $résultat_observé = $this
+                          ->call(
+                              "GET", "/avancement/Marcel/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+                          );
 
-		// Contrôleur
-		$ctl = new AvancementCtl();
-
-		$this->assertEquals(
-			'{"erreur":"Ressource non trouvée."}',
-			$ctl
-				->get(
-					$mockRequest,
-					"Marcel",
-					"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-				)
-				->getContent(),
-		);
+        $this->assertEquals( 404, $résultat_observé->status() );
+        $this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
 	}
 }

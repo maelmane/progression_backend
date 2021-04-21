@@ -35,12 +35,8 @@ final class LoginCtlTests extends TestCase
 		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
 		$mockUserDAO
 		->shouldReceive("get_user")
-		->with("Bob")
-		->andReturn(new User("Bob"));
-		$mockUserDAO
-		->shouldReceive("get_user")
-		->with("jdoe")
-		->andReturn(new User("jdoe"));
+		->with("bob")
+		->andReturn(new User("bob"));
 		$mockUserDAO
 		->shouldReceive("get_user")
 		->with("Marcel")
@@ -65,49 +61,39 @@ final class LoginCtlTests extends TestCase
 		$_ENV['JWT_SECRET'] = "secret";
 		$_ENV['JWT_TTL'] = 3333;
 
-		// Requête
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->ip()
-			->andReturn("127.0.0.1");
-		$mockRequest
-			->allows()
-			->method()
-			->andReturn("GET");
-		$mockRequest
-			->allows()
-			->path()
-			->andReturn("/auth/");
-		$mockRequest
-			->allows()
-			->query("include")
-			->andReturn();
-		$mockRequest
-			->allows()
-			->input("username")
-			->andReturn("Bob");
-		$mockRequest
-			->allows()
-			->input("password")
-			->andReturn();
-
-		$this->app->bind(Request::class, function () use ($mockRequest) {
-			return $mockRequest;
-		});
-        
-		// Contrôleur
-		$ctl = new LoginCtl();
-		$résultat_observé = $ctl->login($mockRequest);
+        $résultat_observé = $this->call(
+            "POST",
+            "/auth",
+            ["username"=>"bob", "password"=>"test"]
+        );
 
 		$token = json_decode($résultat_observé->getContent(), true);
 		$tokenDécodé = JWT::decode($token["Token"], $_ENV['JWT_SECRET'], ['HS256']);
 		$username_obtenu = $tokenDécodé->user->username;
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals("Bob", $username_obtenu);
+		$this->assertEquals("bob", $username_obtenu);
 		$this->assertGreaterThan(time(), $tokenDécodé->expired);
 		$this->assertEquals(3333, $tokenDécodé->expired - $tokenDécodé->current);
 	}
 
+    //Intestable tant que la connexion à LDAP se fera à même l'interacteur
+    /*
+    public function test_étant_donné_lutilisateur_inexistant_roger_et_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_code_403()
+	{
+		$_ENV['AUTH_TYPE'] = "ldap";
+		$_ENV['JWT_SECRET'] = "secret";
+		$_ENV['JWT_TTL'] = 3333;
+
+        $résultat_observé = $this->call(
+            "POST",
+            "/auth",
+            ["username"=>"marcel", "password"=>"test"]
+        );
+        
+		$this->assertEquals(403, $résultat_observé->status());
+		$this->assertEquals('{"erreur":"Accès refusé."}', $résultat_observé->getContent());
+	}
+    */
+    
 }

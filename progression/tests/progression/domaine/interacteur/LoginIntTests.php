@@ -26,7 +26,8 @@ use Mockery;
 final class LoginIntTests extends TestCase
 {
     public function setUp(): void{
-
+        parent::setUp();
+        
 		$mockUserDao = Mockery::mock("progression\dao\UserDAO");
 		$mockUserDao
 			->allows()

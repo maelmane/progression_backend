@@ -25,18 +25,18 @@ class SoumettreTentativeProgInt extends Interacteur
 	{
 		$exécutable = null;
 
-		$préparerProgInt = new PréparerProgInt($this->source_dao);
+		$préparerProgInt = new PréparerProgInt();
 		$exécutable = $préparerProgInt->préparer_exécutable($question, $tentative);
 
 		if ($exécutable) {
-			$exécuterProgInt = new ExécuterProgInt($this->source_dao);
+			$exécuterProgInt = new ExécuterProgInt();
 			foreach ($question->tests as $i => $test) {
 				$résultat = $exécuterProgInt->exécuter($exécutable, $test);
 				$tentative->résultats[$i] = $résultat;
 			}
-			$traiterTentativeProgInt = new TraiterTentativeProgInt($this->source_dao);
+			$traiterTentativeProgInt = new TraiterTentativeProgInt();
 			$tentativeTraité = $traiterTentativeProgInt->traiter_résultats($question, $tentative);
-			$interacteurSauvegarde = new SauvegarderTentativeProgInt($this->source_dao);
+			$interacteurSauvegarde = new SauvegarderTentativeProgInt();
 			$interacteurSauvegarde->sauvegarder($username, $question->uri, $tentativeTraité);
 			return $tentativeTraité;
 		}

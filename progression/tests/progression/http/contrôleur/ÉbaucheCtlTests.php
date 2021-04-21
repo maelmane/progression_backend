@@ -59,95 +59,21 @@ final class ÉbaucheCtlTests extends TestCase
 
 	public function test_étant_donné_le_chemin_dune_ébauche_lorsquon_appelle_get_on_obtient_lébauche_et_ses_relations_sous_forme_json()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
-		
-		// Requête
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->ip()
-			->andReturn("127.0.0.1");
-		$mockRequest
-			->allows()
-			->method()
-			->andReturn("GET");
-		$mockRequest
-			->allows()
-			->path()
-			->andReturn(
-				"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
-			);
-		$mockRequest
-			->allows()
-			->query("include")
-			->andReturn();
-		$this->app->bind(Request::class, function () use ($mockRequest) {
-			return $mockRequest;
-		});
 
-		// Contrôleur
-		$ctl = new ÉbaucheCtl();
-		$résultat_obtenu = $ctl->get(
-			$mockRequest,
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-			"python",
+        $résultat_obtenu = $this->call(
+            "GET",
+			"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python"
 		);
 
-		$résultat_attendu = [
-			"data" => [
-				"type" => "ebauche",
-				"id" =>
-					"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
-				"attributes" => [
-					"langage" => "python",
-					"code" => "print(\"Hello world\")",
-				],
-				"links" => [
-					"self" =>
-						"https://example.com/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
-					"related" =>
-						"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-				],
-			],
-		];
-        
 		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
+		$this->assertStringEqualsFile(__DIR__ . "/ébaucheCtlTests_1.json", $résultat_obtenu->getContent());
 	}
 
 	public function test_étant_donné_le_chemin_dune_ébauche_inexistante_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
 	{
-		// Requête
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->ip()
-			->andReturn("127.0.0.1");
-		$mockRequest
-			->allows()
-			->method()
-			->andReturn("GET");
-		$mockRequest
-			->allows()
-			->path()
-			->andReturn(
-				"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/unlangageinexistant",
-			);
-		$mockRequest
-			->allows()
-			->query("include")
-			->andReturn();
-		$this->app->bind(Request::class, function () use ($mockRequest) {
-			return $mockRequest;
-		});
-
-		// Contrôleur
-		$ctl = new ÉbaucheCtl();
-
-		$résultat_obtenu = $ctl->get(
-			$mockRequest,
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-			"unlangageinexistant",
+        $résultat_obtenu = $this->call(
+            "GET",
+			"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/fortran"
 		);
 
 		$this->assertEquals(404, $résultat_obtenu->status());

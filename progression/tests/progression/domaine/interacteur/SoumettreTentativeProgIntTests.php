@@ -19,48 +19,14 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{Exécutable, Avancement, QuestionProg, RésultatProg, TentativeProg, Test};
+use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
 final class SoumettreTentativeProgIntTests extends TestCase
 {
-	public function tearDown(): void
-	{
-		Mockery::close();
-	}
-
-	public function test_étant_donné_une_questionprog_et_une_tentativeprog_lorsqu_on_appelle_soumettre_tentative_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
-	{
-        // Tentative soumise
-		$tentative = new TentativeProg(
-			"python",
-			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
-			1615696286,
-			false,
-			0,
-			"feedbackTentativeTest",
-		);
-
-        // Question
-		$question = new QuestionProg();
-		$question->uri =
-			"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour";
-		$question->tests = [
-			new Test(
-				"nomTest",
-				"entréeTest",
-				"sortieTest",
-				"params",
-				"feedbackPositif",
-				"feedbackNégatif",
-				"feedbackErreur",
-			),
-		];
-		$question->exécutables["python"] = new Exécutable(
-			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
-			"python",
-		);
-		$question->feedback_neg="feedbackGénéralNégatif";
+    public function setUp(): void{
+        parent::setUp();
 
         // Avancement actuel
 		$avancement = new Avancement();
@@ -85,9 +51,9 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			->with(
 				"jdoe",
 				"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour",
-				$tentative,
+				Mockery::any()
 			)
-			->andReturn($tentative);
+			->andReturnArg(2);
 
         // Mock exécuteur
 		$mockExécuteur = Mockery::mock("progression\dao\Exécuteur");
@@ -106,9 +72,49 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		$mockDAOFactory
 			->shouldReceive("get_tentative_prog_dao")
 			->andReturn($mockTentativeDAO);
+        DAOFactory::setInstance($mockDAOFactory);
+    }
+    
+	public function tearDown(): void
+	{
+		Mockery::close();
+	}
+
+	public function test_étant_donné_une_questionprog_et_une_tentativeprog_lorsqu_on_appelle_soumettre_tentative_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
+	{
+        // Question
+		$question = new QuestionProg();
+		$question->uri =
+			"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour";
+		$question->tests = [
+			new Test(
+				"nomTest",
+				"entréeTest",
+				"sortieTest",
+				"params",
+				"feedbackPositif",
+				"feedbackNégatif",
+				"feedbackErreur",
+			),
+		];
+		$question->exécutables["python"] = new Exécutable(
+			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
+			"python",
+		);
+		$question->feedback_neg="feedbackGénéralNégatif";
+        
+        // Tentative soumise
+		$tentative = new TentativeProg(
+			"python",
+			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
+			1615696286,
+			false,
+			0,
+			"feedbackTentativeTest",
+		);
 
         // Exécution
-		$interacteur = new SoumettreTentativeProgInt($mockDAOFactory);
+		$interacteur = new SoumettreTentativeProgInt();
 		$résultat_obtenu = $interacteur->soumettre_tentative("jdoe", $question, $tentative);
 
         // Résultat attendu

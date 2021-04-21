@@ -26,6 +26,7 @@ final class ValidationPermissionsTests extends TestCase
 {
 	public function setup() : void
 	{
+		$_ENV['AUTH_TYPE'] = "ldap";
 		$user = new User("bob");
 
 		// UserDAO

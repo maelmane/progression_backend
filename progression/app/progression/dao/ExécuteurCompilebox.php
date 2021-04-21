@@ -59,6 +59,11 @@ class ExécuteurCompilebox extends Exécuteur{
 		$context = stream_context_create($options_rc);
 
 		$comp_resp = @file_get_contents($url_rc, false, $context);
+        
+        if($comp_resp === false)
+        {
+			throw new ExécutionException(error_get_last(), $_ENV["COMPILEBOX_URL"]);
+		}
 
 		return $comp_resp;
 	}
