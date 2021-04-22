@@ -56,6 +56,10 @@ class AvancementCtl extends Contrôleur
 				$avancementInt = $this->intFactory->getObtenirAvancementInt();
 				$avancement = $avancementInt->get_avancement($username, $chemin);
 			} else{
+				$validation = $this->validationAvancement($request);
+				if ($validation->fails()) {
+					return $this->réponse_json(["erreur" => $validation->errors()], 422);
+				}
 				$avancementReq = json_decode($request->avancement);
 				if($avancementReq != null){
 					$avancementInt = $this->intFactory->getSauvegarderAvancementInt();
@@ -71,5 +75,18 @@ class AvancementCtl extends Contrôleur
 		}
 
 		return $this->préparer_réponse($réponse);
+	}
+
+	public function validationAvancement($request)
+	{
+		return Validator::make(
+			$request->all(),
+			[
+				"avancement" => "required"
+			],
+			[
+				"required" => "Le champ :attribute est obligatoire pour enregistrer l'avancement.",
+			]
+		);
 	}
 }
