@@ -20,6 +20,8 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use progression\domaine\interacteur\ObtenirAvancementInt;
+use progression\domaine\interacteur\ObtenirUserInt;
+use progression\domaine\interacteur\SauvegarderAvancementInt;
 use progression\http\transformer\AvancementTransformer;
 use progression\util\Encodage;
 use progression\domaine\entité\User;
@@ -50,11 +52,11 @@ class AvancementCtl extends Contrôleur
 		$réponse = null;
 
 		$chemin = Encodage::base64_decode_url($question_uri);
-		$userInt = $this->intFactory->getObtenirUserInt();
+		$userInt = new ObtenirUserInt();
 		$user = $userInt->get_user($username);
 		if($user != null){
 			if($user->rôle == User::ROLE_NORMAL){
-				$avancementInt = $this->intFactory->getObtenirAvancementInt();
+				$avancementInt = new ObtenirAvancementInt();
 				$avancement = $avancementInt->get_avancement($username, $chemin);
 			} else{
 				$validation = $this->validationAvancement($request);
@@ -63,7 +65,7 @@ class AvancementCtl extends Contrôleur
 				}
 				$avancementReq = json_decode($request->avancement);
 				if($avancementReq != null){
-					$avancementInt = $this->intFactory->getSauvegarderAvancementInt();
+					$avancementInt = new SauvegarderAvancementInt();
 					$avancement = $avancementInt->sauvegarderAvancement($username, $chemin, $avancementReq)
 				} else{
 					return $this->réponse_json(["erreur" => "Le format de l'avancement est intraitable."], 422);
