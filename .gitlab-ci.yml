@@ -18,9 +18,9 @@ variables:
   MYSQL_USER: $DB_USERNAME
   MYSQL_PASSWORD: $DB_PASSWORD
   MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD
-  JWT_SECRET: secret_à_changer
+  JWT_SECRET: "secret_à_changer"
   JWT_TTL: 8640000
-  AUTH_TYPE: no
+  AUTH_TYPE: "no"
 
 # We test PHP7
 test_unitaires:
