@@ -71,7 +71,7 @@ class AvancementCtl extends Contrôleur
 			$avancement->id = "{$username}/$question_uri";
 			$réponse = $this->item($avancement, new AvancementTransformer());
 		} else{
-			return $this->réponse_json(["erreur" => "Utilisateur inexistant"], 403);
+			return $this->réponse_json(["erreur" => "Utilisateur inexistant"], 404);
 		}
 
 		return $this->préparer_réponse($réponse);
