@@ -26,21 +26,9 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\JsonApiSerializer;
-use progression\domaine\interacteur\InteracteurFactory;
 
 class Contrôleur extends BaseController
 {
-	protected $intFactory;
-
-	public function __construct(InteracteurFactory $intFactory = null)
-	{
-		if ($intFactory == null) {
-			$this->intFactory = new InteracteurFactory();
-		} else {
-			$this->intFactory = $intFactory;
-		}
-	}
-
 	protected function réponse_json($réponse, $code)
 	{
 		return response()->json(

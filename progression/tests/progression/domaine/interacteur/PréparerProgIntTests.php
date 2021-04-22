@@ -77,10 +77,7 @@ final class PréparerProgIntTests extends TestCase
 			"python",
 		);
 
-		$tentative = new TentativeProg(
-			"python",
-			"#+TODO\nprint(1)\n#-TODO",
-		);
+		$tentative = new TentativeProg("python", "#+TODO\nprint(1)\n#-TODO");
 
 		$interacteur = new PréparerProgInt();
 		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
@@ -96,10 +93,7 @@ final class PréparerProgIntTests extends TestCase
 			"python",
 		);
 
-		$tentative = new TentativeProg(
-			"python",
-			"#+TODO\nprint(1)\n#-TODO\n#+TODO\nprint(1)\n#-TODO",
-		);
+		$tentative = new TentativeProg("python", "#+TODO\nprint(1)\n#-TODO\n#+TODO\nprint(1)\n#-TODO");
 
 		$interacteur = new PréparerProgInt();
 		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);

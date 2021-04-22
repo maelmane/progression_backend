@@ -43,7 +43,7 @@ class AuthServiceProvider extends ServiceProvider
 						return null;
 					} else {
 						// Recherche de l'utilisateur
-						$user = (new CréerUserInt(new DAOFactory()))->obtenir_ou_créer_user(($tokenDécodé->user)->username);
+						$user = (new CréerUserInt())->obtenir_ou_créer_user(($tokenDécodé->user)->username);
 						$request->request->add(['utilisateurConnecté' => $user]);
 
 						return $user;

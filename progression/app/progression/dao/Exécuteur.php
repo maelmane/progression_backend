@@ -16,14 +16,24 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\domaine\interacteur;
+namespace progression\dao;
+use Exception;
 
-use progression\dao\DAOFactory;
+class Exécuteur{
 
-class ObtenirQuestionInt extends Interacteur
-{
-	function get_question($question_id)
-	{
-		return $this->source_dao->get_question_dao()->get_question($question_id);
+	public function exécuter($exécutable, $test){
+		return null;
 	}
+
 }
+
+class ExécutionException extends Exception
+{
+    public function __construct($erreur, $url)
+    {
+        $erreurMsg = (isset($erreur) && isset($erreur["message"]) && $erreur["message"] != "") ?
+                   $erreur["message"] : "Échec de l'ouverture du fichier a l'adresse : {$url}";
+        parent::__construct($erreurMsg);
+    }
+}
+    

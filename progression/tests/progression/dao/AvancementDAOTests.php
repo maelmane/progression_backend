@@ -27,6 +27,19 @@ final class AvancementDAOTests extends TestCase
 	public function setUp(): void
 	{
 		EntitéDAO::get_connexion()->begin_transaction();
+
+		$mockTentativeProgDao = Mockery::mock("progression\dao\TentativeProgDAO");
+		$mockTentativeProgDao
+			->allows()
+			->get_toutes("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->andReturn([new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)]);
+
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory
+			->allows()
+			->get_tentative_prog_dao()
+			->andReturn($mockTentativeProgDao);
+		DAOFactory::setInstance($mockDAOFactory);
 	}
 
 	public function tearDown(): void
@@ -37,26 +50,13 @@ final class AvancementDAOTests extends TestCase
 
 	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_objet_avancement_correspondant()
 	{
-		$résultat_attendu = new Avancement([
-			new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)
-		]);
+		$résultat_attendu = new Avancement([new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)]);
 		$résultat_attendu->type = Question::TYPE_PROG;
 
-		$mockTentativeProgDao = Mockery::mock('progression\dao\TentativeProgDAO');
-		$mockTentativeProgDao
-			->allows()
-			->get_toutes("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
-			->andReturn([
-				new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)
-			]);
-
-		$mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
-		$mockDAOFactory
-			->allows()
-			->get_tentative_prog_dao()
-			->andReturn($mockTentativeProgDao);
-
-		$résponse_observée = (new AvancementDAO($mockDAOFactory))->get_avancement("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction");
+		$résponse_observée = (new AvancementDAO())->get_avancement(
+			"bob",
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+		);
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
 
@@ -64,7 +64,10 @@ final class AvancementDAOTests extends TestCase
 	{
 		$réponse_attendue = null;
 
-		$résponse_observée = (new AvancementDAO())->get_avancement("bobert", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction_inexistante");
+		$résponse_observée = (new AvancementDAO())->get_avancement(
+			"bobert",
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction_inexistante",
+		);
 		$this->assertEquals($réponse_attendue, $résponse_observée);
 	}
 }

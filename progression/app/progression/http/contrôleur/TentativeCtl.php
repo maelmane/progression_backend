@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransformer, TentativeBDTransformer};
+use progression\domaine\interacteur\{ObtenirTentativeInt, ObtenirQuestionInt, SoumettreTentativeProgInt};
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\interacteur\ExécutionException;
@@ -36,7 +37,7 @@ class TentativeCtl extends Contrôleur
 
 		$chemin = Encodage::base64_decode_url($question_uri);
 
-		$tentativeInt = $this->intFactory->getObtenirTentativeInt();
+		$tentativeInt = new ObtenirTentativeInt();
 		$tentative = $tentativeInt->get_tentative($username, $chemin, $timestamp);
 
 		if ($tentative != null) {
@@ -65,7 +66,7 @@ class TentativeCtl extends Contrôleur
 
 		$question = null;
 
-		$questionInt = $this->intFactory->getObtenirQuestionInt();
+		$questionInt = new ObtenirQuestionInt();
 		try {
 			$question = $questionInt->get_question($chemin);
 		} catch (LengthException $erreur) {
@@ -87,7 +88,7 @@ class TentativeCtl extends Contrôleur
 
 			$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
 
-			$tentativeInt = $this->intFactory->getSoumettreTentativeProgInt();
+			$tentativeInt = new SoumettreTentativeProgInt();
 			try {
 				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
 			} catch (ExécutionException $e) {

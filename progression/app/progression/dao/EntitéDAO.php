@@ -30,7 +30,7 @@ class EntitéDAO
 	public function __construct($source = null)
 	{
 		if ($source == null) {
-			$this->source = new DAOFactory();
+			$this->source = DAOFactory::getInstance();
 		} else {
 			$this->source = $source;
 		}

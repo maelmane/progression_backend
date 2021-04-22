@@ -22,11 +22,6 @@ use progression\domaine\entité\Avancement;
 
 class ObtenirAvancementInt extends Interacteur
 {
-	function __construct($source)
-	{
-		parent::__construct($source);
-	}
-
 	function get_avancement($username, $question_uri)
 	{
 		if ($this->source_dao->get_user_dao()->get_user($username) == null) {
