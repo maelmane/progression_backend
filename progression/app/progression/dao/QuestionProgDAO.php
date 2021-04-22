@@ -19,6 +19,7 @@
 namespace progression\dao;
 
 use progression\domaine\entité\{Exécutable, Test};
+use RuntimeException, DomainException;
 
 class QuestionProgDAO extends EntitéDAO
 {
@@ -99,6 +100,7 @@ class QuestionProgDAO extends EntitéDAO
 
 		if ($data === false) {
 			error_log("$uri/$exec ne peut pas être chargé");
+			throw new RuntimeException("Le fichier ne peut pas être chargé");
 			return null;
 		} else {
 			return $data;
@@ -114,12 +116,14 @@ class QuestionProgDAO extends EntitéDAO
 
 			if ($data === false) {
 				error_log("$uri/$test ne peut pas être chargé");
+				throw new RuntimeException("Le fichier ne peut pas être chargé");
 				return null;
 			}
 
 			$items = array_merge($items, yaml_parse($data, -1));
 			if ($items === false) {
 				error_log("$uri/$test ne peut pas être décodé");
+				throw new DomainException("Le fichier ne peut pas être décodé");
 				return null;
 			}
 		}
