@@ -19,15 +19,19 @@
 require_once __DIR__ . "/../../../TestCase.php";
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{QuestionProg, Question, Test};
+use progression\domaine\entité\{QuestionProg, Question, Test, User};
 use progression\http\contrôleur\TestCtl;
 use Illuminate\Http\Request;
+use Illuminate\Auth\GenericUser;
 
 final class TestCtlTests extends TestCase
 {
+	public $user;
+	
 	public function setUp(): void
 	{
 		parent::setUp();
+		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
@@ -61,7 +65,7 @@ final class TestCtlTests extends TestCase
 
 	public function test_étant_donné_le_chemin_dune_question_et_son_test_numero_0_lorsquon_appelle_get_on_obtient_le_test_numero_0_et_ses_relations_sous_forme_json()
 	{
-		$résultat_obtenu = $this->call(
+		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
 			"/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 		);
@@ -75,7 +79,7 @@ final class TestCtlTests extends TestCase
 
 	public function test_étant_donné_le_chemin_dune_question_et_son_test_numero_abc_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
 	{
-		$résultat_obtenu = $this->call(
+		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
 			"/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/999",
 		);

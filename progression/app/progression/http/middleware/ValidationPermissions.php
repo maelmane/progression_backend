@@ -27,7 +27,7 @@ class ValidationPermissions
 	public function handle($request, Closure $next)
 	{
 		$nomUtilisateur = $request->username;
-		$utilisateurConnecté = $request->request->get("utilisateurConnecté");
+		$utilisateurConnecté = $request->user();
 
 		if (!$nomUtilisateur) {
 			$utilisateurRecherché = $utilisateurConnecté;

@@ -19,15 +19,19 @@
 require_once __DIR__ . "/../../../TestCase.php";
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{User, Question, QuestionProg, Avancement, TentativeProg};
+use progression\domaine\entité\{Question, QuestionProg, Avancement, TentativeProg, User};
 use progression\http\contrôleur\AvancementCtl;
 use Illuminate\Http\Request;
+use Illuminate\Auth\GenericUser;
 
 final class AvancementCtlTests extends TestCase
 {
+	public $user;
+	
 	public function setUp(): void
 	{
 		parent::setUp();
+		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
@@ -85,7 +89,7 @@ final class AvancementCtlTests extends TestCase
 
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_l_avancement_et_ses_relations_sous_forme_json()
 	{
-		$résultat_observé = $this->call(
+		$résultat_observé = $this->actingAs($this->user)->call(
 			"GET",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 		);
@@ -99,7 +103,7 @@ final class AvancementCtlTests extends TestCase
 
 	public function test_étant_donné_un_avancement_inexistant_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
 	{
-		$résultat_observé = $this->call(
+		$résultat_observé = $this->actingAs($this->user)->call(
 			"GET",
 			"/avancement/Marcel/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 		);

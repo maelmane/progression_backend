@@ -4,6 +4,7 @@ namespace progression\providers;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Auth\GenericUser;
 use progression\dao\DAOFactory;
 use progression\domaine\interacteur\CréerUserInt;
 use \Firebase\JWT\JWT;
@@ -44,9 +45,8 @@ class AuthServiceProvider extends ServiceProvider
 					} else {
 						// Recherche de l'utilisateur
 						$user = (new CréerUserInt())->obtenir_ou_créer_user(($tokenDécodé->user)->username);
-						$request->request->add(['utilisateurConnecté' => $user]);
 
-						return $user;
+						return new GenericUser(["username" => $user->username, "rôle" => $user->rôle, "entité" => $user]);
 					}
 				} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
 					Log::error("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")" . " " . $e);

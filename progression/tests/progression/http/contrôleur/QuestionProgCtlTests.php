@@ -18,16 +18,21 @@
 
 require_once __DIR__ . "/../../../TestCase.php";
 
-use progression\domaine\entité\{Question, QuestionProg, Exécutable, Test};
+use progression\domaine\entité\{Question, QuestionProg, Exécutable, Test, User};
 use progression\http\contrôleur\QuestionCtl;
 use progression\dao\DAOFactory;
 use Illuminate\Http\Request;
+use Illuminate\Auth\GenericUser;
 
 final class QuestionProgCtlTests extends TestCase
 {
+
+	public $user;
+	
 	public function setUp(): void
 	{
 		parent::setUp();
+		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
 
 		// Question
 		$question = new QuestionProg();
@@ -72,7 +77,7 @@ final class QuestionProgCtlTests extends TestCase
 
 	public function test_étant_donné_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_la_question_et_ses_relations_sous_forme_json()
 	{
-		$résultat_obtenu = $this->call(
+		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
 			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 		);
@@ -86,7 +91,7 @@ final class QuestionProgCtlTests extends TestCase
 
 	public function test_étant_donné_le_chemin_dune_question_inexistante_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
 	{
-		$résultat_obtenu = $this->call(
+		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
 			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25faW5leGlzdGFudGU",
 		);

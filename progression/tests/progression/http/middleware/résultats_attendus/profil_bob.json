@@ -1,0 +1,1 @@
+{"data":{"type":"user","id":"bob","attributes":{"username":"bob","rôle":0},"links":{"self":"http:\/\/rocinante.lamancha:81\/user\/bob"},"relationships":{"avancements":{"links":{"self":"http:\/\/rocinante.lamancha:81\/user\/bob\/relationships\/avancements","related":"http:\/\/rocinante.lamancha:81\/user\/bob\/avancements"}}}}}
