@@ -25,8 +25,8 @@ use Mockery;
 
 final class ObtenirQuestionProgIntTests extends TestCase
 {
-    public function setUp(): void
-    {
+	public function setUp(): void
+	{
 		$question = new QuestionProg();
 		$question->uri = "prog1/les_fonctions/appeler_une_fonction";
 
@@ -55,9 +55,9 @@ final class ObtenirQuestionProgIntTests extends TestCase
 			->allows()
 			->get_question_dao()
 			->andReturn($mockQuestionDao);
-        DAOFactory::setInstance($mockDAOFactory);
-    }
-    
+		DAOFactory::setInstance($mockDAOFactory);
+	}
+
 	public function tearDown(): void
 	{
 		Mockery::close();
@@ -66,9 +66,7 @@ final class ObtenirQuestionProgIntTests extends TestCase
 	public function test_étant_donné_une_questionprog_avec_un_chemin_existant_lorsque_cherché_par_chemin_on_obtient_un_objet_questionprog_correspondant()
 	{
 		$interacteur = new ObtenirQuestionInt();
-		$résultat_obtenu = $interacteur->get_question(
-			"prog1/les_fonctions/appeler_une_fonction"
-		);
+		$résultat_obtenu = $interacteur->get_question("prog1/les_fonctions/appeler_une_fonction");
 
 		$résultat_attendu = new QuestionProg();
 		$résultat_attendu->uri = "prog1/les_fonctions/appeler_une_fonction";
@@ -79,9 +77,7 @@ final class ObtenirQuestionProgIntTests extends TestCase
 	public function test_étant_donné_une_questionprog_avec_un_chemin_inexistant_lorsque_cherché_par_chemin_on_obtient_null()
 	{
 		$interacteur = new ObtenirQuestionInt();
-		$résultat_obtenu = $interacteur->get_question(
-			"test/de/chemin/non/valide"
-		);
+		$résultat_obtenu = $interacteur->get_question("test/de/chemin/non/valide");
 
 		$this->assertNull($résultat_obtenu);
 	}

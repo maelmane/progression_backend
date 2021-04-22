@@ -16,7 +16,7 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-require_once __DIR__ . '/../../../TestCase.php';
+require_once __DIR__ . "/../../../TestCase.php";
 
 use progression\domaine\entité\{Question, QuestionProg, Exécutable};
 use progression\http\contrôleur\ÉbaucheCtl;
@@ -25,11 +25,11 @@ use Illuminate\Http\Request;
 
 final class ÉbaucheCtlTests extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
+	public function setUp(): void
+	{
+		parent::setUp();
 
-        // Question
+		// Question
 		$question = new QuestionProg();
 		$question->type = Question::TYPE_PROG;
 		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
@@ -40,40 +40,40 @@ final class ÉbaucheCtlTests extends TestCase
 
 		$mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
 		$mockQuestionDAO
-		->shouldReceive("get_question")
-		->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
-		->andReturn($question);
-		
+			->shouldReceive("get_question")
+			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->andReturn($question);
+
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
-		$mockDAOFactory
-			->shouldReceive("get_question_dao")
-			->andReturn($mockQuestionDAO);
+		$mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);
 		DAOFactory::setInstance($mockDAOFactory);
-    }
+	}
 
-    public function tearDown(): void
+	public function tearDown(): void
 	{
 		Mockery::close();
 	}
 
 	public function test_étant_donné_le_chemin_dune_ébauche_lorsquon_appelle_get_on_obtient_lébauche_et_ses_relations_sous_forme_json()
 	{
-
-        $résultat_obtenu = $this->call(
-            "GET",
-			"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python"
+		$résultat_obtenu = $this->call(
+			"GET",
+			"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertStringEqualsFile(__DIR__ . "/ébaucheCtlTests_1.json", $résultat_obtenu->getContent());
+		$this->assertStringEqualsFile(
+			__DIR__ . "/résultats_attendus/ébaucheCtlTests_1.json",
+			$résultat_obtenu->getContent(),
+		);
 	}
 
 	public function test_étant_donné_le_chemin_dune_ébauche_inexistante_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
 	{
-        $résultat_obtenu = $this->call(
-            "GET",
-			"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/fortran"
+		$résultat_obtenu = $this->call(
+			"GET",
+			"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/fortran",
 		);
 
 		$this->assertEquals(404, $résultat_obtenu->status());

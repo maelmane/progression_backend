@@ -25,31 +25,30 @@ use Mockery;
 
 final class ObtenirUserIntTests extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
+	public function setUp(): void
+	{
+		parent::setUp();
 
-        $mockUserDao = Mockery::mock('progression\dao\UserDAO');
+		$mockUserDao = Mockery::mock("progression\dao\UserDAO");
 		$mockUserDao
 			->allows()
-			->get_user('Bob')
+			->get_user("Bob")
 			->andReturn(new User("Bob"));
 
 		$mockUserDao
 			->allows()
-			->get_user('Banane')
+			->get_user("Banane")
 			->andReturn(null);
 
-		$mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_user_dao()
 			->andReturn($mockUserDao);
 
-        
-        DAOFactory::setInstance($mockDAOFactory);
-    }
-    
+		DAOFactory::setInstance($mockDAOFactory);
+	}
+
 	public function tearDown(): void
 	{
 		Mockery::close();
@@ -58,16 +57,16 @@ final class ObtenirUserIntTests extends TestCase
 	public function test_étant_donné_un_utilisateur_Bob_lorsquon_le_cherche_par_username_on_obtient_un_objet_user_nommé_Bob()
 	{
 		$interacteur = new ObtenirUserInt();
-		$résultat_obtenu = $interacteur->get_user('Bob');
+		$résultat_obtenu = $interacteur->get_user("Bob");
 
-        $résultat_attendu = new User("Bob");
+		$résultat_attendu = new User("Bob");
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
 	public function test_étant_donné_un_utilisateur_Banane_inexistant_lorsquon_le_cherche_par_username_on_obtient_null()
 	{
 		$interacteur = new ObtenirUserInt();
-		$résultat_obtenu = $interacteur->get_user('Banane');
+		$résultat_obtenu = $interacteur->get_user("Banane");
 
 		$this->assertNull($résultat_obtenu);
 	}

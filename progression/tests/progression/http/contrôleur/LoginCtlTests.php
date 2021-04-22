@@ -16,7 +16,7 @@
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-require_once __DIR__ . '/../../../TestCase.php';
+require_once __DIR__ . "/../../../TestCase.php";
 
 use progression\http\contrôleur\LoginCtl;
 use progression\domaine\entité\User;
@@ -26,49 +26,42 @@ use Firebase\JWT\JWT;
 
 final class LoginCtlTests extends TestCase
 {
+	public function setUp(): void
+	{
+		parent::setUp();
 
-    public function setUp() : void
-    {
-        parent::setUp();
-        
-        // UserDAO
+		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
 		$mockUserDAO
-		->shouldReceive("get_user")
-		->with("bob")
-		->andReturn(new User("bob"));
+			->shouldReceive("get_user")
+			->with("bob")
+			->andReturn(new User("bob"));
 		$mockUserDAO
-		->shouldReceive("get_user")
-		->with("Marcel")
-		->andReturn(null);
-		
+			->shouldReceive("get_user")
+			->with("Marcel")
+			->andReturn(null);
+
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
-		$mockDAOFactory
-			->shouldReceive("get_user_dao")
-			->andReturn($mockUserDAO);
+		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		DAOFactory::setInstance($mockDAOFactory);
-    }
-    
+	}
+
 	public function tearDown(): void
 	{
 		Mockery::close();
 	}
 
-    public function test_étant_donné_lutilisateur_Bob_et_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Bob()
+	public function test_étant_donné_lutilisateur_Bob_et_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Bob()
 	{
-		$_ENV['AUTH_TYPE'] = "no";
-		$_ENV['JWT_SECRET'] = "secret";
-		$_ENV['JWT_TTL'] = 3333;
+		$_ENV["AUTH_TYPE"] = "no";
+		$_ENV["JWT_SECRET"] = "secret";
+		$_ENV["JWT_TTL"] = 3333;
 
-        $résultat_observé = $this->call(
-            "POST",
-            "/auth",
-            ["username"=>"bob", "password"=>"test"]
-        );
+		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob", "password" => "test"]);
 
 		$token = json_decode($résultat_observé->getContent(), true);
-		$tokenDécodé = JWT::decode($token["Token"], $_ENV['JWT_SECRET'], ['HS256']);
+		$tokenDécodé = JWT::decode($token["Token"], $_ENV["JWT_SECRET"], ["HS256"]);
 		$username_obtenu = $tokenDécodé->user->username;
 
 		$this->assertEquals(200, $résultat_observé->status());
@@ -77,8 +70,8 @@ final class LoginCtlTests extends TestCase
 		$this->assertEquals(3333, $tokenDécodé->expired - $tokenDécodé->current);
 	}
 
-    //Intestable tant que la connexion à LDAP se fera à même l'interacteur
-    /*
+	//Intestable tant que la connexion à LDAP se fera à même l'interacteur
+	/*
     public function test_étant_donné_lutilisateur_inexistant_roger_et_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_code_403()
 	{
 		$_ENV['AUTH_TYPE'] = "ldap";
@@ -95,5 +88,4 @@ final class LoginCtlTests extends TestCase
 		$this->assertEquals('{"erreur":"Accès refusé."}', $résultat_observé->getContent());
 	}
     */
-    
 }

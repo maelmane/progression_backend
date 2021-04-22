@@ -25,13 +25,13 @@ use Mockery;
 
 final class SauvegarderTentativeProgIntTests extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
+	public function setUp(): void
+	{
+		parent::setUp();
 
 		$mockAvancementDao = Mockery::mock("progression\dao\AvancementDAO");
 
-        $mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
+		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
@@ -42,10 +42,9 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->allows()
 			->get_tentative_prog_dao()
 			->andReturn($mockTentativeDao);
-        
-        DAOFactory::setInstance($mockDAOFactory);
-        
-    }
+
+		DAOFactory::setInstance($mockDAOFactory);
+	}
 	public function tearDown(): void
 	{
 		Mockery::close();
@@ -53,33 +52,34 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 
 	public function test_étant_donné_une_première_tentative_ratée_lorsquon_la_sauvegarde_lavancement_est_aussi_sauvegardé_et_on_obtient_la_tentative()
 	{
-        $tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
+		$tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
 		$avancement = new Avancement([$tentative], Question::ETAT_NONREUSSI, Question::TYPE_PROG);
 
-        DAOFactory::getInstance()->get_avancement_dao()
+		DAOFactory::getInstance()
+			->get_avancement_dao()
 			->shouldReceive("get_avancement")
 			->with("Bob", "https://example.com/question")
 			->andReturn(null);
 
-        DAOFactory::getInstance()->get_avancement_dao()
-                                 ->shouldReceive("save")
-                                 ->once()
-                                 ->withArgs(function ($user, $uri, $av) use ($avancement, $tentative) {
-                                     return $user == "Bob" &&
-                                                  $uri == "https://example.com/question" &&
-                                                  $av == new Avancement([$tentative], Question::ETAT_NONREUSSI, Question::TYPE_PROG);
-                                 })
-                                 ->andReturn($avancement);
-        
-		DAOFactory::getInstance()->get_tentative_prog_dao()
-                                 ->shouldReceive("save")
-                                 ->once()
-                                 ->withArgs(function ($user, $uri, $t) use ($tentative) {
-                                     return $user == "Bob" &&
-                                                  $uri == "https://example.com/question" && $t == $tentative;
-                                 })
-                                 ->andReturn($tentative);
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($user, $uri, $av) use ($avancement, $tentative) {
+				return $user == "Bob" &&
+					$uri == "https://example.com/question" &&
+					$av == new Avancement([$tentative], Question::ETAT_NONREUSSI, Question::TYPE_PROG);
+			})
+			->andReturn($avancement);
 
+		DAOFactory::getInstance()
+			->get_tentative_prog_dao()
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($user, $uri, $t) use ($tentative) {
+				return $user == "Bob" && $uri == "https://example.com/question" && $t == $tentative;
+			})
+			->andReturn($tentative);
 
 		$résultat_attendu = $tentative;
 
@@ -95,28 +95,31 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 
 		$avancement = new Avancement([$tentative], Question::ETAT_REUSSI, Question::TYPE_PROG);
 
-        DAOFactory::getInstance()->get_avancement_dao()
+		DAOFactory::getInstance()
+			->get_avancement_dao()
 			->shouldReceive("get_avancement")
 			->with("Bob", "https://example.com/question")
 			->andReturn(null);
 
-        DAOFactory::getInstance()->get_avancement_dao()
-                                 ->shouldReceive("save")
-                                 ->once()
-                                 ->withArgs(function ($user, $uri, $av) use ($avancement, $tentative) {
-                                     return $user == "Bob" &&
-                                                  $uri == "https://example.com/question" && $av == new Avancement([$tentative], Question::ETAT_REUSSI, Question::TYPE_PROG);
-                                 })
-                                 ->andReturn($avancement);
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($user, $uri, $av) use ($avancement, $tentative) {
+				return $user == "Bob" &&
+					$uri == "https://example.com/question" &&
+					$av == new Avancement([$tentative], Question::ETAT_REUSSI, Question::TYPE_PROG);
+			})
+			->andReturn($avancement);
 
-		DAOFactory::getInstance()->get_tentative_prog_dao()
-                                 ->shouldReceive("save")
-                                 ->once()
-                                 ->withArgs(function ($user, $uri, $t) use ($tentative) {
-                                     return $user == "Bob" &&
-                                                  $uri == "https://example.com/question" && $t == $tentative;
-                                 })
-                                 ->andReturn($tentative);
+		DAOFactory::getInstance()
+			->get_tentative_prog_dao()
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($user, $uri, $t) use ($tentative) {
+				return $user == "Bob" && $uri == "https://example.com/question" && $t == $tentative;
+			})
+			->andReturn($tentative);
 
 		$résultat_attendu = $tentative;
 
@@ -130,27 +133,29 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 	{
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
 
-        DAOFactory::getInstance()->get_avancement_dao()
-                                 ->shouldReceive("get_avancement")
-                                 ->with("Bob", "https://example.com/question")
-                                 ->andReturn(
-                                     new Avancement(
-                                         [new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", [])],
-                                         Question::ETAT_NONREUSSI,
-                                         Question::TYPE_PROG,
-                                     ),
-                                 );
-        DAOFactory::getInstance()->get_avancement_dao()
-                                 ->shouldNotReceive("save");
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldReceive("get_avancement")
+			->with("Bob", "https://example.com/question")
+			->andReturn(
+				new Avancement(
+					[new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", [])],
+					Question::ETAT_NONREUSSI,
+					Question::TYPE_PROG,
+				),
+			);
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldNotReceive("save");
 
-		DAOFactory::getInstance()->get_tentative_prog_dao()
-                                 ->shouldReceive("save")
-                                 ->once()
-                                 ->withArgs(function ($user, $uri, $t) use ($tentative) {
-                                     return $user == "Bob" &&
-                                                  $uri == "https://example.com/question" && $t == $tentative;
-                                 })
-                                 ->andReturn($tentative);
+		DAOFactory::getInstance()
+			->get_tentative_prog_dao()
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($user, $uri, $t) use ($tentative) {
+				return $user == "Bob" && $uri == "https://example.com/question" && $t == $tentative;
+			})
+			->andReturn($tentative);
 
 		$résultat_attendu = $tentative;
 
@@ -170,32 +175,34 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			Question::TYPE_PROG,
 		);
 
-        DAOFactory::getInstance()->get_avancement_dao()
-                                 ->shouldReceive("get_avancement")
-                                 ->with("Bob", "https://example.com/question")
-                                 ->andReturn(
-                                     new Avancement(
-                                         [new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", [])],
-                                         Question::ETAT_NONREUSSI,
-                                         Question::TYPE_PROG,
-                                     ),
-                                 );
-        DAOFactory::getInstance()->get_avancement_dao()
-                                 ->shouldReceive("save")
-                                 ->once()
-                                 ->withArgs(function ($user, $uri, $av) use ($avancement) {
-                                     return $user == "Bob" && $uri == "https://example.com/question" && $av == $avancement;
-                                 })
-                                 ->andReturn($avancement);
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldReceive("get_avancement")
+			->with("Bob", "https://example.com/question")
+			->andReturn(
+				new Avancement(
+					[new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", [])],
+					Question::ETAT_NONREUSSI,
+					Question::TYPE_PROG,
+				),
+			);
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($user, $uri, $av) use ($avancement) {
+				return $user == "Bob" && $uri == "https://example.com/question" && $av == $avancement;
+			})
+			->andReturn($avancement);
 
-		DAOFactory::getInstance()->get_tentative_prog_dao()
-                                 ->shouldReceive("save")
-                                 ->once()
-                                 ->withArgs(function ($user, $uri, $t) use ($tentative) {
-                                     return $user == "Bob" &&
-                                                  $uri == "https://example.com/question" && $t == $tentative;
-                                 })
-                                 ->andReturn($tentative);
+		DAOFactory::getInstance()
+			->get_tentative_prog_dao()
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($user, $uri, $t) use ($tentative) {
+				return $user == "Bob" && $uri == "https://example.com/question" && $t == $tentative;
+			})
+			->andReturn($tentative);
 
 		$résultat_attendu = $tentative;
 
@@ -209,29 +216,31 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 	{
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
 
-        DAOFactory::getInstance()->get_avancement_dao()
-                                 ->shouldReceive("get_avancement")
-                                 ->with("Bob", "https://example.com/question")
-                                 ->andReturn(
-                                     new Avancement(
-                                         [new TentativeProg(1, "print('code')", 1616531000, true, 1, "feedback", [])],
-                                         Question::ETAT_REUSSI,
-                                         Question::TYPE_PROG,
-                                     ),
-                                 );
-        DAOFactory::getInstance()->get_avancement_dao()
-                                 ->shouldNotReceive("save");
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldReceive("get_avancement")
+			->with("Bob", "https://example.com/question")
+			->andReturn(
+				new Avancement(
+					[new TentativeProg(1, "print('code')", 1616531000, true, 1, "feedback", [])],
+					Question::ETAT_REUSSI,
+					Question::TYPE_PROG,
+				),
+			);
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldNotReceive("save");
 
-        DAOFactory::getInstance()->get_tentative_prog_dao()
-                                 ->shouldReceive("save")
-                                 ->once()
-                                 ->withArgs(function ($user, $uri, $t) use ($tentative) {
-                                     return $user == "Bob" &&
-                                                  $uri == "https://example.com/question" && $t == $tentative;
-                                 })
-                                 ->andReturn($tentative);
+		DAOFactory::getInstance()
+			->get_tentative_prog_dao()
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($user, $uri, $t) use ($tentative) {
+				return $user == "Bob" && $uri == "https://example.com/question" && $t == $tentative;
+			})
+			->andReturn($tentative);
 
-        $résultat_attendu = $tentative;
+		$résultat_attendu = $tentative;
 
 		$interacteur = new SauvegarderTentativeProgInt();
 		$résultat_observé = $interacteur->sauvegarder("Bob", "https://example.com/question", $tentative);
@@ -245,27 +254,29 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 
 		$avancement = new Avancement([$tentative], Question::ETAT_REUSSI, Question::TYPE_PROG);
 
-        DAOFactory::getInstance()->get_avancement_dao()
-                                 ->shouldReceive("get_avancement")
-                                 ->with("Bob", "https://example.com/question")
-                                 ->andReturn(
-                                     new Avancement(
-                                         [new TentativeProg(1, "print('code')", 1616531000, true, 1, "feedback", [])],
-                                         Question::ETAT_REUSSI,
-                                         Question::TYPE_PROG,
-                                     ),
-                                 );
-        DAOFactory::getInstance()->get_avancement_dao()
-                                 ->shouldNotReceive("save");
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldReceive("get_avancement")
+			->with("Bob", "https://example.com/question")
+			->andReturn(
+				new Avancement(
+					[new TentativeProg(1, "print('code')", 1616531000, true, 1, "feedback", [])],
+					Question::ETAT_REUSSI,
+					Question::TYPE_PROG,
+				),
+			);
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldNotReceive("save");
 
-		DAOFactory::getInstance()->get_tentative_prog_dao()
-                                 ->shouldReceive("save")
-                                 ->once()
-                                 ->withArgs(function ($user, $uri, $t) use ($tentative) {
-                                     return $user == "Bob" &&
-                                                  $uri == "https://example.com/question" && $t == $tentative;
-                                 })
-                                 ->andReturn($tentative);
+		DAOFactory::getInstance()
+			->get_tentative_prog_dao()
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($user, $uri, $t) use ($tentative) {
+				return $user == "Bob" && $uri == "https://example.com/question" && $t == $tentative;
+			})
+			->andReturn($tentative);
 
 		$résultat_attendu = $tentative;
 

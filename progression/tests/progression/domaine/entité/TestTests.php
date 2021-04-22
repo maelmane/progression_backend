@@ -37,7 +37,7 @@ final class TestTests extends TestCase
 			"testSortie",
 			["testParam0", "testParam1"],
 			"testFbp",
-			"testFbn"
+			"testFbn",
 		);
 
 		$this->assertEquals($nom_attendu, $résultat_obtenu->nom);

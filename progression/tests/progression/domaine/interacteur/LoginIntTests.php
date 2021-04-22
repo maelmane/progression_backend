@@ -25,9 +25,10 @@ use Mockery;
 
 final class LoginIntTests extends TestCase
 {
-    public function setUp(): void{
-        parent::setUp();
-        
+	public function setUp(): void
+	{
+		parent::setUp();
+
 		$mockUserDao = Mockery::mock("progression\dao\UserDAO");
 		$mockUserDao
 			->allows()
@@ -37,18 +38,16 @@ final class LoginIntTests extends TestCase
 			->allows()
 			->get_user("Banane")
 			->andReturn(null);
-        $mockUserDao
-            ->shouldReceive("save")
-            ->andReturn(new User("Banane"));
+		$mockUserDao->shouldReceive("save")->andReturn(new User("Banane"));
 
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_user_dao()
 			->andReturn($mockUserDao);
-        DAOFactory::setInstance($mockDAOFactory);
-    }
-    
+		DAOFactory::setInstance($mockDAOFactory);
+	}
+
 	public function tearDown(): void
 	{
 		Mockery::close();

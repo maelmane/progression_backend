@@ -25,10 +25,11 @@ use Mockery;
 
 final class SoumettreTentativeProgIntTests extends TestCase
 {
-    public function setUp(): void{
-        parent::setUp();
+	public function setUp(): void
+	{
+		parent::setUp();
 
-        // Avancement actuel
+		// Avancement actuel
 		$avancement = new Avancement();
 
 		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
@@ -39,42 +40,31 @@ final class SoumettreTentativeProgIntTests extends TestCase
 				"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour",
 			)
 			->andReturn($avancement);
-		$mockAvancementDAO
-			->shouldReceive("save")
-			->andReturn($avancement);
+		$mockAvancementDAO->shouldReceive("save")->andReturn($avancement);
 
-
-        // Mock TentativeDAO
+		// Mock TentativeDAO
 		$mockTentativeDAO = Mockery::mock("progression\dao\TentativeProgDAO");
 		$mockTentativeDAO
 			->shouldReceive("save")
 			->with(
 				"jdoe",
 				"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour",
-				Mockery::any()
+				Mockery::any(),
 			)
 			->andReturnArg(2);
 
-        // Mock exécuteur
+		// Mock exécuteur
 		$mockExécuteur = Mockery::mock("progression\dao\Exécuteur");
-		$mockExécuteur
-			->shouldReceive("exécuter")
-			->andReturn("{\"output\": \"Patate poil!\", \"errors\":\"\"}");
+		$mockExécuteur->shouldReceive("exécuter")->andReturn("{\"output\": \"Patate poil!\", \"errors\":\"\"}");
 
-        // Mock DAOFactory
+		// Mock DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
-		$mockDAOFactory
-			->shouldReceive("get_avancement_dao")
-			->andReturn($mockAvancementDAO);
-		$mockDAOFactory
-			->shouldReceive("get_exécuteur")
-			->andReturn($mockExécuteur);
-		$mockDAOFactory
-			->shouldReceive("get_tentative_prog_dao")
-			->andReturn($mockTentativeDAO);
-        DAOFactory::setInstance($mockDAOFactory);
-    }
-    
+		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
+		$mockDAOFactory->shouldReceive("get_exécuteur")->andReturn($mockExécuteur);
+		$mockDAOFactory->shouldReceive("get_tentative_prog_dao")->andReturn($mockTentativeDAO);
+		DAOFactory::setInstance($mockDAOFactory);
+	}
+
 	public function tearDown(): void
 	{
 		Mockery::close();
@@ -82,7 +72,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 
 	public function test_étant_donné_une_questionprog_et_une_tentativeprog_lorsqu_on_appelle_soumettre_tentative_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
 	{
-        // Question
+		// Question
 		$question = new QuestionProg();
 		$question->uri =
 			"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour";
@@ -101,9 +91,9 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
 			"python",
 		);
-		$question->feedback_neg="feedbackGénéralNégatif";
-        
-        // Tentative soumise
+		$question->feedback_neg = "feedbackGénéralNégatif";
+
+		// Tentative soumise
 		$tentative = new TentativeProg(
 			"python",
 			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
@@ -113,11 +103,11 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			"feedbackTentativeTest",
 		);
 
-        // Exécution
+		// Exécution
 		$interacteur = new SoumettreTentativeProgInt();
 		$résultat_obtenu = $interacteur->soumettre_tentative("jdoe", $question, $tentative);
 
-        // Résultat attendu
+		// Résultat attendu
 		$résultat_attendu = new TentativeProg(
 			"python",
 			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
@@ -129,7 +119,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 
 		$résultat_attendu->résultats = [new RésultatProg("Patate poil!", "", false, "feedbackNégatif")];
 
-        // Assertion
+		// Assertion
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 }

@@ -25,47 +25,47 @@ use Mockery;
 
 final class ExécuterProgIntTests extends TestCase
 {
+	public function setUp(): void
+	{
+		parent::setUp();
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        
-		$_ENV['COMPILEBOX_URL'] = "file://" . __DIR__ . "/ExécuterProgIntTests_fichiers/test_exec_prog_int_python";
+		$_ENV["COMPILEBOX_URL"] = "file://" . __DIR__ . "/ExécuterProgIntTests_fichiers/test_exec_prog_int_python";
 		$_SERVER["REMOTE_ADDR"] = "";
 		$_SERVER["PHP_SELF"] = "";
 
 		$mockExécuteur = Mockery::mock("progression\dao\Exécuteur");
 		$mockExécuteur
-		->shouldReceive("exécuter")
-		->with(Mockery::on(function($param){
-            return $param == new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
-        }),
-            Mockery::on(function($param){
-                return $param == new Test("premier test", "1", "ok\n");
-            })
-        )
-		->andReturn("{\"output\": \"ok\", \"errors\":\"\"}");
+			->shouldReceive("exécuter")
+			->with(
+				Mockery::on(function ($param) {
+					return $param == new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
+				}),
+				Mockery::on(function ($param) {
+					return $param == new Test("premier test", "1", "ok\n");
+				}),
+			)
+			->andReturn("{\"output\": \"ok\", \"errors\":\"\"}");
 
 		$mockExécuteur
-		->shouldReceive("exécuter")
-		->with(Mockery::on(function($param){
-            return $param == new Exécutable("a=a", "python");
-        }),
-            Mockery::on(function($param){
-                return $param == new Test("premier test", "1", "ok\n");
-            })
-        )
-		->andReturn("{\"output\": \"\", \"errors\":\"erreur\"}");
-		
+			->shouldReceive("exécuter")
+			->with(
+				Mockery::on(function ($param) {
+					return $param == new Exécutable("a=a", "python");
+				}),
+				Mockery::on(function ($param) {
+					return $param == new Test("premier test", "1", "ok\n");
+				}),
+			)
+			->andReturn("{\"output\": \"\", \"errors\":\"erreur\"}");
+
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
-		->allows()
-		->get_exécuteur()
-		->andReturn($mockExécuteur);
-        DAOFactory::setInstance($mockDAOFactory);
-        
-    }
-    
+			->allows()
+			->get_exécuteur()
+			->andReturn($mockExécuteur);
+		DAOFactory::setInstance($mockDAOFactory);
+	}
+
 	public function tearDown(): void
 	{
 		Mockery::close();
@@ -73,7 +73,7 @@ final class ExécuterProgIntTests extends TestCase
 
 	public function test_étant_donné_un_exécutable_valide_et_un_test_lorsquon_les_soumet_pour_exécution_on_obtient_un_résultat_de_test_avec_ses_sorties_standards()
 	{
-        $exécutable_valide = new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
+		$exécutable_valide = new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
 		$test = new Test("premier test", "1", "ok\n");
 
 		$résultat_observé = (new ExécuterProgInt())->exécuter($exécutable_valide, $test);
@@ -84,7 +84,7 @@ final class ExécuterProgIntTests extends TestCase
 
 	public function test_étant_donné_un_exécutable_d_erreur_et_un_test_lorsquon_les_soumet_pour_exécution_on_obtient_un_résultat_de_test_avec_ses_sorties_d_erreur()
 	{
-        $exécutable_erreur = new Exécutable("a=a", "python");
+		$exécutable_erreur = new Exécutable("a=a", "python");
 		$test = new Test("premier test", "1", "ok\n");
 
 		$résultat_observé = (new ExécuterProgInt())->exécuter($exécutable_erreur, $test);
@@ -92,5 +92,4 @@ final class ExécuterProgIntTests extends TestCase
 		$résultat_attendu = new RésultatProg("", "erreur");
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
-
 }

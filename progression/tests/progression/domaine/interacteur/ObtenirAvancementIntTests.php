@@ -25,11 +25,11 @@ use Mockery;
 
 final class ObtenirAvancementIntTests extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
+	public function setUp(): void
+	{
+		parent::setUp();
 
-        $user_jdoe = new User("jdoe");
+		$user_jdoe = new User("jdoe");
 		$avancement = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
 
 		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
@@ -62,25 +62,24 @@ final class ObtenirAvancementIntTests extends TestCase
 			->allows()
 			->get_user_dao()
 			->andReturn($mockUserDAO);
-        DAOFactory::setInstance($mockDAOFactory);
-    }
+		DAOFactory::setInstance($mockDAOFactory);
+	}
 
-    public function tearDown(): void
+	public function tearDown(): void
 	{
 		Mockery::close();
 	}
 
 	public function test_étant_donné_un_avancement_avec_un_username_et_question_uri_existant_lorsque_cherché_par_username_et_question_uri_on_obtient_un_objet_avancementprog_correspondant()
 	{
-
 		$interacteur = new ObtenirAvancementInt();
 		$résultat_obtenu = $interacteur->get_avancement(
 			"jdoe",
 			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
 		);
 
-        $résultat_attendu = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
-        
+		$résultat_attendu = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
+
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 

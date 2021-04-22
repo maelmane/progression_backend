@@ -26,7 +26,7 @@ final class UserDAOTests extends TestCase
 	public function setUp(): void
 	{
 		EntitéDAO::get_connexion()->begin_transaction();
-        DAOFactory::setInstance(null);
+		DAOFactory::setInstance(null);
 	}
 
 	public function tearDown(): void
@@ -39,7 +39,7 @@ final class UserDAOTests extends TestCase
 		$réponse_attendue = new User("bob");
 		$réponse_attendue->avancements = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement([], 1, 3),
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement([], 0, 3)
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement([], 0, 3),
 		];
 
 		$résponse_observée = (new UserDAO())->get_user("bob");
@@ -71,7 +71,7 @@ final class UserDAOTests extends TestCase
 		$réponse_attendue = new User("bob", User::ROLE_ADMIN);
 		$réponse_attendue->avancements = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement([], 1, 3),
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement([], 0, 3)
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement([], 0, 3),
 		];
 
 		$user_test = (new UserDAO())->get_user("bob");
