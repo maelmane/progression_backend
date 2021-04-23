@@ -39,6 +39,10 @@ final class AvancementCtlTests extends TestCase
 			->andReturn(new User("jdoe"));
 		$mockUserDAO
 			->shouldReceive("get_user")
+			->with("bob")
+			->andReturn(new User("bob"));
+		$mockUserDAO
+			->shouldReceive("get_user")
 			->with("Marcel")
 			->andReturn(null);
 
@@ -106,5 +110,41 @@ final class AvancementCtlTests extends TestCase
 
 		$this->assertEquals(404, $résultat_observé->status());
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
+	}
+
+	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_on_obtient_un_nouvel_avancement_avec_ses_valeurs_par_defaut()
+	{
+		$résultat_observé = $this->call(
+			"POST",
+			"/avancement/bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		);
+
+		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertEquals($résultat_observé->getContent()->id, "bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
+		$this->assertEquals($résultat_observé->getContent()->attributes->état, "0");	
+	}
+	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_dans_le_body_on_obtient_un_message_derreur()
+	{
+		$résultat_observé = $this->call(
+			"POST",
+			"/avancement/admin/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		);
+
+		$this->assertEquals(422, $résultat_observé->status());
+		$this->assertEquals('{"erreur":"Le champ avancement est obligatoire pour enregistrer l\'avancement."}', $résultat_observé->getContent());	
+	}
+	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_avancement_dans_le_body_on_obtient_lavancement_modifié()
+	{
+		$tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
+		$avancement = new Avancement([$tentative], Question::ETAT_REUSSI, Question::TYPE_PROG);
+		$résultat_observé = $this->call(
+			"POST",
+			"/avancement/admin/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			["avancement" => $avancement]
+		);
+
+		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertEquals($résultat_observé->getContent()->id, "bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
+		$this->assertEquals($résultat_observé->getContent()->attributes->état, "2");	
 	}
 }
