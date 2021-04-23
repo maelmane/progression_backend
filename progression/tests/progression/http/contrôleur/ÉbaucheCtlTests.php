@@ -18,17 +18,21 @@
 
 require_once __DIR__ . "/../../../TestCase.php";
 
-use progression\domaine\entité\{Question, QuestionProg, Exécutable};
+use progression\domaine\entité\{Question, QuestionProg, Exécutable, User};
 use progression\http\contrôleur\ÉbaucheCtl;
 use progression\dao\DAOFactory;
 use Illuminate\Http\Request;
+use Illuminate\Auth\GenericUser;
 
 final class ÉbaucheCtlTests extends TestCase
 {
+	public $user;
+	
 	public function setUp(): void
 	{
 		parent::setUp();
-
+		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
+		
 		// Question
 		$question = new QuestionProg();
 		$question->type = Question::TYPE_PROG;
@@ -57,7 +61,7 @@ final class ÉbaucheCtlTests extends TestCase
 
 	public function test_étant_donné_le_chemin_dune_ébauche_lorsquon_appelle_get_on_obtient_lébauche_et_ses_relations_sous_forme_json()
 	{
-		$résultat_obtenu = $this->call(
+		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
 			"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
 		);
@@ -71,7 +75,7 @@ final class ÉbaucheCtlTests extends TestCase
 
 	public function test_étant_donné_le_chemin_dune_ébauche_inexistante_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
 	{
-		$résultat_obtenu = $this->call(
+		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
 			"/ebauche/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/fortran",
 		);

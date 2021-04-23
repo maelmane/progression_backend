@@ -30,7 +30,7 @@ class UserCtl extends Contrôleur
 		$user = null;
 
 		if ($username == null) {
-			$username = $request->request->get("utilisateurConnecté")->username;
+			$username = $request->user()->username;
 		}
 
 		if ($username != null && $username != "") {

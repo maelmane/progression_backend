@@ -22,12 +22,16 @@ use progression\dao\DAOFactory;
 use progression\domaine\entité\{Avancement, User};
 use progression\http\contrôleur\UserCtl;
 use Illuminate\Http\Request;
+use Illuminate\Auth\GenericUser;
 
 final class UserCtlTests extends TestCase
 {
+	public $user;
 	public function setUp(): void
 	{
 		parent::setUp();
+
+		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
@@ -57,7 +61,7 @@ final class UserCtlTests extends TestCase
 
 	public function test_étant_donné_le_nom_dun_utilisateur_lorsquon_appelle_get_on_obtient_lutilisateur_et_ses_relations_sous_forme_json()
 	{
-		$résultat_obtenu = $this->call("GET", "/user/jdoe");
+		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe");
 
 		$this->assertEquals(200, $résultat_obtenu->status());
 		$this->assertStringEqualsFile(

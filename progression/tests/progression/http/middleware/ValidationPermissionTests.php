@@ -21,20 +21,25 @@ require_once __DIR__ . "/../../../TestCase.php";
 use progression\http\middleware\ValidationPermissions;
 use progression\domaine\entité\User;
 use progression\dao\{DAOFactory, UserDAO};
+use Illuminate\Auth\GenericUser;
 
 final class ValidationPermissionsTests extends TestCase
 {
+	public $user;
+	
 	public function setup(): void
 	{
+		parent::setUp();
+		
 		$_ENV["AUTH_TYPE"] = "ldap";
-		$user = new User("bob");
+		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
 		$mockUserDAO
 			->allows()
 			->get_user("bob")
-			->andReturn($user);
+			->andReturn(new User("bob"));
 		$mockUserDAO
 			->allows()
 			->get_user("jdoe")
@@ -53,122 +58,31 @@ final class ValidationPermissionsTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_normal_bob_connecté_lorsquon_demande_une_ressource_pour_ce_même_utilisateur_on_obtient_OK()
 	{
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->get("utilisateurConnecté")
-			->andReturn(new User("bob"));
-		$mockRequest
-			->allows()
-			->all()
-			->andReturn([
-				"username" => "bob",
-			]);
-		$mockRequest->request = $mockRequest;
+		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/bob");
 
-		$cobaye = new ValidationPermissions();
-		$résultat_obtenu = $cobaye->handle($mockRequest, function () {
-			return "OK";
-		});
-
-		$this->assertEquals("OK", $résultat_obtenu);
+		$this->assertStringEqualsFile(__DIR__."/résultats_attendus/profil_bob.json", $résultat_obtenu->getContent());
 	}
 
-	public function test_étant_donné_un_utilisateur_normal_bob_connecté_lorsquon_demande_une_ressource_pour_l_utilisateur_existant_jdoe_on_obtient_erreur_403()
+	public function test_étant_donné_un_utilisateur_normal_bob_connecté_lorsquon_demande_une_ressource_pour_l_utilisateur_jdoe_on_obtient_erreur_403()
 	{
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->get("utilisateurConnecté")
-			->andReturn(new User("bob"));
-		$mockRequest
-			->allows()
-			->all()
-			->andReturn([
-				"username" => "jdoe",
-			]);
-		$mockRequest->request = $mockRequest;
+		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe");
 
-		$cobaye = new ValidationPermissions();
-		$résultat_obtenu = $cobaye->handle($mockRequest, function () {
-			return "OK";
-		});
-
-		$résultat_attendu = [
-			"erreur" => "Accès interdit.",
-		];
 		$this->assertEquals(403, $résultat_obtenu->status());
-		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
+		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_obtenu->getContent());
 	}
 
-	public function test_étant_donné_un_utilisateur_normal_bob_connecté_lorsquon_demande_une_ressource_pour_l_utilisateur_inexistant_jdoe_on_obtient_erreur_403()
+	public function test_étant_donné_un_utilisateur_admin_connecté_lorsquon_demande_une_ressource_pour_l_utilisateur_existant_bob_on_obtient_son_profil()
 	{
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->get("utilisateurConnecté")
-			->andReturn(new User("bob"));
-		$mockRequest
-			->allows()
-			->all()
-			->andReturn([
-				"username" => "jdoe",
-			]);
-		$mockRequest->request = $mockRequest;
+		$admin = new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]);
+		$résultat_obtenu = $this->actingAs($admin)->call("GET", "/user/bob");
 
-		$cobaye = new ValidationPermissions();
-		$résultat_obtenu = $cobaye->handle($mockRequest, function () {
-			return "OK";
-		});
-
-		$résultat_attendu = [
-			"erreur" => "Accès interdit.",
-		];
-		$this->assertEquals(403, $résultat_obtenu->status());
-		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
-	}
-	public function test_étant_donné_un_utilisateur_admin_connecté_lorsquon_demande_une_ressource_pour_l_utilisateur_existant_bob_on_obtient_OK()
-	{
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->get("utilisateurConnecté")
-			->andReturn(new User("admin", User::ROLE_ADMIN));
-		$mockRequest
-			->allows()
-			->all()
-			->andReturn([
-				"username" => "bob",
-			]);
-		$mockRequest->request = $mockRequest;
-
-		$cobaye = new ValidationPermissions();
-		$résultat_obtenu = $cobaye->handle($mockRequest, function () {
-			return "OK";
-		});
-		$this->assertEquals("OK", $résultat_obtenu);
+		$this->assertStringEqualsFile(__DIR__."/résultats_attendus/profil_bob.json", $résultat_obtenu->getContent());
 	}
 
-	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquon_demande_une_ressource_pour_null_on_obtient_OK()
+	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquon_demande_une_ressource_pour_null_on_obtient_son_propre_profil()
 	{
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->get("utilisateurConnecté")
-			->andReturn(new User("bob"));
-		$mockRequest
-			->allows()
-			->all()
-			->andReturn([
-				"username" => null,
-			]);
-		$mockRequest->request = $mockRequest;
+		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/");
 
-		$cobaye = new ValidationPermissions();
-		$résultat_obtenu = $cobaye->handle($mockRequest, function () {
-			return "OK";
-		});
-
-		$this->assertEquals("OK", $résultat_obtenu);
+		$this->assertStringEqualsFile(__DIR__."/résultats_attendus/profil_bob.json", $résultat_obtenu->getContent());
 	}
 }
