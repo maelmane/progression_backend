@@ -22,7 +22,7 @@ use progression\util\Encodage;
 
 class QuestionProgTransformer extends QuestionTransformer
 {
-	protected $availableIncludes = ["tests", "ebauches"];
+	protected $availableIncludes = ["tests", "ebauches", "avancement"];
 
 	public function transform($data_in)
 	{
@@ -75,6 +75,25 @@ class QuestionProgTransformer extends QuestionTransformer
 			$question->exécutables,
 			new ÉbaucheTransformer(),
 			"ebauche"
+		);
+	}
+
+	public function includeAvancement($data_in)
+	{
+		$question = $data_in["question"];
+		$username = $data_in["username"];
+		$question->avancement->id = $username . "/" . Encodage::base64_encode_url($question->uri);
+		$question->avancement->links = [
+			"related" =>
+			$_ENV["APP_URL"] .
+			"question/" .
+			Encodage::base64_encode_url($question->uri),
+		];
+
+		return $this->collection(
+			$question->avancement,
+			new AvancementTransformer(),
+			"avancement"
 		);
 	}
 }

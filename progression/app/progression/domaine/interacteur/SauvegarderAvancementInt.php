@@ -16,11 +16,21 @@
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\interacteur;
 
-class QuestionProg extends Question
+use progression\domaine\entité\{Avancement, Question};
+
+class SauvegarderAvancementInt extends Interacteur
 {
-	public $exécutables = [];
-	public $tests = [];
-	public $avancement = null;
+	public function sauvegarderAvancement($username, $question_uri, $nouvelAvancement)
+	{
+		$dao_avancement = $this->source_dao->get_avancement_dao();
+		$dao_avancement->save($username, $question_uri, $nouvelAvancement);
+		$dao_tentative = $this->source_dao->get_tentative_prog_dao();
+		foreach ($nouvelAvancement->tentatives as $tentative) {
+			$dao_tentative->save($username, $question_uri, $tentative);
+		}
+
+		return $dao_avancement->get_avancement($username, $question_uri);
+	}
 }

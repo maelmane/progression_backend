@@ -23,7 +23,7 @@ Les versions de l'api sont accessibles à des URL distincts pour assurer la rét
 | GET     | ~/question/{uri}~ | Obtient la question disponible à <uri> | uri                | Question            |
 
 ** Privés
-Les points d'entrée privés requierent un token dans l'entête : «Authentification: Bearer <token>»
+Les points d'entrée privés requièrent un token dans l'entête : «Authentification: Bearer <token>»
 
 | Méthode | URL                | Description                       | Paramètres | Réponse |
 | GET     | ~/user~            | Obtient l'utilisateur authentifié |            | User    |
@@ -31,7 +31,7 @@ Les points d'entrée privés requierent un token dans l'entête : «Authentifica
 
 * Ressources
 
-Les ressources échangées sont représentée en format [[https://jsonapi.org][JSON-API]]
+Les ressources échangées sont représentées en format [[https://jsonapi.org][JSON-API]]
 
 ** Utilisateur
 
@@ -91,10 +91,11 @@ Question
 Une question spécifiquement de programmation
 
 *** Relations :
-| Nom      | Cardinalité | Type    | description                  |
-|----------+-------------+---------+------------------------------|
-| ebauches | 1-n         | Ébauche | liste d'ébauches de Solution |
-| tests    | 1-n         | Test    | liste de Tests de validation |
+| Nom        | Cardinalité | Type       | description                   |
+|------------+-------------+------------+-------------------------------|
+| ebauches   | 1-n         | Ébauche    | liste d'ébauches de Solution  |
+| tests      | 1-n         | Test       | liste de Tests de validation  |
+| avancement | 1-1         | Avancement | l'avancement d'un utilisateur |
 
 ** Avancement
 
@@ -264,6 +265,12 @@ curl "https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9nc
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 curl "https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ?include=tests,ebauches" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Créer l'avancement de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+curl -X POST https://progression.dti.crosemont.quebec/api/v1/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir l'avancement de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» : ~LIVE~

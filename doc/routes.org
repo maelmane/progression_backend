@@ -6,10 +6,11 @@
 ** Question
 ~GET /question/{uri}~
 ** Avancement
+~POST /avancement/{username}/{question_uri}~
 ~GET /avancement/{username}/{question_uri}~
 ** Tentative
-~GET /tentative/{username}/{question_uri}/{timestamp:[[:digit:]]}~
 ~POST /tentative/{username}/{question_uri}~
+~GET /tentative/{username}/{question_uri}/{timestamp:[[:digit:]]}~
 ** Ébauche
 ~GET /ebauche/{question_uri}/?langage={langage}~
 ** Test
