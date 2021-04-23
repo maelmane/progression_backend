@@ -36,3 +36,7 @@ RUN chown -R www-data:www-data /var/www/progression/app/storage
 RUN echo AddDefaultCharset utf-8 >> /etc/apache2/apache2.conf
 RUN sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/progression\/app\/html/' /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
+
+WORKDIR /var/www/
+RUN chmod +x progression/app/entrypoint.sh
+CMD [ "bash", "progression/app/entrypoint.sh" ]

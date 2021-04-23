@@ -1,6 +1,7 @@
 <?php
+require_once "/var/www/progression/vendor/" . 'autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable("../");
+$dotenv = Dotenv\Dotenv::createImmutable("/var/www/progression/app/");
 $dotenv->load();
 
 $dotenv->required('APP_URL')->allowedValues(['http://localhost/', 'http://172.20.0.3/']);
