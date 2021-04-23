@@ -20,16 +20,17 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use progression\http\transformer\UserTransformer;
+use progression\domaine\interacteur\ObtenirUserInt;
 
 class UserCtl extends Contrôleur
 {
 	public function get(Request $request, $username = null)
 	{
-		$userInt = $this->intFactory->getObtenirUserInt();
+		$userInt = new ObtenirUserInt();
 		$user = null;
 
 		if ($username == null) {
-			$username = $request->request->get("utilisateurConnecté")->username;
+			$username = $request->user()->username;
 		}
 
 		if ($username != null && $username != "") {

@@ -12,13 +12,14 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
+.	You should have received a copy of the GNU General Public License
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
+use progression\domaine\interacteur\ObtenirAvancementInt;
 use progression\http\transformer\AvancementTransformer;
 use progression\util\Encodage;
 
@@ -28,7 +29,7 @@ class AvancementCtl extends Contrôleur
 	{
 		$chemin = Encodage::base64_decode_url($question_uri);
 		$avancement = null;
-		$avancementInt = $this->intFactory->getObtenirAvancementInt();
+		$avancementInt = new ObtenirAvancementInt();
 		$avancement = $avancementInt->get_avancement($username, $chemin);
 
 		$réponse = null;

@@ -21,6 +21,7 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
+use progression\domaine\interacteur\ObtenirQuestionInt;
 use progression\http\transformer\QuestionProgTransformer;
 use progression\util\Encodage;
 use DomainException, LengthException, RuntimeException;
@@ -34,7 +35,7 @@ class QuestionCtl extends Contrôleur
 
 		$chemin = Encodage::base64_decode_url($uri);
 
-		$questionInt = $this->intFactory->getObtenirQuestionInt();
+		$questionInt = new ObtenirQuestionInt();
 
 		try {
 			$question = $questionInt->get_question($chemin);

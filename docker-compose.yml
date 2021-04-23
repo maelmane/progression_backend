@@ -53,6 +53,7 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=password
       - DB_DBNAME=quiz_test
+      - AUTH_TYPE=no
     volumes:
       - "./db/build_db.sh/:/var/www/db/build_db.sh"
       - "./db/create_db.sql/:/var/www/db/create_db.sql"

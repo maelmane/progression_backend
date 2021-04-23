@@ -49,7 +49,7 @@ print( "Bonjour le monde" )
 
 #-VISIBLE
 ',
-				"python"
+				"python",
 			),
 			"java" => new Exécutable(
 				'import java.util.Scanner;
@@ -76,7 +76,7 @@ public static void main(String[] args) {
 
 }
 ',
-				"java"
+				"java",
 			),
 		];
 		$résultat_attendu->tests = [
@@ -93,20 +93,16 @@ Bonjour le monde
 Bonjour le monde
 Bonjour le monde
 Bonjour le monde
-"
+",
 			),
-			new Test(
-				"1 fois",
-				1,
-				"Bonjour le monde"
-			),
+			new Test("1 fois", 1, "Bonjour le monde"),
 			new Test(
 				"0 fois",
 				0,
 				"",
 				null,
 				"Bien joué! 0 est aussi une entrée valable.",
-				"N'oublie pas les cas limites, 0 est aussi une entrée valable!"
+				"N'oublie pas les cas limites, 0 est aussi une entrée valable!",
 			),
 			new Test(
 				"2 fois",
@@ -116,7 +112,7 @@ Bonjour
 ",
 				null,
 				"Bien joué!",
-				"Rien à dire"
+				"Rien à dire",
 			),
 		];
 
@@ -158,7 +154,6 @@ public static void main(String[] args) {
 ',
 		];
 		$info["tests"] = [
-
 			[
 				"nom" => "10 fois",
 				"in" => 10,
