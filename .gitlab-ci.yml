@@ -21,6 +21,7 @@ variables:
   JWT_SECRET: "secret_à_changer"
   JWT_TTL: 8640000
   AUTH_TYPE: "no"
+  HTTP_ORIGIN: "https://example.com"
 
 # We test PHP7
 test_unitaires:
