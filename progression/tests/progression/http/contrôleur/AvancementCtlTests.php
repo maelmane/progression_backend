@@ -43,8 +43,8 @@ final class AvancementCtlTests extends TestCase
 			->andReturn(new User("jdoe"));
 		$mockUserDAO
 			->shouldReceive("get_user")
-			->with("bob")
-			->andReturn(new User("bob"));
+			->with("jdoe")
+			->andReturn(new User("jdoe"));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("Marcel")
@@ -120,12 +120,12 @@ final class AvancementCtlTests extends TestCase
 	{
 		$résultat_observé = $this->call(
 			"POST",
-			"/avancement/bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 		);
-
+		$resultat_attendu = new Avancement([], Question::ETAT_DEBUT, Question::TYPE_INCONNU);
+		$resultat_attendu->id = "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals($résultat_observé->getContent()->id, "bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
-		$this->assertEquals($résultat_observé->getContent()->attributes->état, "0");	
+		$this->assertEquals($resultat_attendu, $résultat_observé);	
 	}
 	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_dans_le_body_on_obtient_un_message_derreur()
 	{

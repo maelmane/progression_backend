@@ -95,7 +95,6 @@ Une question spécifiquement de programmation
 |------------+-------------+------------+-------------------------------|
 | ebauches   | 1-n         | Ébauche    | liste d'ébauches de Solution  |
 | tests      | 1-n         | Test       | liste de Tests de validation  |
-| avancement | 1-1         | Avancement | l'avancement d'un utilisateur |
 
 ** Avancement
 

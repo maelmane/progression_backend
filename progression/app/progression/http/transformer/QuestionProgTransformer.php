@@ -22,7 +22,7 @@ use progression\util\Encodage;
 
 class QuestionProgTransformer extends QuestionTransformer
 {
-	protected $availableIncludes = ["tests", "ebauches", "avancement"];
+	protected $availableIncludes = ["tests", "ebauches"];
 
 	public function transform($data_in)
 	{
@@ -78,7 +78,7 @@ class QuestionProgTransformer extends QuestionTransformer
 		);
 	}
 
-	public function includeAvancement($data_in)
+	/*public function includeAvancement($data_in)
 	{
 		$question = $data_in["question"];
 		$username = $data_in["username"];
@@ -95,5 +95,5 @@ class QuestionProgTransformer extends QuestionTransformer
 			new AvancementTransformer(),
 			"avancement"
 		);
-	}
+	}*/
 }

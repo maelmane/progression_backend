@@ -42,7 +42,21 @@ class UserDAO extends EntitéDAO
 
 		return $résultat != null ? $objet : null;
 	}
+	public function verifier_rôle_admin($username){
+		$objet = new User($username);
 
+		$query = EntitéDAO::get_connexion()->prepare("SELECT role FROM user WHERE username = ? ");
+		$query->bind_param("s", $objet->username);
+
+		$query->execute();
+
+		$query->bind_result($objet->rôle);
+
+		$résultat = $query->fetch();
+		$query->close();
+
+		return ($objet->rôle == User::ROLE_ADMIN) ? true : false; 
+	}
 	public function save($objet)
 	{
 		$query = EntitéDAO::get_connexion()->prepare(

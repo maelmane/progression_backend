@@ -30,10 +30,15 @@ final class SauvegarderAvancementIntTests extends TestCase
 	{
 		parent::setUp();
 
+		$mockUserDao = Mockery::mock("progression\dao\UserDAO");
 		$mockAvancementDao = Mockery::mock("progression\dao\AvancementDAO");
         $mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 
+		$mockDAOFactory
+			->allows()
+			->get_user_dao()
+			->andReturn($mockUserDao);
 		$mockDAOFactory
 			->allows()
 			->get_avancement_dao()
@@ -68,7 +73,7 @@ final class SauvegarderAvancementIntTests extends TestCase
 		$résultat_attendu = $avancement;
 
 		$interacteur = new SauvegarderAvancementInt();
-		$résultat_observé = $interacteur->sauvegarderAvancement("Bob", "https://example.com/question", $avancement);
+		$résultat_observé = $interacteur->sauvegarder("Bob", "https://example.com/question", $avancement);
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
         $this->assertEquals($résultat_attendu->tentatives, []);

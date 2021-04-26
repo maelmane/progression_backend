@@ -22,15 +22,19 @@ use progression\domaine\entité\{Avancement, Question};
 
 class SauvegarderAvancementInt extends Interacteur
 {
-	public function sauvegarderAvancement($username, $question_uri, $nouvelAvancement)
+	public function sauvegarder($username, $question_uri, $nouvelAvancement)
 	{
-		$dao_avancement = $this->source_dao->get_avancement_dao();
-		$dao_avancement->save($username, $question_uri, $nouvelAvancement);
-		$dao_tentative = $this->source_dao->get_tentative_prog_dao();
-		foreach ($nouvelAvancement->tentatives as $tentative) {
-			$dao_tentative->save($username, $question_uri, $tentative);
-		}
+		$dao_user = $this->source_dao->get_user_dao();
+		if($dao_user->verifier_rôle_admin($username)){
+			$dao_avancement = $this->source_dao->get_avancement_dao();
+			$dao_avancement->save($username, $question_uri, $nouvelAvancement);
+			$dao_tentative = $this->source_dao->get_tentative_prog_dao();
+			foreach ($nouvelAvancement->tentatives as $tentative) {
+				$dao_tentative->save($username, $question_uri, $tentative);
+			}
 
-		return $dao_avancement->get_avancement($username, $question_uri);
+			return $dao_avancement->get_avancement($username, $question_uri);
+		}
+		return null;
 	}
 }
