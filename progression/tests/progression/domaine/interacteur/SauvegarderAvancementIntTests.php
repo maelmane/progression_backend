@@ -57,27 +57,21 @@ final class SauvegarderAvancementIntTests extends TestCase
 
     public function test_étant_donné_un_avancement_sans_tentatives_lorsquon_sauvegarde_seul_lavancement_est_enregistré_et_on_obtient_lavancement_sans_tentatives()
 	{
-		$avancement = new Avancement([], Question::ETAT_NONREUSSI, Question::TYPE_PROG);
+		$résultat_attendu = new Avancement([], Question::ETAT_NONREUSSI, Question::TYPE_PROG);
 
 		DAOFactory::getInstance()
 			->get_avancement_dao()
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($user, $uri, $av) use ($avancement) {
-				return $user == "Bob" &&
-					$uri == "https://example.com/question" &&
-					$av == new Avancement([], Question::ETAT_NONREUSSI, Question::TYPE_PROG);
-			})
-			->andReturn($avancement);
-
-		$résultat_attendu = $avancement;
+			->withArgs(["jdoe", "https://example.com/question", Mockery::any()])
+			->andReturnArg(2);
 
 		$interacteur = new SauvegarderAvancementInt();
-		$résultat_observé = $interacteur->sauvegarder("Bob", "https://example.com/question", $avancement);
+		$résultat_observé = $interacteur->sauvegarder("Bob", "https://example.com/question", new Avancement([], Question::ETAT_NONREUSSI, Question::TYPE_PROG));
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
-        $this->assertEquals($résultat_attendu->tentatives, []);
-        $this->assertEquals($résultat_observé->tentatives, []);
+        $this->assertEquals([], $résultat_attendu->tentatives);
+        $this->assertEquals([], $résultat_observé->tentatives);
 	}
     public function test_étant_donné_un_avancement_avec_tentatives_lorsquon_sauvegarde_ses_tentatives_aussi_sont_enregistrées_et_on_obtient_lavancement_avec_tentatives()
 	{
