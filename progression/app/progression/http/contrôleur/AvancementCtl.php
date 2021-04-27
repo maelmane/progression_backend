@@ -60,7 +60,7 @@ class AvancementCtl extends Contrôleur
 			$avancementReq = json_decode($request->avancement);
 			if($avancementReq != null){
 				$avancementInt = new SauvegarderAvancementInt();
-				$avancement = $avancementInt->sauvegarder($username, $chemin, $avancementReq)
+				$avancement = $avancementInt->sauvegarder($username, $chemin, $avancementReq);
 			} else{
 				return $this->réponse_json(["erreur" => "Le format de l'avancement est intraitable."], 422);
 			}
@@ -68,7 +68,7 @@ class AvancementCtl extends Contrôleur
 			$avancementInt = new ObtenirAvancementInt();
 			$avancement = $avancementInt->get_avancement($username, $chemin);
 		}
-		// Cad que l'utilisateur existe et <l'objet $avancement correspond bel et bien à un objet de la classe «Avancement»>(si applicable)
+		// On n'entrera ici que si l'utilisateur existe et <l'objet $avancement correspond bel et bien à un objet de la classe «Avancement»>(si applicable)
 		if($avancement != null){
 			$avancement->id = "{$username}/$question_uri";
 			$réponse = $this->item($avancement, new AvancementTransformer());

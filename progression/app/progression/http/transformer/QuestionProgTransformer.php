@@ -77,23 +77,4 @@ class QuestionProgTransformer extends QuestionTransformer
 			"ebauche"
 		);
 	}
-
-	/*public function includeAvancement($data_in)
-	{
-		$question = $data_in["question"];
-		$username = $data_in["username"];
-		$question->avancement->id = $username . "/" . Encodage::base64_encode_url($question->uri);
-		$question->avancement->links = [
-			"related" =>
-			$_ENV["APP_URL"] .
-			"question/" .
-			Encodage::base64_encode_url($question->uri),
-		];
-
-		return $this->collection(
-			$question->avancement,
-			new AvancementTransformer(),
-			"avancement"
-		);
-	}*/
 }
