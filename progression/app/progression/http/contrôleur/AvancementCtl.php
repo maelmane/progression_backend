@@ -46,36 +46,45 @@ class AvancementCtl extends Contrôleur
 		return $this->préparer_réponse($réponse);
 	}
 
-	public function post(Request $request, $username, $question_uri)
+	public function post(Request $request, $username)
 	{
 		$avancement = null;
 		$réponse = null;
-		$chemin = Encodage::base64_decode_url($question_uri);
 
-		if(isset($request->avancement)){
-			$validation = $this->validationAvancement($request->avancement);
-			if ($validation->fails()) {
-				return $this->réponse_json(["erreur" => $validation->errors()], 422);
-			}
-			$avancementReq = json_decode($request->avancement);
-			if($avancementReq != null){
-				$avancementInt = new SauvegarderAvancementInt();
-				$avancement = $avancementInt->sauvegarder($username, $chemin, $avancementReq);
+		if(isset($request->question_uri)){
+			$chemin = Encodage::base64_decode_url($request->question_uri);
+
+			if(isset($request->avancement)){
+				if($request->user()->rôle == User::ROLE_ADMIN){
+					$validation = $this->validationAvancement($request->avancement);
+					if ($validation->fails()) {
+						return $this->réponse_json(["erreur" => $validation->errors()], 422);
+					}
+					$avancementReq = json_decode($request->avancement);
+					if($avancementReq != null){
+						$avancementInt = new SauvegarderAvancementInt();
+						$avancement = $avancementInt->sauvegarder($username, $chemin, $avancementReq);
+					} else{
+						return $this->réponse_json(["erreur" => "Le format de l'avancement est intraitable."], 422);
+					}
+				} else{
+					return $this->réponse_json(["erreur" => "Accès interdit."], 403);
+				}
 			} else{
-				return $this->réponse_json(["erreur" => "Le format de l'avancement est intraitable."], 422);
+				$avancementInt = new ObtenirAvancementInt();
+				$avancement = $avancementInt->get_avancement($username, $chemin);
 			}
-		} else{
-			$avancementInt = new ObtenirAvancementInt();
-			$avancement = $avancementInt->get_avancement($username, $chemin);
-		}
-		// On n'entrera ici que si l'utilisateur existe et <l'objet $avancement correspond bel et bien à un objet de la classe «Avancement»>(si applicable)
-		if($avancement != null){
-			$avancement->id = "{$username}/$question_uri";
-			$réponse = $this->item($avancement, new AvancementTransformer());
+			// On n'entrera ici que si l'utilisateur existe et <l'objet $avancement correspond bel et bien à un objet de la classe «Avancement»>(si applicable)
+			if($avancement != null){
+				$avancement->id = "{$username}/$request->question_uri";
+				$réponse = $this->item($avancement, new AvancementTransformer());
+			}else{
+				return $this->réponse_json(["erreur" => "Requête incorrecte !!!"], 422);
+			}
+			return $this->préparer_réponse($réponse);
 		}else{
-			return $this->réponse_json(["erreur" => "Requête incorrecte !!!"], 422);
+			return $this->réponse_json(["erreur" => "Vous devez fournir l'uri de la question."], 422);
 		}
-		return $this->préparer_réponse($réponse);
 	}
 
 	public function validationAvancement($request)
