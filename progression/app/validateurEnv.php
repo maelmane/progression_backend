@@ -22,10 +22,3 @@ $dotenv->required('LIMITE_YML')->isInteger();
 $dotenv->required('JWT_TTL')->isInteger();
 
 $dotenv->required('COMPILEBOX_URL')->allowedRegexValues('(.*)');
-
-$dotenv->required('APP_DEBUG')->isBoolean();
-$dotenv->required('LOG_CHANNEL')->allowedValues(['stack']);
-$dotenv->required('CACHE_DRIVER')->allowedValues(['file']);
-$dotenv->required('QUEUE_CONNECTION')->allowedValues(['sync']);
-
-$dotenv->required(['LOG_SLACK_WEBHOOK_URL', 'APP_KEY']);
