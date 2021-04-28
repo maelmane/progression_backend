@@ -6,6 +6,7 @@
 ** Question
 ~GET /question/{uri}~
 ** Avancement
+~POST /user/{username}/avancements~
 ~GET /avancement/{username}/{question_uri}~
 ** Tentative
 ~POST /tentative/{username}/{question_uri}~
