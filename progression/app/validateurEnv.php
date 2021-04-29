@@ -6,7 +6,6 @@ $dotenv->load();
 
 $dotenv->required('APP_URL')->allowedRegexValues('(.*/$)');
 $dotenv->required('APP_NAME')->allowedRegexValues('(.*)');
-$dotenv->required('APP_ENV')->allowedValues(['local', 'prod', 'test']);
 $dotenv->required('APP_TIMEZONE')->allowedValues(['UTC']);
 
 $dotenv->required('JWT_SECRET')->allowedRegexValues('(.*)');
