@@ -4,13 +4,21 @@ CREATE TABLE `user` (
 	`role`		int NOT NULL DEFAULT 0,
 	PRIMARY KEY (`username`)
 );
+CREATE TABLE `sauvegarde` (
+	`id`			int NOT NULL AUTO_INCREMENT,
+	`code`			text NOT NULL,
+	`langage`		varchar(255) NOT NULL,
+	PRIMARY KEY (`id`)
+);
 CREATE TABLE `avancement` (
 	`username`		varchar(255) NOT NULL,
 	`question_uri` 	varchar(2048) CHARACTER SET latin1 NOT NULL,
 	`etat`			int DEFAULT 1,
 	`type`          int NOT NULL,
+	`sauvegarde_id`	int,
 	PRIMARY KEY (`username`, `question_uri`),
-	FOREIGN KEY ( `username`) REFERENCES `user`(`username`)
+	FOREIGN KEY (`username`) REFERENCES `user`(`username`),
+	FOREIGN KEY (`sauvegarde_id`) REFERENCES `sauvegarde`(`id`)
 );
 CREATE TABLE `reponse_sys` (
 	`username`		varchar(255) NOT NULL,
