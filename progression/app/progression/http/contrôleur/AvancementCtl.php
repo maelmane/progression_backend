@@ -32,14 +32,11 @@ class AvancementCtl extends Contrôleur
 	{
 		$chemin = Encodage::base64_decode_url($question_uri);
 		$avancement = null;
-		$avancementInt = new ObtenirAvancementInt();
-		$avancement = $avancementInt->get_avancement($username, $chemin);
-
 		$réponse = null;
 
+		$avancement = $this->obtenirAvancement($username, $chemin);
 		if ($avancement != null) {
 			$avancement->id = "{$username}/$question_uri";
-
 			$réponse = $this->item($avancement, new AvancementTransformer());
 		}
 
@@ -60,33 +57,43 @@ class AvancementCtl extends Contrôleur
 					if ($validation->fails()) {
 						return $this->réponse_json(["erreur" => $validation->errors()], 422);
 					}
-					$avancementReq = json_decode($request->avancement);
-					if($avancementReq != null){
-						$avancementInt = new SauvegarderAvancementInt();
-						$avancement = $avancementInt->sauvegarder($username, $chemin, $avancementReq);
+					$avancement = json_decode($request->avancement);
+					if($avancement != null){
+						$avancement = $this->sauvegarderAvancement($username, $chemin, $avancement);
 					} else{
-						return $this->réponse_json(["erreur" => "Le format de l'avancement est intraitable."], 422);
+						return $this->réponse_json(["erreur" => "Requête intraitable"], 422);
 					}
 				} else{
 					return $this->réponse_json(["erreur" => "Accès interdit."], 403);
 				}
 			} else{
-				$avancementInt = new ObtenirAvancementInt();
-				$avancement = $avancementInt->get_avancement($username, $chemin);
+				$avancement = $this->obtenirAvancement($username, $chemin);
 			}
 			// On n'entrera ici que si l'utilisateur existe et <l'objet $avancement correspond bel et bien à un objet de la classe «Avancement»>(si applicable)
 			if($avancement != null){
 				$avancement->id = "{$username}/$request->question_uri";
 				$réponse = $this->item($avancement, new AvancementTransformer());
 			}else{
-				return $this->réponse_json(["erreur" => "Requête incorrecte !!!"], 422);
+				return $this->réponse_json(["erreur" => "Requête intraitable"], 422);
 			}
 			return $this->préparer_réponse($réponse);
 		}else{
-			return $this->réponse_json(["erreur" => "Vous devez fournir l'uri de la question."], 422);
+			return $this->réponse_json(["erreur" => "Requête intraitable"], 422);
 		}
 	}
 
+	public function obtenirAvancement($username, $chemin)
+	{
+		$avancementInt = new ObtenirAvancementInt();
+		$avancement = $avancementInt->get_avancement($username, $chemin);
+		return $avancement;
+	}
+	public function sauvegarderAvancement($username, $chemin, $avancement)
+	{
+		$avancementInt = new SauvegarderAvancementInt();
+		$new_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);
+		return $new_avancement;
+	}
 	public function validationAvancement($request)
 	{
 		return Validator::make(

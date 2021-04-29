@@ -3,11 +3,6 @@
 require_once __DIR__ . "/../autoload.php";
 require_once __DIR__ . "/../../vendor/autoload.php";
 
-// Vérification et formattage de la variable d'environnement contenant l'url de base de l'application
-if (isset($_ENV["APP_URL"]) && $_ENV["APP_URL"] != "") {
-	$_ENV["APP_URL"] = preg_replace("/\/+$/", "/", $_ENV["APP_URL"]);
-}
-
 date_default_timezone_set(env("APP_TIMEZONE", "UTC"));
 
 /*

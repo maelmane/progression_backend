@@ -31,16 +31,13 @@ final class AvancementCtlTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$this->admin = new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("jdoe")
-			->andReturn(new User("jdoe"));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("jdoe")
@@ -66,12 +63,17 @@ final class AvancementCtlTests extends TestCase
 		$avancement = new Avancement([new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest")]);
 		$avancement->etat = 1;
 		$avancement->type = Question::TYPE_PROG;
+		$avancementPost = new Avancement([], Question::ETAT_DEBUT, Question::TYPE_PROG);
 
 		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($avancement);
+		$mockAvancementDAO
+			->shouldReceive("save")
+			->with("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", $avancementPost)
+			->andReturn($avancementPost);
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
 			->with("Marcel", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
@@ -118,20 +120,20 @@ final class AvancementCtlTests extends TestCase
 
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_on_obtient_un_nouvel_avancement_avec_ses_valeurs_par_defaut()
 	{
-		$résultat_observé = $this->call(
+		$résultat_observé = $this->actingAs($this->user)->call(
 			"POST",
-			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"/user/bob/avancements",
 		);
-		$resultat_attendu = new Avancement([], Question::ETAT_DEBUT, Question::TYPE_INCONNU);
-		$resultat_attendu->id = "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$resultat_attendu = new Avancement([], Question::ETAT_DEBUT, Question::TYPE_PROG);
+		$resultat_attendu->id = "bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertEquals($resultat_attendu, $résultat_observé);	
 	}
 	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_dans_le_body_on_obtient_un_message_derreur()
 	{
-		$résultat_observé = $this->call(
+		$résultat_observé = $this->actingAs($this->admin)->call(
 			"POST",
-			"/avancement/admin/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"/user/bob/avancements",
 		);
 
 		$this->assertEquals(422, $résultat_observé->status());
@@ -139,12 +141,14 @@ final class AvancementCtlTests extends TestCase
 	}
 	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_avancement_dans_le_body_on_obtient_lavancement_modifié()
 	{
-		$tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
-		$avancement = new Avancement([$tentative], Question::ETAT_REUSSI, Question::TYPE_PROG);
-		$résultat_observé = $this->call(
+		$avancement = new Avancement([], Question::ETAT_REUSSI, Question::TYPE_PROG);
+		$résultat_observé = $this->actingAs($this->admin)->call(
 			"POST",
-			"/avancement/admin/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-			["avancement" => $avancement]
+			"/user/bob/avancements",
+			[
+				"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				"avancement" => $avancement
+			],
 		);
 
 		$this->assertEquals(200, $résultat_observé->status());

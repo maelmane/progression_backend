@@ -67,7 +67,7 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->andReturnArg(2);
 
 		$interacteur = new SauvegarderAvancementInt();
-		$résultat_observé = $interacteur->sauvegarder("Bob", "https://example.com/question", new Avancement([], Question::ETAT_NONREUSSI, Question::TYPE_PROG));
+		$résultat_observé = $interacteur->sauvegarder("jdoe", "https://example.com/question", new Avancement([], Question::ETAT_NONREUSSI, Question::TYPE_PROG));
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
         $this->assertEquals([], $résultat_attendu->tentatives);
