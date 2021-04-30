@@ -81,11 +81,6 @@ class AvancementCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => "Requête intraitable"], 422);
 		}
 	}
-	public function postSauvegarde(Request $request, $username, $question_uri)
-	{
-		$code = $request->code;
-		$langage = $request->langage;
-	}
 
 	public function obtenirAvancement($username, $chemin)
 	{
@@ -93,12 +88,14 @@ class AvancementCtl extends Contrôleur
 		$avancement = $avancementInt->get_avancement($username, $chemin);
 		return $avancement;
 	}
+
 	public function sauvegarderAvancement($username, $chemin, $avancement)
 	{
 		$avancementInt = new SauvegarderAvancementInt();
 		$new_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);
 		return $new_avancement;
 	}
+
 	public function validationAvancement($request)
 	{
 		return Validator::make(

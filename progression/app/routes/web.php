@@ -44,9 +44,11 @@ $router->group(["middleware" => ["auth", "validationPermissions"]], function () 
 	$router->get("/user[/{username}]", "UserCtl@get");
 	$router->get("/user/{username}/relationships/avancements", "NotImplementedCtl@get");
 	$router->get("/user/{username}/avancements", "NotImplementedCtl@get");
+	// Sauvegarde
+	$router->post("/sauvegarde/{username}/{question_uri}", "SauvegardeCtl@post");
+	$router->get("/sauvegarde/{username}/{question_uri}/{langage}", "SauvegardeCtl@get");
 	// Avancement
 	$router->post("/user/{username}/avancements", "AvancementCtl@post");
-	$router->post("/avancement/{username}/{question_uri}", "AvancementCtl@postSauvegarde");
 	$router->get("/avancement/{username}/{question_uri}", "AvancementCtl@get");
 	$router->get("/avancement/{username}/{chemin}/relationships/tentatives", "NotImplementedCtl@get");
 	$router->get("/avancement/{username}/{chemin}/tentatives", "NotImplementedCtl@get");
