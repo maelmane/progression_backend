@@ -5,10 +5,11 @@ CREATE TABLE `user` (
 	PRIMARY KEY (`username`)
 );
 CREATE TABLE `sauvegarde` (
-	`username`		varchar(255) NOT NULL,
-	`question_uri` 	varchar(2048) CHARACTER SET latin1 NOT NULL,
-	`langage`		varchar(255) NOT NULL,
-	`code`			text,
+	`username`			varchar(255) NOT NULL,
+	`question_uri`		varchar(2048) CHARACTER SET latin1 NOT NULL,
+	`date_sauvegarde`	int(10) NOT NULL,
+	`langage`			varchar(255) NOT NULL,
+	`code`				text,
 	PRIMARY KEY (`username`, `question_uri`),
 	FOREIGN KEY (`username`) REFERENCES `user`(`username`),
 	UNIQUE (`langage`)
