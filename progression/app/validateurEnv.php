@@ -17,7 +17,7 @@ $dotenv->required('DB_PASSWORD')->allowedRegexValues('(.*)');
 $dotenv->required("AUTH_TYPE")->allowedRegexValues("(no|local|ldap)");
 $dotenv->required("HTTP_ORIGIN")->allowedRegexValues("(.*)");
 
-$dotenv->required("LIMITE_YML")->isInteger();
+$dotenv->required("QUESTION_TAILLE_MAX")->isInteger();
 $dotenv->required("JWT_TTL")->isInteger();
 
 $dotenv->required("COMPILEBOX_URL")->allowedRegexValues("(.*)");
