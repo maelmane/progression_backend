@@ -12,21 +12,19 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details.
 
-.	You should have received a copy of the GNU General Public License
+	You should have received a copy of the GNU General Public License
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\http\contrôleur;
+namespace progression\dao;
 
-use Illuminate\Http\Request;
-
-class SauvegardeCtl extends Contrôleur
+class SauvegardeDAO extends EntitéDAO
 {
-	public function post(Request $request, $username, $question_uri)
+	public function get_sauvegarde($username, $question_uri, $langage)
 	{
 	}
 
-	public function get(Request $request, $username, $question_uri, $langage)
+	protected function save($sauvegarde)
 	{
 	}
 }
