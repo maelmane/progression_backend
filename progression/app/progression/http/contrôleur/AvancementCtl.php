@@ -49,7 +49,7 @@ class AvancementCtl extends Contrôleur
 		$avancement = null;
 		$réponse = null;
 
-		if (isset($request->question_uri)) {
+		if (isset($request->question_uri)) { 
 			$chemin = Encodage::base64_decode_url($request->question_uri);
 
 			if (isset($request->avancement)) {
