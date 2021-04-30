@@ -20,7 +20,6 @@ namespace progression\domaine\interacteur;
 
 class SoumettreTentativeProgInt extends Interacteur
 {
-
 	public function soumettre_tentative($username, $question, $tentative)
 	{
 		$exécutable = null;

@@ -27,12 +27,12 @@ use Illuminate\Auth\GenericUser;
 final class ÉbaucheCtlTests extends TestCase
 {
 	public $user;
-	
+
 	public function setUp(): void
 	{
 		parent::setUp();
 		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
-		
+
 		// Question
 		$question = new QuestionProg();
 		$question->type = Question::TYPE_PROG;

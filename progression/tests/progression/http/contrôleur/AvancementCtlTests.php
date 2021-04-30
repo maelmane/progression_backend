@@ -27,7 +27,7 @@ use Illuminate\Auth\GenericUser;
 final class AvancementCtlTests extends TestCase
 {
 	public $user;
-	
+
 	public function setUp(): void
 	{
 		parent::setUp();
@@ -120,39 +120,54 @@ final class AvancementCtlTests extends TestCase
 
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_on_obtient_un_nouvel_avancement_avec_ses_valeurs_par_defaut()
 	{
-		$résultat_observé = $this->actingAs($this->user)->call(
-			"POST",
-			"/user/bob/avancements",
-		);
-		$resultat_attendu = new Avancement([], Question::ETAT_DEBUT, Question::TYPE_PROG);
-		$resultat_attendu->id = "bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/bob/avancements", [
+			"question_uri" =>
+				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"avancement" => "{}",
+		]);
+		$resultat_attendu = new Avancement([], Question::ETAT_DEBUT, Question::TYPE_INCONNU);
+		$resultat_attendu->id =
+			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals($resultat_attendu, $résultat_observé);	
+		$this->assertEquals($resultat_attendu, $résultat_observé);
 	}
 	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_dans_le_body_on_obtient_un_message_derreur()
 	{
-		$résultat_observé = $this->actingAs($this->admin)->call(
+		$résultat_observé = $this->actingAs(new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]))->call(
 			"POST",
-			"/user/bob/avancements",
+			"/user/jdoe/avancements",
+			[
+				"question_uri" =>
+					"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				"avancement" => null,
+			],
 		);
 
 		$this->assertEquals(422, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Le champ avancement est obligatoire pour enregistrer l\'avancement."}', $résultat_observé->getContent());	
+		$this->assertEquals(
+			'{"erreur":"Le champ avancement est obligatoire pour enregistrer l\'avancement."}',
+			$résultat_observé->getContent(),
+		);
 	}
 	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_avancement_dans_le_body_on_obtient_lavancement_modifié()
 	{
 		$avancement = new Avancement([], Question::ETAT_REUSSI, Question::TYPE_PROG);
-		$résultat_observé = $this->actingAs($this->admin)->call(
+		$résultat_observé = $this->actingAs(new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]))->call(
 			"POST",
 			"/user/bob/avancements",
 			[
-				"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-				"avancement" => $avancement
+				"question_uri" =>
+					"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				"avancement" => $avancement,
 			],
 		);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals($résultat_observé->getContent()->id, "bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
-		$this->assertEquals($résultat_observé->getContent()->attributes->état, "2");	
+		$this->assertEquals(
+			$résultat_observé->getContent()->id,
+			"bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		);
+		$this->assertEquals($résultat_observé->getContent()->attributes->état, "2");
 	}
 }

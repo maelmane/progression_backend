@@ -22,8 +22,6 @@ class ObtenirTentativeInt extends Interacteur
 {
 	function get_tentative($username, $question_uri, $date)
 	{
-		return $this->source_dao
-			->get_tentative_dao()
-			->get_tentative($username, $question_uri, $date);
+		return $this->source_dao->get_tentative_dao()->get_tentative($username, $question_uri, $date);
 	}
 }

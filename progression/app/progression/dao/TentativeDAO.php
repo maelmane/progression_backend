@@ -38,7 +38,7 @@ class TentativeDAO extends EntitéDAO
 		}
 	}
 
-    public function get_tentative($username, $question_uri, $date)
+	public function get_tentative($username, $question_uri, $date)
 	{
 		$type = $this->get_type($username, $question_uri);
 
@@ -53,7 +53,7 @@ class TentativeDAO extends EntitéDAO
 		}
 	}
 
-    public function save($username, $question_uri, $objet)
+	public function save($username, $question_uri, $objet)
 	{
 		if ($objet instanceof TentativeProg) {
 			return $this->source->get_tentative_prog_dao()->save($username, $question_uri, $objet);
@@ -65,8 +65,7 @@ class TentativeDAO extends EntitéDAO
 			return null;
 		}
 	}
-    
-    
+
 	private function get_type($username, $question_uri)
 	{
 		$type = null;
@@ -82,7 +81,4 @@ class TentativeDAO extends EntitéDAO
 
 		return $type;
 	}
-
-
-    
 }

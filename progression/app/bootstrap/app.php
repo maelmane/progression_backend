@@ -70,7 +70,10 @@ $app->routeMiddleware([
 ]);
 
 $app->routeMiddleware([
-	"validationPermissions" => $_ENV["AUTH_TYPE"]=="no" ? progression\http\middleware\Bypass::class : progression\http\middleware\ValidationPermissions::class,
+	"validationPermissions" =>
+		$_ENV["AUTH_TYPE"] == "no"
+			? progression\http\middleware\Bypass::class
+			: progression\http\middleware\ValidationPermissions::class,
 ]);
 
 $app->routeMiddleware([
@@ -108,11 +111,11 @@ $app->register(progression\providers\AuthServiceProvider::class);
 
 $app->router->group(
 	[
-	"namespace" => "progression\http\contrôleur",
+		"namespace" => "progression\http\contrôleur",
 	],
 	function ($router) {
 		require __DIR__ . "/../routes/web.php";
-},
+	},
 );
 
-	return $app;
+return $app;

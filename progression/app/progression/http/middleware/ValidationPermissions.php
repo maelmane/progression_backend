@@ -43,16 +43,13 @@ class ValidationPermissions
 				"Content-Type" => "application/vnd.api+json",
 				"Charset" => "utf-8",
 			],
-			JSON_UNESCAPED_UNICODE
+			JSON_UNESCAPED_UNICODE,
 		);
 
 		if ($utilisateurRecherché && $utilisateurConnecté) {
 			switch ($utilisateurConnecté->rôle) {
 				case User::ROLE_NORMAL:
-					if (
-						$utilisateurConnecté->username ==
-							$utilisateurRecherché->username
-					) {
+					if ($utilisateurConnecté->username == $utilisateurRecherché->username) {
 						$réponse = $next($request);
 					}
 					break;

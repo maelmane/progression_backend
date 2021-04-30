@@ -25,7 +25,7 @@ use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransfor
 use progression\domaine\interacteur\{ObtenirTentativeInt, ObtenirQuestionInt, SoumettreTentativeProgInt};
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
-use progression\domaine\interacteur\ExécutionException;
+use progression\dao\ExécutionException;
 use progression\util\Encodage;
 use DomainException, LengthException, RuntimeException;
 
@@ -71,13 +71,13 @@ class TentativeCtl extends Contrôleur
 			$question = $questionInt->get_question($chemin);
 		} catch (LengthException $erreur) {
 			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			return $this->réponse_json(["message" => "Limite de volume dépassé."], 509);
+			return $this->réponse_json(["erreur" => "Limite de volume dépassé."], 509);
 		} catch (RuntimeException $erreur) {
 			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			return $this->réponse_json(["message" => "Ressource indisponible sur le serveur distant."], 502);
+			return $this->réponse_json(["erreur" => "Ressource indisponible sur le serveur distant."], 502);
 		} catch (DomainException $erreur) {
 			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			return $this->réponse_json(["message" => "Requête intraitable."], 422);
+			return $this->réponse_json(["erreur" => "Requête intraitable."], 422);
 		}
 
 		if ($question instanceof QuestionProg) {
@@ -100,7 +100,7 @@ class TentativeCtl extends Contrôleur
 				$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
 				$réponse = $this->item($tentative, new TentativeProgTransformer());
 			} else {
-				return $this->réponse_json(["erreur" => "Tentative intraitable."], 422);
+				return $this->réponse_json(["erreur" => "Requête intraitable."], 422);
 			}
 		} elseif ($question instanceof QuestionSys) {
 			return $this->réponse_json(["erreur" => "Question système non implémentée."], 501);
@@ -117,11 +117,11 @@ class TentativeCtl extends Contrôleur
 			$request->all(),
 			[
 				"langage" => "required",
-				"code" => "required"
+				"code" => "required",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
-			]
+			],
 		);
 	}
 }

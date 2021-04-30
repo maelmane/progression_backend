@@ -22,18 +22,23 @@ class DAOFactory
 {
 	private static $laFactory = null;
 
-	private function __construct(){
+	private function __construct()
+	{
 	}
 
-	static function getInstance(){
-		if(DAOFactory::$laFactory == null) DAOFactory::$laFactory = new DAOFactory();
+	static function getInstance()
+	{
+		if (DAOFactory::$laFactory == null) {
+			DAOFactory::$laFactory = new DAOFactory();
+		}
 		return DAOFactory::$laFactory;
 	}
 
-	static function setInstance($uneFactory){
+	static function setInstance($uneFactory)
+	{
 		DAOFactory::$laFactory = $uneFactory;
 	}
-	
+
 	function get_avancement_dao()
 	{
 		return new AvancementDAO($this);

@@ -17,11 +17,16 @@
  */
 
 namespace progression\dao;
+use Exception;
 
-class Exécuteur
+class ExécutionException extends Exception
 {
-	public function exécuter($exécutable, $test)
+	public function __construct($erreur, $url)
 	{
-		return null;
+		$erreurMsg =
+			isset($erreur) && isset($erreur["message"]) && $erreur["message"] != ""
+				? $erreur["message"]
+				: "Échec de l'ouverture du fichier a l'adresse : {$url}";
+		parent::__construct($erreurMsg);
 	}
 }

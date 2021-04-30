@@ -26,11 +26,11 @@ use Illuminate\Auth\GenericUser;
 final class ValidationPermissionsTests extends TestCase
 {
 	public $user;
-	
+
 	public function setup(): void
 	{
 		parent::setUp();
-		
+
 		$_ENV["AUTH_TYPE"] = "ldap";
 		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
 
@@ -60,7 +60,7 @@ final class ValidationPermissionsTests extends TestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/bob");
 
-		$this->assertStringEqualsFile(__DIR__."/résultats_attendus/profil_bob.json", $résultat_obtenu->getContent());
+		$this->assertStringEqualsFile(__DIR__ . "/résultats_attendus/profil_bob.json", $résultat_obtenu->getContent());
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_bob_connecté_lorsquon_demande_une_ressource_pour_l_utilisateur_jdoe_on_obtient_erreur_403()
@@ -76,13 +76,13 @@ final class ValidationPermissionsTests extends TestCase
 		$admin = new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]);
 		$résultat_obtenu = $this->actingAs($admin)->call("GET", "/user/bob");
 
-		$this->assertStringEqualsFile(__DIR__."/résultats_attendus/profil_bob.json", $résultat_obtenu->getContent());
+		$this->assertStringEqualsFile(__DIR__ . "/résultats_attendus/profil_bob.json", $résultat_obtenu->getContent());
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquon_demande_une_ressource_pour_null_on_obtient_son_propre_profil()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/");
 
-		$this->assertStringEqualsFile(__DIR__."/résultats_attendus/profil_bob.json", $résultat_obtenu->getContent());
+		$this->assertStringEqualsFile(__DIR__ . "/résultats_attendus/profil_bob.json", $résultat_obtenu->getContent());
 	}
 }
