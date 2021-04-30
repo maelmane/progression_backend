@@ -25,7 +25,7 @@ use progression\domaine\interacteur\ObtenirUserInt;
 use progression\domaine\interacteur\SauvegarderAvancementInt;
 use progression\http\transformer\AvancementTransformer;
 use progression\util\Encodage;
-use progression\domaine\entité\User;
+use progression\domaine\entité\{User, Avancement, Question};
 
 class AvancementCtl extends Contrôleur
 {
@@ -54,16 +54,11 @@ class AvancementCtl extends Contrôleur
 
 			if (isset($request->avancement)) {
 				if ($request->user()->rôle == User::ROLE_ADMIN) {
-					$validation = $this->validationAvancement($request->avancement);
-					if ($validation->fails()) {
-						return $this->réponse_json(["erreur" => $validation->errors()], 422);
+					if (!isset($request->avancement["état"])) {
+						return $this->réponse_json(["erreur" => "Le champ état est obligatoire pour enregistrer l'avancement."], 422);
 					}
-					$avancement = json_decode($request->avancement);
-					if ($avancement != null) {
-						$avancement = $this->sauvegarderAvancement($username, $chemin, $avancement);
-					} else {
-						return $this->réponse_json(["erreur" => "Requête intraitable"], 422);
-					}
+					$avancement = new Avancement([], $request->avancement["état"], Question::TYPE_PROG);
+					$avancement = $this->sauvegarderAvancement($username, $chemin, $avancement);
 				} else {
 					return $this->réponse_json(["erreur" => "Accès interdit."], 403);
 				}
@@ -94,17 +89,5 @@ class AvancementCtl extends Contrôleur
 		$avancementInt = new SauvegarderAvancementInt();
 		$new_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);
 		return $new_avancement;
-	}
-	public function validationAvancement($request)
-	{
-		return Validator::make(
-			$request->all(),
-			[
-				"état" => "required",
-			],
-			[
-				"required" => "Le champ :attribute est obligatoire pour enregistrer l'avancement.",
-			],
-		);
 	}
 }
