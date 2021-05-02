@@ -63,7 +63,7 @@ class TentativeCtl extends Contrôleur
 		$réponse = null;
 
 		$chemin = Encodage::base64_decode_url($question_uri);
-
+		
 		$question = null;
 
 		$questionInt = new ObtenirQuestionInt();
@@ -95,7 +95,6 @@ class TentativeCtl extends Contrôleur
 				Log::error($e->getMessage());
 				return $this->réponse_json(["erreur" => "Service non disponible."], 503);
 			}
-
 			if ($tentative != null) {
 				$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
 				$réponse = $this->item($tentative, new TentativeProgTransformer());

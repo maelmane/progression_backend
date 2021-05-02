@@ -43,8 +43,9 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->andReturn(null);
 
 		$mockTentativeDAO = Mockery::mock("progression\dao\TentativeDAO");
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockTentativeProgDAO = Mockery::mock("progression\dao\TentativeProgDAO");
 
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_user_dao()
@@ -56,6 +57,10 @@ final class SauvegarderAvancementIntTests extends TestCase
 		$mockDAOFactory
 			->allows()
 			->get_tentative_prog_dao()
+			->andReturn($mockTentativeProgDAO);
+		$mockDAOFactory
+			->allows()
+			->get_tentative_dao()
 			->andReturn($mockTentativeDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);
@@ -92,22 +97,25 @@ final class SauvegarderAvancementIntTests extends TestCase
 		$avancement = new Avancement([$tentative], Question::ETAT_NONREUSSI, Question::TYPE_PROG);
 
 		DAOFactory::getInstance()
-			->get_avancement_dao()
-			->shouldReceive("save")
+			->get_tentative_dao()
+			->shouldReceive("get_toutes")
 			->once()
-			->withArgs(function ($user, $uri, $av) use ($avancement, $tentative) {
-				return $user == "jdoe" && $uri == "https://example.com/question" && $av == $avancement;
-			})
-			->andReturn($avancement);
+			->withArgs(["jdoe", "https://example.com/question"])
+			->andReturn([$tentative]);
 
 		DAOFactory::getInstance()
 			->get_tentative_prog_dao()
+			->shouldReceive("get_toutes")
+			->once()
+			->withArgs(["jdoe", "https://example.com/question"])
+			->andReturn([$tentative]);
+
+		DAOFactory::getInstance()
+			->get_avancement_dao()
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($user, $uri, $t) use ($tentative) {
-				return $user == "jdoe" && $uri == "https://example.com/question" && $t == $tentative;
-			})
-			->andReturn($tentative);
+			->withArgs(["jdoe", "https://example.com/question", $avancement])
+			->andReturnArg(2);
 
 		$interacteur = new SauvegarderAvancementInt();
 		$résultat_observé = $interacteur->sauvegarder("jdoe", "https://example.com/question", $avancement);
