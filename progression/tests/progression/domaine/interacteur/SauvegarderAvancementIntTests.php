@@ -42,9 +42,6 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->with("jdoe", "https://example.com/question")
 			->andReturn(null);
 
-		$mockTentativeDAO = Mockery::mock("progression\dao\TentativeDAO");
-		$mockTentativeProgDAO = Mockery::mock("progression\dao\TentativeProgDAO");
-
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
 			->allows()
@@ -54,14 +51,6 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->allows()
 			->get_avancement_dao()
 			->andReturn($mockAvancementDAO);
-		$mockDAOFactory
-			->allows()
-			->get_tentative_prog_dao()
-			->andReturn($mockTentativeProgDAO);
-		$mockDAOFactory
-			->allows()
-			->get_tentative_dao()
-			->andReturn($mockTentativeDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);
 	}
@@ -95,20 +84,6 @@ final class SauvegarderAvancementIntTests extends TestCase
 	{
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
 		$avancement = new Avancement([$tentative], Question::ETAT_NONREUSSI, Question::TYPE_PROG);
-
-		DAOFactory::getInstance()
-			->get_tentative_dao()
-			->shouldReceive("get_toutes")
-			->once()
-			->withArgs(["jdoe", "https://example.com/question"])
-			->andReturn([$tentative]);
-
-		DAOFactory::getInstance()
-			->get_tentative_prog_dao()
-			->shouldReceive("get_toutes")
-			->once()
-			->withArgs(["jdoe", "https://example.com/question"])
-			->andReturn([$tentative]);
 
 		DAOFactory::getInstance()
 			->get_avancement_dao()
