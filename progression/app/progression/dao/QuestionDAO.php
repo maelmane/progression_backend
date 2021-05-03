@@ -69,6 +69,7 @@ class QuestionDAO extends EntitéDAO
 
 	protected function récupérer_question($uri)
 	{
+		$info = null;
 		$entêtesInitiales = @get_headers($uri, 1);
 		if (!$entêtesInitiales) {
 			// Fichier test local

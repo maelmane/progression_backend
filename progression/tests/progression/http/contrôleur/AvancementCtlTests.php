@@ -72,8 +72,8 @@ final class AvancementCtlTests extends TestCase
 			->andReturn($avancement);
 		$mockAvancementDAO
 			->shouldReceive("save")
-			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", $avancementPost)
 			->andReturn($avancementPost);
+
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
 			->with("Marcel", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
@@ -142,7 +142,7 @@ final class AvancementCtlTests extends TestCase
 		$this->assertEquals(403, $résultat_observé->status());
 		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_observé->getContent());
 	}
-	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_dans_le_body_on_obtient_un_message_derreur()
+	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_dans_le_body_on_obtient_le_meme_resultat_quun_utilisateur_normal()
 	{
 		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/jdoe/avancements", [
 			"question_uri" =>

@@ -18,6 +18,7 @@
 
 namespace progression\dao;
 
+use mysqli_sql_exception;
 use progression\domaine\entité\{Avancement, Question};
 
 class AvancementDAO extends EntitéDAO

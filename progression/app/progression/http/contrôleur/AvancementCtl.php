@@ -91,7 +91,7 @@ class AvancementCtl extends Contrôleur
 	public function sauvegarderAvancement($username, $chemin, $avancement)
 	{
 		$avancementInt = new SauvegarderAvancementInt();
-		$new_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);
+		$new_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);	
 		return $new_avancement;
 	}
 }
