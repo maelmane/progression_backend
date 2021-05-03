@@ -20,9 +20,9 @@ namespace progression\domaine\interacteur;
 
 class RéinitialiserConteneurInt extends ConnecterConteneurInt
 {
-    protected function get_data_rc()
-    {
-        return $this->get_data_nouveau_conteneur();
-    }
+	protected function get_data_rc()
+	{
+		return $this->get_data_nouveau_conteneur();
+	}
 }
 ?>

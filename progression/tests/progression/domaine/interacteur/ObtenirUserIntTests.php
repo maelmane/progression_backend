@@ -19,11 +19,36 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\User;
+use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
 final class ObtenirUserIntTests extends TestCase
 {
+	public function setUp(): void
+	{
+		parent::setUp();
+
+		$mockUserDao = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDao
+			->allows()
+			->get_user("Bob")
+			->andReturn(new User("Bob"));
+
+		$mockUserDao
+			->allows()
+			->get_user("Banane")
+			->andReturn(null);
+
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory
+			->allows()
+			->get_user_dao()
+			->andReturn($mockUserDao);
+
+		DAOFactory::setInstance($mockDAOFactory);
+	}
+
 	public function tearDown(): void
 	{
 		Mockery::close();
@@ -31,45 +56,18 @@ final class ObtenirUserIntTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_Bob_lorsquon_le_cherche_par_username_on_obtient_un_objet_user_nommé_Bob()
 	{
+		$interacteur = new ObtenirUserInt();
+		$résultat_obtenu = $interacteur->get_user("Bob");
+
 		$résultat_attendu = new User("Bob");
-
-		$mockUserDao = Mockery::mock('progression\dao\UserDAO');
-		$mockUserDao
-			->allows()
-			->get_user('Bob')
-			->andReturn($résultat_attendu);
-
-		$mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
-		$mockDAOFactory
-			->allows()
-			->get_user_dao()
-			->andReturn($mockUserDao);
-
-		$interacteur = new ObtenirUserInt($mockDAOFactory);
-		$résultat_obtenu = $interacteur->get_user('Bob');
-
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
 	public function test_étant_donné_un_utilisateur_Banane_inexistant_lorsquon_le_cherche_par_username_on_obtient_null()
 	{
-		$résultat_attendu = null;
+		$interacteur = new ObtenirUserInt();
+		$résultat_obtenu = $interacteur->get_user("Banane");
 
-		$mockUserDao = Mockery::mock('progression\dao\UserDAO');
-		$mockUserDao
-			->allows()
-			->get_user('Banane')
-			->andReturn(null);
-
-		$mockDAOFactory = Mockery::mock('progression\dao\DAOFactory');
-		$mockDAOFactory
-			->allows()
-			->get_user_dao()
-			->andReturn($mockUserDao);
-
-		$interacteur = new ObtenirUserInt($mockDAOFactory);
-		$résultat_obtenu = $interacteur->get_user('Banane');
-
-		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+		$this->assertNull($résultat_obtenu);
 	}
 }

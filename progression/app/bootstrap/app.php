@@ -3,13 +3,6 @@
 require_once __DIR__ . "/../autoload.php";
 require_once __DIR__ . "/../../vendor/autoload.php";
 
-(new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(dirname(__DIR__)))->bootstrap();
-
-// Vérification des variables d'environnement
-if (isset($_ENV["APP_URL"]) && $_ENV["APP_URL"] != "") {
-	$_ENV["APP_URL"] = preg_replace("/\/+$/", "/", $_ENV["APP_URL"]);
-}
-
 date_default_timezone_set(env("APP_TIMEZONE", "UTC"));
 
 /*
@@ -77,7 +70,10 @@ $app->routeMiddleware([
 ]);
 
 $app->routeMiddleware([
-	"validationPermissions" => progression\http\middleware\ValidationPermissions::class,
+	"validationPermissions" =>
+		$_ENV["AUTH_TYPE"] == "no"
+			? progression\http\middleware\Bypass::class
+			: progression\http\middleware\ValidationPermissions::class,
 ]);
 
 $app->routeMiddleware([

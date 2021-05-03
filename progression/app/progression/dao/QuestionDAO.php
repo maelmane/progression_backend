@@ -1,20 +1,20 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\dao;
 
@@ -69,22 +69,23 @@ class QuestionDAO extends EntitéDAO
 
 	protected function récupérer_question($uri)
 	{
+		$info = null;
 		$entêtesInitiales = @get_headers($uri, 1);
 		if (!$entêtesInitiales) {
 			// Fichier test local
 			try {
 				$info = $this->récupérer_fichier_info($uri);
-			} catch (Exception) {
+			} catch (Exception $e) {
 				$archiveExtraite = self::extraire_zip($uri, sys_get_temp_dir() . substr($uri, 0, -4), true);
 				$info = $this->récupérer_fichier_info("file://" . $archiveExtraite);
 				self::supprimer_fichiers($archiveExtraite);
 			}
 		} else {
-			$entêtesYml = self::vérifier_entêtes($uri . "/info.yml");
+			$entêtesYml = @get_headers($uri . "/info.yml", 1);
 			if ($entêtesYml && $entêtesYml["Content-Type"] == "text/yaml; charset=utf-8") {
 				$info = $this->récupérer_fichier_info($uri);
-			} else {
-				$info = $this->récupérer_archive($uri, $entêtesInitiales["Content-Type"]);
+			} elseif ($entêtesInitiales["Content-Type"]) {
+				$info = $this->récupérer_archive($uri, $entêtesInitiales);
 			}
 		}
 
@@ -95,7 +96,7 @@ class QuestionDAO extends EntitéDAO
 	{
 		$data = @file_get_contents($uri . "/info.yml");
 		if ($data === false) {
-			throw new RuntimeException("Le fichier ne peut pas être chargé");
+			throw new RuntimeException("Le fichier {$uri} ne peut pas être chargé");
 		}
 
 		$info = yaml_parse($data);
@@ -111,13 +112,11 @@ class QuestionDAO extends EntitéDAO
 		return $info;
 	}
 
-	private function récupérer_archive($uri, $typeArchive)
+	private function récupérer_archive($uri, $entêtes)
 	{
-		if (!self::vérifier_entêtes($uri)) {
-			return null;
-		}
+		self::vérifier_entêtes($entêtes);
 
-		switch ($typeArchive) {
+		switch ($entêtes["Content-Type"]) {
 			case "application/zip":
 				$nomFichier = self::télécharger_fichier($uri);
 				$archiveExtraite = self::extraire_zip($nomFichier, substr($nomFichier, 0, -4));
@@ -132,14 +131,15 @@ class QuestionDAO extends EntitéDAO
 		return $sortie;
 	}
 
-	private static function vérifier_entêtes($uri)
+	private static function vérifier_entêtes($entêtes)
 	{
-		$entêtes = @get_headers($uri, 1);
-		if ($entêtes["Content-Length"] > $_ENV["QUESTION_TAILLE_MAX"]) {
-			throw new LengthException("Le fichier est trop volumineux pour être chargé");
+		if (!isset($entêtes["Content-Length"])) {
+			throw new LengthException("Le fichier de taille inconnue. On ne le chargera pas.");
 		}
 
-		return $entêtes;
+		if ($entêtes["Content-Length"] > $_ENV["QUESTION_TAILLE_MAX"]) {
+			throw new LengthException("Le fichier est trop volumineux pour être chargé: " . $entêtes["Content-Length"]);
+		}
 	}
 
 	private static function télécharger_fichier($uri)
@@ -168,7 +168,7 @@ class QuestionDAO extends EntitéDAO
 
 	private static function extraire_zip($archive, $destination, $test = false)
 	{
-		$zip = new ZipArchive;
+		$zip = new ZipArchive();
 		if ($zip->open($archive) === true) {
 			if (!$zip->extractTo($destination)) {
 				return false;

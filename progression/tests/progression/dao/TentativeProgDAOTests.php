@@ -20,12 +20,14 @@ namespace progression\dao;
 
 use progression\domaine\entité\TentativeProg;
 use PHPUnit\Framework\TestCase;
+use progression\dao\DAOFactory;
 
 final class TentativeProgDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
 		EntitéDAO::get_connexion()->begin_transaction();
+		DAOFactory::setInstance(null);
 	}
 
 	public function tearDown(): void
@@ -37,7 +39,7 @@ final class TentativeProgDAOTests extends TestCase
 	{
 		$résultat_attendu = new TentativeProg("python", "print(\"Tourlou le monde!\")", 1615696276, false, 2);
 
-		$résultat_observé = (new TentativeDAO(new DAOFactory()))->get_tentative(
+		$résultat_observé = (new TentativeDAO())->get_tentative(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 			1615696276,
@@ -50,7 +52,7 @@ final class TentativeProgDAOTests extends TestCase
 	{
 		$résultat_attendu = new TentativeProg("python", "print(\"Allo tout le monde!\")", 1615696296, true, 4);
 
-		$résultat_observé = (new TentativeDAO(new DAOFactory()))->get_tentative(
+		$résultat_observé = (new TentativeDAO())->get_tentative(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction",
 			1615696296,
