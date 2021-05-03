@@ -32,7 +32,6 @@ class ExécuterProgInt extends Interacteur
 		
 		if ($comp_resp === false) {
 			$erreur = error_get_last();
-			print_r(" Ici3");
 			throw new ExécutionException($erreur, $_ENV["COMPILEBOX_URL"]);
 		}
 		
