@@ -26,7 +26,7 @@ class SoumettreTentativeProgInt extends Interacteur
 
 		$préparerProgInt = new PréparerProgInt();
 		$exécutable = $préparerProgInt->préparer_exécutable($question, $tentative);
-		
+
 		if ($exécutable) {
 			$exécuterProgInt = new ExécuterProgInt();
 			foreach ($question->tests as $i => $test) {

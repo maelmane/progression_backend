@@ -26,15 +26,19 @@ class UserDAO extends EntitéDAO
 	{
 		$objet = new User($username);
 
-		$query = EntitéDAO::get_connexion()->prepare("SELECT username, role FROM user WHERE username = ? ");
-		$query->bind_param("s", $objet->username);
+		try {
+			$query = EntitéDAO::get_connexion()->prepare("SELECT username, role FROM user WHERE username = ? ");
+			$query->bind_param("s", $objet->username);
 
-		$query->execute();
+			$query->execute();
 
-		$query->bind_result($objet->username, $objet->rôle);
+			$query->bind_result($objet->username, $objet->rôle);
 
-		$résultat = $query->fetch();
-		$query->close();
+			$résultat = $query->fetch();
+			$query->close();
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
+		}
 
 		if ($résultat != null) {
 			$objet->avancements = $this->source->get_avancement_dao()->get_tous($username);
@@ -45,12 +49,16 @@ class UserDAO extends EntitéDAO
 
 	public function save($objet)
 	{
-		$query = EntitéDAO::get_connexion()->prepare(
-			"INSERT INTO user( username, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )",
-		);
-		$query->bind_param("si", $objet->username, $objet->rôle);
-		$query->execute();
-		$query->close();
+		try {
+			$query = EntitéDAO::get_connexion()->prepare(
+				"INSERT INTO user( username, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )",
+			);
+			$query->bind_param("si", $objet->username, $objet->rôle);
+			$query->execute();
+			$query->close();
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
+		}
 
 		return $this->get_user($objet->username);
 	}

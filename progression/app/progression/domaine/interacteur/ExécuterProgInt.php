@@ -26,14 +26,14 @@ class ExécuterProgInt extends Interacteur
 	public function exécuter($exécutable, $test)
 	{
 		$this->loguer_code($exécutable);
-		
+
 		$comp_resp = $this->source_dao->get_exécuteur()->exécuter($exécutable, $test);
-		
+
 		if ($comp_resp === false) {
 			$erreur = error_get_last();
 			throw new ExécutionException($erreur, $_ENV["COMPILEBOX_URL"]);
 		}
-		
+
 		return new RésultatProg($this->extraire_sortie_standard($comp_resp), $this->extraire_sortie_erreur($comp_resp));
 	}
 

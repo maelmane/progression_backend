@@ -63,7 +63,7 @@ class TentativeCtl extends Contrôleur
 		$réponse = null;
 
 		$chemin = Encodage::base64_decode_url($question_uri);
-		
+
 		$question = null;
 
 		$questionInt = new ObtenirQuestionInt();

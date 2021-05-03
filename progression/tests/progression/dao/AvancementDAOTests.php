@@ -35,8 +35,11 @@ final class AvancementDAOTests extends TestCase
 			->andReturn([new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)]);
 		$mockTentativeDao
 			->allows()
-			->get_toutes("bobert", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction_inexistante")
-			->andReturn(null);
+			->get_toutes(
+				"bobert",
+				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction_inexistante",
+			)
+			->andReturn([]);
 
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
