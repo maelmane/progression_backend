@@ -27,7 +27,7 @@ use Illuminate\Auth\GenericUser;
 final class TestCtlTests extends TestCase
 {
 	public $user;
-	
+
 	public function setUp(): void
 	{
 		parent::setUp();

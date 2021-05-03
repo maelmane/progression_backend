@@ -24,38 +24,33 @@ use progression\util\Encodage;
 
 class UserTransformer extends Fractal\TransformerAbstract
 {
-    public $type = "user";
+	public $type = "user";
 
-    protected $availableIncludes = ["avancements"];
+	protected $availableIncludes = ["avancements"];
 
-    public function transform(User $user)
-    {
-        $data = [
-            "id" => $user->username,
-            "username" => $user->username,
-            "rôle" => $user->rôle,
-            "links" => (isset($user->links) ? $user->links : []) + [
-                "self" => "{$_ENV["APP_URL"]}user/{$user->username}",
-            ],
-        ];
+	public function transform(User $user)
+	{
+		$data = [
+			"id" => $user->username,
+			"username" => $user->username,
+			"rôle" => $user->rôle,
+			"links" => (isset($user->links) ? $user->links : []) + [
+				"self" => "{$_ENV["APP_URL"]}user/{$user->username}",
+			],
+		];
 
-        return $data;
-    }
+		return $data;
+	}
 
-    public function includeAvancements(User $user)
-    {
-        foreach ($user->avancements as $uri => $avancement) {
-            $avancement->id =
-                "{$user->username}/" . Encodage::base64_encode_url($uri);
-            $avancement->links = [
-                "related" => $_ENV["APP_URL"] . "user/{$user->username}",
-            ];
-        }
+	public function includeAvancements(User $user)
+	{
+		foreach ($user->avancements as $uri => $avancement) {
+			$avancement->id = "{$user->username}/" . Encodage::base64_encode_url($uri);
+			$avancement->links = [
+				"related" => $_ENV["APP_URL"] . "user/{$user->username}",
+			];
+		}
 
-        return $this->collection(
-            $user->avancements,
-            new AvancementTransformer(),
-            "avancement"
-        );
-    }
+		return $this->collection($user->avancements, new AvancementTransformer(), "avancement");
+	}
 }

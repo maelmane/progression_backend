@@ -26,9 +26,8 @@ use Illuminate\Auth\GenericUser;
 
 final class QuestionProgCtlTests extends TestCase
 {
-
 	public $user;
-	
+
 	public function setUp(): void
 	{
 		parent::setUp();

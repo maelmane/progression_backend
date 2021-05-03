@@ -48,22 +48,15 @@ class TestCtl extends Contrôleur
 		}
 
 		if ($question != null) {
-
 			if (array_key_exists($numero, $question->tests)) {
 				$test = $question->tests[$numero];
 				$test->numéro = $numero;
 				$test->id = $question_uri . "/{$test->numéro}";
 				$test->links = [
-					"related" =>
-					$_ENV['APP_URL'] .
-						"question/" .
-						$question_uri,
+					"related" => $_ENV["APP_URL"] . "question/" . $question_uri,
 				];
 
-				$réponse = $this->item(
-					$test,
-					new TestTransformer(),
-				);
+				$réponse = $this->item($test, new TestTransformer());
 			}
 		}
 

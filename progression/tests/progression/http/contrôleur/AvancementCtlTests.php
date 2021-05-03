@@ -27,7 +27,7 @@ use Illuminate\Auth\GenericUser;
 final class AvancementCtlTests extends TestCase
 {
 	public $user;
-	
+
 	public function setUp(): void
 	{
 		parent::setUp();
@@ -63,7 +63,7 @@ final class AvancementCtlTests extends TestCase
 		$avancement = new Avancement([new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest")]);
 		$avancement->etat = 1;
 		$avancement->type = Question::TYPE_PROG;
-		$avancementPost = new Avancement([], Question::ETAT_DEBUT, Question::TYPE_PROG);
+		$avancementPost = new Avancement([], Question::ETAT_REUSSI, Question::TYPE_PROG);
 
 		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
 		$mockAvancementDAO
@@ -72,8 +72,8 @@ final class AvancementCtlTests extends TestCase
 			->andReturn($avancement);
 		$mockAvancementDAO
 			->shouldReceive("save")
-			->with("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", $avancementPost)
 			->andReturn($avancementPost);
+
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
 			->with("Marcel", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
@@ -118,41 +118,63 @@ final class AvancementCtlTests extends TestCase
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
 	}
 
-	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_on_obtient_un_nouvel_avancement_avec_ses_valeurs_par_defaut()
+	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_on_obtient_un_nouvel_avancement_avec_ses_valeurs_par_defaut()
 	{
-		$résultat_observé = $this->actingAs($this->user)->call(
-			"POST",
-			"/user/bob/avancements",
-		);
-		$resultat_attendu = new Avancement([], Question::ETAT_DEBUT, Question::TYPE_PROG);
-		$resultat_attendu->id = "bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
+			"question_uri" =>
+				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+		]);
+
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals($resultat_attendu, $résultat_observé);	
+		$this->assertStringEqualsFile(
+			__DIR__ . "/résultats_attendus/avancementCtlTests_1.json",
+			$résultat_observé->getContent(),
+		);
 	}
-	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_dans_le_body_on_obtient_un_message_derreur()
+	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_avec_un_avancement_on_obtient_une_erreur_403()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
+			"question_uri" =>
+				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"avancement" => "{test}",
+		]);
+
+		$this->assertEquals(403, $résultat_observé->status());
+		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_observé->getContent());
+	}
+	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_dans_le_body_on_obtient_le_meme_resultat_quun_utilisateur_normal()
 	{
 		$résultat_observé = $this->actingAs($this->admin)->call(
 			"POST",
-			"/user/bob/avancements",
+			"/user/jdoe/avancements",
+			[
+				"question_uri" =>
+					"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+			],
 		);
-
-		$this->assertEquals(422, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Le champ avancement est obligatoire pour enregistrer l\'avancement."}', $résultat_observé->getContent());	
+		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertStringEqualsFile(
+			__DIR__ . "/résultats_attendus/avancementCtlTests_1.json",
+			$résultat_observé->getContent(),
+		);
 	}
 	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_avancement_dans_le_body_on_obtient_lavancement_modifié()
 	{
-		$avancement = new Avancement([], Question::ETAT_REUSSI, Question::TYPE_PROG);
+		$avancementTest = array("état"=>Question::ETAT_REUSSI);
 		$résultat_observé = $this->actingAs($this->admin)->call(
 			"POST",
-			"/user/bob/avancements",
+			"/user/jdoe/avancements",
 			[
-				"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-				"avancement" => $avancement
+				"question_uri" =>
+					"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				"avancement" => $avancementTest
 			],
 		);
 
-		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals($résultat_observé->getContent()->id, "bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
-		$this->assertEquals($résultat_observé->getContent()->attributes->état, "2");	
+		$this->assertEquals(200, $résultat_observé->status());		
+		$this->assertStringEqualsFile(
+			__DIR__ . "/résultats_attendus/avancementCtlTests_2.json",
+			$résultat_observé->getContent(),
+		);
 	}
 }

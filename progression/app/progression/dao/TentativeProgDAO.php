@@ -42,8 +42,8 @@ class TentativeProgDAO extends TentativeDAO
 		$langage = null;
 		$code = null;
 		$date_soumission = null;
-        $réussi = false;
-        $tests_réussis = 0;
+		$réussi = false;
+		$tests_réussis = 0;
 		$query->bind_result($langage, $code, $date_soumission, $réussi, $tests_réussis);
 
 		while ($query->fetch()) {
@@ -77,7 +77,7 @@ class TentativeProgDAO extends TentativeDAO
 		$code = null;
 		$date_soumission = null;
 		$réussi = false;
-        $tests_réussis = 0;
+		$tests_réussis = 0;
 		$query->bind_result($langage, $code, $date_soumission, $réussi, $tests_réussis);
 
 		if ($query->fetch()) {
@@ -102,7 +102,7 @@ class TentativeProgDAO extends TentativeDAO
 			$objet->code,
 			$objet->date_soumission,
 			$objet->réussi,
-            $objet->tests_réussis
+			$objet->tests_réussis,
 		);
 		$query->execute();
 		$query->close();

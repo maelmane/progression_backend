@@ -42,7 +42,7 @@ class UserDAO extends EntitéDAO
 
 		return $résultat != null ? $objet : null;
 	}
-	
+
 	public function save($objet)
 	{
 		$query = EntitéDAO::get_connexion()->prepare(

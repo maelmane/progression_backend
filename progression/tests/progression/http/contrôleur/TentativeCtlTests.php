@@ -19,7 +19,16 @@
 require_once __DIR__ . "/../../../TestCase.php";
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{Avancement, Test, Exécutable, Question, TentativeProg, QuestionProg, RésultatProg, User};
+use progression\domaine\entité\{
+	Avancement,
+	Test,
+	Exécutable,
+	Question,
+	TentativeProg,
+	QuestionProg,
+	RésultatProg,
+	User,
+};
 use progression\domaine\interacteur\ExécutionException;
 use progression\http\contrôleur\TentativeCtl;
 use Illuminate\Http\Request;
@@ -28,7 +37,7 @@ use Illuminate\Auth\GenericUser;
 final class TentativeCtlTests extends TestCase
 {
 	public $user;
-	
+
 	public function setUp(): void
 	{
 		parent::setUp();
@@ -192,6 +201,6 @@ final class TentativeCtlTests extends TestCase
 		);
 
 		$this->assertEquals(422, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":"Tentative intraitable."}', $résultat_obtenu->getContent());
+		$this->assertEquals('{"erreur":"Requête intraitable."}', $résultat_obtenu->getContent());
 	}
 }

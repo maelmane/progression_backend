@@ -22,7 +22,7 @@ class MissingException extends Exception
 
 // chargement des fichiers automatique
 spl_autoload_register(function ($class_name) {
-	$class = __DIR__ . "/" . str_replace('\\', '/', $class_name) . '.php';
+	$class = __DIR__ . "/" . str_replace("\\", "/", $class_name) . ".php";
 
 	if (file_exists($class)) {
 		require $class;

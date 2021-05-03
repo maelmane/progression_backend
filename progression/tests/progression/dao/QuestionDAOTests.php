@@ -139,15 +139,26 @@ public static void main( String[] args ) {
 
 		// Tests
 		$question->tests = [
+			new Test("Une salutation", 1, "Bonjour le monde!\n", "", "Bravo champion!", "Encore un effort..."),
 			new Test(
-				"Une salutation",
-				1,
-				"Bonjour le monde!\n",
-				"",
-				"Bravo champion!",
-				"Encore un effort...",
+				"10 salutations",
+				10,
+				"Bonjour le monde!
+Bonjour le monde!
+Bonjour le monde!
+Bonjour le monde!
+Bonjour le monde!
+Bonjour le monde!
+Bonjour le monde!
+Bonjour le monde!
+Bonjour le monde!
+Bonjour le monde!
+",
 			),
-			new Test("10 salutations", 10, "Bonjour le monde!
+			new Test(
+				"100 salutations",
+				100,
+				"Bonjour le monde!
 Bonjour le monde!
 Bonjour le monde!
 Bonjour le monde!
@@ -157,8 +168,6 @@ Bonjour le monde!
 Bonjour le monde!
 Bonjour le monde!
 Bonjour le monde!
-"),
-			new Test("100 salutations", 100, "Bonjour le monde!
 Bonjour le monde!
 Bonjour le monde!
 Bonjour le monde!
@@ -249,16 +258,8 @@ Bonjour le monde!
 Bonjour le monde!
 Bonjour le monde!
 Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-"),
+",
+			),
 			new Test(
 				"Aucune salutation",
 				0,

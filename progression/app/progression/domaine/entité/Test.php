@@ -28,8 +28,15 @@ class Test
 	public $feedback_neg;
 	public $feedback_err;
 
-	public function __construct($nom, $entrée, $sortie_attendue, $params = null, $feedback_pos = null, $feedback_neg = null, $feedback_err = null)
-	{
+	public function __construct(
+		$nom,
+		$entrée,
+		$sortie_attendue,
+		$params = null,
+		$feedback_pos = null,
+		$feedback_neg = null,
+		$feedback_err = null
+	) {
 		$this->nom = $nom;
 		$this->entrée = $entrée;
 		$this->sortie_attendue = $sortie_attendue;

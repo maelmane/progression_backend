@@ -26,9 +26,10 @@ class Interacteur
 
 	function __construct($sourceDAO = null)
 	{
-		if($sourceDAO == null)
+		if ($sourceDAO == null) {
 			$this->source_dao = DAOFactory::getInstance();
-		else
+		} else {
 			$this->source_dao = $sourceDAO;
+		}
 	}
 }

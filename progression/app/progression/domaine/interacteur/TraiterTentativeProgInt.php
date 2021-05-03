@@ -60,7 +60,7 @@ class TraiterTentativeProgInt extends Interacteur
 		"Méfiez vous d'un ordinateur que vous ne pouvez jeter par la fenêtre. (Steve Wozniak)",
 		"Avec Windows 98, nous étions au bord du gouffre. Avec Windows ME, nous avons fait un grand pas en avant.",
 		"Qui pourrait se sentir mal de pirater Windows XP? Ils nous ont pourtant infligé ME et 95!",
-		"L'informatique c'est passer 15 jours a gagner 15 mili-secondes."
+		"L'informatique c'est passer 15 jours a gagner 15 mili-secondes.",
 	];
 
 	public $CapitainePatenaude = [
@@ -96,7 +96,7 @@ class TraiterTentativeProgInt extends Interacteur
 		"On fait pas d’omelette sans casser les oeufs. (Capitaine Patenaude)",
 		"Si l’on ne trouve pas de solution, la mort pourrai nous tuer. (Capitaine Patenaude)",
 		"Retroussons notre courage et prenons nos manches à deux mains. (Capitaine Patenaude)",
-		"Jouer au ping-pong tout seul, c’est bon pour le cardio-vasculaire, mais c’est plate rare ! (Capitaine Patenaude)"
+		"Jouer au ping-pong tout seul, c’est bon pour le cardio-vasculaire, mais c’est plate rare ! (Capitaine Patenaude)",
 	];
 
 	function traiter_résultats($question, $tentative)
@@ -127,7 +127,7 @@ class TraiterTentativeProgInt extends Interacteur
 			if ($question->feedback_err) {
 				$tentative->feedback = $question->feedback_err;
 			} else {
-				$date = date('j n');
+				$date = date("j n");
 				if ($date === "1 4") {
 					$feedback_err = $this->CapitainePatenaude[rand(0, count($this->CapitainePatenaude) - 1)];
 				} else {

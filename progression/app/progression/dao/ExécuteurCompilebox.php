@@ -18,7 +18,8 @@
 
 namespace progression\dao;
 
-class ExécuteurCompilebox extends Exécuteur{
+class ExécuteurCompilebox extends Exécuteur
+{
 	const langages = [
 		"python2" => 0,
 		"python" => 1,
@@ -37,7 +38,8 @@ class ExécuteurCompilebox extends Exécuteur{
 		"mysql" => 14,
 	];
 
-	public function exécuter($exécutable, $test){
+	public function exécuter($exécutable, $test)
+	{
 		//post le code à remotecompiler
 		$url_rc = $_ENV["COMPILEBOX_URL"];
 
@@ -59,13 +61,11 @@ class ExécuteurCompilebox extends Exécuteur{
 		$context = stream_context_create($options_rc);
 
 		$comp_resp = @file_get_contents($url_rc, false, $context);
-        
-        if($comp_resp === false)
-        {
+
+		if ($comp_resp === false) {
 			throw new ExécutionException(error_get_last(), $_ENV["COMPILEBOX_URL"]);
 		}
 
 		return $comp_resp;
 	}
-
 }

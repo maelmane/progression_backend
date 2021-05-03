@@ -19,6 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use Exception;
+use progression\dao\ExécutionException;
 use progression\domaine\entité\RésultatProg;
 
 class ExécuterProgInt extends Interacteur
@@ -26,18 +27,16 @@ class ExécuterProgInt extends Interacteur
 	public function exécuter($exécutable, $test)
 	{
 		$this->loguer_code($exécutable);
-
-		$comp_resp=$this->source_dao->get_exécuteur()->exécuter($exécutable, $test);
-
+		
+		$comp_resp = $this->source_dao->get_exécuteur()->exécuter($exécutable, $test);
+		
 		if ($comp_resp === false) {
 			$erreur = error_get_last();
+			print_r(" Ici3");
 			throw new ExécutionException($erreur, $_ENV["COMPILEBOX_URL"]);
 		}
-
-		return new RésultatProg(
-			$this->extraire_sortie_standard($comp_resp),
-			$this->extraire_sortie_erreur($comp_resp)
-		);
+		
+		return new RésultatProg($this->extraire_sortie_standard($comp_resp), $this->extraire_sortie_erreur($comp_resp));
 	}
 
 	protected function loguer_code($exécutable)
@@ -61,15 +60,5 @@ class ExécuterProgInt extends Interacteur
 	protected function extraire_sortie_erreur($sorties)
 	{
 		return json_decode($sorties, true)["errors"];
-	}
-}
-
-class ExécutionException extends Exception
-{
-	public function __construct($erreur, $url)
-	{
-		$erreurMsg = (isset($erreur) && isset($erreur["message"]) && $erreur["message"] != "") ?
-					 $erreur["message"] : "Échec de l'ouverture du fichier a l'adresse : {$url}";
-		parent::__construct($erreurMsg);
 	}
 }

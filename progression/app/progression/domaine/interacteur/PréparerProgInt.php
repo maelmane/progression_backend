@@ -54,8 +54,7 @@ class PréparerProgInt
 		}
 
 		foreach ($codeÉbauche as $ligne) {
-
-			if ($todoStatut  && strpos($ligne, "-TODO")) {
+			if ($todoStatut && strpos($ligne, "-TODO")) {
 				$todoStatut = false;
 			}
 
@@ -63,7 +62,7 @@ class PréparerProgInt
 				$codeExécutable[] = $ligne;
 			}
 
-			if (!$todoStatut  && strpos($ligne, "+TODO")) {
+			if (!$todoStatut && strpos($ligne, "+TODO")) {
 				$codeExécutable[] = $todos_utilisateur[1][$todoIndex++];
 				$todoStatut = true;
 			}

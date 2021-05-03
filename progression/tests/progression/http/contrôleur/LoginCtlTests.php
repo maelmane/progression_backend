@@ -27,9 +27,8 @@ use Firebase\JWT\JWT;
 
 final class LoginCtlTests extends TestCase
 {
-
 	public $user;
-	
+
 	public function setUp(): void
 	{
 		parent::setUp();
@@ -63,7 +62,7 @@ final class LoginCtlTests extends TestCase
 		$_ENV["JWT_SECRET"] = "secret";
 		$_ENV["JWT_TTL"] = 3333;
 
-		$résultat_observé = $this->actingAs($this->user)->call("POST", "/auth", ["username" => "bob", "password" => "test"]);
+		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob", "password" => "test"]);
 
 		$token = json_decode($résultat_observé->getContent(), true);
 		$tokenDécodé = JWT::decode($token["Token"], $_ENV["JWT_SECRET"], ["HS256"]);
@@ -77,20 +76,20 @@ final class LoginCtlTests extends TestCase
 
 	//Intestable tant que la connexion à LDAP se fera à même l'interacteur
 	/*
-       public function test_étant_donné_lutilisateur_inexistant_roger_et_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_code_403()
+	   public function test_étant_donné_lutilisateur_inexistant_roger_et_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_code_403()
 	   {
 	   $_ENV['AUTH_TYPE'] = "ldap";
 	   $_ENV['JWT_SECRET'] = "secret";
 	   $_ENV['JWT_TTL'] = 3333;
 
-       $résultat_observé = $this->actingAs($this->user)->call(
-       "POST",
-       "/auth",
-       ["username"=>"marcel", "password"=>"test"]
-       );
-       
+	   $résultat_observé = $this->actingAs($this->user)->call(
+	   "POST",
+	   "/auth",
+	   ["username"=>"marcel", "password"=>"test"]
+	   );
+	   
 	   $this->assertEquals(403, $résultat_observé->status());
 	   $this->assertEquals('{"erreur":"Accès refusé."}', $résultat_observé->getContent());
 	   }
-     */
+	 */
 }

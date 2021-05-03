@@ -20,14 +20,13 @@ namespace progression\domaine\interacteur;
 
 class SoumettreTentativeProgInt extends Interacteur
 {
-
 	public function soumettre_tentative($username, $question, $tentative)
 	{
 		$exécutable = null;
-
+		
 		$préparerProgInt = new PréparerProgInt();
 		$exécutable = $préparerProgInt->préparer_exécutable($question, $tentative);
-
+		
 		if ($exécutable) {
 			$exécuterProgInt = new ExécuterProgInt();
 			foreach ($question->tests as $i => $test) {
@@ -40,7 +39,6 @@ class SoumettreTentativeProgInt extends Interacteur
 			$interacteurSauvegarde->sauvegarder($username, $question->uri, $tentativeTraité);
 			return $tentativeTraité;
 		}
-
 		return null;
 	}
 }

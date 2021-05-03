@@ -23,13 +23,13 @@ use PHPUnit\Framework\TestCase;
 
 final class QuestionProgTransformerTests extends TestCase
 {
-	public function setUp() : void
+	public function setUp(): void
 	{
 		parent::setUp();
 
 		$_ENV["APP_URL"] = "https://example.com/";
 	}
-	
+
 	public function test_étant_donné_une_questionprog_instanciée_avec_des_valeurs_lorsquon_le_transforme_on_obtient_un_tableau_d_objets_identique()
 	{
 		$username = "jdoe";
@@ -46,8 +46,11 @@ final class QuestionProgTransformerTests extends TestCase
 			"question" => $question,
 			"username" => $username,
 		]);
-		
-		$this->assertStringEqualsFile(__DIR__."/résultats_attendus/questionProgTransformerTest_1.json", json_encode($item));
+
+		$this->assertStringEqualsFile(
+			__DIR__ . "/résultats_attendus/questionProgTransformerTest_1.json",
+			json_encode($item),
+		);
 	}
 
 	public function test_étant_donné_une_question_avec_ses_tests_lorsquon_inclut_les_tests_on_reçoit_un_tableau_de_tests_numérotés_dans_le_même_ordre()
@@ -72,7 +75,10 @@ final class QuestionProgTransformerTests extends TestCase
 			$tests[] = $résultat;
 		}
 
-		$this->assertStringEqualsFile(__DIR__."/résultats_attendus/questionProgTransformerTest_2.json", json_encode($tests));
+		$this->assertStringEqualsFile(
+			__DIR__ . "/résultats_attendus/questionProgTransformerTest_2.json",
+			json_encode($tests),
+		);
 	}
 
 	public function test_étant_donné_une_question_sans_tests_lorsquon_inclut_les_tests_on_reçoit_un_tableau_vide()
@@ -112,7 +118,10 @@ final class QuestionProgTransformerTests extends TestCase
 			$ébauches[] = $résultat;
 		}
 
-		$this->assertStringEqualsFile(__DIR__."/résultats_attendus/questionProgTransformerTest_3.json", json_encode($ébauches));
+		$this->assertStringEqualsFile(
+			__DIR__ . "/résultats_attendus/questionProgTransformerTest_3.json",
+			json_encode($ébauches),
+		);
 	}
 
 	public function test_étant_donné_une_question_sans_ébauche_lorsquon_inclut_les_ébauches_on_reçoit_un_tableau_vide()

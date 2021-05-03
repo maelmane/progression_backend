@@ -1,20 +1,20 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\http\contrôleur;
 
@@ -40,13 +40,25 @@ class QuestionCtl extends Contrôleur
 		try {
 			$question = $questionInt->get_question($chemin);
 		} catch (LengthException $erreur) {
-			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			Log::error(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					__CLASS__ .
+					") : {$erreur->getMessage()}",
+			);
 			return $this->réponse_json(["message" => "Limite de volume dépassé."], 509);
 		} catch (RuntimeException $erreur) {
-			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			Log::error(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					__CLASS__ .
+					") : {$erreur->getMessage()}",
+			);
 			return $this->réponse_json(["message" => "Ressource indisponible sur le serveur distant."], 502);
 		} catch (DomainException $erreur) {
-			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			Log::error(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					__CLASS__ .
+					") : {$erreur->getMessage()}",
+			);
 			return $this->réponse_json(["message" => "Requête intraitable."], 422);
 		}
 

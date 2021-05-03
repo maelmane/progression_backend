@@ -23,13 +23,13 @@ use PHPUnit\Framework\TestCase;
 
 final class AvancementTransformerTests extends TestCase
 {
-	public function setUp() : void
+	public function setUp(): void
 	{
 		parent::setUp();
 
 		$_ENV["APP_URL"] = "https://example.com/";
 	}
-	
+
 	public function test_étant_donné_un_avancement_instancié_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
 	{
 		$avancement = new Avancement([], Question::ETAT_DEBUT, Question::TYPE_PROG);
@@ -38,32 +38,35 @@ final class AvancementTransformerTests extends TestCase
 
 		$avancementTransformer = new AvancementTransformer();
 		$résultats_obtenus = $avancementTransformer->transform($avancement);
-		$this->assertStringEqualsFile(__DIR__."/résultats_attendus/avancementTransformerTest_1.json", json_encode($résultats_obtenus));
+		$this->assertStringEqualsFile(
+			__DIR__ . "/résultats_attendus/avancementTransformerTest_1.json",
+			json_encode($résultats_obtenus),
+		);
 	}
 	public function test_étant_donné_un_avancement_avec_ses_tentatives_lorsquon_inclut_les_tentatives_on_reçoit_un_tableau_de_tentatives()
 	{
-		$avancement = new Avancement([
-			new TentativeProg(
-				"python",
-				"codeTestPython",
-				1614711760,
-				false,
-				2,
-				"feedbackTest Python"),
-			new TentativeProg("java", "codeTestJava", 1614711761, true, 2, "feedbackTest Java")
-		], Question::ETAT_DEBUT, Question::TYPE_PROG);
+		$avancement = new Avancement(
+			[
+				new TentativeProg("python", "codeTestPython", 1614711760, false, 2, "feedbackTest Python"),
+				new TentativeProg("java", "codeTestJava", 1614711761, true, 2, "feedbackTest Java"),
+			],
+			Question::ETAT_DEBUT,
+			Question::TYPE_PROG,
+		);
 		$avancement->id =
 			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$avancementTransformer = new AvancementTransformer();
 		$résultats_obtenus = $avancementTransformer->includeTentatives($avancement);
 
-
 		$tentatives = [];
 		foreach ($résultats_obtenus->getData() as $résultat) {
 			$tentatives[] = $résultat;
 		}
-		$this->assertStringEqualsFile(__DIR__ . "/résultats_attendus/avancementTransformerTest_2.json", json_encode($tentatives));
+		$this->assertStringEqualsFile(
+			__DIR__ . "/résultats_attendus/avancementTransformerTest_2.json",
+			json_encode($tentatives),
+		);
 	}
 
 	public function test_étant_donné_un_avancement_sans_tentative_lorsquon_inclut_les_tentatives_on_reçoit_un_tableau_vide()
