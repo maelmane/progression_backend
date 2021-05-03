@@ -9,7 +9,7 @@ CREATE TABLE `sauvegarde` (
 	`question_uri`		varchar(1024) CHARACTER SET latin1 NOT NULL,
 	`date_sauvegarde`	int(10) NOT NULL,
 	`langage`			varchar(255) NOT NULL,
-	`code`				text,
+	`code`				text NOT NULL,
 	PRIMARY KEY (`username`, `question_uri`, `langage`),
 	FOREIGN KEY (`username`) REFERENCES `user`(`username`)
 );

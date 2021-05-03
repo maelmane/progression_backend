@@ -16,28 +16,23 @@
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\interacteur;
 
-class Sauvegarde
+use progression\domaine\entité\Sauvegarde;
+
+class ObtenirSauvegardeAutomatiqueInt extends Interacteur
 {
-	public $username;
-	public $question_uri;
-    public $date_sauvegarde;
-	public $langage;
-	public $code;
+	function get_sauvegarde_automatique($username, $question_uri, $langage)
+	{
+		if ($this->source_dao->get_user_dao()->get_user($sauvegarde->username) == null) {
+			return null;
+		}
+        if ($this->source_dao->get_question_dao()->get_question($sauvegarde->question_uri) == null) {
+			return null;
+		}
 
-	public function __construct(
-        $username, 
-        $question_uri, 
-        $date_sauvegarde, 
-        $langage, 
-        $code
-    )
-    {
-        $this->username = $username;
-        $this->question_uri = $question_uri;
-		$this->date_sauvegarde = $date_sauvegarde;
-		$this->langage = $langage;
-        $this->code = $code;
+		$sauvegarde = $this->source_dao->get_sauvegarde_dao()->get_sauvegarde($username, $question_uri, $langage);
+
+		return $sauvegarde;
 	}
 }

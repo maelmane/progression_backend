@@ -19,14 +19,31 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
+use progression\domaine\interacteur\ObtenirSauvegardeAutomatiqueInt;
+use progression\domaine\interacteur\CréerSauvegardeAutomatiqueInt;
+use progression\http\transformer\SauvegardeAutomatiqueTransformer;
+use progression\util\Encodage;
+use progression\domaine\entité\Sauvegarde;
 
 class SauvegardeCtl extends Contrôleur
 {
-	public function post(Request $request, $username, $question_uri)
+	public function get(Request $request, $username, $question_uri, $langage)
 	{
+		$chemin = Encodage::base64_decode_url($question_uri);
+		$sauvegarde = null;
+		$réponse = null;
+
+		$sauvegardeInt = new ObtenirSauvegardeAutomatiqueInt();
+		$sauvegarde = $sauvegardeInt->get_sauvegarde_automatique($username, $chemin, $langage);
+
+		if ($sauvegarde != null) {
+			$réponse = $this->item($sauvegarde, new SauvegardeAutomatiqueTransformer());
+		}
+
+		return $this->préparer_réponse($réponse);
 	}
 
-	public function get(Request $request, $username, $question_uri, $langage)
+	public function post(Request $request, $username, $question_uri)
 	{
 	}
 }
