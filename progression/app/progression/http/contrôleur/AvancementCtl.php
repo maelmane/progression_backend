@@ -53,11 +53,11 @@ class AvancementCtl extends Contrôleur
 			$chemin = Encodage::base64_decode_url($request->question_uri);
 
 			if (isset($request->avancement)) {
-				if ($request->user()->rôle == User::ROLE_ADMIN) {					
+				if ($request->user()->rôle == User::ROLE_ADMIN) {	
 					if (!isset($request->avancement["état"])) {
 						return $this->réponse_json(["erreur" => "Le champ état est obligatoire pour enregistrer l'avancement."], 422);
 					}
-					
+								
 					$avancement = new Avancement([], $request->avancement["état"], Question::TYPE_PROG);
 					$avancement = $this->sauvegarderAvancement($username, $chemin, $avancement);
 				} else {
@@ -88,7 +88,7 @@ class AvancementCtl extends Contrôleur
 	public function sauvegarderAvancement($username, $chemin, $avancement)
 	{
 		$avancementInt = new SauvegarderAvancementInt();
-		$new_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);
+		$new_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);	
 		return $new_avancement;
 	}
 }
