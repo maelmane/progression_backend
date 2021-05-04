@@ -24,10 +24,10 @@ class ObtenirSauvegardeAutomatiqueInt extends Interacteur
 {
 	function get_sauvegarde_automatique($username, $question_uri, $langage)
 	{
-		if ($this->source_dao->get_user_dao()->get_user($sauvegarde->username) == null) {
+		if ($this->source_dao->get_user_dao()->get_user($username) == null) {
 			return null;
 		}
-        if ($this->source_dao->get_question_dao()->get_question($sauvegarde->question_uri) == null) {
+        if ($this->source_dao->get_question_dao()->get_question($question_uri) == null) {
 			return null;
 		}
 

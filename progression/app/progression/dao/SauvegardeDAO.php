@@ -65,8 +65,8 @@ class SauvegardeDAO extends EntitéDAO
 		);
 		$query->bind_param(
 			"ssiss",
-			$sauvegarde->$username,
-			$sauvegarde->$question_uri,
+			$sauvegarde->username,
+			$sauvegarde->question_uri,
 			$sauvegarde->date_sauvegarde,
 			$sauvegarde->langage,
 			$sauvegarde->code
