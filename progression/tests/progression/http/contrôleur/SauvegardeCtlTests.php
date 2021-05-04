@@ -80,6 +80,10 @@ final class SauvegardeCtlTests extends TestCase
 			->shouldReceive("get_sauvegarde")
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "java")
 			->andReturn(null);
+		$mockSauvegardeDAO
+			->shouldReceive("save")
+			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python")
+			->andReturn($sauvegarde);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
@@ -95,7 +99,8 @@ final class SauvegardeCtlTests extends TestCase
 		Mockery::close();
 	}
 
-	public function test_étant_donné_le_username_dun_utilisateur_inexistant_lorsquon_appelle_get_on_obtient_une_sauvegarde_nulle()
+	// GET
+	public function test_étant_donné_le_username_dun_utilisateur_inexistant_lorsquon_appelle_get_on_obtient_un_message_derrreur()
 	{
 		$résultat_observé = $this->actingAs($this->admin)->call(
 			"GET",
@@ -105,7 +110,7 @@ final class SauvegardeCtlTests extends TestCase
 		$this->assertEquals(404, $résultat_observé->status());
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
 	}
-	public function test_étant_donné_luri_dune_question_inexistante_lorsquon_appelle_get_on_obtient_une_sauvegarde_nulle()
+	public function test_étant_donné_luri_dune_question_inexistante_lorsquon_appelle_get_on_obtient_un_message_derrreur()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
 			"GET",
@@ -128,7 +133,7 @@ final class SauvegardeCtlTests extends TestCase
 			$résultat_observé->getContent(),
 		);
 	}
-	public function test_étant_donné_un_username_existant_luri_dune_question_existante_et_un_langage_inexistant_lorsquon_appelle_get_on_obtient_une_sauvegarde_nulle()
+	public function test_étant_donné_un_username_existant_luri_dune_question_existante_et_un_langage_inexistant_lorsquon_appelle_get_on_obtient_un_message_derrreur()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
 			"GET",
@@ -137,5 +142,78 @@ final class SauvegardeCtlTests extends TestCase
 
 		$this->assertEquals(404, $résultat_observé->status());
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
+	}
+
+	// POST
+	public function test_étant_donné_un_username_existant_luri_dune_question_existante_et_le_langage_inexistant_dans_le_corps_de_la_requete_lorsquon_appelle_post_on_obtient_un_message_derrreur()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call(
+			"POST",
+			"/sauvegarde/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+			[
+				"code" => "print(\"Hello world!\")"
+			]
+		);
+
+		$this->assertEquals(422, $résultat_observé->status());
+		$this->assertEquals('{"erreur":"Le champ langage est obligatoire."}', $résultat_observé->getContent());
+	}
+	public function test_étant_donné_un_username_existant_luri_dune_question_existante_et_le_code_inexistant_dans_le_corps_de_la_requete_lorsquon_appelle_post_on_obtient_un_message_derrreur()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call(
+			"POST",
+			"/sauvegarde/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+			[
+				"langage" => "python"
+			]
+		);
+
+		$this->assertEquals(422, $résultat_observé->status());
+		$this->assertEquals('{"erreur":"Le champ code est obligatoire."}', $résultat_observé->getContent());
+	}
+	public function test_étant_donné_un_username_inexexistant_luri_dune_question_existante_le_code_et_le_langage_existants_dans_le_corps_de_la_requete_lorsquon_appelle_post_on_obtient_un_message_derrreur()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call(
+			"POST",
+			"/sauvegarde/Marcel/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+			[
+				"langage" => "python",
+				"code" => "print(\"Hello world!\")"
+			]
+		);
+
+		$this->assertEquals(404, $résultat_observé->status());
+		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
+	}
+	public function test_étant_donné_un_username_existant_luri_dune_question_inexistante_le_code_et_le_langage_existants_dans_le_corps_de_la_requete_lorsquon_appelle_post_on_obtient_un_message_derrreur()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call(
+			"POST",
+			"/sauvegarde/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvcXVlc3Rpb25faW5leGlzdGFudGU=/python",
+			[
+				"langage" => "python",
+				"code" => "print(\"Hello world!\")"
+			]
+		);
+
+		$this->assertEquals(404, $résultat_observé->status());
+		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
+	}
+	public function test_étant_donné_un_username_existant_luri_dune_question_existante_le_code_et_le_langage_existants_dans_le_corps_de_la_requete_lorsquon_appelle_post_on_obtient_une_sauvegarde_nouvellement_créee()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call(
+			"POST",
+			"/sauvegarde/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+			[
+				"langage" => "python",
+				"code" => "print(\"Hello world!\")"
+			]
+		);
+
+		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertStringEqualsFile(
+			__DIR__ . "/résultats_attendus/sauvegardeCtlTests_1.json",
+			$résultat_observé->getContent(),
+		);
 	}
 }
