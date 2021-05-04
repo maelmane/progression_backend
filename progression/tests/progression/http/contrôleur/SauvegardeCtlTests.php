@@ -32,6 +32,7 @@ final class SauvegardeCtlTests extends TestCase
 	{
 		parent::setUp();
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$this->admin = new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
@@ -66,7 +67,7 @@ final class SauvegardeCtlTests extends TestCase
         (
             "jdoe",
             "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-            "03/05/2021",
+            "1111111111",
             "python",
             "print(\"Hello world!\")"
         );
@@ -96,7 +97,7 @@ final class SauvegardeCtlTests extends TestCase
 
 	public function test_étant_donné_le_username_dun_utilisateur_inexistant_lorsquon_appelle_get_on_obtient_une_sauvegarde_nulle()
 	{
-		$résultat_observé = $this->actingAs($this->user)->call(
+		$résultat_observé = $this->actingAs($this->admin)->call(
 			"GET",
 			"/sauvegarde/Marcel/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
 		);

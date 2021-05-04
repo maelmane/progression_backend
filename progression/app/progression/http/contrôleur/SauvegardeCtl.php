@@ -39,7 +39,7 @@ class SauvegardeCtl extends Contrôleur
 
 		if ($sauvegarde != null) {
 			//$réponse = $this->item($sauvegarde, new SauvegardeAutomatiqueTransformer());
-			$réponse = "La sauvegarde a été correctement récupérée"
+			$réponse = "La sauvegarde a été correctement récupérée";
 		}
 
 		return $this->préparer_réponse($réponse);
