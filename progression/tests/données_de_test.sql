@@ -1,5 +1,6 @@
 DELETE FROM reponse_prog;
 DELETE FROM avancement;
+DELETE FROM sauvegarde;
 DELETE FROM user;
 
 INSERT INTO user VALUES (
@@ -19,6 +20,14 @@ INSERT INTO user VALUES (
   1,
   0
 );
+
+/*INSERT INTO sauvegarde VALUES (
+  "jdoe",
+  "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+  "03/05/2021",
+  "python",
+  "print('Hello world!')"
+);*/
 
 INSERT INTO avancement VALUES (
   "bob",

@@ -29,6 +29,7 @@ class SauvegardeCtl extends Contrôleur
 {
 	public function get(Request $request, $username, $question_uri, $langage)
 	{
+		print_r(" Là1");
 		$chemin = Encodage::base64_decode_url($question_uri);
 		$sauvegarde = null;
 		$réponse = null;
@@ -37,7 +38,8 @@ class SauvegardeCtl extends Contrôleur
 		$sauvegarde = $sauvegardeInt->get_sauvegarde_automatique($username, $chemin, $langage);
 
 		if ($sauvegarde != null) {
-			$réponse = $this->item($sauvegarde, new SauvegardeAutomatiqueTransformer());
+			//$réponse = $this->item($sauvegarde, new SauvegardeAutomatiqueTransformer());
+			$réponse = "La sauvegarde a été correctement récupérée"
 		}
 
 		return $this->préparer_réponse($réponse);

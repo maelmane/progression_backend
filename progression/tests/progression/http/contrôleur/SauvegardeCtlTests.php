@@ -19,7 +19,7 @@
 require_once __DIR__ . "/../../../TestCase.php";
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{Sauvegarde, User};
+use progression\domaine\entité\{Sauvegarde, User, Question, QuestionProg};
 use progression\http\contrôleur\SauvegardeCtl;
 use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
@@ -51,12 +51,15 @@ final class SauvegardeCtlTests extends TestCase
 		$question->type = Question::TYPE_PROG;
 		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
-
 		$mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
 		$mockQuestionDAO
 			->shouldReceive("get_question")
 			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
+		$mockQuestionDAO
+			->shouldReceive("get_question")
+			->with("https://depot.com/roger/questions_prog/question_inexistante")
+			->andReturn(null);
 
 		// Sauvegarde
 		$sauvegarde = new Sauvegarde
@@ -67,12 +70,15 @@ final class SauvegardeCtlTests extends TestCase
             "python",
             "print(\"Hello world!\")"
         );
-
 		$mockSauvegardeDAO = Mockery::mock("progression\dao\SauvegardeDAO");
 		$mockSauvegardeDAO
 			->shouldReceive("get_sauvegarde")
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python")
 			->andReturn($sauvegarde);
+		$mockSauvegardeDAO
+			->shouldReceive("get_sauvegarde")
+			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "java")
+			->andReturn(null);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
@@ -86,5 +92,21 @@ final class SauvegardeCtlTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+	}
+
+	public function test_étant_donné_le_username_dun_utilisateur_inexistant_lorsquon_appelle_get_on_obtient_une_sauvegarde_nulle()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call(
+			"GET",
+			"/sauvegarde/Marcel/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+		);
+
+		$this->assertEquals(404, $résultat_observé->status());
+		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
+
+		/*$this->assertStringEqualsFile(
+			__DIR__ . "/résultats_attendus/avancementCtlTests_1.json",
+			$résultat_observé->getContent(),
+		);*/
 	}
 }
