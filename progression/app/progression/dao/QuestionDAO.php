@@ -69,12 +69,13 @@ class QuestionDAO extends EntitéDAO
 
 	protected function récupérer_question($uri)
 	{
+		$info = null;
 		$entêtesInitiales = @get_headers($uri, 1);
 		if (!$entêtesInitiales) {
 			// Fichier test local
 			try {
 				$info = $this->récupérer_fichier_info($uri);
-			} catch (Exception) {
+			} catch (Exception $e) {
 				$archiveExtraite = self::extraire_zip($uri, sys_get_temp_dir() . substr($uri, 0, -4), true);
 				$info = $this->récupérer_fichier_info("file://" . $archiveExtraite);
 				self::supprimer_fichiers($archiveExtraite);
@@ -83,7 +84,7 @@ class QuestionDAO extends EntitéDAO
 			$entêtesYml = @get_headers($uri . "/info.yml", 1);
 			if ($entêtesYml && $entêtesYml["Content-Type"] == "text/yaml; charset=utf-8") {
 				$info = $this->récupérer_fichier_info($uri);
-			} else if ($entêtesInitiales["Content-Type"]){
+			} elseif ($entêtesInitiales["Content-Type"]) {
 				$info = $this->récupérer_archive($uri, $entêtesInitiales);
 			}
 		}
@@ -132,8 +133,9 @@ class QuestionDAO extends EntitéDAO
 
 	private static function vérifier_entêtes($entêtes)
 	{
-		if (!isset($entêtes["Content-Length"]))
+		if (!isset($entêtes["Content-Length"])) {
 			throw new LengthException("Le fichier de taille inconnue. On ne le chargera pas.");
+		}
 
 		if ($entêtes["Content-Length"] > $_ENV["QUESTION_TAILLE_MAX"]) {
 			throw new LengthException("Le fichier est trop volumineux pour être chargé: " . $entêtes["Content-Length"]);
@@ -166,7 +168,7 @@ class QuestionDAO extends EntitéDAO
 
 	private static function extraire_zip($archive, $destination, $test = false)
 	{
-		$zip = new ZipArchive;
+		$zip = new ZipArchive();
 		if ($zip->open($archive) === true) {
 			if (!$zip->extractTo($destination)) {
 				return false;

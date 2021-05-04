@@ -1,23 +1,24 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\dao;
 
+use mysqli_sql_exception;
 use progression\domaine\entité\{Avancement, Question};
 
 class AvancementDAO extends EntitéDAO
@@ -26,18 +27,24 @@ class AvancementDAO extends EntitéDAO
 	{
 		$avancements = [];
 
-		$query = EntitéDAO::get_connexion()->prepare(
-			"SELECT question_uri, etat, type FROM avancement WHERE username = ?",
-		);
-		$query->bind_param("s", $username);
-		$query->execute();
+		try {
+			$query = EntitéDAO::get_connexion()->prepare(
+				"SELECT question_uri, etat, type FROM avancement WHERE username = ?",
+			);
+			$query->bind_param("s", $username);
+			$query->execute();
 
-		$uri = null;
-		$etat = 0;
-		$type = 0;
-		$query->bind_result($uri, $etat, $type);
-		while ($query->fetch()) {
-			$avancements[$uri] = new Avancement([], $etat, $type);
+			$uri = null;
+			$etat = 0;
+			$type = 0;
+			$query->bind_result($uri, $etat, $type);
+			while ($query->fetch()) {
+				$avancements[$uri] = new Avancement([], $etat, $type);
+			}
+
+			$query->close();
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
 		}
 
 		return $avancements;
@@ -53,32 +60,46 @@ class AvancementDAO extends EntitéDAO
 
 	protected function load($username, $question_uri)
 	{
-		$avancement = new Avancement();
+		$état = null;
+		$type = null;
+		$avancement = null;
 
-		$query = EntitéDAO::get_connexion()->prepare(
-			"SELECT etat, type FROM avancement WHERE question_uri = ? AND username = ?",
-		);
-		$query->bind_param("ss", $question_uri, $username);
-		$query->execute();
-		$query->bind_result($avancement->etat, $avancement->type);
-		$query->fetch();
+		try {
+			$query = EntitéDAO::get_connexion()->prepare(
+				"SELECT etat, type FROM avancement WHERE question_uri = ? AND username = ?",
+			);
+			$query->bind_param("ss", $question_uri, $username);
+			$query->execute();
+			$query->bind_result($état, $type);
 
-		$query->close();
-		return $avancement;
+			if ($query->fetch()) {
+				$avancement = new Avancement([], $état, $type);
+			}
+
+			$query->close();
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
+		}
+
+		return $avancement ?? new Avancement();
 	}
 
 	public function save($username, $question_uri, $objet)
 	{
-		$query = EntitéDAO::get_connexion()->prepare(
-			"INSERT INTO avancement ( etat, question_uri, username, type ) VALUES ( ?, ?, ?, " .
-				Question::TYPE_PROG .
-				')
+		try {
+			$query = EntitéDAO::get_connexion()->prepare(
+				"INSERT INTO avancement ( etat, question_uri, username, type ) VALUES ( ?, ?, ?, " .
+					Question::TYPE_PROG .
+					')
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ',
-		);
+			);
 
-		$query->bind_param("iss", $objet->etat, $question_uri, $username);
-		$query->execute();
-		$query->close();
+			$query->bind_param("iss", $objet->etat, $question_uri, $username);
+			$query->execute();
+			$query->close();
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
+		}
 
 		return $this->get_avancement($username, $question_uri);
 	}
