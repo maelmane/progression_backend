@@ -266,22 +266,6 @@ curl "https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9nc
 curl "https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU?include=tests,ebauches" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-<<<<<<< Updated upstream
-||||||| merged common ancestors
-** Créer l'avancement de jdoe à la question «appeler_une_fonction_paramétrée» : ~LIVE~
-
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-DATA=$(cat <<EOF
-{
-  "question_uri":"aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ"
-}
-EOF
-)
-
-curl -X POST --data "$DATA" https://progression.dti.crosemont.quebec/api/v1/user/test/avancements -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
-#+END_SRC
-
-=======
 ** Créer l'avancement de jdoe à la question «appeler_une_fonction_paramétrée» : ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
@@ -295,7 +279,6 @@ EOF
 curl -X POST --data "$DATA" https://progression.dti.crosemont.quebec/api/v1/user/test/avancements -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
->>>>>>> Stashed changes
 ** Obtenir l'avancement de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
