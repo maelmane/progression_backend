@@ -18,6 +18,7 @@
 
 namespace progression\dao;
 
+use mysqli_sql_exception;
 use progression\domaine\entité\Sauvegarde;
 
 class SauvegardeDAO extends EntitéDAO
@@ -25,55 +26,62 @@ class SauvegardeDAO extends EntitéDAO
 	public function get_sauvegarde($username, $question_uri, $langage)
 	{
 		$sauvegarde = null;
+		try{
+			$query = EntitéDAO::get_connexion()->prepare(
+				'SELECT sauvegarde.username,
+					sauvegarde.question_uri,
+					sauvegarde.date_sauvegarde,
+					sauvegarde.langage,
+					sauvegarde.code
+				FROM sauvegarde
+				WHERE username = ? 
+				AND question_uri = ?
+				AND langage = ?',
+			);
+			$query->bind_param("sss", $username, $question_uri, $langage);
+			$query->execute();
 
-		$query = EntitéDAO::get_connexion()->prepare(
-			'SELECT sauvegarde.username,
-				sauvegarde.question_uri,
-				sauvegarde.date_sauvegarde,
-                sauvegarde.langage,
-                sauvegarde.code
-			 FROM sauvegarde
-			 WHERE username = ? 
-             AND question_uri = ?
-             AND langage = ?',
-		);
-		$query->bind_param("sss", $username, $question_uri, $langage);
-		$query->execute();
+			$langage = null;
+			$code = null;
+			$date_sauvegarde = null;
+			$question_uri = null;
+			$username = null;
+			$query->bind_result($username, $question_uri, $date_sauvegarde, $langage, $code);
 
-		$langage = null;
-		$code = null;
-		$date_sauvegarde = null;
-		$question_uri = null;
-        $username = null;
-		$query->bind_result($username, $question_uri, $date_sauvegarde, $langage, $code);
+			if ($query->fetch()) {
+				$sauvegarde = new Sauvegarde($username, $question_uri, $date_sauvegarde, $langage, $code);
+			}
 
-		if ($query->fetch()) {
-			$sauvegarde = new Sauvegarde($username, $question_uri, $date_sauvegarde, $langage, $code);
+			$query->close();
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
 		}
-
-		$query->close();
 
 		return $sauvegarde;
 	}
 
-	protected function save($sauvegarde)
+	public function save($sauvegarde)
 	{
-		$query = EntitéDAO::get_connexion()->prepare(
-			"INSERT INTO sauvegarde ( username, question_uri, date_sauvegarde, langage, code )
-			 VALUES ( ?, ?, ?, ?, ? )
-			 ON DUPLICATE KEY UPDATE code = VALUES( code ), date_sauvegarde = VALUES( date_sauvegarde )",
-		);
-		$query->bind_param(
-			"ssiss",
-			$sauvegarde->username,
-			$sauvegarde->question_uri,
-			$sauvegarde->date_sauvegarde,
-			$sauvegarde->langage,
-			$sauvegarde->code
-		);
-		$resultat = $query->execute();
-		$query->close();
+		try{
+			$query = EntitéDAO::get_connexion()->prepare(
+				"INSERT INTO sauvegarde ( username, question_uri, date_sauvegarde, langage, code )
+				VALUES ( ?, ?, ?, ?, ? )
+				ON DUPLICATE KEY UPDATE code = VALUES( code ), date_sauvegarde = VALUES( date_sauvegarde )",
+			);
+			$query->bind_param(
+				"ssiss",
+				$sauvegarde->username,
+				$sauvegarde->question_uri,
+				$sauvegarde->date_sauvegarde,
+				$sauvegarde->langage,
+				$sauvegarde->code
+			);
+			$query->execute();
+			$query->close();
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
+		}
 
-		return $resultat;
+		return $this->get_sauvegarde($sauvegarde->username, $sauvegarde->question_uri, $sauvegarde->langage);
 	}
 }

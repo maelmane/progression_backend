@@ -30,7 +30,6 @@ class CréerSauvegardeAutomatiqueInt extends Interacteur
         if ($this->source_dao->get_question_dao()->get_question($sauvegarde->question_uri) == null) {
 			return null;
 		}
-
 		$dao_sauvegarde = $this->source_dao->get_sauvegarde_dao();
 		$resultat_sauvegarde = $dao_sauvegarde->save($sauvegarde);
 		return $resultat_sauvegarde;

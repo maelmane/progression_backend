@@ -66,8 +66,8 @@ final class SauvegardeCtlTests extends TestCase
 		$sauvegarde = new Sauvegarde
         (
             "jdoe",
-            "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-            "1111111111",
+            "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+            1620150294,
             "python",
             "print(\"Hello world!\")"
         );
@@ -104,10 +104,38 @@ final class SauvegardeCtlTests extends TestCase
 
 		$this->assertEquals(404, $résultat_observé->status());
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
+	}
+	public function test_étant_donné_luri_dune_question_inexistante_lorsquon_appelle_get_on_obtient_une_sauvegarde_nulle()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call(
+			"GET",
+			"/sauvegarde/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvcXVlc3Rpb25faW5leGlzdGFudGU=/python",
+		);
 
-		/*$this->assertStringEqualsFile(
-			__DIR__ . "/résultats_attendus/avancementCtlTests_1.json",
+		$this->assertEquals(404, $résultat_observé->status());
+		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
+	}
+	public function test_étant_donné_un_username_existant_luri_dune_question_existante_et_un_langage_existant_lorsquon_appelle_get_on_obtient_une_sauvegarde()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call(
+			"GET",
+			"/sauvegarde/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+		);
+
+		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertStringEqualsFile(
+			__DIR__ . "/résultats_attendus/sauvegardeCtlTests_1.json",
 			$résultat_observé->getContent(),
-		);*/
+		);
+	}
+	public function test_étant_donné_un_username_existant_luri_dune_question_existante_et_un_langage_inexistant_lorsquon_appelle_get_on_obtient_une_sauvegarde_nulle()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call(
+			"GET",
+			"/sauvegarde/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/java",
+		);
+
+		$this->assertEquals(404, $résultat_observé->status());
+		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
 	}
 }

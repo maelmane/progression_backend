@@ -19,6 +19,7 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\ObtenirSauvegardeAutomatiqueInt;
 use progression\domaine\interacteur\CréerSauvegardeAutomatiqueInt;
 use progression\http\transformer\SauvegardeAutomatiqueTransformer;
@@ -29,17 +30,15 @@ class SauvegardeCtl extends Contrôleur
 {
 	public function get(Request $request, $username, $question_uri, $langage)
 	{
-		print_r(" Là1");
 		$chemin = Encodage::base64_decode_url($question_uri);
 		$sauvegarde = null;
 		$réponse = null;
-
 		$sauvegardeInt = new ObtenirSauvegardeAutomatiqueInt();
 		$sauvegarde = $sauvegardeInt->get_sauvegarde_automatique($username, $chemin, $langage);
 
 		if ($sauvegarde != null) {
-			//$réponse = $this->item($sauvegarde, new SauvegardeAutomatiqueTransformer());
-			$réponse = "La sauvegarde a été correctement récupérée";
+			$sauvegarde->id = "{$username}/{$question_uri}/{$langage}";
+			$réponse = $this->item($sauvegarde, new SauvegardeAutomatiqueTransformer());
 		}
 
 		return $this->préparer_réponse($réponse);
@@ -47,5 +46,44 @@ class SauvegardeCtl extends Contrôleur
 
 	public function post(Request $request, $username, $question_uri)
 	{
+		$réponse = null;
+
+		$chemin = Encodage::base64_decode_url($question_uri);
+		$validation = $this->validationSauvegarde($request);
+		if ($validation->fails()) {
+			return $this->réponse_json(["erreur" => $validation->errors()], 422);
+		}
+		$sauvegarde = new Sauvegarde(
+			$username,
+			$chemin,
+			(new \DateTime())->getTimestamp(),
+			$request->langage,
+			$request->code
+		);
+		$sauvegardeInt = new CréerSauvegardeAutomatiqueInt();
+
+		$résultat_sauvegarde = $sauvegardeInt->sauvegarder($sauvegarde);
+		
+		if ($résultat_sauvegarde != null) {
+			$résultat_sauvegarde->id = "{$username}/{$question_uri}/{$request->langage}";
+			$réponse = $this->item($résultat_sauvegarde, new SauvegardeAutomatiqueTransformer());
+		} else {
+			return $this->réponse_json(["erreur" => "Requête intraitable"], 422);
+		}
+		return $this->préparer_réponse($réponse);
+	}
+
+	public function validationSauvegarde($request)
+	{
+		return Validator::make(
+			$request->all(),
+			[
+				"langage" => "required",
+				"code" => "required",
+			],
+			[
+				"required" => "Le champ :attribute est obligatoire.",
+			],
+		);
 	}
 }
