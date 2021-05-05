@@ -79,7 +79,7 @@ class QuestionDAO extends EntitéDAO
 				return $this->récupérer_archive($uri);
 			}
 
-			if ($this->get_entête($uri . "/info.yml", "Content-Type") == "text/yaml") {
+			if (str_starts_with($this->get_entête($uri . "/info.yml", "Content-Type"), "text/yaml")) {
 				return $this->récupérer_fichier_info($uri);
 			}
 
