@@ -61,7 +61,7 @@ class SauvegardeCtl extends Contrôleur
 			$request->code
 		);
 		$sauvegardeInt = new CréerSauvegardeAutomatiqueInt();
-
+		
 		$résultat_sauvegarde = $sauvegardeInt->sauvegarder($sauvegarde);
 		
 		if ($résultat_sauvegarde != null) {
