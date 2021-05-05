@@ -38,21 +38,27 @@ class PréparerProgInt
 
 	private function composer_code_à_exécuter($ébauche, $code_utilisateur)
 	{
-		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code_utilisateur, $todos_utilisateur);
-		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $ébauche, $todos_ébauche);
-
-		$nb_todos_utilisateur = count($todos_utilisateur[1]);
-		$nb_todos_ébauche = count($todos_ébauche[1]);
-
-		$codeÉbauche = explode("\n", $ébauche);
-		$codeExécutable = [];
-		$todoStatut = false;
-		$todoIndex = 0;
-
-		if ($nb_todos_utilisateur != $nb_todos_ébauche) {
+        if (! $this->vérifierNombreTodos($ébauche, $code_utilisateur)){
 			return null;
 		}
 
+        //S'il n'y a pas de +TODO, on considère que l'ébauche commence avec une zone éditable
+		if(!str_contains($ébauche, "+TODO")){
+            $ébauche = "#+TODO\n" . $ébauche;
+            $code_utilisateur = "#+TODO\n" . $code_utilisateur;
+        }
+        else{
+            $ébauche = "#\n" . $ébauche;
+            $code_utilisateur = "#\n" . $code_utilisateur;            
+        }
+
+		$codeÉbauche = explode("\n", $ébauche);
+		$codeExécutable = [];
+        
+		$todoIndex = 0;
+        $todoStatut = false;
+
+        preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code_utilisateur, $todos_utilisateur);
 		foreach ($codeÉbauche as $ligne) {
 			if ($todoStatut && strpos($ligne, "-TODO")) {
 				$todoStatut = false;
@@ -68,8 +74,19 @@ class PréparerProgInt
 			}
 		}
 
-		$codeExécutable = implode("\n", $codeExécutable);
+        //On enlève la première ligne et recompose le code
+		$codeExécutable = implode("\n", array_slice($codeExécutable, 1));
 
 		return $codeExécutable;
 	}
+
+    private function vérifierNombreTodos($ébauche, $code_utilisateur){
+        preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code_utilisateur, $todos_utilisateur);
+		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $ébauche, $todos_ébauche);
+
+		$nb_todos_utilisateur = count($todos_utilisateur[1]);
+		$nb_todos_ébauche = count($todos_ébauche[1]);
+
+        return $nb_todos_ébauche == $nb_todos_utilisateur;
+    }
 }
