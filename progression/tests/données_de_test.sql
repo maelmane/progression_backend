@@ -21,13 +21,13 @@ INSERT INTO user VALUES (
   0
 );
 
-/*INSERT INTO sauvegarde VALUES (
-  "jdoe",
+INSERT INTO sauvegarde VALUES (
+  "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-  "03/05/2021",
+  1620150294,
   "python",
-  "print('Hello world!')"
-);*/
+  "print(\"Hello world!\")"
+);
 
 INSERT INTO avancement VALUES (
   "bob",
