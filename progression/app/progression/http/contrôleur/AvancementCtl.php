@@ -56,7 +56,7 @@ class AvancementCtl extends Contrôleur
 				if ($request->user()->rôle == User::ROLE_ADMIN) {
 					if (!isset($request->avancement["état"])) {
 						return $this->réponse_json(
-							["erreur" => "Le champ état est obligatoire pour enregistrer l'avancement."],
+							["erreur" => "Le champ état est obligatoire pour traiter la requête"],
 							422,
 						);
 					}
