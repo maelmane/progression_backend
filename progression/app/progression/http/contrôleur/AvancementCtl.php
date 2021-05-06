@@ -86,7 +86,7 @@ class AvancementCtl extends Contrôleur
 	{
 		$avancementInt = new ObtenirAvancementInt();
 		$avancement = $avancementInt->get_avancement($username, $chemin);
-		
+
 		return $avancement;
 	}
 	private function sauvegarderAvancement($username, $chemin, $avancement)
