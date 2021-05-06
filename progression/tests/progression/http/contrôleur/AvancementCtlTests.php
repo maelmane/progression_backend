@@ -70,9 +70,7 @@ final class AvancementCtlTests extends TestCase
 			->shouldReceive("get_avancement")
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($avancement);
-		$mockAvancementDAO
-			->shouldReceive("save")
-			->andReturn($avancementPost);
+		$mockAvancementDAO->shouldReceive("save")->andReturn($avancementPost);
 
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
