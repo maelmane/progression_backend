@@ -277,7 +277,7 @@ DATA=$(cat <<EOF
 EOF
 )
 
-curl -X POST --data "$DATA" https://progression.dti.crosemont.quebec/api/v1/user/test/avancements -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+curl -X POST --data "$DATA" https://progression.dti.crosemont.quebec/api/v1/user/jdoe/avancements -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir l'avancement de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
