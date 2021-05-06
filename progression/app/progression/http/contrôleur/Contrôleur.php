@@ -98,7 +98,7 @@ class Contrôleur extends BaseController
 		return $manager->createData($resource)->toArray();
 	}
 
-	protected function préparer_réponse(array|null $réponse, $code = 200)
+	protected function préparer_réponse($réponse, $code = 200)
 	{
 		$request = app(Request::class);
 		if ($réponse != null && $réponse != [null]) {
