@@ -29,7 +29,7 @@ final class PréparerProgIntTests extends TestCase
 		Mockery::close();
 	}
 
-public function test_étant_donné_une_questionprog_sans_todo_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_exactement_le_code_utilisateur()
+	public function test_étant_donné_une_questionprog_sans_todo_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_exactement_le_code_utilisateur()
 	{
 		$résultat_attendu = new Exécutable(
 			"#Commentaire invisible
@@ -72,7 +72,7 @@ public function test_étant_donné_une_questionprog_sans_todo_et_une_tentative_l
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
-public function test_étant_donné_une_questionprog_à_un_todo_sans_balise_de_début_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_seulement_code_utilisateur_avant_le_todo()
+	public function test_étant_donné_une_questionprog_à_un_todo_sans_balise_de_début_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_seulement_code_utilisateur_avant_le_todo()
 	{
 		$résultat_attendu = new Exécutable(
 			"#Commentaire invisible
@@ -108,7 +108,7 @@ public function test_étant_donné_une_questionprog_à_un_todo_sans_balise_de_d�
              #-TODO
              # Rien à faire ici
 
-            "
+            ",
 		);
 
 		$interacteur = new PréparerProgInt();
@@ -117,7 +117,7 @@ public function test_étant_donné_une_questionprog_à_un_todo_sans_balise_de_d�
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
-public function test_étant_donné_une_questionprog_à_un_todo_sans_balise_de_fin_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_seulement_code_utilisateur_après_le_todo()
+	public function test_étant_donné_une_questionprog_à_un_todo_sans_balise_de_fin_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_seulement_code_utilisateur_après_le_todo()
 	{
 		$résultat_attendu = new Exécutable(
 			"#Commentaire invisible
@@ -156,7 +156,7 @@ public function test_étant_donné_une_questionprog_à_un_todo_sans_balise_de_fi
              #+TODO
              print(\"Allo le monde\")
 
-            "
+            ",
 		);
 
 		$interacteur = new PréparerProgInt();
@@ -164,8 +164,8 @@ public function test_étant_donné_une_questionprog_à_un_todo_sans_balise_de_fi
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
-    
-    public function test_étant_donné_une_questionprog_à_deux_todos_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_seulement_code_utilisateur_entre_todos()
+
+	public function test_étant_donné_une_questionprog_à_deux_todos_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_seulement_code_utilisateur_entre_todos()
 	{
 		$résultat_attendu = new Exécutable(
 			"#Commentaire invisible
