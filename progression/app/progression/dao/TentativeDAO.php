@@ -1,23 +1,24 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\dao;
 
+use mysqli_sql_exception;
 use progression\domaine\entité\Question;
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 
@@ -33,12 +34,14 @@ class TentativeDAO extends EntitéDAO
 			return $this->source->get_tentative_sys_dao()->get_toutes($username, $question_uri);
 		} elseif ($type == Question::TYPE_BD) {
 			return $this->source->get_tentative_bd_dao()->get_toutes($username, $question_uri);
+		} elseif ($type == Question::TYPE_INCONNU) {
+			return [];
 		} else {
 			return null;
 		}
 	}
 
-    public function get_tentative($username, $question_uri, $date)
+	public function get_tentative($username, $question_uri, $date)
 	{
 		$type = $this->get_type($username, $question_uri);
 
@@ -53,7 +56,7 @@ class TentativeDAO extends EntitéDAO
 		}
 	}
 
-    public function save($username, $question_uri, $objet)
+	public function save($username, $question_uri, $objet)
 	{
 		if ($objet instanceof TentativeProg) {
 			return $this->source->get_tentative_prog_dao()->save($username, $question_uri, $objet);
@@ -65,24 +68,25 @@ class TentativeDAO extends EntitéDAO
 			return null;
 		}
 	}
-    
-    
+
 	private function get_type($username, $question_uri)
 	{
 		$type = null;
 
-		$query = EntitéDAO::get_connexion()->prepare(
-			"SELECT type FROM avancement WHERE question_uri = ? AND username = ?",
-		);
-		$query->bind_param("ss", $question_uri, $username);
-		$query->execute();
-		$query->bind_result($type);
-		$query->fetch();
-		$query->close();
+		try {
+			$query = EntitéDAO::get_connexion()->prepare(
+				"SELECT type FROM avancement WHERE question_uri = ? AND username = ?",
+			);
 
-		return $type;
+			$query->bind_param("ss", $question_uri, $username);
+			$query->execute();
+			$query->bind_result($type);
+			$query->fetch();
+			$query->close();
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
+		}
+
+		return $type ?? Question::TYPE_INCONNU;
 	}
-
-
-    
 }

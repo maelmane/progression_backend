@@ -18,6 +18,7 @@
 
 namespace progression\http\contrôleur;
 
+use progression\domaine\interacteur\ObtenirQuestionInt;
 use progression\http\transformer\ÉbaucheTransformer;
 use progression\util\Encodage;
 use Illuminate\Http\Request;
@@ -32,7 +33,7 @@ class ÉbaucheCtl extends Contrôleur
 		$question = null;
 		$réponse = null;
 
-		$questionInt =  $this->intFactory->getObtenirQuestionInt();
+		$questionInt = new ObtenirQuestionInt();
 		try {
 			$question = $questionInt->get_question($chemin);
 		} catch (LengthException $erreur) {
@@ -47,18 +48,14 @@ class ÉbaucheCtl extends Contrôleur
 		}
 
 		if ($question != null) {
-
 			if (array_key_exists($langage, $question->exécutables)) {
 				$ébauche = $question->exécutables[$langage];
 				$ébauche->id = $question_uri . "/{$ébauche->lang}";
 				$ébauche->links = [
-					"related" =>
-					$_ENV['APP_URL'] .
-						"question/" .
-						$question_uri,
+					"related" => $_ENV["APP_URL"] . "question/" . $question_uri,
 				];
 
-				$réponse = $this->item($ébauche, new ÉbaucheTransformer);
+				$réponse = $this->item($ébauche, new ÉbaucheTransformer());
 			}
 		}
 

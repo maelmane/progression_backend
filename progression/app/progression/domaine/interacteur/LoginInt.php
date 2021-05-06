@@ -30,11 +30,11 @@ class LoginInt extends Interacteur
 
 		$user = null;
 
-		if ($_ENV['AUTH_TYPE'] == "no") {
+		if ($_ENV["AUTH_TYPE"] == "no") {
 			$user = $this->login_sans_authentification($username);
-		} elseif ($_ENV['AUTH_TYPE'] == "local") {
+		} elseif ($_ENV["AUTH_TYPE"] == "local") {
 			$user = $this->login_local($username, $password);
-		} elseif ($_ENV['AUTH_TYPE'] == "ldap") {
+		} elseif ($_ENV["AUTH_TYPE"] == "ldap") {
 			$user = $this->login_ldap($username, $password);
 		}
 
@@ -58,7 +58,7 @@ class LoginInt extends Interacteur
 			$user_ldap = $this->get_username_ldap($username, $password);
 
 			if ($user_ldap != null) {
-				$user = (new CréerUserInt($this->source_dao))->obtenir_ou_créer_user($username);
+				$user = (new CréerUserInt())->obtenir_ou_créer_user($username);
 			}
 		}
 
@@ -75,11 +75,11 @@ class LoginInt extends Interacteur
 		#Tentative de connexion à AD
 		define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
 
-		($ldap = ldap_connect("ldap://" . $_ENV['HOTE_AD'], $_ENV['PORT_AD'])) or
+		($ldap = ldap_connect("ldap://" . $_ENV["HOTE_AD"], $_ENV["PORT_AD"])) or
 			die("Configuration de serveur LDAP invalide.");
 		ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-		$bind = @ldap_bind($ldap, $_ENV['DN_BIND'], $_ENV['PW_BIND']);
+		$bind = @ldap_bind($ldap, $_ENV["DN_BIND"], $_ENV["PW_BIND"]);
 
 		if (!$bind) {
 			ldap_get_option($ldap, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
@@ -87,9 +87,9 @@ class LoginInt extends Interacteur
 				"Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extended_error",
 			);
 		}
-		$result = ldap_search($ldap, $_ENV['LDAP_BASE'], "(sAMAccountName=$username)", ['dn', 'cn', 1]);
+		$result = ldap_search($ldap, $_ENV["LDAP_BASE"], "(sAMAccountName=$username)", ["dn", "cn", 1]);
 		$user = ldap_get_entries($ldap, $result);
-		if ($user["count"] != 1 || !@ldap_bind($ldap, $user[0]['dn'], $password)) {
+		if ($user["count"] != 1 || !@ldap_bind($ldap, $user[0]["dn"], $password)) {
 			return null;
 		}
 		return $user[0];
@@ -97,6 +97,6 @@ class LoginInt extends Interacteur
 
 	function login_sans_authentification($username)
 	{
-		return (new CréerUserInt($this->source_dao))->obtenir_ou_créer_user($username);
+		return (new CréerUserInt())->obtenir_ou_créer_user($username);
 	}
 }

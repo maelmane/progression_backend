@@ -23,21 +23,22 @@ use PHPUnit\Framework\TestCase;
 
 final class UserTransformerTests extends TestCase
 {
-    public function test_étant_donné_un_user_instancié_avec_id_2_et_nom_bob_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
-    {
-        $_ENV['APP_URL'] = "https://example.com/";
-        $userTransformer = new UserTransformer();
-        $user = new User(2);
-        $user->username = "bob";
+	public function test_étant_donné_un_user_instancié_avec_id_2_et_nom_bob_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
+		$userTransformer = new UserTransformer();
+		$user = new User(2);
+		$user->username = "bob";
 
-        $résultat = [
-            "id" => "bob",
-            "username" => "bob",
-            "rôle" => 0,
-            "links" => [
-                "self" => "https://example.com/user/bob"
-            ]];
-        
-        $this->assertEquals( $résultat, $userTransformer->transform($user) );
-    }
+		$résultat = [
+			"id" => "bob",
+			"username" => "bob",
+			"rôle" => 0,
+			"links" => [
+				"self" => "https://example.com/user/bob",
+			],
+		];
+
+		$this->assertEquals($résultat, $userTransformer->transform($user));
+	}
 }

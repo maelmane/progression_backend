@@ -18,7 +18,6 @@
 
 namespace progression\http\transformer;
 
-
 use PHPUnit\Framework\TestCase;
 use progression\domaine\entité\RésultatProg;
 
@@ -32,13 +31,14 @@ final class RésultatProgTransformerTests extends TestCase
 		$résultat = new RésultatProg("Bonjour\nBonjour\n", "", true, "Bon travail!");
 		$résultat->numéro = 0;
 		$résultat->id =
-			"bob"
-			. "/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
-			. "/1614374490"
-			. "/0";
+			"bob" .
+			"/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24" .
+			"/1614374490" .
+			"/0";
 
 		$réponse_attendue = [
-			"id" => "bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
+			"id" =>
+				"bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
 			"numéro" => 0,
 			"sortie_observée" => "Bonjour\nBonjour\n",
 			"sortie_erreur" => "",
@@ -46,7 +46,7 @@ final class RésultatProgTransformerTests extends TestCase
 			"feedback" => "Bon travail!",
 			"links" => [
 				"self" =>
-				"https://example.com/resultat/bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
+					"https://example.com/resultat/bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
 			],
 		];
 

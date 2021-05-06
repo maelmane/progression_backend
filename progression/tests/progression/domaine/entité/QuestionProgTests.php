@@ -30,6 +30,7 @@ final class QuestionProgTests extends TestCase
 		$résultat_obtenu = new QuestionProg();
 		$résultat_obtenu->exécutables = ["execTest0", "execTest1"];
 		$résultat_obtenu->tests = ["testTest0", "testTest1"];
+		$résultat_obtenu->avancement = "avancementTest0";
 
 		$this->assertEquals($exécutables_attendu, $résultat_obtenu->exécutables);
 		$this->assertEquals($tests_attendu, $résultat_obtenu->tests);

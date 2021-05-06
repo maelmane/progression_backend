@@ -21,6 +21,7 @@ namespace progression\http\contrôleur;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use progression\domaine\interacteur\LoginInt;
 
 class LoginCtl extends Contrôleur
 {
@@ -32,7 +33,7 @@ class LoginCtl extends Contrôleur
 		$username = $request->input("username");
 		$password = $request->input("password");
 
-		$loginInt = $this->intFactory->getLoginInt();
+		$loginInt = new LoginInt();
 		$user = $loginInt->effectuer_login($username, $password);
 
 		if ($user != null) {

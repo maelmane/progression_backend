@@ -64,7 +64,7 @@ catégorie/
   - execs : liste de descriptifs des programmes exécutables. Chaque élément contenant les attributs suivants :
     - langage : langage de programmation
     - fichier: le fichier contenant l'ébauche de programme
-  - feedback+ : rétroaction positive générale (facultatif, en format Markdown)
+  - feedback+ : rétroaction positive générale (facultatif, en format Markdown)[fn:1]
   - feedback- : rétroaction négative générale (facultatif, en format Markdown)
   - feedback! : rétroaction d'erreur générale (facultatif, en format Markdown)
   - tests : liste des fichiers de tests
@@ -72,11 +72,16 @@ catégorie/
 ** Questions Prog: 
     
 *** Le fichier d'ébauche de programme
-Pour chaque question, un fichier de départ est fourni. Le programme entier doit résider dans ce seul fichier (pas d'import/include possible autre que ceux des librairies standard); c'est ce fichier qui sera exécuté.
+Pour chaque langage pris en charge par la question, un fichier de départ doit être fourni. Le programme entier doit résider dans ce seul fichier (pas d'import/include possible autre que ceux des librairies standard); c'est ce fichier qui sera exécuté.
 
-En commentaire (quelque soit le style de commentaire du langage utilisé), les étiquettes suivantes peuvent être utilisées pour contrôler l'affichage et la modification du code par l'étudiant :
-  - parties visibles (entre +VISIBLE et -VISIBLE) : ces sections seront visibles par l'étudiant
-  - parties éditables (entre +TODO et -TODO) : ces sections seront modifiables par l'étudiant. Au moins une est obligatoire mais elle peut être vide.
+En commentaire (quelque soit le style de commentaire du langage utilisé), les balises suivantes peuvent être utilisées pour contrôler l'affichage et la modification du code par l'étudiant :
+  - parties visibles (entre +VISIBLE et -VISIBLE) : ces sections seront visibles par l'étudiant.
+    - De la première ligne et jusqu'à la première balise -VISIBLE, le code de l'ébauche est visible.
+    - À partir de la dernière balise +VISIBLE et jusqu'à la fin de l'ébauche, elle est visible.
+  - parties éditables (entre +TODO et -TODO) : ces sections seront modifiables par l'étudiant.
+    - Au moins une balise +TODO est obligatoire.
+    - De la première ligne et jusqu'à la première balise +TODO, l'ébauche est non éditable
+    - À partir de la dernière balise +TODO et jusqu'à la fin de l'ébauche, elle est éditable
 
 Tout ce qui se trouve hors des sections VISIBLE sera invisible à l'étudiant (et donc immuable) mais sera tout de même exécuté normalement.
 
@@ -85,7 +90,7 @@ Les fichiers de tests sont dans le format yaml et comportent une ou plusieurs se
   - nom : nom du test
   - in : les entrées textuelles passés directement à l'entrée standard du programme
   - out : les sorties textuelles attendues sur la sortie standard du programme
-  - feedback+ : rétroaction positive spécifique à la question (facultatif, en format Markdown)
+  - feedback+ : rétroaction positive spécifique à la question (facultatif, en format Markdown)[fn:1]
   - feedback- : rétroaction négative spécifique à la question (facultatif, en format Markdown)
   - feedback! : rétroaction d'erreur spécifique à la question (facultatif, en format Markdown)
 
@@ -151,3 +156,19 @@ cd "$current_directory"
 			+ [[file:./démo/les_opérateurs/question1/tests/cas_négatifs.yml][cas_négatifs.yml]]
 			+ [[file:./démo/les_opérateurs/question1/tests/cas_positifs.yml][cas_positifs.yml]]
 :end:
+
+* Footnotes
+
+[fn:1]Certains symboles on une signification particulière en YAML ou en markdown. Le format YAML ayant préséance, pour les utiliser en markdown, utilisez les caractères d'échappement, les guillemets ou le format yaml «bloc» :
+
+#+BEGIN_SRC
+Incorrect :
+
+feedback+: *Ceci est en gras*
+
+Correct :
+  - feedback+: \*Ceci est en gras*
+  - feedback+: "*Ceci est en gras*"
+  - feedback+: >
+      *Ceci est en gras*
+#+END_SRC

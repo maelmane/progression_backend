@@ -18,210 +18,55 @@
 
 require_once __DIR__ . "/../../../TestCase.php";
 
+use progression\dao\DAOFactory;
 use progression\domaine\entité\{Avancement, User};
 use progression\http\contrôleur\UserCtl;
 use Illuminate\Http\Request;
+use Illuminate\Auth\GenericUser;
 
 final class UserCtlTests extends TestCase
 {
-	public function test_étant_donné_le_nom_dun_utilisateur_lorsquon_appelle_get_on_obtient_lutilisateur_et_ses_relations_sous_forme_json()
+	public $user;
+	public function setUp(): void
 	{
+		parent::setUp();
+
+		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$user = new User(null);
-		$user->username = "jdoe";
+		$user = new User("jdoe");
 		$user->avancements = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement(),
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement(),
 		];
 
-		$résultat_attendu = [
-			"data" => [
-				"type" => "user",
-				"id" => "jdoe",
-				"attributes" => [
-					"username" => "jdoe",
-					"rôle" => "0",
-				],
-				"links" => [
-					"self" => "https://example.com/user/jdoe",
-				],
-				"relationships" => [
-					"avancements" => [
-						"data" => [
-							[
-								"type" => "avancement",
-								"id" =>
-									"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-							],
-							[
-								"type" => "avancement",
-								"id" =>
-									"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
-							],
-						],
-						"links" => [
-							"self" => "https://example.com/user/jdoe/relationships/avancements",
-							"related" => "https://example.com/user/jdoe/avancements",
-						],
-					],
-				],
-			],
-			"included" => [
-				[
-					"type" => "avancement",
-					"id" =>
-						"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-					"attributes" => [
-						"état" => 0,
-					],
-					"links" => [
-						"self" =>
-							"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-						"tentative" => "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-						"related" => "https://example.com/user/jdoe",
-					],
-					"relationships" => [
-						"tentatives" => [
-							"links" => [
-								"self" =>
-									"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/relationships/tentatives",
-								"related" =>
-									"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
-							],
-						],
-					],
-				],
-				[
-					"type" => "avancement",
-					"id" =>
-						"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
-					"attributes" => [
-						"état" => 0,
-					],
-					"links" => [
-						"self" =>
-							"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
-						"tentative" => "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
-						"related" => "https://example.com/user/jdoe",
-					],
-					"relationships" => [
-						"tentatives" => [
-							"links" => [
-								"self" =>
-									"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24/relationships/tentatives",
-								"related" =>
-									"https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24/tentatives",
-							],
-						],
-					],
-				],
-			],
-		];
-
-		// Intéracteur
-		$mockObtenirUserInt = Mockery::mock("progression\domaine\interacteur\ObtenirUserInt");
-		$mockObtenirUserInt
-			->allows()
-			->get_user("jdoe")
+		// UserDAO
+		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("jdoe")
 			->andReturn($user);
 
-		// InteracteurFactory
-		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
-		$mockIntFactory
-			->allows()
-			->getObtenirUserInt()
-			->andReturn($mockObtenirUserInt);
-
-		// Requête
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->ip()
-			->andReturn("127.0.0.1");
-		$mockRequest
-			->allows()
-			->method()
-			->andReturn("GET");
-		$mockRequest
-			->allows()
-			->path()
-			->andReturn("/user");
-		$mockRequest
-			->allows()
-			->all()
-			->andReturn();
-		$mockRequest
-			->allows()
-			->query("include")
-			->andReturn("avancements");
-
-		$this->app->bind(Request::class, function () use ($mockRequest) {
-			return $mockRequest;
-		});
-
-		// Contrôleur
-		$ctl = new UserCtl($mockIntFactory);
-		$résultat_obtenu = $ctl->get($mockRequest, "jdoe");
-
-		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
+		// DAOFactory
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
+		DAOFactory::setInstance($mockDAOFactory);
 	}
 
-	public function test_étant_donné_le_nom_dun_utilisateur_inexistant_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
+	public function tearDown(): void
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
+		Mockery::close();
+	}
 
-		$résultat_attendu = [
-			"erreur" => "Ressource non trouvée.",
-		];
+	public function test_étant_donné_le_nom_dun_utilisateur_lorsquon_appelle_get_on_obtient_lutilisateur_et_ses_relations_sous_forme_json()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe");
 
-		// Intéracteur
-		$mockObtenirUserInt = Mockery::mock("progression\domaine\interacteur\ObtenirUserInt");
-		$mockObtenirUserInt
-			->allows()
-			->get_user("Jean-Yves")
-			->andReturn(null);
-
-		// InteracteurFactory
-		$mockIntFactory = Mockery::mock("progression\domaine\interacteur\InteracteurFactory");
-		$mockIntFactory
-			->allows()
-			->getObtenirUserInt()
-			->andReturn($mockObtenirUserInt);
-
-		// Requête
-		$mockRequest = Mockery::mock("Illuminate\Http\Request");
-		$mockRequest
-			->allows()
-			->ip()
-			->andReturn("127.0.0.1");
-		$mockRequest
-			->allows()
-			->method()
-			->andReturn("GET");
-		$mockRequest
-			->allows()
-			->path()
-			->andReturn("/user");
-		$mockRequest
-			->allows()
-			->all()
-			->andReturn();
-		$mockRequest
-			->allows()
-			->query("include")
-			->andReturn();
-
-		$this->app->bind(Request::class, function () use ($mockRequest) {
-			return $mockRequest;
-		});
-
-		// Contrôleur
-		$ctl = new UserCtl($mockIntFactory);
-		$résultat_obtenu = $ctl->get($mockRequest, "Jean-Yves");
-
-		$this->assertEquals(404, $résultat_obtenu->status());
-		$this->assertEquals($résultat_attendu, json_decode($résultat_obtenu->getContent(), true));
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertStringEqualsFile(
+			__DIR__ . "/résultats_attendus/userCtlTest_1.json",
+			$résultat_obtenu->getContent(),
+		);
 	}
 }

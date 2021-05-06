@@ -103,15 +103,10 @@ final class TraiterTentativeProgIntTests extends TestCase
 		$tentative = new TentativeProg("python", "testCode");
 		$tentative->résultats = [new RésultatProg("ok\n", ""), new RésultatProg("", "testErreur")];
 
-		$résultat_attendu = new TentativeProg(
-			"python",
-			"testCode",
-			null,
-			false,
-			1,
-			"Revise la syntaxe de ton code",
-			[new RésultatProg("ok\n", "", true, "Test 0 passé"), new RésultatProg("", "testErreur", false, "Erreur!")],
-		);
+		$résultat_attendu = new TentativeProg("python", "testCode", null, false, 1, "Revise la syntaxe de ton code", [
+			new RésultatProg("ok\n", "", true, "Test 0 passé"),
+			new RésultatProg("", "testErreur", false, "Erreur!"),
+		]);
 
 		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($question, $tentative);
 

@@ -20,15 +20,8 @@ namespace progression\domaine\interacteur;
 
 class ObtenirTentativeInt extends Interacteur
 {
-	function __construct($source)
-	{
-		$this->source_dao = $source;
-	}
-
 	function get_tentative($username, $question_uri, $date)
 	{
-		return $this->source_dao
-			->get_tentative_dao()
-			->get_tentative($username, $question_uri, $date);
+		return $this->source_dao->get_tentative_dao()->get_tentative($username, $question_uri, $date);
 	}
 }
