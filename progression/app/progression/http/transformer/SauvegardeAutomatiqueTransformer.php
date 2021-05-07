@@ -20,7 +20,6 @@ namespace progression\http\transformer;
 
 use League\Fractal;
 use progression\domaine\entité\Sauvegarde;
-use progression\util\Encodage;
 
 class SauvegardeAutomatiqueTransformer extends Fractal\TransformerAbstract
 {
@@ -28,14 +27,10 @@ class SauvegardeAutomatiqueTransformer extends Fractal\TransformerAbstract
 
 	public function transform(Sauvegarde $sauvegarde)
 	{
-
 		$data_out = [
 			"id" => $sauvegarde->id,
-			"username" => $sauvegarde->username,
-			"question_uri" => Encodage::base64_encode_url($sauvegarde->question_uri),
-            "date_sauvegarde" => $sauvegarde->date_sauvegarde,
-			"langage" => $sauvegarde->langage,
-            "code" => $sauvegarde->code,
+			"date_sauvegarde" => $sauvegarde->date_sauvegarde,
+			"code" => $sauvegarde->code,
 			"links" => (isset($sauvegarde->links) ? $sauvegarde->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}sauvegarde/{$sauvegarde->id}"
 			],

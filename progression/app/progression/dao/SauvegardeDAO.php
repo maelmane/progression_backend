@@ -26,12 +26,10 @@ class SauvegardeDAO extends EntitéDAO
 	public function get_sauvegarde($username, $question_uri, $langage)
 	{
 		$sauvegarde = null;
-		try{
+		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				'SELECT sauvegarde.username,
-					sauvegarde.question_uri,
+				'SELECT
 					sauvegarde.date_sauvegarde,
-					sauvegarde.langage,
 					sauvegarde.code
 				FROM sauvegarde
 				WHERE username = ? 
@@ -41,15 +39,12 @@ class SauvegardeDAO extends EntitéDAO
 			$query->bind_param("sss", $username, $question_uri, $langage);
 			$query->execute();
 
-			$langage = null;
 			$code = null;
 			$date_sauvegarde = null;
-			$question_uri = null;
-			$username = null;
-			$query->bind_result($username, $question_uri, $date_sauvegarde, $langage, $code);
+			$query->bind_result($date_sauvegarde, $code);
 
 			if ($query->fetch()) {
-				$sauvegarde = new Sauvegarde($username, $question_uri, $date_sauvegarde, $langage, $code);
+				$sauvegarde = new Sauvegarde($date_sauvegarde, $code);
 			}
 
 			$query->close();
@@ -60,20 +55,21 @@ class SauvegardeDAO extends EntitéDAO
 		return $sauvegarde;
 	}
 
-	public function save($sauvegarde)
+	public function save($sauvegarde, $username, $question_uri, $langage)
 	{
-		try{
+		try {
 			$query = EntitéDAO::get_connexion()->prepare(
 				"INSERT INTO sauvegarde ( username, question_uri, date_sauvegarde, langage, code )
 				VALUES ( ?, ?, ?, ?, ? )
 				ON DUPLICATE KEY UPDATE code = VALUES( code ), date_sauvegarde = VALUES( date_sauvegarde )",
 			);
+
 			$query->bind_param(
 				"ssiss",
-				$sauvegarde->username,
-				$sauvegarde->question_uri,
+				$username,
+				$question_uri,
 				$sauvegarde->date_sauvegarde,
-				$sauvegarde->langage,
+				$langage,
 				$sauvegarde->code
 			);
 			$query->execute();
@@ -82,6 +78,6 @@ class SauvegardeDAO extends EntitéDAO
 			throw new DAOException($e);
 		}
 
-		return $this->get_sauvegarde($sauvegarde->username, $sauvegarde->question_uri, $sauvegarde->langage);
+		return $this->get_sauvegarde($username, $question_uri, $langage);
 	}
 }

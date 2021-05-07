@@ -24,25 +24,15 @@ final class SauvegardeTests extends TestCase
 {
 	public function test_étant_donné_une_Sauvegarde_instanciée_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
 	{
-		$username_attendu = "jdoe";
-        $question_uri_attendu = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		$date_sauvegarde_attendue = 1620150294;
-		$langage_attendu = "python";
-        $code_attendu = "print(\"Hello world!\")";
+		$code_attendu = "print(\"Hello world!\")";
 
-		$résultat_obtenu = new Sauvegarde
-        (
-            "jdoe",
-            "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-            1620150294,
-            "python",
-            "print(\"Hello world!\")"
-        );
+		$résultat_obtenu = new Sauvegarde(
+				1620150294,
+				"print(\"Hello world!\")"
+			);
 
-		$this->assertEquals($username_attendu, $résultat_obtenu->username);
-		$this->assertEquals($question_uri_attendu, $résultat_obtenu->question_uri);
 		$this->assertEquals($date_sauvegarde_attendue, $résultat_obtenu->date_sauvegarde);
-        $this->assertEquals($langage_attendu, $résultat_obtenu->langage);
 		$this->assertEquals($code_attendu, $résultat_obtenu->code);
 	}
 }

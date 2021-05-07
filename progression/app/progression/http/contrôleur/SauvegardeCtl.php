@@ -54,16 +54,13 @@ class SauvegardeCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => $validation->errors()], 422);
 		}
 		$sauvegarde = new Sauvegarde(
-			$username,
-			$chemin,
 			(new \DateTime())->getTimestamp(),
-			$request->langage,
 			$request->code
 		);
 		$sauvegardeInt = new CréerSauvegardeAutomatiqueInt();
-		
-		$résultat_sauvegarde = $sauvegardeInt->sauvegarder($sauvegarde);
-		
+
+		$résultat_sauvegarde = $sauvegardeInt->sauvegarder($sauvegarde, $username, $chemin, $request->langage);
+
 		if ($résultat_sauvegarde != null) {
 			$résultat_sauvegarde->id = "{$username}/{$question_uri}/{$request->langage}";
 			$réponse = $this->item($résultat_sauvegarde, new SauvegardeAutomatiqueTransformer());

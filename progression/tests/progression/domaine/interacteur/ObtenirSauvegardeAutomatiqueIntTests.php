@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Sauvegarde, User, Question, QuestionProg};
+use progression\domaine\entité\{Sauvegarde};
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -29,41 +29,11 @@ final class ObtenirSauvegardeAutomatiqueIntTests extends TestCase
 	{
 		parent::setUp();
 
-        // UserDAO
-		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("jdoe")
-			->andReturn(new User("jdoe"));
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("Marcel")
-			->andReturn(null);
-
-        // Question
-		$question = new QuestionProg();
-		$question->type = Question::TYPE_PROG;
-		$question->nom = "appeler_une_fonction_paramétrée";
-		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
-		$mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
-		$mockQuestionDAO
-			->shouldReceive("get_question")
-			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
-			->andReturn($question);
-		$mockQuestionDAO
-			->shouldReceive("get_question")
-			->with("https://depot.com/roger/questions_prog/question_inexistante")
-			->andReturn(null);
-
 		// Sauvegarde
-        $sauvegarde = new Sauvegarde
-        (
-            "jdoe",
-            "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-            1620150294,
-            "python",
-            "print(\"Hello world!\")"
-        );
+		$sauvegarde = new Sauvegarde(
+				1620150294,
+				"print(\"Hello world!\")"
+			);
 		$mockSauvegardeDAO = Mockery::mock("progression\dao\SauvegardeDAO");
 		$mockSauvegardeDAO
 			->shouldReceive("get_sauvegarde")
@@ -73,15 +43,17 @@ final class ObtenirSauvegardeAutomatiqueIntTests extends TestCase
 			->shouldReceive("get_sauvegarde")
 			->with("Marcel", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python")
 			->andReturn(null);
-        $mockSauvegardeDAO
+		$mockSauvegardeDAO
 			->shouldReceive("get_sauvegarde")
 			->with("jdoe", "https://depot.com/roger/questions_prog/question_inexistante", "python")
+			->andReturn(null);
+		$mockSauvegardeDAO
+			->shouldReceive("get_sauvegarde")
+			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "java")
 			->andReturn(null);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
-		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
-        $mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);
 		$mockDAOFactory->shouldReceive("get_sauvegarde_dao")->andReturn($mockSauvegardeDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
@@ -103,7 +75,7 @@ final class ObtenirSauvegardeAutomatiqueIntTests extends TestCase
 		$this->assertNull($résultat_obtenu);
 	}
 
-    public function test_étant_donné_luri_dune_question_inexistante_lorsquon_appelle_get_sauvegarde_on_obtient_un_objet_null()
+	public function test_étant_donné_luri_dune_question_inexistante_lorsquon_appelle_get_sauvegarde_on_obtient_un_objet_null()
 	{
 		$interacteur = new ObtenirSauvegardeAutomatiqueInt();
 		$résultat_obtenu = $interacteur->get_sauvegarde_automatique(
@@ -115,7 +87,19 @@ final class ObtenirSauvegardeAutomatiqueIntTests extends TestCase
 		$this->assertNull($résultat_obtenu);
 	}
 
-    public function test_étant_donné_luri_dune_question_existante_un_username_existant_et_le_bon_langage_lorsquon_appelle_get_sauvegarde_on_obtient_un_objet_sauvegarde_correspondant()
+	public function test_étant_donné_un_langage_inexistant_pour_une_sauvegarde_lorsquon_appelle_get_sauvegarde_on_obtient_un_objet_null()
+	{
+		$interacteur = new ObtenirSauvegardeAutomatiqueInt();
+		$résultat_obtenu = $interacteur->get_sauvegarde_automatique(
+			"jdoe",
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+			"java"
+		);
+
+		$this->assertNull($résultat_obtenu);
+	}
+
+	public function test_étant_donné_luri_dune_question_existante_un_username_existant_et_le_bon_langage_lorsquon_appelle_get_sauvegarde_on_obtient_un_objet_sauvegarde_correspondant()
 	{
 		$interacteur = new ObtenirSauvegardeAutomatiqueInt();
 		$résultat_obtenu = $interacteur->get_sauvegarde_automatique(
@@ -123,14 +107,10 @@ final class ObtenirSauvegardeAutomatiqueIntTests extends TestCase
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 			"python"
 		);
-        $résultat_attendu = new Sauvegarde
-        (
-            "jdoe",
-            "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-            1620150294,
-            "python",
-            "print(\"Hello world!\")"
-        );
-		$this->assertEquals($résultat_attendu , $résultat_obtenu);
+		$résultat_attendu = new Sauvegarde(
+				1620150294,
+				"print(\"Hello world!\")"
+			);
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 }

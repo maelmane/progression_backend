@@ -20,24 +20,14 @@ namespace progression\domaine\entité;
 
 class Sauvegarde
 {
-	public $username;
-	public $question_uri;
-    public $date_sauvegarde;
-	public $langage;
+	public $date_sauvegarde;
 	public $code;
 
 	public function __construct(
-        $username, 
-        $question_uri, 
-        $date_sauvegarde, 
-        $langage, 
-        $code
-    )
-    {
-        $this->username = $username;
-        $this->question_uri = $question_uri;
+		$date_sauvegarde,
+		$code
+	) {
 		$this->date_sauvegarde = $date_sauvegarde;
-		$this->langage = $langage;
-        $this->code = $code;
+		$this->code = $code;
 	}
 }

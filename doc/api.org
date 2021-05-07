@@ -228,10 +228,7 @@ username/question_uri/langage
 
 | Nom             | Type | Valeurs   |
 |-----------------+------+-----------|
-| username        | str  |           |
-| question_uri    | str  |           |
 | date_sauvegarde | int  | timestamp |
-| langage         | str  |           |
 | code            | str  |           |
 
 

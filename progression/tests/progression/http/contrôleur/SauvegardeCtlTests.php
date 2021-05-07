@@ -19,9 +19,7 @@
 require_once __DIR__ . "/../../../TestCase.php";
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{Sauvegarde, User, Question, QuestionProg};
-use progression\http\contrôleur\SauvegardeCtl;
-use Illuminate\Http\Request;
+use progression\domaine\entité\{Sauvegarde, User};
 use Illuminate\Auth\GenericUser;
 
 final class SauvegardeCtlTests extends TestCase
@@ -36,41 +34,11 @@ final class SauvegardeCtlTests extends TestCase
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		// UserDAO
-		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("jdoe")
-			->andReturn(new User("jdoe"));
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("Marcel")
-			->andReturn(null);
-
-        // Question
-		$question = new QuestionProg();
-		$question->type = Question::TYPE_PROG;
-		$question->nom = "appeler_une_fonction_paramétrée";
-		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
-		$mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
-		$mockQuestionDAO
-			->shouldReceive("get_question")
-			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
-			->andReturn($question);
-		$mockQuestionDAO
-			->shouldReceive("get_question")
-			->with("https://depot.com/roger/questions_prog/question_inexistante")
-			->andReturn(null);
-
 		// Sauvegarde
-		$sauvegarde = new Sauvegarde
-        (
-            "jdoe",
-            "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-            1620150294,
-            "python",
-            "print(\"Hello world!\")"
-        );
+		$sauvegarde = new Sauvegarde(
+				1620150294,
+				"print(\"Hello world!\")"
+			);
 		$mockSauvegardeDAO = Mockery::mock("progression\dao\SauvegardeDAO");
 		$mockSauvegardeDAO
 			->shouldReceive("get_sauvegarde")
@@ -86,8 +54,6 @@ final class SauvegardeCtlTests extends TestCase
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
-		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
-        $mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);
 		$mockDAOFactory->shouldReceive("get_sauvegarde_dao")->andReturn($mockSauvegardeDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);
@@ -99,26 +65,6 @@ final class SauvegardeCtlTests extends TestCase
 	}
 
 	// GET
-	public function test_étant_donné_le_username_dun_utilisateur_inexistant_lorsquon_appelle_get_on_obtient_un_message_derrreur()
-	{
-		$résultat_observé = $this->actingAs($this->admin)->call(
-			"GET",
-			"/sauvegarde/Marcel/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
-		);
-
-		$this->assertEquals(404, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
-	}
-	public function test_étant_donné_luri_dune_question_inexistante_lorsquon_appelle_get_on_obtient_un_message_derrreur()
-	{
-		$résultat_observé = $this->actingAs($this->user)->call(
-			"GET",
-			"/sauvegarde/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvcXVlc3Rpb25faW5leGlzdGFudGU=/python",
-		);
-
-		$this->assertEquals(404, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
-	}
 	public function test_étant_donné_un_username_existant_luri_dune_question_existante_et_un_langage_existant_lorsquon_appelle_get_on_obtient_une_sauvegarde()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
@@ -144,7 +90,7 @@ final class SauvegardeCtlTests extends TestCase
 	}
 
 	// POST
-	public function test_étant_donné_un_username_existant_luri_dune_question_existante_et_le_langage_inexistant_dans_le_corps_de_la_requete_lorsquon_appelle_post_on_obtient_un_message_derrreur()
+	public function test_étant_donné_le_langage_inexistant_dans_le_corps_de_la_requete_lorsquon_appelle_post_on_obtient_un_message_derrreur()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
 			"POST",
@@ -157,7 +103,7 @@ final class SauvegardeCtlTests extends TestCase
 		$this->assertEquals(422, $résultat_observé->status());
 		$this->assertEquals('{"erreur":{"langage":["Le champ langage est obligatoire."]}}', $résultat_observé->getContent());
 	}
-	public function test_étant_donné_un_username_existant_luri_dune_question_existante_et_le_code_inexistant_dans_le_corps_de_la_requete_lorsquon_appelle_post_on_obtient_un_message_derrreur()
+	public function test_étant_donné_le_code_inexistant_dans_le_corps_de_la_requete_lorsquon_appelle_post_on_obtient_un_message_derrreur()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
 			"POST",
@@ -169,34 +115,6 @@ final class SauvegardeCtlTests extends TestCase
 
 		$this->assertEquals(422, $résultat_observé->status());
 		$this->assertEquals('{"erreur":{"code":["Le champ code est obligatoire."]}}', $résultat_observé->getContent());
-	}
-	public function test_étant_donné_un_username_inexexistant_luri_dune_question_existante_le_code_et_le_langage_existants_dans_le_corps_de_la_requete_lorsquon_appelle_post_on_obtient_un_message_derrreur()
-	{
-		$résultat_observé = $this->actingAs($this->user)->call(
-			"POST",
-			"/sauvegarde/Marcel/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-			[
-				"langage" => "python",
-				"code" => "print(\"Hello world!\")"
-			]
-		);
-
-		$this->assertEquals(422, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Requête intraitable"}', $résultat_observé->getContent());
-	}
-	public function test_étant_donné_un_username_existant_luri_dune_question_inexistante_le_code_et_le_langage_existants_dans_le_corps_de_la_requete_lorsquon_appelle_post_on_obtient_un_message_derrreur()
-	{
-		$résultat_observé = $this->actingAs($this->user)->call(
-			"POST",
-			"/sauvegarde/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvcXVlc3Rpb25faW5leGlzdGFudGU=",
-			[
-				"langage" => "python",
-				"code" => "print(\"Hello world!\")"
-			]
-		);
-
-		$this->assertEquals(422, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Requête intraitable"}', $résultat_observé->getContent());
 	}
 	public function test_étant_donné_un_username_existant_luri_dune_question_existante_le_code_et_le_langage_existants_dans_le_corps_de_la_requete_lorsquon_appelle_post_on_obtient_une_sauvegarde_nouvellement_créee()
 	{
