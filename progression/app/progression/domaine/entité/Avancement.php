@@ -23,10 +23,12 @@ class Avancement
 	public $etat;
 	public $type;
 	public $tentatives;
+	public $sauvegardes;
 
-	public function __construct($tentatives = [], $etat = Question::ETAT_DEBUT, $type = Question::TYPE_INCONNU)
+	public function __construct($tentatives = [], $sauvegardes = [], $etat = Question::ETAT_DEBUT, $type = Question::TYPE_INCONNU)
 	{
 		$this->tentatives = $tentatives;
+		$this->sauvegardes = $sauvegardes;
 		$this->etat = $etat;
 		$this->type = $type;
 	}

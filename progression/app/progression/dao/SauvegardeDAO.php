@@ -23,6 +23,33 @@ use progression\domaine\entité\Sauvegarde;
 
 class SauvegardeDAO extends EntitéDAO
 {
+	public function get_toutes($username, $question_uri)
+	{
+		$sauvegardes = [];
+
+		try {
+			$query = EntitéDAO::get_connexion()->prepare(
+				"SELECT date_sauvegarde, langage, code type FROM sauvegarde WHERE username = ? AND question_uri = ?"
+			);
+			$query->bind_param("ss", $username, $question_uri);
+			$query->execute();
+
+			$date_sauvegarde = null;
+			$langage = null;
+			$code = null;
+			$query->bind_result($date_sauvegarde, $langage, $code);
+			while ($query->fetch()) {
+				$sauvegardes[$langage] = new Sauvegarde($date_sauvegarde, $code);
+			}
+
+			$query->close();
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
+		}
+
+		return $sauvegardes;
+	}
+
 	public function get_sauvegarde($username, $question_uri, $langage)
 	{
 		$sauvegarde = null;
