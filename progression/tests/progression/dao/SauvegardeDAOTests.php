@@ -103,4 +103,13 @@ final class SauvegardeDAOTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résponse_observée1);
 		$this->assertEquals($résultat_attendu, $résponse_observée2);
 	}
+
+	public function test_étant_donné_une__liste_de_sauvegardes_existante_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_tableau_de_sauvegardes_correspondant()
+	{
+		$résultat_attendu = [];
+		$résultat_attendu["python"] = new Sauvegarde(1620150294, "print(\"Hello world!\")");
+
+		$résponse_observée = (new SauvegardeDAO())->get_toutes("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction");
+		$this->assertEquals($résultat_attendu, $résponse_observée);
+	}
 }

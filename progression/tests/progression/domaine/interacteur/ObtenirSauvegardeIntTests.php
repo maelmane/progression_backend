@@ -30,27 +30,27 @@ final class ObtenirSauvegardeIntTests extends TestCase
 		parent::setUp();
 
 		// Sauvegarde
-		$sauvegarde = new Sauvegarde(
-				1620150294,
-				"print(\"Hello world!\")"
-			);
+		$sauvegarde = new Sauvegarde(1620150294, "print(\"Hello world!\")");
+		$sauvegardes = [];
+		$sauvegardes["python"] = new Sauvegarde(1620150294,	"print(\"Hello world!\")");
+
 		$mockSauvegardeDAO = Mockery::mock("progression\dao\SauvegardeDAO");
 		$mockSauvegardeDAO
 			->shouldReceive("get_sauvegarde")
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python")
 			->andReturn($sauvegarde);
 		$mockSauvegardeDAO
+			->shouldReceive("get_toutes")
+			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->andReturn($sauvegardes);
+		$mockSauvegardeDAO
 			->shouldReceive("get_sauvegarde")
 			->with("Marcel", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python")
 			->andReturn(null);
 		$mockSauvegardeDAO
-			->shouldReceive("get_sauvegarde")
-			->with("jdoe", "https://depot.com/roger/questions_prog/question_inexistante", "python")
-			->andReturn(null);
-		$mockSauvegardeDAO
-			->shouldReceive("get_sauvegarde")
-			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "java")
-			->andReturn(null);
+			->shouldReceive("get_toutes")
+			->with("jdoe", "https://depot.com/roger/questions_prog/question_inexistante")
+			->andReturn([]);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
@@ -74,6 +74,16 @@ final class ObtenirSauvegardeIntTests extends TestCase
 
 		$this->assertNull($résultat_obtenu);
 	}
+	public function test_étant_donné_luri_dune_question_inexistante_lorsquon_appelle_get_toutes_on_obtient_un_tableau_vide()
+	{
+		$interacteur = new ObtenirSauvegardeInt();
+		$résultat_obtenu = $interacteur->get_sauvegardes(
+			"jdoe",
+			"https://depot.com/roger/questions_prog/question_inexistante"
+		);
+
+		$this->assertEquals([], $résultat_obtenu);
+	}
 
 	public function test_étant_donné_luri_dune_question_existante_un_username_existant_et_le_bon_langage_lorsquon_appelle_get_sauvegarde_on_obtient_un_objet_sauvegarde_correspondant()
 	{
@@ -84,9 +94,22 @@ final class ObtenirSauvegardeIntTests extends TestCase
 			"python"
 		);
 		$résultat_attendu = new Sauvegarde(
-				1620150294,
-				"print(\"Hello world!\")"
-			);
+			1620150294,
+			"print(\"Hello world!\")"
+		);
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+	public function test_étant_donné_luri_dune_question_existante_un_username_existant_lorsquon_appelle_get_toutes_on_obtient_un_tableau_de_sauvegardes()
+	{
+		$résultat_attendu = [];
+		$résultat_attendu["python"] = new Sauvegarde(1620150294, "print(\"Hello world!\")");
+
+		$interacteur = new ObtenirSauvegardeInt();
+		$résultat_obtenu = $interacteur->get_sauvegardes(
+			"jdoe",
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
+		);
+
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 }
