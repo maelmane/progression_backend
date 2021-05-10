@@ -61,7 +61,7 @@ class AvancementCtl extends Contrôleur
 						);
 					}
 
-					$avancement = new Avancement([], $request->avancement["état"], Question::TYPE_PROG);
+					$avancement = new Avancement([], [], $request->avancement["état"], Question::TYPE_PROG);
 					$avancement = $this->sauvegarderAvancement($username, $chemin, $avancement);
 				} else {
 					return $this->réponse_json(["erreur" => "Accès interdit."], 403);

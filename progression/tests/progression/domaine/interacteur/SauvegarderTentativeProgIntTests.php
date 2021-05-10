@@ -53,7 +53,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 	public function test_étant_donné_une_première_tentative_ratée_lorsquon_la_sauvegarde_lavancement_est_aussi_sauvegardé_et_on_obtient_la_tentative()
 	{
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
-		$avancement = new Avancement([$tentative], Question::ETAT_NONREUSSI, Question::TYPE_PROG);
+		$avancement = new Avancement([$tentative], [], Question::ETAT_NONREUSSI, Question::TYPE_PROG);
 
 		DAOFactory::getInstance()
 			->get_avancement_dao()
@@ -68,7 +68,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->withArgs(function ($user, $uri, $av) use ($tentative) {
 				return $user == "Bob" &&
 					$uri == "https://example.com/question" &&
-					$av == new Avancement([$tentative], Question::ETAT_NONREUSSI, Question::TYPE_PROG);
+					$av == new Avancement([$tentative], [], Question::ETAT_NONREUSSI, Question::TYPE_PROG);
 			})
 			->andReturn($avancement);
 
@@ -93,7 +93,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 	{
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, true, 1, "feedback", []);
 
-		$avancement = new Avancement([$tentative], Question::ETAT_REUSSI, Question::TYPE_PROG);
+		$avancement = new Avancement([$tentative], [], Question::ETAT_REUSSI, Question::TYPE_PROG);
 
 		DAOFactory::getInstance()
 			->get_avancement_dao()
@@ -108,7 +108,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->withArgs(function ($user, $uri, $av) use ($avancement, $tentative) {
 				return $user == "Bob" &&
 					$uri == "https://example.com/question" &&
-					$av == new Avancement([$tentative], Question::ETAT_REUSSI, Question::TYPE_PROG);
+					$av == new Avancement([$tentative], [], Question::ETAT_REUSSI, Question::TYPE_PROG);
 			})
 			->andReturn($avancement);
 
@@ -141,6 +141,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->andReturn(
 				new Avancement(
 					[new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", [])],
+					[],
 					Question::ETAT_NONREUSSI,
 					Question::TYPE_PROG,
 				),
@@ -173,6 +174,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 
 		$avancement = new Avancement(
 			[new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", []), $tentative],
+			[],
 			Question::ETAT_REUSSI,
 			Question::TYPE_PROG,
 		);
@@ -184,6 +186,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->andReturn(
 				new Avancement(
 					[new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", [])],
+					[],
 					Question::ETAT_NONREUSSI,
 					Question::TYPE_PROG,
 				),
@@ -227,6 +230,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->andReturn(
 				new Avancement(
 					[new TentativeProg(1, "print('code')", 1616531000, true, 1, "feedback", [])],
+					[],
 					Question::ETAT_REUSSI,
 					Question::TYPE_PROG,
 				),
@@ -266,6 +270,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->andReturn(
 				new Avancement(
 					[new TentativeProg(1, "print('code')", 1616531000, true, 1, "feedback", [])],
+					[], 
 					Question::ETAT_REUSSI,
 					Question::TYPE_PROG,
 				),

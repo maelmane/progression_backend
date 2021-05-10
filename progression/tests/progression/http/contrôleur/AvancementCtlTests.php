@@ -60,10 +60,10 @@ final class AvancementCtlTests extends TestCase
 			->andReturn($question);
 
 		// Avancement
-		$avancement = new Avancement([new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest")]);
+		$avancement = new Avancement([new TentativeProg("python", "codeTest", [], 1614965817, false, 2, "feedbackTest")]);
 		$avancement->etat = 1;
 		$avancement->type = Question::TYPE_PROG;
-		$avancementPost = new Avancement([], Question::ETAT_REUSSI, Question::TYPE_PROG);
+		$avancementPost = new Avancement([], [], Question::ETAT_REUSSI, Question::TYPE_PROG);
 
 		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
 		$mockAvancementDAO

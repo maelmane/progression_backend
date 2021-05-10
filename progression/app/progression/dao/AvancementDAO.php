@@ -39,7 +39,7 @@ class AvancementDAO extends EntitéDAO
 			$type = 0;
 			$query->bind_result($uri, $etat, $type);
 			while ($query->fetch()) {
-				$avancements[$uri] = new Avancement([], $etat, $type);
+				$avancements[$uri] = new Avancement([], [], $etat, $type);
 			}
 
 			$query->close();
@@ -74,7 +74,7 @@ class AvancementDAO extends EntitéDAO
 			$query->bind_result($état, $type);
 
 			if ($query->fetch()) {
-				$avancement = new Avancement([], $état, $type);
+				$avancement = new Avancement([], [], $état, $type);
 			}
 
 			$query->close();

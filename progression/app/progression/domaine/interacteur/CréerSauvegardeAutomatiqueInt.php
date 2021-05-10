@@ -20,10 +20,10 @@ namespace progression\domaine\interacteur;
 
 class CréerSauvegardeAutomatiqueInt extends Interacteur
 {
-	public function sauvegarder($sauvegarde, $username, $question_uri, $langage)
+	public function sauvegarder($username, $question_uri, $langage, $sauvegarde)
 	{
 		$dao_sauvegarde = $this->source_dao->get_sauvegarde_dao();
-		$resultat_sauvegarde = $dao_sauvegarde->save($sauvegarde, $username, $question_uri, $langage);
+		$resultat_sauvegarde = $dao_sauvegarde->save($username, $question_uri, $langage, $sauvegarde);
 		return $resultat_sauvegarde;
 	}
 }

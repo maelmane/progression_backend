@@ -30,6 +30,7 @@ class SauvegarderTentativeProgInt extends Interacteur
 		if ($avancement == null) {
 			$avancement = new Avancement(
 				[$tentative],
+				[],
 				$tentative->réussi ? Question::ETAT_REUSSI : Question::ETAT_NONREUSSI,
 				Question::TYPE_PROG,
 			);

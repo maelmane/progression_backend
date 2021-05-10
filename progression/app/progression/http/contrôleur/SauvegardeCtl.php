@@ -28,22 +28,23 @@ use progression\domaine\entité\Sauvegarde;
 
 class SauvegardeCtl extends Contrôleur
 {
-	public function get(Request $request, $username, $question_uri, $langage)
+	public function getToutes(Request $request, $username, $question_uri)
 	{
 		$chemin = Encodage::base64_decode_url($question_uri);
-		$sauvegarde = null;
+		$sauvegardes = [];
 		$réponse = null;
 		$sauvegardeInt = new ObtenirSauvegardeAutomatiqueInt();
-		$sauvegarde = $sauvegardeInt->get_sauvegarde_automatique($username, $chemin, $langage);
+		$sauvegardes = $sauvegardeInt->get_sauvegardes($username, $chemin);
 
-		if ($sauvegarde != null) {
-			$sauvegarde->id = "{$username}/{$question_uri}/{$langage}";
-			$réponse = $this->item($sauvegarde, new SauvegardeAutomatiqueTransformer());
+		if ($sauvegardes != []) {
+			foreach ($sauvegardes as $langage => $sauvegarde) {
+				$sauvegarde->id = "{$username}/{$question_uri}/{$langage}";
+			}
+			$réponse = $this->collection($sauvegardes, new SauvegardeAutomatiqueTransformer(), "sauvegarde");
 		}
 
 		return $this->préparer_réponse($réponse);
 	}
-
 	public function post(Request $request, $username, $question_uri)
 	{
 		$réponse = null;
@@ -59,7 +60,48 @@ class SauvegardeCtl extends Contrôleur
 		);
 		$sauvegardeInt = new CréerSauvegardeAutomatiqueInt();
 
-		$résultat_sauvegarde = $sauvegardeInt->sauvegarder($sauvegarde, $username, $chemin, $request->langage);
+		$résultat_sauvegarde = $sauvegardeInt->sauvegarder($username, $chemin, $request->langage, $sauvegarde);
+
+		if ($résultat_sauvegarde != null) {
+			$résultat_sauvegarde->id = "{$username}/{$question_uri}/{$request->langage}";
+			$réponse = $this->item($résultat_sauvegarde, new SauvegardeAutomatiqueTransformer());
+		} else {
+			return $this->réponse_json(["erreur" => "Requête intraitable"], 422);
+		}
+		return $this->préparer_réponse($réponse);
+	}	
+
+	public function getSauvegarde(Request $request, $username, $question_uri, $langage)
+	{
+		$chemin = Encodage::base64_decode_url($question_uri);
+		$sauvegarde = null;
+		$réponse = null;
+		$sauvegardeInt = new ObtenirSauvegardeAutomatiqueInt();
+		$sauvegarde = $sauvegardeInt->get_sauvegarde_automatique($username, $chemin, $langage);
+
+		if ($sauvegarde != null) {
+			$sauvegarde->id = "{$username}/{$question_uri}/{$langage}";
+			$réponse = $this->item($sauvegarde, new SauvegardeAutomatiqueTransformer());
+		}
+
+		return $this->préparer_réponse($réponse);
+	}
+	public function postSauvegarde(Request $request, $username, $question_uri)
+	{
+		$réponse = null;
+
+		$chemin = Encodage::base64_decode_url($question_uri);
+		$validation = $this->validationSauvegarde($request);
+		if ($validation->fails()) {
+			return $this->réponse_json(["erreur" => $validation->errors()], 422);
+		}
+		$sauvegarde = new Sauvegarde(
+			(new \DateTime())->getTimestamp(),
+			$request->code
+		);
+		$sauvegardeInt = new CréerSauvegardeAutomatiqueInt();
+
+		$résultat_sauvegarde = $sauvegardeInt->sauvegarder($username, $chemin, $request->langage, $sauvegarde);
 
 		if ($résultat_sauvegarde != null) {
 			$résultat_sauvegarde->id = "{$username}/{$question_uri}/{$request->langage}";

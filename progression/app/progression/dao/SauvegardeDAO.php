@@ -82,7 +82,7 @@ class SauvegardeDAO extends EntitéDAO
 		return $sauvegarde;
 	}
 
-	public function save($sauvegarde, $username, $question_uri, $langage)
+	public function save($username, $question_uri, $langage, $sauvegarde)
 	{
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(

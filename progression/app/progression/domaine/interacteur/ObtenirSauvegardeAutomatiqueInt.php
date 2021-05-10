@@ -26,4 +26,11 @@ class ObtenirSauvegardeAutomatiqueInt extends Interacteur
 
 		return $sauvegarde;
 	}
+	
+	function get_sauvegardes($username, $question_uri)
+	{
+		$sauvegardes = $this->source_dao->get_sauvegarde_dao()->get_toutes($username, $question_uri);
+
+		return $sauvegardes;
+	}
 }

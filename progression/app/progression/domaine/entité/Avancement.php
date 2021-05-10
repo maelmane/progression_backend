@@ -20,10 +20,10 @@ namespace progression\domaine\entité;
 
 class Avancement
 {
-	public $etat;
-	public $type;
 	public $tentatives;
 	public $sauvegardes;
+	public $etat;
+	public $type;
 
 	public function __construct($tentatives = [], $sauvegardes = [], $etat = Question::ETAT_DEBUT, $type = Question::TYPE_INCONNU)
 	{
