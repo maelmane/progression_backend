@@ -40,7 +40,7 @@ class SauvegardeCtl extends Contrôleur
 			foreach ($sauvegardes as $langage => $sauvegarde) {
 				$sauvegarde->id = "{$username}/{$question_uri}/{$langage}";
 			}
-			$réponse = $this->collection($sauvegardes, new SauvegardeTransformer(), "sauvegarde");
+			$réponse = $this->collection($sauvegardes, new SauvegardeTransformer());
 		}
 
 		return $this->préparer_réponse($réponse);
