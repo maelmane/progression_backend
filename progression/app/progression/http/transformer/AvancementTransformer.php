@@ -70,6 +70,6 @@ class AvancementTransformer extends Fractal\TransformerAbstract
 			];
 		}
 
-		return $this->collection($avancement->sauvegardes, new SauvegardeAutomatiqueTransformer(), "sauvegarde");
+		return $this->collection($avancement->sauvegardes, new SauvegardeTransformer(), "sauvegarde");
 	}
 }

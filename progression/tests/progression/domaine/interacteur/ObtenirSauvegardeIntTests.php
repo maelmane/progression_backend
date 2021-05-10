@@ -23,7 +23,7 @@ use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
-final class ObtenirSauvegardeAutomatiqueIntTests extends TestCase
+final class ObtenirSauvegardeIntTests extends TestCase
 {
 	public function setUp(): void
 	{
@@ -65,8 +65,8 @@ final class ObtenirSauvegardeAutomatiqueIntTests extends TestCase
 
 	public function test_étant_donné_le_username_dun_utilisateur_inexistant_lorsquon_appelle_get_sauvegarde_on_obtient_un_objet_null()
 	{
-		$interacteur = new ObtenirSauvegardeAutomatiqueInt();
-		$résultat_obtenu = $interacteur->get_sauvegarde_automatique(
+		$interacteur = new ObtenirSauvegardeInt();
+		$résultat_obtenu = $interacteur->get_sauvegarde(
 			"Marcel",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 			"python"
@@ -75,34 +75,10 @@ final class ObtenirSauvegardeAutomatiqueIntTests extends TestCase
 		$this->assertNull($résultat_obtenu);
 	}
 
-	public function test_étant_donné_luri_dune_question_inexistante_lorsquon_appelle_get_sauvegarde_on_obtient_un_objet_null()
-	{
-		$interacteur = new ObtenirSauvegardeAutomatiqueInt();
-		$résultat_obtenu = $interacteur->get_sauvegarde_automatique(
-			"jdoe",
-			"https://depot.com/roger/questions_prog/question_inexistante",
-			"python"
-		);
-
-		$this->assertNull($résultat_obtenu);
-	}
-
-	public function test_étant_donné_un_langage_inexistant_pour_une_sauvegarde_lorsquon_appelle_get_sauvegarde_on_obtient_un_objet_null()
-	{
-		$interacteur = new ObtenirSauvegardeAutomatiqueInt();
-		$résultat_obtenu = $interacteur->get_sauvegarde_automatique(
-			"jdoe",
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			"java"
-		);
-
-		$this->assertNull($résultat_obtenu);
-	}
-
 	public function test_étant_donné_luri_dune_question_existante_un_username_existant_et_le_bon_langage_lorsquon_appelle_get_sauvegarde_on_obtient_un_objet_sauvegarde_correspondant()
 	{
-		$interacteur = new ObtenirSauvegardeAutomatiqueInt();
-		$résultat_obtenu = $interacteur->get_sauvegarde_automatique(
+		$interacteur = new ObtenirSauvegardeInt();
+		$résultat_obtenu = $interacteur->get_sauvegarde(
 			"jdoe",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 			"python"

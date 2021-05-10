@@ -16,21 +16,26 @@
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\interacteur;
+namespace progression\http\transformer;
 
-class ObtenirSauvegardeAutomatiqueInt extends Interacteur
+use League\Fractal;
+use progression\domaine\entité\Sauvegarde;
+
+class SauvegardeTransformer extends Fractal\TransformerAbstract
 {
-	function get_sauvegarde_automatique($username, $question_uri, $langage)
-	{
-		$sauvegarde = $this->source_dao->get_sauvegarde_dao()->get_sauvegarde($username, $question_uri, $langage);
+	public $type = "sauvegarde";
 
-		return $sauvegarde;
-	}
-	
-	function get_sauvegardes($username, $question_uri)
+	public function transform(Sauvegarde $sauvegarde)
 	{
-		$sauvegardes = $this->source_dao->get_sauvegarde_dao()->get_toutes($username, $question_uri);
+		$data_out = [
+			"id" => $sauvegarde->id,
+			"date_sauvegarde" => $sauvegarde->date_sauvegarde,
+			"code" => $sauvegarde->code,
+			"links" => (isset($sauvegarde->links) ? $sauvegarde->links : []) + [
+				"self" => "{$_ENV["APP_URL"]}sauvegarde/{$sauvegarde->id}"
+			],
+		];
 
-		return $sauvegardes;
+		return $data_out;
 	}
 }

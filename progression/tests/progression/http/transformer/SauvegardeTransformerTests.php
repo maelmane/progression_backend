@@ -21,7 +21,7 @@ namespace progression\http\transformer;
 use progression\domaine\entité\Sauvegarde;
 use PHPUnit\Framework\TestCase;
 
-final class SauvegardeAutomatiqueTransformerTests extends TestCase
+final class SauvegardeTransformerTests extends TestCase
 {
     public function setUp(): void
     {
@@ -38,10 +38,10 @@ final class SauvegardeAutomatiqueTransformerTests extends TestCase
         );
         $sauvegarde->id = "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python";
 
-        $sauvegardeTransformer = new SauvegardeAutomatiqueTransformer();
+        $sauvegardeTransformer = new SauvegardeTransformer();
         $résultats_obtenus = $sauvegardeTransformer->transform($sauvegarde);
         $this->assertStringEqualsFile(
-            __DIR__ . "/résultats_attendus/SauvegardeAutomatiqueTransformerTest_1.json",
+            __DIR__ . "/résultats_attendus/sauvegardeTransformerTest_1.json",
             json_encode($résultats_obtenus),
         );
     }

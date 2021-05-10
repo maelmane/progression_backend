@@ -84,6 +84,7 @@ class SauvegardeDAO extends EntitéDAO
 
 	public function save($username, $question_uri, $langage, $sauvegarde)
 	{
+		$estEnregistre = 0;
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
 				"INSERT INTO sauvegarde ( username, question_uri, date_sauvegarde, langage, code )
@@ -99,12 +100,11 @@ class SauvegardeDAO extends EntitéDAO
 				$langage,
 				$sauvegarde->code
 			);
-			$query->execute();
+			$estEnregistre = $query->execute();
 			$query->close();
 		} catch (mysqli_sql_exception $e) {
 			throw new DAOException($e);
 		}
-
-		return $this->get_sauvegarde($username, $question_uri, $langage);
+		return ($estEnregistre == 1) ? $sauvegarde : null;
 	}
 }

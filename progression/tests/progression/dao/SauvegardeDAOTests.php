@@ -100,6 +100,7 @@ final class SauvegardeDAOTests extends TestCase
 			"python"
 		);
 
+		$this->assertEquals($résultat_attendu, $résponse_observée1);
 		$this->assertEquals($résultat_attendu, $résponse_observée2);
 	}
 }
