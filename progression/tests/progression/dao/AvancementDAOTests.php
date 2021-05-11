@@ -77,6 +77,8 @@ final class AvancementDAOTests extends TestCase
 	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_objet_avancement_correspondant()
 	{
 		$résultat_attendu = new Avancement(
+			0,
+			0,
 			[new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)],
 			[new Sauvegarde(1620150294, "print(\"Hello world!\")")]
 		);

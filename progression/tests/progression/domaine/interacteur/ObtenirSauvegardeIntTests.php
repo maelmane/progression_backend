@@ -74,16 +74,6 @@ final class ObtenirSauvegardeIntTests extends TestCase
 
 		$this->assertNull($résultat_obtenu);
 	}
-	public function test_étant_donné_luri_dune_question_inexistante_lorsquon_appelle_get_toutes_on_obtient_un_tableau_vide()
-	{
-		$interacteur = new ObtenirSauvegardeInt();
-		$résultat_obtenu = $interacteur->get_sauvegardes(
-			"jdoe",
-			"https://depot.com/roger/questions_prog/question_inexistante"
-		);
-
-		$this->assertEquals([], $résultat_obtenu);
-	}
 
 	public function test_étant_donné_luri_dune_question_existante_un_username_existant_et_le_bon_langage_lorsquon_appelle_get_sauvegarde_on_obtient_un_objet_sauvegarde_correspondant()
 	{
@@ -97,19 +87,6 @@ final class ObtenirSauvegardeIntTests extends TestCase
 			1620150294,
 			"print(\"Hello world!\")"
 		);
-		$this->assertEquals($résultat_attendu, $résultat_obtenu);
-	}
-	public function test_étant_donné_luri_dune_question_existante_un_username_existant_lorsquon_appelle_get_toutes_on_obtient_un_tableau_de_sauvegardes()
-	{
-		$résultat_attendu = [];
-		$résultat_attendu["python"] = new Sauvegarde(1620150294, "print(\"Hello world!\")");
-
-		$interacteur = new ObtenirSauvegardeInt();
-		$résultat_obtenu = $interacteur->get_sauvegardes(
-			"jdoe",
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
-		);
-
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 }

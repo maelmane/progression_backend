@@ -26,12 +26,9 @@ use progression\domaine\entité\{
 	Question,
 	TentativeProg,
 	QuestionProg,
-	RésultatProg,
 	User,
 };
-use progression\domaine\interacteur\ExécutionException;
-use progression\http\contrôleur\TentativeCtl;
-use Illuminate\Http\Request;
+
 use Illuminate\Auth\GenericUser;
 
 final class TentativeCtlTests extends TestCase
@@ -103,10 +100,9 @@ final class TentativeCtlTests extends TestCase
 
 		// Avancement
 		$avancement = new Avancement(
-			[new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest")],
-			[], 
 			Question::ETAT_REUSSI,
 			Question::TYPE_PROG,
+			[new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest")]
 		);
 
 		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");

@@ -20,8 +20,6 @@ require_once __DIR__ . "/../../../TestCase.php";
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\{Question, QuestionProg, Avancement, TentativeProg, User};
-use progression\http\contrôleur\AvancementCtl;
-use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
 
 final class AvancementCtlTests extends TestCase
@@ -60,10 +58,10 @@ final class AvancementCtlTests extends TestCase
 			->andReturn($question);
 
 		// Avancement
-		$avancement = new Avancement([new TentativeProg("python", "codeTest", [], 1614965817, false, 2, "feedbackTest")]);
+		$avancement = new Avancement(0, 0, [new TentativeProg("python", "codeTest", [], 1614965817, false, 2, "feedbackTest")]);
 		$avancement->etat = 1;
 		$avancement->type = Question::TYPE_PROG;
-		$avancementPost = new Avancement([], [], Question::ETAT_REUSSI, Question::TYPE_PROG);
+		$avancementPost = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG);
 
 		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
 		$mockAvancementDAO

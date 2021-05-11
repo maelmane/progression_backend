@@ -32,7 +32,7 @@ final class AvancementTransformerTests extends TestCase
 
 	public function test_étant_donné_un_avancement_instancié_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
 	{
-		$avancement = new Avancement([], [], Question::ETAT_DEBUT, Question::TYPE_PROG);
+		$avancement = new Avancement(Question::ETAT_DEBUT, Question::TYPE_PROG);
 		$avancement->id =
 			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
@@ -47,13 +47,12 @@ final class AvancementTransformerTests extends TestCase
 	public function test_étant_donné_un_avancement_avec_ses_tentatives_lorsquon_inclut_les_tentatives_on_reçoit_un_tableau_de_tentatives()
 	{
 		$avancement = new Avancement(
+			Question::ETAT_DEBUT,
+			Question::TYPE_PROG,
 			[
 				new TentativeProg("python", "codeTestPython", 1614711760, false, 2, "feedbackTest Python"),
 				new TentativeProg("java", "codeTestJava", 1614711761, true, 2, "feedbackTest Java"),
-			],
-			[], 
-			Question::ETAT_DEBUT,
-			Question::TYPE_PROG,
+			]
 		);
 		$avancement->id =
 			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
@@ -74,11 +73,12 @@ final class AvancementTransformerTests extends TestCase
 	{
 		$sauvegardes = [];
 		$sauvegardes["python"] = new Sauvegarde(1620150294,	"print(\"Hello world!\")");
+		$sauvegardes["java"] = new Sauvegarde(1620150375, "System.out.println(\"Hello world!\");");
 		$avancement = new Avancement(
-			[],
-			$sauvegardes, 
 			Question::ETAT_DEBUT,
 			Question::TYPE_PROG,
+			[],
+			$sauvegardes, 
 		);
 		$avancement->id =
 			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";

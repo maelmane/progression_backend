@@ -28,7 +28,7 @@ final class AvancementTests extends TestCase
 		$type_attendu = Question::TYPE_PROG;
 		$tentatives_attendu = ["exemple_tentative"];
 
-		$résultat_obtenu = new Avancement(["exemple_tentative"], [], $etat_attendu, $type_attendu);
+		$résultat_obtenu = new Avancement(0, 0, [$etat_attendu, $type_attendu, "exemple_tentative"]);
 
 		$this->assertEquals($type_attendu, $résultat_obtenu->type);
 		$this->assertEquals($tentatives_attendu, $résultat_obtenu->tentatives);

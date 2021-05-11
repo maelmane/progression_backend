@@ -28,23 +28,6 @@ use progression\domaine\entité\Sauvegarde;
 
 class SauvegardeCtl extends Contrôleur
 {
-	public function getToutes(Request $request, $username, $question_uri)
-	{
-		$chemin = Encodage::base64_decode_url($question_uri);
-		$sauvegardes = [];
-		$réponse = null;
-		$sauvegardeInt = new ObtenirSauvegardeInt();
-		$sauvegardes = $sauvegardeInt->get_sauvegardes($username, $chemin);
-
-		if ($sauvegardes != []) {
-			foreach ($sauvegardes as $langage => $sauvegarde) {
-				$sauvegarde->id = "{$username}/{$question_uri}/{$langage}";
-			}
-			$réponse = $this->collection($sauvegardes, new SauvegardeTransformer());
-		}
-
-		return $this->préparer_réponse($réponse);
-	}
 	public function post(Request $request, $username, $question_uri)
 	{
 		$réponse = null;
@@ -71,7 +54,7 @@ class SauvegardeCtl extends Contrôleur
 		return $this->préparer_réponse($réponse);
 	}	
 
-	public function getSauvegarde(Request $request, $username, $question_uri, $langage)
+	public function get(Request $request, $username, $question_uri, $langage)
 	{
 		$chemin = Encodage::base64_decode_url($question_uri);
 		$sauvegarde = null;
@@ -87,33 +70,7 @@ class SauvegardeCtl extends Contrôleur
 		return $this->préparer_réponse($réponse);
 	}
 
-	public function postSauvegarde(Request $request, $username, $question_uri)
-	{
-		$réponse = null;
-
-		$chemin = Encodage::base64_decode_url($question_uri);
-		$validation = $this->validationSauvegarde($request);
-		if ($validation->fails()) {
-			return $this->réponse_json(["erreur" => $validation->errors()], 422);
-		}
-		$sauvegarde = new Sauvegarde(
-			(new \DateTime())->getTimestamp(),
-			$request->code
-		);
-		$sauvegardeInt = new EnregistrerSauvegardeInt();
-
-		$résultat_sauvegarde = $sauvegardeInt->enregistrer($username, $chemin, $request->langage, $sauvegarde);
-
-		if ($résultat_sauvegarde != null) {
-			$résultat_sauvegarde->id = "{$username}/{$question_uri}/{$request->langage}";
-			$réponse = $this->item($résultat_sauvegarde, new SauvegardeTransformer());
-		} else {
-			return $this->réponse_json(["erreur" => "Requête intraitable"], 422);
-		}
-		return $this->préparer_réponse($réponse);
-	}
-
-	public function validationSauvegarde($request)
+	private function validationSauvegarde($request)
 	{
 		return Validator::make(
 			$request->all(),

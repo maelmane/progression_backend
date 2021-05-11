@@ -72,10 +72,10 @@ final class SauvegarderAvancementIntTests extends TestCase
 		$résultat_observé = $interacteur->sauvegarder(
 			"jdoe",
 			"https://example.com/question",
-			new Avancement([], [], Question::ETAT_NONREUSSI, Question::TYPE_PROG),
+			new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG),
 		);
 
-		$résultat_attendu = new Avancement([], [], Question::ETAT_NONREUSSI, Question::TYPE_PROG);
+		$résultat_attendu = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG);
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 		$this->assertEquals([], $résultat_observé->tentatives);
@@ -83,7 +83,7 @@ final class SauvegarderAvancementIntTests extends TestCase
 	public function test_étant_donné_un_avancement_avec_tentatives_lorsquon_sauvegarde_ses_tentatives_aussi_sont_enregistrées_et_on_obtient_lavancement_avec_tentatives()
 	{
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
-		$avancement = new Avancement([$tentative], [], Question::ETAT_NONREUSSI, Question::TYPE_PROG);
+		$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, [$tentative]);
 
 		DAOFactory::getInstance()
 			->get_avancement_dao()

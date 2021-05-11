@@ -65,7 +65,6 @@ class AvancementTransformer extends Fractal\TransformerAbstract
 		foreach ($avancement->sauvegardes as $langage => $sauvegarde) {
 			$sauvegarde->id = "{$avancement->id}/" . $langage;
 			$sauvegarde->links = [
-				"self" => "{$_ENV["APP_URL"]}sauvegarde/{$sauvegarde->id}",
 				"related" => "{$_ENV["APP_URL"]}avancement/{$avancement->id}",
 			];
 		}
