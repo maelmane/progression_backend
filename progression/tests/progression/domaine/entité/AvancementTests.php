@@ -27,20 +27,28 @@ final class AvancementTests extends TestCase
 		$etat_attendu = Question::ETAT_REUSSI;
 		$type_attendu = Question::TYPE_PROG;
 		$tentatives_attendu = ["exemple_tentative"];
+		$sauvegardes_attendues = ["exemple_sauvegarde"];
 
-		$résultat_obtenu = new Avancement(0, 0, [$etat_attendu, $type_attendu, "exemple_tentative"]);
+		$résultat_obtenu = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, ["exemple_tentative"], ["exemple_sauvegarde"]);
 
+		$this->assertEquals($etat_attendu, $résultat_obtenu->etat);
 		$this->assertEquals($type_attendu, $résultat_obtenu->type);
 		$this->assertEquals($tentatives_attendu, $résultat_obtenu->tentatives);
-		$this->assertEquals($etat_attendu, $résultat_obtenu->etat);
+		$this->assertEquals($sauvegardes_attendues, $résultat_obtenu->sauvegardes);
 	}
 
 	public function test_étant_donné_un_AvancementProg_instancié_sans_tentatives_lorsquon_récupère_ses_tentatives_on_obtient_un_tableau_vide()
 	{
-		$etat_attendu = Question::ETAT_DEBUT;
-		$type_attendu = Question::TYPE_INCONNU;
 		$résultat_attendu = [];
 		$résultat_obtenu = (new Avancement())->tentatives;
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
+	public function test_étant_donné_un_AvancementProg_instancié_sans_sauvegardes_lorsquon_récupère_ses_sauvegardes_on_obtient_un_tableau_vide()
+	{
+		$résultat_attendu = [];
+		$résultat_obtenu = (new Avancement())->sauvegardes;
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}

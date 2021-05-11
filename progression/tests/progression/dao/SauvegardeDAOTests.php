@@ -72,7 +72,7 @@ final class SauvegardeDAOTests extends TestCase
 		$résponse_observée = (new SauvegardeDAO())->get_sauvegarde(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			"java"
+			"c#"
 		);
 		$this->assertNull($résponse_observée);
 	}
