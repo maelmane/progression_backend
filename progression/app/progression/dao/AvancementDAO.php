@@ -53,8 +53,11 @@ class AvancementDAO extends EntitéDAO
 	public function get_avancement($username, $question_uri)
 	{
 		$avancement = $this->load($username, $question_uri);
-		$avancement->tentatives = $this->source->get_tentative_dao()->get_toutes($username, $question_uri);
-		$avancement->sauvegardes = $this->source->get_sauvegarde_dao()->get_toutes($username, $question_uri);
+
+		if ($avancement) {
+			$avancement->tentatives = $this->source->get_tentative_dao()->get_toutes($username, $question_uri);
+            $avancement->sauvegardes = $this->source->get_sauvegarde_dao()->get_toutes($username, $question_uri);
+		}
 
 		return $avancement;
 	}
@@ -82,7 +85,7 @@ class AvancementDAO extends EntitéDAO
 			throw new DAOException($e);
 		}
 
-		return $avancement ?? new Avancement();
+		return $avancement;
 	}
 
 	public function save($username, $question_uri, $objet)

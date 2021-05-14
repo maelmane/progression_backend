@@ -91,14 +91,12 @@ final class AvancementDAOTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
 
-	public function test_étant_donné_un_avancement_inexistant_lorsquon_le_cherche_par_username_et_question_uri_on_obtient_un_avancement_par_défaut()
+	public function test_étant_donné_un_avancement_inexistant_lorsquon_le_cherche_par_username_et_question_uri_on_obtient_null()
 	{
-		$réponse_attendue = new Avancement();
-
 		$résponse_observée = (new AvancementDAO())->get_avancement(
 			"bobert",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction_inexistante",
 		);
-		$this->assertEquals($réponse_attendue, $résponse_observée);
+		$this->assertNull($résponse_observée);
 	}
 }

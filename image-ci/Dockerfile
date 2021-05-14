@@ -2,7 +2,7 @@ FROM php:8
 
 # Install git, the php image doesn't have installed
 RUN apt update
-RUN DEBIAN_FRONTEND=noninteractive TZ=America/Toronto apt install tzdata git emacs elpa-htmlize unzip python3 python3-pip libyaml-dev libzip-dev default-libmysqlclient-dev default-mysql-client -yqq && apt autoclean
+RUN DEBIAN_FRONTEND=noninteractive TZ=America/Toronto apt install tzdata git emacs elpa-htmlize unzip python3 python3-pip libyaml-dev libzip-dev default-libmysqlclient-dev default-mysql-client npm -yqq  && apt autoclean
 RUN pip3 install napkin
 
 #Ajout d'extensions PHP
@@ -21,3 +21,6 @@ RUN emacs --no-init-file --script /tmp/install.el
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php
+
+# Install prettier
+RUN npm install --global prettier @prettier/plugin-php
