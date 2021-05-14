@@ -82,16 +82,17 @@ class AvancementCtl extends Contrôleur
 		}
 	}
 
-	public function obtenirAvancement($username, $chemin)
+	private function obtenirAvancement($username, $chemin)
 	{
 		$avancementInt = new ObtenirAvancementInt();
 		$avancement = $avancementInt->get_avancement($username, $chemin);
+
 		return $avancement;
 	}
-	public function sauvegarderAvancement($username, $chemin, $avancement)
+	private function sauvegarderAvancement($username, $chemin, $avancement)
 	{
 		$avancementInt = new SauvegarderAvancementInt();
-		$new_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);	
+		$new_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);
 		return $new_avancement;
 	}
 }
