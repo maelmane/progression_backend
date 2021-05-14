@@ -316,3 +316,24 @@ curl "https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/aHR0cHM6Ly9
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 curl "https://progression.dti.crosemont.quebec/api/v1/test/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
+
+** Créer ou mettre à jour la sauvegarde de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» et un code ~python~ : ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+DATA=$(cat <<EOF
+{
+  "langage":"java",
+  "code": "#+TODO\nSystem.out.println('Hi !');\n#-TODO"
+}
+EOF
+)
+
+curl -X POST --data "$DATA" https://progression.dti.crosemont.quebec/api/v1/sauvegarde/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Obtenir la dernière sauvegarde de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» effectuée avec le langage ~python~: ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+curl "https://progression.dti.crosemont.quebec/api/v1/sauvegarde/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/python" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
