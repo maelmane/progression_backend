@@ -20,8 +20,6 @@ require_once __DIR__ . "/../../../TestCase.php";
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\{Question, QuestionProg, Avancement, TentativeProg, User};
-use progression\http\contrôleur\AvancementCtl;
-use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
 
 final class AvancementCtlTests extends TestCase
@@ -60,10 +58,12 @@ final class AvancementCtlTests extends TestCase
 			->andReturn($question);
 
 		// Avancement
-		$avancement = new Avancement([new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest")]);
+		$avancement = new Avancement(0, 0, [
+			new TentativeProg("python", "codeTest", [], 1614965817, false, 2, "feedbackTest"),
+		]);
 		$avancement->etat = 1;
 		$avancement->type = Question::TYPE_PROG;
-		$avancementPost = new Avancement([], Question::ETAT_REUSSI, Question::TYPE_PROG);
+		$avancementPost = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG);
 
 		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
 		$mockAvancementDAO
@@ -91,6 +91,7 @@ final class AvancementCtlTests extends TestCase
 		Mockery::close();
 	}
 
+	// GET
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_l_avancement_et_ses_relations_sous_forme_json()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
@@ -114,6 +115,17 @@ final class AvancementCtlTests extends TestCase
 
 		$this->assertEquals(404, $résultat_observé->status());
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
+	}
+
+	// POST
+	public function test_étant_donné_le_chemin_dune_question_non_fourni_dans_la_requete_lorsquon_appelle_post_sans_avancement_on_obtient_un_message_derreur()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
+			"avancement" => "{test}",
+		]);
+
+		$this->assertEquals(422, $résultat_observé->status());
+		$this->assertEquals('{"erreur":"Requête intraitable"}', $résultat_observé->getContent());
 	}
 
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_on_obtient_un_nouvel_avancement_avec_ses_valeurs_par_defaut()
@@ -164,6 +176,21 @@ final class AvancementCtlTests extends TestCase
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertStringEqualsFile(
 			__DIR__ . "/résultats_attendus/avancementCtlTests_2.json",
+			$résultat_observé->getContent(),
+		);
+	}
+	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_avancement_dans_le_body_mais_sans_etat_on_obtient_un_message_derreur()
+	{
+		$avancementTest = ["test" => "test valeur"];
+		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/jdoe/avancements", [
+			"question_uri" =>
+				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"avancement" => $avancementTest,
+		]);
+
+		$this->assertEquals(422, $résultat_observé->status());
+		$this->assertEquals(
+			'{"erreur":"Le champ état est obligatoire pour traiter la requête"}',
 			$résultat_observé->getContent(),
 		);
 	}

@@ -18,22 +18,18 @@
 
 namespace progression\domaine\entité;
 
-class Avancement
-{
-	public $tentatives;
-	public $sauvegardes;
-	public $etat;
-	public $type;
+use PHPUnit\Framework\TestCase;
 
-	public function __construct(
-		$etat = Question::ETAT_DEBUT,
-		$type = Question::TYPE_INCONNU,
-		$tentatives = [],
-		$sauvegardes = []
-	) {
-		$this->tentatives = $tentatives;
-		$this->sauvegardes = $sauvegardes;
-		$this->etat = $etat;
-		$this->type = $type;
+final class SauvegardeTests extends TestCase
+{
+	public function test_étant_donné_une_Sauvegarde_instanciée_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
+	{
+		$date_sauvegarde_attendue = 1620150294;
+		$code_attendu = "print(\"Hello world!\")";
+
+		$résultat_obtenu = new Sauvegarde(1620150294, "print(\"Hello world!\")");
+
+		$this->assertEquals($date_sauvegarde_attendue, $résultat_obtenu->date_sauvegarde);
+		$this->assertEquals($code_attendu, $résultat_obtenu->code);
 	}
 }

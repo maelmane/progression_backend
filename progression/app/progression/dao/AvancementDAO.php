@@ -39,7 +39,7 @@ class AvancementDAO extends EntitéDAO
 			$type = 0;
 			$query->bind_result($uri, $etat, $type);
 			while ($query->fetch()) {
-				$avancements[$uri] = new Avancement([], $etat, $type);
+				$avancements[$uri] = new Avancement($etat, $type);
 			}
 
 			$query->close();
@@ -56,6 +56,7 @@ class AvancementDAO extends EntitéDAO
 
 		if ($avancement) {
 			$avancement->tentatives = $this->source->get_tentative_dao()->get_toutes($username, $question_uri);
+			$avancement->sauvegardes = $this->source->get_sauvegarde_dao()->get_toutes($username, $question_uri);
 		}
 
 		return $avancement;
@@ -76,7 +77,7 @@ class AvancementDAO extends EntitéDAO
 			$query->bind_result($état, $type);
 
 			if ($query->fetch()) {
-				$avancement = new Avancement([], $état, $type);
+				$avancement = new Avancement($état, $type);
 			}
 
 			$query->close();

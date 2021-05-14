@@ -18,7 +18,7 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Avancement, Question, TentativeProg};
+use progression\domaine\entité\{Avancement, Question, TentativeProg, Sauvegarde};
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -28,6 +28,7 @@ final class AvancementDAOTests extends TestCase
 	{
 		EntitéDAO::get_connexion()->begin_transaction();
 
+		// Tentative
 		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
 		$mockTentativeDao
 			->allows()
@@ -41,11 +42,29 @@ final class AvancementDAOTests extends TestCase
 			)
 			->andReturn([]);
 
+		// Sauvegarde
+		$mockSauvegardeDao = Mockery::mock("progression\dao\SauvegardeDAO");
+		$mockSauvegardeDao
+			->allows()
+			->get_toutes("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->andReturn([new Sauvegarde(1620150294, "print(\"Hello world!\")")]);
+		$mockSauvegardeDao
+			->allows()
+			->get_toutes(
+				"bobert",
+				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction_inexistante",
+			)
+			->andReturn([]);
+
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_tentative_dao()
 			->andReturn($mockTentativeDao);
+		$mockDAOFactory
+			->allows()
+			->get_sauvegarde_dao()
+			->andReturn($mockSauvegardeDao);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 
@@ -57,7 +76,12 @@ final class AvancementDAOTests extends TestCase
 
 	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_objet_avancement_correspondant()
 	{
-		$résultat_attendu = new Avancement([new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)]);
+		$résultat_attendu = new Avancement(
+			0,
+			0,
+			[new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)],
+			[new Sauvegarde(1620150294, "print(\"Hello world!\")")],
+		);
 		$résultat_attendu->type = Question::TYPE_PROG;
 
 		$résponse_observée = (new AvancementDAO())->get_avancement(

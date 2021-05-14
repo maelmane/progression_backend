@@ -18,22 +18,14 @@
 
 namespace progression\domaine\entité;
 
-class Avancement
+class Sauvegarde
 {
-	public $tentatives;
-	public $sauvegardes;
-	public $etat;
-	public $type;
+	public $date_sauvegarde;
+	public $code;
 
-	public function __construct(
-		$etat = Question::ETAT_DEBUT,
-		$type = Question::TYPE_INCONNU,
-		$tentatives = [],
-		$sauvegardes = []
-	) {
-		$this->tentatives = $tentatives;
-		$this->sauvegardes = $sauvegardes;
-		$this->etat = $etat;
-		$this->type = $type;
+	public function __construct($date_sauvegarde, $code)
+	{
+		$this->date_sauvegarde = $date_sauvegarde;
+		$this->code = $code;
 	}
 }
