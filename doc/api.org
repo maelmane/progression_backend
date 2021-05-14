@@ -322,7 +322,7 @@ curl "https://progression.dti.crosemont.quebec/api/v1/test/aHR0cHM6Ly9wcm9ncmVzc
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 DATA=$(cat <<EOF
 {
-  "langage":"java",
+  "langage":"python",
   "code": "#+TODO\nSystem.out.println('Hi !');\n#-TODO"
 }
 EOF
