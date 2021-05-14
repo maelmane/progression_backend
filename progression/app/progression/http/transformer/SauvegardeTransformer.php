@@ -16,24 +16,26 @@
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\http\transformer;
 
-class Avancement
+use League\Fractal;
+use progression\domaine\entité\Sauvegarde;
+
+class SauvegardeTransformer extends Fractal\TransformerAbstract
 {
-	public $tentatives;
-	public $sauvegardes;
-	public $etat;
-	public $type;
+	public $type = "sauvegarde";
 
-	public function __construct(
-		$etat = Question::ETAT_DEBUT,
-		$type = Question::TYPE_INCONNU,
-		$tentatives = [],
-		$sauvegardes = []
-	) {
-		$this->tentatives = $tentatives;
-		$this->sauvegardes = $sauvegardes;
-		$this->etat = $etat;
-		$this->type = $type;
+	public function transform(Sauvegarde $sauvegarde)
+	{
+		$data_out = [
+			"id" => $sauvegarde->id,
+			"date_sauvegarde" => $sauvegarde->date_sauvegarde,
+			"code" => $sauvegarde->code,
+			"links" => (isset($sauvegarde->links) ? $sauvegarde->links : []) + [
+				"self" => "{$_ENV["APP_URL"]}sauvegarde/{$sauvegarde->id}",
+			],
+		];
+
+		return $data_out;
 	}
 }

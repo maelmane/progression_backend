@@ -84,6 +84,11 @@ class DAOFactory
 		return new UserDAO($this);
 	}
 
+	function get_sauvegarde_dao()
+	{
+		return new SauvegardeDAO($this);
+	}
+
 	function get_exécuteur()
 	{
 		return new ExécuteurCompilebox();

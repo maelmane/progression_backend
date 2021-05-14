@@ -56,12 +56,12 @@ class AvancementCtl extends Contrôleur
 				if ($request->user()->rôle == User::ROLE_ADMIN) {
 					if (!isset($request->avancement["état"])) {
 						return $this->réponse_json(
-							["erreur" => "Le champ état est obligatoire pour enregistrer l'avancement."],
+							["erreur" => "Le champ état est obligatoire pour traiter la requête"],
 							422,
 						);
 					}
 
-					$avancement = new Avancement([], $request->avancement["état"], Question::TYPE_PROG);
+					$avancement = new Avancement($request->avancement["état"], Question::TYPE_PROG);
 					$avancement = $this->sauvegarderAvancement($username, $chemin, $avancement);
 				} else {
 					return $this->réponse_json(["erreur" => "Accès interdit."], 403);

@@ -16,24 +16,14 @@
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\interacteur;
 
-class Avancement
+class ObtenirSauvegardeInt extends Interacteur
 {
-	public $tentatives;
-	public $sauvegardes;
-	public $etat;
-	public $type;
+	function get_sauvegarde($username, $question_uri, $langage)
+	{
+		$sauvegarde = $this->source_dao->get_sauvegarde_dao()->get_sauvegarde($username, $question_uri, $langage);
 
-	public function __construct(
-		$etat = Question::ETAT_DEBUT,
-		$type = Question::TYPE_INCONNU,
-		$tentatives = [],
-		$sauvegardes = []
-	) {
-		$this->tentatives = $tentatives;
-		$this->sauvegardes = $sauvegardes;
-		$this->etat = $etat;
-		$this->type = $type;
+		return $sauvegarde;
 	}
 }

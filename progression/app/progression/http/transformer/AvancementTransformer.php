@@ -25,7 +25,7 @@ class AvancementTransformer extends Fractal\TransformerAbstract
 {
 	public $type = "avancement";
 
-	protected $availableIncludes = ["tentatives"];
+	protected $availableIncludes = ["tentatives", "sauvegardes"];
 
 	public function transform(Avancement $avancement)
 	{
@@ -58,5 +58,17 @@ class AvancementTransformer extends Fractal\TransformerAbstract
 		} elseif ($avancement->type == Question::TYPE_BD) {
 			return $this->collection($tentatives, new TentativeBDTransformer(), "tentative");
 		}
+	}
+
+	public function includeSauvegardes($avancement)
+	{
+		foreach ($avancement->sauvegardes as $langage => $sauvegarde) {
+			$sauvegarde->id = "{$avancement->id}/" . $langage;
+			$sauvegarde->links = [
+				"related" => "{$_ENV["APP_URL"]}avancement/{$avancement->id}",
+			];
+		}
+
+		return $this->collection($avancement->sauvegardes, new SauvegardeTransformer(), "sauvegarde");
 	}
 }
