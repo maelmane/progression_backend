@@ -23,26 +23,24 @@ use PHPUnit\Framework\TestCase;
 
 final class SauvegardeTransformerTests extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
+	public function setUp(): void
+	{
+		parent::setUp();
 
-        $_ENV["APP_URL"] = "https://example.com/";
-    }
+		$_ENV["APP_URL"] = "https://example.com/";
+	}
 
-    public function test_étant_donné_une_sauvegarde_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
-    {
-        $sauvegarde = new Sauvegarde(
-            1620150294,
-            "print(\"Hello world!\")"
-        );
-        $sauvegarde->id = "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python";
+	public function test_étant_donné_une_sauvegarde_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
+	{
+		$sauvegarde = new Sauvegarde(1620150294, "print(\"Hello world!\")");
+		$sauvegarde->id =
+			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python";
 
-        $sauvegardeTransformer = new SauvegardeTransformer();
-        $résultats_obtenus = $sauvegardeTransformer->transform($sauvegarde);
-        $this->assertStringEqualsFile(
-            __DIR__ . "/résultats_attendus/sauvegardeTransformerTest_1.json",
-            json_encode($résultats_obtenus),
-        );
-    }
+		$sauvegardeTransformer = new SauvegardeTransformer();
+		$résultats_obtenus = $sauvegardeTransformer->transform($sauvegarde);
+		$this->assertStringEqualsFile(
+			__DIR__ . "/résultats_attendus/sauvegardeTransformerTest_1.json",
+			json_encode($résultats_obtenus),
+		);
+	}
 }

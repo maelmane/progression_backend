@@ -121,7 +121,6 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			})
 			->andReturn($tentative);
 
-
 		$résultat_attendu = $tentative;
 
 		$interacteur = new SauvegarderTentativeProgInt();
@@ -139,11 +138,9 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->shouldReceive("get_avancement")
 			->with("Bob", "https://example.com/question")
 			->andReturn(
-				new Avancement(
-					Question::ETAT_NONREUSSI,
-					Question::TYPE_PROG,
-					[new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", [])]
-				),
+				new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, [
+					new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", []),
+				]),
 			);
 		DAOFactory::getInstance()
 			->get_avancement_dao()
@@ -158,7 +155,6 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			})
 			->andReturn($tentative);
 
-
 		$résultat_attendu = $tentative;
 
 		$interacteur = new SauvegarderTentativeProgInt();
@@ -171,22 +167,19 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 	{
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, true, 1, "feedback", []);
 
-		$avancement = new Avancement(
-			Question::ETAT_REUSSI,
-			Question::TYPE_PROG,
-			[new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", []), $tentative]
-		);
+		$avancement = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [
+			new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", []),
+			$tentative,
+		]);
 
 		DAOFactory::getInstance()
 			->get_avancement_dao()
 			->shouldReceive("get_avancement")
 			->with("Bob", "https://example.com/question")
 			->andReturn(
-				new Avancement(
-					Question::ETAT_NONREUSSI,
-					Question::TYPE_PROG,
-					[new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", [])]
-				),
+				new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, [
+					new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", []),
+				]),
 			);
 
 		DAOFactory::getInstance()
@@ -207,7 +200,6 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			})
 			->andReturn($tentative);
 
-
 		$résultat_attendu = $tentative;
 
 		$interacteur = new SauvegarderTentativeProgInt();
@@ -225,11 +217,9 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->shouldReceive("get_avancement")
 			->with("Bob", "https://example.com/question")
 			->andReturn(
-				new Avancement(
-					Question::ETAT_REUSSI,
-					Question::TYPE_PROG,
-					[new TentativeProg(1, "print('code')", 1616531000, true, 1, "feedback", [])]
-				),
+				new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [
+					new TentativeProg(1, "print('code')", 1616531000, true, 1, "feedback", []),
+				]),
 			);
 		DAOFactory::getInstance()
 			->get_avancement_dao()
@@ -243,7 +233,6 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 				return $user == "Bob" && $uri == "https://example.com/question" && $t == $tentative;
 			})
 			->andReturn($tentative);
-
 
 		$résultat_attendu = $tentative;
 
@@ -262,11 +251,9 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->shouldReceive("get_avancement")
 			->with("Bob", "https://example.com/question")
 			->andReturn(
-				new Avancement(
-					Question::ETAT_REUSSI,
-					Question::TYPE_PROG,
-					[new TentativeProg(1, "print('code')", 1616531000, true, 1, "feedback", [])]
-				),
+				new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [
+					new TentativeProg(1, "print('code')", 1616531000, true, 1, "feedback", []),
+				]),
 			);
 		DAOFactory::getInstance()
 			->get_avancement_dao()
@@ -280,7 +267,6 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 				return $user == "Bob" && $uri == "https://example.com/question" && $t == $tentative;
 			})
 			->andReturn($tentative);
-
 
 		$résultat_attendu = $tentative;
 

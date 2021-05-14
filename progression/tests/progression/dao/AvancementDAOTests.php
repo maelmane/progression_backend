@@ -80,7 +80,7 @@ final class AvancementDAOTests extends TestCase
 			0,
 			0,
 			[new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)],
-			[new Sauvegarde(1620150294, "print(\"Hello world!\")")]
+			[new Sauvegarde(1620150294, "print(\"Hello world!\")")],
 		);
 		$résultat_attendu->type = Question::TYPE_PROG;
 

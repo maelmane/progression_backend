@@ -32,7 +32,7 @@ class SauvegardeTransformer extends Fractal\TransformerAbstract
 			"date_sauvegarde" => $sauvegarde->date_sauvegarde,
 			"code" => $sauvegarde->code,
 			"links" => (isset($sauvegarde->links) ? $sauvegarde->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}sauvegarde/{$sauvegarde->id}"
+				"self" => "{$_ENV["APP_URL"]}sauvegarde/{$sauvegarde->id}",
 			],
 		];
 

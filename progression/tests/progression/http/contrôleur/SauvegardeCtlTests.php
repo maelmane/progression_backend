@@ -36,7 +36,7 @@ final class SauvegardeCtlTests extends TestCase
 		// Sauvegarde
 		$sauvegarde = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 		$sauvegardes = [];
-		$sauvegardes["python"] = new Sauvegarde(1620150294,	"print(\"Hello world!\")");
+		$sauvegardes["python"] = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 
 		$mockSauvegardeDAO = Mockery::mock("progression\dao\SauvegardeDAO");
 		$mockSauvegardeDAO
@@ -47,9 +47,7 @@ final class SauvegardeCtlTests extends TestCase
 			->shouldReceive("get_sauvegarde")
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "java")
 			->andReturn(null);
-		$mockSauvegardeDAO
-			->shouldReceive("save")
-			->andReturn($sauvegarde);
+		$mockSauvegardeDAO->shouldReceive("save")->andReturn($sauvegarde);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
@@ -100,7 +98,10 @@ final class SauvegardeCtlTests extends TestCase
 		);
 
 		$this->assertEquals(422, $résultat_observé->status());
-		$this->assertEquals('{"erreur":{"langage":["Le champ langage est obligatoire."]}}', $résultat_observé->getContent());
+		$this->assertEquals(
+			'{"erreur":{"langage":["Le champ langage est obligatoire."]}}',
+			$résultat_observé->getContent(),
+		);
 	}
 	public function test_étant_donné_une_sauvegarde_sans_code_lorquon_fait_une_requête_post_on_obtient_une_erreur_422()
 	{
@@ -108,8 +109,8 @@ final class SauvegardeCtlTests extends TestCase
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/sauvegardes",
 			[
-				"langage" => "python"
-			]
+				"langage" => "python",
+			],
 		);
 
 		$this->assertEquals(422, $résultat_observé->status());
@@ -122,8 +123,8 @@ final class SauvegardeCtlTests extends TestCase
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/sauvegardes",
 			[
 				"langage" => "python",
-				"code" => "print(\"Hello world!\")"
-			]
+				"code" => "print(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(200, $résultat_observé->status());

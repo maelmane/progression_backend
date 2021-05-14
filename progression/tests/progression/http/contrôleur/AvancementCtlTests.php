@@ -58,7 +58,9 @@ final class AvancementCtlTests extends TestCase
 			->andReturn($question);
 
 		// Avancement
-		$avancement = new Avancement(0, 0, [new TentativeProg("python", "codeTest", [], 1614965817, false, 2, "feedbackTest")]);
+		$avancement = new Avancement(0, 0, [
+			new TentativeProg("python", "codeTest", [], 1614965817, false, 2, "feedbackTest"),
+		]);
 		$avancement->etat = 1;
 		$avancement->type = Question::TYPE_PROG;
 		$avancementPost = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG);
@@ -187,6 +189,9 @@ final class AvancementCtlTests extends TestCase
 		]);
 
 		$this->assertEquals(422, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Le champ état est obligatoire pour traiter la requête"}', $résultat_observé->getContent());
+		$this->assertEquals(
+			'{"erreur":"Le champ état est obligatoire pour traiter la requête"}',
+			$résultat_observé->getContent(),
+		);
 	}
 }

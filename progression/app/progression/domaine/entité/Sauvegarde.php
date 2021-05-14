@@ -23,10 +23,8 @@ class Sauvegarde
 	public $date_sauvegarde;
 	public $code;
 
-	public function __construct(
-		$date_sauvegarde,
-		$code
-	) {
+	public function __construct($date_sauvegarde, $code)
+	{
 		$this->date_sauvegarde = $date_sauvegarde;
 		$this->code = $code;
 	}

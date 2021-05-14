@@ -32,7 +32,7 @@ final class ObtenirSauvegardeIntTests extends TestCase
 		// Sauvegarde
 		$sauvegarde = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 		$sauvegardes = [];
-		$sauvegardes["python"] = new Sauvegarde(1620150294,	"print(\"Hello world!\")");
+		$sauvegardes["python"] = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 
 		$mockSauvegardeDAO = Mockery::mock("progression\dao\SauvegardeDAO");
 		$mockSauvegardeDAO
@@ -69,7 +69,7 @@ final class ObtenirSauvegardeIntTests extends TestCase
 		$résultat_obtenu = $interacteur->get_sauvegarde(
 			"Marcel",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			"python"
+			"python",
 		);
 
 		$this->assertNull($résultat_obtenu);
@@ -81,12 +81,9 @@ final class ObtenirSauvegardeIntTests extends TestCase
 		$résultat_obtenu = $interacteur->get_sauvegarde(
 			"jdoe",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			"python"
+			"python",
 		);
-		$résultat_attendu = new Sauvegarde(
-			1620150294,
-			"print(\"Hello world!\")"
-		);
+		$résultat_attendu = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 }

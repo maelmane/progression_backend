@@ -29,7 +29,7 @@ class SauvegardeDAO extends EntitéDAO
 
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT date_sauvegarde, langage, code type FROM sauvegarde WHERE username = ? AND question_uri = ?"
+				"SELECT date_sauvegarde, langage, code type FROM sauvegarde WHERE username = ? AND question_uri = ?",
 			);
 			$query->bind_param("ss", $username, $question_uri);
 			$query->execute();
@@ -97,7 +97,7 @@ class SauvegardeDAO extends EntitéDAO
 				$question_uri,
 				$sauvegarde->date_sauvegarde,
 				$langage,
-				$sauvegarde->code
+				$sauvegarde->code,
 			);
 			$estEnregistre = $query->execute();
 			$query->close();

@@ -38,16 +38,16 @@ final class EnregistrerSauvegardeIntTests extends TestCase
 	public function test_étant_donné_luri_dune_question_existante_un_username_existant_et_le_bon_langage_lorsquon_appelle_save_on_obtient_un_objet_sauvegarde_correspondant()
 	{
 		// Sauvegarde
-		$sauvegarde = new Sauvegarde(
-			1620150294,
-			"print(\"Hello world!\")"
-		);
+		$sauvegarde = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 		$mockSauvegardeDAO = Mockery::mock("progression\dao\SauvegardeDAO");
 		$mockSauvegardeDAO
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user, $uri, $lang, $s) use ($sauvegarde) {
-				return $user == "jdoe" && $uri == "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" && $lang == "python" && $s == $sauvegarde;
+				return $user == "jdoe" &&
+					$uri == "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" &&
+					$lang == "python" &&
+					$s == $sauvegarde;
 			})
 			->andReturn($sauvegarde);
 
@@ -56,13 +56,14 @@ final class EnregistrerSauvegardeIntTests extends TestCase
 		$mockDAOFactory->shouldReceive("get_sauvegarde_dao")->andReturn($mockSauvegardeDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 
-
 		$interacteur = new EnregistrerSauvegardeInt();
-		$résultat_obtenu = $interacteur->enregistrer("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python", $sauvegarde);
-		$résultat_attendu = new Sauvegarde(
-			1620150294,
-			"print(\"Hello world!\")"
+		$résultat_obtenu = $interacteur->enregistrer(
+			"jdoe",
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+			"python",
+			$sauvegarde,
 		);
+		$résultat_attendu = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 }

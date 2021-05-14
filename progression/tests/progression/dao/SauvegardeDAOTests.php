@@ -37,22 +37,22 @@ final class SauvegardeDAOTests extends TestCase
 
 	public function test_étant_donné_une_sauvegarde_existante_lorsquon_cherche_par_username_question_uri_et_langage_on_obtient_un_objet_sauvegarde_correspondant()
 	{
-		$résultat_attendu = new Sauvegarde(
-			1620150294,
-			"print(\"Hello world!\")"
-		);
+		$résultat_attendu = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 
-		$résponse_observée = (new SauvegardeDAO())->get_sauvegarde("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python");
+		$résponse_observée = (new SauvegardeDAO())->get_sauvegarde(
+			"bob",
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+			"python",
+		);
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
 
 	public function test_étant_donné_un_username_inexistant_lorsquon_cherche_une_sauvegarde_on_obtient_un_objet_null()
 	{
-
 		$résponse_observée = (new SauvegardeDAO())->get_sauvegarde(
 			"Marcel",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			"python"
+			"python",
 		);
 		$this->assertNull($résponse_observée);
 	}
@@ -62,7 +62,7 @@ final class SauvegardeDAOTests extends TestCase
 		$résponse_observée = (new SauvegardeDAO())->get_sauvegarde(
 			"bob",
 			"https://depot.com/roger/questions_prog/question_inexistante",
-			"python"
+			"python",
 		);
 		$this->assertNull($résponse_observée);
 	}
@@ -72,32 +72,26 @@ final class SauvegardeDAOTests extends TestCase
 		$résponse_observée = (new SauvegardeDAO())->get_sauvegarde(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			"c#"
+			"c#",
 		);
 		$this->assertNull($résponse_observée);
 	}
 
 	public function test_étant_donné_une_sauvegarde_instanciée_lorsquon_lenregistre_on_obtient_un_objet_sauvegarde_correspondant()
 	{
-		$résultat_attendu = new Sauvegarde(
-			1620150294,
-			"print(\"Hello world!\")"
-		);
+		$résultat_attendu = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 
 		$résponse_observée1 = (new SauvegardeDAO())->save(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 			"python",
-			new Sauvegarde(
-				1620150294,
-				"print(\"Hello world!\")"
-			),
+			new Sauvegarde(1620150294, "print(\"Hello world!\")"),
 		);
 
 		$résponse_observée2 = (new SauvegardeDAO())->get_sauvegarde(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			"python"
+			"python",
 		);
 
 		$this->assertEquals($résultat_attendu, $résponse_observée1);
@@ -110,7 +104,10 @@ final class SauvegardeDAOTests extends TestCase
 		$résultat_attendu["python"] = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 		$résultat_attendu["java"] = new Sauvegarde(1620150375, "System.out.println(\"Hello world!\");");
 
-		$résponse_observée = (new SauvegardeDAO())->get_toutes("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction");
+		$résponse_observée = (new SauvegardeDAO())->get_toutes(
+			"bob",
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+		);
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
 }

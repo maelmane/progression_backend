@@ -27,10 +27,7 @@ final class SauvegardeTests extends TestCase
 		$date_sauvegarde_attendue = 1620150294;
 		$code_attendu = "print(\"Hello world!\")";
 
-		$résultat_obtenu = new Sauvegarde(
-				1620150294,
-				"print(\"Hello world!\")"
-			);
+		$résultat_obtenu = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 
 		$this->assertEquals($date_sauvegarde_attendue, $résultat_obtenu->date_sauvegarde);
 		$this->assertEquals($code_attendu, $résultat_obtenu->code);

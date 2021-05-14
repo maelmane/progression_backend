@@ -56,7 +56,7 @@ class AvancementDAO extends EntitéDAO
 
 		if ($avancement) {
 			$avancement->tentatives = $this->source->get_tentative_dao()->get_toutes($username, $question_uri);
-            $avancement->sauvegardes = $this->source->get_sauvegarde_dao()->get_toutes($username, $question_uri);
+			$avancement->sauvegardes = $this->source->get_sauvegarde_dao()->get_toutes($username, $question_uri);
 		}
 
 		return $avancement;

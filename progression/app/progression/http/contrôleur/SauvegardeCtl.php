@@ -37,10 +37,7 @@ class SauvegardeCtl extends Contrôleur
 		if ($validation->fails()) {
 			return $this->réponse_json(["erreur" => $validation->errors()], 422);
 		}
-		$sauvegarde = new Sauvegarde(
-			(new \DateTime())->getTimestamp(),
-			$request->code
-		);
+		$sauvegarde = new Sauvegarde((new \DateTime())->getTimestamp(), $request->code);
 		$sauvegardeInt = new EnregistrerSauvegardeInt();
 
 		$résultat_sauvegarde = $sauvegardeInt->enregistrer($username, $chemin, $request->langage, $sauvegarde);
@@ -52,7 +49,7 @@ class SauvegardeCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => "Requête intraitable"], 422);
 		}
 		return $this->préparer_réponse($réponse);
-	}	
+	}
 
 	public function get(Request $request, $username, $question_uri, $langage)
 	{
