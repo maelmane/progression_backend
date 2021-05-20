@@ -116,7 +116,7 @@ Bonjour
 			),
 		];
 
-		$info["execs"] = [
+		$info["ébauches"] = [
 			"python" => '#+VISIBLE
 nb_répétitions = int( input() )
 
@@ -156,8 +156,8 @@ public static void main(String[] args) {
 		$info["tests"] = [
 			[
 				"nom" => "10 fois",
-				"in" => 10,
-				"out" => "Bonjour le monde
+				"entrée" => 10,
+				"sortie" => "Bonjour le monde
 Bonjour le monde
 Bonjour le monde
 Bonjour le monde
@@ -172,28 +172,32 @@ Bonjour le monde
 
 			[
 				"nom" => "1 fois",
-				"in" => 1,
-				"out" => "Bonjour le monde",
+				"entrée" => 1,
+				"sortie" => "Bonjour le monde",
 			],
 
 			[
 				"nom" => "0 fois",
-				"in" => 0,
-				"out" => "",
+				"entrée" => 0,
+				"sortie" => "",
 				"params" => null,
-				"feedback+" => "Bien joué! 0 est aussi une entrée valable.",
-				"feedback-" => "N'oublie pas les cas limites, 0 est aussi une entrée valable!",
+				"rétroactions" => [
+					"positive" => "Bien joué! 0 est aussi une entrée valable.",
+					"négative" => "N'oublie pas les cas limites, 0 est aussi une entrée valable!",
+				],
 			],
 
 			[
 				"nom" => "2 fois",
-				"in" => 2,
-				"out" => "Bonjour
+				"entrée" => 2,
+				"sortie" => "Bonjour
 Bonjour
 ",
 				"params" => null,
-				"feedback+" => "Bien joué!",
-				"feedback-" => "Rien à dire",
+				"rétroactions" => [
+					"positive" => "Bien joué!",
+					"négative" => "Rien à dire",
+				],
 			],
 		];
 

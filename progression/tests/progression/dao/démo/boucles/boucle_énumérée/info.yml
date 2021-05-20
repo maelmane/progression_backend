@@ -6,15 +6,15 @@ description: Exercice simple sur les itérations à nombre d'itérations fixe
 
 énoncé: Saisissez un nombre sur l'entrée standard puis faites afficher la phrase «Bonjour le monde!» autant de fois.
 
-execs:
+ébauches:
  - langage: python
-   fichier: exec.py
+   code: exec.py
  - langage: java
-   fichier: exec.java
+   code: exec.java
 
-feedback+: Bravo! tu es prêt à passer à un type de boucles plus complexe
-
-feedback-: "Pour tout savoir sur les itérations énumérées : [clique ici](http://unlien.com)"
+rétroactions:
+ positive: Bravo! tu es prêt à passer à un type de boucles plus complexe
+ négative: "Pour tout savoir sur les itérations énumérées : [clique ici](http://unlien.com)"
 
 tests:
  - tests/tous_les_tests.yml

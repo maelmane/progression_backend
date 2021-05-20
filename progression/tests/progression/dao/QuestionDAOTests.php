@@ -1,20 +1,20 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\dao;
 
@@ -24,6 +24,24 @@ use Mockery;
 
 final class QuestionDAOTests extends TestCase
 {
+	public function setUp(): void
+	{
+		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory
+			->allows()
+			->get_question_prog_dao()
+			->andReturn(new QuestionProgDAO());
+
+		DAOFactory::setInstance($mockDAOFactory);
+	}
+
+	public function tearDown(): void
+	{
+		parent::tearDown();
+
+		Mockery::close();
+	}
+
 	public function test_get_question()
 	{
 		$question = new QuestionProg();
@@ -65,222 +83,224 @@ final class QuestionDAOTests extends TestCase
 			new Test("2 fois", "2", "Bonjour\nBonjour\n", "", "Bien joué!", "Rien à dire"),
 		];
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_question_prog_dao()
-			->andReturn(new QuestionProgDAO());
-
-		$résultat_obtenu = (new QuestionDAO($mockDAOFactory))->get_question(
-			"file://" . __DIR__ . "/démo/boucles/boucle_énumérée",
-		);
+		$résultat_obtenu = (new QuestionDAO())->get_question("file://" . __DIR__ . "/démo/boucles/boucle_énumérée");
 
 		$this->assertEquals($question, $résultat_obtenu);
 	}
 
 	/** Impossible à tester tant qu'on n'aura pas séparé QuestionDAO et sa source de fichiers (Voir ticker #76)
-	public function test_étant_donné_un_zip_existant_contenant_une_question_lorsquon_donne_son_chemin_on_obtient_un_objet_question_prog_correspondant()
+	   public function test_étant_donné_un_zip_existant_contenant_une_question_lorsquon_donne_son_chemin_on_obtient_un_objet_question_prog_correspondant()
+	   {
+	   $question = new QuestionProg();
+	   $question->uri = "file://" . sys_get_temp_dir() . __DIR__ . "/démo/appeler_une_fonction_paramétrée";
+	   $question->titre = "Appeler une fonction paramétrée";
+	   $question->description = "Appel d'une fonction existante recevant un paramètre";
+	   $question->enonce =
+	   "La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
+	   $question->feedback_neg = "Avez-vous utilisé le parenthèse avec la variable nb_entré à l'intérieur?";
+	   $question->feedback_pos = "Très bien! Vous avez maintenant appélé une fonction paramétrée";
+
+	   // Ébauches
+	   $question->exécutables = [];
+	   $question->exécutables["python"] = new Exécutable(
+	   "# +VISIBLE
+	   def salutations( nb_répétitions ):
+       for i in range( nb_répétitions ):
+       print( \"Bonjour le monde!\" )
+
+
+	   nb_entré = int( input() )
+	   # +TODO
+
+
+	   # -TODO
+	   # -VISIBLE
+	   ",
+	   "python",
+	   );
+	   $question->exécutables["java"] = new Exécutable(
+	   "import java.util.Scanner;
+
+	   class Test {
+
+	   // +VISIBLE
+
+	   public static void salutations( int nb_répétitions ) {
+	   for ( int i = 0; i < nb_répétitions; i++ ) {
+	   System.out.println( \"Bonjour le monde!\" );
+	   }
+	   }
+
+	   public static void main( String[] args ) {
+	   Scanner scan = new Scanner( System.in );
+
+	   int nb_entré = scan.nextInt();
+
+	   // +TODO
+
+
+
+	   // -TODO
+	   }
+	   // -VISIBLE
+	   }
+	   ",
+	   "java",
+	   );
+
+	   // Tests
+	   $question->tests = [
+	   new Test("Une salutation", 1, "Bonjour le monde!\n", "", "Bravo champion!", "Encore un effort..."),
+	   new Test(
+	   "10 salutations",
+	   10,
+	   "Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   ",
+	   ),
+	   new Test(
+	   "100 salutations",
+	   100,
+	   "Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   Bonjour le monde!
+	   ",
+	   ),
+	   new Test(
+	   "Aucune salutation",
+	   0,
+	   "",
+	   "",
+	   "Bien vu! 0 salutations est une valeur possible.",
+	   "Que veut-on voir lorsqu'on demande 0 salutations?",
+	   ),
+	   ];
+
+	   $mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+	   $mockDAOFactory
+	   ->allows()
+	   ->get_question_prog_dao()
+	   ->andReturn(new QuestionProgDAO());
+
+	   $résultat_obtenu = (new QuestionDAO($mockDAOFactory))->get_question(
+	   "file://" . __DIR__ . "/démo/appeler_une_fonction_paramétrée.zip",
+	   );
+	   $this->assertEquals($question, $résultat_obtenu);
+	   }
+	 */
+
+	public function test_étant_donnée_un_fichier_info_vide_lorsquon_récupère_la_question_on_obtien_une_QuestionProg_avec_des_attributs_par_défaut()
 	{
-		$question = new QuestionProg();
-		$question->uri = "file://" . sys_get_temp_dir() . __DIR__ . "/démo/appeler_une_fonction_paramétrée";
-		$question->titre = "Appeler une fonction paramétrée";
-		$question->description = "Appel d'une fonction existante recevant un paramètre";
-		$question->enonce =
-			"La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
-		$question->feedback_neg = "Avez-vous utilisé le parenthèse avec la variable nb_entré à l'intérieur?";
-		$question->feedback_pos = "Très bien! Vous avez maintenant appélé une fonction paramétrée";
+		$résultat_attendu = new QuestionProg();
+		$résultat_attendu->uri = "file://" . __DIR__ . "/démo/défauts";
 
-		// Ébauches
-		$question->exécutables = [];
-		$question->exécutables["python"] = new Exécutable(
-			"# +VISIBLE
-def salutations( nb_répétitions ):
-    for i in range( nb_répétitions ):
-        print( \"Bonjour le monde!\" )
+		$résultat_obtenu = (new QuestionDAO())->get_question("file://" . __DIR__ . "/démo/défauts");
 
-
-nb_entré = int( input() )
-# +TODO
-
-
-# -TODO
-# -VISIBLE
-",
-			"python",
-		);
-		$question->exécutables["java"] = new Exécutable(
-			"import java.util.Scanner;
-
-class Test {
-
-// +VISIBLE
-
-public static void salutations( int nb_répétitions ) {
-	for ( int i = 0; i < nb_répétitions; i++ ) {
-		System.out.println( \"Bonjour le monde!\" );
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
-}
-
-public static void main( String[] args ) {
-	Scanner scan = new Scanner( System.in );
-
-	int nb_entré = scan.nextInt();
-
-// +TODO
-
-
-
-// -TODO
-}
-// -VISIBLE
-}
-",
-			"java",
-		);
-
-		// Tests
-		$question->tests = [
-			new Test("Une salutation", 1, "Bonjour le monde!\n", "", "Bravo champion!", "Encore un effort..."),
-			new Test(
-				"10 salutations",
-				10,
-				"Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-",
-			),
-			new Test(
-				"100 salutations",
-				100,
-				"Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-Bonjour le monde!
-",
-			),
-			new Test(
-				"Aucune salutation",
-				0,
-				"",
-				"",
-				"Bien vu! 0 salutations est une valeur possible.",
-				"Que veut-on voir lorsqu'on demande 0 salutations?",
-			),
-		];
-
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_question_prog_dao()
-			->andReturn(new QuestionProgDAO());
-
-		$résultat_obtenu = (new QuestionDAO($mockDAOFactory))->get_question(
-			"file://" . __DIR__ . "/démo/appeler_une_fonction_paramétrée.zip",
-		);
-		$this->assertEquals($question, $résultat_obtenu);
-	}
-	*/
 }

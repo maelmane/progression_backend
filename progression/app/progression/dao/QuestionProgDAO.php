@@ -33,10 +33,9 @@ class QuestionProgDAO extends EntitéDAO
 	protected function load_exécutables($question, $infos_question)
 	{
 		$exécutables = [];
-		foreach ($infos_question["execs"] as $lang => $code) {
+		foreach ($infos_question["ébauches"] as $lang => $code) {
 			$exécutables[$lang] = new Exécutable($code, $lang);
 		}
-
 		return $exécutables;
 	}
 
@@ -46,12 +45,12 @@ class QuestionProgDAO extends EntitéDAO
 		foreach ($infos_question["tests"] as $test) {
 			$tests[] = new Test(
 				$test["nom"],
-				$test["in"],
-				$test["out"],
-				key_exists("params", $test) ? $test["params"] : null,
-				key_exists("feedback+", $test) ? $test["feedback+"] : null,
-				key_exists("feedback-", $test) ? $test["feedback-"] : null,
-				key_exists("feedback!", $test) ? $test["feedback!"] : null,
+				strval($test["entrée"]),
+				strval($test["sortie"]),
+				strval($test["params"] ?? null),
+				$test["rétroactions"]["positive"] ?? null,
+				$test["rétroactions"]["négative"] ?? null,
+				$test["rétroactions"]["erreur"] ?? null,
 			);
 		}
 
@@ -60,15 +59,15 @@ class QuestionProgDAO extends EntitéDAO
 
 	public function récupérer_question($uri, $info)
 	{
-		$exécutables = $this->récupérer_execs($uri, $info["execs"]);
+		$exécutables = $this->récupérer_execs($uri, $info["ébauches"] ?? []);
 
 		if ($exécutables === null) {
 			return null;
 		} else {
-			$info["execs"] = $exécutables;
+			$info["ébauches"] = $exécutables;
 		}
 
-		$tests = $this->récupérer_tests($uri, $info["tests"]);
+		$tests = $this->récupérer_tests($uri, $info["tests"] ?? []);
 		if ($tests === null) {
 			return null;
 		} else {
@@ -83,7 +82,7 @@ class QuestionProgDAO extends EntitéDAO
 		$items = [];
 
 		foreach ($execs as $exec) {
-			$exécutable = $this->récupérer_exec($uri, $exec["fichier"]);
+			$exécutable = $this->récupérer_exec($uri, $exec["code"]);
 
 			if ($exécutable === null) {
 				return null;

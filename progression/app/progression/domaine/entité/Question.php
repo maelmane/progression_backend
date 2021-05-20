@@ -31,15 +31,14 @@ class Question
 	const TYPE_BD = 2;
 	const TYPE_PROG = 3;
 
-	public $nom;
-	public $uri;
-	public $actif;
-	public $titre;
-	public $description;
-	public $enonce;
-	public $feedback_pos;
-	public $feedback_neg;
-	public $feedback_err;
-	public $etat;
-	public $code_validation;
+	public $nom = "";
+	public $uri = "";
+	public $actif = 1;
+	public $titre = "";
+	public $description = "";
+	public $enonce = "";
+	public $feedback_pos = "";
+	public $feedback_neg = "";
+	public $feedback_err = "";
+	public $etat = Question::ETAT_DEBUT;
 }

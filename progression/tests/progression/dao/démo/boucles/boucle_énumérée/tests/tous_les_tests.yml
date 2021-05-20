@@ -1,6 +1,6 @@
 nom: 10 fois
-in: 10
-out: |
+entrée: 10
+sortie: |
     Bonjour le monde
     Bonjour le monde
     Bonjour le monde
@@ -14,13 +14,14 @@ out: |
 ---
 
 nom: 1 fois
-in: 1
-out: Bonjour le monde
+entrée: 1
+sortie: Bonjour le monde
 
 ---
 
 nom: 0 fois
-in: 0
-out: ""
-feedback+: Bien joué! 0 est aussi une entrée valable.
-feedback-: N'oublie pas les cas limites, 0 est aussi une entrée valable!
+entrée: 0
+sortie: ""
+rétroactions:
+ positive: Bien joué! 0 est aussi une entrée valable.
+ négative: N'oublie pas les cas limites, 0 est aussi une entrée valable!
