@@ -38,34 +38,38 @@ class QuestionDAO extends EntitéDAO
 
 		if (key_exists("type", $infos_question)) {
 			$type = $infos_question["type"];
+		} else {
+			$type = "prog";
+		}
 
-			if ($type == "prog") {
-				$question = new QuestionProg();
-				$this->load($question, $infos_question);
-				$this->source->get_question_prog_dao()->load($question, $infos_question);
-			} elseif ($type == "sys") {
-				$question = new QuestionSys();
-				$this->load($question, $infos_question);
-				$this->source->get_question_sys_dao()->load($question, $infos_question);
-			} elseif ($type == "bd") {
-				$question = new QuestionBD();
-				$this->source->get_question_bd_dao()->load($question, $infos_question);
-			}
+		if ($type == "prog") {
+			$question = new QuestionProg();
+			$this->load($question, $infos_question);
+			$this->source->get_question_prog_dao()->load($question, $infos_question);
+		} elseif ($type == "sys") {
+			$question = new QuestionSys();
+			$this->load($question, $infos_question);
+			$this->source->get_question_sys_dao()->load($question, $infos_question);
+		} elseif ($type == "bd") {
+			$question = new QuestionBD();
+			$this->source->get_question_bd_dao()->load($question, $infos_question);
 		} else {
 			throw new DomainException("Le fichier ne peut pas être décodé (type inconnu)");
 		}
+
 		return $question;
 	}
 
 	protected function load($question, $infos_question)
 	{
 		$question->uri = $infos_question["uri"];
-		$question->titre = $infos_question["titre"];
-		$question->description = $infos_question["description"];
-		$question->enonce = $infos_question["énoncé"];
-		$question->feedback_pos = key_exists("feedback+", $infos_question) ? $infos_question["feedback+"] : null;
-		$question->feedback_neg = key_exists("feedback-", $infos_question) ? $infos_question["feedback-"] : null;
-		$question->feedback_err = key_exists("feedback!", $infos_question) ? $infos_question["feedback!"] : null;
+		$question->titre = $infos_question["titre"] ?? null;
+		$question->description = $infos_question["description"] ?? null;
+		$question->enonce = $infos_question["énoncé"] ?? null;
+
+		$question->feedback_pos = $infos_question["rétroactions"]["positive"] ?? null;
+		$question->feedback_neg = $infos_question["rétroactions"]["négative"] ?? null;
+		$question->feedback_err = $infos_question["rétroactions"]["erreur"] ?? null;
 	}
 
 	protected function récupérer_question($uri)
@@ -126,7 +130,7 @@ class QuestionDAO extends EntitéDAO
 			throw new DomainException("Le fichier ne peut pas être décodé (format invalide)");
 		}
 
-		if (isset($info["type"]) && $info["type"] == "prog") {
+		if (!isset($info["type"]) || $info["type"] == "prog") {
 			$info = $this->source->get_question_prog_dao()->récupérer_question($uri, $info);
 		}
 

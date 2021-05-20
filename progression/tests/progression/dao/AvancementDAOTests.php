@@ -26,6 +26,7 @@ final class AvancementDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
+		parent::setUp();
 		EntitéDAO::get_connexion()->begin_transaction();
 
 		// Tentative
@@ -70,6 +71,8 @@ final class AvancementDAOTests extends TestCase
 
 	public function tearDown(): void
 	{
+		parent::tearDown();
+
 		EntitéDAO::get_connexion()->rollback();
 		Mockery::close();
 	}
