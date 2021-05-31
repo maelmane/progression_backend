@@ -30,8 +30,8 @@ class Test
 
 	public function __construct(
 		$nom,
-		$entrée,
 		$sortie_attendue,
+		$entrée = null,
 		$params = null,
 		$feedback_pos = null,
 		$feedback_neg = null,

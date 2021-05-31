@@ -27,8 +27,8 @@ final class TraiterTentativeProgIntTests extends TestCase
 	{
 		$question = new QuestionProg();
 		$question->tests = [
-			new Test("premier test", "1", "ok\n", null, "Test 0 passé", "Test 0 échoué"),
-			new Test("deuxième test", "5", "ok\nok\nok\nok\nok\n", null, "Test 1 passé", "Test 1 échoué"),
+			new Test("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
+			new Test("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
 		];
 		$question->feedback_pos = "Bravo!";
 		$question->feedback_neg = "Non!";
@@ -49,12 +49,12 @@ final class TraiterTentativeProgIntTests extends TestCase
 	{
 		$question = new QuestionProg();
 		$question->tests = [
-			new Test("premier test", "1", "ok\n", null, "Test 0 passé", "Test 0 échoué"),
-			new Test("deuxième test", "5", "ok\nok\nok\nok\nok\n", null, "Test 1 passé", "Test 1 échoué"),
+			new Test("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
+			new Test("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
 			new Test(
 				"troisième test",
-				"10",
 				"ok\nok\nok\nok\nok\nok\nok\nok\nok\nok\n",
+				"10",
 				null,
 				"Test 2 passé",
 				"Test 2 échoué",
@@ -93,8 +93,8 @@ final class TraiterTentativeProgIntTests extends TestCase
 	{
 		$question = new QuestionProg();
 		$question->tests = [
-			new Test("premier test", "1", "ok\n", null, "Test 0 passé", "Test 0 échoué", "Erreur!"),
-			new Test("deuxième test", "5", "ok\nok\nok\nok\nok\n", null, "Test 1 passé", "Test 1 échoué", "Erreur!"),
+			new Test("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué", "Erreur!"),
+			new Test("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué", "Erreur!"),
 		];
 		$question->feedback_pos = "Bravo!";
 		$question->feedback_neg = "As-tu essayé de ne pas faire ça?";
@@ -117,8 +117,8 @@ final class TraiterTentativeProgIntTests extends TestCase
 	{
 		$question = new QuestionProg();
 		$question->tests = [
-			new Test("premier test", "1", "ok\n", null, "Test 0 passé", "Test 0 échoué"),
-			new Test("deuxième test", "5", "ok\nok\nok\nok\nok\n", null, "Test 1 passé", "Test 1 échoué"),
+			new Test("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
+			new Test("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
 		];
 		$question->feedback_pos = "Bravo!";
 		$question->feedback_neg = "As-tu essayé de ne pas faire ça?";

@@ -36,7 +36,6 @@ final class QuestionProgCtlTests extends TestCase
 		// Question
 		$question = new QuestionProg();
 		$question->type = Question::TYPE_PROG;
-		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		$question->titre = "Appeler une fonction paramétrée";
 		$question->description = "Appel d'une fonction existante recevant un paramètre";
@@ -49,18 +48,18 @@ final class QuestionProgCtlTests extends TestCase
 
 		// Tests
 		$question->tests = [
-			new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
-			new Test("Aucune salutation", "0", ""),
+			new Test("2 salutations", "Bonjour\nBonjour\n", "2"),
+			new Test("Aucune salutation", "", "0"),
 		];
 
 		$mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
 		$mockQuestionDAO
 			->shouldReceive("get_question")
-			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", Mockery::any())
 			->andReturn($question);
 		$mockQuestionDAO
 			->shouldReceive("get_question")
-			->with(Mockery::any())
+			->with(Mockery::any(), Mockery::any())
 			->andReturn(null);
 
 		// DAOFactory

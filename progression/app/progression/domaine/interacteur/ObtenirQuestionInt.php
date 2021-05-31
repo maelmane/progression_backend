@@ -19,11 +19,12 @@
 namespace progression\domaine\interacteur;
 
 use progression\dao\DAOFactory;
+use progression\dao\{ChargeurQuestion, ChargeurQuestionFichier};
 
 class ObtenirQuestionInt extends Interacteur
 {
 	function get_question($question_id)
 	{
-		return $this->source_dao->get_question_dao()->get_question($question_id);
+		return $this->source_dao->get_question_dao()->get_question($question_id, new ChargeurQuestion());
 	}
 }
