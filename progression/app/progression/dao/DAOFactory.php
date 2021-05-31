@@ -49,11 +49,6 @@ class DAOFactory
 		return new QuestionDAO($this);
 	}
 
-	function get_question_prog_dao()
-	{
-		return new QuestionProgDAO($this);
-	}
-
 	function get_question_sys_dao()
 	{
 		return new QuestionSysDAO($this);

@@ -1,27 +1,35 @@
-nom: 10 fois
-entrée: 10
-sortie: |
-    Bonjour le monde
-    Bonjour le monde
-    Bonjour le monde
-    Bonjour le monde
-    Bonjour le monde
-    Bonjour le monde
-    Bonjour le monde
-    Bonjour le monde
-    Bonjour le monde
-    Bonjour le monde
----
+-
+  nom: 10 fois
+  entrée: 10
+  sortie: |
+      Bonjour le monde
+      Bonjour le monde
+      Bonjour le monde
+      Bonjour le monde
+      Bonjour le monde
+      Bonjour le monde
+      Bonjour le monde
+      Bonjour le monde
+      Bonjour le monde
+      Bonjour le monde
 
-nom: 1 fois
-entrée: 1
-sortie: Bonjour le monde
+-
+  nom: 1 fois
+  entrée: 1
+  sortie: Bonjour le monde
 
----
+-
+  nom: 0 fois
+  entrée: 0
+  sortie: ""
+  rétroactions:
+   positive: Bien joué! 0 est aussi une entrée valable.
+   négative: N'oublie pas les cas limites, 0 est aussi une entrée valable!
 
-nom: 0 fois
-entrée: 0
-sortie: ""
-rétroactions:
- positive: Bien joué! 0 est aussi une entrée valable.
- négative: N'oublie pas les cas limites, 0 est aussi une entrée valable!
+-
+  nom: 2 fois
+  entrée: 2
+  sortie: "Bonjour\nBonjour\n"
+  rétroactions:
+   positive: Bien joué! 
+   négative: Rien à dire

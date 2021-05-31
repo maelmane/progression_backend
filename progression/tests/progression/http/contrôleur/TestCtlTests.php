@@ -41,14 +41,14 @@ final class TestCtlTests extends TestCase
 		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		$question->tests = [
-			new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
-			new Test("Aucune salutation", "0", ""),
+			new Test("2 salutations", "Bonjour\nBonjour\n", "2"),
+			new Test("Aucune salutation", "", "0"),
 		];
 
 		$mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
 		$mockQuestionDAO
 			->shouldReceive("get_question")
-			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", Mockery::any())
 			->andReturn($question);
 
 		// DAOFactory

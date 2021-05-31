@@ -66,13 +66,13 @@ final class TentativeCtlTests extends TestCase
 		$question->exécutables["java"] = new Exécutable("//+TODO\nSystem.out.println(\"Hello world!\")", "java");
 		// Tests
 		$question->tests = [
-			new Test("2 salutations", "2", "Bonjour\nBonjour\n", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
+			new Test("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
 		];
 
 		$mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
 		$mockQuestionDAO
 			->shouldReceive("get_question")
-			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", Mockery::any())
 			->andReturn($question);
 
 		// Exécuteur

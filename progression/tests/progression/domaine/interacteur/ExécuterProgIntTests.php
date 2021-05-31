@@ -41,7 +41,7 @@ final class ExécuterProgIntTests extends TestCase
 					return $param == new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
 				}),
 				Mockery::on(function ($param) {
-					return $param == new Test("premier test", "1", "ok\n");
+					return $param == new Test("premier test", "ok\n", "1");
 				}),
 			)
 			->andReturn("{\"output\": \"ok\", \"errors\":\"\"}");
@@ -53,7 +53,7 @@ final class ExécuterProgIntTests extends TestCase
 					return $param == new Exécutable("a=a", "python");
 				}),
 				Mockery::on(function ($param) {
-					return $param == new Test("premier test", "1", "ok\n");
+					return $param == new Test("premier test", "ok\n", "1");
 				}),
 			)
 			->andReturn("{\"output\": \"\", \"errors\":\"erreur\"}");
@@ -74,7 +74,7 @@ final class ExécuterProgIntTests extends TestCase
 	public function test_étant_donné_un_exécutable_valide_et_un_test_lorsquon_les_soumet_pour_exécution_on_obtient_un_résultat_de_test_avec_ses_sorties_standards()
 	{
 		$exécutable_valide = new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
-		$test = new Test("premier test", "1", "ok\n");
+		$test = new Test("premier test", "ok\n", "1");
 
 		$résultat_observé = (new ExécuterProgInt())->exécuter($exécutable_valide, $test);
 
@@ -85,7 +85,7 @@ final class ExécuterProgIntTests extends TestCase
 	public function test_étant_donné_un_exécutable_d_erreur_et_un_test_lorsquon_les_soumet_pour_exécution_on_obtient_un_résultat_de_test_avec_ses_sorties_d_erreur()
 	{
 		$exécutable_erreur = new Exécutable("a=a", "python");
-		$test = new Test("premier test", "1", "ok\n");
+		$test = new Test("premier test", "ok\n", "1");
 
 		$résultat_observé = (new ExécuterProgInt())->exécuter($exécutable_erreur, $test);
 

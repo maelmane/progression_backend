@@ -37,8 +37,8 @@ class Question
 	public $titre = "";
 	public $description = "";
 	public $enonce = "";
-	public $feedback_pos = "";
-	public $feedback_neg = "";
-	public $feedback_err = "";
+	public $feedback_pos = null;
+	public $feedback_neg = null;
+	public $feedback_err = null;
 	public $etat = Question::ETAT_DEBUT;
 }

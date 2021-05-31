@@ -59,8 +59,8 @@ final class QuestionProgTransformerTests extends TestCase
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		$question->tests = [
-			new Test("2 salutations", "2", "Bonjour\nBonjour\n"),
-			new Test("Aucune salutation", "0", ""),
+			new Test("2 salutations", "Bonjour\nBonjour\n", "2"),
+			new Test("Aucune salutation", "", "0"),
 		];
 
 		$questionProgTransformer = new QuestionProgTransformer();

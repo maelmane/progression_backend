@@ -33,8 +33,8 @@ final class TestTests extends TestCase
 
 		$résultat_obtenu = new Test(
 			"testNom",
-			"testEntrée",
 			"testSortie",
+			"testEntrée",
 			["testParam0", "testParam1"],
 			"testFbp",
 			"testFbn",
@@ -54,7 +54,7 @@ final class TestTests extends TestCase
 		$feedback_pos_attendu = null;
 		$feedback_neg_attendu = null;
 
-		$résultat_obtenu = new Test("testNom", "testEntrée", "testSortie");
+		$résultat_obtenu = new Test("testNom", "testSortie", "testEntrée");
 
 		$this->assertEquals($params_attendu, $résultat_obtenu->params);
 		$this->assertEquals($feedback_pos_attendu, $résultat_obtenu->feedback_pos);

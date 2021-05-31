@@ -79,8 +79,8 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		$question->tests = [
 			new Test(
 				"nomTest",
-				"entréeTest",
 				"sortieTest",
+				"entréeTest",
 				"params",
 				"feedbackPositif",
 				"feedbackNégatif",
