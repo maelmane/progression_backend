@@ -1,34 +1,46 @@
-FROM greyltc/lamp
+FROM composer:latest AS composer
 
-#Corrige https://bugs.archlinux.org/task/58100
-RUN sed -i  '15s/\/etc\/ssl/\"\/etc\/ssl\"/' /usr/sbin/c_rehash
-RUN sed -i  '16s/\/usr/"\/usr"/' /usr/sbin/c_rehash
+COPY composer.json /var/www/
 
-RUN rm /srv/http/info.php
+RUN composer install -d /var/www/
+
+FROM php:apache
 
 # Mise a jour de la liste de package
-RUN pacman -Suy --noconfirm
-RUN pacman -S --noprogressbar --noconfirm --needed unzip wget composer
-RUN echo extension=gmp.so >> /etc/php/php.ini
+RUN apt update && apt upgrade -y && apt autoclean
+RUN apt update && apt install -y unzip wget default-libmysqlclient-dev default-mysql-client python-yaml git libldap2-dev libyaml-dev libzip-dev python3 python3-pip && apt autoclean
 
-RUN wget http://codemirror.net/codemirror.zip
-RUN unzip -d /srv/http/ codemirror.zip
-RUN mv /srv/http/codemirror* /srv/http/CodeMirror
+RUN pip3 install progression_qc
 
+#Ajout d'extensions PHP
+RUN docker-php-ext-install -j$(nproc) mysqli ldap zip
+
+COPY docker-php-ext-get /usr/local/bin/
+
+RUN docker-php-source extract &&\
+    docker-php-ext-get yaml 2.2.1 &&\
+    docker-php-ext-install yaml &&\
+    docker-php-source delete
+	
 #Pour authentification par LDAP
-RUN mkdir /etc/ldap
 COPY ldap.conf /etc/ldap
 COPY certs/* /etc/ssl/certs/
 RUN c_rehash
 
-#Installation des composantes PHP
-COPY app/composer.json /srv/
-RUN cd /srv/ && composer install
+RUN mkdir -p /var/www/progression/app
+COPY app /var/www/progression/app/
 
-COPY quiz.conf /srv/
-COPY app /srv/http/
+RUN mkdir -p /var/www/progression/vendor
+COPY --from=composer  /var/www/vendor/ /var/www/progression/vendor/
+RUN mkdir -p /var/www/progression/app/storage
+RUN chown -R www-data:www-data /var/www/progression/app/storage
 
-RUN chown -R http:http /srv/
+RUN echo AddDefaultCharset utf-8 >> /etc/apache2/apache2.conf
+RUN sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/progression\/app\/html/' /etc/apache2/sites-available/000-default.conf
+RUN a2enmod rewrite
 
-RUN echo AddDefaultCharset utf-8 >> /etc/httpd/conf/httpd.conf
+RUN pip3 install --upgrade progression_qc
 
+WORKDIR /var/www/
+RUN chmod +x progression/app/entrypoint.sh
+CMD [ "bash", "progression/app/entrypoint.sh" ]

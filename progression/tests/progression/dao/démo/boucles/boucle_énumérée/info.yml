@@ -1,0 +1,17 @@
+type: prog
+
+titre: Affichage répété
+
+description: Exercice simple sur les itérations à nombre d'itérations fixe
+
+énoncé: Saisissez un nombre sur l'entrée standard puis faites afficher la phrase «Bonjour le monde!» autant de fois.
+
+ébauches:
+  python: !include exec.py
+  java: !include exec.java
+
+rétroactions:
+  positive: Bravo! tu es prêt à passer à un type de boucles plus complexe
+  négative: "Pour tout savoir sur les itérations énumérées : [clique ici](http://unlien.com)"
+
+tests: !include tests/tous_les_tests.yml

@@ -1,0 +1,354 @@
+#+SETUPFILE: https://plafrance.pages.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg.setup
+#+TITLE: API Progression
+#+PROPERTY: header-args:sh :results output
+#+PROPERTY: header-args:sh :exports both
+
+#+begin_warning
+  Cette documentation est proposée à titre indicatif seulement et peut changer à tout moment.
+#+end_warning
+
+
+
+* Versions
+Les versions de l'api sont accessibles à des URL distincts pour assurer la rétrocompatibilité.
+
+| Version | URL        |
+|       1 | ~/api/v1/~ |
+
+* Points d'entrée
+** Publics
+| Méthode | URL               | Description                            | Paramètres         | Réponse             |
+| GET     | ~/doc~            | Documentation                          |                    | str (HTML)          |
+| POST    | ~/auth~           | Authentification                       | username, password | token, un token JWT |
+| GET     | ~/question/{uri}~ | Obtient la question disponible à <uri> | uri                | Question            |
+
+** Privés
+Les points d'entrée privés requièrent un token dans l'entête : «Authentification: Bearer <token>»
+
+| Méthode | URL                | Description                       | Paramètres | Réponse |
+| GET     | ~/user~            | Obtient l'utilisateur authentifié |            | User    |
+| GET     | ~/user/{username}~ | Obtient l'utilisateur /username/  | username   | User    |
+
+* Ressources
+
+Les ressources échangées sont représentées en format [[https://jsonapi.org][JSON-API]]
+
+** Utilisateur
+
+Un utilisateur du système.
+
+*** Identifiant :
+username
+
+*** Propriétés:
+
+| Nom      | Type | Valeurs          |
+|----------+------+------------------|
+| username | str  |                  |
+| rôle     | int  | 0=normal,1=admin |
+|----------+------+------------------|
+
+*** Relations :
+
+| Nom         | Cardinalité | Type       | description         |
+|-------------+-------------+------------+---------------------|
+| avancements | 1-n         | Avancement | Liste d'avancements |
+
+** Question
+
+Une question générique
+
+*** Identifiant :
+URI
+
+*** Hiérarchie
+
+#+begin_src text
+Question          
+▲                 
+├ QuestionProg    
+├ QuestionProgEval
+├ QuestionSys     
+└ QuestionBD
+#+end_src
+
+
+*** Propriétés :
+
+| Nom         | Type | Valeurs      |
+|-------------+------+--------------|
+| uri         | str  |              |
+| titre       | str  |              |
+| description | str  |              |
+| énoncé      | str  |              |
+| sous-type   | str  | questionProg |
+|             |      | (obsolète)   |
+|             |      | questionSys  |
+|             |      | questionBD   |
+
+** Question (sous-type QuestionProg)
+
+Une question spécifiquement de programmation
+
+*** Relations :
+| Nom        | Cardinalité | Type       | description                   |
+|------------+-------------+------------+-------------------------------|
+| ebauches   | 1-n         | Ébauche    | liste d'ébauches de Solution  |
+| tests      | 1-n         | Test       | liste de Tests de validation  |
+
+** Avancement
+
+L'avancement d'un utilisateur pour une question
+
+*** Identifiant :
+username/question_uri
+
+*** Propriétés:
+
+| Nom  | Type | Valeurs       |
+|------+------+---------------|
+| état | int  | 0=non débutée |
+|      |      | 1=non réussie |
+|      |      | 2=réussie     |
+
+*** Relations :
+
+| Nom        | Cardinalité | Type       | Description                    |
+|------------+-------------+------------+--------------------------------|
+| tentatives | 1-n         | Tentatives | liste de Tentatives effectuées |
+
+*** Liens :
+
+| Nom       | Description                      |
+|-----------+----------------------------------|
+| tentative | Soumettre une nouvelle tentative |
+
+** Ébauche
+
+Une ébauche de solution fournie comme point de départ à la résolution de l'exercice
+
+*** Identifiant :
+question_uri/langage
+
+*** Propriétés:
+
+| Nom     | Type | Valeurs |
+|---------+------+---------|
+| langage | str  |         |
+| code    | str  |         |
+
+** Tentative
+
+Une tentative de réponse à une question.
+
+*** Identifiant :
+username/question_uri/date_soumission
+
+
+*** Hiérarchie
+
+#+begin_src text
+Tentative 
+▲ 
+├ TentativeProg 
+├ TentativeSys 
+├ TentativeBD 
+#+end_src
+
+*** Propriétés :
+
+| Nom             | Type | Valeurs                                                    |
+|-----------------+------+------------------------------------------------------------|
+| date_soumission | int  | timestamp                                                  |
+| feedback        | str  |                                                            |
+| sous-type       | str  | tentativeProg                                              |
+|                 |      | tentativeSys                                               |
+|                 |      | tentativeBD                                                |
+| réussi          | bool | vrai ssi la tentative a correctement répondu à la question |
+
+** Tentative (sous-type tentativeProg)
+
+Une tentative de réponse à une question.
+
+*** Propriétés:
+
+| Nom           | Type | Valeurs             |
+|---------------+------+---------------------|
+| langage       | str  |                     |
+| code          | str  |                     |
+| tests_réussis | int  | nb de tests réussis |
+
+*** Relations :
+
+| Nom       | Cardinalité | Type     | Description           |
+|-----------+-------------+----------+-----------------------|
+| résultats | 1-n         | Résultat | les résultats de test |
+
+** Test
+
+Un test de validation d'une question auquel sont soumises les solutions proposées.
+
+*** Identifiant :
+question_uri/numéro
+
+*** Propriétés :
+
+| Nom             | Type | Valeurs |
+|-----------------+------+---------|
+| numéro          | int  |         |
+| nom             | str  |         |
+| entrée          | str  |         |
+| sortie_attendue | str  |         |
+
+** Résultat
+
+Le résultat d'un test pour une solution proposée.
+
+*** Identifiant :
+username/question_uri/date_soumission/numéro
+
+*** Propriétés:
+
+| Nom             | Type | Valeurs   |
+|-----------------+------+-----------|
+| numéro          | int  | # du test |
+| sortie_observée | str  |           |
+| sortie_erreur   | str  |           |
+| résultat        | bool |           |
+| feedback        | str  |           |
+
+** Sauvegarde automatique
+
+La sauvegarde automatique du travail d'un utilisateur pour une question et dans un langage spécifique
+
+*** Identifiant :
+username/question_uri/langage
+
+*** Propriétés:
+
+| Nom             | Type | Valeurs   |
+|-----------------+------+-----------|
+| date_sauvegarde | int  | timestamp |
+| code            | str  |           |
+
+
+* Exemples
+
+#+begin_warning
+Les exemples marqués ~LIVE~ reflètent les résultats réels sur la plus récente version de l'API disponible sur ~https://progression.dti.crosemont.quebec/api/v1/~.
+
+Les exemples marqués ~PROTOTYPE~ sont générés manuellement à titre indicatif et ne reflètent nécessairement pas les résultats réels.
+#+end_warning
+
+#+NAME: get_token
+#+BEGIN_SRC sh :eval yes :results output :exports none
+RET=$(curl "https://progression.dti.crosemont.quebec/api/v1/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | cut -d '"' -f 4)
+printf "%s" $RET
+#+END_SRC
+
+#+NAME: json_pretty
+#+begin_src python :eval yes :var json_str="{}" :results output :exports none
+import json
+import sys
+
+print( json.dumps( json.loads(json_str), ensure_ascii=False, indent=4 ) )
+#+end_src
+
+** Authentification en tant qu'utilisateur ~jdoe~ : ~LIVE~
+
+
+#+BEGIN_SRC sh :eval yes :results output
+curl "https://progression.dti.crosemont.quebec/api/v1/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json"
+#+END_SRC
+
+** Obtenir le profil de l'utilisateur authentifié ~jdoe~ : ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+curl "https://progression.dti.crosemont.quebec/api/v1/user" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Obtenir la question «appeler_une_fonction_paramétrée» et ses tests: ~LIVE~
+
+Cette question est disponible à l'URL suivant : https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_param%C3%A9tr%C3%A9e
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+curl "https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU?include=tests" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Obtenir la question «appeler_une_fonction_paramétrée», ses tests et ses ébauches: ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+curl "https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU?include=tests,ebauches" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Créer l'avancement de jdoe à la question «appeler_une_fonction_paramétrée» : ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+DATA=$(cat <<EOF
+{
+  "question_uri":"aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU"
+}
+EOF
+)
+
+curl -X POST --data "$DATA" https://progression.dti.crosemont.quebec/api/v1/user/jdoe/avancements -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Obtenir l'avancement de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+curl "https://progression.dti.crosemont.quebec/api/v1/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+curl "https://progression.dti.crosemont.quebec/api/v1/ebauche/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Soumettre une tentative de solution à la question «appeler_une_fonction_paramétrée» et récupérer les résultats : ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+DATA=$(cat <<EOF
+{
+  "langage":"python",
+  "code": "#+TODO\nprint(1)\n#-TODO"
+}
+EOF
+)
+
+curl -X POST --data "$DATA" https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU?include=resultats -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Obtenir une tentative de solution préalablement soumise pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+curl "https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1617040175" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Obtenir le test numéro 0 pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+curl "https://progression.dti.crosemont.quebec/api/v1/test/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Créer ou mettre à jour la sauvegarde de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» et un code ~python~ : ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+DATA=$(cat <<EOF
+{
+  "langage":"python",
+  "code": "#+TODO\nSystem.out.println('Hi !');\n#-TODO"
+}
+EOF
+)
+
+curl -X POST --data "$DATA" https://progression.dti.crosemont.quebec/api/v1/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/sauvegardes -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Obtenir la dernière sauvegarde de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» effectuée avec le langage ~python~: ~LIVE~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+curl "https://progression.dti.crosemont.quebec/api/v1/sauvegarde/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/python" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
