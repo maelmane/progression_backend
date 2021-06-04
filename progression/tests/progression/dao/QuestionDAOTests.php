@@ -87,6 +87,8 @@ final class QuestionDAOTests extends TestCase
 	public function test_étant_donnée_un_fichier_info_vide_lorsquon_récupère_la_question_on_obtien_une_QuestionProg_avec_des_attributs_par_défaut()
 	{
 		$résultat_attendu = new QuestionProg();
+		$résultat_attendu->exécutables = ["python" => new Exécutable("", "python")];
+		$résultat_attendu->tests = [new Test("#1", "")];
 		$résultat_attendu->uri = "file://" . __DIR__ . "/démo/défauts/info.yml";
 
 		$résultat_obtenu = (new QuestionDAO())->get_question(
