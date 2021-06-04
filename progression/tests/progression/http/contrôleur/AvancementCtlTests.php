@@ -74,9 +74,9 @@ final class AvancementCtlTests extends TestCase
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($avancement_réussi);
 		$mockAvancementDAO
-		->shouldReceive("save")
-		->with("jdoe", "https://depot.com/roger/questions_prog/nouvelle_question", Mockery::any())
-		->andReturn($avancement_nouveau);
+			->shouldReceive("save")
+			->with("jdoe", "https://depot.com/roger/questions_prog/nouvelle_question", Mockery::any())
+			->andReturn($avancement_nouveau);
 
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
@@ -88,9 +88,9 @@ final class AvancementCtlTests extends TestCase
 			->with("roger", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($avancement_réussi);
 		$mockAvancementDAO
-		->shouldReceive("save")
-		->with("roger", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", Mockery::any())
-		->andReturn($avancement_réussi);
+			->shouldReceive("save")
+			->with("roger", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", Mockery::any())
+			->andReturn($avancement_réussi);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
@@ -146,8 +146,7 @@ final class AvancementCtlTests extends TestCase
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_on_obtient_un_nouvel_avancement_avec_ses_valeurs_par_defaut()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
-			"question_uri" =>
-				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
+			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
 		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
@@ -170,8 +169,7 @@ final class AvancementCtlTests extends TestCase
 	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_on_obtient_le_meme_resultat_quun_utilisateur_normal()
 	{
 		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/jdoe/avancements", [
-			"question_uri" =>
-				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
+			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
 		]);
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertStringEqualsFile(
@@ -182,7 +180,7 @@ final class AvancementCtlTests extends TestCase
 	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_avancement_on_obtient_lavancement_modifié()
 	{
 		$avancementTest = ["état" => Question::ETAT_REUSSI];
-		
+
 		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/roger/avancements", [
 			"question_uri" =>
 				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",

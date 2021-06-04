@@ -19,6 +19,7 @@
 namespace progression\dao;
 
 use progression\domaine\entité\{QuestionProg, Exécutable, Test};
+use DomainException;
 
 class DécodeurQuestionProg
 {
@@ -31,13 +32,13 @@ class DécodeurQuestionProg
 		$question->exécutables = self::load_exécutables($infos_question);
 		$question->tests = self::load_tests($infos_question);
 
-		if(count($question->exécutables) == 0){
-            throw new DomainException("Le fichier ne peut pas être décodé. Les ébauches sont manquantes.");
-        }
-		if(count($question->tests) == 0){
-            throw new DomainException("Le fichier ne peut pas être décodé. Les tests sont manquants.");
-        }
-		
+		if (count($question->exécutables) == 0) {
+			throw new DomainException("Le fichier ne peut pas être décodé. Les ébauches sont manquantes.");
+		}
+		if (count($question->tests) == 0) {
+			throw new DomainException("Le fichier ne peut pas être décodé. Les tests sont manquants.");
+		}
+
 		return $question;
 	}
 
