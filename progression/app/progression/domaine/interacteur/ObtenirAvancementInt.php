@@ -30,10 +30,6 @@ class ObtenirAvancementInt extends Interacteur
 
 		$avancement = $this->source_dao->get_avancement_dao()->get_avancement($username, $question_uri);
 
-		if ($avancement == null) {
-			$avancement = new Avancement();
-		}
-
 		return $avancement;
 	}
 }
