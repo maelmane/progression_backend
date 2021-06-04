@@ -67,7 +67,7 @@ class AvancementCtl extends Contrôleur
 					return $this->réponse_json(["erreur" => "Accès interdit."], 403);
 				}
 			} else {
-				$avancement = $this->obtenirAvancement($username, $chemin);
+				$avancement = $this->sauvegarderAvancement($username, $chemin, new Avancement());
 			}
 			// On n'entrera ici que si l'utilisateur existe et <l'objet $avancement correspond bel et bien à un objet de la classe «Avancement»>(si applicable)
 			if ($avancement != null) {

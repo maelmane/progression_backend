@@ -31,6 +31,13 @@ class DécodeurQuestionProg
 		$question->exécutables = self::load_exécutables($infos_question);
 		$question->tests = self::load_tests($infos_question);
 
+		if(count($question->exécutables) == 0){
+            throw new DomainException("Le fichier ne peut pas être décodé. Les ébauches sont manquantes.");
+        }
+		if(count($question->tests) == 0){
+            throw new DomainException("Le fichier ne peut pas être décodé. Les tests sont manquants.");
+        }
+		
 		return $question;
 	}
 
@@ -51,7 +58,7 @@ class DécodeurQuestionProg
 				$test["nom"] ?? "#" . $i + 1,
 				$test["sortie"],
 				$test["entrée"] ?? null,
-				strval($test["params"] ?? null),
+				$test["params"] ?? null,
 				$test["rétroactions"]["positive"] ?? null,
 				$test["rétroactions"]["négative"] ?? null,
 				$test["rétroactions"]["erreur"] ?? null,

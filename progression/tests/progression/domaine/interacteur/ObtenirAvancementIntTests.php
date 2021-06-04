@@ -88,9 +88,7 @@ final class ObtenirAvancementIntTests extends TestCase
 		$interacteur = new ObtenirAvancementInt();
 		$résultat_obtenu = $interacteur->get_avancement("jdoe", "une_question_inexistante");
 
-		$résultat_attendu = new Avancement();
-
-		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+		$this->assertNull($résultat_obtenu);
 	}
 
 	public function test_étant_donné_un_avancement_avec_un_user_inexistant_et_une_question_uri_existante_lorsque_cherché_par_username_et_question_uri_on_obtient_null()
