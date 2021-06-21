@@ -19,7 +19,6 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\ObtenirAvancementInt;
 use progression\domaine\interacteur\ObtenirUserInt;
 use progression\domaine\interacteur\SauvegarderAvancementInt;

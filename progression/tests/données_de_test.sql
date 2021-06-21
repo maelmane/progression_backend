@@ -5,16 +5,19 @@ DELETE FROM user;
 
 INSERT INTO user VALUES (
   "bob",
+  "motDePasse",
   1,
   0
 );
 INSERT INTO user VALUES (
   "admin",
+  "mdpAdmin",
   1,
   1
 );
 INSERT INTO user VALUES (
   "Stefany",
+  NULL,
   1,
   0
 );

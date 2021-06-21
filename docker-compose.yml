@@ -32,18 +32,6 @@ services:
     depends_on:
       - db
 
-  importeur:
-    build: importeur/
-    networks:
-      progressionnet:
-        ipv4_address: 172.20.0.4
-    restart: "no"
-    depends_on:
-      - db
-    environment:
-      SOURCE: https://git.dti.crosemont.quebec/progression/progression_contenu_demo.git
-      DESTINATION: mysql://quiz:password@172.20.0.2/quiz
-
   tests:
     image: progression_backend_progression
     build: progression/

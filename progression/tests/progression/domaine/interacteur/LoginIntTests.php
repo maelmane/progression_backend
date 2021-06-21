@@ -1,20 +1,20 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\domaine\interacteur;
 
@@ -39,6 +39,9 @@ final class LoginIntTests extends TestCase
 			->get_user("Banane")
 			->andReturn(null);
 		$mockUserDao->shouldReceive("save")->andReturn(new User("Banane"));
+		$mockUserDao->shouldReceive("set_password")->withArgs(function ($user, $password) {
+			return $user->username == "Banane" && $password == "password";
+		});
 
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
@@ -68,7 +71,7 @@ final class LoginIntTests extends TestCase
 		$_ENV["AUTH_TYPE"] = "no";
 
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login("Banane", "");
+		$résultat_obtenu = $interacteur->effectuer_login("Banane", "password");
 
 		$this->assertEquals(new User("Banane"), $résultat_obtenu);
 	}

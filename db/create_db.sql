@@ -1,5 +1,6 @@
 CREATE TABLE `user` (
-	`username`	varchar(255),
+    `username`	varchar(255),
+    `password`	varchar(255),
 	`actif`		int NOT NULL DEFAULT 1,
 	`role`		int NOT NULL DEFAULT 0,
 	PRIMARY KEY (`username`)
