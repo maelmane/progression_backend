@@ -81,7 +81,7 @@ class TentativeCtl extends Contrôleur
 		}
 
 		if ($question instanceof QuestionProg) {
-			$validation = $this->validationTentativeProg($request);
+			$validation = $this->validerParams($request);
 			if ($validation->fails()) {
 				return $this->réponse_json(["erreur" => $validation->errors()], 422);
 			}
@@ -109,7 +109,7 @@ class TentativeCtl extends Contrôleur
 		return $this->préparer_réponse($réponse);
 	}
 
-	public function validationTentativeProg($request)
+	public function validerParams($request)
 	{
 		return Validator::make(
 			$request->all(),

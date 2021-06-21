@@ -31,7 +31,7 @@ class LoginCtl extends Contrôleur
 		$user = null;
 		$token = null;
 
-		$validation = $this->validationParams($request);
+		$validation = $this->validerParams($request);
 		if ($validation->fails()) {
 			return $this->réponse_json(["erreur" => $validation->errors()], 422);
 		}
@@ -63,7 +63,7 @@ class LoginCtl extends Contrôleur
 		}
 	}
 
-	private function validationParams($request)
+	private function validerParams($request)
 	{
 		return Validator::make(
 			$request->all(),

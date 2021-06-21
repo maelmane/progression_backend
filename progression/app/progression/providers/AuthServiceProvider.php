@@ -3,10 +3,12 @@
 namespace progression\providers;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\GenericUser;
 use progression\dao\DAOFactory;
 use progression\domaine\interacteur\CréerUserInt;
+use progression\domaine\entité\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
 use UnexpectedValueException;
@@ -31,6 +33,24 @@ class AuthServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
+		Gate::guessPolicyNamesUsing(function ($modelClass) {
+			if ($modelClass == "progression\domaine\entité\User") {
+				return "agir-sur-utilisateur";
+			}
+		});
+
+		Gate::before(function ($user, $ability) {
+			if ($user->rôle == User::ROLE_ADMIN) {
+				return true;
+			}
+		});
+
+		Gate::define("agir-sur-utilisateur", [GenericUserPolicy::class, "agir_sur_utilisateur"]);
+
+		Gate::define("update-avancement", function ($user) {
+			return false;
+		});
+
 		// Décode le token de la requête.
 		$this->app["auth"]->viaRequest("api", function ($request) {
 			$parties_token = explode(" ", $request->header("Authorization"));

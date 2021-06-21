@@ -33,7 +33,7 @@ class SauvegardeCtl extends Contrôleur
 		$réponse = null;
 
 		$chemin = Encodage::base64_decode_url($question_uri);
-		$validation = $this->validationSauvegarde($request);
+		$validation = $this->validerParams($request);
 		if ($validation->fails()) {
 			return $this->réponse_json(["erreur" => $validation->errors()], 422);
 		}
@@ -67,7 +67,7 @@ class SauvegardeCtl extends Contrôleur
 		return $this->préparer_réponse($réponse);
 	}
 
-	private function validationSauvegarde($request)
+	private function validerParams($request)
 	{
 		return Validator::make(
 			$request->all(),

@@ -19,6 +19,8 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\ObtenirAvancementInt;
 use progression\domaine\interacteur\ObtenirUserInt;
 use progression\domaine\interacteur\SauvegarderAvancementInt;
@@ -45,39 +47,31 @@ class AvancementCtl extends Contrôleur
 
 	public function post(Request $request, $username)
 	{
-		$avancement = null;
 		$réponse = null;
 
 		if (isset($request->question_uri)) {
 			$chemin = Encodage::base64_decode_url($request->question_uri);
 
 			if (isset($request->avancement)) {
-				if ($request->user()->rôle == User::ROLE_ADMIN) {
-					if (!isset($request->avancement["état"])) {
-						return $this->réponse_json(
-							["erreur" => "Le champ état est obligatoire pour traiter la requête"],
-							422,
-						);
-					}
-
-					$avancement = new Avancement($request->avancement["état"], Question::TYPE_PROG);
-					$avancement = $this->sauvegarderAvancement($username, $chemin, $avancement);
-				} else {
-					return $this->réponse_json(["erreur" => "Accès interdit."], 403);
+				$avancement = $request->avancement;
+				$validation = $this->validerParams($request);
+				if ($validation->fails()) {
+					return $this->réponse_json(["erreur" => $validation->errors()], 422);
 				}
+
+				if (Gate::denies("update-avancement")) {
+					return $this->réponse_json(["erreur" => "Opération interdite."], 403);
+				}
+
+				$avancement_sauvegardé = $this->sauvegarderAvancement($username, $chemin, $avancement);
 			} else {
-				$avancement = $this->sauvegarderAvancement($username, $chemin, new Avancement());
+				$avancement_sauvegardé = $this->sauvegarderAvancement($username, $chemin, new Avancement());
 			}
-			// On n'entrera ici que si l'utilisateur existe et <l'objet $avancement correspond bel et bien à un objet de la classe «Avancement»>(si applicable)
-			if ($avancement != null) {
-				$avancement->id = "{$username}/$request->question_uri";
-				$réponse = $this->item($avancement, new AvancementTransformer());
-			} else {
-				return $this->réponse_json(["erreur" => "Requête intraitable"], 422);
-			}
-			return $this->préparer_réponse($réponse);
+
+			$avancement_sauvegardé->id = "{$username}/$request->question_uri";
+			return $this->préparer_réponse($this->item($avancement_sauvegardé, new AvancementTransformer()));
 		} else {
-			return $this->réponse_json(["erreur" => "Requête intraitable"], 422);
+			return $this->réponse_json(["erreur" => "Requête intraitable."], 422);
 		}
 	}
 
@@ -88,10 +82,24 @@ class AvancementCtl extends Contrôleur
 
 		return $avancement;
 	}
+
 	private function sauvegarderAvancement($username, $chemin, $avancement)
 	{
 		$avancementInt = new SauvegarderAvancementInt();
 		$new_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);
 		return $new_avancement;
+	}
+
+	private function validerParams($request)
+	{
+		return Validator::make(
+			$request->all(),
+			[
+				"avancement.état" => "required|integer|between:0,2",
+			],
+			[
+				"required" => "Le champ :attribute est obligatoire.",
+			],
+		);
 	}
 }
