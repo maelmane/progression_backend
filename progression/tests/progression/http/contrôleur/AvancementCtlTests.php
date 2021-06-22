@@ -80,7 +80,7 @@ final class AvancementCtlTests extends TestCase
 
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("Marcel", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->with("jdoe", "https://depot.com/roger/questions_inexistante")
 			->andReturn(null);
 
 		$mockAvancementDAO
@@ -125,7 +125,7 @@ final class AvancementCtlTests extends TestCase
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
 			"GET",
-			"/avancement/Marcel/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX2luZXhpc3RhbnRl",
 		);
 
 		$this->assertEquals(404, $résultat_observé->status());

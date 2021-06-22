@@ -30,13 +30,11 @@ class ValidationPermissions
 		$utilisateurRequête = $request->username;
 		$utilisateurConnecté = $request->user();
 
-		if (!$utilisateurRequête) {
-			$utilisateurRecherché = $utilisateurConnecté;
-		} else {
-			$utilisateurRecherché = (new ObtenirUserInt())->get_user($utilisateurRequête);
-		}
+		$utilisateurRecherché = (new ObtenirUserInt())->get_user($utilisateurRequête ?? $utilisateurConnecté->username);
 
-		if (!Gate::allows("agir-sur-utilisateur", $utilisateurRecherché)) {
+		if ($utilisateurRecherché && Gate::allows("access-user", $utilisateurRecherché)) {
+			return $next($request);
+		} else {
 			return response()->json(
 				["erreur" => "Opération interdite."],
 				403,
@@ -46,8 +44,6 @@ class ValidationPermissions
 				],
 				JSON_UNESCAPED_UNICODE,
 			);
-		} else {
-			return $next($request);
 		}
 	}
 }

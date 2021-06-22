@@ -35,7 +35,7 @@ class AuthServiceProvider extends ServiceProvider
 	{
 		Gate::guessPolicyNamesUsing(function ($modelClass) {
 			if ($modelClass == "progression\domaine\entité\User") {
-				return "agir-sur-utilisateur";
+				return "access-user";
 			}
 		});
 
@@ -45,7 +45,7 @@ class AuthServiceProvider extends ServiceProvider
 			}
 		});
 
-		Gate::define("agir-sur-utilisateur", [GenericUserPolicy::class, "agir_sur_utilisateur"]);
+		Gate::define("access-user", [UserPolicy::class, "access"]);
 
 		Gate::define("update-avancement", function ($user) {
 			return false;
@@ -69,7 +69,6 @@ class AuthServiceProvider extends ServiceProvider
 						return new GenericUser([
 							"username" => $user->username,
 							"rôle" => $user->rôle,
-							"entité" => $user,
 						]);
 					}
 				} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {

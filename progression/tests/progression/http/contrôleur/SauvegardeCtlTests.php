@@ -49,9 +49,17 @@ final class SauvegardeCtlTests extends TestCase
 			->andReturn(null);
 		$mockSauvegardeDAO->shouldReceive("save")->andReturn($sauvegarde);
 
+		// User
+		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO
+			->allows("get_user")
+			->with("jdoe")
+			->andReturn(new User("jdoe"));
+
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_sauvegarde_dao")->andReturn($mockSauvegardeDAO);
+		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);
 	}
