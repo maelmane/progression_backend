@@ -22,6 +22,14 @@ INSERT INTO user VALUES (
   0
 );
 
+INSERT INTO cle VALUES (
+  "bob",
+  "1234",
+  "2021-06-25 00:00",
+  "2021-06-26 00:00",
+  1
+);
+
 INSERT INTO sauvegarde VALUES (
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",

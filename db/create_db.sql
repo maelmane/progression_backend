@@ -5,6 +5,15 @@ CREATE TABLE `user` (
 	`role`		int NOT NULL DEFAULT 0,
 	PRIMARY KEY (`username`)
 );
+CREATE TABLE `cle` (
+    `username`   varchar(255),
+    `numero`     int,
+    `creation`   datetime NOT NULL,
+    `expiration` datetime NOT NULL,
+	`portee`     int NOT NULL DEFAULT 0,
+    PRIMARY KEY (`username`, `numero`),
+    FOREIGN KEY (`username`) REFERENCES `user`(`username`)
+);
 CREATE TABLE `sauvegarde` (
 	`username`			varchar(255) NOT NULL,
 	`question_uri`		varchar(1024) CHARACTER SET latin1 NOT NULL,
