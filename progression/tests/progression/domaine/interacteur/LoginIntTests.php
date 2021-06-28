@@ -38,6 +38,15 @@ final class LoginIntTests extends TestCase
 			->allows()
 			->get_user("Banane")
 			->andReturn(null);
+		$mockUserDao
+			->allows()
+			->vérifier_password(Mockery::Any(), "password")
+			->andReturn(true);
+		$mockUserDao
+			->allows()
+			->vérifier_password(Mockery::Any(), Mockery::Any())
+			->andReturn(false);
+
 		$mockUserDao->shouldReceive("save")->andReturn(new User("Banane"));
 		$mockUserDao->shouldReceive("set_password")->withArgs(function ($user, $password) {
 			return $user->username == "Banane" && $password == "password";
@@ -56,23 +65,69 @@ final class LoginIntTests extends TestCase
 		Mockery::close();
 	}
 
-	public function test_étant_donné_lutilisateur_bob_et_une_authentification_de_type_no_lorsquon_login_sans_authentification_on_obtient_un_objet_user_nommé_bob()
+	public function test_étant_donné_lutilisateur_null_lorsquon_login_obtient_null()
+	{
+		$interacteur = new LoginInt();
+		$résultat_obtenu = $interacteur->effectuer_login(null);
+
+		$this->assertNull($résultat_obtenu);
+	}
+
+	public function test_étant_donné_lutilisateur_vide_lorsquon_login_obtient_null()
+	{
+		$interacteur = new LoginInt();
+		$résultat_obtenu = $interacteur->effectuer_login("");
+
+		$this->assertNull($résultat_obtenu);
+	}
+
+	public function test_étant_donné_lutilisateur_bob_et_une_authentification_de_type_no_lorsquon_login_sans_mot_de_passe_on_obtient_un_objet_user_nommé_bob()
 	{
 		$_ENV["AUTH_TYPE"] = "no";
 
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login("bob", "");
+		$résultat_obtenu = $interacteur->effectuer_login("bob");
 
 		$this->assertEquals(new User("bob"), $résultat_obtenu);
 	}
 
-	public function test_étant_donné_lutilisateur_Banane_inexistant_et_une_authentification_de_type_no_lorsquon_login_sans_authentification_il_est_créé_et_on_obtient_un_objet_user_nommé_Banane()
+	public function test_étant_donné_lutilisateur_Banane_inexistant_et_une_authentification_de_type_no_lorsquon_login_sans_mot_de_passe_il_est_créé_et_on_obtient_un_objet_user_nommé_Banane()
 	{
 		$_ENV["AUTH_TYPE"] = "no";
 
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login("Banane", "password");
+		$résultat_obtenu = $interacteur->effectuer_login("Banane");
 
 		$this->assertEquals(new User("Banane"), $résultat_obtenu);
+	}
+
+	public function test_étant_donné_lutilisateur_existant_bob_et_une_authentification_de_type_local_lorsquon_login_avec_mdp_correct_on_obtient_un_objet_user_nommé_bob()
+	{
+		$_ENV["AUTH_TYPE"] = "local";
+
+		$interacteur = new LoginInt();
+		$résultat_obtenu = $interacteur->effectuer_login("bob", "password");
+
+		$this->assertEquals(new User("bob"), $résultat_obtenu);
+	}
+
+	public function test_étant_donné_lutilisateur_existant_bob_et_une_authentification_de_type_local_lorsquon_login_avec_mdp_incorrect_on_obtient_null()
+	{
+		$_ENV["AUTH_TYPE"] = "local";
+
+		$interacteur = new LoginInt();
+		$résultat_obtenu = $interacteur->effectuer_login("bob", "pas mon mot de passe");
+
+		$this->assertNull($résultat_obtenu);
+	}
+
+	public function test_étant_donné_lutilisateur_Banane_inexistant_et_une_authentification_de_type_local_lorsquon_login_on_obtient_null()
+	{
+		$_ENV["AUTH_TYPE"] = "local";
+
+		$interacteur = new LoginInt();
+		$résultat_obtenu = $interacteur->effectuer_login("Banane", "password");
+
+		$this->assertNull($résultat_obtenu);
 	}
 }
