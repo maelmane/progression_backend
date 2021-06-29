@@ -28,52 +28,112 @@ class LoginCtl extends Contrôleur
 {
 	public function login(Request $request)
 	{
+		Log::debug("LoginCtl.login. Params : " . print_r($request->all(), $return = true));
+		Log::info("{$request->ip()} - Tentative de login : {$request->input("username")}");
+
 		$user = null;
 		$token = null;
 
-		$validation = $this->validerParams($request);
-		if ($validation->fails()) {
-			return $this->réponse_json(["erreur" => $validation->errors()], 422);
+		$erreurs = $this->validerParams($request);
+		if ($erreurs) {
+			$réponse = $this->réponse_json(["erreur" => $erreurs], 422);
+		} else {
+			$réponse = $this->effectuer_login($request);
 		}
 
+		Log::debug("LoginCtl.login. Retour : " . print_r($réponse, $return = true));
+		return $réponse;
+	}
+
+	private function effectuer_login($request)
+	{
+		Log::debug("LoginCtl.effectuer_login. Params : " . print_r($request->all(), $return = true));
+
 		$username = $request->input("username");
+		$key = $request->input("key");
 		$password = $request->input("password");
 
 		$loginInt = new LoginInt();
-		$user = $loginInt->effectuer_login($username, $password);
 
-		if ($user != null) {
-			$payload = [
-				"user" => $user,
-				"current" => time(),
-				"expired" => time() + $_ENV["JWT_TTL"],
-			];
-			$token = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
+		if ($key) {
+			$user = $loginInt->effectuer_login_par_clé($username, $key);
+		} else {
+			$user = $loginInt->effectuer_login_par_identifiant($username, $password);
 		}
 
-		if ($token == null) {
-			Log::warning(
+		$réponse = $this->valider_et_préparer_réponse($user, $request);
+
+		Log::debug("LoginCtl.effectuer_login. Retour : " . print_r($réponse, $return = true));
+		return $réponse;
+	}
+	private function valider_et_préparer_réponse($user, $request)
+	{
+		Log::debug("LoginCtl.valider_et_préparer_réponse. Params : " . print_r($user, $return = true));
+
+		if ($user) {
+			Log::info(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
 					get_class($this) .
-					") Accès interdit. username: $username",
+					") Login. username: " .
+					$request->input("username"),
 			);
-			return $this->réponse_json(["erreur" => "Accès interdit."], 401);
+
+			$token = $this->générer_token($user);
+			$réponse = $this->préparer_réponse(["Token" => $token]);
 		} else {
-			return $this->préparer_réponse(["Token" => $token]);
+			Log::notice(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					get_class($this) .
+					") Accès interdit. username: " .
+					$request->input("username"),
+			);
+
+			$réponse = $this->réponse_json(["erreur" => "Accès interdit."], 401);
 		}
+
+		Log::debug("LoginCtl.valider_et_préparer_réponse. Retour : " . print_r($réponse, $return = true));
+		return $réponse;
+	}
+
+	private function générer_token($user)
+	{
+		Log::debug("LoginCtl.générer_token. Params : " . print_r($user, $return = true));
+
+		$payload = [
+			"user" => $user,
+			"current" => time(),
+			"expired" => time() + $_ENV["JWT_TTL"],
+		];
+
+		$réponse = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
+
+		Log::debug("LoginCtl.générer_token. Retour : " . print_r($réponse, $return = true));
+		return $réponse;
 	}
 
 	private function validerParams($request)
 	{
-		return Validator::make(
+		Log::debug("LoginCtl.validerParams : " . print_r($request->all(), $return = true));
+
+		$validateur = Validator::make(
 			$request->all(),
 			[
-				"username" => "required|alpha_dash",
-				"password" => "required",
+				"key" => "required_without:username",
+				"username" => "required_without:key|alpha_dash",
+				"password" => "required_without:key",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
 			],
 		);
+
+		if ($validateur->fails()) {
+			$réponse = $validateur->errors();
+		} else {
+			$réponse = null;
+		}
+
+		Log::debug("LoginCtl.validerParams. Retour : " . print_r($réponse, $return = true));
+		return $réponse;
 	}
 }

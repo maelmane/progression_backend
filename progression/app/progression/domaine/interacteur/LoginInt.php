@@ -18,6 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
+use progression\domaine\entité\Clé;
 use progression\dao\DAOFactory;
 
 class AuthException extends \Exception
@@ -26,9 +27,23 @@ class AuthException extends \Exception
 
 class LoginInt extends Interacteur
 {
-	function effectuer_login($username, $password = null)
+	function effectuer_login_par_clé($username, $clé_p)
 	{
-		syslog(LOG_INFO, "Tentative de connexion : " . $username);
+		$dao = DAOFactory::getInstance()->get_clé_dao();
+
+		$clé = $dao->get_clé($username, $clé_p);
+		if ($clé && $clé->est_valide() && $clé->portée == Clé::PORTEE_AUTH) {
+			$dao = DAOFactory::getInstance()->get_user_dao();
+			return $dao->get_user($username);
+		} else {
+			syslog(LOG_INFO, "Clé invalide pour $username");
+			return null;
+		}
+	}
+
+	function effectuer_login_par_identifiant($username, $password = null)
+	{
+		syslog(LOG_INFO, "Tentative de connexion : $username");
 
 		if (!$this->vérifier_champ_valide($username)) {
 			return null;
@@ -45,7 +60,7 @@ class LoginInt extends Interacteur
 		}
 
 		if ($user != null) {
-			syslog(LOG_INFO, "Connexion réussie: " . $username);
+			syslog(LOG_INFO, "Connexion réussie : $username");
 		}
 
 		return $user;

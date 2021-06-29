@@ -19,7 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\User;
+use progression\domaine\entité\{User, Clé};
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -52,11 +52,36 @@ final class LoginIntTests extends TestCase
 			return $user->username == "Banane" && $password == "password";
 		});
 
+		$mockCléDao = Mockery::mock("progression\dao\CléDAO");
+		$mockCléDao
+			->allows()
+			->get_clé("bob", "clé_valide")
+			->andReturn(new Clé("clé_valide", (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_AUTH));
+		$mockCléDao
+			->allows()
+			->get_clé("bob", "clé_expirée")
+			->andReturn(
+				new Clé(
+					"clé_valide",
+					(new \DateTime())->getTimestamp() - 2,
+					(new \DateTime())->getTimestamp() - 1,
+					Clé::PORTEE_AUTH,
+				),
+			);
+		$mockCléDao
+			->allows()
+			->get_clé("bob", "clé_révoquée")
+			->andReturn(new Clé("clé_valide", (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_REVOQUEE));
+
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_user_dao()
 			->andReturn($mockUserDao);
+		$mockDAOFactory
+			->allows()
+			->get_clé_dao()
+			->andReturn($mockCléDao);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 
@@ -68,7 +93,7 @@ final class LoginIntTests extends TestCase
 	public function test_étant_donné_lutilisateur_null_lorsquon_login_obtient_null()
 	{
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login(null);
+		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant(null);
 
 		$this->assertNull($résultat_obtenu);
 	}
@@ -76,7 +101,7 @@ final class LoginIntTests extends TestCase
 	public function test_étant_donné_lutilisateur_vide_lorsquon_login_obtient_null()
 	{
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login("");
+		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("");
 
 		$this->assertNull($résultat_obtenu);
 	}
@@ -86,7 +111,7 @@ final class LoginIntTests extends TestCase
 		$_ENV["AUTH_TYPE"] = "no";
 
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login("bob");
+		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("bob");
 
 		$this->assertEquals(new User("bob"), $résultat_obtenu);
 	}
@@ -96,7 +121,7 @@ final class LoginIntTests extends TestCase
 		$_ENV["AUTH_TYPE"] = "no";
 
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login("Banane");
+		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("Banane");
 
 		$this->assertEquals(new User("Banane"), $résultat_obtenu);
 	}
@@ -106,7 +131,7 @@ final class LoginIntTests extends TestCase
 		$_ENV["AUTH_TYPE"] = "local";
 
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login("bob", "password");
+		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("bob", "password");
 
 		$this->assertEquals(new User("bob"), $résultat_obtenu);
 	}
@@ -116,7 +141,7 @@ final class LoginIntTests extends TestCase
 		$_ENV["AUTH_TYPE"] = "local";
 
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login("bob", "pas mon mot de passe");
+		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("bob", "pas mon mot de passe");
 
 		$this->assertNull($résultat_obtenu);
 	}
@@ -126,7 +151,37 @@ final class LoginIntTests extends TestCase
 		$_ENV["AUTH_TYPE"] = "local";
 
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login("Banane", "password");
+		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("Banane", "password");
+
+		$this->assertNull($résultat_obtenu);
+	}
+
+	public function test_étant_donné_lutilisateur_existant_bob_et_une_clé_dauthentification_valide_lorsquon_login_on_obtient_un_user_bob()
+	{
+		$_ENV["AUTH_TYPE"] = "local";
+
+		$interacteur = new LoginInt();
+		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "clé_valide");
+
+		$this->assertEquals(new User("bob"), $résultat_obtenu);
+	}
+
+	public function test_étant_donné_lutilisateur_existant_bob_et_une_clé_dauthentification_expirée_lorsquon_login_on_obtient_null()
+	{
+		$_ENV["AUTH_TYPE"] = "local";
+
+		$interacteur = new LoginInt();
+		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "clé_expirée");
+
+		$this->assertNull($résultat_obtenu);
+	}
+
+	public function test_étant_donné_lutilisateur_existant_bob_et_une_clé_dauthentification_révoquée_lorsquon_login_on_obtient_null()
+	{
+		$_ENV["AUTH_TYPE"] = "local";
+
+		$interacteur = new LoginInt();
+		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "clé_révoquée");
 
 		$this->assertNull($résultat_obtenu);
 	}
