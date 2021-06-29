@@ -28,7 +28,7 @@ class LoginCtl extends Contrôleur
 {
 	public function login(Request $request)
 	{
-		Log::debug("LoginCtl.login. Params : " . print_r($request->all(), $return = true));
+		Log::debug("LoginCtl.login. Params : ", $request->all());
 		Log::info("{$request->ip()} - Tentative de login : {$request->input("username")}");
 
 		$user = null;
@@ -41,13 +41,13 @@ class LoginCtl extends Contrôleur
 			$réponse = $this->effectuer_login($request);
 		}
 
-		Log::debug("LoginCtl.login. Retour : " . print_r($réponse, $return = true));
+		Log::debug("LoginCtl.login. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
 	private function effectuer_login($request)
 	{
-		Log::debug("LoginCtl.effectuer_login. Params : " . print_r($request->all(), $return = true));
+		Log::debug("LoginCtl.effectuer_login. Params : ", [$request]);
 
 		$username = $request->input("username");
 		$key = $request->input("key");
@@ -63,12 +63,12 @@ class LoginCtl extends Contrôleur
 
 		$réponse = $this->valider_et_préparer_réponse($user, $request);
 
-		Log::debug("LoginCtl.effectuer_login. Retour : " . print_r($réponse, $return = true));
+		Log::debug("LoginCtl.effectuer_login. Retour : ", [$réponse]);
 		return $réponse;
 	}
 	private function valider_et_préparer_réponse($user, $request)
 	{
-		Log::debug("LoginCtl.valider_et_préparer_réponse. Params : " . print_r($user, $return = true));
+		Log::debug("LoginCtl.valider_et_préparer_réponse. Params : ", [$user]);
 
 		if ($user) {
 			Log::info(
@@ -91,13 +91,13 @@ class LoginCtl extends Contrôleur
 			$réponse = $this->réponse_json(["erreur" => "Accès interdit."], 401);
 		}
 
-		Log::debug("LoginCtl.valider_et_préparer_réponse. Retour : " . print_r($réponse, $return = true));
+		Log::debug("LoginCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
 	private function générer_token($user)
 	{
-		Log::debug("LoginCtl.générer_token. Params : " . print_r($user, $return = true));
+		Log::debug("LoginCtl.générer_token. Params : ", [$user]);
 
 		$payload = [
 			"user" => $user,
@@ -107,13 +107,13 @@ class LoginCtl extends Contrôleur
 
 		$réponse = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
 
-		Log::debug("LoginCtl.générer_token. Retour : " . print_r($réponse, $return = true));
+		Log::debug("LoginCtl.générer_token. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
 	private function validerParams($request)
 	{
-		Log::debug("LoginCtl.validerParams : " . print_r($request->all(), $return = true));
+		Log::debug("LoginCtl.validerParams : ", $request->all());
 
 		$validateur = Validator::make(
 			$request->all(),
@@ -133,7 +133,7 @@ class LoginCtl extends Contrôleur
 			$réponse = null;
 		}
 
-		Log::debug("LoginCtl.validerParams. Retour : " . print_r($réponse, $return = true));
+		Log::debug("LoginCtl.validerParams. Retour : ", [$réponse]);
 		return $réponse;
 	}
 }
