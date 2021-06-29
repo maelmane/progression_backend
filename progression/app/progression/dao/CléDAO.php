@@ -59,7 +59,7 @@ class CléDAO extends EntitéDAO
 				"INSERT INTO cle ( username, numero, creation, expiration, portee ) VALUES ( ?, ?, ?, ?, ? )",
 			);
 
-			$query->bind_param("ssssi", $username, $numéro, $objet->création, $objet->expiration, $objet->portée);
+			$query->bind_param("ssiii", $username, $numéro, $objet->création, $objet->expiration, $objet->portée);
 			$query->execute();
 			$query->close();
 		} catch (mysqli_sql_exception $e) {

@@ -39,13 +39,13 @@ final class CléDAOTests extends TestCase
 		$dao = new CléDAO();
 		$clé = $dao->get_clé("bob", 1234);
 
-		$résultat_attendu = new Clé(1234, "2021-06-25 00:00:00", "2021-06-26 00:00:00", Clé::PORTEE_AUTH);
+		$résultat_attendu = new Clé(1234, 1624593600, 1624680000, Clé::PORTEE_AUTH);
 		$this->assertEquals($résultat_attendu, $clé);
 	}
 
 	public function test_étant_donné_une_clé_inexistante_lorsquon_la_sauvegarde_on_la_retrouve_dans_la_bd()
 	{
-		$clé = new Clé(9999, "2021-06-25 00:00:00", "2021-06-26 00:00:00", Clé::PORTEE_AUTH);
+		$clé = new Clé(9999, 1624593600, 1624680000, Clé::PORTEE_AUTH);
 
 		$dao = new CléDAO();
 		$dao->save("bob", 9999, $clé);
@@ -57,7 +57,7 @@ final class CléDAOTests extends TestCase
 
 	public function test_étant_donné_une_clé_existante_lorsquon_la_sauvegarde_de_nouveau_on_obtient_une_exception()
 	{
-		$clé = new Clé(1234, "2021-06-25 00:00:00", "2021-06-26 00:00:00", Clé::PORTEE_AUTH);
+		$clé = new Clé(1234, 1624593600, 1624680000, Clé::PORTEE_AUTH);
 
 		$dao = new CléDAO();
 		try {

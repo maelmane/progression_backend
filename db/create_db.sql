@@ -8,8 +8,8 @@ CREATE TABLE `user` (
 CREATE TABLE `cle` (
     `username`   varchar(255),
     `numero`     int,
-    `creation`   datetime NOT NULL,
-    `expiration` datetime NOT NULL,
+    `creation`   int NOT NULL,
+    `expiration` int NOT NULL,
 	`portee`     int NOT NULL DEFAULT 0,
     PRIMARY KEY (`username`, `numero`),
     FOREIGN KEY (`username`) REFERENCES `user`(`username`)

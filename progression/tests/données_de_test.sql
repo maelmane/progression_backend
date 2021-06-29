@@ -25,8 +25,8 @@ INSERT INTO user VALUES (
 INSERT INTO cle VALUES (
   "bob",
   "1234",
-  "2021-06-25 00:00",
-  "2021-06-26 00:00",
+  1624593600,
+  1624680000,
   1
 );
 
