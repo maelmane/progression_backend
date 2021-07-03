@@ -66,6 +66,7 @@ class LoginCtl extends Contrôleur
 		Log::debug("LoginCtl.effectuer_login. Retour : ", [$réponse]);
 		return $réponse;
 	}
+
 	private function valider_et_préparer_réponse($user, $request)
 	{
 		Log::debug("LoginCtl.valider_et_préparer_réponse. Params : ", [$user]);

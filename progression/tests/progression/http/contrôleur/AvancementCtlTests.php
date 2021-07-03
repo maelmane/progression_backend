@@ -146,7 +146,7 @@ final class AvancementCtlTests extends TestCase
 		$this->assertEquals('{"erreur":"Opération interdite."}', $résultat_observé->getContent());
 	}
 
-	public function test_étant_donné_le_chemin_dune_question_non_fourni_dans_la_requete_lorsquon_appelle_post_avec_un_avancement_on_obtient_un_message_derreur()
+	public function test_étant_donné_le_chemin_dune_question_non_fourni_dans_la_requete_lorsquon_appelle_post_avec_un_avancement_on_obtient_une_erreur_422()
 	{
 		$avancementTest = ["état" => Question::ETAT_REUSSI];
 
@@ -155,7 +155,7 @@ final class AvancementCtlTests extends TestCase
 		]);
 
 		$this->assertEquals(422, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Requête intraitable."}', $résultat_observé->getContent());
+		$this->assertEquals('{"erreur":{"question_uri":["Le champ question uri est obligatoire."]}}', $résultat_observé->getContent());
 	}
 
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_on_obtient_un_nouvel_avancement_avec_ses_valeurs_par_defaut()
@@ -222,7 +222,7 @@ final class AvancementCtlTests extends TestCase
 
 		$this->assertEquals(422, $résultat_observé->status());
 		$this->assertEquals(
-			'{"erreur":{"avancement.état":["Le champ avancement.état est obligatoire."]}}',
+			'{"erreur":{"avancement.état":["The avancement.état field is required when avancement is present."]}}',
 			$résultat_observé->getContent(),
 		);
 	}

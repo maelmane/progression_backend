@@ -20,6 +20,7 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\ObtenirAvancementInt;
 use progression\domaine\interacteur\ObtenirUserInt;
@@ -32,74 +33,130 @@ class AvancementCtl extends Contrôleur
 {
 	public function get(Request $request, $username, $question_uri)
 	{
-		$chemin = Encodage::base64_decode_url($question_uri);
+		Log::debug("AvancementCtl.get. Params : ", [$request->all(), $username, $question_uri]);
+
 		$avancement = null;
 		$réponse = null;
 
-		$avancement = $this->obtenirAvancement($username, $chemin);
-		if ($avancement != null) {
-			$avancement->id = "{$username}/$question_uri";
-			$réponse = $this->item($avancement, new AvancementTransformer());
-		}
+		$avancement = $this->obtenir_avancement($username, $question_uri);
+		$id = "{$username}/$question_uri";
 
-		return $this->préparer_réponse($réponse);
+		$réponse = $this->valider_et_préparer_réponse($avancement, $id);
+
+		Log::debug("AvancementCtl.get. Retour : ", [$réponse]);
+		return $réponse;
+	}
+
+	private function valider_et_préparer_réponse($avancement, $id)
+	{
+		Log::debug("AvancementCtl.valider_et_préparer_réponse. Params : ", [$avancement, $id]);
+
+		$réponse_json = $avancement ? $this->jasonifier_avancement($avancement, $id) : null;
+
+		$réponse = $this->préparer_réponse($réponse_json);
+
+		Log::debug("AvancementCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
+		return $réponse;
+	}
+
+	private function jasonifier_avancement($avancement, $id)
+	{
+		Log::debug("AvancementCtl.générer_id_et_jasonifier_réponse. Params : ", [$avancement, $id]);
+
+		$avancement->id = $id;
+		$réponse = $this->item($avancement, new AvancementTransformer());
+
+		Log::debug("AvancementCtl.générer_id_et_jasonifier_réponse. Retour : ", [$réponse]);
+
+		return $réponse;
 	}
 
 	public function post(Request $request, $username)
 	{
-		$réponse = null;
+		Log::debug("AvancementCtl.post. Params : ", [$request->all(), $username]);
 
-		if (isset($request->question_uri)) {
-			$chemin = Encodage::base64_decode_url($request->question_uri);
+		$validateur = $this->valider_paramètres($request);
 
-			if (isset($request->avancement)) {
-				$avancement = $request->avancement;
-				$validation = $this->valider_paramètres($request);
-				if ($validation->fails()) {
-					return $this->réponse_json(["erreur" => $validation->errors()], 422);
-				}
-
-				if (Gate::denies("update-avancement")) {
-					return $this->réponse_json(["erreur" => "Opération interdite."], 403);
-				}
-
-				$avancement_sauvegardé = $this->sauvegarderAvancement($username, $chemin, $avancement);
-			} else {
-				$avancement_sauvegardé = $this->sauvegarderAvancement($username, $chemin, new Avancement());
-			}
-
-			$avancement_sauvegardé->id = "{$username}/$request->question_uri";
-			return $this->préparer_réponse($this->item($avancement_sauvegardé, new AvancementTransformer()));
+		if ($validateur->fails()) {
+			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 422);
+		} elseif ($request->avancement && !$this->valider_permissions()) {
+			$réponse = $this->réponse_json(["erreur" => "Opération interdite."], 403);
 		} else {
-			return $this->réponse_json(["erreur" => "Requête intraitable."], 422);
+			$avancement = $request->avancement;
+
+			$avancement_sauvegardé = $this->créer_ou_sauvegarder_avancement(
+				$avancement,
+				$username,
+				$request->question_uri,
+			);
+
+			$réponse = $this->préparer_réponse($this->item($avancement_sauvegardé, new AvancementTransformer()));
 		}
+
+		Log::debug("AvancementCtl.post. Retour : ", [$réponse]);
+
+		return $réponse;
 	}
 
-	private function obtenirAvancement($username, $chemin)
+	private function créer_ou_sauvegarder_avancement($avancement, $username, $question_uri)
 	{
-		$avancementInt = new ObtenirAvancementInt();
-		$avancement = $avancementInt->get_avancement($username, $chemin);
+		Log::debug("AvancementCtl.créer_ou_sauvegarder_avancement. Params : ", [$avancement, $username, $question_uri]);
 
-		return $avancement;
-	}
+		$avancement_sauvegardé = $this->sauvegarder_avancement(
+			$username,
+			$question_uri,
+			$avancement ?? new Avancement(),
+		);
 
-	private function sauvegarderAvancement($username, $chemin, $avancement)
-	{
-		$avancementInt = new SauvegarderAvancementInt();
-		$new_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);
-		return $new_avancement;
+		$réponse = $avancement_sauvegardé;
+		Log::debug("AvancementCtl.créer_ou_sauvegarder_avancement. Retour : ", [$réponse]);
+		return $réponse;
 	}
 
 	private function valider_paramètres($request)
 	{
-		return Validator::make(
+		$validateur = Validator::make(
 			$request->all(),
 			[
-				"avancement.état" => "required|integer|between:0,2",
+				"question_uri" => "required",
+				"avancement.état" => "required_with:avancement|integer|between:0,2",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
 			],
 		);
+
+		return $validateur;
+	}
+
+	private function valider_permissions()
+	{
+		return Gate::allows("update-avancement");
+	}
+
+	private function obtenir_avancement($username, $question_uri)
+	{
+		Log::debug("AvancementCtl.obtenir_avancement. Params : ", [$username, $question_uri]);
+
+		$avancementInt = new ObtenirAvancementInt();
+		$chemin = Encodage::base64_decode_url($question_uri);
+		$avancement = $avancementInt->get_avancement($username, $chemin);
+
+		Log::debug("AvancementCtl.obtenir_avancement. Retour : ", [$avancement]);
+		return $avancement;
+	}
+
+	private function sauvegarder_avancement($username, $question_uri, $avancement)
+	{
+		Log::debug("AvancementCtl.sauvegarder_avancement. Params : ", [$username, $question_uri]);
+
+		$avancementInt = new SauvegarderAvancementInt();
+		$chemin = Encodage::base64_decode_url($question_uri);
+
+		$nouvel_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);
+		$nouvel_avancement->id = "$username/$question_uri";
+
+		Log::debug("AvancementCtl.sauvegarder_avancement. Retour : ", [$nouvel_avancement]);
+		return $nouvel_avancement;
 	}
 }
