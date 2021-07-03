@@ -54,7 +54,7 @@ class AvancementCtl extends Contrôleur
 
 			if (isset($request->avancement)) {
 				$avancement = $request->avancement;
-				$validation = $this->validerParams($request);
+				$validation = $this->valider_paramètres($request);
 				if ($validation->fails()) {
 					return $this->réponse_json(["erreur" => $validation->errors()], 422);
 				}
@@ -90,7 +90,7 @@ class AvancementCtl extends Contrôleur
 		return $new_avancement;
 	}
 
-	private function validerParams($request)
+	private function valider_paramètres($request)
 	{
 		return Validator::make(
 			$request->all(),

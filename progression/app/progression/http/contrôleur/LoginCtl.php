@@ -34,7 +34,7 @@ class LoginCtl extends Contrôleur
 		$user = null;
 		$token = null;
 
-		$erreurs = $this->validerParams($request);
+		$erreurs = $this->valider_paramètres($request);
 		if ($erreurs) {
 			$réponse = $this->réponse_json(["erreur" => $erreurs], 422);
 		} else {
@@ -111,9 +111,9 @@ class LoginCtl extends Contrôleur
 		return $réponse;
 	}
 
-	private function validerParams($request)
+	private function valider_paramètres($request)
 	{
-		Log::debug("LoginCtl.validerParams : ", $request->all());
+		Log::debug("LoginCtl.valider_paramètres : ", $request->all());
 
 		$validateur = Validator::make(
 			$request->all(),
@@ -133,7 +133,7 @@ class LoginCtl extends Contrôleur
 			$réponse = null;
 		}
 
-		Log::debug("LoginCtl.validerParams. Retour : ", [$réponse]);
+		Log::debug("LoginCtl.valider_paramètres. Retour : ", [$réponse]);
 		return $réponse;
 	}
 }
