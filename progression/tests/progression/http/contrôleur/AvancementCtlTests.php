@@ -155,7 +155,10 @@ final class AvancementCtlTests extends TestCase
 		]);
 
 		$this->assertEquals(422, $résultat_observé->status());
-		$this->assertEquals('{"erreur":{"question_uri":["Le champ question uri est obligatoire."]}}', $résultat_observé->getContent());
+		$this->assertEquals(
+			'{"erreur":{"question_uri":["Le champ question uri est obligatoire."]}}',
+			$résultat_observé->getContent(),
+		);
 	}
 
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_on_obtient_un_nouvel_avancement_avec_ses_valeurs_par_defaut()

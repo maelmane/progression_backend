@@ -35,38 +35,37 @@ class AvancementCtl extends Contrôleur
 	{
 		Log::debug("AvancementCtl.get. Params : ", [$request->all(), $username, $question_uri]);
 
-		$avancement = null;
-		$réponse = null;
-
 		$avancement = $this->obtenir_avancement($username, $question_uri);
-		$id = "{$username}/$question_uri";
-
-		$réponse = $this->valider_et_préparer_réponse($avancement, $id);
+		$réponse = $this->valider_et_préparer_réponse($avancement, $username, $question_uri);
 
 		Log::debug("AvancementCtl.get. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
-	private function valider_et_préparer_réponse($avancement, $id)
+	private function valider_et_préparer_réponse($avancement, $username, $question_uri)
 	{
-		Log::debug("AvancementCtl.valider_et_préparer_réponse. Params : ", [$avancement, $id]);
+		Log::debug("AvancementCtl.valider_et_préparer_réponse. Params : ", [$avancement, $username, $question_uri]);
 
-		$réponse_json = $avancement ? $this->jasonifier_avancement($avancement, $id) : null;
+		if ($avancement) {
+			$avancement->id = "{$username}/$question_uri";
+			$réponse_array = $this->avancement_to_array($avancement);
+		} else {
+			$réponse_array = null;
+		}
 
-		$réponse = $this->préparer_réponse($réponse_json);
+		$réponse = $this->préparer_réponse($réponse_array);
 
 		Log::debug("AvancementCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
-	private function jasonifier_avancement($avancement, $id)
+	private function avancement_to_array($avancement)
 	{
-		Log::debug("AvancementCtl.générer_id_et_jasonifier_réponse. Params : ", [$avancement, $id]);
+		Log::debug("AvancementCtl.avancement_to_array. Params : ", [$avancement]);
 
-		$avancement->id = $id;
 		$réponse = $this->item($avancement, new AvancementTransformer());
 
-		Log::debug("AvancementCtl.générer_id_et_jasonifier_réponse. Retour : ", [$réponse]);
+		Log::debug("AvancementCtl.avancement_to_array. Retour : ", [$réponse]);
 
 		return $réponse;
 	}
