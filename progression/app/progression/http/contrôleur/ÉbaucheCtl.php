@@ -31,16 +31,6 @@ class ÉbaucheCtl extends Contrôleur
 	{
 		Log::debug("ÉbaucheCtl.get. Params : ", [$request->all(), $question_uri, $langage]);
 
-		$réponse = $this->obtenir_réponse($request, $question_uri, $langage);
-
-		Log::debug("ÉbaucheCtl.get. Retour : ", [$réponse]);
-		return $réponse;
-	}
-
-	private function obtenir_réponse($request, $question_uri, $langage)
-	{
-		Log::debug("ÉbaucheCtl.obtenir_réponse. Params : ", [$request->all(), $question_uri, $langage]);
-
 		try {
 			$question = $this->obtenir_question($question_uri);
 			$réponse = $this->valider_et_préparer_réponse($question, $question_uri, $langage);
@@ -55,7 +45,7 @@ class ÉbaucheCtl extends Contrôleur
 			$réponse = $this->réponse_json(["message" => "Requête intraitable."], 422);
 		}
 
-		Log::debug("ÉbaucheCtl.obtenir_question. Retour : ", [$réponse]);
+		Log::debug("ÉbaucheCtl.get. Retour : ", [$réponse]);
 
 		return $réponse;
 	}
@@ -67,7 +57,7 @@ class ÉbaucheCtl extends Contrôleur
 
 		if ($question != null) {
 			$ébauche = $this->préparer_ébauche($question, $question_uri, $langage);
-			$ébauche_array = $this->ébauche_to_array($ébauche);
+			$ébauche_array = $this->item($ébauche, new ÉbaucheTransformer());
 		}
 
 		$réponse = $this->préparer_réponse($ébauche_array);
@@ -91,16 +81,6 @@ class ÉbaucheCtl extends Contrôleur
 
 		Log::debug("ÉbaucheCtl.préparer_ébauche. Retour : ", [$ébauche]);
 		return $ébauche;
-	}
-
-	private function ébauche_to_array($ébauche)
-	{
-		Log::debug("ÉbaucheCtl.ébauche_to_array. Params : ", [$ébauche]);
-
-		$réponse = $this->item($ébauche, new ÉbaucheTransformer());
-
-		Log::debug("ÉbaucheCtl.ébauche_to_array. Retour : ", [$réponse]);
-		return $réponse;
 	}
 
 	private function obtenir_question($question_uri)

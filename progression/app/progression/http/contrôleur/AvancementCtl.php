@@ -42,6 +42,34 @@ class AvancementCtl extends Contrôleur
 		return $réponse;
 	}
 
+	public function post(Request $request, $username)
+	{
+		Log::debug("AvancementCtl.post. Params : ", [$request->all(), $username]);
+
+		$validateur = $this->valider_paramètres($request);
+
+		if ($validateur->fails()) {
+			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 422);
+		} elseif ($request->avancement && !$this->valider_permissions()) {
+			$réponse = $this->réponse_json(["erreur" => "Opération interdite."], 403);
+		} else {
+			$avancement = $request->avancement;
+
+			$avancement_sauvegardé = $this->créer_ou_sauvegarder_avancement(
+				$avancement,
+				$username,
+				$request->question_uri,
+			);
+
+			$réponse_array = $this->item($avancement_sauvegardé, new AvancementTransformer());
+			$réponse = $this->préparer_réponse($réponse_array);
+		}
+
+		Log::debug("AvancementCtl.post. Retour : ", [$réponse]);
+
+		return $réponse;
+	}
+
 	private function valider_et_préparer_réponse($avancement, $username, $question_uri)
 	{
 		Log::debug("AvancementCtl.valider_et_préparer_réponse. Params : ", [$avancement, $username, $question_uri]);
@@ -66,33 +94,6 @@ class AvancementCtl extends Contrôleur
 		$réponse = $this->item($avancement, new AvancementTransformer());
 
 		Log::debug("AvancementCtl.avancement_to_array. Retour : ", [$réponse]);
-
-		return $réponse;
-	}
-
-	public function post(Request $request, $username)
-	{
-		Log::debug("AvancementCtl.post. Params : ", [$request->all(), $username]);
-
-		$validateur = $this->valider_paramètres($request);
-
-		if ($validateur->fails()) {
-			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 422);
-		} elseif ($request->avancement && !$this->valider_permissions()) {
-			$réponse = $this->réponse_json(["erreur" => "Opération interdite."], 403);
-		} else {
-			$avancement = $request->avancement;
-
-			$avancement_sauvegardé = $this->créer_ou_sauvegarder_avancement(
-				$avancement,
-				$username,
-				$request->question_uri,
-			);
-
-			$réponse = $this->préparer_réponse($this->item($avancement_sauvegardé, new AvancementTransformer()));
-		}
-
-		Log::debug("AvancementCtl.post. Retour : ", [$réponse]);
 
 		return $réponse;
 	}
