@@ -214,7 +214,6 @@ question_uri/numéro
 
 | Nom             | Type | Valeurs |
 |-----------------+------+---------|
-| numéro          | int  |         |
 | nom             | str  |         |
 | entrée          | str  |         |
 | sortie_attendue | str  |         |
@@ -230,7 +229,6 @@ username/question_uri/date_soumission/numéro
 
 | Nom             | Type | Valeurs   |
 |-----------------+------+-----------|
-| numéro          | int  | # du test |
 | sortie_observée | str  |           |
 | sortie_erreur   | str  |           |
 | résultat        | bool |           |
