@@ -54,24 +54,30 @@ final class LoginIntTests extends TestCase
 
 		$mockCléDao = Mockery::mock("progression\dao\CléDAO");
 		$mockCléDao
-			->allows()
-			->get_clé("bob", "clé_valide")
-			->andReturn(new Clé("clé_valide", (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_AUTH));
+			->shouldReceive("get_clé")
+			->with("bob", "clé valide")
+			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_AUTH));
 		$mockCléDao
-			->allows()
-			->get_clé("bob", "clé_expirée")
+			->shouldReceive("vérifier")
+			->with("bob", "clé valide", "secret")
+			->andReturn(true);
+		$mockCléDao
+			->shouldReceive("get_clé")
+			->with("bob", "clé expirée")
 			->andReturn(
 				new Clé(
-					"clé_valide",
+					"secret",
 					(new \DateTime())->getTimestamp() - 2,
 					(new \DateTime())->getTimestamp() - 1,
 					Clé::PORTEE_AUTH,
 				),
 			);
 		$mockCléDao
-			->allows()
-			->get_clé("bob", "clé_révoquée")
-			->andReturn(new Clé("clé_valide", (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_REVOQUEE));
+			->shouldReceive("get_clé")
+			->with("bob", "clé_révoquée")
+			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_REVOQUEE));
+		$mockCléDao->shouldReceive("get_clé")->andReturn(null);
+		$mockCléDao->shouldReceive("vérifier")->andReturn(false);
 
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
@@ -156,32 +162,43 @@ final class LoginIntTests extends TestCase
 		$this->assertNull($résultat_obtenu);
 	}
 
-	public function test_étant_donné_lutilisateur_existant_bob_et_une_clé_dauthentification_valide_lorsquon_login_on_obtient_un_user_bob()
+	// Login par clé
+	public function test_étant_donné_lutilisateur_existant_bob_lorsquon_login_avec_une_clé_d_authentification_valide_on_obtient_un_user_bob()
 	{
-		$_ENV["AUTH_TYPE"] = "local";
-
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "clé_valide");
+		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "clé valide", "secret");
 
 		$this->assertEquals(new User("bob"), $résultat_obtenu);
 	}
 
-	public function test_étant_donné_lutilisateur_existant_bob_et_une_clé_dauthentification_expirée_lorsquon_login_on_obtient_null()
+	public function test_étant_donné_lutilisateur_existant_bob_lorsquon_login_avec_une_clé_d_authentification_inexistante_on_obtient_null()
 	{
-		$_ENV["AUTH_TYPE"] = "local";
-
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "clé_expirée");
+		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "clé inexistante", "secret");
 
 		$this->assertNull($résultat_obtenu);
 	}
 
-	public function test_étant_donné_lutilisateur_existant_bob_et_une_clé_dauthentification_révoquée_lorsquon_login_on_obtient_null()
+	public function test_étant_donné_lutilisateur_existant_bob_lorsquon_login_avec_une_clé_d_authentification_et_un_secret_invalide_on_obtient_null()
 	{
-		$_ENV["AUTH_TYPE"] = "local";
-
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "clé_révoquée");
+		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "clé valide", "mauvais secret");
+
+		$this->assertNull($résultat_obtenu);
+	}
+
+	public function test_étant_donné_lutilisateur_existant_bob_lorsquon_login_avec_une_clé_d_authentification_expirée_on_obtient_null()
+	{
+		$interacteur = new LoginInt();
+		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "clé expirée", "secret");
+
+		$this->assertNull($résultat_obtenu);
+	}
+
+	public function test_étant_donné_lutilisateur_existant_bob_lorsquon_login_avec_une_clé_d_authentification_révoquée_on_obtient_null()
+	{
+		$interacteur = new LoginInt();
+		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "clé révoquée", "secret");
 
 		$this->assertNull($résultat_obtenu);
 	}

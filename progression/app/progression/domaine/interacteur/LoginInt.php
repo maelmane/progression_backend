@@ -27,16 +27,21 @@ class AuthException extends \Exception
 
 class LoginInt extends Interacteur
 {
-	function effectuer_login_par_clé($username, $clé_p)
+	function effectuer_login_par_clé($username, $nom_clé, $secret)
 	{
 		$dao = DAOFactory::getInstance()->get_clé_dao();
 
-		$clé = $dao->get_clé($username, $clé_p);
-		if ($clé && $clé->est_valide() && $clé->portée == Clé::PORTEE_AUTH) {
+		$clé = $dao->get_clé($username, $nom_clé);
+		if (
+			$clé &&
+			$clé->est_valide() &&
+			$clé->portée == Clé::PORTEE_AUTH &&
+			$dao->vérifier($username, $nom_clé, $secret)
+		) {
 			$dao = DAOFactory::getInstance()->get_user_dao();
 			return $dao->get_user($username);
 		} else {
-			syslog(LOG_INFO, "Clé invalide pour $username");
+			syslog(LOG_NOTICE, "Clé invalide pour $username");
 			return null;
 		}
 	}
