@@ -61,8 +61,7 @@ class AvancementCtl extends Contrôleur
 				$request->question_uri,
 			);
 
-			$réponse_array = $this->item($avancement_sauvegardé, new AvancementTransformer());
-			$réponse = $this->préparer_réponse($réponse_array);
+			$réponse = $this->valider_et_préparer_réponse($avancement_sauvegardé, $username, $request->question_uri);
 		}
 
 		Log::debug("AvancementCtl.post. Retour : ", [$réponse]);

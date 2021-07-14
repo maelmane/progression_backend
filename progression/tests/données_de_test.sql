@@ -24,6 +24,7 @@ INSERT INTO user VALUES (
 
 INSERT INTO cle VALUES (
   "bob",
+  "clé de test",
   "1234",
   1624593600,
   1624680000,

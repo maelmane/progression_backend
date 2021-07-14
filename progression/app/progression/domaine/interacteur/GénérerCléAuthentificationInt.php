@@ -23,12 +23,21 @@ use progression\dao\DAOFactory;
 
 class GénérerCléAuthentificationInt extends Interacteur
 {
-	public function générer_clé($username)
+	public function générer_clé($username, $nom)
 	{
-		$numéro = bin2hex(random_bytes(20));
-		$clé = new Clé($numéro, new \DateTime(), 0, Clé::PORTEE_AUTH);
+		if (!$nom || !$username) {
+			return null;
+		}
 
 		$dao = DAOFactory::getInstance()->get_clé_dao();
-		return $dao->save($username, $numéro, $clé);
+
+		if ($dao->get_clé($username, $nom)) {
+			return null;
+		}
+
+		$secret = bin2hex(random_bytes(20));
+		$clé = new Clé($secret, (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_AUTH);
+
+		return $dao->save($username, $nom, $clé);
 	}
 }

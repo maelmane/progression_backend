@@ -37,9 +37,9 @@ final class CléDAOTests extends TestCase
 	public function test_étant_donné_une_clé_existante_lorsquon_la_récupère_on_obtient_ses_attributs()
 	{
 		$dao = new CléDAO();
-		$clé = $dao->get_clé("bob", 1234);
+		$clé = $dao->get_clé("bob", "clé de test");
 
-		$résultat_attendu = new Clé(1234, 1624593600, 1624680000, Clé::PORTEE_AUTH);
+		$résultat_attendu = new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH);
 		$this->assertEquals($résultat_attendu, $clé);
 	}
 
@@ -48,7 +48,7 @@ final class CléDAOTests extends TestCase
 		$clé = new Clé(9999, 1624593600, 1624680000, Clé::PORTEE_AUTH);
 
 		$dao = new CléDAO();
-		$dao->save("bob", 9999, $clé);
+		$dao->save("bob", "nouvelle clé", $clé);
 		$clé = $dao->get_clé("bob", 9999);
 
 		$résultat_attendu = $clé;
@@ -61,7 +61,7 @@ final class CléDAOTests extends TestCase
 
 		$dao = new CléDAO();
 		try {
-			$dao->save("bob", 1234, $clé);
+			$dao->save("bob", "clé de test", $clé);
 			$this->fail();
 		} catch (DAOException $e) {
 			// Exception attendue

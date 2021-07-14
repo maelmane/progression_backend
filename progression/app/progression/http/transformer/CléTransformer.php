@@ -29,7 +29,7 @@ class CléTransformer extends Fractal\TransformerAbstract
 	{
 		$data_out = [
 			"id" => $clé->id,
-			"numéro" => $clé->numéro,
+			"secret" => $clé->secret,
 			"création" => $clé->création,
 			"expiration" => $clé->expiration,
 			"portée" => $clé->portée,

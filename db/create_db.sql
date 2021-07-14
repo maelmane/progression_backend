@@ -5,15 +5,18 @@ CREATE TABLE `user` (
 	`role`		int NOT NULL DEFAULT 0,
 	PRIMARY KEY (`username`)
 );
+
 CREATE TABLE `cle` (
     `username`   varchar(255),
-    `numero`     int,
+    `nom`        varchar(255),
+    `hash`       varchar(255) NOT NULL,
     `creation`   int NOT NULL,
     `expiration` int NOT NULL,
 	`portee`     int NOT NULL DEFAULT 0,
-    PRIMARY KEY (`username`, `numero`),
+    PRIMARY KEY (`username`, `nom`),
     FOREIGN KEY (`username`) REFERENCES `user`(`username`)
 );
+
 CREATE TABLE `sauvegarde` (
 	`username`			varchar(255) NOT NULL,
 	`question_uri`		varchar(1024) CHARACTER SET latin1 NOT NULL,
@@ -23,6 +26,7 @@ CREATE TABLE `sauvegarde` (
 	PRIMARY KEY (`username`, `question_uri`, `langage`),
 	FOREIGN KEY (`username`) REFERENCES `user`(`username`)
 );
+
 CREATE TABLE `avancement` (
 	`username`		varchar(255) NOT NULL,
 	`question_uri` 	varchar(1024) CHARACTER SET latin1 NOT NULL,
@@ -31,6 +35,7 @@ CREATE TABLE `avancement` (
 	PRIMARY KEY (`username`, `question_uri`),
 	FOREIGN KEY (`username`) REFERENCES `user`(`username`)
 );
+
 CREATE TABLE `reponse_sys` (
 	`username`		varchar(255) NOT NULL,
 	`question_uri` 	varchar(1024) CHARACTER SET latin1,
@@ -40,6 +45,7 @@ CREATE TABLE `reponse_sys` (
 	FOREIGN KEY ( `username`) REFERENCES `user`(`username`),
 	FOREIGN KEY (`username`, `question_uri`) REFERENCES avancement(`username`, `question_uri`)
 );
+
 CREATE TABLE `reponse_prog` (
 	`username`			varchar(255) NOT NULL,
 	`question_uri` 		varchar(1024) CHARACTER SET latin1,
@@ -51,3 +57,4 @@ CREATE TABLE `reponse_prog` (
 	PRIMARY KEY (`username`, `question_uri`, `date_soumission`),
 	FOREIGN KEY (`username`, `question_uri`) REFERENCES avancement(`username`, `question_uri`)
 );
+

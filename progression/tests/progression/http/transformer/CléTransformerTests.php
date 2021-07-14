@@ -34,19 +34,19 @@ final class CléTransformerTests extends TestCase
 	{
 		$transformer = new CléTransformer();
 
-		$clé = new Clé(1234, "2021-06-25 00:00:00", "2021-06-26 00:00:00", 1);
-		$clé->id = "jdoe/1234";
+		$clé = new Clé("1234", "2021-06-25 00:00:00", "2021-06-26 00:00:00", 1);
+		$clé->id = "jdoe/clé%20de%20test";
 
 		$résultat_obtenu = $transformer->transform($clé);
 
 		$résultat_attendu = [
-			"id" => "jdoe/1234",
-			"numéro" => 1234,
+			"id" => "jdoe/clé%20de%20test",
+			"secret" => "1234",
 			"création" => "2021-06-25 00:00:00",
 			"expiration" => "2021-06-26 00:00:00",
 			"portée" => 1,
 			"links" => [
-				"self" => "https://example.com/cle/jdoe/1234",
+				"self" => "https://example.com/cle/jdoe/clé%20de%20test",
 			],
 		];
 

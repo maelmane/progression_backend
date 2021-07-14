@@ -19,7 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Clé;
-use progression\dao\DAOFactory;
+use progression\dao\{DAOFactory, UserDAO};
 
 class AuthException extends \Exception
 {
@@ -68,11 +68,9 @@ class LoginInt extends Interacteur
 
 	function login_local($username, $password)
 	{
-		$dao = DAOFactory::getInstance()->get_user_dao();
+		$user = (new ObtenirUserInt())->get_user($username);
 
-		$user = $dao->get_user($username);
-
-		if ($user && $dao->vérifier_password($user, $password)) {
+		if ($user && $this->source_dao->get_user_dao()->vérifier_password($user, $password)) {
 			return $user;
 		} else {
 			return null;
@@ -84,10 +82,15 @@ class LoginInt extends Interacteur
 		$user_ldap = $this->get_username_ldap($username, $password);
 
 		if ($user_ldap != null) {
-			return (new CréerUserInt())->obtenir_ou_créer_user($username);
+			$user = (new ObtenirUserInt())->get_user($username);
+			if (!$user) {
+				$user = (new CréerUserInt())->créer_user($username);
+			}
 		} else {
-			return null;
+			$user = null;
 		}
+
+		return $user;
 	}
 
 	function vérifier_champ_valide($champ)
@@ -122,6 +125,11 @@ class LoginInt extends Interacteur
 
 	function login_sans_authentification($username)
 	{
-		return (new CréerUserInt())->obtenir_ou_créer_user($username);
+		$user = (new ObtenirUserInt())->get_user($username);
+		if (!$user) {
+			$user = (new CréerUserInt())->créer_user($username);
+		}
+
+		return $user;
 	}
 }

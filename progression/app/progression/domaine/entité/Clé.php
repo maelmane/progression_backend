@@ -23,14 +23,14 @@ class Clé
 	const PORTEE_REVOQUEE = 0;
 	const PORTEE_AUTH = 1;
 
-	public $numéro;
+	public $secret;
 	public $création;
 	public $expiration;
 	public $portée;
 
-	public function __construct($numéro, $création, $expiration, $portée)
+	public function __construct($secret, $création, $expiration, $portée)
 	{
-		$this->numéro = $numéro;
+		$this->secret = $secret;
 		$this->création = $création;
 		$this->expiration = $expiration;
 		$this->portée = $portée;

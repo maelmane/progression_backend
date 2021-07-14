@@ -23,7 +23,7 @@ use progression\domaine\entité\Clé;
 
 class CléDAO extends EntitéDAO
 {
-	public function get_clé($username, $numéro)
+	public function get_clé($username, $nom)
 	{
 		$clé = null;
 
@@ -33,9 +33,9 @@ class CléDAO extends EntitéDAO
 
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT creation, expiration, portee FROM cle WHERE username = ? AND numero = ? ",
+				"SELECT creation, expiration, portee FROM cle WHERE username = ? AND nom = ? ",
 			);
-			$query->bind_param("ss", $username, $numéro);
+			$query->bind_param("ss", $username, $nom);
 
 			$query->execute();
 			$query->bind_result($création, $expiration, $portée);
@@ -43,7 +43,7 @@ class CléDAO extends EntitéDAO
 			$résultat = $query->fetch();
 			$query->close();
 			if ($résultat) {
-				$clé = new Clé($numéro, $création, $expiration, $portée);
+				$clé = new Clé(null, $création, $expiration, $portée);
 			}
 		} catch (mysqli_sql_exception $e) {
 			throw new DAOException($e);
@@ -52,20 +52,42 @@ class CléDAO extends EntitéDAO
 		return $clé;
 	}
 
-	public function save($username, $numéro, $objet)
+	public function save($username, $nom, $objet)
 	{
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO cle ( username, numero, creation, expiration, portee ) VALUES ( ?, ?, ?, ?, ? )",
+				"INSERT INTO cle ( username, nom, hash, creation, expiration, portee ) VALUES ( ?, ?, ?, ?, ?, ? )",
 			);
 
-			$query->bind_param("ssiii", $username, $numéro, $objet->création, $objet->expiration, $objet->portée);
+			$hash = hash("sha256", $objet->secret);
+
+			$query->bind_param("sssiii", $username, $nom, $hash, $objet->création, $objet->expiration, $objet->portée);
 			$query->execute();
 			$query->close();
 		} catch (mysqli_sql_exception $e) {
 			throw new DAOException($e);
 		}
 
-		return $this->get_clé($username, $numéro);
+		return $this->get_clé($username, $nom);
+	}
+
+	public function vérifier($username, $nom, $secret)
+	{
+		$hash = null;
+
+		try {
+			$query = EntitéDAO::get_connexion()->prepare("SELECT hash FROM cle WHERE username = ? AND nom = ? ");
+			$query->bind_param("ss", $username, $nom);
+
+			$query->execute();
+			$query->bind_result($hash);
+
+			$résultat = $query->fetch();
+			$query->close();
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
+		}
+
+		return hash("sha256", $secret) == $hash;
 	}
 }
