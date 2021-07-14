@@ -38,8 +38,8 @@ class Clé
 
 	public function est_valide()
 	{
-		return $this->création >= (new \DateTime())->getTimestamp() &&
-			$this->expiration <= (new \DateTime())->getTimestamp() &&
+		return $this->création <= (new \DateTime())->getTimestamp() &&
+			($this->expiration == 0 || $this->expiration > (new \DateTime())->getTimestamp()) &&
 			$this->portée > $this::PORTEE_REVOQUEE;
 	}
 }

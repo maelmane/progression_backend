@@ -74,9 +74,12 @@ final class LoginIntTests extends TestCase
 			);
 		$mockCléDao
 			->shouldReceive("get_clé")
-			->with("bob", "clé_révoquée")
+			->with("bob", "clé révoquée")
 			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_REVOQUEE));
-		$mockCléDao->shouldReceive("get_clé")->andReturn(null);
+		$mockCléDao
+			->shouldReceive("get_clé")
+			->with("bob", "clé inexistante")
+			->andReturn(null);
 		$mockCléDao->shouldReceive("vérifier")->andReturn(false);
 
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
