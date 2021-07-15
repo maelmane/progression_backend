@@ -36,7 +36,7 @@ class LoginCtl extends Contrôleur
 
 		$erreurs = $this->valider_paramètres($request);
 		if ($erreurs) {
-			$réponse = $this->réponse_json(["erreur" => $erreurs], 422);
+			$réponse = $this->réponse_json(["erreur" => $erreurs], 400);
 		} else {
 			$réponse = $this->effectuer_login($request);
 		}
@@ -50,13 +50,14 @@ class LoginCtl extends Contrôleur
 		Log::debug("LoginCtl.effectuer_login. Params : ", [$request]);
 
 		$username = $request->input("username");
-		$key = $request->input("key");
+		$key_name = $request->input("key_name");
+		$key_secret = $request->input("key_secret");
 		$password = $request->input("password");
 
 		$loginInt = new LoginInt();
 
-		if ($key) {
-			$user = $loginInt->effectuer_login_par_clé($username, $key);
+		if ($key_name && $key_secret) {
+			$user = $loginInt->effectuer_login_par_clé($username, $key_name, $key_secret);
 		} else {
 			$user = $loginInt->effectuer_login_par_identifiant($username, $password);
 		}
@@ -74,9 +75,9 @@ class LoginCtl extends Contrôleur
 		if ($user) {
 			Log::info(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					get_class($this) .
-					") Login. username: " .
-					$request->input("username"),
+				get_class($this) .
+				") Login. username: " .
+				$request->input("username"),
 			);
 
 			$token = $this->générer_token($user);
@@ -84,9 +85,9 @@ class LoginCtl extends Contrôleur
 		} else {
 			Log::notice(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					get_class($this) .
-					") Accès interdit. username: " .
-					$request->input("username"),
+				get_class($this) .
+				") Accès interdit. username: " .
+				$request->input("username"),
 			);
 
 			$réponse = $this->réponse_json(["erreur" => "Accès interdit."], 401);
@@ -119,9 +120,10 @@ class LoginCtl extends Contrôleur
 		$validateur = Validator::make(
 			$request->all(),
 			[
-				"key" => "required_without:username",
-				"username" => "required_without:key|alpha_dash",
-				"password" => "required_without:key",
+				"key_name" => "required_without:password",
+				"key_secret" => "required_with:key_name",
+				"username" => "required|alpha_dash",
+				"password" => "required_without:key_name",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
