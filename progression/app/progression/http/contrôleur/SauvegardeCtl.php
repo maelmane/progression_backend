@@ -48,7 +48,7 @@ class SauvegardeCtl extends Contrôleur
 
 		$validateur = $this->valider_paramètres($request);
 		if ($validateur->fails()) {
-			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 422);
+			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} else {
 			$résultat_sauvegarde = $this->sauvegarder_sauvegarde($request, $username, $question_uri);
 			$réponse = $this->valider_et_préparer_réponse(

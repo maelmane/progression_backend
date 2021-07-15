@@ -49,7 +49,7 @@ class AvancementCtl extends Contrôleur
 		$validateur = $this->valider_paramètres($request);
 
 		if ($validateur->fails()) {
-			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 422);
+			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} elseif ($request->avancement && !$this->valider_permissions()) {
 			$réponse = $this->réponse_json(["erreur" => "Opération interdite."], 403);
 		} else {

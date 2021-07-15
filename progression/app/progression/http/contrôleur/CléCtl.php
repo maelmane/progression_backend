@@ -47,7 +47,7 @@ class CléCtl extends Contrôleur
 		$validateur = $this->valider_paramètres($request);
 
 		if ($validateur->fails()) {
-			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 422);
+			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} else {
 			$cléInt = new GénérerCléAuthentificationInt();
 			$clé = $cléInt->générer_clé($username, $request->nom);

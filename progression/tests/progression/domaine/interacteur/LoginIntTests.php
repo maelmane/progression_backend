@@ -29,39 +29,39 @@ final class LoginIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$mockUserDao = Mockery::mock("progression\dao\UserDAO");
-		$mockUserDao
+		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO
 			->allows()
 			->get_user("bob")
 			->andReturn(new User("bob"));
-		$mockUserDao
+		$mockUserDAO
 			->allows()
 			->get_user("Banane")
 			->andReturn(null);
-		$mockUserDao
+		$mockUserDAO
 			->allows()
 			->vérifier_password(Mockery::Any(), "password")
 			->andReturn(true);
-		$mockUserDao
+		$mockUserDAO
 			->allows()
 			->vérifier_password(Mockery::Any(), Mockery::Any())
 			->andReturn(false);
 
-		$mockUserDao->shouldReceive("save")->andReturn(new User("Banane"));
-		$mockUserDao->shouldReceive("set_password")->withArgs(function ($user, $password) {
+		$mockUserDAO->shouldReceive("save")->andReturn(new User("Banane"));
+		$mockUserDAO->shouldReceive("set_password")->withArgs(function ($user, $password) {
 			return $user->username == "Banane" && $password == "password";
 		});
 
-		$mockCléDao = Mockery::mock("progression\dao\CléDAO");
-		$mockCléDao
+		$mockCléDAO = Mockery::mock("progression\dao\CléDAO");
+		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé valide")
 			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_AUTH));
-		$mockCléDao
+		$mockCléDAO
 			->shouldReceive("vérifier")
 			->with("bob", "clé valide", "secret")
 			->andReturn(true);
-		$mockCléDao
+		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé expirée")
 			->andReturn(
@@ -72,25 +72,25 @@ final class LoginIntTests extends TestCase
 					Clé::PORTEE_AUTH,
 				),
 			);
-		$mockCléDao
+		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé révoquée")
 			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_REVOQUEE));
-		$mockCléDao
+		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé inexistante")
 			->andReturn(null);
-		$mockCléDao->shouldReceive("vérifier")->andReturn(false);
+		$mockCléDAO->shouldReceive("vérifier")->andReturn(false);
 
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_user_dao()
-			->andReturn($mockUserDao);
+			->andReturn($mockUserDAO);
 		$mockDAOFactory
 			->allows()
 			->get_clé_dao()
-			->andReturn($mockCléDao);
+			->andReturn($mockCléDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 

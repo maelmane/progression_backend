@@ -77,13 +77,13 @@ class TentativeCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => "Ressource indisponible sur le serveur distant."], 502);
 		} catch (DomainException $erreur) {
 			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			return $this->réponse_json(["erreur" => "Requête intraitable."], 422);
+			return $this->réponse_json(["erreur" => "Requête intraitable."], 400);
 		}
 
 		if ($question instanceof QuestionProg) {
 			$validation = $this->valider_paramètres($request);
 			if ($validation->fails()) {
-				return $this->réponse_json(["erreur" => $validation->errors()], 422);
+				return $this->réponse_json(["erreur" => $validation->errors()], 400);
 			}
 			$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
 
@@ -98,7 +98,7 @@ class TentativeCtl extends Contrôleur
 				$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
 				$réponse = $this->item($tentative, new TentativeProgTransformer());
 			} else {
-				return $this->réponse_json(["erreur" => "Requête intraitable."], 422);
+				return $this->réponse_json(["erreur" => "Requête intraitable."], 400);
 			}
 		} elseif ($question instanceof QuestionSys) {
 			return $this->réponse_json(["erreur" => "Question système non implémentée."], 501);

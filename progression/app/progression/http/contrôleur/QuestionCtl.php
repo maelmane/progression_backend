@@ -43,7 +43,7 @@ class QuestionCtl extends Contrôleur
 			$réponse = $this->réponse_json(["message" => "Ressource indisponible sur le serveur distant."], 502);
 		} catch (DomainException $erreur) {
 			Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			$réponse = $this->réponse_json(["message" => "Requête intraitable."], 422);
+			$réponse = $this->réponse_json(["message" => "Requête intraitable."], 400);
 		}
 
 		Log::debug("QuestionCtl.get. Retour : ", [$réponse]);
