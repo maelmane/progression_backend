@@ -39,7 +39,6 @@ final class RésultatProgTransformerTests extends TestCase
 		$réponse_attendue = [
 			"id" =>
 				"bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
-			"numéro" => 0,
 			"sortie_observée" => "Bonjour\nBonjour\n",
 			"sortie_erreur" => "",
 			"résultat" => true,

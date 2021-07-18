@@ -87,14 +87,14 @@ final class QuestionProgCtlTests extends TestCase
 		);
 	}
 
-	public function test_étant_donné_le_chemin_dune_question_inexistante_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
+	public function test_étant_donné_le_chemin_dune_question_inexistante_lorsquon_appelle_get_on_obtient_une_erreur_400()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
 			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25faW5leGlzdGFudGU",
 		);
 
-		$this->assertEquals(404, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_obtenu->getContent());
+		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals('{"erreur":"Type de question inconnu."}', $résultat_obtenu->getContent());
 	}
 }

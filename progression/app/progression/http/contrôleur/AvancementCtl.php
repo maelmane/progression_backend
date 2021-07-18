@@ -19,6 +19,8 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\ObtenirAvancementInt;
 use progression\domaine\interacteur\ObtenirUserInt;
@@ -31,68 +33,129 @@ class AvancementCtl extends Contrôleur
 {
 	public function get(Request $request, $username, $question_uri)
 	{
-		$chemin = Encodage::base64_decode_url($question_uri);
-		$avancement = null;
-		$réponse = null;
+		Log::debug("AvancementCtl.get. Params : ", [$request->all(), $username, $question_uri]);
 
-		$avancement = $this->obtenirAvancement($username, $chemin);
-		if ($avancement != null) {
-			$avancement->id = "{$username}/$question_uri";
-			$réponse = $this->item($avancement, new AvancementTransformer());
-		}
+		$avancement = $this->obtenir_avancement($username, $question_uri);
+		$réponse = $this->valider_et_préparer_réponse($avancement, $username, $question_uri);
 
-		return $this->préparer_réponse($réponse);
+		Log::debug("AvancementCtl.get. Retour : ", [$réponse]);
+		return $réponse;
 	}
 
 	public function post(Request $request, $username)
 	{
-		$avancement = null;
-		$réponse = null;
+		Log::debug("AvancementCtl.post. Params : ", [$request->all(), $username]);
 
-		if (isset($request->question_uri)) {
-			$chemin = Encodage::base64_decode_url($request->question_uri);
+		$validateur = $this->valider_paramètres($request);
 
-			if (isset($request->avancement)) {
-				if ($request->user()->rôle == User::ROLE_ADMIN) {
-					if (!isset($request->avancement["état"])) {
-						return $this->réponse_json(
-							["erreur" => "Le champ état est obligatoire pour traiter la requête"],
-							422,
-						);
-					}
-
-					$avancement = new Avancement($request->avancement["état"], Question::TYPE_PROG);
-					$avancement = $this->sauvegarderAvancement($username, $chemin, $avancement);
-				} else {
-					return $this->réponse_json(["erreur" => "Accès interdit."], 403);
-				}
-			} else {
-				$avancement = $this->sauvegarderAvancement($username, $chemin, new Avancement());
-			}
-			// On n'entrera ici que si l'utilisateur existe et <l'objet $avancement correspond bel et bien à un objet de la classe «Avancement»>(si applicable)
-			if ($avancement != null) {
-				$avancement->id = "{$username}/$request->question_uri";
-				$réponse = $this->item($avancement, new AvancementTransformer());
-			} else {
-				return $this->réponse_json(["erreur" => "Requête intraitable"], 422);
-			}
-			return $this->préparer_réponse($réponse);
+		if ($validateur->fails()) {
+			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
+		} elseif ($request->avancement && !$this->valider_permissions()) {
+			$réponse = $this->réponse_json(["erreur" => "Opération interdite."], 403);
 		} else {
-			return $this->réponse_json(["erreur" => "Requête intraitable"], 422);
+			$avancement = $request->avancement;
+
+			$avancement_sauvegardé = $this->créer_ou_sauvegarder_avancement(
+				$avancement,
+				$username,
+				$request->question_uri,
+			);
+
+			$réponse = $this->valider_et_préparer_réponse($avancement_sauvegardé, $username, $request->question_uri);
 		}
+
+		Log::debug("AvancementCtl.post. Retour : ", [$réponse]);
+
+		return $réponse;
 	}
 
-	private function obtenirAvancement($username, $chemin)
+	private function valider_et_préparer_réponse($avancement, $username, $question_uri)
 	{
+		Log::debug("AvancementCtl.valider_et_préparer_réponse. Params : ", [$avancement, $username, $question_uri]);
+
+		if ($avancement) {
+			$avancement->id = "{$username}/$question_uri";
+			$réponse_array = $this->avancement_to_array($avancement);
+		} else {
+			$réponse_array = null;
+		}
+
+		$réponse = $this->préparer_réponse($réponse_array);
+
+		Log::debug("AvancementCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
+		return $réponse;
+	}
+
+	private function avancement_to_array($avancement)
+	{
+		Log::debug("AvancementCtl.avancement_to_array. Params : ", [$avancement]);
+
+		$réponse = $this->item($avancement, new AvancementTransformer());
+
+		Log::debug("AvancementCtl.avancement_to_array. Retour : ", [$réponse]);
+
+		return $réponse;
+	}
+
+	private function créer_ou_sauvegarder_avancement($avancement, $username, $question_uri)
+	{
+		Log::debug("AvancementCtl.créer_ou_sauvegarder_avancement. Params : ", [$avancement, $username, $question_uri]);
+
+		$avancement_sauvegardé = $this->sauvegarder_avancement(
+			$username,
+			$question_uri,
+			$avancement ?? new Avancement(),
+		);
+
+		$réponse = $avancement_sauvegardé;
+		Log::debug("AvancementCtl.créer_ou_sauvegarder_avancement. Retour : ", [$réponse]);
+		return $réponse;
+	}
+
+	private function valider_paramètres($request)
+	{
+		$validateur = Validator::make(
+			$request->all(),
+			[
+				"question_uri" => "required",
+				"avancement.état" => "required_with:avancement|integer|between:0,2",
+			],
+			[
+				"required" => "Le champ :attribute est obligatoire.",
+			],
+		);
+
+		return $validateur;
+	}
+
+	private function valider_permissions()
+	{
+		return Gate::allows("update-avancement");
+	}
+
+	private function obtenir_avancement($username, $question_uri)
+	{
+		Log::debug("AvancementCtl.obtenir_avancement. Params : ", [$username, $question_uri]);
+
 		$avancementInt = new ObtenirAvancementInt();
+		$chemin = Encodage::base64_decode_url($question_uri);
 		$avancement = $avancementInt->get_avancement($username, $chemin);
 
+		Log::debug("AvancementCtl.obtenir_avancement. Retour : ", [$avancement]);
 		return $avancement;
 	}
-	private function sauvegarderAvancement($username, $chemin, $avancement)
+
+	private function sauvegarder_avancement($username, $question_uri, $avancement)
 	{
+		Log::debug("AvancementCtl.sauvegarder_avancement. Params : ", [$username, $question_uri]);
+
 		$avancementInt = new SauvegarderAvancementInt();
-		$new_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);
-		return $new_avancement;
+		$chemin = Encodage::base64_decode_url($question_uri);
+
+		$nouvel_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);
+		$nouvel_avancement->id = "$username/$question_uri";
+
+		Log::debug("AvancementCtl.sauvegarder_avancement. Retour : ", [$nouvel_avancement]);
+		return $nouvel_avancement;
 	}
 }

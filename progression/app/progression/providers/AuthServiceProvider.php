@@ -3,10 +3,12 @@
 namespace progression\providers;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\GenericUser;
 use progression\dao\DAOFactory;
-use progression\domaine\interacteur\CréerUserInt;
+use progression\domaine\interacteur\ObtenirUserInt;
+use progression\domaine\entité\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
 use UnexpectedValueException;
@@ -31,6 +33,24 @@ class AuthServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
+		Gate::guessPolicyNamesUsing(function ($modelClass) {
+			if ($modelClass == "progression\domaine\entité\User") {
+				return "access-user";
+			}
+		});
+
+		Gate::before(function ($user, $ability) {
+			if ($user->rôle == User::ROLE_ADMIN) {
+				return true;
+			}
+		});
+
+		Gate::define("access-user", [UserPolicy::class, "access"]);
+
+		Gate::define("update-avancement", function ($user) {
+			return false;
+		});
+
 		// Décode le token de la requête.
 		$this->app["auth"]->viaRequest("api", function ($request) {
 			$parties_token = explode(" ", $request->header("Authorization"));
@@ -44,12 +64,11 @@ class AuthServiceProvider extends ServiceProvider
 						return null;
 					} else {
 						// Recherche de l'utilisateur
-						$user = (new CréerUserInt())->obtenir_ou_créer_user($tokenDécodé->user->username);
+						$user = (new ObtenirUserInt())->get_user($tokenDécodé->user->username);
 
 						return new GenericUser([
 							"username" => $user->username,
 							"rôle" => $user->rôle,
-							"entité" => $user,
 						]);
 					}
 				} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {

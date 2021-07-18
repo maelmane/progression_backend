@@ -80,7 +80,7 @@ final class AvancementCtlTests extends TestCase
 
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("Marcel", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->with("jdoe", "https://depot.com/roger/questions_inexistante")
 			->andReturn(null);
 
 		$mockAvancementDAO
@@ -125,7 +125,7 @@ final class AvancementCtlTests extends TestCase
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
 			"GET",
-			"/avancement/Marcel/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX2luZXhpc3RhbnRl",
 		);
 
 		$this->assertEquals(404, $résultat_observé->status());
@@ -133,14 +133,32 @@ final class AvancementCtlTests extends TestCase
 	}
 
 	// POST
-	public function test_étant_donné_le_chemin_dune_question_non_fourni_dans_la_requete_lorsquon_appelle_post_sans_avancement_on_obtient_un_message_derreur()
+	public function test_étant_donné_un_utilisateur_inexistant_dans_la_requete_lorsquon_appelle_post_avec_un_avancement_on_obtient_une_erreur_403()
 	{
-		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
-			"avancement" => "{test}",
+		$avancementTest = ["état" => Question::ETAT_REUSSI];
+
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/Marcel/avancements", [
+			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
+			"avancement" => $avancementTest,
 		]);
 
-		$this->assertEquals(422, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Requête intraitable"}', $résultat_observé->getContent());
+		$this->assertEquals(403, $résultat_observé->status());
+		$this->assertEquals('{"erreur":"Opération interdite."}', $résultat_observé->getContent());
+	}
+
+	public function test_étant_donné_le_chemin_dune_question_non_fourni_dans_la_requete_lorsquon_appelle_post_avec_un_avancement_on_obtient_une_erreur_400()
+	{
+		$avancementTest = ["état" => Question::ETAT_REUSSI];
+
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
+			"avancement" => $avancementTest,
+		]);
+
+		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertEquals(
+			'{"erreur":{"question_uri":["Le champ question uri est obligatoire."]}}',
+			$résultat_observé->getContent(),
+		);
 	}
 
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_on_obtient_un_nouvel_avancement_avec_ses_valeurs_par_defaut()
@@ -157,16 +175,18 @@ final class AvancementCtlTests extends TestCase
 	}
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_avec_un_avancement_on_obtient_une_erreur_403()
 	{
+		$avancementTest = ["état" => Question::ETAT_REUSSI];
+
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
 			"question_uri" =>
 				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-			"avancement" => "{test}",
+			"avancement" => $avancementTest,
 		]);
 
 		$this->assertEquals(403, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_observé->getContent());
+		$this->assertEquals('{"erreur":"Opération interdite."}', $résultat_observé->getContent());
 	}
-	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_on_obtient_le_meme_resultat_quun_utilisateur_normal()
+	public function test_étant_donné_un_admin_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_on_obtient_le_meme_resultat_quun_utilisateur_normal()
 	{
 		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/jdoe/avancements", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
@@ -177,7 +197,7 @@ final class AvancementCtlTests extends TestCase
 			$résultat_observé->getContent(),
 		);
 	}
-	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_avancement_on_obtient_lavancement_modifié()
+	public function test_étant_donné_un_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_avancement_on_obtient_lavancement_modifié()
 	{
 		$avancementTest = ["état" => Question::ETAT_REUSSI];
 
@@ -193,7 +213,8 @@ final class AvancementCtlTests extends TestCase
 			$résultat_observé->getContent(),
 		);
 	}
-	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_avancement_sans_etat_on_obtient_un_message_derreur()
+
+	public function test_étant_donné_un_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_avancement_sans_etat_on_obtient_une_erreur_400()
 	{
 		$avancementTest = ["test" => "test valeur"];
 		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/jdoe/avancements", [
@@ -202,9 +223,25 @@ final class AvancementCtlTests extends TestCase
 			"avancement" => $avancementTest,
 		]);
 
-		$this->assertEquals(422, $résultat_observé->status());
+		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
-			'{"erreur":"Le champ état est obligatoire pour traiter la requête"}',
+			'{"erreur":{"avancement.état":["The avancement.état field is required when avancement is present."]}}',
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_l_état_d_avancement_invalide_on_obtient_une_erreur_400()
+	{
+		$avancementTest = ["état" => 42];
+		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/jdoe/avancements", [
+			"question_uri" =>
+				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"avancement" => $avancementTest,
+		]);
+
+		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertEquals(
+			'{"erreur":{"avancement.état":["The avancement.état must be between 0 and 2."]}}',
 			$résultat_observé->getContent(),
 		);
 	}

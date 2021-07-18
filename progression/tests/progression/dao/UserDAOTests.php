@@ -1,20 +1,20 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\dao;
 
@@ -82,5 +82,48 @@ final class UserDAOTests extends TestCase
 
 		$résponse_observée = (new UserDAO())->get_user("bob");
 		$this->assertEquals($réponse_attendue, $résponse_observée);
+	}
+
+	public function test_étant_donné_un_utilisateur_lorsquon_vérifie_un_mot_de_passe_correct_on_obtient_vrai()
+	{
+		$user = new User("bob");
+
+		$dao = new UserDAO();
+		$dao->set_password($user, "test de mot de passe");
+
+		$this->assertTrue($dao->vérifier_password($user, "test de mot de passe"));
+	}
+
+	public function test_étant_donné_un_utilisateur_lorsquon_vérifie_un_mot_de_passe_incorrect_on_obtient_faux()
+	{
+		$user = new User("bob");
+
+		$dao = new UserDAO();
+		$dao->set_password($user, "test de mot de passe");
+
+		$this->assertFalse($dao->vérifier_password($user, "Mauvais mot de passe"));
+	}
+
+	public function test_étant_donné_un_utilisateur_lorsquon_vérifie_un_mot_de_passe_null_on_obtient_faux()
+	{
+		$user = new User("bob");
+
+		$dao = new UserDAO();
+		$dao->set_password($user, "test de mot de passe");
+
+		$this->assertFalse($dao->vérifier_password($user, null));
+	}
+
+	public function test_étant_donné_un_utilisateur_lorsquon_change_son_mot_de_passe_et_vérifie_l_ancien_on_obtient_faux()
+	{
+		$user = new User("bob");
+
+		$dao = new UserDAO();
+		$dao->set_password($user, "test de mot de passe");
+		$dao->set_password($user, "Nouveau mot de passe");
+
+		$this->assertTrue($dao->vérifier_password($user, "Nouveau mot de passe"));
+
+		$this->assertFalse($dao->vérifier_password($user, "test de mot de passe"));
 	}
 }

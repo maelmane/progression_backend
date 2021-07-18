@@ -34,7 +34,7 @@ final class TentativeCtlTests extends TestCase
 		$_ENV["AUTH_TYPE"] = "no";
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 
 		// Tentative
 		$tentative = new TentativeProg("python", "codeTest", "1614374490");
@@ -101,6 +101,13 @@ final class TentativeCtlTests extends TestCase
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($avancement);
 
+		// User
+		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO
+			->allows("get_user")
+			->with("jdoe")
+			->andReturn(new User("jdoe"));
+
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_tentative_dao")->andReturn($mockTentativeDAO);
@@ -108,6 +115,8 @@ final class TentativeCtlTests extends TestCase
 		$mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);
 		$mockDAOFactory->shouldReceive("get_exécuteur")->andReturn($mockExécuteur);
 		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
+		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
+
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 
@@ -130,7 +139,7 @@ final class TentativeCtlTests extends TestCase
 		);
 	}
 
-	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
+	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_un_timestamp_inexistant_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
@@ -163,7 +172,7 @@ final class TentativeCtlTests extends TestCase
 			["langage" => "python"],
 		);
 
-		$this->assertEquals(422, $résultat_obtenu->status());
+		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":{"code":["Le champ code est obligatoire."]}}', $résultat_obtenu->getContent());
 	}
 
@@ -187,7 +196,7 @@ final class TentativeCtlTests extends TestCase
 			["langage" => "python", "code" => "print(\"Hello world!\")"],
 		);
 
-		$this->assertEquals(422, $résultat_obtenu->status());
+		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Requête intraitable."}', $résultat_obtenu->getContent());
 	}
 }

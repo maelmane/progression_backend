@@ -49,9 +49,17 @@ final class SauvegardeCtlTests extends TestCase
 			->andReturn(null);
 		$mockSauvegardeDAO->shouldReceive("save")->andReturn($sauvegarde);
 
+		// User
+		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO
+			->allows("get_user")
+			->with("jdoe")
+			->andReturn(new User("jdoe"));
+
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_sauvegarde_dao")->andReturn($mockSauvegardeDAO);
+		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);
 	}
@@ -87,7 +95,7 @@ final class SauvegardeCtlTests extends TestCase
 	}
 
 	// POST
-	public function test_étant_donné_une_sauvegarde_sans_langage_lorquon_fait_une_requête_post_on_obtient_une_erreur_422()
+	public function test_étant_donné_une_sauvegarde_sans_langage_lorquon_fait_une_requête_post_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
 			"POST",
@@ -97,13 +105,13 @@ final class SauvegardeCtlTests extends TestCase
 			],
 		);
 
-		$this->assertEquals(422, $résultat_observé->status());
+		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
 			'{"erreur":{"langage":["Le champ langage est obligatoire."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
-	public function test_étant_donné_une_sauvegarde_sans_code_lorquon_fait_une_requête_post_on_obtient_une_erreur_422()
+	public function test_étant_donné_une_sauvegarde_sans_code_lorquon_fait_une_requête_post_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
 			"POST",
@@ -113,7 +121,7 @@ final class SauvegardeCtlTests extends TestCase
 			],
 		);
 
-		$this->assertEquals(422, $résultat_observé->status());
+		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals('{"erreur":{"code":["Le champ code est obligatoire."]}}', $résultat_observé->getContent());
 	}
 	public function test_étant_donné_un_username_luri_dune_question_un_code_et_un_langage_lorsquon_appelle_post_on_obtient_une_sauvegarde()

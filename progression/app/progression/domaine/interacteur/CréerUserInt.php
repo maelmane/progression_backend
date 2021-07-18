@@ -22,16 +22,23 @@ use progression\domaine\entité\User;
 
 class CréerUserInt extends Interacteur
 {
-	function obtenir_ou_créer_user($username)
+	function créer_user($username)
 	{
+		if (!$username) {
+			return null;
+		}
+
 		$user_dao = $this->source_dao->get_user_dao();
 
 		$user = $user_dao->get_user($username);
-		if ($user == null) {
-			$user = new User(null);
-			$user->username = $username;
+
+		if ($user) {
+			return null;
+		} else {
+			$user = new User($username);
 			$user = $user_dao->save($user);
 		}
+
 		return $user;
 	}
 }

@@ -43,7 +43,7 @@ final class ValidationPermissionsTests extends TestCase
 		$mockUserDAO
 			->allows()
 			->get_user("jdoe")
-			->andReturn(null);
+			->andReturn(new User("jdoe"));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
@@ -68,7 +68,7 @@ final class ValidationPermissionsTests extends TestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe");
 
 		$this->assertEquals(403, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_obtenu->getContent());
+		$this->assertEquals('{"erreur":"Opération interdite."}', $résultat_obtenu->getContent());
 	}
 
 	public function test_étant_donné_un_utilisateur_admin_connecté_lorsquon_demande_une_ressource_pour_l_utilisateur_existant_bob_on_obtient_son_profil()

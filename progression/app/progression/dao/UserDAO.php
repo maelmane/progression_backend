@@ -63,4 +63,37 @@ class UserDAO extends EntitéDAO
 
 		return $this->get_user($objet->username);
 	}
+
+	public function set_password(User $user, string $password)
+	{
+		try {
+			$query = EntitéDAO::get_connexion()->prepare("UPDATE user SET password=? WHERE username=?");
+
+			$hash = password_hash($password, PASSWORD_DEFAULT);
+			$query->bind_param("ss", $hash, $user->username);
+			$query->execute();
+			$query->close();
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
+		}
+	}
+
+	public function vérifier_password(User $user, string $password = null)
+	{
+		try {
+			$query = EntitéDAO::get_connexion()->prepare("SELECT password FROM user WHERE username=?");
+
+			$query->bind_param("s", $user->username);
+			$query->execute();
+
+			$hash = null;
+			$query->bind_result($hash);
+			$query->fetch();
+			$query->close();
+
+			return $hash && password_verify($password, $hash);
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
+		}
+	}
 }

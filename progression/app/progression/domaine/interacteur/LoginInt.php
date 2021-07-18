@@ -1,22 +1,25 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\domaine\interacteur;
+
+use progression\domaine\entité\Clé;
+use progression\dao\{DAOFactory, UserDAO};
 
 class AuthException extends \Exception
 {
@@ -24,9 +27,32 @@ class AuthException extends \Exception
 
 class LoginInt extends Interacteur
 {
-	function effectuer_login($username, $password)
+	function effectuer_login_par_clé($username, $nom_clé, $secret)
 	{
-		syslog(LOG_INFO, "Tentative de connexion : " . $username);
+		$dao = DAOFactory::getInstance()->get_clé_dao();
+
+		$clé = $dao->get_clé($username, $nom_clé);
+		if (
+			$clé &&
+			$clé->est_valide() &&
+			$clé->portée == Clé::PORTEE_AUTH &&
+			$dao->vérifier($username, $nom_clé, $secret)
+		) {
+			$dao = DAOFactory::getInstance()->get_user_dao();
+			return $dao->get_user($username);
+		} else {
+			syslog(LOG_NOTICE, "Clé invalide pour $username");
+			return null;
+		}
+	}
+
+	function effectuer_login_par_identifiant($username, $password = null)
+	{
+		syslog(LOG_INFO, "Tentative de connexion : $username");
+
+		if (!$this->vérifier_champ_valide($username)) {
+			return null;
+		}
 
 		$user = null;
 
@@ -39,7 +65,7 @@ class LoginInt extends Interacteur
 		}
 
 		if ($user != null) {
-			syslog(LOG_INFO, "Connexion réussie: " . $username);
+			syslog(LOG_INFO, "Connexion réussie : $username");
 		}
 
 		return $user;
@@ -47,27 +73,34 @@ class LoginInt extends Interacteur
 
 	function login_local($username, $password)
 	{
-		throw new AuthException("L'authentification locale n'est pas implémentée.");
+		$user = (new ObtenirUserInt())->get_user($username);
+
+		if ($user && $this->source_dao->get_user_dao()->vérifier_password($user, $password)) {
+			return $user;
+		} else {
+			return null;
+		}
 	}
 
 	function login_ldap($username, $password)
 	{
-		$user = null;
+		$user_ldap = $this->get_username_ldap($username, $password);
 
-		if ($this->vérifier_champs_valides($username, $password)) {
-			$user_ldap = $this->get_username_ldap($username, $password);
-
-			if ($user_ldap != null) {
-				$user = (new CréerUserInt())->obtenir_ou_créer_user($username);
+		if ($user_ldap != null) {
+			$user = (new ObtenirUserInt())->get_user($username);
+			if (!$user) {
+				$user = (new CréerUserInt())->créer_user($username);
 			}
+		} else {
+			$user = null;
 		}
 
 		return $user;
 	}
 
-	function vérifier_champs_valides($username, $password)
+	function vérifier_champ_valide($champ)
 	{
-		return !(empty(trim($username)) || empty($password));
+		return !empty(trim($champ));
 	}
 
 	function get_username_ldap($username, $password)
@@ -97,6 +130,11 @@ class LoginInt extends Interacteur
 
 	function login_sans_authentification($username)
 	{
-		return (new CréerUserInt())->obtenir_ou_créer_user($username);
+		$user = (new ObtenirUserInt())->get_user($username);
+		if (!$user) {
+			$user = (new CréerUserInt())->créer_user($username);
+		}
+
+		return $user;
 	}
 }

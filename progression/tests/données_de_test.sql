@@ -5,18 +5,30 @@ DELETE FROM user;
 
 INSERT INTO user VALUES (
   "bob",
+  "motDePasse",
   1,
   0
 );
 INSERT INTO user VALUES (
   "admin",
+  "mdpAdmin",
   1,
   1
 );
 INSERT INTO user VALUES (
   "Stefany",
+  NULL,
   1,
   0
+);
+
+INSERT INTO cle VALUES (
+  "bob",
+  "clé de test",
+  "1234",
+  1624593600,
+  1624680000,
+  1
 );
 
 INSERT INTO sauvegarde VALUES (
