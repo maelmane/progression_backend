@@ -75,9 +75,9 @@ class LoginCtl extends Contrôleur
 		if ($user) {
 			Log::info(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-				get_class($this) .
-				") Login. username: " .
-				$request->input("username"),
+					get_class($this) .
+					") Login. username: " .
+					$request->input("username"),
 			);
 
 			$token = $this->générer_token($user);
@@ -85,9 +85,9 @@ class LoginCtl extends Contrôleur
 		} else {
 			Log::notice(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-				get_class($this) .
-				") Accès interdit. username: " .
-				$request->input("username"),
+					get_class($this) .
+					") Accès interdit. username: " .
+					$request->input("username"),
 			);
 
 			$réponse = $this->réponse_json(["erreur" => "Accès interdit."], 401);

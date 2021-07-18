@@ -56,13 +56,11 @@ final class LoginCtlTests extends TestCase
 			->with("bob", "clé valide", "secret")
 			->andReturn(true);
 		$mockCléDAO
-            ->shouldReceive("get_clé")
+			->shouldReceive("get_clé")
 			->with("bob", "clé invalide")
 			->andReturn(null);
-		$mockCléDAO
-            ->shouldReceive("vérifier")
-			->andReturn(false);
-		
+		$mockCléDAO->shouldReceive("vérifier")->andReturn(false);
+
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
@@ -135,7 +133,11 @@ final class LoginCtlTests extends TestCase
 		$_ENV["JWT_SECRET"] = "secret";
 		$_ENV["JWT_TTL"] = 3333;
 
-		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob", "key_name" => "clé valide", "key_secret" => "secret"]);
+		$résultat_observé = $this->call("POST", "/auth", [
+			"username" => "bob",
+			"key_name" => "clé valide",
+			"key_secret" => "secret",
+		]);
 
 		$token = json_decode($résultat_observé->getContent(), true);
 		$tokenDécodé = JWT::decode($token["Token"], $_ENV["JWT_SECRET"], ["HS256"]);
@@ -152,13 +154,16 @@ final class LoginCtlTests extends TestCase
 		$_ENV["JWT_SECRET"] = "secret";
 		$_ENV["JWT_TTL"] = 3333;
 
-		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob", "key_name" => "clé invalide", "key_secret" => "secret"]);
+		$résultat_observé = $this->call("POST", "/auth", [
+			"username" => "bob",
+			"key_name" => "clé invalide",
+			"key_secret" => "secret",
+		]);
 
 		$this->assertEquals(401, $résultat_observé->status());
 		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_observé->content());
-
 	}
-	
+
 	//Intestable tant que la connexion à LDAP se fera à même l'interacteur
 	/*
 	   public function test_étant_donné_lutilisateur_inexistant_roger_et_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_code_403()
