@@ -30,6 +30,8 @@ class ChargeurQuestion
 			return (new ChargeurQuestionFichier())->récupérer_question($uri);
 		} elseif ($scheme == "https") {
 			return $this->récupérer_question_http($uri);
+		} else {
+			throw new RuntimeException("Schéma d'URI invalide");
 		}
 	}
 

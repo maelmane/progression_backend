@@ -36,14 +36,26 @@ class QuestionCtl extends Contrôleur
 			$question = $this->obtenir_question($uri);
 			$réponse = $this->valider_et_préparer_réponse($question);
 		} catch (LengthException $erreur) {
-			Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			$réponse = $this->réponse_json(["message" => "Limite de volume dépassé."], 509);
+			Log::warning(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					__CLASS__ .
+					") ERR: {$erreur->getMessage()}",
+			);
+			$réponse = $this->réponse_json(["erreur" => "Limite de volume dépassé."], 509);
 		} catch (RuntimeException $erreur) {
-			Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			$réponse = $this->réponse_json(["message" => "Ressource indisponible sur le serveur distant."], 502);
+			Log::notice(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					__CLASS__ .
+					") ERR: {$erreur->getMessage()}",
+			);
+			$réponse = $this->réponse_json(["erreur" => "Ressource indisponible sur le serveur distant."], 502);
 		} catch (DomainException $erreur) {
-			Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			$réponse = $this->réponse_json(["message" => "Requête intraitable."], 400);
+			Log::notice(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					__CLASS__ .
+					") ERR: {$erreur->getMessage()}",
+			);
+			$réponse = $this->réponse_json(["erreur" => "Requête intraitable."], 400);
 		}
 
 		Log::debug("QuestionCtl.get. Retour : ", [$réponse]);
@@ -56,6 +68,7 @@ class QuestionCtl extends Contrôleur
 		Log::debug("QuestionCtl.obtenir_question. Params : ", [$question_uri]);
 
 		$chemin = Encodage::base64_decode_url($question_uri);
+
 		$questionInt = new ObtenirQuestionInt();
 		$question = $questionInt->get_question($chemin);
 
@@ -72,9 +85,9 @@ class QuestionCtl extends Contrôleur
 			$réponse = $this->préparer_réponse($réponse_array);
 		} elseif ($question instanceof QuestionSys || $question instanceof QuestionBD) {
 			Log::notice("Type de question non implémentée : " . get_class($question));
-			$réponse = $this->réponse_json(["message" => "Type de question non implémentée."], 501);
+			$réponse = $this->réponse_json(["erreur" => "Type de question non implémentée."], 501);
 		} else {
-			$réponse = $this->préparer_réponse($question);
+			$réponse = $this->réponse_json(["erreur" => "Type de question inconnu."], 400);
 		}
 
 		Log::debug("QuestionCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
