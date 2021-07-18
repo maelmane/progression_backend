@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\GenericUser;
 use progression\dao\DAOFactory;
-use progression\domaine\interacteur\CréerUserInt;
+use progression\domaine\interacteur\ObtenirUserInt;
 use progression\domaine\entité\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
@@ -64,7 +64,7 @@ class AuthServiceProvider extends ServiceProvider
 						return null;
 					} else {
 						// Recherche de l'utilisateur
-						$user = (new CréerUserInt())->obtenir_ou_créer_user($tokenDécodé->user->username);
+						$user = (new ObtenirUserInt())->get_user($tokenDécodé->user->username);
 
 						return new GenericUser([
 							"username" => $user->username,
