@@ -27,23 +27,24 @@ class CléDAO extends EntitéDAO
 	{
 		$clé = null;
 
+		$secret = null;
 		$création = null;
 		$expiration = null;
 		$portée = null;
 
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT creation, expiration, portee FROM cle WHERE username = ? AND nom = ? ",
+				"SELECT hash, creation, expiration, portee FROM cle WHERE username = ? AND nom = ? ",
 			);
 			$query->bind_param("ss", $username, $nom);
 
 			$query->execute();
-			$query->bind_result($création, $expiration, $portée);
+			$query->bind_result($secret, $création, $expiration, $portée);
 
 			$résultat = $query->fetch();
 			$query->close();
 			if ($résultat) {
-				$clé = new Clé(null, $création, $expiration, $portée);
+				$clé = new Clé($secret, $création, $expiration, $portée);
 			}
 		} catch (mysqli_sql_exception $e) {
 			throw new DAOException($e);

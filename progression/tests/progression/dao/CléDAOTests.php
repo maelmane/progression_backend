@@ -39,7 +39,7 @@ final class CléDAOTests extends TestCase
 		$dao = new CléDAO();
 		$clé = $dao->get_clé("bob", "clé de test");
 
-		$résultat_attendu = new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH);
+		$résultat_attendu = new Clé(1234, 1624593600, 1624680000, Clé::PORTEE_AUTH);
 		$this->assertEquals($résultat_attendu, $clé);
 	}
 
@@ -49,7 +49,7 @@ final class CléDAOTests extends TestCase
 
 		$dao = new CléDAO();
 		$dao->save("bob", "nouvelle clé", $clé);
-		$clé = $dao->get_clé("bob", 9999);
+		$clé = $dao->get_clé("bob", "nouvelle clé");
 
 		$résultat_attendu = $clé;
 		$this->assertEquals($résultat_attendu, $clé);
