@@ -55,7 +55,6 @@ class LoginCtl extends Contrôleur
 		$password = $request->input("password");
 
 		$loginInt = new LoginInt();
-
 		if ($key_name && $key_secret) {
 			$user = $loginInt->effectuer_login_par_clé($username, $key_name, $key_secret);
 		} else {

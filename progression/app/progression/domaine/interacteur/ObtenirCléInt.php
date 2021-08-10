@@ -29,7 +29,7 @@ class ObtenirCléInt extends Interacteur
 
 		$clé = $dao->get_clé($username, $numéro);
 
-		if($clé){
+		if ($clé) {
 			//Caviarde le secret
 			$clé->secret = null;
 		}

@@ -69,7 +69,10 @@ class CléDAO extends EntitéDAO
 			throw new DAOException($e);
 		}
 
-		return $this->get_clé($username, $nom);
+		$clé = $this->get_clé($username, $nom);
+		$clé->secret = $objet->secret;
+
+		return $clé;
 	}
 
 	public function vérifier($username, $nom, $secret)
