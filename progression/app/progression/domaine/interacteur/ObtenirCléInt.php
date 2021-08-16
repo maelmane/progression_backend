@@ -27,6 +27,13 @@ class ObtenirCléInt extends Interacteur
 	{
 		$dao = DAOFactory::getInstance()->get_clé_dao();
 
-		return $dao->get_clé($username, $numéro);
+		$clé = $dao->get_clé($username, $numéro);
+
+		if ($clé) {
+			//Caviarde le secret
+			$clé->secret = null;
+		}
+
+		return $clé;
 	}
 }

@@ -59,7 +59,7 @@ final class ObtenirCléIntTests extends TestCase
 		$int = new ObtenirCléInt();
 
 		$this->assertEquals(
-			new Clé(1234, "2021-06-25 00:00:00", "2021-06-26 00:00:00", 1),
+			new Clé(null, "2021-06-25 00:00:00", "2021-06-26 00:00:00", 1),
 			$int->get_clé("jdoe", 1234),
 		);
 	}
