@@ -21,24 +21,28 @@ namespace progression\http\contrôleur;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Log;
 
-class GénérateurDeToken {
+class GénérateurDeToken
+{
 	private static GénérateurDeToken $instance;
-	
-	private function __construct(){
+
+	private function __construct()
+	{
 	}
 
-	static function get_instance(){
-		if(GénérateurDeToken::$instance == null){
+	static function get_instance()
+	{
+		if (GénérateurDeToken::$instance == null) {
 			GénérateurDeToken::$instance = new GénérateurDeToken();
 		}
 
 		return GénérateurDeToken::$instance;
 	}
 
-	static function set_instance(GénérateurDeToken $générateur){
+	static function set_instance(GénérateurDeToken $générateur)
+	{
 		GénérateurDeToken::$instance = $générateur;
 	}
-	
+
 	function générer_token($user)
 	{
 		Log::debug("InscriptionCtl.générer_token. Params : ", [$user]);

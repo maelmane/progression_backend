@@ -44,57 +44,60 @@ final class InscriptionIntTests extends TestCase
 		Mockery::close();
 	}
 
-	public function test_étant_donné_un_nouvel_utilisateur_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User(){
+	public function test_étant_donné_un_nouvel_utilisateur_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User()
+	{
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
 			->allows()
 			->get_user("roger")
 			->andReturn(null, new User("roger"));
 		$mockUserDao
-            ->shouldReceive("save")
-            ->withArgs(function ($user) {
-            	return $user->username == "roger" && $user->rôle == User::ROLE_NORMAL;
+			->shouldReceive("save")
+			->withArgs(function ($user) {
+				return $user->username == "roger" && $user->rôle == User::ROLE_NORMAL;
 			})
-            ->once()
-            ->andReturn(new User("roger"));
+			->once()
+			->andReturn(new User("roger"));
 		$mockUserDao
-            ->shouldReceive("set_password")
-            ->once()
-            ->withArgs(function ($user, $password) {
-            	return $user->username == "roger" && $password == "password";
-            });
+			->shouldReceive("set_password")
+			->once()
+			->withArgs(function ($user, $password) {
+				return $user->username == "roger" && $password == "password";
+			});
 
 		$user = (new InscriptionInt())->effectuer_inscription("roger", "password");
 
 		$this->assertEquals($user, new User("roger"));
 	}
 
-	public function test_étant_donné_un_nouvel_admin_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User(){
+	public function test_étant_donné_un_nouvel_admin_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User()
+	{
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
 			->allows()
 			->get_user("admin")
 			->andReturn(null, new User("admin", User::ROLE_ADMIN));
 		$mockUserDao
-            ->shouldReceive("save")
-            ->withArgs(function ($user) {
-            	return $user->username == "admin" && $user->rôle == User::ROLE_ADMIN;
+			->shouldReceive("save")
+			->withArgs(function ($user) {
+				return $user->username == "admin" && $user->rôle == User::ROLE_ADMIN;
 			})
-            ->once()
-            ->andReturn(new User("admin", User::ROLE_ADMIN));
+			->once()
+			->andReturn(new User("admin", User::ROLE_ADMIN));
 		$mockUserDao
-            ->shouldReceive("set_password")
-            ->once()
-            ->withArgs(function ($user, $password) {
-            	return $user->username == "admin" && $password == "password";
-            });
+			->shouldReceive("set_password")
+			->once()
+			->withArgs(function ($user, $password) {
+				return $user->username == "admin" && $password == "password";
+			});
 
 		$user = (new InscriptionInt())->effectuer_inscription("admin", "password", User::ROLE_ADMIN);
 
 		$this->assertEquals($user, new User("admin", User::ROLE_ADMIN));
 	}
-	
-	public function test_étant_donné_un_utilisateur_existant_lorsquon_effectue_à_nouveau_linscription_on_obtient_null(){
+
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_effectue_à_nouveau_linscription_on_obtient_null()
+	{
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
 			->allows()

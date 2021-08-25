@@ -23,17 +23,18 @@ use progression\domaine\entité\User;
 
 class InscriptionInt extends Interacteur
 {
-	function effectuer_inscription($username, $password, $role=User::ROLE_NORMAL){
+	function effectuer_inscription($username, $password, $role = User::ROLE_NORMAL)
+	{
 		$dao = $this->source_dao->get_user_dao();
 
 		$user = $dao->get_user($username);
 
-		if($user){
+		if ($user) {
 			return null;
 		}
 
 		$user = $dao->save(new User($username, $role));
-		$dao->set_password($user,$password);
+		$dao->set_password($user, $password);
 
 		return $dao->get_user($username);
 	}

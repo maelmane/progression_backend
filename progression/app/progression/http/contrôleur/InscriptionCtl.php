@@ -67,9 +67,9 @@ class InscriptionCtl extends Contrôleur
 		if ($user) {
 			Log::info(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-				get_class($this) .
-				") Inscription. username: " .
-				$request->input("username"),
+					get_class($this) .
+					") Inscription. username: " .
+					$request->input("username"),
 			);
 
 			$token = GénérateurDeToken::get_instance()->générer_token($user);
@@ -77,9 +77,9 @@ class InscriptionCtl extends Contrôleur
 		} else {
 			Log::notice(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-				get_class($this) .
-				") Échec de l'inscription. username: " .
-				$request->input("username"),
+					get_class($this) .
+					") Échec de l'inscription. username: " .
+					$request->input("username"),
 			);
 
 			$réponse = $this->réponse_json(["erreur" => "Échec de l'inscription."], 403);
