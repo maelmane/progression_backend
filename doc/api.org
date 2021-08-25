@@ -369,3 +369,31 @@ curl -X POST --data "$DATA" https://progression.dti.crosemont.quebec/api/v1/avan
 curl "https://progression.dti.crosemont.quebec/api/v1/sauvegarde/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/python" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
+** Créer une clé d'authentification pour ~jdoe~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+DATA=$(cat <<EOF
+{
+  "nom":"cléAuth",
+  "portée":1
+}
+EOF
+)
+
+curl -X POST --data "$DATA" "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/cles -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Authentification par clé d'authentification pour ~jdoe~
+
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+DATA=$(cat <<EOF
+{
+  "username":"jdoe",
+  "key_name":"cléAuth",
+  "key_secret":"1234"
+}
+EOF
+)
+
+curl -X POST --data "$DATA" "https://progression.dti.crosemont.quebec/api/v1/auth -H "Authorization: Bearer $TOKEN"
+#+END_SRC
