@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Log;
 
 class GénérateurDeToken
 {
-	private static GénérateurDeToken $instance;
+	private static ?GénérateurDeToken $instance = null;
 
 	private function __construct()
 	{
