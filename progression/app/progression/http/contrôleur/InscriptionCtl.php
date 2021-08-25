@@ -18,18 +18,17 @@
 
 namespace progression\http\contrôleur;
 
-use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use progression\domaine\interacteur\LoginInt;
+use progression\domaine\interacteur\InscriptionInt;
 
-class LoginCtl extends Contrôleur
+class InscriptionCtl extends Contrôleur
 {
-	public function login(Request $request)
+	public function inscription(Request $request)
 	{
-		Log::debug("LoginCtl.login. Params : ", $request->all());
-		Log::info("{$request->ip()} - Tentative de login : {$request->input("username")}");
+		Log::debug("InscriptionCtl.inscription. Params : ", $request->all());
+		Log::info("{$request->ip()} - Tentative d'inscription : {$request->input("username")}");
 
 		$user = null;
 		$token = null;
@@ -38,86 +37,67 @@ class LoginCtl extends Contrôleur
 		if ($erreurs) {
 			$réponse = $this->réponse_json(["erreur" => $erreurs], 400);
 		} else {
-			$réponse = $this->effectuer_login($request);
+			$réponse = $this->effectuer_inscription($request);
 		}
 
-		Log::debug("LoginCtl.login. Retour : ", [$réponse]);
+		Log::debug("InscriptionCtl.inscription. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
-	private function effectuer_login($request)
+	private function effectuer_inscription($request)
 	{
-		Log::debug("LoginCtl.effectuer_login. Params : ", [$request]);
+		Log::debug("InscriptionCtl.effectuer_inscription. Params : ", [$request]);
 
 		$username = $request->input("username");
-		$key_name = $request->input("key_name");
-		$key_secret = $request->input("key_secret");
 		$password = $request->input("password");
 
-		$loginInt = new LoginInt();
-
-		if ($key_name && $key_secret) {
-			$user = $loginInt->effectuer_login_par_clé($username, $key_name, $key_secret);
-		} else {
-			$user = $loginInt->effectuer_login_par_identifiant($username, $password);
-		}
+		$inscriptionInt = new InscriptionInt();
+		$user = $inscriptionInt->effectuer_inscription($username, $password);
 
 		$réponse = $this->valider_et_préparer_réponse($user, $request);
 
-		Log::debug("LoginCtl.effectuer_login. Retour : ", [$réponse]);
+		Log::debug("InscriptionCtl.effectuer_inscription. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
 	private function valider_et_préparer_réponse($user, $request)
 	{
-		Log::debug("LoginCtl.valider_et_préparer_réponse. Params : ", [$user]);
+		Log::debug("InscriptionCtl.valider_et_préparer_réponse. Params : ", [$user]);
 
 		if ($user) {
 			Log::info(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
 					get_class($this) .
-					") Login. username: " .
+					") Inscription. username: " .
 					$request->input("username"),
 			);
 
-			$token = $this->générer_token($user);
+			$token = GénérateurDeToken::get_instance()->générer_token($user);
 			$réponse = $this->préparer_réponse(["Token" => $token]);
 		} else {
 			Log::notice(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
 					get_class($this) .
-					") Accès interdit. username: " .
+					") Échec de l'inscription. username: " .
 					$request->input("username"),
 			);
 
-			$réponse = $this->réponse_json(["erreur" => "Accès interdit."], 401);
+			$réponse = $this->réponse_json(["erreur" => "Échec de l'inscription."], 403);
 		}
 
-		Log::debug("LoginCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
+		Log::debug("InscriptionCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
 		return $réponse;
-	}
-
-	private function générer_token($user)
-	{
-		Log::debug("LoginCtl.générer_token. Params : ", [$user]);
-
-		$token = GénérateurDeToken::get_instance()->générer_token($user);
-
-		Log::debug("LoginCtl.générer_token. Retour : ", [$token]);
-		return $token;
 	}
 
 	private function valider_paramètres($request)
 	{
-		Log::debug("LoginCtl.valider_paramètres : ", $request->all());
+		Log::debug("InscriptionCtl.valider_paramètres : ", $request->all());
 
 		$validateur = Validator::make(
 			$request->all(),
 			[
-				"key_name" => "required_without:password",
-				"key_secret" => "required_with:key_name",
 				"username" => "required|alpha_dash",
-				"password" => "required_without:key_name",
+				"password" => "required_without",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
@@ -130,7 +110,7 @@ class LoginCtl extends Contrôleur
 			$réponse = null;
 		}
 
-		Log::debug("LoginCtl.valider_paramètres. Retour : ", [$réponse]);
+		Log::debug("InscriptionCtl.valider_paramètres. Retour : ", [$réponse]);
 		return $réponse;
 	}
 }

@@ -25,6 +25,7 @@ $router->options("{all:.*}", [
 ]);
 
 $router->post("/auth/", "LoginCtl@login");
+$router->post("/signin/", "InscriptionCtl@sinscription");
 
 $router->group(["middleware" => "auth"], function () use ($router) {
 	// Question
