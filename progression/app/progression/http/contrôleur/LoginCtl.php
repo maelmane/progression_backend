@@ -26,6 +26,7 @@ use progression\domaine\interacteur\LoginInt;
 
 class LoginCtl extends Contrôleur
 {
+	
 	public function login(Request $request)
 	{
 		$user = null;
@@ -43,23 +44,16 @@ class LoginCtl extends Contrôleur
 		$user = $loginInt->effectuer_login($username, $password);
 
 		if ($user != null) {
-			$payload = [
-				"user" => $user,
-				"current" => time(),
-				"expired" => time() + $_ENV["JWT_TTL"],
-			];
-			$token = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
+			$token = GénérateurDeToken::get_instance()->générer_token($user);
+			return $this->préparer_réponse(["Token" => $token]);
 		}
-
-		if ($token == null) {
+		else{
 			Log::warning(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					get_class($this) .
-					") Accès interdit. username: $username",
+				get_class($this) .
+				") Accès interdit. username: $username",
 			);
 			return $this->réponse_json(["erreur" => "Accès interdit."], 401);
-		} else {
-			return $this->préparer_réponse(["Token" => $token]);
 		}
 	}
 

@@ -18,7 +18,7 @@
 
 require_once __DIR__ . "/../../../TestCase.php";
 
-use progression\http\contrôleur\LoginCtl;
+use progression\http\contrôleur\{LoginCtl, GénérateurDeToken};
 use progression\domaine\entité\User;
 use progression\dao\DAOFactory;
 use Illuminate\Http\Request;
@@ -49,6 +49,18 @@ final class LoginCtlTests extends TestCase
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		DAOFactory::setInstance($mockDAOFactory);
+
+		//Mock du générateur de token
+		GénérateurDeToken::set_instance(new class extends GénérateurDeToken{
+			public function __construct(){
+			}
+			
+			function générer_token($user)
+			{
+				return "token valide";
+			}
+		});
+		
 	}
 
 	public function tearDown(): void
@@ -58,27 +70,16 @@ final class LoginCtlTests extends TestCase
 
 	public function test_étant_donné_lutilisateur_Bob_et_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Bob()
 	{
-		$_ENV["AUTH_TYPE"] = "no";
-		$_ENV["JWT_SECRET"] = "secret";
-		$_ENV["JWT_TTL"] = 3333;
-
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob", "password" => "test"]);
 
-		$token = json_decode($résultat_observé->getContent(), true);
-		$tokenDécodé = JWT::decode($token["Token"], $_ENV["JWT_SECRET"], ["HS256"]);
+		$token = $résultat_observé->getContent();
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals("bob", $tokenDécodé->user->username);
-		$this->assertGreaterThan(time(), $tokenDécodé->expired);
-		$this->assertEquals(3333, $tokenDécodé->expired - $tokenDécodé->current);
+		$this->assertEquals('{"Token":"token valide"}', $token);
 	}
 
 	public function test_étant_donné_un_utilisateur_inexistant_et_une_authentification_de_type_no_lorsquon_appelle_login_lutilisateur_est_créé()
 	{
-		$_ENV["AUTH_TYPE"] = "no";
-		$_ENV["JWT_SECRET"] = "secret";
-		$_ENV["JWT_TTL"] = 3333;
-
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDAO
 			->shouldReceive("save")
@@ -90,21 +91,14 @@ final class LoginCtlTests extends TestCase
 
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "Marcel", "password" => "test"]);
 
-		$token = json_decode($résultat_observé->getContent(), true);
-		$tokenDécodé = JWT::decode($token["Token"], $_ENV["JWT_SECRET"], ["HS256"]);
+		$token = $résultat_observé->getContent();
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals("Marcel", $tokenDécodé->user->username);
-		$this->assertGreaterThan(time(), $tokenDécodé->expired);
-		$this->assertEquals(3333, $tokenDécodé->expired - $tokenDécodé->current);
+		$this->assertEquals('{"Token":"token valide"}', $token);
 	}
 
 	public function test_étant_donné_un_nom_dutilisateur_vide_lorsquon_appelle_login_on_obtient_une_erreur_422()
 	{
-		$_ENV["AUTH_TYPE"] = "no";
-		$_ENV["JWT_SECRET"] = "secret";
-		$_ENV["JWT_TTL"] = 3333;
-
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "", "password" => "test"]);
 
 		$this->assertEquals(422, $résultat_observé->status());
