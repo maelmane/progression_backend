@@ -22,6 +22,15 @@ INSERT INTO user VALUES (
   0
 );
 
+INSERT INTO cle VALUES (
+  "bob",
+  "clé de test",
+  "1234",
+  1624593600,
+  1624680000,
+  1
+);
+
 INSERT INTO sauvegarde VALUES (
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",

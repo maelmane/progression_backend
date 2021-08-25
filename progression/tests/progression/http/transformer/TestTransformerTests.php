@@ -32,7 +32,6 @@ final class TestTransformerTests extends TestCase
 
 		$résultat_attendu = [
 			"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
-			"numéro" => 0,
 			"nom" => "Somme de deux nombres",
 			"entrée" => "21\n21\n",
 			"sortie_attendue" => "42",

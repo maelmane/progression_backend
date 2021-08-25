@@ -79,6 +79,11 @@ class DAOFactory
 		return new UserDAO($this);
 	}
 
+	function get_clé_dao()
+	{
+		return new CléDAO($this);
+	}
+
 	function get_sauvegarde_dao()
 	{
 		return new SauvegardeDAO($this);

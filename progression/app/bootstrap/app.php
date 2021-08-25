@@ -70,10 +70,12 @@ $app->routeMiddleware([
 ]);
 
 $app->routeMiddleware([
-	"validationPermissions" =>
-		$_ENV["AUTH_TYPE"] == "no"
-			? progression\http\middleware\Bypass::class
-			: progression\http\middleware\ValidationPermissions::class,
+	//	"validationPermissions" =>
+	//		$_ENV["AUTH_TYPE"] == "no"
+	//			? progression\http\middleware\Bypass::class
+	//			: progression\http\middleware\ValidationPermissions::class,
+
+	"validationPermissions" => progression\http\middleware\ValidationPermissions::class,
 ]);
 
 $app->routeMiddleware([

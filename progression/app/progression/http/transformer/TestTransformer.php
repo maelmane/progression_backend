@@ -29,7 +29,6 @@ class TestTransformer extends Fractal\TransformerAbstract
 	{
 		$data = [
 			"id" => $test->id,
-			"numéro" => $test->numéro,
 			"nom" => $test->nom,
 			"entrée" => $test->entrée,
 			"sortie_attendue" => $test->sortie_attendue,

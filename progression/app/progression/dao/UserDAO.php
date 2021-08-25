@@ -64,7 +64,7 @@ class UserDAO extends EntitéDAO
 		return $this->get_user($objet->username);
 	}
 
-	public function set_password($user, $password)
+	public function set_password(User $user, string $password)
 	{
 		try {
 			$query = EntitéDAO::get_connexion()->prepare("UPDATE user SET password=? WHERE username=?");
@@ -78,7 +78,7 @@ class UserDAO extends EntitéDAO
 		}
 	}
 
-	public function vérifier_password($user, $password)
+	public function vérifier_password(User $user, string $password = null)
 	{
 		try {
 			$query = EntitéDAO::get_connexion()->prepare("SELECT password FROM user WHERE username=?");

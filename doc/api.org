@@ -17,10 +17,10 @@ Les versions de l'api sont accessibles à des URL distincts pour assurer la rét
 
 * Points d'entrée
 ** Publics
-| Méthode | URL               | Description                            | Paramètres         | Réponse             |
-| GET     | ~/doc~            | Documentation                          |                    | str (HTML)          |
-| POST    | ~/auth~           | Authentification                       | username, password | token, un token JWT |
-| GET     | ~/question/{uri}~ | Obtient la question disponible à <uri> | uri                | Question            |
+| Méthode | URL               | Description                            | Paramètres                | Réponse             |
+| GET     | ~/doc~            | Documentation                          |                           | str (HTML)          |
+| POST    | ~/auth~           | Authentification                       | username, password ou key | token, un token JWT |
+| GET     | ~/question/{uri}~ | Obtient la question disponible à <uri> | uri                       | Question            |
 
 ** Privés
 Les points d'entrée privés requièrent un token dans l'entête : «Authentification: Bearer <token>»
@@ -53,6 +53,25 @@ username
 | Nom         | Cardinalité | Type       | description         |
 |-------------+-------------+------------+---------------------|
 | avancements | 1-n         | Avancement | Liste d'avancements |
+
+** Clé
+
+Une clé donnant accès à un sous-ensemble des services ou ressources de l'API. Les clés peuvent être octroyées temporairement ou être révoquées. Une clé peut être utilisée en lieu et place d'un mot de passe au moment d'effectuer une authentification. Le token JWT retourné après une authentification réussie peut être utilisé pour accéder aux services et ressources donnés par la portée de la clé.
+
+*** Identifiant :
+username/nom
+
+*** Propriétés : 
+
+| Nom         | Type   | Valeurs            | Description                                               |
+|-------------+--------+--------------------+-----------------------------------------------------------|
+| secret      | string |                    | valeur secrète de la clé                                  |
+| création    | int    |                    | Timestamp de création                                     |
+| expriration | int    |                    | Timestamp d'expiration, 0=n'expire jamais                 |
+| portée      | int    |                    | Service ou ressource accessible par la clé.               |
+|             |        | 0=Révoquée         | La clé est révoquée pour tout service ou ressource        |
+|             |        | 1=Authentification | La clé peut être utilisée pour authentifier l'utilisateur |
+|-------------+--------+--------------------+-----------------------------------------------------------|
 
 ** Question
 
@@ -195,7 +214,6 @@ question_uri/numéro
 
 | Nom             | Type | Valeurs |
 |-----------------+------+---------|
-| numéro          | int  |         |
 | nom             | str  |         |
 | entrée          | str  |         |
 | sortie_attendue | str  |         |
@@ -211,7 +229,6 @@ username/question_uri/date_soumission/numéro
 
 | Nom             | Type | Valeurs   |
 |-----------------+------+-----------|
-| numéro          | int  | # du test |
 | sortie_observée | str  |           |
 | sortie_erreur   | str  |           |
 | résultat        | bool |           |

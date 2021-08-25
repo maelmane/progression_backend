@@ -172,7 +172,7 @@ final class TentativeCtlTests extends TestCase
 			["langage" => "python"],
 		);
 
-		$this->assertEquals(422, $résultat_obtenu->status());
+		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":{"code":["Le champ code est obligatoire."]}}', $résultat_obtenu->getContent());
 	}
 
@@ -196,7 +196,7 @@ final class TentativeCtlTests extends TestCase
 			["langage" => "python", "code" => "print(\"Hello world!\")"],
 		);
 
-		$this->assertEquals(422, $résultat_obtenu->status());
+		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Requête intraitable."}', $résultat_obtenu->getContent());
 	}
 }
