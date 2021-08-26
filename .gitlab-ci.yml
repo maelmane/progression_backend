@@ -30,8 +30,6 @@ test_unitaires:
   - db/build_db.sh && \
   - mysql -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
   - progression/vendor/bin/phpunit --configuration progression/phpunit.xml --coverage-text
-  except:
-  - documentation
 
 analyse_statique:
   stage: test
