@@ -14,6 +14,7 @@ services:
   - mariadb:latest
 
 stages:
+  - build
   - test
   - doc
 
@@ -27,12 +28,16 @@ variables:
   AUTH_TYPE: "no"
   HTTP_ORIGIN: "https://example.com"
 
+prep:
+  stage: build
+  script:
+  - db/build_db.sh
+  - mysql -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
+
 # We test PHP7
 test_unitaires:
   stage: test
   script:
-  - db/build_db.sh && \
-  - mysql -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
   - progression/vendor/bin/phpunit --configuration progression/phpunit.xml --coverage-text
 
 analyse_statique:
