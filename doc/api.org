@@ -1,6 +1,6 @@
 #+SETUPFILE: https://plafrance.pages.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg.setup
 #+TITLE: API Progression
-#+PROPERTY: header-args:sh :results output :exports both :prologue "exec 2>&1" :epilogue ":"
+#+PROPERTY: header-args:sh :results drawer :exports output :prologue "exec 2>&1" :epilogue ":"
 
 #+begin_warning
   Cette documentation est proposée à titre indicatif seulement et peut changer à tout moment.
@@ -265,9 +265,7 @@ printf "%s" $RET
 import json
 import sys
 
-print( "<details><summary>Résultat</summary>" )
 print( json.dumps( json.loads(json_str), ensure_ascii=False, indent=4 ) )
-print( "</details>" )
 #+end_src
 
 ** Authentification en tant qu'utilisateur ~jdoe~
