@@ -371,7 +371,7 @@ curl -s "https://progression.dti.crosemont.quebec/dev/sauvegarde/jdoe/aHR0cHM6Ly
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*)
 DATA=$(cat <<EOF
 {
-  "nom":"cléAuth",
+  "nom":"cléAuth$(head -n 10 /dev/urandom|base64)",
   "portée":1
 }
 EOF
@@ -388,9 +388,9 @@ DATA=$(cat <<EOF
   "username":"jdoe",
   "key_name":"cléAuth",
   "key_secret":"06091d6ffbdb37e04bcd78fb45c5dc324626c58c"
-}
+.}
 EOF
 )
 
-#curl -s -X POST --data "$DATA" "progression.dti.crosemont.quebec/dev/auth" -H "Content-Type: application/json"
+curl -s -X POST --data "$DATA" "progression.dti.crosemont.quebec/dev/auth" -H "Content-Type: application/json"
 #+END_SRC
