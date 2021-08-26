@@ -257,7 +257,8 @@ Les exemples marqués ~LIVE~ reflètent les résultats réels sur la plus récen
 Les exemples marqués ~PROTOTYPE~ sont générés manuellement à titre indicatif et ne reflètent nécessairement pas les résultats réels.
 #+end_warning
 
-#+BEGIN_SRC sh :eval yes :results output :exports none
+Variables utilisées :
+#+BEGIN_SRC sh :eval yes :results output
 echo Serveur : $DB_SERVERNAME
 #+END_SRC
 
