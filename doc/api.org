@@ -279,7 +279,7 @@ curl -s "https://progression.dti.crosemont.quebec/dev/auth" --data '{"username":
 
 ** Obtenir le profil de l'utilisateur authentifié ~jdoe~
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :results output :exports both
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output :exports both
 curl -s "https://progression.dti.crosemont.quebec/dev/user" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
