@@ -380,7 +380,7 @@ DATA=$(cat <<EOF
 EOF
 )
 
-curl -X POST --data "$DATA" "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/cles -H "Authorization: Bearer $TOKEN"
+curl -X POST --data "$DATA" "https://progression.dti.crosemont.quebec/api/v1/user/jdoe/cles" -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Authentification par clé d'authentification pour ~jdoe~
@@ -390,10 +390,10 @@ DATA=$(cat <<EOF
 {
   "username":"jdoe",
   "key_name":"cléAuth",
-  "key_secret":"1234"
+  "key_secret":"06091d6ffbdb37e04bcd78fb45c5dc324626c58c"
 }
 EOF
 )
 
-curl -X POST --data "$DATA" "https://progression.dti.crosemont.quebec/api/v1/auth -H "Authorization: Bearer $TOKEN"
+curl -X POST --data "$DATA" "https://progression.dti.crosemont.quebec/api/v1/auth" -H "Content-Type: application/json"
 #+END_SRC
