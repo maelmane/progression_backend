@@ -1,8 +1,5 @@
 #+SETUPFILE: https://plafrance.pages.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg.setup
 #+TITLE: API Progression
-#+PROPERTY: header-args:sh :results output
-#+PROPERTY: header-args:sh :exports both
-#+PROPERTY: header-args:sh :prologue "exec 2>&1" :epilogue ":"
 
 #+begin_warning
   Cette documentation est proposée à titre indicatif seulement et peut changer à tout moment.
@@ -279,7 +276,7 @@ curl -s "https://progression.dti.crosemont.quebec/dev/auth" --data '{"username":
 
 ** Obtenir le profil de l'utilisateur authentifié ~jdoe~
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :results output :exports both :prologue "exec 2>&1" :epilogue ":"
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 curl -s "https://progression.dti.crosemont.quebec/dev/user" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
