@@ -31,7 +31,7 @@ variables:
 prep:
   stage: build
   script:
-  - db/build_db.sh
+  - db/build_db.sh && \
   - mysql -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
 
 # We test PHP7
