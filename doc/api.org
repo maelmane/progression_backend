@@ -273,7 +273,7 @@ print( json.dumps( json.loads(json_str), ensure_ascii=False, indent=4 ) )
 
 
 #+BEGIN_SRC sh :eval yes :results output
-curl "$DB_SERVERNAME/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json"
+curl "$DB_SERVERNAME/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" 2>&1
 #+END_SRC
 
 ** Obtenir le profil de l'utilisateur authentifié ~jdoe~
