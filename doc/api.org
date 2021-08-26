@@ -16,10 +16,11 @@ Les versions de l'api sont accessibles à des URL distincts pour assurer la rét
 
 * Points d'entrée
 ** Publics
-| Méthode | URL               | Description                            | Paramètres                | Réponse             |
-| GET     | ~/doc~            | Documentation                          |                           | str (HTML)          |
-| POST    | ~/auth~           | Authentification                       | username, password ou key | token, un token JWT |
-| GET     | ~/question/{uri}~ | Obtient la question disponible à <uri> | uri                       | Question            |
+| Méthode | URL               | Description                            | Paramètres                                   | Réponse             |
+| GET     | ~/doc~            | Documentation                          |                                              | str (HTML)          |
+| POST    | ~/auth~           | Authentification                       | username, password ou key_name et key_secret | token, un token JWT |
+| POST    | ~/inscription~    | Inscription                            | username, password, rôle                     | token, un token JWT |
+| GET     | ~/question/{uri}~ | Obtient la question disponible à <uri> | uri                                          | Question            |
 
 ** Privés
 Les points d'entrée privés requièrent un token dans l'entête : «Authentification: Bearer <token>»
