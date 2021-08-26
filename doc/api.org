@@ -258,7 +258,7 @@ Les exemples marqués ~PROTOTYPE~ sont générés manuellement à titre indicati
 #+end_warning
 
 Variables utilisées :
-#+BEGIN_SRC sh :eval yes :results output
+#+BEGIN_SRC sh :eval yes :results both :exports both
 echo Serveur : $DB_SERVERNAME
 ping -c 1 $DB_SERVERNAME
 #+END_SRC
