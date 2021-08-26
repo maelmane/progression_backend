@@ -253,19 +253,11 @@ username/question_uri/langage
 
 #+begin_warning
 Les exemples marqués ~LIVE~ reflètent les résultats réels sur la plus récente version de l'API disponible sur ~https://progression.dti.crosemont.quebec/api/v1/~.
-
-Les exemples marqués ~PROTOTYPE~ sont générés manuellement à titre indicatif et ne reflètent nécessairement pas les résultats réels.
 #+end_warning
-
-Variables utilisées :
-#+BEGIN_SRC sh :eval yes :results both :exports both
-echo Serveur : $DB_SERVERNAME
-ping -c 1 $DB_SERVERNAME
-#+END_SRC
 
 #+NAME: get_token
 #+BEGIN_SRC sh :eval yes :results output :exports none
-RET=$(curl "$DB_SERVERNAME/api/v1/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | cut -d '"' -f 4)
+RET=$(curl "$DB_SERVERNAME/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | cut -d '"' -f 4)
 printf "%s" $RET
 #+END_SRC
 
@@ -277,17 +269,17 @@ import sys
 print( json.dumps( json.loads(json_str), ensure_ascii=False, indent=4 ) )
 #+end_src
 
-** Authentification en tant qu'utilisateur ~jdoe~ : ~LIVE~
+** Authentification en tant qu'utilisateur ~jdoe~
 
 
 #+BEGIN_SRC sh :eval yes :results output
-curl "$DB_SERVERNAME/api/v1/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json"
+curl "$DB_SERVERNAME/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json"
 #+END_SRC
 
-** Obtenir le profil de l'utilisateur authentifié ~jdoe~ : ~LIVE~
+** Obtenir le profil de l'utilisateur authentifié ~jdoe~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "$DB_SERVERNAME/api/v1/user" -H "Authorization: Bearer $TOKEN"
+curl "$DB_SERVERNAME/user" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir la question «appeler_une_fonction_paramétrée» et ses tests: ~LIVE~
@@ -295,16 +287,16 @@ curl "$DB_SERVERNAME/api/v1/user" -H "Authorization: Bearer $TOKEN"
 Cette question est disponible à l'URL suivant : https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_param%C3%A9tr%C3%A9e
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "$DB_SERVERNAME/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw?include=tests" -H "Authorization: Bearer $TOKEN"
+curl "$DB_SERVERNAME/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw?include=tests" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir la question «appeler_une_fonction_paramétrée», ses tests et ses ébauches: ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "$DB_SERVERNAME/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw?include=tests,ebauches" -H "Authorization: Bearer $TOKEN"
+curl "$DB_SERVERNAME/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw?include=tests,ebauches" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Créer l'avancement de jdoe à la question «appeler_une_fonction_paramétrée» : ~LIVE~
+** Créer l'avancement de jdoe à la question «appeler_une_fonction_paramétrée»
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 DATA=$(cat <<EOF
@@ -314,22 +306,22 @@ DATA=$(cat <<EOF
 EOF
 )
 
-curl -X POST --data "$DATA" $DB_SERVERNAME/api/v1/user/jdoe/avancements -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+curl -X POST --data "$DATA" $DB_SERVERNAME/user/jdoe/avancements -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir l'avancement de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
+** Obtenir l'avancement de ~jdoe~ pour la question «appeler_une_fonction_paramétrée»
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "$DB_SERVERNAME/api/v1/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw" -H "Authorization: Bearer $TOKEN"
+curl "$DB_SERVERNAME/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
+** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction_paramétrée»
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "$DB_SERVERNAME/api/v1/ebauche/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw/python" -H "Authorization: Bearer $TOKEN"
+curl "$DB_SERVERNAME/ebauche/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw/python" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Soumettre une tentative de solution à la question «appeler_une_fonction_paramétrée» et récupérer les résultats : ~LIVE~
+** Soumettre une tentative de solution à la question «appeler_une_fonction_paramétrée» et récupérer les résultats
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 DATA=$(cat <<EOF
@@ -340,22 +332,22 @@ DATA=$(cat <<EOF
 EOF
 )
 
-curl -X POST --data "$DATA" $DB_SERVERNAME/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw?include=resultats -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+curl -X POST --data "$DATA" $DB_SERVERNAME/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw?include=resultats -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir une tentative de solution préalablement soumise pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
+** Obtenir une tentative de solution préalablement soumise pour la question «appeler_une_fonction_paramétrée»
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "$DB_SERVERNAME/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw/1617040175" -H "Authorization: Bearer $TOKEN"
+curl "$DB_SERVERNAME/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw/1617040175" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir le test numéro 0 pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
+** Obtenir le test numéro 0 pour la question «appeler_une_fonction_paramétrée»
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "$DB_SERVERNAME/api/v1/test/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw/0" -H "Authorization: Bearer $TOKEN"
+curl "$DB_SERVERNAME/test/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw/0" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Créer ou mettre à jour la sauvegarde de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» et un code ~python~ : ~LIVE~
+** Créer ou mettre à jour la sauvegarde de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» et un code ~python~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
 DATA=$(cat <<EOF
@@ -366,13 +358,13 @@ DATA=$(cat <<EOF
 EOF
 )
 
-curl -X POST --data "$DATA" $DB_SERVERNAME/api/v1/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/sauvegardes -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+curl -X POST --data "$DATA" $DB_SERVERNAME/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/sauvegardes -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir la dernière sauvegarde de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» effectuée avec le langage ~python~: ~LIVE~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "$DB_SERVERNAME/api/v1/sauvegarde/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/python" -H "Authorization: Bearer $TOKEN"
+curl "$DB_SERVERNAME/sauvegarde/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/python" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Créer une clé d'authentification pour ~jdoe~
@@ -386,7 +378,7 @@ DATA=$(cat <<EOF
 EOF
 )
 
-curl -X POST --data "$DATA" "$DB_SERVERNAME/api/v1/user/jdoe/cles" -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+curl -X POST --data "$DATA" "$DB_SERVERNAME/user/jdoe/cles" -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Authentification par clé d'authentification pour ~jdoe~
@@ -401,9 +393,9 @@ DATA=$(cat <<EOF
 EOF
 )
 
-echo $DB_SERVERNAME/api/v1/user/jdoe/cles
+echo $DB_SERVERNAME/user/jdoe/cles
 
-#curl -X POST --data "$DATA" "$DB_SERVERNAME/api/v1/auth" -H "Content-Type: application/json"
+#curl -X POST --data "$DATA" "$DB_SERVERNAME/auth" -H "Content-Type: application/json"
 #+END_SRC
 
 #+RESULTS:
