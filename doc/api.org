@@ -2,6 +2,7 @@
 #+TITLE: API Progression
 #+PROPERTY: header-args:sh :results output
 #+PROPERTY: header-args:sh :exports both
+#+PROPERTY: header-args:sh :prologue "exec 2>&1" :epilogue ":"
 
 #+begin_warning
   Cette documentation est proposée à titre indicatif seulement et peut changer à tout moment.
@@ -278,9 +279,8 @@ curl "http://$DB_SERVERNAME/auth" --data '{"username": "jdoe", "password": "Cros
 
 ** Obtenir le profil de l'utilisateur authentifié ~jdoe~
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :results both :export both
-echo curl "http://$DB_SERVERNAME/user" -H "Authorization: Bearer $TOKEN"
-curl "http://$DB_SERVERNAME/user" -H "Authorization: Bearer $TOKEN" 2>&1
+#+BEGIN_SRC sh :eval yes :results output :prologue "exec 2>&1" :epilogue ":"
+curl "http://$DB_SERVERNAME/user" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir la question «appeler_une_fonction_paramétrée» et ses tests: ~LIVE~

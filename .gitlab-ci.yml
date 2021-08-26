@@ -33,6 +33,8 @@ test_unitaires:
   script:
   - db/build_db.sh && mysql -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
   - progression/vendor/bin/phpunit --configuration progression/phpunit.xml --coverage-text
+  except:
+  - documentation
 
 analyse_statique:
   stage: test
@@ -51,8 +53,7 @@ linter:
 # Production de la documentation
 pages:
   script:
-  - db/build_db.sh
-  - mysql -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
+  - db/build_db.sh && mysql -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
   - emacs --batch --load $HOME/.emacs.el --load doc/publish.el --funcall org-publish-all && mkdir public && cp -r progression/app/html/doc/* public/
   artifacts:
     paths:
