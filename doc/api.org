@@ -267,11 +267,7 @@ printf "%s" $RET
 import json
 import sys
 
-obj_json = json.loads(json_str)
-if obj_json:
-    print( json.dumps( obj_json, ensure_ascii=False, indent=4 ) )
-else:
-    print( json_str )
+print( json.dumps( json.loads(json_str), ensure_ascii=False, indent=4 ) )
 #+end_src
 
 ** Authentification en tant qu'utilisateur ~jdoe~
@@ -283,7 +279,7 @@ curl "https://progression.dti.crosemont.quebec/dev/auth" --data '{"username": "j
 
 ** Obtenir le profil de l'utilisateur authentifié ~jdoe~
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :results output :exports output :prologue "exec 2>&1" :epilogue ":"
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :results output :exports both :prologue "exec 2>&1" :epilogue ":"
 curl "https://progression.dti.crosemont.quebec/dev/user" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
