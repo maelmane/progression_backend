@@ -279,7 +279,7 @@ curl "$DB_SERVERNAME/auth" --data '{"username": "jdoe", "password": "Crosemont20
 ** Obtenir le profil de l'utilisateur authentifié ~jdoe~
 
 #+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "$DB_SERVERNAME/user" -H "Authorization: Bearer $TOKEN" 2>&1
+echo curl "$DB_SERVERNAME/user" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir la question «appeler_une_fonction_paramétrée» et ses tests: ~LIVE~
