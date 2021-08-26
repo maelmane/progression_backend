@@ -265,7 +265,9 @@ printf "%s" $RET
 import json
 import sys
 
+print( "<details><summary>Résultat</summary>" )
 print( json.dumps( json.loads(json_str), ensure_ascii=False, indent=4 ) )
+print( "</details>" )
 #+end_src
 
 ** Authentification en tant qu'utilisateur ~jdoe~
