@@ -13,6 +13,10 @@ before_script:
 services:
   - mariadb:latest
 
+stages:
+  - test
+  - doc
+
 variables:
   MYSQL_DATABASE: $DB_DBNAME
   MYSQL_USER: $DB_USERNAME
@@ -55,7 +59,7 @@ linter:
 
 pages:
   <<: *doc
-  stage: build
+  stage: doc
   only:
   - master
   - documentation
