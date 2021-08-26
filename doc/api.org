@@ -279,7 +279,7 @@ curl "http://$DB_SERVERNAME/auth" --data '{"username": "jdoe", "password": "Cros
 
 ** Obtenir le profil de l'utilisateur authentifié ~jdoe~
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :results output :export both :prologue "exec 2>&1" :epilogue ":"
+#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :exports both :prologue "exec 2>&1" :epilogue ":"
 curl "http://$DB_SERVERNAME/user" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
