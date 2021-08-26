@@ -257,6 +257,10 @@ Les exemples marqués ~LIVE~ reflètent les résultats réels sur la plus récen
 Les exemples marqués ~PROTOTYPE~ sont générés manuellement à titre indicatif et ne reflètent nécessairement pas les résultats réels.
 #+end_warning
 
+#+BEGIN_SRC sh :eval yes :results output :exports none
+echo Serveur : $DB_SERVERNAME
+#+END_SRC
+
 #+NAME: get_token
 #+BEGIN_SRC sh :eval yes :results output :exports none
 RET=$(curl "$DB_SERVERNAME/api/v1/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | cut -d '"' -f 4)
