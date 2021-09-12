@@ -97,7 +97,7 @@ class InscriptionCtl extends Contrôleur
 			$request->all(),
 			[
 				"username" => "required|alpha_dash",
-				"password" => "required_without",
+				"password" => "required",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
