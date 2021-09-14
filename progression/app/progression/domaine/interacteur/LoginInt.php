@@ -99,26 +99,44 @@ class LoginInt extends Interacteur
 
 	function get_username_ldap($username, $password)
 	{
-		#Tentative de connexion à AD
 		define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
 
-		$ldap = ldap_connect("ldap://" . $_ENV["LDAO_HOTE"], $_ENV["LDAP_PORT"]);
+		// Connexion au serveur LDAP
+		$ldap = ldap_connect("ldap://" . $_ENV["LDAP_HOTE"], $_ENV["LDAP_PORT"]);
 		if(!$ldap){
-			syslog(LOG_WARNING, "Erreur de configuration LDAP");
-			return false;
+			syslog(LOG_ERROR, "Erreur de configuration LDAP");
+			throw new Exception(
+				"Erreur de configuration LDAP"
+			);
 		}
 		ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-		$bind = @ldap_bind($ldap, $username, $password);
 
+		// Bind l'utilisateur LDAP
+		if($_ENV["LDAP_DN_BIND"] && $_ENV["LDAP_PW_BIND"]){
+			$bind = ldap_bind($ldap, $_ENV["LDAP_DN_BIND"], $_ENV["LDAP_PW_BIND"]);
+		}
+		else {
+			$bind = ldap_bind($ldap, $username, $password)
+		}
+		
 		if (!$bind) {
-			return null;
 			ldap_get_option($ldap, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
+			syslog(LOG_ERROR, "Erreur de connexion à LDAP : $extended_error");
 			throw new AuthException(
-				"Connexion refusée : $extended_error",
+				"Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extended_error",
 			);
 		}
-		return true;
+
+		//Recherche de l'utilisateur à authentifier
+		$result = ldap_search($ldap, $_ENV["LDAP_BASE"], "({$_ENV['LDAP_UID']}=$username)", ["dn", "cn", 1]);
+		$user = ldap_get_entries($ldap, $result);
+		if ($user["count"] != 1 || !@ldap_bind($ldap, $user[0]["dn"], $password)) {
+			return null;
+		}
+		else {
+			return true;
+		}
 	}
 
 	function login_sans_authentification($username)
