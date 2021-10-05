@@ -85,7 +85,7 @@ class LoginInt extends Interacteur
 	function login_ldap($username, $password)
 	{
 		$user = null;
-		if($this->get_username_ldap($username, $password)){
+		if ($this->get_username_ldap($username, $password)) {
 			$user = $this->login_sans_authentification($username);
 		}
 		
@@ -103,38 +103,34 @@ class LoginInt extends Interacteur
 
 		// Connexion au serveur LDAP
 		$ldap = ldap_connect("ldap://" . $_ENV["LDAP_HOTE"], $_ENV["LDAP_PORT"]);
-		if(!$ldap){
-			syslog(LOG_ERROR, "Erreur de configuration LDAP");
-			throw new Exception(
-				"Erreur de configuration LDAP"
-			);
+		if (!$ldap) {
+			syslog(LOG_ERR, "Erreur de configuration LDAP");
+			throw new \Exception("Erreur de configuration LDAP");
 		}
 		ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
 
 		// Bind l'utilisateur LDAP
-		if($_ENV["LDAP_DN_BIND"] && $_ENV["LDAP_PW_BIND"]){
+		if ($_ENV["LDAP_DN_BIND"] && $_ENV["LDAP_PW_BIND"]) {
 			$bind = ldap_bind($ldap, $_ENV["LDAP_DN_BIND"], $_ENV["LDAP_PW_BIND"]);
-		}
-		else {
-			$bind = ldap_bind($ldap, $username, $password)
+		} else {
+			$bind = ldap_bind($ldap, $username, $password);
 		}
 		
 		if (!$bind) {
 			ldap_get_option($ldap, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
-			syslog(LOG_ERROR, "Erreur de connexion à LDAP : $extended_error");
+			syslog(LOG_ERR, "Erreur de connexion à LDAP : $extended_error");
 			throw new AuthException(
 				"Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extended_error",
 			);
 		}
 
 		//Recherche de l'utilisateur à authentifier
-		$result = ldap_search($ldap, $_ENV["LDAP_BASE"], "({$_ENV['LDAP_UID']}=$username)", ["dn", "cn", 1]);
+		$result = ldap_search($ldap, $_ENV["LDAP_BASE"], "({$_ENV["LDAP_UID"]}=$username)", ["dn", "cn", 1]);
 		$user = ldap_get_entries($ldap, $result);
 		if ($user["count"] != 1 || !@ldap_bind($ldap, $user[0]["dn"], $password)) {
 			return null;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
