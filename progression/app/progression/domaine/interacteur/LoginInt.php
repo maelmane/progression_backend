@@ -88,7 +88,7 @@ class LoginInt extends Interacteur
 		if ($this->get_username_ldap($username, $password)) {
 			$user = $this->login_sans_authentification($username);
 		}
-		
+
 		return $user;
 	}
 
@@ -116,7 +116,7 @@ class LoginInt extends Interacteur
 		} else {
 			$bind = ldap_bind($ldap, $username, $password);
 		}
-		
+
 		if (!$bind) {
 			ldap_get_option($ldap, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
 			syslog(LOG_ERR, "Erreur de connexion à LDAP : $extended_error");
