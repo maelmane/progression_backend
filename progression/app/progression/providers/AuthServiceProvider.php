@@ -64,7 +64,7 @@ class AuthServiceProvider extends ServiceProvider
 						return null;
 					} else {
 						// Recherche de l'utilisateur
-						$user = (new ObtenirUserInt())->get_user($tokenDécodé->user->username);
+						$user = (new ObtenirUserInt())->get_user($tokenDécodé->username);
 
 						return new GenericUser([
 							"username" => $user->username,
