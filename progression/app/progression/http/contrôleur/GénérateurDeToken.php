@@ -48,7 +48,7 @@ class GénérateurDeToken
 		Log::debug("InscriptionCtl.générer_token. Params : ", [$user]);
 
 		$payload = [
-			"user" => $user,
+			"username" => $user->username,
 			"current" => time(),
 			"expired" => time() + $_ENV["JWT_TTL"],
 		];
