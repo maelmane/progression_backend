@@ -1,20 +1,20 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\http\transformer;
 
@@ -26,7 +26,7 @@ class UserTransformer extends Fractal\TransformerAbstract
 {
 	public $type = "user";
 
-	protected $availableIncludes = ["avancements"];
+	protected $availableIncludes = ["avancements", "cles"];
 
 	public function transform(User $user)
 	{
@@ -52,5 +52,17 @@ class UserTransformer extends Fractal\TransformerAbstract
 		}
 
 		return $this->collection($user->avancements, new AvancementTransformer(), "avancement");
+	}
+
+	public function includeCles(User $user)
+	{
+		foreach ($user->clés as $nom => $clé) {
+			$clé->id = "{$user->username}/" . $nom;
+			$clé->links = [
+				"related" => $_ENV["APP_URL"] . "user/{$user->username}",
+			];
+		}
+
+		return $this->collection($user->clés, new CléTransformer(), "cle");
 	}
 }

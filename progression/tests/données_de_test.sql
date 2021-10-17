@@ -32,6 +32,14 @@ INSERT INTO cle VALUES (
   1624593600,
   1624680000,
   1
+),
+(
+  "bob",
+  "clé de test 2",
+  "2345",
+  1624593602,
+  1624680002,
+  1
 );
 
 INSERT INTO sauvegarde VALUES (

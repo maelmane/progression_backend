@@ -18,7 +18,7 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Avancement, User};
+use progression\domaine\entité\{Avancement, User, Clé};
 use PHPUnit\Framework\TestCase;
 
 final class UserDAOTests extends TestCase
@@ -40,6 +40,10 @@ final class UserDAOTests extends TestCase
 		$réponse_attendue->avancements = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement(1, 3),
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement(0, 3),
+		];
+		$réponse_attendue->clés = [
+			"clé de test" => new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
+			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
 		];
 
 		$résponse_observée = (new UserDAO())->get_user("bob");
@@ -72,6 +76,10 @@ final class UserDAOTests extends TestCase
 		$réponse_attendue->avancements = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement(1, 3),
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement(0, 3),
+		];
+		$réponse_attendue->clés = [
+			"clé de test" => new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
+			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
 		];
 
 		$user_test = (new UserDAO())->get_user("bob");

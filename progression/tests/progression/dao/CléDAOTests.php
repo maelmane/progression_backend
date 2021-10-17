@@ -43,6 +43,18 @@ final class CléDAOTests extends TestCase
 		$this->assertEquals($résultat_attendu, $clé);
 	}
 
+	public function test_étant_donné_deux_clés_existantes_lorsquon_les_récupère_toutes_on_obtient_deux_clés()
+	{
+		$dao = new CléDAO();
+		$clés = $dao->get_toutes("bob");
+
+		$résultat_attendu = [
+			"clé de test" => new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
+			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
+		];
+		$this->assertEquals($résultat_attendu, $clés);
+	}
+
 	public function test_étant_donné_une_clé_inexistante_lorsquon_la_sauvegarde_on_la_retrouve_dans_la_bd()
 	{
 		$clé = new Clé(9999, 1624593600, 1624680000, Clé::PORTEE_AUTH);

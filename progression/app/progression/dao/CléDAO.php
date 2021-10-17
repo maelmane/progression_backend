@@ -53,6 +53,35 @@ class CléDAO extends EntitéDAO
 		return $clé;
 	}
 
+	public function get_toutes($username)
+	{
+		$clés = [];
+
+		$nom = null;
+		$création = null;
+		$expiration = null;
+		$portée = null;
+
+		try {
+			$query = EntitéDAO::get_connexion()->prepare(
+				"SELECT nom, creation, expiration, portee FROM cle WHERE username = ? ",
+			);
+			$query->bind_param("s", $username);
+
+			$query->execute();
+			$query->bind_result($nom, $création, $expiration, $portée);
+
+			while ($query->fetch()) {
+				$clés[$nom] = new Clé(null, $création, $expiration, $portée);
+			}
+			$query->close();
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
+		}
+
+		return $clés;
+	}
+
 	public function save($username, $nom, $objet)
 	{
 		try {
