@@ -128,8 +128,11 @@ final class CléCtlTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_on_obtient_une_clé_générée_aléatoirement_avec_expiration()
 	{
-		$expiration = time()+100;
-		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", ["nom" => "nouvelle cle", "expiration" => $expiration ]);
+		$expiration = time() + 100;
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", [
+			"nom" => "nouvelle cle",
+			"expiration" => $expiration,
+		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
 		$clé_sauvegardée = json_decode($résultat_observé->getContent())->data->attributes;
@@ -141,8 +144,11 @@ final class CléCtlTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_passée_on_obtient_une_erreur_400()
 	{
-		$expiration = time()-100;
-		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", ["nom" => "nouvelle cle", "expiration" => $expiration ]);
+		$expiration = time() - 100;
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", [
+			"nom" => "nouvelle cle",
+			"expiration" => $expiration,
+		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals('{"erreur":{"expiration":["Expiration invalide"]}}', $résultat_observé->getContent());
@@ -150,8 +156,11 @@ final class CléCtlTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_non_entière_on_obtient_une_erreur_400()
 	{
-		$expiration = time()+100.5;
-		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", ["nom" => "nouvelle cle", "expiration" => $expiration ]);
+		$expiration = time() + 100.5;
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", [
+			"nom" => "nouvelle cle",
+			"expiration" => $expiration,
+		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals('{"erreur":{"expiration":["Expiration invalide"]}}', $résultat_observé->getContent());
@@ -160,7 +169,10 @@ final class CléCtlTests extends TestCase
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_non_numérique_on_obtient_une_erreur_400()
 	{
 		$expiration = "patate";
-		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", ["nom" => "nouvelle cle", "expiration" => $expiration ]);
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", [
+			"nom" => "nouvelle cle",
+			"expiration" => $expiration,
+		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals('{"erreur":{"expiration":["Expiration invalide"]}}', $résultat_observé->getContent());
