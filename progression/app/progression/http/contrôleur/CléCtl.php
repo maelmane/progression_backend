@@ -50,7 +50,7 @@ class CléCtl extends Contrôleur
 			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} else {
 			$cléInt = new GénérerCléAuthentificationInt();
-			$clé = $cléInt->générer_clé($username, $request->nom);
+			$clé = $cléInt->générer_clé($username, $request->nom, $request->expiration);
 
 			$réponse = $this->valider_et_préparer_réponse($clé, $username, $request->nom);
 		}
@@ -93,9 +93,13 @@ class CléCtl extends Contrôleur
 			$request->all(),
 			[
 				"nom" => "required",
+				"expiration" => "numeric|integer|gt:" . time(),
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
+				"expiration.numeric" => "Expiration invalide",
+				"expiration.integer" => "Expiration invalide",
+				"expiration.gt" => "Expiration invalide",
 			],
 		);
 
