@@ -126,6 +126,21 @@ final class CléCtlTests extends TestCase
 		$this->assertEquals(Clé::PORTEE_AUTH, $clé_sauvegardée->portée);
 	}
 
+	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_0_on_obtient_une_clé_générée_aléatoirement_sans_expiration()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", [
+			"nom" => "nouvelle cle",
+			"expiration" => 0,
+		]);
+
+		$this->assertEquals(200, $résultat_observé->status());
+		$clé_sauvegardée = json_decode($résultat_observé->getContent())->data->attributes;
+
+		$this->assertNotNull($clé_sauvegardée->secret);
+		$this->assertEquals(0, $clé_sauvegardée->expiration);
+		$this->assertEquals(Clé::PORTEE_AUTH, $clé_sauvegardée->portée);
+	}
+
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_on_obtient_une_clé_générée_aléatoirement_avec_expiration()
 	{
 		$expiration = time() + 100;
