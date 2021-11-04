@@ -44,7 +44,6 @@ class ChargeurQuestionFichier
 			throw new DomainException("Le fichier {$uri} ne peut pas être décodé. Format invalide.");
 		}
 
-		$info["uri"] = $uri;
 		return $info;
 	}
 }

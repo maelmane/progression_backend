@@ -77,7 +77,7 @@ final class QuestionDAOTests extends TestCase
 	{
 		$résultat_obtenu = (new QuestionDAO())->get_question(
 			"file://" . __DIR__ . "/démo/boucles/boucle_énumérée/info.yml",
-			new ChargeurQuestionFichier(),
+			new ChargeurQuestion(),
 		);
 		$this->question->uri = "file://" . __DIR__ . "/démo/boucles/boucle_énumérée/info.yml";
 
@@ -93,7 +93,7 @@ final class QuestionDAOTests extends TestCase
 
 		$résultat_obtenu = (new QuestionDAO())->get_question(
 			"file://" . __DIR__ . "/démo/défauts/info.yml",
-			new ChargeurQuestionFichier(),
+			new ChargeurQuestion(),
 		);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
