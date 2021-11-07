@@ -41,14 +41,15 @@ class ChargeurQuestion
 
 	private function récupérer_question_http($uri)
 	{
-		$content_type = $this->get_entête($uri, "Content-Type");
+		$entêtes = $this->get_entêtes($uri);
+		$content_type = $this->get_entête($entêtes, "content-type");
 
 		if ($content_type) {
-			if (str_starts_with($content_type, "application/zip")) {
-				return (new ChargeurQuestionArchive())->récupérer_question($uri);
+			if (str_starts_with($content_type, "application")) {
+				return (new ChargeurQuestionArchive())->récupérer_question($uri, $entêtes);
 			}
 
-			if (str_starts_with($content_type, "text/yaml")) {
+			if (str_starts_with($content_type, "text")) {
 				return (new ChargeurQuestionFichier())->récupérer_question($uri);
 			}
 
@@ -58,7 +59,7 @@ class ChargeurQuestion
 		throw new RuntimeException("Type de fichier inconnu");
 	}
 
-	private function get_entête($uri, $clé)
+	private function get_entêtes($uri)
 	{
 		$opts = [
 			"http" => [
@@ -66,20 +67,22 @@ class ChargeurQuestion
 			],
 		];
 		$context = stream_context_create($opts);
-		$entêtes = @get_headers($uri, 1, $context);
+		return array_change_key_case(@get_headers($uri, 1, $context));
+	}
 
-		if ($entêtes != null) {
-			$content_type = $entêtes[$clé];
-
-			if (is_string($content_type)) {
-				return $content_type;
-			}
-
-			if (is_array($content_type)) {
-				return $content_type[count($content_type) - 1];
-			}
-		} else {
+	private function get_entête($entêtes, $clé)
+	{
+		if ($entêtes == null) {
 			return null;
+		}
+		$content_type = $entêtes[$clé];
+
+		if (is_string($content_type)) {
+			return $content_type;
+		}
+
+		if (is_array($content_type)) {
+			return $content_type[count($content_type) - 1];
 		}
 	}
 }

@@ -24,13 +24,19 @@ use ZipArchive;
 
 class ChargeurQuestionArchive
 {
-	public function récupérer_question($uri)
+	public function récupérer_question($uri, $entêtes)
 	{
-		self::vérifier_taille($uri);
+		$taille = self::get_entête($entêtes, "content-length");
 
-		$nomFichier = null;
+		self::vérifier_taille($taille);
+
+		if (!preg_match('/filename=\".*\.zip\"/', self::get_entête($entêtes, "content-disposition"))) {
+			throw new RuntimeException("Impossible de charger le fichier non-archive $uri");
+		}
+
 		$archiveExtraite = null;
 
+		$nomFichier = null;
 		try {
 			$nomFichier = self::télécharger_fichier($uri);
 			$archiveExtraite = self::extraire_zip($nomFichier, substr($nomFichier, 0, -4));
@@ -50,41 +56,30 @@ class ChargeurQuestionArchive
 		return $sortie;
 	}
 
-	private function vérifier_taille($uri)
+	private function get_entête($entêtes, $clé)
 	{
-		$taille = $this->get_entête($uri, "Content-Length");
+		if ($entêtes == null) {
+			return null;
+		}
+		$content_type = $entêtes[$clé];
 
+		if (is_string($content_type)) {
+			return $content_type;
+		}
+
+		if (is_array($content_type)) {
+			return $content_type[count($content_type) - 1];
+		}
+	}
+
+	private function vérifier_taille($taille)
+	{
 		if (!$taille) {
 			throw new LengthException("Le fichier de taille inconnue. On ne le chargera pas.");
 		}
 
 		if ($taille > $_ENV["QUESTION_TAILLE_MAX"]) {
 			throw new LengthException("Le fichier est trop volumineux pour être chargé: " . $taille);
-		}
-	}
-
-	private function get_entête($uri, $clé)
-	{
-		$opts = [
-			"http" => [
-				"follow_location" => 1,
-			],
-		];
-		$context = stream_context_create($opts);
-		$entêtes = @get_headers($uri, 1, $context);
-
-		if ($entêtes != null) {
-			$content_type = $entêtes[$clé];
-
-			if (is_string($content_type)) {
-				return $content_type;
-			}
-
-			if (is_array($content_type)) {
-				return $content_type[count($content_type) - 1];
-			}
-		} else {
-			return null;
 		}
 	}
 
