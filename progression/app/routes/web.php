@@ -46,8 +46,8 @@ $router->group(["middleware" => ["auth", "validationPermissions"]], function () 
 	$router->get("/user/{username}/relationships/avancements", "NotImplementedCtl@get");
 	$router->get("/user/{username}/avancements", "NotImplementedCtl@get");
 	// Clé
-	$router->get("/cle/{username}/{nom}", "CléCtl@get");
 	$router->post("/user/{username}/cles", "CléCtl@post");
+	$router->get("/cle/{username}/{nom}", "CléCtl@get");
 	// Sauvegarde
 	$router->post("/avancement/{username}/{question_uri}/sauvegardes", "SauvegardeCtl@post");
 	$router->get("/sauvegarde/{username}/{question_uri}/{langage}", "SauvegardeCtl@get");
@@ -58,7 +58,7 @@ $router->group(["middleware" => ["auth", "validationPermissions"]], function () 
 	$router->get("/avancement/{username}/{chemin}/relationships/tentatives", "NotImplementedCtl@get");
 	$router->get("/avancement/{username}/{chemin}/tentatives", "NotImplementedCtl@get");
 	// Tentative
-	$router->post("/tentative/{username}/{question_uri}", "TentativeCtl@post");
+	$router->post("/avancement/{username}/{question_uri}/tentatives", "TentativeCtl@post");
 	$router->get("/tentative/{username}/{question_uri}/{timestamp:[[:digit:]]{10}}", "TentativeCtl@get");
 	$router->get(
 		"/tentative/{username}/{question_uri}/{timestamp:[[:digit:]]{10}}/relationships/resultats",

@@ -332,7 +332,7 @@ DATA=$(cat <<EOF
 EOF
 )
 
-curl -s --data "$DATA" https://progression.dti.crosemont.quebec/dev/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw?include=resultats -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+curl -s --data "$DATA" https://progression.dti.crosemont.quebec/dev/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWUvaW5mby55bWw/tentatives?include=resultats -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir une tentative de solution préalablement soumise pour la question «appeler_une_fonction_paramétrée»

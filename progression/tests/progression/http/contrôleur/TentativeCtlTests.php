@@ -154,7 +154,7 @@ final class TentativeCtlTests extends TestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
-			"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24?include=resultats",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives?include=resultats",
 			["langage" => "python", "code" => "#+TODO\nprint(\"Hello world!\")"],
 		);
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -168,7 +168,7 @@ final class TentativeCtlTests extends TestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
-			"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
 			["langage" => "python"],
 		);
 
@@ -180,7 +180,7 @@ final class TentativeCtlTests extends TestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
-			"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
 			["langage" => "java", "code" => "#+TODO\nprint(\"on ne se rendra pas à exécuter ceci\")"],
 		);
 
@@ -192,7 +192,7 @@ final class TentativeCtlTests extends TestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
-			"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
 			["langage" => "python", "code" => "print(\"Hello world!\")"],
 		);
 
