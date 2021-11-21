@@ -53,13 +53,14 @@ class LoginCtl extends Contrôleur
 		$key_name = $request->input("key_name");
 		$key_secret = $request->input("key_secret");
 		$password = $request->input("password");
+		$domaine = $request->input("domaine");
 
 		$loginInt = new LoginInt();
 
 		if ($key_name && $key_secret) {
 			$user = $loginInt->effectuer_login_par_clé($username, $key_name, $key_secret);
 		} else {
-			$user = $loginInt->effectuer_login_par_identifiant($username, $password);
+			$user = $loginInt->effectuer_login_par_identifiant($username, $password, $domaine);
 		}
 
 		$réponse = $this->valider_et_préparer_réponse($user, $request);
