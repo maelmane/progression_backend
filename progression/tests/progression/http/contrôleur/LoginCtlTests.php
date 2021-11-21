@@ -90,7 +90,7 @@ final class LoginCtlTests extends TestCase
 	public function test_étant_donné_lutilisateur_Bob_sans_authentification_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Bob()
 	{
 		putenv("AUTH_LOCAL=false");
-		
+
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDAO
 			->shouldReceive("vérifier_password")
