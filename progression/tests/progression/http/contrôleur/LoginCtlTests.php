@@ -87,8 +87,10 @@ final class LoginCtlTests extends TestCase
 		Mockery::close();
 	}
 
-	public function test_étant_donné_lutilisateur_Bob_et_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Bob()
+	public function test_étant_donné_lutilisateur_Bob_sans_authentification_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Bob()
 	{
+		putenv("AUTH_LOCAL=false");
+		
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDAO
 			->shouldReceive("vérifier_password")
@@ -105,9 +107,9 @@ final class LoginCtlTests extends TestCase
 		$this->assertEquals('{"Token":"token valide"}', $token);
 	}
 
-	public function test_étant_donné_un_utilisateur_inexistant_et_une_authentification_de_type_no_lorsquon_appelle_login_lutilisateur_est_créé()
+	public function test_étant_donné_un_utilisateur_inexistant_sans_authentification_lorsquon_appelle_login_lutilisateur_est_créé()
 	{
-		$_ENV["AUTH_TYPE"] = "no";
+		putenv("AUTH_LOCAL=false");
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDAO

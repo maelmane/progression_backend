@@ -117,7 +117,7 @@ final class LoginIntTests extends TestCase
 
 	public function test_étant_donné_lutilisateur_bob_et_une_authentification_de_type_no_lorsquon_login_sans_mot_de_passe_on_obtient_un_objet_user_nommé_bob()
 	{
-		$_ENV["AUTH_TYPE"] = "no";
+		putenv("AUTH_LOCAL=false");
 
 		$interacteur = new LoginInt();
 		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("bob");
@@ -127,7 +127,7 @@ final class LoginIntTests extends TestCase
 
 	public function test_étant_donné_lutilisateur_Banane_inexistant_et_une_authentification_de_type_no_lorsquon_login_sans_mot_de_passe_il_est_créé_et_on_obtient_un_objet_user_nommé_Banane()
 	{
-		$_ENV["AUTH_TYPE"] = "no";
+		putenv("AUTH_LOCAL=false");
 
 		$interacteur = new LoginInt();
 		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("Banane");
@@ -137,7 +137,7 @@ final class LoginIntTests extends TestCase
 
 	public function test_étant_donné_lutilisateur_existant_bob_et_une_authentification_de_type_local_lorsquon_login_avec_mdp_correct_on_obtient_un_objet_user_nommé_bob()
 	{
-		$_ENV["AUTH_TYPE"] = "local";
+		putenv("AUTH_LOCAL=true");
 
 		$interacteur = new LoginInt();
 		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("bob", "password");
@@ -147,7 +147,7 @@ final class LoginIntTests extends TestCase
 
 	public function test_étant_donné_lutilisateur_existant_bob_et_une_authentification_de_type_local_lorsquon_login_avec_mdp_incorrect_on_obtient_null()
 	{
-		$_ENV["AUTH_TYPE"] = "local";
+		putenv("AUTH_LOCAL=true");
 
 		$interacteur = new LoginInt();
 		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("bob", "pas mon mot de passe");
@@ -157,7 +157,7 @@ final class LoginIntTests extends TestCase
 
 	public function test_étant_donné_lutilisateur_Banane_inexistant_et_une_authentification_de_type_local_lorsquon_login_on_obtient_null()
 	{
-		$_ENV["AUTH_TYPE"] = "local";
+		putenv("AUTH_LOCAL=true");
 
 		$interacteur = new LoginInt();
 		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("Banane", "password");

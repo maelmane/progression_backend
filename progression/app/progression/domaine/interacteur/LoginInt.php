@@ -46,7 +46,7 @@ class LoginInt extends Interacteur
 		}
 	}
 
-	function effectuer_login_par_identifiant($username, $password = null)
+	function effectuer_login_par_identifiant($username, $password = null, $domaine = null)
 	{
 		syslog(LOG_INFO, "Tentative de connexion : $username");
 
@@ -56,12 +56,15 @@ class LoginInt extends Interacteur
 
 		$user = null;
 
-		if ($_ENV["AUTH_TYPE"] == "no") {
-			$user = $this->login_sans_authentification($username);
-		} elseif ($_ENV["AUTH_TYPE"] == "local") {
+		$auth_local = getenv("AUTH_LOCAL") !== "false";
+		$auth_ldap = getenv("AUTH_LDAP") === "true";
+
+		if ($auth_ldap && $domaine) {
+			$user = $this->login_ldap($username, $password, $domaine);
+		} elseif ($auth_local) {
 			$user = $this->login_local($username, $password);
-		} elseif ($_ENV["AUTH_TYPE"] == "ldap") {
-			$user = $this->login_ldap($username, $password);
+		} else {
+			$user = $this->login_sans_authentification($username);
 		}
 
 		if ($user != null) {
@@ -82,10 +85,10 @@ class LoginInt extends Interacteur
 		}
 	}
 
-	function login_ldap($username, $password)
+	function login_ldap($username, $password, $domaine)
 	{
 		$user = null;
-		if ($this->get_username_ldap($username, $password)) {
+		if ($this->get_username_ldap($username, $password, $domaine)) {
 			$user = $this->login_sans_authentification($username);
 		}
 
@@ -97,9 +100,11 @@ class LoginInt extends Interacteur
 		return !empty(trim($champ));
 	}
 
-	function get_username_ldap($username, $password)
+	function get_username_ldap($username, $password, $domaine)
 	{
-		define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
+		if ($domaine != $_ENV["LDAP_DOMAINE"]) {
+			throw new \Exception("Domaine multiple non implémenté");
+		}
 
 		// Connexion au serveur LDAP
 		$ldap = ldap_connect("ldap://" . $_ENV["LDAP_HOTE"], $_ENV["LDAP_PORT"]);
