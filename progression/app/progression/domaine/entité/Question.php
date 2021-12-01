@@ -37,6 +37,8 @@ class Question
 	public $titre = null;
 	public $description = null;
 	public $enonce = null;
+	public $auteur = null;
+	public $licence = null;
 	public $feedback_pos = null;
 	public $feedback_neg = null;
 	public $feedback_err = null;

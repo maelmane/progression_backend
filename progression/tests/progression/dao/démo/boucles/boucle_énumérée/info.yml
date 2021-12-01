@@ -15,3 +15,6 @@ rétroactions:
   négative: "Pour tout savoir sur les itérations énumérées : [clique ici](http://unlien.com)"
 
 tests: !include tests/tous_les_tests.yml
+
+auteur: Albert Einstein
+licence: poétique

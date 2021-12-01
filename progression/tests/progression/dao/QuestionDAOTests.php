@@ -33,6 +33,8 @@ final class QuestionDAOTests extends TestCase
 		$this->question->description = "Exercice simple sur les itérations à nombre d'itérations fixe";
 		$this->question->enonce =
 			"Saisissez un nombre sur l'entrée standard puis faites afficher la phrase «Bonjour le monde!» autant de fois.";
+		$this->question->auteur = "Albert Einstein";
+		$this->question->licence = "poétique";
 		$this->question->feedback_neg =
 			"Pour tout savoir sur les itérations énumérées : [clique ici](http://unlien.com)";
 		$this->question->feedback_pos = "Bravo! tu es prêt à passer à un type de boucles plus complexe";

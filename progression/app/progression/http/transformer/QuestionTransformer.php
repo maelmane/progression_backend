@@ -36,6 +36,8 @@ class QuestionTransformer extends Fractal\TransformerAbstract
 			"titre" => $question->titre,
 			"description" => $question->description,
 			"énoncé" => $question->enonce,
+			"auteur" => $question->auteur,
+			"licence" => $question->licence,
 			"links" => [
 				"self" => $_ENV["APP_URL"] . "question/" . $chemin_encodé,
 			],

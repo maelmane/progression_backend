@@ -26,6 +26,8 @@ class DécodeurQuestion
 		$question->titre = $infos_question["titre"] ?? null;
 		$question->description = $infos_question["description"] ?? null;
 		$question->enonce = $infos_question["énoncé"] ?? null;
+		$question->auteur = $infos_question["auteur"] ?? null;
+		$question->licence = $infos_question["licence"] ?? null;
 
 		$question->feedback_pos = $infos_question["rétroactions"]["positive"] ?? null;
 		$question->feedback_neg = $infos_question["rétroactions"]["négative"] ?? null;
