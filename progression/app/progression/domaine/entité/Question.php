@@ -34,6 +34,7 @@ class Question
 	public $nom = null;
 	public $uri = null;
 	public $actif = 1;
+	public $niveau = null;
 	public $titre = null;
 	public $description = null;
 	public $enonce = null;

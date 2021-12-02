@@ -33,6 +33,7 @@ class QuestionTransformer extends Fractal\TransformerAbstract
 
 		$data_out = [
 			"id" => $chemin_encodé,
+			"niveau" => $question->niveau,
 			"titre" => $question->titre,
 			"description" => $question->description,
 			"énoncé" => $question->enonce,
