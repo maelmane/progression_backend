@@ -1,20 +1,20 @@
 <?php
 /*
-  This file is part of Progression.
+   This file is part of Progression.
 
-  Progression is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-  Progression is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\domaine\interacteur;
 
@@ -106,7 +106,7 @@ final class PréparerProgIntTests extends TestCase
 
              print(\"Allo le monde\")
              #-TODO
-             # Rien à faire ici
+             # Ne devrait pas être ici
 
             ",
 		);
@@ -151,7 +151,7 @@ final class PréparerProgIntTests extends TestCase
 			"#Commentaire invisible
              #+VISIBLE
 
-             # Rien à faire ici
+             # Ne devrait pas être ici
 
              #+TODO
              print(\"Allo le monde\")
@@ -199,11 +199,11 @@ final class PréparerProgIntTests extends TestCase
 			"python",
 			"#Commentaire invisible
              #+VISIBLE
-             #Ne devrait pas être ici
+             # Ne devrait pas être ici
              #+TODO
              print(\"Allo le monde\")
              #-TODO
-             # Rien à faire ici
+             # Ne devrait pas être ici
              #+TODO
              
              print(\"Test 123\")",
