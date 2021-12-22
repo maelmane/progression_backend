@@ -11,7 +11,7 @@ RUN docker-php-ext-install -j$(nproc) mysqli zip
 COPY docker-php-ext-get /usr/local/bin/
 
 RUN docker-php-source extract &&\
-    docker-php-ext-get yaml 2.2.1 &&\
+    docker-php-ext-get yaml 2.2.2 &&\
     docker-php-ext-install yaml &&\
     docker-php-source delete
 
