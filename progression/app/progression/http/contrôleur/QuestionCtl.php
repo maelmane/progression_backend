@@ -41,7 +41,7 @@ class QuestionCtl extends Contrôleur
 					__CLASS__ .
 					") ERR: {$erreur->getMessage()}",
 			);
-			$réponse = $this->réponse_json(["erreur" => "Limite de volume dépassé."], 509);
+			$réponse = $this->réponse_json(["erreur" => "Limite de volume dépassé."], 413);
 		} catch (RuntimeException $erreur) {
 			Log::notice(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
