@@ -110,8 +110,6 @@ class TentativeCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => "Question BD non implémentée."], 501);
 		}
 
-		Log::notice("Réponse : " . print_r($réponse, true));
-
 		return $this->préparer_réponse($réponse);
 	}
 

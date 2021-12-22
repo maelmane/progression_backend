@@ -41,20 +41,20 @@ class ExécuteurCache extends Exécuteur
 
 		$hash_non_formaté = $hash;
 		
-		$code = $this->standardiser_code( $exécutable->code, $exécutable->lang );
-		$hash = $this->calculer_hash( $exécutable->code, $exécutable->lang, $test->entrée );
+		$code_standardisé = $this->standardiser_code( $exécutable->code, $exécutable->lang );
+		$hash = $this->calculer_hash( $code_standardisé, $exécutable->lang, $test->entrée );
 
 		$résultat = $this->obtenir_de_la_cache( $hash );
 
 		if(!$résultat) {
 			$résultat = $this->_exécuteur->exécuter($exécutable, $test);
 
-			$this->placer_en_cache( $hash, $résultat );
-		}
-		
-		if (!$this->contient_des_erreurs( $résultat ))
-		{
-			$this->placer_en_cache( $hash_non_formaté, $résultat );
+			if (!$this->contient_des_erreurs( $résultat ))
+			{
+				$this->placer_en_cache( $hash, $résultat );
+				$this->placer_en_cache( $hash_non_formaté, $résultat );
+			}
+
 		}
 
 		return $résultat;
@@ -64,8 +64,39 @@ class ExécuteurCache extends Exécuteur
 		return md5( $code . $lang . $entrée );
 	}
 
-	private function standardiser_code( $code, $langage ) {
-		return $code;
+	private function standardiser_code( $code, $lang ) {
+		if ($lang == "python") {
+			$beautifier = "black";
+		}
+		else if ($lang == "cpp") {
+			$beautifier = "clang-format";
+		}
+		else if ($lang == "java") {
+			$beautifier = "clang-format";
+		}
+		else {
+			return $code;
+		}
+
+		$descriptorspec = array(
+			0 => array("pipe", "r"),
+			1 => array("pipe", "w")
+		);
+		
+		$proc = proc_open( [ $beautifier ],
+						   $descriptorspec,
+						   $pipes );
+
+		if(is_resource($proc)){
+			fwrite($pipes[0], $code);
+			fclose($pipes[0]);
+
+			$stdout = stream_get_contents($pipes[1]);
+			fclose($pipes[1]);
+		}
+
+		$retour = proc_close( $proc );
+		return $retour == 0 ? $stdout : $code ;
 	}
 	
 	private function obtenir_de_la_cache( $hash ){
