@@ -91,6 +91,6 @@ class DAOFactory
 
 	function get_exécuteur()
 	{
-		return new ExécuteurCache( new ExécuteurCompilebox() );
+		return new ExécuteurCache(new ExécuteurCompilebox());
 	}
 }

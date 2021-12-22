@@ -122,6 +122,6 @@ $app->router->group(
 	},
 );
 
-$app->configure('database');
+$app->configure("database");
 
 return $app;
