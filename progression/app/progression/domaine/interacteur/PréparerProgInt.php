@@ -44,9 +44,9 @@ class PréparerProgInt
 
 		//S'il n'y a pas de +TODO, ou que le premier est placé après le premiers -TODO,
 		//on considère que l'ébauche commence avec une zone éditable
-		$premier_plus_todo = strpos( $ébauche, "+TODO" );
-		$premier_moins_todo = strpos( $ébauche, "-TODO" );
-		if ( !$premier_plus_todo || $premier_moins_todo && $premier_plus_todo > $premier_moins_todo ) {
+		$premier_plus_todo = strpos($ébauche, "+TODO");
+		$premier_moins_todo = strpos($ébauche, "-TODO");
+		if (!$premier_plus_todo || ($premier_moins_todo && $premier_plus_todo > $premier_moins_todo)) {
 			$ébauche = "#+TODO\n" . $ébauche;
 			$code_utilisateur = "#+TODO\n" . $code_utilisateur;
 		} else {
