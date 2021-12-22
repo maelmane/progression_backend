@@ -11,7 +11,9 @@
         "league/fractal": "^0.19.2",
         "symfony/config": "^5.2",
         "tymon/jwt-auth": "^1.0.0-beta.3@dev",
-        "vlucas/phpdotenv": "^5"
+        "vlucas/phpdotenv": "^5",
+		"predis/predis": "^1.1.9",
+		"illuminate/redis": "^8.77.1"
     },
 	"require-dev": {
         "mockery/mockery": "@stable",

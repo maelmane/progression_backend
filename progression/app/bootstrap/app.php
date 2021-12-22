@@ -97,6 +97,8 @@ $app->middleware([progression\http\middleware\Cors::class]);
 
 // $app->register(App\Providers\AppServiceProvider::class);
 $app->register(progression\providers\AuthServiceProvider::class);
+$app->register(Illuminate\Redis\RedisServiceProvider::class);
+
 // $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
@@ -119,5 +121,7 @@ $app->router->group(
 		require __DIR__ . "/../routes/web.php";
 	},
 );
+
+$app->configure('database');
 
 return $app;
