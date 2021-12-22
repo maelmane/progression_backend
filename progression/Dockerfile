@@ -42,3 +42,7 @@ RUN a2enmod rewrite
 WORKDIR /var/www/
 RUN chmod +x progression/app/entrypoint.sh
 CMD [ "bash", "progression/app/entrypoint.sh" ]
+
+# Installation des beautifiers pour la standardisation du code soumis
+RUN apt install -y black \
+				   clang-format
