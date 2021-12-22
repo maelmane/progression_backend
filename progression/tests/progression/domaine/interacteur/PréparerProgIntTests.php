@@ -215,6 +215,54 @@ final class PréparerProgIntTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
+	public function test_étant_donné_une_questionprog_à_deux_todos_au_début_et_à_la_fin_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_seulement_code_utilisateur_entre_todos()
+	{
+		$résultat_attendu = new Exécutable(
+			"#Commentaire invisible
+             #+VISIBLE
+             print(\"Allo le monde\")
+             #-TODO
+
+             # Rien à faire ici
+
+             #+TODO
+             print(\"Test 123\")",
+
+			"python",
+		);
+
+		$question = new QuestionProg();
+		$question->exécutables["python"] = new Exécutable(
+			"#Commentaire invisible
+             #+VISIBLE
+             print()
+             #-TODO
+
+             # Rien à faire ici
+
+             #+TODO
+             # À faire
+            ",
+			"python",
+		);
+
+		$tentative = new TentativeProg(
+			"python",
+			"#Commentaire invisible
+             #+VISIBLE
+             print(\"Allo le monde\")
+             #-TODO
+             # Ne devrait pas être ici
+             #+TODO
+             print(\"Test 123\")",
+		);
+
+		$interacteur = new PréparerProgInt();
+		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
 	public function test_étant_donné_une_question_et_une_tentative_pour_un_langage_sans_ébauche_lorsquon_prépare_lexécutable_on_obtient_null()
 	{
 		$question = new QuestionProg();
