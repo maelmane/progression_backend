@@ -83,6 +83,7 @@ class ExécuteurCache extends Exécuteur
 
 		$proc = proc_open([$beautifier], $descriptorspec, $pipes);
 
+		$stdout = "";
 		if (is_resource($proc)) {
 			fwrite($pipes[0], $code);
 			fclose($pipes[0]);
