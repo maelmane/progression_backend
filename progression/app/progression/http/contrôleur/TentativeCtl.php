@@ -76,13 +76,14 @@ class TentativeCtl extends Contrôleur
 			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["erreur" => "Ressource indisponible sur le serveur distant."], 502);
 		} catch (DomainException $erreur) {
-			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["erreur" => "Requête intraitable."], 400);
 		}
 
 		if ($question instanceof QuestionProg) {
 			$validation = $this->valider_paramètres($request);
 			if ($validation->fails()) {
+				Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 				return $this->réponse_json(["erreur" => $validation->errors()], 400);
 			}
 			$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
@@ -98,13 +99,18 @@ class TentativeCtl extends Contrôleur
 				$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
 				$réponse = $this->item($tentative, new TentativeProgTransformer());
 			} else {
+				Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 				return $this->réponse_json(["erreur" => "Requête intraitable."], 400);
 			}
 		} elseif ($question instanceof QuestionSys) {
+			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["erreur" => "Question système non implémentée."], 501);
 		} elseif ($question instanceof QuestionBD) {
+			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["erreur" => "Question BD non implémentée."], 501);
 		}
+
+		Log::notice("Réponse : " . print_r($réponse, true));
 
 		return $this->préparer_réponse($réponse);
 	}
