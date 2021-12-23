@@ -33,7 +33,7 @@ class ChargeurQuestionFichier
 		$err_code = null;
 
 		//Les limites doivent être suffisamment basses pour empêcher les «abus» (inclusion récursive, fichiers volumineux, etc.)
-		exec("ulimit -s 256 && ulimit -t 3 && python3 -m progression_qc $uri", $output, $err_code);
+		exec("ulimit -s 256 && ulimit -t 3 && python3 -m progression_qc $uri 2>/dev/null", $output, $err_code);
 
 		if ($err_code != 0) {
 			throw new RuntimeException("Le fichier {$uri} ne peut pas être chargé (err:{$err_code})");
