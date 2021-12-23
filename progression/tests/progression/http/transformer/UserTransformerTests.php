@@ -59,6 +59,9 @@ final class UserTransformerTests extends TestCase
 		foreach ($résultats_obtenus->getData() as $résultat) {
 			$clés[] = $résultat;
 		}
-		$this->assertStringEqualsFile(__DIR__ . "/résultats_attendus/userTransformerTest_1.json", json_encode($clés));
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/userTransformerTest_1.json",
+			json_encode($clés),
+		);
 	}
 }

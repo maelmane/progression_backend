@@ -71,7 +71,7 @@ final class TestCtlTests extends TestCase
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/testCtlTest_1.json",
 			$résultat_obtenu->getContent(),
 		);

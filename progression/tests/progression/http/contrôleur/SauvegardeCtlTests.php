@@ -78,7 +78,7 @@ final class SauvegardeCtlTests extends TestCase
 		);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/sauvegardeCtlTests_1.json",
 			$résultat_observé->getContent(),
 		);
@@ -136,7 +136,7 @@ final class SauvegardeCtlTests extends TestCase
 		);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/sauvegardeCtlTests_1.json",
 			$résultat_observé->getContent(),
 		);

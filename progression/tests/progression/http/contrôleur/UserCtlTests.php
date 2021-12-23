@@ -64,7 +64,7 @@ final class UserCtlTests extends TestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe");
 
 		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/userCtlTest_1.json",
 			$résultat_obtenu->getContent(),
 		);

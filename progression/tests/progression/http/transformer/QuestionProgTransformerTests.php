@@ -50,7 +50,7 @@ final class QuestionProgTransformerTests extends TestCase
 			"username" => $username,
 		]);
 
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/questionProgTransformerTest_1.json",
 			json_encode($item),
 		);
@@ -78,7 +78,7 @@ final class QuestionProgTransformerTests extends TestCase
 			$tests[] = $résultat;
 		}
 
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/questionProgTransformerTest_2.json",
 			json_encode($tests),
 		);
@@ -121,7 +121,7 @@ final class QuestionProgTransformerTests extends TestCase
 			$ébauches[] = $résultat;
 		}
 
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/questionProgTransformerTest_3.json",
 			json_encode($ébauches),
 		);

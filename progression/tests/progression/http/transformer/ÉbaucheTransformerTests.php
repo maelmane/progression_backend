@@ -42,7 +42,7 @@ final class ÉbaucheTransformerTests extends TestCase
 
 		$résultat_obtenu = $ébaucheTransformer->transform($ébauche);
 
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/ébaucheTransformerTest_1.json",
 			json_encode($résultat_obtenu),
 		);

@@ -38,7 +38,7 @@ final class AvancementTransformerTests extends TestCase
 
 		$avancementTransformer = new AvancementTransformer();
 		$résultats_obtenus = $avancementTransformer->transform($avancement);
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementTransformerTest_1.json",
 			json_encode($résultats_obtenus),
 		);
@@ -60,7 +60,7 @@ final class AvancementTransformerTests extends TestCase
 		foreach ($résultats_obtenus->getData() as $résultat) {
 			$tentatives[] = $résultat;
 		}
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementTransformerTest_2.json",
 			json_encode($tentatives),
 		);
@@ -81,7 +81,7 @@ final class AvancementTransformerTests extends TestCase
 		foreach ($résultats_obtenus->getData() as $résultat) {
 			$listeSauvegardes[] = $résultat;
 		}
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementTransformerTest_3.json",
 			json_encode($listeSauvegardes),
 		);

@@ -115,7 +115,7 @@ final class AvancementCtlTests extends TestCase
 		);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementCtlTests_1.json",
 			$résultat_observé->getContent(),
 		);
@@ -168,7 +168,7 @@ final class AvancementCtlTests extends TestCase
 		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementCtlTests_nouvelAvancement.json",
 			$résultat_observé->getContent(),
 		);
@@ -192,7 +192,7 @@ final class AvancementCtlTests extends TestCase
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
 		]);
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementCtlTests_nouvelAvancement.json",
 			$résultat_observé->getContent(),
 		);
@@ -208,7 +208,7 @@ final class AvancementCtlTests extends TestCase
 		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementCtlTests_2.json",
 			$résultat_observé->getContent(),
 		);
