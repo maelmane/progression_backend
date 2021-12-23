@@ -152,16 +152,20 @@ final class TentativeCtlTests extends TestCase
 
 	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_on_obtient_la_TentativeProg_avec_ses_résultats_et_ses_relations_sous_forme_json()
 	{
-		$heure_courante = time();
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives?include=resultats",
 			["langage" => "python", "code" => "#+TODO\nprint(\"Hello world!\")"],
 		);
 		$this->assertEquals(200, $résultat_obtenu->status());
+		$heure_courante = time();
+		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
+		if ($heure_courante - $heure_tentative > 1) {
+			$this->fail();
+		}
+
 		$this->assertJsonStringEqualsJsonString(
-			// Risqué. L'heure peut avoir changé entre la requête et la vérification
-			sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_1.json"), $heure_courante),
+			sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_1.json"), $heure_tentative),
 			$résultat_obtenu->getContent(),
 		);
 	}
