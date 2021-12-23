@@ -161,7 +161,7 @@ final class TentativeCtlTests extends TestCase
 		$this->assertEquals(200, $résultat_obtenu->status());
 		$this->assertJsonStringEqualsJsonString(
 			// Risqué. L'heure peut avoir changé entre la requête et la vérification
-			sprintf( file_get_contents( __DIR__ . "/résultats_attendus/tentativeCtlTest_1.json" ), $heure_courante ),
+			sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_1.json"), $heure_courante),
 			$résultat_obtenu->getContent(),
 		);
 	}
