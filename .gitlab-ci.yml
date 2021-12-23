@@ -31,7 +31,7 @@ variables:
 test_unitaires:
   stage: test
   script:
-  - db/build_db.sh && mysql -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
+  - db/build_db.sh && mysql --default-character-set=utf8 -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
   - progression/vendor/bin/phpunit --configuration progression/phpunit.xml --coverage-text
   except:
   - documentation
