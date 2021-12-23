@@ -8,7 +8,7 @@ FROM php:apache
 
 # Mise a jour de la liste de package
 RUN apt update && apt upgrade -y && apt autoclean
-RUN apt update && apt install -y unzip wget default-libmysqlclient-dev default-mysql-client python-yaml git libldap2-dev libyaml-dev libzip-dev python3 python3-pip && apt autoclean
+RUN apt update && apt install -y unzip wget default-libmysqlclient-dev default-mysql-client python3-yaml git libldap2-dev libyaml-dev libzip-dev python3 python3-pip && apt autoclean
 
 RUN pip3 install progression_qc
 
@@ -18,7 +18,7 @@ RUN docker-php-ext-install -j$(nproc) mysqli ldap zip
 COPY docker-php-ext-get /usr/local/bin/
 
 RUN docker-php-source extract &&\
-    docker-php-ext-get yaml 2.2.1 &&\
+    docker-php-ext-get yaml 2.2.2 &&\
     docker-php-ext-install yaml &&\
     docker-php-source delete
 	
