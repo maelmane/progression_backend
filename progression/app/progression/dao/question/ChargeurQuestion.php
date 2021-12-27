@@ -16,7 +16,7 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\dao;
+namespace progression\dao\question;
 
 use RuntimeException;
 

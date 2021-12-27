@@ -92,7 +92,7 @@ class UserDAO extends EntitéDAO
 			$query->fetch();
 			$query->close();
 
-			return $hash && password_verify($password, $hash);
+			return $hash && $password && password_verify($password, $hash);
 		} catch (mysqli_sql_exception $e) {
 			throw new DAOException($e);
 		}

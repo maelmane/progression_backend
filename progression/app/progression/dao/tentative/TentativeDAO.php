@@ -16,9 +16,10 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\dao;
+namespace progression\dao\tentative;
 
 use mysqli_sql_exception;
+use progression\dao\{DAOException, EntitéDAO};
 use progression\domaine\entité\Question;
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 

@@ -97,7 +97,7 @@ class LoginInt extends Interacteur
 
 	function vérifier_champ_valide($champ)
 	{
-		return !empty(trim($champ));
+		return $champ && !empty(trim($champ));
 	}
 
 	function get_username_ldap($username, $password, $domaine)

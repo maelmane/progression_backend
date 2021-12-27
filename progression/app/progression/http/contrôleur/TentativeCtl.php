@@ -25,7 +25,7 @@ use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransfor
 use progression\domaine\interacteur\{ObtenirTentativeInt, ObtenirQuestionInt, SoumettreTentativeProgInt};
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
-use progression\dao\ExécutionException;
+use progression\dao\exécuteur\ExécutionException;
 use progression\util\Encodage;
 use DomainException, LengthException, RuntimeException;
 
@@ -84,6 +84,7 @@ class TentativeCtl extends Contrôleur
 			$validation = $this->valider_paramètres($request);
 			if ($validation->fails()) {
 				Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+
 				return $this->réponse_json(["erreur" => $validation->errors()], 400);
 			}
 			$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());

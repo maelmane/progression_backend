@@ -19,7 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\dao\DAOFactory;
-use progression\dao\{ChargeurQuestion, ChargeurQuestionFichier};
+use progression\dao\question\{ChargeurQuestion, ChargeurQuestionFichier};
 
 class ObtenirQuestionInt extends Interacteur
 {

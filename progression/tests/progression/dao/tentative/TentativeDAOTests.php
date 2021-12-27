@@ -16,10 +16,11 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\dao;
+namespace progression\dao\tentative;
 
 use PHPUnit\Framework\TestCase;
 use progression\dao\DAOFactory;
+use progression\dao\EntitéDAO;
 
 final class TentativeDAOTests extends TestCase
 {

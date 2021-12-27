@@ -19,6 +19,7 @@
 require_once __DIR__ . "/../../../TestCase.php";
 
 use progression\dao\DAOFactory;
+use progression\dao\exécuteur\ExécutionException;
 use progression\domaine\entité\{Avancement, Test, Exécutable, Question, TentativeProg, QuestionProg, User};
 
 use Illuminate\Auth\GenericUser;
@@ -88,7 +89,7 @@ final class TentativeCtlTests extends TestCase
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "java";
 			})
-			->andReturn(false);
+			->andThrow(new ExécutionException(null, "test://TentativeCtlTests.php"));
 
 		// Avancement
 		$avancement = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [

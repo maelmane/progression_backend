@@ -16,11 +16,12 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\dao;
+namespace progression\dao\question;
 
 use DomainException;
 use RuntimeException;
 use Illuminate\Support\Facades\Log;
+use progression\dao\EntitéDAO;
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
 
 class QuestionDAO extends EntitéDAO

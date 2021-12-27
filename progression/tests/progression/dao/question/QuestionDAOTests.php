@@ -16,8 +16,9 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\dao;
+namespace progression\dao\question;
 
+use progression\dao\DAOFactory;
 use progression\domaine\entité\{QuestionProg, Exécutable, Test};
 use PHPUnit\Framework\TestCase;
 

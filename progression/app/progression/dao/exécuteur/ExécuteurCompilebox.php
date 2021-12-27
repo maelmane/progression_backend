@@ -16,7 +16,7 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\dao;
+namespace progression\dao\exécuteur;
 
 class ExécuteurCompilebox extends Exécuteur
 {
@@ -60,11 +60,7 @@ class ExécuteurCompilebox extends Exécuteur
 		];
 		$context = stream_context_create($options_rc);
 
-		$comp_resp = @file_get_contents($url_rc, false, $context);
-
-		if ($comp_resp === false) {
-			throw new ExécutionException(error_get_last(), $_ENV["COMPILEBOX_URL"]);
-		}
+		$comp_resp = file_get_contents($url_rc, false, $context);
 
 		return $comp_resp;
 	}
