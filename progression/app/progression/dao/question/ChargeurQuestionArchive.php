@@ -24,7 +24,7 @@ use ZipArchive;
 
 class ChargeurQuestionArchive
 {
-	public function récupérer_question($uri, $entêtes)
+	public static function récupérer_question($uri, $entêtes)
 	{
 		$taille = self::get_entête($entêtes, "content-length");
 
@@ -56,7 +56,7 @@ class ChargeurQuestionArchive
 		return $sortie;
 	}
 
-	private function get_entête($entêtes, $clé)
+	private static function get_entête($entêtes, $clé)
 	{
 		if ($entêtes == null) {
 			return null;
@@ -72,7 +72,7 @@ class ChargeurQuestionArchive
 		}
 	}
 
-	private function vérifier_taille($taille)
+	private static function vérifier_taille($taille)
 	{
 		if (!$taille) {
 			throw new LengthException("Le fichier de taille inconnue. On ne le chargera pas.");
@@ -83,7 +83,7 @@ class ChargeurQuestionArchive
 		}
 	}
 
-	private function télécharger_fichier($uri)
+	private static function télécharger_fichier($uri)
 	{
 		$nomUnique = uniqid("archive_", true);
 		$chemin = sys_get_temp_dir() . "/$nomUnique.arc";
@@ -101,7 +101,7 @@ class ChargeurQuestionArchive
 		return false;
 	}
 
-	private function supprimer_fichiers($cheminCible)
+	private static function supprimer_fichiers($cheminCible)
 	{
 		if (PHP_OS === "Windows") {
 			exec(sprintf("rd /s /q %s", escapeshellarg($cheminCible)));
@@ -113,7 +113,7 @@ class ChargeurQuestionArchive
 		return false;
 	}
 
-	private function extraire_zip($archive, $destination, $test = false)
+	private static function extraire_zip($archive, $destination, $test = false)
 	{
 		$zip = new ZipArchive();
 		if ($zip->open($archive) === true) {

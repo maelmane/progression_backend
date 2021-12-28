@@ -34,11 +34,11 @@ final class ObtenirQuestionProgIntTests extends TestCase
 		$mockQuestionDao = Mockery::mock("progression\dao\QuestionDAO");
 		$mockQuestionDao
 			->shouldReceive("get_question")
-			->with("file:///prog1/les_fonctions/appeler_une_fonction/info.yml", Mockery::any())
+			->with("file:///prog1/les_fonctions/appeler_une_fonction/info.yml")
 			->andReturn($question);
 		$mockQuestionDao
 			->shouldReceive("get_question")
-			->with("file:///test/de/chemin/non/valide", Mockery::any())
+			->with("file:///test/de/chemin/non/valide")
 			->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");

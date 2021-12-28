@@ -57,11 +57,11 @@ final class QuestionProgCtlTests extends TestCase
 		$mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
 		$mockQuestionDAO
 			->shouldReceive("get_question")
-			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", Mockery::any())
+			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 		$mockQuestionDAO
 			->shouldReceive("get_question")
-			->with(Mockery::any(), Mockery::any())
+			->with(Mockery::any())
 			->andReturn(null);
 
 		// DAOFactory

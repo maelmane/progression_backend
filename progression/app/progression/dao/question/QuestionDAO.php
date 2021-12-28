@@ -22,22 +22,31 @@ use DomainException;
 use RuntimeException;
 use Illuminate\Support\Facades\Log;
 use progression\dao\EntitéDAO;
-use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
+use progression\domaine\entité\QuestionProg;
 
 class QuestionDAO extends EntitéDAO
 {
-	public function get_question($uri, $chargeur = null)
+	public function get_question($uri)
 	{
-		$infos_question = ($chargeur ?? new ChargeurQuestion())->récupérer_question($uri);
+		$scheme = parse_url($uri, PHP_URL_SCHEME);
+
+		if ($scheme == "file") {
+			$infos_question = ChargeurQuestionFichier::récupérer_question($uri);
+		} elseif ($scheme == "https") {
+			$infos_question = ChargeurQuestionHTTP::récupérer_question($uri);
+		} else {
+			throw new RuntimeException("Schéma d'URI invalide");
+		}
 
 		if ($infos_question === null) {
 			throw new DomainException("Le fichier ne peut pas être décodé. Erreur inconnue.");
 		}
 
+		$infos_question["uri"] = $uri;
 		$type = $infos_question["type"] ?? ($type = "prog");
 
 		if ($type == "prog") {
-			return DécodeurQuestionProg::load($infos_question);
+			return DécodeurQuestionProg::load(new QuestionProg(), $infos_question);
 		} elseif ($type == "sys") {
 			throw new RuntimeException("Question de type SYS non implémenté");
 		} elseif ($type == "bd") {

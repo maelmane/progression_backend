@@ -22,12 +22,7 @@ use DomainException, RuntimeException;
 
 class ChargeurQuestionFichier
 {
-	public function récupérer_question($uri)
-	{
-		return $this->récupérer_fichier_info($uri);
-	}
-
-	protected function récupérer_fichier_info($uri)
+	public static function récupérer_question($uri)
 	{
 		$output = null;
 		$err_code = null;

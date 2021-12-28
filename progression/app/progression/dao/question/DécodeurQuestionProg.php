@@ -21,13 +21,11 @@ namespace progression\dao\question;
 use progression\domaine\entité\{QuestionProg, Exécutable, Test};
 use DomainException;
 
-class DécodeurQuestionProg
+class DécodeurQuestionProg extends DécodeurQuestion
 {
-	public static function load($infos_question)
+	public static function load($question, $infos_question)
 	{
-		$question = new QuestionProg();
-
-		DécodeurQuestion::load($question, $infos_question);
+		parent::load($question, $infos_question);
 
 		$question->exécutables = self::load_exécutables($infos_question);
 		$question->tests = self::load_tests($infos_question);

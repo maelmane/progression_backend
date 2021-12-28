@@ -77,11 +77,10 @@ final class QuestionDAOTests extends TestCase
 		parent::tearDown();
 	}
 
-	public function test_get_question()
+	public function test_étant_donné_un_fichier_de_question_valide_lorsquon_charge_la_question_on_obtient_un_objet_Question_correspondant()
 	{
 		$résultat_obtenu = (new QuestionDAO())->get_question(
 			"file://" . __DIR__ . "/démo/boucles/boucle_énumérée/info.yml",
-			new ChargeurQuestion(),
 		);
 		$this->question->uri = "file://" . __DIR__ . "/démo/boucles/boucle_énumérée/info.yml";
 
@@ -95,10 +94,7 @@ final class QuestionDAOTests extends TestCase
 		$résultat_attendu->tests = [new Test("#1", "")];
 		$résultat_attendu->uri = "file://" . __DIR__ . "/démo/défauts/info.yml";
 
-		$résultat_obtenu = (new QuestionDAO())->get_question(
-			"file://" . __DIR__ . "/démo/défauts/info.yml",
-			new ChargeurQuestion(),
-		);
+		$résultat_obtenu = (new QuestionDAO())->get_question("file://" . __DIR__ . "/démo/défauts/info.yml");
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}

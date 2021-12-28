@@ -20,29 +20,12 @@ namespace progression\dao\question;
 
 use RuntimeException;
 
-class ChargeurQuestion
+class ChargeurQuestionHTTP
 {
-	public function récupérer_question($uri)
+	public static function récupérer_question($uri)
 	{
-		$scheme = parse_url($uri, PHP_URL_SCHEME);
-
-		if ($scheme == "file") {
-			$sortie = (new ChargeurQuestionFichier())->récupérer_question($uri);
-		} elseif ($scheme == "https") {
-			$sortie = $this->récupérer_question_http($uri);
-		} else {
-			throw new RuntimeException("Schéma d'URI invalide");
-		}
-
-		$sortie["uri"] = $uri;
-
-		return $sortie;
-	}
-
-	private function récupérer_question_http($uri)
-	{
-		$entêtes = $this->get_entêtes($uri);
-		$content_type = $this->get_entête($entêtes, "content-type");
+		$entêtes = self::get_entêtes($uri);
+		$content_type = self::get_entête($entêtes, "content-type");
 
 		if ($content_type) {
 			if (str_starts_with($content_type, "application")) {
@@ -59,7 +42,7 @@ class ChargeurQuestion
 		throw new RuntimeException("Type de fichier inconnu");
 	}
 
-	private function get_entêtes($uri)
+	private static function get_entêtes($uri)
 	{
 		$opts = [
 			"http" => [
@@ -70,7 +53,7 @@ class ChargeurQuestion
 		return array_change_key_case(@get_headers($uri, 1, $context));
 	}
 
-	private function get_entête($entêtes, $clé)
+	private static function get_entête($entêtes, $clé)
 	{
 		if ($entêtes == null) {
 			return null;
