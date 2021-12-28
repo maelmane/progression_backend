@@ -24,12 +24,12 @@ class ChargeurQuestion extends Chargeur
 {
 	public function récupérer_question($uri)
 	{
-		$scheme = parse_url($uri, PHP_URL_SCHEME);
+		$scheme = strtolower(parse_url($uri, PHP_URL_SCHEME));
 
 		if ($scheme == "file") {
 			$sortie = $this->source->get_chargeur_fichier()->récupérer_question($uri);
 		} elseif ($scheme == "https") {
-			$sortie = $this->source->get_chargeur_http()->récupérer_question_http($uri);
+			$sortie = $this->source->get_chargeur_http()->récupérer_question($uri);
 		} else {
 			throw new RuntimeException("Schéma d'URI invalide");
 		}
@@ -38,5 +38,4 @@ class ChargeurQuestion extends Chargeur
 
 		return $sortie;
 	}
-
 }
