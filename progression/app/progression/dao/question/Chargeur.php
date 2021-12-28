@@ -18,27 +18,16 @@
 
 namespace progression\dao\question;
 
-use DomainException, RuntimeException;
-
-class ChargeurQuestionFichier extends Chargeur
+class Chargeur
 {
-	public function récupérer_question($uri)
+	protected $source = null;
+
+	public function __construct($source = null)
 	{
-		$output = null;
-		$err_code = null;
-
-		//Les limites doivent être suffisamment basses pour empêcher les «abus» (inclusion récursive, fichiers volumineux, etc.)
-		exec("ulimit -s 256 && ulimit -t 3 && python3 -m progression_qc $uri 2>/dev/null", $output, $err_code);
-
-		if ($err_code != 0) {
-			throw new RuntimeException("Le fichier {$uri} ne peut pas être chargé (err:{$err_code})");
+		if ($source == null) {
+			$this->source = ChargeurFactory::get_instance();
+		} else {
+			$this->source = $source;
 		}
-
-		$info = yaml_parse(implode("\n", $output));
-		if ($info === false) {
-			throw new DomainException("Le fichier {$uri} ne peut pas être décodé. Format invalide.");
-		}
-
-		return $info;
 	}
 }
