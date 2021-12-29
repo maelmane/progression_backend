@@ -66,12 +66,14 @@ pages:
 
 deploy_dev:
   script:
+    - chmod 400 /builds/progression/progression_backend.tmp/ID_RSA
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $CD_USER@$CD_HOST -p $CD_PORT $CD_COMMAND_DEV
   only:
     - dev
 
 deploy:
   script:
+    - chmod 400 /builds/progression/progression_backend.tmp/ID_RSA
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $CD_USER@$CD_HOST -p $CD_PORT $CD_COMMAND
   only:
     - master
