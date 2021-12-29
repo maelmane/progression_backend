@@ -66,12 +66,12 @@ pages:
 
 deploy_dev:
   script:
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $CD_USER@$CD_HOST:$CD_PORT $CD_COMMAND_DEV
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $CD_USER@$CD_HOST -p $CD_PORT $CD_COMMAND_DEV
   only:
     - dev
 
 deploy:
   script:
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $CD_USER@$CD_HOST:$CD_PORT $CD_COMMAND
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $CD_USER@$CD_HOST -p $CD_PORT $CD_COMMAND
   only:
     - master
