@@ -327,7 +327,7 @@ curl -s "https://progression.dti.crosemont.quebec/dev/api/v1/ebauche/aHR0cHM6Ly9
 DATA=$(cat <<EOF
 {
   "langage":"python",
-  "code": "#+TODO\nprint(1)\n#-TODO"
+  "code": "# Fonction qui calcule et produit en sortie le périmètre du rectangle dont les côtés sont recus en paramètre\ndef périmètre( une_largeur, une_longueur ):\n# +TODO\n    print( 2 * (une_largeur + une_longueur ) )\n\n# -TODO\n# Fonction qui calcule et produit en sortie l'aire du rectangle dont les côtés sont recus en paramètre\n# +TODO\ndef aire( une_largeur, une_longueur ):\n    print(une_lageur * une_longueur)\n# -TODO\n# Programme principal\n# Entrées\nlargeur = int( input() )\nlongueur = int( input() )\n\n# Appel des fonctions, les côtés du rectangle sont transmis en paramètre\npérimètre( largeur, longueur )\n# +TODO\naire( largeur, longueur )\n"
 }
 EOF
 )
