@@ -33,21 +33,28 @@ class ExécuteurCache extends Exécuteur
 	public function exécuter($exécutable, $test)
 	{
 		$hash = $this->calculer_hash($exécutable->code, $exécutable->lang, $test->entrée);
+		Log::debug("Hash : $hash");
 
 		$résultat = $this->obtenir_de_la_cache($hash);
 
 		if ($résultat) {
+			Log::debug("Cache : Hit");
 			return $résultat;
 		}
+		Log::debug("Cache : Miss");
 
 		$hash_non_formaté = $hash;
 
 		$code_standardisé = $this->standardiser_code($exécutable->code, $exécutable->lang);
 		$hash = $this->calculer_hash($code_standardisé, $exécutable->lang, $test->entrée);
+		Log::debug("Hash formaté: $hash");
 
 		$résultat = $this->obtenir_de_la_cache($hash);
 
-		if (!$résultat) {
+		if ($résultat) {
+			Log::debug("Cache : Hit");
+		} else {
+			Log::debug("Cache : Miss");
 			$résultat = $this->_exécuteur->exécuter($exécutable, $test);
 
 			if (!$this->contient_des_erreurs($résultat)) {
@@ -81,7 +88,7 @@ class ExécuteurCache extends Exécuteur
 			1 => ["pipe", "w"],
 		];
 
-		$proc = proc_open([$beautifier], $descriptorspec, $pipes);
+		$proc = proc_open([$beautifier, "-"], $descriptorspec, $pipes);
 
 		$stdout = "";
 		if (is_resource($proc)) {
@@ -93,6 +100,12 @@ class ExécuteurCache extends Exécuteur
 		}
 
 		$retour = proc_close($proc);
+		if ($retour != 0) {
+			Log::error("Beautifier erreur code $retour");
+		} else {
+			Log::debug("Code formaté : $stdout");
+		}
+
 		return $retour == 0 ? $stdout : $code;
 	}
 
