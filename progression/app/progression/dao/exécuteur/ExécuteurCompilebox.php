@@ -36,6 +36,7 @@ class ExécuteurCompilebox extends Exécuteur
 		"perl" => 12,
 		"sshd" => 13,
 		"mysql" => 14,
+		"powershell" => 15,
 	];
 
 	public function exécuter($exécutable, $test)
