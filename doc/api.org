@@ -330,7 +330,7 @@ curl "https://progression.dti.crosemont.quebec/dev/api/v1/ebauche/aHR0cHM6Ly9wcm
 
 ** Soumettre une tentative de solution à la question «Les fonctions avec paramètres/Rectangle» et récupérer les résultats
 
-#+BEGIN_SRC bash :eval yes :session *bash* :exports code
+#+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
 DATA=$(cat <<EOF
 {
   "langage":"python",
@@ -341,20 +341,18 @@ EOF
 #+END_SRC
 
 #+NAME: get_tentative
-#+BEGIN_SRC bash :eval yes :session *bash* :post json_pretty(*this*) :results output :exports both :cache yes
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*) :cache yes
 curl --data "$DATA" https://progression.dti.crosemont.quebec/dev/api/v1/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vOWJkZjVmMWEtNDg5YS00NDFmLTllNmUtMmM4N2JiYTU4YmY4L2luZm8ueW1s/tentatives?include=resultats -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir une tentative de solution préalablement soumise pour la question «Les fonctions avec paramètres/Rectangle»
 
 #+NAME: get_timestamp
-#+BEGIN_SRC bash :eval yes :session *bash* :var RES_TENTATIVE=get_tentative :results output :exports none :cache yes
-TS=$(echo $RES_TENTATIVE | grep -Po '(?<="date_soumission": )\d*')
-
-printf "%s" $TS
+#+BEGIN_SRC bash :eval yes :session *bash* :var RES_TENTATIVE=get_tentative :results output :exports none
+TIMESTAMP=$(echo $RES_TENTATIVE | grep -Po '(?<="date_soumission": )\d*')
 #+END_SRC
 
-#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :var TIMESTAMP=get_timestamp :post json_pretty(*this*)
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
 curl "https://progression.dti.crosemont.quebec/dev/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vOWJkZjVmMWEtNDg5YS00NDFmLTllNmUtMmM4N2JiYTU4YmY4L2luZm8ueW1s/$TIMESTAMP" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
@@ -398,20 +396,28 @@ EOF
 )
 #+END_SRC
 
-#+NAME: get_clé
-#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*) :cache yes
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
 curl --data "$DATA" "https://progression.dti.crosemont.quebec/dev/api/v1/user/jdoe/cles" -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Authentification par clé d'authentification pour ~jdoe~
 
-#+NAME: get_clé
-#+BEGIN_SRC bash :eval yes :session *bash* :var RES_CLE=get_clé :results none :exports none
-NOM_CLE=$(echo $RES_CLE | grep -Po '(?<="id": "jdoe/)[^"]*')
-SECRET=$(echo $RES_CLE | grep -Po '(?<="secret": ")\w*')
+#+BEGIN_SRC bash :eval yes :session *bash* :results none :exports none
+DATA=$(cat <<EOF
+{
+  "nom":"cléAuth$(head -c 9 /dev/urandom|base64|tr '/+' '_-')",
+  "portée":1
+}
+EOF
+)
+
+RES_CLE=$(/usr/bin/curl --data "$DATA" "https://progression.dti.crosemont.quebec/dev/api/v1/user/jdoe/cles" -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN")
+
+NOM_CLE=$(echo $RES_CLE | grep -Po '(?<="id":"jdoe\\/)[^"]*')
+SECRET=$(echo $RES_CLE | grep -Po '(?<="secret":")\w*')
 #+END_SRC
 
-#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports code
+#+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
 DATA=$(cat <<EOF
 {
   "username":"jdoe",
@@ -421,8 +427,6 @@ DATA=$(cat <<EOF
 EOF
 )
 #+END_SRC
-
-#+RESULTS:
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
 curl --data "$DATA" "https://progression.dti.crosemont.quebec/dev/api/v1/auth" -H "Content-Type: application/json"
