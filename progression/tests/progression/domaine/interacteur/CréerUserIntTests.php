@@ -51,6 +51,7 @@ final class CréerUserIntTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	public function test_étant_donné_un_nom_dutilisateur_valide_lorsquon_crée_lutilisateur_il_est_sauvegardé()

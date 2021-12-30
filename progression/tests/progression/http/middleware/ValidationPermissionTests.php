@@ -54,6 +54,7 @@ final class ValidationPermissionsTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_bob_connecté_lorsquon_demande_une_ressource_pour_ce_même_utilisateur_on_obtient_OK()

@@ -52,6 +52,7 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	public function test_étant_donné_un_utilisateur_jdoe_lorsquon_génère_une_clé_d_authentification_une_nouvelle_clé_est_sauvegardée()
@@ -63,10 +64,10 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 			->once()
 			->withArgs(function ($username, $nom, $clé) {
 				return $username == "jdoe" &&
-					$nom == "nouvelle clé" &&
-					$clé->création - (new \DateTime())->getTimestamp() < 1 &&
-					$clé->expiration == 0 &&
-					$clé->portée == Clé::PORTEE_AUTH;
+					   $nom == "nouvelle clé" &&
+					   $clé->création - (new \DateTime())->getTimestamp() < 1 &&
+					   $clé->expiration == 0 &&
+					   $clé->portée == Clé::PORTEE_AUTH;
 			})
 			->andReturnArg(2);
 

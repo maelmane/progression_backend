@@ -75,6 +75,7 @@ final class AvancementDAOTests extends TestCase
 
 		EntitéDAO::get_connexion()->rollback();
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_objet_avancement_correspondant()

@@ -42,6 +42,7 @@ final class InscriptionIntTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	public function test_étant_donné_un_nouvel_utilisateur_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User()
