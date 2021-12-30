@@ -1,6 +1,6 @@
 #+SETUPFILE: https://plafrance.pages.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg.setup
 #+TITLE: API Progression
-#+PROPERTY: header-args:sh :results output :exports both :prologue "exec 2>&1" :epilogue ":"
+#+PROPERTY: header-args:sh :results output :exports both
 
 #+begin_warning
   Cette documentation est proposée à titre indicatif seulement et peut changer à tout moment.
@@ -255,10 +255,9 @@ username/question_uri/langage
 Les exemples reflètent les résultats réels sur la plus récente version de l'API disponible sur ~https://progression.dti.crosemont.quebec/dev/api/v1/~.
 #+end_warning
 
-#+NAME: get_token
-#+BEGIN_SRC sh :eval yes :results output :exports none
-RET=$(curl -s "https://progression.dti.crosemont.quebec/dev/api/v1/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | cut -d '"' -f 4)
-printf "%s" $RET
+#+name: get_token
+#+BEGIN_SRC sh :eval yes :session s2 :exports none :results output
+TOKEN=$(curl -s "https://progression.dti.crosemont.quebec/dev/api/v1/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | grep -Po '(?<=Token":").*(?=")')
 #+END_SRC
 
 #+NAME: json_pretty
@@ -271,14 +270,13 @@ print( json.dumps( json.loads(json_str), ensure_ascii=False, indent=4 ) )
 
 ** Authentification en tant qu'utilisateur ~jdoe~
 
-
 #+BEGIN_SRC sh :eval yes
 curl -s "https://progression.dti.crosemont.quebec/dev/api/v1/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json"
 #+END_SRC
 
 ** Obtenir le profil de l'utilisateur authentifié ~jdoe~
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*)
+#+BEGIN_SRC sh :eval yes :session s2 :results output
 curl -s "https://progression.dti.crosemont.quebec/dev/api/v1/user" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
@@ -286,19 +284,19 @@ curl -s "https://progression.dti.crosemont.quebec/dev/api/v1/user" -H "Authoriza
 
 Cette question est disponible à l'URL suivant : https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/9bdf5f1a-489a-441f-9e6e-2c87bba58bf8/info.yml
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*)
+#+BEGIN_SRC sh :eval yes :session s2 :post json_pretty(*this*)
 curl -s "https://progression.dti.crosemont.quebec/dev/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vOWJkZjVmMWEtNDg5YS00NDFmLTllNmUtMmM4N2JiYTU4YmY4L2luZm8ueW1s?include=tests" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir la question «Les fonctions avec paramètres/Rectangle», ses tests et ses ébauches: 
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*)
+#+BEGIN_SRC sh :eval yes :session s2 :post json_pretty(*this*)
 curl -s "https://progression.dti.crosemont.quebec/dev/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vOWJkZjVmMWEtNDg5YS00NDFmLTllNmUtMmM4N2JiYTU4YmY4L2luZm8ueW1s?include=tests,ebauches" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Créer l'avancement de jdoe à la question «Les fonctions avec paramètres/Rectangle»
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*)
+#+BEGIN_SRC sh :eval yes :session s2 :post json_pretty(*this*)
 DATA=$(cat <<EOF
 {
   "question_uri":"aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vOWJkZjVmMWEtNDg5YS00NDFmLTllNmUtMmM4N2JiYTU4YmY4L2luZm8ueW1s"
@@ -311,19 +309,20 @@ curl -s --data "$DATA" https://progression.dti.crosemont.quebec/dev/api/v1/user/
 
 ** Obtenir l'avancement de ~jdoe~ pour la question «Les fonctions avec paramètres/Rectangle»
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*)
+#+BEGIN_SRC sh :eval yes :session s2 :post json_pretty(*this*)
 curl -s "https://progression.dti.crosemont.quebec/dev/api/v1/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vOWJkZjVmMWEtNDg5YS00NDFmLTllNmUtMmM4N2JiYTU4YmY4L2luZm8ueW1s" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir l'ébauche de solution en Python pour la question «Les fonctions avec paramètres/Rectangle»
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*)
+#+BEGIN_SRC sh :eval yes :session s2 :post json_pretty(*this*)
 curl -s "https://progression.dti.crosemont.quebec/dev/api/v1/ebauche/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vOWJkZjVmMWEtNDg5YS00NDFmLTllNmUtMmM4N2JiYTU4YmY4L2luZm8ueW1s/python" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Soumettre une tentative de solution à la question «Les fonctions avec paramètres/Rectangle» et récupérer les résultats
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*)
+#+NAME: get_tentative
+#+BEGIN_SRC sh :eval yes :session s2 :post json_pretty(*this*) :results output :exports both :cache yes
 DATA=$(cat <<EOF
 {
   "langage":"python",
@@ -337,19 +336,26 @@ curl -s --data "$DATA" https://progression.dti.crosemont.quebec/dev/api/v1/avanc
 
 ** Obtenir une tentative de solution préalablement soumise pour la question «Les fonctions avec paramètres/Rectangle»
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*)
-curl -s "https://progression.dti.crosemont.quebec/dev/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vOWJkZjVmMWEtNDg5YS00NDFmLTllNmUtMmM4N2JiYTU4YmY4L2luZm8ueW1s/1617040175" -H "Authorization: Bearer $TOKEN"
+#+NAME: get_timestamp
+#+BEGIN_SRC sh :eval yes :session s2 :var RES_TENTATIVE=get_tentative :results output :exports none :cache yes
+TS=$(echo $RES_TENTATIVE | grep -Po '(?<="date_soumission": )\d*')
+
+printf "%s" $TS
+#+END_SRC
+
+#+BEGIN_SRC sh :eval yes :session s2 :var TIMESTAMP=get_timestamp 
+curl -s "https://progression.dti.crosemont.quebec/dev/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vOWJkZjVmMWEtNDg5YS00NDFmLTllNmUtMmM4N2JiYTU4YmY4L2luZm8ueW1s/$TIMESTAMP" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir le test numéro 0 pour la question «Les fonctions avec paramètres/Rectangle»
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*)
+#+BEGIN_SRC sh :eval yes :session s2 :post json_pretty(*this*)
 curl -s "https://progression.dti.crosemont.quebec/dev/api/v1/test/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vOWJkZjVmMWEtNDg5YS00NDFmLTllNmUtMmM4N2JiYTU4YmY4L2luZm8ueW1s/0" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Créer ou mettre à jour la sauvegarde de ~jdoe~ pour la question «Les fonctions avec paramètres/Rectangle» et un code ~python~
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*)
+#+BEGIN_SRC sh :eval yes :session s2 :post json_pretty(*this*)
 DATA=$(cat <<EOF
 {
   "langage":"python",
@@ -363,16 +369,17 @@ curl -s --data "$DATA" https://progression.dti.crosemont.quebec/dev/api/v1/avanc
 
 ** Obtenir la dernière sauvegarde de ~jdoe~ pour la question «Les fonctions avec paramètres/Rectangle» effectuée avec le langage ~python~: 
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*)
+#+BEGIN_SRC sh :eval yes :session s2 :post json_pretty(*this*)
 curl -s "https://progression.dti.crosemont.quebec/dev/api/v1/sauvegarde/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/python" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Créer une clé d'authentification pour ~jdoe~
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*)
+#+NAME: get_clé
+#+BEGIN_SRC sh :eval yes :session s2 :post json_pretty(*this*) :cache yes
 DATA=$(cat <<EOF
 {
-  "nom":"cléAuth$(head -c 9 /dev/api/v1/urandom|base64)",
+  "nom":"cléAuth$(head -c 9 /dev/urandom|base64|tr '/+' '_-')",
   "portée":1
 }
 EOF
@@ -383,12 +390,20 @@ curl -s --data "$DATA" "https://progression.dti.crosemont.quebec/dev/api/v1/user
 
 ** Authentification par clé d'authentification pour ~jdoe~
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*)
+#+NAME: get_clé
+#+BEGIN_SRC sh :eval yes :session s2 :var RES_CLE=get_clé :results output :exports none
+NOM_CLE=$(echo $RES_CLE | grep -Po '(?<="id": "jdoe/)[^"]*')
+SECRET=$(echo $RES_CLE | grep -Po '(?<="secret": ")\w*')
+#+END_SRC
+
+#+BEGIN_SRC sh :eval yes :session s2
+echo $NOM_CLE
+echo $SECRET
 DATA=$(cat <<EOF
 {
   "username":"jdoe",
-  "key_name":"cléAuth",
-  "key_secret":"06091d6ffbdb37e04bcd78fb45c5dc324626c58c"
+  "key_name":"$NOM_CLE",
+  "key_secret":"$SECRET"
 }
 EOF
 )
