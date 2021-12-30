@@ -64,10 +64,10 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 			->once()
 			->withArgs(function ($username, $nom, $clé) {
 				return $username == "jdoe" &&
-					   $nom == "nouvelle clé" &&
-					   $clé->création - (new \DateTime())->getTimestamp() < 1 &&
-					   $clé->expiration == 0 &&
-					   $clé->portée == Clé::PORTEE_AUTH;
+					$nom == "nouvelle clé" &&
+					$clé->création - (new \DateTime())->getTimestamp() < 1 &&
+					$clé->expiration == 0 &&
+					$clé->portée == Clé::PORTEE_AUTH;
 			})
 			->andReturnArg(2);
 

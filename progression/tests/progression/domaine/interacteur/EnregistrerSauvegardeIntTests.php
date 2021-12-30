@@ -46,9 +46,9 @@ final class EnregistrerSauvegardeIntTests extends TestCase
 			->once()
 			->withArgs(function ($user, $uri, $lang, $s) use ($sauvegarde) {
 				return $user == "jdoe" &&
-					   $uri == "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" &&
-					   $lang == "python" &&
-					   $s == $sauvegarde;
+					$uri == "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" &&
+					$lang == "python" &&
+					$s == $sauvegarde;
 			})
 			->andReturn($sauvegarde);
 
