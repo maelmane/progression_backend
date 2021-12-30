@@ -304,7 +304,7 @@ curl "https://progression.dti.crosemont.quebec/dev/api/v1/question/aHR0cHM6Ly9wc
 ** Créer l'avancement de jdoe à la question «Les fonctions avec paramètres/Rectangle»
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
-DATA=$(cat <<EOF
+export DATA=$(cat <<EOF
 {
   "question_uri":"aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vOWJkZjVmMWEtNDg5YS00NDFmLTllNmUtMmM4N2JiYTU4YmY4L2luZm8ueW1s"
 }
@@ -331,7 +331,7 @@ curl "https://progression.dti.crosemont.quebec/dev/api/v1/ebauche/aHR0cHM6Ly9wcm
 ** Soumettre une tentative de solution à la question «Les fonctions avec paramètres/Rectangle» et récupérer les résultats
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
-DATA=$(cat <<EOF
+export DATA=$(cat <<EOF
 {
   "langage":"python",
   "code": "# Fonction qui calcule et produit en sortie le périmètre du rectangle dont les côtés sont recus en paramètre\ndef périmètre( une_largeur, une_longueur ):\n# +TODO\n    print( 2 * (une_largeur + une_longueur ) )\n\n# -TODO\n# Fonction qui calcule et produit en sortie l'aire du rectangle dont les côtés sont recus en paramètre\n# +TODO\ndef aire( une_largeur, une_longueur ):\n    print(une_lageur * une_longueur)\n# -TODO\n# Programme principal\n# Entrées\nlargeur = int( input() )\nlongueur = int( input() )\n\n# Appel des fonctions, les côtés du rectangle sont transmis en paramètre\npérimètre( largeur, longueur )\n# +TODO\naire( largeur, longueur )\n"
@@ -349,7 +349,7 @@ curl --data "$DATA" https://progression.dti.crosemont.quebec/dev/api/v1/avanceme
 
 #+NAME: get_timestamp
 #+BEGIN_SRC bash :eval yes :session *bash* :var RES_TENTATIVE=get_tentative :results output :exports none
-TIMESTAMP=$(echo $RES_TENTATIVE | grep -Po '(?<="date_soumission": )\d*')
+export TIMESTAMP=$(echo $RES_TENTATIVE | grep -Po '(?<="date_soumission": )\d*')
 #+END_SRC
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
@@ -365,7 +365,7 @@ curl "https://progression.dti.crosemont.quebec/dev/api/v1/test/aHR0cHM6Ly9wcm9nc
 ** Créer ou mettre à jour la sauvegarde de ~jdoe~ pour la question «Les fonctions avec paramètres/Rectangle» et un code ~python~
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
-DATA=$(cat <<EOF
+export DATA=$(cat <<EOF
 {
   "langage":"python",
   "code": "#+TODO\nSystem.out.println('Hi !');\n#-TODO"
@@ -387,7 +387,7 @@ curl "https://progression.dti.crosemont.quebec/dev/api/v1/sauvegarde/jdoe/aHR0cH
 ** Créer une clé d'authentification pour ~jdoe~
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
-DATA=$(cat <<EOF
+export DATA=$(cat <<EOF
 {
   "nom":"cléAuth$(head -c 9 /dev/urandom|base64|tr '/+' '_-')",
   "portée":1
@@ -413,12 +413,12 @@ EOF
 
 RES_CLE=$(/usr/bin/curl --data "$DATA" "https://progression.dti.crosemont.quebec/dev/api/v1/user/jdoe/cles" -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN")
 
-NOM_CLE=$(echo $RES_CLE | grep -Po '(?<="id":"jdoe\\/)[^"]*')
-SECRET=$(echo $RES_CLE | grep -Po '(?<="secret":")\w*')
+export NOM_CLE=$(echo $RES_CLE | grep -Po '(?<="id":"jdoe\\/)[^"]*')
+export SECRET=$(echo $RES_CLE | grep -Po '(?<="secret":")\w*')
 #+END_SRC
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
-DATA=$(cat <<EOF
+export DATA=$(cat <<EOF
 {
   "username":"jdoe",
   "key_name":"$NOM_CLE",
