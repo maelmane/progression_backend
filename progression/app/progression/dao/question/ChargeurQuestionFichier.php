@@ -31,7 +31,7 @@ class ChargeurQuestionFichier extends Chargeur
 		exec("ulimit -s 256 && ulimit -t 3 && python3 -m progression_qc $uri 2>/dev/null", $output, $err_code);
 
 		if ($err_code != 0) {
-			throw new RuntimeException("Le fichier {$uri} ne peut pas être chargé (err:{$err_code})");
+			throw new RuntimeException("Le fichier {$uri} ne peut pas être chargé. (err:{$err_code})");
 		}
 
 		$info = yaml_parse(implode("\n", $output));
