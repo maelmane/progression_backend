@@ -18,12 +18,12 @@
 
 namespace progression\dao\question;
 
-use DomainException;
+use RuntimeException;
 use PHPUnit\Framework\TestCase;
 
-final class ChargeurQuestionFichierTests extends TestCase
+final class ChargeurQuestionArchiveTests extends TestCase
 {
-	public function test_étant_donné_un_uri_de_fichier_lorsquon_charge_la_question_on_obtient_un_tableau_associatif_représentant_la_question()
+	public function test_étant_donné_un_uri_de_fichier_zip_lorsquon_charge_la_question_on_obtient_un_tableau_associatif_représentant_la_question()
 	{
 		$résultat_attendu["type"] = "prog";
 		$résultat_attendu["titre"] = "Affichage répété";
@@ -79,46 +79,43 @@ final class ChargeurQuestionFichierTests extends TestCase
 			],
 		];
 
-		$uri = "file://" . __DIR__ . "/démo/boucles/boucle_énumérée/info.yml";
+		$entêtes = [
+			"content-length" => "1252",
+			"content-disposition" => 'filename="boucle_énumérée.zip"',
+		];
 
-		$résultat_obtenu = (new ChargeurQuestionFichier())->récupérer_question($uri);
+		$uri = "file://" . __DIR__ . "/démo/boucle_énumérée.zip";
+		$contenu_tmp = scandir("/tmp");
+
+		$résultat_obtenu = (new ChargeurQuestionArchive())->récupérer_question($uri, $entêtes);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+
+		// Le contenu du répertoire /tmp n'a pas changé
+		$this->assertEquals($contenu_tmp, scandir("/tmp"));
 	}
 
-	public function test_étant_donné_un_uri_de_fichier_yaml_invalide_lorsquon_charge_la_question_on_obtient_une_DomainException()
+	public function test_étant_donné_un_uri_de_fichier_zip_invalide_lorsquon_charge_la_question_on_obtient_une_ChargeurException()
 	{
-		$uri = "file://" . __DIR__ . "/démo/yaml_invalide/info.yml";
+		$uri = "file://" . __DIR__ . "/démo/invalide.zip";
+		$contenu_tmp = scandir("/tmp");
+
+		$entêtes = [
+			"content-length" => "1252",
+			"content-disposition" => 'filename="invalide.zip"',
+		];
 
 		try {
-			$résultat_obtenu = (new ChargeurQuestionFichier())->récupérer_question($uri);
-			$this->fail();
-		} catch (DomainException $résultat_obtenu) {
-			$this->assertEquals("Le fichier ${uri} est invalide. (err:1)", $résultat_obtenu->getMessage());
-		}
-	}
-
-	public function test_étant_donné_un_uri_de_fichier_question_invalide_lorsquon_charge_la_question_on_obtient_une_DomainException_err_1()
-	{
-		$uri = "file://" . __DIR__ . "/démo/question_invalide/info.yml";
-
-		try {
-			$résultat_obtenu = (new ChargeurQuestionFichier())->récupérer_question($uri);
+			$résultat_obtenu = (new ChargeurQuestionArchive())->récupérer_question($uri, $entêtes);
 			$this->fail();
 		} catch (ChargeurException $résultat_obtenu) {
-			$this->assertEquals("Le fichier ${uri} ne peut pas être chargé.", $résultat_obtenu->getMessage());
+			$this->assertEquals(
+				"Impossible de charger le fichier archive file:///var/www/progression/tests/progression/dao/question/démo/invalide.zip",
+				$résultat_obtenu->getMessage(),
+			);
 		}
-	}
 
-	public function test_étant_donné_un_uri_de_fichier_non_existant_lorsquon_charge_la_question_on_obtient_une_ChargeurException()
-	{
-		$uri = "file://" . __DIR__ . "/démo/inexistant/info.yml";
-
-		try {
-			$résultat_obtenu = (new ChargeurQuestionFichier())->récupérer_question($uri);
-			$this->fail();
-		} catch (ChargeurException $résultat_obtenu) {
-			$this->assertEquals("Le fichier ${uri} ne peut pas être chargé.", $résultat_obtenu->getMessage());
-		}
+		// Le contenu du répertoire /tmp n'a pas changé
+		$this->assertEquals($contenu_tmp, scandir("/tmp"));
 	}
 }

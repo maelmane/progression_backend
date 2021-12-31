@@ -18,7 +18,7 @@
 
 namespace progression\dao\question;
 
-use LengthException, RuntimeException;
+use LengthException, RuntimeException, DomainException;
 use Exception;
 use ZipArchive;
 
@@ -31,7 +31,7 @@ class ChargeurQuestionArchive extends Chargeur
 		self::vérifier_taille($taille);
 
 		if (!preg_match('/filename=\".*\.zip\"/', self::get_entête($entêtes, "content-disposition"))) {
-			throw new RuntimeException("Impossible de charger le fichier non-archive $uri");
+			throw new ChargeurException("Impossible de charger le fichier non-archive $uri");
 		}
 
 		$archiveExtraite = null;
@@ -40,11 +40,10 @@ class ChargeurQuestionArchive extends Chargeur
 		try {
 			$nomFichier = self::télécharger_fichier($uri);
 			$archiveExtraite = self::extraire_zip($nomFichier, substr($nomFichier, 0, -4));
-
 			$sortie = $this->source
 				->get_chargeur_fichier()
 				->récupérer_question("file://" . $archiveExtraite . "/info.yml");
-		} catch (Exception $e) {
+		} catch (ChargeurException $e) {
 			throw $e;
 		} finally {
 			if ($nomFichier) {
@@ -77,11 +76,11 @@ class ChargeurQuestionArchive extends Chargeur
 	private function vérifier_taille($taille)
 	{
 		if (!$taille) {
-			throw new LengthException("Le fichier de taille inconnue. On ne le chargera pas.");
+			throw new ChargeurException("Le fichier de taille inconnue. On ne le chargera pas.");
 		}
 
 		if ($taille > $_ENV["QUESTION_TAILLE_MAX"]) {
-			throw new LengthException("Le fichier est trop volumineux pour être chargé: " . $taille);
+			throw new ChargeurException("Le fichier est trop volumineux pour être chargé: " . $taille);
 		}
 	}
 
@@ -90,10 +89,10 @@ class ChargeurQuestionArchive extends Chargeur
 		$nomUnique = uniqid("archive_", true);
 		$chemin = sys_get_temp_dir() . "/$nomUnique.arc";
 
-		$contenu = file_get_contents($uri);
+		$contenu = @file_get_contents($uri);
 
 		if ($contenu === false) {
-			throw new RuntimeException("Impossible de charger le fichier archive $uri");
+			throw new ChargeurException("Impossible de charger le fichier archive $uri");
 		}
 
 		if (file_put_contents($chemin, $contenu)) {
@@ -120,7 +119,7 @@ class ChargeurQuestionArchive extends Chargeur
 		$zip = new ZipArchive();
 		if ($zip->open($archive) === true) {
 			if (!$zip->extractTo($destination)) {
-				throw new RuntimeException("Impossible de décompresser l'archive");
+				throw new ChargeurException("Impossible de décompresser l'archive");
 			} else {
 				if (!$test) {
 					self::supprimer_fichiers($archive);

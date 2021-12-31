@@ -17,19 +17,8 @@
  */
 
 namespace progression\dao\question;
+use Exception;
 
-class Chargeur
+class ChargeurException extends Exception
 {
-	const ERR_CHARGEMENT = 255;
-
-	protected $source = null;
-
-	public function __construct($source = null)
-	{
-		if ($source == null) {
-			$this->source = ChargeurFactory::get_instance();
-		} else {
-			$this->source = $source;
-		}
-	}
 }

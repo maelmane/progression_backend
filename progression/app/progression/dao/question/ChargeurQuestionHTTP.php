@@ -36,10 +36,10 @@ class ChargeurQuestionHTTP extends Chargeur
 				return $this->source->get_chargeur_fichier()->récupérer_question($uri);
 			}
 
-			throw new RuntimeException("Type d'archive {$content_type} non implémenté");
+			throw new ChargeurException("Type d'archive {$content_type} non implémenté");
 		}
 
-		throw new RuntimeException("Type de fichier inconnu");
+		throw new ChargeurException("Type de fichier inconnu");
 	}
 
 	private function get_entêtes($uri)
@@ -50,7 +50,12 @@ class ChargeurQuestionHTTP extends Chargeur
 			],
 		];
 		$context = stream_context_create($opts);
-		return array_change_key_case(@get_headers($uri, 1, $context));
+		$entêtes = get_headers($uri, 1, $context);
+		if ($entêtes === false) {
+			throw new ChargeurException("Impossible de récupérer les entêtes du fichier {$uri}");
+		}
+
+		return array_change_key_case($entêtes);
 	}
 
 	private function get_entête($entêtes, $clé)
