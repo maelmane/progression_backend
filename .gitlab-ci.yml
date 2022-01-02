@@ -52,13 +52,13 @@ linter:
   - documentation
 
 # Production de la documentation
-doc_master:
+.doc_master: &doc_master
   script:
   - db/build_db.sh && mysql -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
   - emacs --batch --load $HOME/.emacs.el --load doc/publish.el --funcall org-publish-all && mkdir public && cp -r progression/app/html/doc/* public/
   - bash -c "! grep -q nil public/api.html" # Vérifie que la production de l'API n'a pas produit d'erreur
 
-doc_dev:
+.doc_dev: &doc_dev
   script:
   - db/build_db.sh && mysql -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
   - emacs --batch --load $HOME/.emacs.el --load doc/publish.el --funcall org-publish-all && mkdir -p public/dev && cp -r progression/app/html/doc/* public/dev/
@@ -84,7 +84,7 @@ pages_dev:
     - public
 
 pages:
-  stage: publication
+  stage: deploy
   script:
   - mv public_dev public/dev || true
   artifacts:
