@@ -56,7 +56,7 @@ doc_master:
   script:
   - db/build_db.sh && mysql -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
   - emacs --batch --load $HOME/.emacs.el --load doc/publish.el --funcall org-publish-all && mkdir public && cp -r progression/app/html/doc/* public/
-  - grep -v nil doc/api.org || echo ERREUR dans api.org # Vérifie que la production de l'API n'a pas produit d'erreur
+  - bash -c "! grep -q nil public/api.html" # Vérifie que la production de l'API n'a pas produit d'erreur
 
 doc_dev:
   script:
