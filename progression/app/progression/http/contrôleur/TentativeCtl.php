@@ -77,14 +77,20 @@ class TentativeCtl extends Contrôleur
 			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["erreur" => "Ressource indisponible sur le serveur distant."], 502);
 		} catch (DomainException $erreur) {
-			Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Question inexistante");
+			Log::notice(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Question inexistante",
+			);
 			return $this->réponse_json(["erreur" => "Requête intraitable."], 400);
 		}
 
 		if ($question instanceof QuestionProg) {
 			$validation = $this->valider_paramètres($request);
 			if ($validation->fails()) {
-				Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Paramètres invalides");
+				Log::notice(
+					"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+						__CLASS__ .
+						") Paramètres invalides",
+				);
 				return $this->réponse_json(["erreur" => $validation->errors()], 400);
 			}
 			$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
@@ -100,7 +106,9 @@ class TentativeCtl extends Contrôleur
 				$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
 				$réponse = $this->item($tentative, new TentativeProgTransformer());
 			} else {
-				Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Tentative null");
+				Log::notice(
+					"({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Tentative null",
+				);
 				return $this->réponse_json(["erreur" => "Requête intraitable."], 400);
 			}
 		} elseif ($question instanceof QuestionSys) {
