@@ -31,8 +31,6 @@ test_unitaires:
   script:
   - db/build_db.sh && mysql --default-character-set=utf8 -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
   - progression/vendor/bin/phpunit --configuration progression/phpunit.xml --coverage-text
-  except:
-  - documentation
   services:
   - mariadb:latest
 
@@ -40,15 +38,10 @@ analyse_statique:
   stage: test
   script:
   - php -d memory_limit=1G progression/vendor/bin/phpstan analyse -c progression/phpstan.neon
-  except:
-  - documentation
-
 linter:
   stage: test
   script:
   - shopt -s globstar && prettier -c progression/app/**/*.php progression/tests/**/*.php
-  except:
-  - documentation
 
 # Production de la documentation
 .doc_master: &doc_master
@@ -93,6 +86,9 @@ pages:
   artifacts:
     paths:
     - public
+  only:
+    - dev
+    - master
 
 deploy_dev:
   stage: deploy
