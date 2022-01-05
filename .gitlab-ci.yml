@@ -10,9 +10,6 @@ before_script:
 # Install all project dependencies
 - php /composer.phar install --dev -d progression/
 
-services:
-  - mariadb:latest
-
 stages:
   - test
   - doc
@@ -36,6 +33,8 @@ test_unitaires:
   - progression/vendor/bin/phpunit --configuration progression/phpunit.xml --coverage-text
   except:
   - documentation
+  services:
+  - mariadb:latest
 
 analyse_statique:
   stage: test
@@ -67,6 +66,8 @@ linter:
 pages_master:
   stage: doc
   <<: *doc_master
+  services:
+    - mariadb:latest  
   only:
     - master
     - dev
@@ -77,6 +78,8 @@ pages_master:
 pages_dev:
   stage: doc
   <<: *doc_dev
+  services:
+    - mariadb:latest  
   only:
     - dev
   artifacts:
