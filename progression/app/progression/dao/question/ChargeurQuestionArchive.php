@@ -29,7 +29,7 @@ class ChargeurQuestionArchive extends Chargeur
 		$archiveExtraite = self::extraire_zip($chemin_fichier, substr($chemin_fichier, 0, -4));
 		try {
 			$question = $this->source
-				->get_chargeur_fichier()
+				->get_chargeur_question_fichier()
 				->récupérer_question("file://" . $archiveExtraite . "/info.yml");
 		} catch (ChargeurException $e) {
 			throw $e;

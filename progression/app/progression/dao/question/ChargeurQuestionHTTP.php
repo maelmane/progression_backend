@@ -24,7 +24,7 @@ class ChargeurQuestionHTTP extends Chargeur
 {
 	public function récupérer_question($uri)
 	{
-		$entêtes = self::get_entêtes($uri);
+		$entêtes = $this->source->get_chargeur_http()->get_entêtes($uri);
 
 		$taille = self::get_entête($entêtes, "content-length");
 		$content_type = self::get_entête($entêtes, "content-type");
@@ -38,26 +38,10 @@ class ChargeurQuestionHTTP extends Chargeur
 			self::vérifier_nom_archive($nom_archive);
 			$question = self::extraire_archive($uri);
 		} elseif (str_starts_with($content_type, "text")) {
-			$question = $this->source->get_chargeur_fichier()->récupérer_question($uri);
+			$question = $this->source->get_chargeur_question_fichier()->récupérer_question($uri);
 		}
 
 		return $question;
-	}
-
-	private function get_entêtes($uri)
-	{
-		$opts = [
-			"http" => [
-				"follow_location" => 1,
-			],
-		];
-		$context = stream_context_create($opts);
-		$entêtes = get_headers($uri, 1, $context);
-		if ($entêtes === false) {
-			throw new ChargeurException("Impossible de récupérer les entêtes du fichier {$uri}");
-		}
-
-		return array_change_key_case($entêtes);
 	}
 
 	private function get_entête($entêtes, $clé)
@@ -98,7 +82,7 @@ class ChargeurQuestionHTTP extends Chargeur
 	{
 		$chemin_fichier = self::télécharger_fichier($uri);
 		try {
-			$question = $this->source->get_chargeur_archive()->récupérer_question($chemin_fichier);
+			$question = $this->source->get_chargeur_question_archive()->récupérer_question($chemin_fichier);
 		} catch (ChargeurException $e) {
 			throw $e;
 		} finally {
@@ -120,7 +104,7 @@ class ChargeurQuestionHTTP extends Chargeur
 		$nomUnique = uniqid("archive_", true);
 		$chemin = sys_get_temp_dir() . "/$nomUnique.arc";
 
-		$contenu = @file_get_contents($uri);
+		$contenu = $this->source->get_chargeur_http()->get_url($uri);
 
 		if ($contenu === false) {
 			throw new ChargeurException("Impossible de charger le fichier archive $uri");

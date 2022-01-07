@@ -43,7 +43,7 @@ final class QuestionDAOTests extends TestCase
 		]);
 
 		$mockFactory = Mockery::mock("progression\dao\question\ChargeurFactory");
-		$mockFactory->shouldReceive("get_chargeur_fichier")->andReturn($mockChargeurFichier);
+		$mockFactory->shouldReceive("get_chargeur_question_fichier")->andReturn($mockChargeurFichier);
 
 		ChargeurFactory::set_instance($mockFactory);
 	}
