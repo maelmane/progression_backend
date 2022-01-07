@@ -91,7 +91,28 @@ final class ChargeurQuestionArchiveTests extends TestCase
 		$this->assertEquals($contenu_tmp, scandir("/tmp"));
 	}
 
-	public function test_étant_donné_un_uri_de_fichier_zip_invalide_lorsquon_charge_la_question_on_obtient_une_ChargeurException()
+	public function test_étant_donné_un_uri_de_fichier_inexistant_lorsquon_charge_la_question_on_obtient_une_ChargeurException_ER_NOENT()
+	{
+		$uri = __DIR__ . "/démo/inexistant.zip";
+		$contenu_tmp = scandir("/tmp");
+
+		try {
+			$résultat_obtenu = (new ChargeurQuestionArchive())->récupérer_question($uri);
+			$this->fail();
+		} catch (ChargeurException $résultat_obtenu) {
+			$this->assertEquals(
+				"Impossible de lire l'archive /var/www/progression/tests/progression/dao/question/démo/inexistant.zip (err.: " .
+					ZipArchive::ER_NOENT .
+					")",
+				$résultat_obtenu->getMessage(),
+			);
+		}
+
+		// Le contenu du répertoire /tmp n'a pas changé
+		$this->assertEquals($contenu_tmp, scandir("/tmp"));
+	}
+
+	public function test_étant_donné_un_uri_de_fichier_zip_invalide_lorsquon_charge_la_question_on_obtient_une_ChargeurException_ER_NOZIP()
 	{
 		$uri = __DIR__ . "/démo/invalide.zip";
 		$contenu_tmp = scandir("/tmp");
@@ -102,7 +123,7 @@ final class ChargeurQuestionArchiveTests extends TestCase
 		} catch (ChargeurException $résultat_obtenu) {
 			$this->assertEquals(
 				"Impossible de lire l'archive /var/www/progression/tests/progression/dao/question/démo/invalide.zip (err.: " .
-					ZipArchive::ER_NOENT .
+					ZipArchive::ER_NOZIP .
 					")",
 				$résultat_obtenu->getMessage(),
 			);
