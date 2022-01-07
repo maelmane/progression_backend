@@ -20,6 +20,7 @@ namespace progression\dao\question;
 
 use RuntimeException;
 use PHPUnit\Framework\TestCase;
+use ZipArchive;
 
 final class ChargeurQuestionArchiveTests extends TestCase
 {
@@ -79,15 +80,10 @@ final class ChargeurQuestionArchiveTests extends TestCase
 			],
 		];
 
-		$entêtes = [
-			"content-length" => "1252",
-			"content-disposition" => 'filename="boucle_énumérée.zip"',
-		];
-
-		$uri = "file://" . __DIR__ . "/démo/boucle_énumérée.zip";
+		$uri = __DIR__ . "/démo/boucle_énumérée.zip";
 		$contenu_tmp = scandir("/tmp");
 
-		$résultat_obtenu = (new ChargeurQuestionArchive())->récupérer_question($uri, $entêtes);
+		$résultat_obtenu = (new ChargeurQuestionArchive())->récupérer_question($uri);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 
@@ -97,20 +93,17 @@ final class ChargeurQuestionArchiveTests extends TestCase
 
 	public function test_étant_donné_un_uri_de_fichier_zip_invalide_lorsquon_charge_la_question_on_obtient_une_ChargeurException()
 	{
-		$uri = "file://" . __DIR__ . "/démo/invalide.zip";
+		$uri = __DIR__ . "/démo/invalide.zip";
 		$contenu_tmp = scandir("/tmp");
 
-		$entêtes = [
-			"content-length" => "1252",
-			"content-disposition" => 'filename="invalide.zip"',
-		];
-
 		try {
-			$résultat_obtenu = (new ChargeurQuestionArchive())->récupérer_question($uri, $entêtes);
+			$résultat_obtenu = (new ChargeurQuestionArchive())->récupérer_question($uri);
 			$this->fail();
 		} catch (ChargeurException $résultat_obtenu) {
 			$this->assertEquals(
-				"Impossible de charger le fichier archive file:///var/www/progression/tests/progression/dao/question/démo/invalide.zip",
+				"Impossible de lire l'archive /var/www/progression/tests/progression/dao/question/démo/invalide.zip (err.: " .
+					ZipArchive::ER_NOENT .
+					")",
 				$résultat_obtenu->getMessage(),
 			);
 		}

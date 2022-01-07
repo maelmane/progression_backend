@@ -25,21 +25,23 @@ class ChargeurQuestionHTTP extends Chargeur
 	public function récupérer_question($uri)
 	{
 		$entêtes = self::get_entêtes($uri);
+
+		$taille = self::get_entête($entêtes, "content-length");
 		$content_type = self::get_entête($entêtes, "content-type");
+		$nom_archive = self::get_entête($entêtes, "content-disposition");
 
-		if ($content_type) {
-			if (str_starts_with($content_type, "application")) {
-				return $this->source->get_chargeur_archive()->récupérer_question($uri, $entêtes);
-			}
+		self::vérifier_taille($taille);
+		self::vérifier_type($content_type);
 
-			if (str_starts_with($content_type, "text")) {
-				return $this->source->get_chargeur_fichier()->récupérer_question($uri);
-			}
-
-			throw new ChargeurException("Type d'archive {$content_type} non implémenté");
+		$question = null;
+		if (str_starts_with($content_type, "application")) {
+			self::vérifier_nom_archive($nom_archive);
+			$question = self::extraire_archive($uri);
+		} elseif (str_starts_with($content_type, "text")) {
+			$question = $this->source->get_chargeur_fichier()->récupérer_question($uri);
 		}
 
-		throw new ChargeurException("Type de fichier inconnu");
+		return $question;
 	}
 
 	private function get_entêtes($uri)
@@ -72,5 +74,62 @@ class ChargeurQuestionHTTP extends Chargeur
 		if (is_array($content_type)) {
 			return $content_type[count($content_type) - 1];
 		}
+	}
+
+	private function vérifier_taille($taille)
+	{
+		if (!$taille) {
+			throw new ChargeurException("Le fichier de taille inconnue. On ne le chargera pas.");
+		}
+
+		if ($taille > $_ENV["QUESTION_TAILLE_MAX"]) {
+			throw new ChargeurException("Le fichier est trop volumineux pour être chargé: " . $taille);
+		}
+	}
+
+	private function vérifier_type($type)
+	{
+		if (!in_array($type, ["application", "text"])) {
+			throw new ChargeurException("Impossible de charger le fichier de type $type");
+		}
+	}
+
+	private function extraire_archive($uri)
+	{
+		$chemin_fichier = self::télécharger_fichier($uri);
+		try {
+			$question = $this->source->get_chargeur_archive()->récupérer_question($chemin_fichier);
+		} catch (ChargeurException $e) {
+			throw $e;
+		} finally {
+			unlink($chemin_fichier);
+		}
+	}
+
+	private function vérifier_nom_archive($nom_archive)
+	{
+		preg_match('/filename=\"(.*\.zip)\"/', $nom_archive, $résultats);
+		if (!array_key_exists(1, $résultats)) {
+			throw new ChargeurException("Impossible de charger l'archive $nom_archive");
+		}
+		return $résultats[1];
+	}
+
+	private function télécharger_fichier($uri)
+	{
+		$nomUnique = uniqid("archive_", true);
+		$chemin = sys_get_temp_dir() . "/$nomUnique.arc";
+
+		$contenu = @file_get_contents($uri);
+
+		if ($contenu === false) {
+			throw new ChargeurException("Impossible de charger le fichier archive $uri");
+		}
+
+		if (file_put_contents($chemin, $contenu)) {
+			return $chemin;
+		}
+
+		return false;
 	}
 }

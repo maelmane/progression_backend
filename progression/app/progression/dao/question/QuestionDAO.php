@@ -32,12 +32,12 @@ class QuestionDAO extends EntitéDAO
 
 		if ($scheme == "file") {
 			$infos_question = ChargeurFactory::get_instance()
-				->get_chargeur_fichier()
-				->récupérer_question($uri);
+											 ->get_chargeur_fichier()
+											 ->récupérer_question($uri);
 		} elseif ($scheme == "https") {
 			$infos_question = ChargeurFactory::get_instance()
-				->get_chargeur_http()
-				->récupérer_question($uri);
+											 ->get_chargeur_http()
+											 ->récupérer_question($uri);
 		} else {
 			throw new RuntimeException("Schéma d'URI invalide");
 		}
