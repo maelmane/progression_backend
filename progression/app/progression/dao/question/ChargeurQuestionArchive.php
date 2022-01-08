@@ -26,15 +26,18 @@ class ChargeurQuestionArchive extends Chargeur
 	{
 		$archiveExtraite = null;
 
-		$archiveExtraite = self::extraire_zip($chemin_fichier, substr($chemin_fichier, 0, -4));
+		$nom_unique = uniqid("archive_", true);
+		$destination = sys_get_temp_dir() . "/$nom_unique";
+
+		self::extraire_zip($chemin_fichier, $destination);
 		try {
 			$question = $this->source
-				->get_chargeur_question_fichier()
-				->récupérer_question("file://" . $archiveExtraite . "/info.yml");
+							 ->get_chargeur_question_fichier()
+							 ->récupérer_question("file://" . $destination . "/info.yml");
 		} catch (ChargeurException $e) {
 			throw $e;
 		} finally {
-			self::supprimer_fichiers($archiveExtraite);
+			self::supprimer_fichiers($destination);
 		}
 
 		return $question;
@@ -53,8 +56,6 @@ class ChargeurQuestionArchive extends Chargeur
 		}
 
 		$zip->close();
-
-		return $destination;
 	}
 
 	private function supprimer_fichiers($cheminCible)
