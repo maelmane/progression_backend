@@ -74,11 +74,13 @@ class ExécuteurCache extends Exécuteur
 	private function standardiser_code($code, $lang)
 	{
 		if ($lang == "python") {
-			$beautifier = "black";
+			$beautifier_cmd = ["black", "-"];
 		} elseif ($lang == "cpp") {
-			$beautifier = "clang-format";
+			$beautifier_cmd = ["clang-format", "-"];
 		} elseif ($lang == "java") {
-			$beautifier = "clang-format";
+			$beautifier_cmd = ["clang-format", "-"];
+		} elseif ($lang == "bash") {
+			$beautifier_cmd = ["beautysh", "-"];
 		} else {
 			return $code;
 		}
@@ -88,7 +90,7 @@ class ExécuteurCache extends Exécuteur
 			1 => ["pipe", "w"],
 		];
 
-		$proc = proc_open([$beautifier, "-"], $descriptorspec, $pipes);
+		$proc = proc_open($beautifier_cmd, $descriptorspec, $pipes);
 
 		$stdout = "";
 		if (is_resource($proc)) {
