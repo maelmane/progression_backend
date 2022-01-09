@@ -72,6 +72,7 @@ final class CléCtlTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	// GET

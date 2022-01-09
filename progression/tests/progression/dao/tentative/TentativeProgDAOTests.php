@@ -28,7 +28,6 @@ final class TentativeProgDAOTests extends TestCase
 	public function setUp(): void
 	{
 		EntitéDAO::get_connexion()->begin_transaction();
-		DAOFactory::setInstance(null);
 	}
 
 	public function tearDown(): void

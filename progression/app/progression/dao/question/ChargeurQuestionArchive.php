@@ -18,89 +18,54 @@
 
 namespace progression\dao\question;
 
-use LengthException, RuntimeException;
-use Exception;
 use ZipArchive;
 
 class ChargeurQuestionArchive extends Chargeur
 {
-	public function récupérer_question($uri, $entêtes)
+	public function récupérer_question($chemin_archive, $type_archive = false)
 	{
-		$taille = self::get_entête($entêtes, "content-length");
+		if (!$type_archive) {
+			throw new ChargeurException(
+				"Impossible de déterminer automatiquement le type de l'archive $chemin_archive.",
+			);
+		}
 
-		self::vérifier_taille($taille);
-
-		if (!preg_match('/filename=\".*\.zip\"/', self::get_entête($entêtes, "content-disposition"))) {
-			throw new RuntimeException("Impossible de charger le fichier non-archive $uri");
+		if ($type_archive != "zip") {
+			throw new ChargeurException("Type d'archive $type_archive non implémenté.");
 		}
 
 		$archiveExtraite = null;
 
-		$nomFichier = null;
-		try {
-			$nomFichier = self::télécharger_fichier($uri);
-			$archiveExtraite = self::extraire_zip($nomFichier, substr($nomFichier, 0, -4));
+		$nom_unique = uniqid("archive_", true);
+		$destination = sys_get_temp_dir() . "/$nom_unique";
 
-			$sortie = $this->source
-				->get_chargeur_fichier()
-				->récupérer_question("file://" . $archiveExtraite . "/info.yml");
-		} catch (Exception $e) {
+		self::extraire_zip($chemin_archive, $destination);
+		try {
+			$question = $this->source
+				->get_chargeur_question_fichier()
+				->récupérer_question("file://" . $destination . "/info.yml");
+		} catch (ChargeurException $e) {
 			throw $e;
 		} finally {
-			if ($nomFichier) {
-				self::supprimer_fichiers($nomFichier);
-			}
-			if ($archiveExtraite) {
-				self::supprimer_fichiers($archiveExtraite);
-			}
+			self::supprimer_fichiers($destination);
 		}
 
-		return $sortie;
+		return $question;
 	}
 
-	private function get_entête($entêtes, $clé)
+	private function extraire_zip($chemin_archive, $destination)
 	{
-		if ($entêtes == null) {
-			return null;
+		$zip = new ZipArchive();
+		$res = $zip->open($chemin_archive);
+		if ($res !== true) {
+			throw new ChargeurException("Impossible de lire l'archive $chemin_archive (err.: $res)");
 		}
-		$content_type = $entêtes[$clé];
-
-		if (is_string($content_type)) {
-			return $content_type;
-		}
-
-		if (is_array($content_type)) {
-			return $content_type[count($content_type) - 1];
-		}
-	}
-
-	private function vérifier_taille($taille)
-	{
-		if (!$taille) {
-			throw new LengthException("Le fichier de taille inconnue. On ne le chargera pas.");
+		$res = $zip->extractTo($destination);
+		if ($res !== true) {
+			throw new ChargeurException("Impossible de décompresser l'archive $chemin_archive (err.: $res)");
 		}
 
-		if ($taille > $_ENV["QUESTION_TAILLE_MAX"]) {
-			throw new LengthException("Le fichier est trop volumineux pour être chargé: " . $taille);
-		}
-	}
-
-	private function télécharger_fichier($uri)
-	{
-		$nomUnique = uniqid("archive_", true);
-		$chemin = sys_get_temp_dir() . "/$nomUnique.arc";
-
-		$contenu = file_get_contents($uri);
-
-		if ($contenu === false) {
-			throw new RuntimeException("Impossible de charger le fichier archive $uri");
-		}
-
-		if (file_put_contents($chemin, $contenu)) {
-			return $chemin;
-		}
-
-		return false;
+		$zip->close();
 	}
 
 	private function supprimer_fichiers($cheminCible)
@@ -112,24 +77,6 @@ class ChargeurQuestionArchive extends Chargeur
 			exec(sprintf("rm -rf %s", escapeshellarg($cheminCible)));
 			return true;
 		}
-		return false;
-	}
-
-	private function extraire_zip($archive, $destination, $test = false)
-	{
-		$zip = new ZipArchive();
-		if ($zip->open($archive) === true) {
-			if (!$zip->extractTo($destination)) {
-				throw new RuntimeException("Impossible de décompresser l'archive");
-			} else {
-				if (!$test) {
-					self::supprimer_fichiers($archive);
-				}
-				return $destination;
-			}
-			$zip->close();
-		}
-
 		return false;
 	}
 }

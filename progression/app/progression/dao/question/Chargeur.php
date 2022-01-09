@@ -20,6 +20,8 @@ namespace progression\dao\question;
 
 class Chargeur
 {
+	const ERR_CHARGEMENT = 255;
+
 	protected $source = null;
 
 	public function __construct($source = null)

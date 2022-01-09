@@ -69,6 +69,7 @@ final class ExécuterProgIntTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	public function test_étant_donné_un_exécutable_valide_et_un_test_lorsquon_les_soumet_pour_exécution_on_obtient_un_résultat_de_test_avec_ses_sorties_standards()

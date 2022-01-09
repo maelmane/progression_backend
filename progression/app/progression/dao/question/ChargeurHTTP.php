@@ -20,22 +20,26 @@ namespace progression\dao\question;
 
 use RuntimeException;
 
-class ChargeurQuestion extends Chargeur
+class ChargeurHTTP
 {
-	public function récupérer_question($uri)
+	public function get_url($url)
 	{
-		$scheme = strtolower(parse_url($uri, PHP_URL_SCHEME));
+		return @file_get_contents($url);
+	}
 
-		if ($scheme == "file") {
-			$sortie = $this->source->get_chargeur_question_fichier()->récupérer_question($uri);
-		} elseif ($scheme == "https") {
-			$sortie = $this->source->get_chargeur_question_http()->récupérer_question($uri);
-		} else {
-			throw new RuntimeException("Schéma d'URI invalide");
+	public function get_entêtes($url)
+	{
+		$opts = [
+			"http" => [
+				"follow_location" => 1,
+			],
+		];
+		$context = stream_context_create($opts);
+		$entêtes = get_headers($url, 1, $context);
+		if ($entêtes === false) {
+			throw new ChargeurException("Impossible de récupérer les entêtes de l'URL {$url}");
 		}
 
-		$sortie["uri"] = $uri;
-
-		return $sortie;
+		return $entêtes;
 	}
 }

@@ -97,6 +97,7 @@ final class LoginIntTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	public function test_étant_donné_lutilisateur_null_lorsquon_login_obtient_null()

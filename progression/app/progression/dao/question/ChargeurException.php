@@ -17,25 +17,8 @@
  */
 
 namespace progression\dao\question;
+use Exception;
 
-use RuntimeException;
-
-class ChargeurQuestion extends Chargeur
+class ChargeurException extends Exception
 {
-	public function récupérer_question($uri)
-	{
-		$scheme = strtolower(parse_url($uri, PHP_URL_SCHEME));
-
-		if ($scheme == "file") {
-			$sortie = $this->source->get_chargeur_question_fichier()->récupérer_question($uri);
-		} elseif ($scheme == "https") {
-			$sortie = $this->source->get_chargeur_question_http()->récupérer_question($uri);
-		} else {
-			throw new RuntimeException("Schéma d'URI invalide");
-		}
-
-		$sortie["uri"] = $uri;
-
-		return $sortie;
-	}
 }

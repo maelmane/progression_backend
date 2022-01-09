@@ -39,17 +39,17 @@ class ChargeurFactory
 		ChargeurFactory::$laFactory = $uneFactory;
 	}
 
-	function get_chargeur_fichier()
+	function get_chargeur_question_fichier()
 	{
 		return new ChargeurQuestionFichier($this);
 	}
 
-	function get_chargeur_archive()
+	function get_chargeur_question_archive()
 	{
 		return new ChargeurQuestionArchive($this);
 	}
 
-	function get_chargeur_http()
+	function get_chargeur_question_http()
 	{
 		return new ChargeurQuestionHTTP($this);
 	}

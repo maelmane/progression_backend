@@ -24,3 +24,11 @@ RUN curl -sS https://getcomposer.org/installer | php
 
 # Install prettier
 RUN npm install --global prettier @prettier/plugin-php
+
+RUN apt update && apt install -y locales
+RUN echo fr_CA.UTF-8 UTF-8 >> /etc/locale.gen
+RUN locale-gen
+
+ENV LANG fr_CA.UTF-8
+ENV LANGUAGE fr_CA:en
+ENV LC_ALL fr_CA.UTF-8

@@ -52,6 +52,7 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	public function test_étant_donné_un_utilisateur_jdoe_lorsquon_génère_une_clé_d_authentification_une_nouvelle_clé_est_sauvegardée()
