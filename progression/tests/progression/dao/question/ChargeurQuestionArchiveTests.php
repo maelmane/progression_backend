@@ -120,10 +120,8 @@ final class ChargeurQuestionArchiveTests extends TestCase
 			$résultat_obtenu = (new ChargeurQuestionArchive())->récupérer_question($uri, "zip");
 			$this->fail();
 		} catch (ChargeurException $résultat_obtenu) {
-			$this->assertEquals(
-				"Impossible de lire l'archive /var/www/progression/tests/progression/dao/question/démo/inexistant.zip (err.: " .
-					ZipArchive::ER_NOENT .
-					")",
+			$this->assertStringMatchesFormat(
+				"Impossible de lire l'archive %s/démo/inexistant.zip (err.: " . ZipArchive::ER_NOENT . ")",
 				$résultat_obtenu->getMessage(),
 			);
 		}
@@ -137,10 +135,8 @@ final class ChargeurQuestionArchiveTests extends TestCase
 			$résultat_obtenu = (new ChargeurQuestionArchive())->récupérer_question($uri, "zip");
 			$this->fail();
 		} catch (ChargeurException $résultat_obtenu) {
-			$this->assertEquals(
-				"Impossible de lire l'archive /var/www/progression/tests/progression/dao/question/démo/invalide.zip (err.: " .
-					ZipArchive::ER_NOZIP .
-					")",
+			$this->assertStringMatchesFormat(
+				"Impossible de lire l'archive %s/démo/invalide.zip (err.: " . ZipArchive::ER_NOZIP . ")",
 				$résultat_obtenu->getMessage(),
 			);
 		}

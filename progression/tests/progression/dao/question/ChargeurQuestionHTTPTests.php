@@ -197,8 +197,6 @@ final class ChargeurQuestionHTTPTests extends TestCase
 	}
 	public function test_étant_donné_un_url_de_type_text_de_taille_trop_grande_lorsquon_charge_la_question_on_obtient_une_ChargeurException()
 	{
-		$_ENV["QUESTION_TAILLE_MAX"] = 1000;
-
 		// ChargeurHTTP
 		$mockChargeurHTTP = Mockery::mock("progression\dao\question\ChargeurHTTP");
 		$mockChargeurHTTP
@@ -224,8 +222,6 @@ final class ChargeurQuestionHTTPTests extends TestCase
 	}
 	public function test_étant_donné_un_url_de_type_application_de_taille_trop_grande_lorsquon_charge_la_question_on_obtient_une_ChargeurException()
 	{
-		$_ENV["QUESTION_TAILLE_MAX"] = 1000;
-
 		// ChargeurHTTP
 		$mockChargeurHTTP = Mockery::mock("progression\dao\question\ChargeurHTTP");
 		$mockChargeurHTTP

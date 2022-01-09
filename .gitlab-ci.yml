@@ -27,6 +27,7 @@ variables:
   JWT_TTL: 8640000
   AUTH_TYPE: "no"
   HTTP_ORIGIN: "https://example.com"
+  QUESTION_TAILLE_MAX=1000
 
 # We test PHP7
 test_unitaires:
