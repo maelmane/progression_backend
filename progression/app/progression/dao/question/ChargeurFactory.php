@@ -39,6 +39,11 @@ class ChargeurFactory
 		ChargeurFactory::$laFactory = $uneFactory;
 	}
 
+	function get_chargeur_http()
+	{
+		return new ChargeurHTTP($this);
+	}
+
 	function get_chargeur_question_fichier()
 	{
 		return new ChargeurQuestionFichier($this);
