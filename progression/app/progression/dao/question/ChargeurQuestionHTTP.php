@@ -24,24 +24,23 @@ class ChargeurQuestionHTTP extends Chargeur
 {
 	public function récupérer_question($uri)
 	{
-		$entêtes = $this->source->get_chargeur_http()->get_entêtes($uri);
+		$entêtes = array_change_key_case($this->source->get_chargeur_http()->get_entêtes($uri));
 
 		$taille = self::get_entête($entêtes, "content-length");
-		$content_type = self::get_entête($entêtes, "content-type");
-		$nom_archive = self::get_entête($entêtes, "content-disposition");
-
 		self::vérifier_taille($taille);
+
+		$content_type = self::get_entête($entêtes, "content-type");
 		self::vérifier_type($content_type);
 
-		$question = null;
 		if (str_starts_with($content_type, "application")) {
-			self::vérifier_nom_archive($nom_archive);
-			$question = self::extraire_archive($uri);
+			$type_archive = self::déterminer_type_archive(
+				self::get_entête($entêtes, "content-type"),
+				self::get_entête($entêtes, "content-disposition"),
+			);
+			return self::extraire_archive($uri, $type_archive);
 		} elseif (str_starts_with($content_type, "text")) {
-			$question = $this->source->get_chargeur_question_fichier()->récupérer_question($uri);
+			return $this->source->get_chargeur_question_fichier()->récupérer_question($uri);
 		}
-
-		return $question;
 	}
 
 	private function get_entête($entêtes, $clé)
@@ -49,6 +48,11 @@ class ChargeurQuestionHTTP extends Chargeur
 		if ($entêtes == null) {
 			return null;
 		}
+
+		if (!array_key_exists($clé, $entêtes)) {
+			return null;
+		}
+
 		$content_type = $entêtes[$clé];
 
 		if (is_string($content_type)) {
@@ -58,45 +62,86 @@ class ChargeurQuestionHTTP extends Chargeur
 		if (is_array($content_type)) {
 			return $content_type[count($content_type) - 1];
 		}
+
+		throw new RuntimeException("L'entête $clé est de type " . gettype($content_type));
 	}
 
 	private function vérifier_taille($taille)
 	{
+		$taille_max = $_ENV["QUESTION_TAILLE_MAX"];
+
 		if (!$taille) {
-			throw new ChargeurException("Le fichier de taille inconnue. On ne le chargera pas.");
+			throw new ChargeurException("Fichier de taille inconnue. On ne le chargera pas.");
 		}
 
-		if ($taille > $_ENV["QUESTION_TAILLE_MAX"]) {
-			throw new ChargeurException("Le fichier est trop volumineux pour être chargé: " . $taille);
+		if ($taille > $taille_max) {
+			throw new ChargeurException("Fichier trop volumineux ($taille > $taille_max). On ne le chargera pas.");
 		}
 	}
 
 	private function vérifier_type($type)
 	{
-		if (!in_array($type, ["application", "text"])) {
+		if (!preg_match("/(application|text)\/.*/", $type)) {
 			throw new ChargeurException("Impossible de charger le fichier de type $type");
 		}
 	}
 
-	private function extraire_archive($uri)
+	private function extraire_archive($uri, $type_archive)
 	{
 		$chemin_fichier = self::télécharger_fichier($uri);
 		try {
-			$question = $this->source->get_chargeur_question_archive()->récupérer_question($chemin_fichier);
+			$question = $this->source
+				->get_chargeur_question_archive()
+				->récupérer_question($chemin_fichier, $type_archive);
 		} catch (ChargeurException $e) {
 			throw $e;
 		} finally {
 			unlink($chemin_fichier);
 		}
+
+		return $question;
 	}
 
-	private function vérifier_nom_archive($nom_archive)
+	private function déterminer_type_archive($content_type, $content_disposition)
 	{
-		preg_match('/filename=\"(.*\.zip)\"/', $nom_archive, $résultats);
-		if (!array_key_exists(1, $résultats)) {
-			throw new ChargeurException("Impossible de charger l'archive $nom_archive");
+		return self::déterminer_type_par_mime($content_type) ||
+			self::déterminer_type_par_extension($content_disposition);
+	}
+
+	private function déterminer_type_par_mime($content_type)
+	{
+		preg_match("/application\/(x-)*(.*)(-compressed)*/", $content_type, $résultats);
+		if (array_key_exists(2, $résultats)) {
+			switch ($résultats[2]) {
+				case "zip":
+				case "7z":
+				case "tar":
+					return $résultats[2];
+					break;
+				case "gzip":
+					return "gz";
+					break;
+				case "vnd.rar":
+					return "rar";
+					break;
+			}
 		}
-		return $résultats[1];
+		return false;
+	}
+
+	private function déterminer_type_par_extension($content_disposition)
+	{
+		preg_match('/filename=\".+\.(.*)\"/i', $content_disposition, $résultats);
+		if (!array_key_exists(1, $résultats)) {
+			return false;
+		}
+		$ext = strtolower($résultats[1]);
+
+		if (in_array($ext, ["zip", "rar", "xz", "7z", "tar", "tgz", "gz"])) {
+			return $ext;
+		} else {
+			return false;
+		}
 	}
 
 	private function télécharger_fichier($uri)

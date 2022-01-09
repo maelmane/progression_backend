@@ -22,18 +22,28 @@ use ZipArchive;
 
 class ChargeurQuestionArchive extends Chargeur
 {
-	public function récupérer_question($chemin_fichier)
+	public function récupérer_question($chemin_archive, $type_archive = false)
 	{
+		if (!$type_archive) {
+			throw new ChargeurException(
+				"Impossible de déterminer automatiquement le type de l'archive $chemin_archive.",
+			);
+		}
+
+		if ($type_archive != "zip") {
+			throw new ChargeurException("Type d'archive $type_archive non implémenté.");
+		}
+
 		$archiveExtraite = null;
 
 		$nom_unique = uniqid("archive_", true);
 		$destination = sys_get_temp_dir() . "/$nom_unique";
 
-		self::extraire_zip($chemin_fichier, $destination);
+		self::extraire_zip($chemin_archive, $destination);
 		try {
 			$question = $this->source
-							 ->get_chargeur_question_fichier()
-							 ->récupérer_question("file://" . $destination . "/info.yml");
+				->get_chargeur_question_fichier()
+				->récupérer_question("file://" . $destination . "/info.yml");
 		} catch (ChargeurException $e) {
 			throw $e;
 		} finally {
@@ -43,16 +53,16 @@ class ChargeurQuestionArchive extends Chargeur
 		return $question;
 	}
 
-	private function extraire_zip($archive, $destination)
+	private function extraire_zip($chemin_archive, $destination)
 	{
 		$zip = new ZipArchive();
-		$res = $zip->open($archive);
+		$res = $zip->open($chemin_archive);
 		if ($res !== true) {
-			throw new ChargeurException("Impossible de lire l'archive $archive (err.: $res)");
+			throw new ChargeurException("Impossible de lire l'archive $chemin_archive (err.: $res)");
 		}
 		$res = $zip->extractTo($destination);
 		if ($res !== true) {
-			throw new ChargeurException("Impossible de décompresser l'archive $archive (err.: $res)");
+			throw new ChargeurException("Impossible de décompresser l'archive $chemin_archive (err.: $res)");
 		}
 
 		$zip->close();

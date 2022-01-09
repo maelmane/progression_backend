@@ -20,7 +20,7 @@ namespace progression\dao\question;
 
 use RuntimeException;
 
-class ChargeurQuestionHTTP
+class ChargeurHTTP
 {
 	public function get_url($url)
 	{
@@ -40,6 +40,6 @@ class ChargeurQuestionHTTP
 			throw new ChargeurException("Impossible de récupérer les entêtes de l'URL {$url}");
 		}
 
-		return array_change_key_case($entêtes);
+		return $entêtes;
 	}
 }
