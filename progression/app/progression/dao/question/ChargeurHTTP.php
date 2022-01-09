@@ -20,7 +20,7 @@ namespace progression\dao\question;
 
 use RuntimeException;
 
-class ChargeurHTTP
+class ChargeurHTTP extends Chargeur
 {
 	public function get_url($url)
 	{
