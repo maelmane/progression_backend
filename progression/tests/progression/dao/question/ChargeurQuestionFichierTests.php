@@ -86,19 +86,19 @@ final class ChargeurQuestionFichierTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
-	public function test_étant_donné_un_uri_de_fichier_yaml_invalide_lorsquon_charge_la_question_on_obtient_une_DomainException()
+	public function test_étant_donné_un_uri_de_fichier_yaml_invalide_lorsquon_charge_la_question_on_obtient_une_ChargeurException_err_1()
 	{
 		$uri = "file://" . __DIR__ . "/démo/yaml_invalide/info.yml";
 
 		try {
 			$résultat_obtenu = (new ChargeurQuestionFichier())->récupérer_question($uri);
 			$this->fail();
-		} catch (DomainException $résultat_obtenu) {
-			$this->assertEquals("Le fichier ${uri} est invalide. (err:1)", $résultat_obtenu->getMessage());
+		} catch (ChargeurException $résultat_obtenu) {
+			$this->assertEquals("Le fichier ${uri} est invalide. (err: 1)", $résultat_obtenu->getMessage());
 		}
 	}
 
-	public function test_étant_donné_un_uri_de_fichier_question_invalide_lorsquon_charge_la_question_on_obtient_une_DomainException_err_1()
+	public function test_étant_donné_un_uri_de_fichier_question_invalide_lorsquon_charge_la_question_on_obtient_une_ChargeurException_err_1()
 	{
 		$uri = "file://" . __DIR__ . "/démo/question_invalide/info.yml";
 
@@ -106,7 +106,7 @@ final class ChargeurQuestionFichierTests extends TestCase
 			$résultat_obtenu = (new ChargeurQuestionFichier())->récupérer_question($uri);
 			$this->fail();
 		} catch (ChargeurException $résultat_obtenu) {
-			$this->assertEquals("Le fichier ${uri} ne peut pas être chargé.", $résultat_obtenu->getMessage());
+			$this->assertEquals("Le fichier {$uri} est invalide. (err: 1)", $résultat_obtenu->getMessage());
 		}
 	}
 
