@@ -35,7 +35,7 @@ class ChargeurQuestionFichier extends Chargeur
 		}
 
 		if ($err_code != 0) {
-			throw new DomainException("Le fichier {$uri} est invalide. (err:{$err_code})");
+			throw new ChargeurException("Le fichier {$uri} est invalide. (err: {$err_code})");
 		}
 
 		$info = yaml_parse(implode("\n", $output));

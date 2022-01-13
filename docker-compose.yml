@@ -26,7 +26,7 @@ services:
     image: progression_backend_progression
     build: progression/
     container_name: progression
-    env_file: progression/app/.env
+    env_file: ./progression/app/.env
     networks:
       progressionnet:
         ipv4_address: 172.20.0.3
@@ -46,7 +46,7 @@ services:
     image: progression_backend_progression
     build: progression/
     container_name: progression_tests
-    env_file: progression/tests/.env
+    env_file: ./progression/tests/.env
     volumes:
       - "./db/build_db.sh/:/var/www/db/build_db.sh"
       - "./db/create_db.sql/:/var/www/db/create_db.sql"
@@ -57,10 +57,10 @@ services:
     networks:
       progressionnet:
         ipv4_address: 172.20.0.5
-    depends_on:
-      - db
     restart: "no"
-    command: /var/www/progression/tests/exec_tests.sh
+    environment:
+      PROGRESSION_DIR: /var/www 
+    command: bash /var/www/progression/tests/exec_tests.sh
 
   doc:
     image: git.dti.crosemont.quebec:5050/progression/progression_backend:latest

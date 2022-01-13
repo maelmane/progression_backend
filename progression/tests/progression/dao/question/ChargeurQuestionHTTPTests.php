@@ -26,6 +26,13 @@ final class ChargeurQuestionHTTPTests extends TestCase
 {
 	private $contenu_tmp;
 
+	public static function setUpBeforeClass(): void
+	{
+		parent::setUpBeforeClass();
+
+		$_ENV["QUESTION_TAILLE_MAX"] = 1000;
+	}
+
 	public function setUp(): void
 	{
 		parent::setUp();
@@ -204,7 +211,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 			->with("http://exemple.com/question1/info.yml")
 			->andReturn([
 				"Content-Type" => "text/yaml",
-				"Content-Length" => "999999",
+				"Content-Length" => "9999999",
 				"Content-Disposition" => 'filename="info.yml"',
 			]);
 		// ChargeurFactory
@@ -217,7 +224,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 			);
 			$this->fail();
 		} catch (ChargeurException $e) {
-			$this->assertEquals("Fichier trop volumineux (999999 > 1000). On ne le chargera pas.", $e->getMessage());
+			$this->assertEquals("Fichier trop volumineux (9999999 > 1000). On ne le chargera pas.", $e->getMessage());
 		}
 	}
 	public function test_étant_donné_un_url_de_type_application_de_taille_trop_grande_lorsquon_charge_la_question_on_obtient_une_ChargeurException()
@@ -229,7 +236,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 			->with("http://exemple.com/question1/question.zip")
 			->andReturn([
 				"Content-Type" => "application/zip",
-				"Content-Length" => "999999",
+				"Content-Length" => "9999999",
 				"Content-Disposition" => 'filename="question.zip"',
 			]);
 		// ChargeurFactory
@@ -242,7 +249,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 			);
 			$this->fail();
 		} catch (ChargeurException $e) {
-			$this->assertEquals("Fichier trop volumineux (999999 > 1000). On ne le chargera pas.", $e->getMessage());
+			$this->assertEquals("Fichier trop volumineux (9999999 > 1000). On ne le chargera pas.", $e->getMessage());
 		}
 	}
 }

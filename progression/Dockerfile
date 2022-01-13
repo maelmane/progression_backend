@@ -29,6 +29,7 @@ RUN c_rehash
 
 RUN mkdir -p /var/www/progression/app
 COPY app /var/www/progression/app/
+COPY tests /var/www/progression/tests/
 
 RUN mkdir -p /var/www/progression/vendor
 COPY --from=composer  /var/www/vendor/ /var/www/progression/vendor/
