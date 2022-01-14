@@ -288,8 +288,28 @@ import json
 import sys
 import base64
 
-print( json.dumps( json.loads(base64.b64decode(json_str)), ensure_ascii=False, indent=4 ) )
+def decode_b64( b64_str ):
+    try:
+        return base64.b64decode(b64_str)
+    except:
+        return b64_str
+
+def decode_json( json_str ):    
+    try:
+        return json.loads(json_str)
+    except:
+        return json_str
+
+def formatte_json( json_str ):
+    try:
+        return json.dumps( json_str, ensure_ascii=False, indent=4 )
+    except:
+        return json_str
+    
+print( formatte_json( decode_json( decode_b64( json_str ) ) ) )
 #+end_src
+
+#+RESULTS: json_pretty
 
 ** Authentification en tant qu'utilisateur ~jdoe~
 
