@@ -16,16 +16,8 @@ stages:
   - deploy_doc
 
 variables:
-  MYSQL_DATABASE: quiz
-  MYSQL_ROOT_PASSWORD: password
-  JWT_SECRET: "secret_à_changer"
-  JWT_TTL: 8640000
-  AUTH_TYPE: "no"
-  HTTP_ORIGIN: "https://example.com"
-  QUESTION_TAILLE_MAX: 1000
   PROGRESSION_DIR: $CI_PROJECT_DIR
-  DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ""
+  DOCKER_HOST: "tcp://dind:2375"
   
 .creation_bd: &creation_bd
   before_script:
@@ -50,8 +42,9 @@ variables:
 installation:
   stage: setup
   services:
-  - name: docker:dind
+  - name: git.dti.crosemont.quebec:5050/progression/dind_workaround:latest
     command: ["--tls=false"]
+    alias: dind
   script:
   # Installation des dépendances PHP
   - docker run -v "$PROGRESSION_DIR/progression/:/tmp/progression/" $CI_REGISTRY/progression/dev:latest php /composer.phar install -d /tmp/progression
@@ -64,8 +57,9 @@ test_unitaires:
   stage: test
   needs: [installation]
   services:
-  - name: docker:dind
+  - name: git.dti.crosemont.quebec:5050/progression/dind_workaround:latest
     command: ["--tls=false"]
+    alias: dind
   <<: *creation_bd
   script:
   - cp $PROGRESSION_DIR/progression/app/.env.exemple $PROGRESSION_DIR/progression/tests/.env
@@ -83,8 +77,9 @@ test_unitaires:
 const_image:
   stage: build_image
   services:
-  - name: docker:dind
+  - name: git.dti.crosemont.quebec:5050/progression/dind_workaround:latest
     command: ["--tls=false"]
+    alias: dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY/progression/progression_backend:$CI_COMMIT_REF_NAME progression
@@ -123,8 +118,9 @@ deploy_dev:
 pages_master:
   stage: build_doc_master
   services:
-  - name: docker:dind
+  - name: git.dti.crosemont.quebec:5050/progression/dind_workaround:latest
     command: ["--tls=false"]
+    alias: dind
   variables:
     PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/staging/api/v1
   script:
@@ -142,8 +138,9 @@ pages_master:
 pages_dev:
   stage: build_doc_dev
   services:
-  - name: docker:dind
+  - name: git.dti.crosemont.quebec:5050/progression/dind_workaround:latest
     command: ["--tls=false"]
+    alias: dind
   variables:
     PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/dev/api/v1
   script:
