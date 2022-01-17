@@ -30,6 +30,13 @@ class InscriptionCtl extends Contrôleur
 		Log::debug("InscriptionCtl.inscription. Params : ", $request->all());
 		Log::info("{$request->ip()} - Tentative d'inscription : {$request->input("username")}");
 
+		$auth_local = getenv("AUTH_LOCAL") !== "false";
+		$auth_ldap = getenv("AUTH_LDAP") === "true";
+
+		if (!$auth_local && $auth_ldap) {
+			return $this->réponse_json(["erreur" => "Inscription locale non supportée."], 403);
+		}
+
 		$user = null;
 		$token = null;
 
@@ -97,12 +104,13 @@ class InscriptionCtl extends Contrôleur
 			$request->all(),
 			[
 				"username" => "required|alpha_dash",
-				"password" => "required",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
 			],
-		);
+		)->sometimes("password", "required", function ($input) {
+			return getenv("AUTH_LOCAL") === "true";
+		});
 
 		if ($validateur->fails()) {
 			$réponse = $validateur->errors();

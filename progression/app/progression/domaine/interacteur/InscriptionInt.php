@@ -27,6 +27,24 @@ class InscriptionInt extends Interacteur
 	{
 		$dao = $this->source_dao->get_user_dao();
 
+		$auth_local = getenv("AUTH_LOCAL") !== "false";
+		$auth_ldap = getenv("AUTH_LDAP") === "true";
+
+		if ($auth_ldap) {
+			return null;
+		}
+
+		if ($auth_local) {
+			return $this->effectuer_inscription_avec_mdp($username, $password, $role);
+		} else {
+			return $this->effectuer_inscription_sans_mdp($username, $role);
+		}
+	}
+
+	private function effectuer_inscription_avec_mdp($username, $password, $role)
+	{
+		$dao = $this->source_dao->get_user_dao();
+
 		$user = $dao->get_user($username);
 
 		if ($user) {
@@ -36,6 +54,12 @@ class InscriptionInt extends Interacteur
 		$user = $dao->save(new User($username, $role));
 		$dao->set_password($user, $password);
 
-		return $dao->get_user($username);
+		return $user;
+	}
+
+	private function effectuer_inscription_sans_mdp($username, $role)
+	{
+		$dao = $this->source_dao->get_user_dao();
+		return $dao->get_user($username) || $dao->save(new User($username, $role));
 	}
 }

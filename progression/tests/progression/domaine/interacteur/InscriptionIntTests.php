@@ -45,7 +45,7 @@ final class InscriptionIntTests extends TestCase
 		DAOFactory::setInstance(null);
 	}
 
-	public function test_étant_donné_un_nouvel_utilisateur_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User()
+	public function test_étant_donné_un_utilisateur_non_existant_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User()
 	{
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
