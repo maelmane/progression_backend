@@ -63,7 +63,7 @@ class LoginInt extends Interacteur
 			$user = $this->login_ldap($username, $password, $domaine);
 		} elseif ($auth_local) {
 			$user = $this->login_local($username, $password);
-		} else {
+		} elseif (!$auth_ldap && !$auth_local) {
 			$user = $this->login_sans_authentification($username);
 		}
 
