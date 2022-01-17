@@ -151,13 +151,13 @@ final class LoginCtlTests extends TestCase
 			->shouldReceive("vérifier_password")
 			->withArgs(function ($user) {
 				return $user->username == "bob";
-			}, "password")
+			})
 			->andReturn(true);
 
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob", "password" => "test"]);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
+.		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
 	}
 
 	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_appelle_login_lutilisateur_on_obtient_une_erreur_401()
