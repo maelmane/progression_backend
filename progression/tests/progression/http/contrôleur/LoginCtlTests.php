@@ -33,8 +33,6 @@ final class LoginCtlTests extends TestCase
 	{
 		parent::setUp();
 
-		putenv("AUTH_LDAP=false");
-
 		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
 
 		// UserDAO
@@ -90,10 +88,23 @@ final class LoginCtlTests extends TestCase
 		Mockery::close();
 	}
 
-	#  AUTH_LOCAL = false
+	#  AUTH LDAP
+	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_LDAP_lorsquon_appelle_login_lutilisateur_sans_domaine_on_obtient_une_erreur_401()
+	{
+		putenv("AUTH_LOCAL=false");
+		putenv("AUTH_LDAP=true");
+
+		$résultat_observé = $this->call("POST", "/auth", ["username" => "Marcel", "password" => "password"]);
+
+		$this->assertEquals(401, $résultat_observé->status());
+		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_observé->getContent());
+	}
+
+	#  Aucune AUTH
 	public function test_étant_donné_lutilisateur_Bob_sans_authentification_lorsquon_appelle_login_on_obtient_un_token_pour_lutilisateur_Bob()
 	{
 		putenv("AUTH_LOCAL=false");
+		putenv("AUTH_LDAP=false");
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDAO
@@ -112,6 +123,7 @@ final class LoginCtlTests extends TestCase
 	public function test_étant_donné_un_utilisateur_inexistant_sans_authentification_lorsquon_appelle_login_lutilisateur_est_créé()
 	{
 		putenv("AUTH_LOCAL=false");
+		putenv("AUTH_LDAP=false");
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDAO
@@ -128,17 +140,18 @@ final class LoginCtlTests extends TestCase
 		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
 	}
 
-	# AUTH_LOCAL = true
+	# AUTH locale
 	public function test_étant_donné_lutilisateur_Bob_avec_authentification_lorsquon_appelle_login_avec_mdp_correct_on_obtient_un_token_pour_lutilisateur_Bob()
 	{
 		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDAO
 			->shouldReceive("vérifier_password")
 			->withArgs(function ($user) {
 				return $user->username == "bob";
-			}, "password")
+			})
 			->andReturn(true);
 
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob", "password" => "test"]);
@@ -150,6 +163,7 @@ final class LoginCtlTests extends TestCase
 	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_appelle_login_lutilisateur_on_obtient_une_erreur_401()
 	{
 		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
 
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "Marcel", "password" => "test"]);
 
@@ -160,6 +174,7 @@ final class LoginCtlTests extends TestCase
 	public function test_étant_donné_un_utilisateur_Bob_avec_authentification_lorsquon_appelle_login_lutilisateur_avec_mdp_erroné_on_obtient_une_erreur_401()
 	{
 		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDAO
@@ -180,6 +195,8 @@ final class LoginCtlTests extends TestCase
 	public function test_étant_donné_une_authentificaton_locale_lorsquon_appelle_login_avec_un_nom_dutilisateur_vide_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
+
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "", "password" => "test"]);
 
 		$this->assertEquals(400, $résultat_observé->status());
@@ -188,6 +205,8 @@ final class LoginCtlTests extends TestCase
 	public function test_étant_donné_une_authentificaton_locale_lorsquon_appelle_login_sans_nom_dutlisateur_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
+
 		$résultat_observé = $this->call("POST", "/auth", ["password" => "test"]);
 
 		$this->assertEquals(400, $résultat_observé->status());
@@ -196,6 +215,7 @@ final class LoginCtlTests extends TestCase
 	public function test_étant_donné_une_authentification_locale_lorsquon_appelle_login_sans_mot_de_passe_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
 
 		$résultat_observé = $this->call("POST", "/auth", ["username" => ""]);
 
@@ -205,6 +225,7 @@ final class LoginCtlTests extends TestCase
 	public function test_étant_donné_une_authentification_locale_lorsquon_appelle_login_avec_mot_de_passe_vide_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
 
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob", "password" => ""]);
 
@@ -236,7 +257,7 @@ final class LoginCtlTests extends TestCase
 		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_observé->content());
 	}
 
-	public function test_étant_donné_une_authentification_locale__lorsquon_login_avec_une_clé_vide_on_obtient_une_erreur_400()
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_login_avec_une_clé_vide_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->call("POST", "/auth", [
 			"username" => "bob",
@@ -251,22 +272,7 @@ final class LoginCtlTests extends TestCase
 		);
 	}
 
-	public function test_étant_donné_une_authentification_locale__lorsquon_login_avec_un_secret_vide_on_obtient_une_erreur_400()
-	{
-		$résultat_observé = $this->call("POST", "/auth", [
-			"username" => "bob",
-			"key_name" => "clé valide",
-			"key_secret" => "",
-		]);
-
-		$this->assertEquals(400, $résultat_observé->status());
-		$this->assertEquals(
-			'{"erreur":{"key_secret":["The key secret field is required when key name is present."]}}',
-			$résultat_observé->content(),
-		);
-	}
-
-	public function test_étant_donné_une_authentification_locale_lorsquon_login_sans_clé_on_obtient_une_erreur_400()
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_login_sans_clé_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->call("POST", "/auth", [
 			"username" => "bob",
@@ -280,7 +286,21 @@ final class LoginCtlTests extends TestCase
 		);
 	}
 
-	public function test_étant_donné_une_authentification_locale_lorsquon_login_sans_secret_on_obtient_une_erreur_400()
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_login_avec_un_secret_vide_on_obtient_une_erreur_400()
+	{
+		$résultat_observé = $this->call("POST", "/auth", [
+			"username" => "bob",
+			"key_name" => "clé valide",
+			"key_secret" => "",
+		]);
+
+		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertEquals(
+			'{"erreur":{"key_secret":["The key secret field is required when key name is present."]}}',
+			$résultat_observé->content(),
+		);
+	}
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_login_sans_secret_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->call("POST", "/auth", [
 			"username" => "bob",
