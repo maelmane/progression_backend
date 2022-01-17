@@ -18,7 +18,7 @@
 
 require_once __DIR__ . "/../../../TestCase.php";
 
-use progression\http\contrôleur\{LoginCtl, GénérateurDeToken};
+use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\{User, Clé};
 use progression\dao\DAOFactory;
 use Illuminate\Http\Request;
@@ -32,7 +32,7 @@ final class LoginCtlTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		
+
 		putenv("AUTH_LDAP=false");
 
 		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
@@ -100,15 +100,13 @@ final class LoginCtlTests extends TestCase
 			->shouldReceive("vérifier_password")
 			->withArgs(function ($user) {
 				return $user->username == "bob";
-			} )
+			})
 			->andReturn(true);
 
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob"]);
 
-		$token = $résultat_observé->getContent();
-
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Token":"token valide"}', $token);
+		$this->assertEquals('{"Token":"token valide"}', $token = $résultat_observé->getContent());
 	}
 
 	public function test_étant_donné_un_utilisateur_inexistant_sans_authentification_lorsquon_appelle_login_lutilisateur_est_créé()
@@ -126,10 +124,8 @@ final class LoginCtlTests extends TestCase
 
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "Marcel"]);
 
-		$token = $résultat_observé->getContent();
-
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Token":"token valide"}', $token);
+		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
 	}
 
 	# AUTH_LOCAL = true
@@ -147,10 +143,8 @@ final class LoginCtlTests extends TestCase
 
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob", "password" => "test"]);
 
-		$token = $résultat_observé->getContent();
-
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Token":"token valide"}', $token);
+		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
 	}
 
 	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_appelle_login_lutilisateur_on_obtient_une_erreur_401()
@@ -159,10 +153,8 @@ final class LoginCtlTests extends TestCase
 
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "Marcel", "password" => "test"]);
 
-		$message = $résultat_observé->getContent();
-
 		$this->assertEquals(401, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Accès interdit."}', $message);
+		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_observé->getContent());
 	}
 
 	public function test_étant_donné_un_utilisateur_Bob_avec_authentification_lorsquon_appelle_login_lutilisateur_avec_mdp_erroné_on_obtient_une_erreur_401()
@@ -176,17 +168,15 @@ final class LoginCtlTests extends TestCase
 				return $user->username == "bob";
 			}, "incorrect")
 			->andReturn(false);
-		
+
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob", "password" => "incorrect"]);
 
-		$token = $résultat_observé->getContent();
-
 		$this->assertEquals(401, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Accès interdit."}', $token);
+		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_observé->getContent());
 	}
-	
+
 	# Identifiants invalides
-	
+
 	public function test_étant_donné_une_authentificaton_locale_lorsquon_appelle_login_avec_un_nom_dutilisateur_vide_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
@@ -202,7 +192,7 @@ final class LoginCtlTests extends TestCase
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}
-	
+
 	public function test_étant_donné_une_authentification_locale_lorsquon_appelle_login_sans_mot_de_passe_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
@@ -230,10 +220,8 @@ final class LoginCtlTests extends TestCase
 			"key_secret" => "secret",
 		]);
 
-		$token = $résultat_observé->getContent();
-
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Token":"token valide"}', $token);
+		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
 	}
 
 	public function test_étant_donné_lutilisateur_Bob_et_une_clé_dauthentification_invalide_lorsquon_login_on_obtient_une_erreur_401()
@@ -257,7 +245,10 @@ final class LoginCtlTests extends TestCase
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
-		$this->assertEquals('{"erreur":{"password":["The password field is required when key name is not present."]}}', $résultat_observé->content());
+		$this->assertEquals(
+			'{"erreur":{"password":["The password field is required when key name is not present."]}}',
+			$résultat_observé->content(),
+		);
 	}
 
 	public function test_étant_donné_une_authentification_locale__lorsquon_login_avec_un_secret_vide_on_obtient_une_erreur_400()
@@ -269,9 +260,11 @@ final class LoginCtlTests extends TestCase
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
-		$this->assertEquals('{"erreur":{"key_secret":["The key secret field is required when key name is present."]}}', $résultat_observé->content());
+		$this->assertEquals(
+			'{"erreur":{"key_secret":["The key secret field is required when key name is present."]}}',
+			$résultat_observé->content(),
+		);
 	}
-	
 
 	public function test_étant_donné_une_authentification_locale_lorsquon_login_sans_clé_on_obtient_une_erreur_400()
 	{
@@ -281,7 +274,10 @@ final class LoginCtlTests extends TestCase
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
-		$this->assertEquals('{"erreur":{"password":["The password field is required when key name is not present."]}}', $résultat_observé->content());
+		$this->assertEquals(
+			'{"erreur":{"password":["The password field is required when key name is not present."]}}',
+			$résultat_observé->content(),
+		);
 	}
 
 	public function test_étant_donné_une_authentification_locale_lorsquon_login_sans_secret_on_obtient_une_erreur_400()
@@ -292,10 +288,12 @@ final class LoginCtlTests extends TestCase
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
-		$this->assertEquals('{"erreur":{"key_secret":["The key secret field is required when key name is present."]}}', $résultat_observé->content());
+		$this->assertEquals(
+			'{"erreur":{"key_secret":["The key secret field is required when key name is present."]}}',
+			$résultat_observé->content(),
+		);
 	}
-	
-	
+
 	//Intestable tant que la connexion à LDAP se fera à même l'interacteur
 	/*
 	   public function test_étant_donné_lutilisateur_inexistant_roger_et_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_code_403()
