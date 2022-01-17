@@ -2,18 +2,6 @@
 #+TITLE: API Progression
 #+PROPERTY: header-args:bash :results output :exports both :noweb yes
 
-#+begin_warning
-  Cette documentation est proposée à titre indicatif seulement et peut changer à tout moment.
-#+end_warning
-
-
-
-* Versions
-Les versions de l'api sont accessibles à des URL distincts pour assurer la rétrocompatibilité.
-
-| Version | URL        |
-|       1 | ~/api/v1/~ |
-
 * Points d'entrée
 ** Publics
 | Méthode | URL               | Description                            | Paramètres                                   | Réponse             |

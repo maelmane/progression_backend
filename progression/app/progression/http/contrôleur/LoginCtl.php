@@ -115,15 +115,18 @@ class LoginCtl extends Contrôleur
 		$validateur = Validator::make(
 			$request->all(),
 			[
-				"key_name" => "required_without:password",
-				"key_secret" => "required_with:key_name",
 				"username" => "required|alpha_dash",
-				"password" => "required_without:key_name",
+				"key_secret" => "required_with:key_name",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
 			],
-		);
+		)->sometimes("password", "required_without:key_name", function ($input) {
+			$auth_local = getenv("AUTH_LOCAL") !== "false";
+			$auth_ldap = getenv("AUTH_LDAP") === "true";
+
+			return $auth_local || $auth_ldap;
+		});
 
 		if ($validateur->fails()) {
 			$réponse = $validateur->errors();
