@@ -1,5 +1,0 @@
-FROM q8-1
-
-RUN echo sideshowbob:x:1001:1001:Robert Underdunk Terwilliger Jr.,Cellule 13,,:/home/sideshowbob:/bin/bash >> /etc/passwd
-RUN echo sideshowbob:$6$Hf/C/0pP$dWXMgIOuMw5SAmuHbs3a8qdoB3aRF1N26fvGbylbW2wJpw4hqmJBMvJdj9EmHt3OCkPaIkrlkNogOMUYshWAF.:17491:0:99999:7::: >> /etc/shadow
-

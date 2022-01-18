@@ -21,11 +21,6 @@ RUN docker-php-source extract &&\
     docker-php-ext-get yaml 2.2.2 &&\
     docker-php-ext-install yaml &&\
     docker-php-source delete
-	
-#Pour authentification par LDAP
-COPY ldap.conf /etc/ldap
-COPY certs/* /etc/ssl/certs/
-RUN c_rehash
 
 RUN mkdir -p /var/www/progression/app
 COPY app /var/www/progression/app/

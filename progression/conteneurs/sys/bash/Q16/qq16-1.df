@@ -1,5 +1,0 @@
-FROM system
-
-RUN groupadd -g 1001 simpson && useradd -u 1016 lisa
-RUN touch /tmp/devoir.doc && chown lisa:simpson /tmp/devoir.doc
-

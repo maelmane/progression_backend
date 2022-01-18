@@ -1,9 +1,0 @@
-FROM system
-
-RUN useradd -s /bin/bash -m petitpoucet
-RUN mkdir /home/petitpoucet/forêt
-RUN echo n\'oubliez pas votre chemin\! > /home/petitpoucet/forêt/miettes
-RUN chown petitpoucet:petitpoucet /home/petitpoucet/ -R
-ENV SIAB_SERVICE=/:petitpoucet:petitpoucet:HOME:SHELL \
-    SIAB_TIMEOUT=600
-
