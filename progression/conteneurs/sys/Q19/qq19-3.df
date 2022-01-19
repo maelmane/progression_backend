@@ -1,7 +1,0 @@
-FROM vim
-
-COPY qq19-3/lettre.txt /home/krusty/
-RUN chown krusty:krusty /home/krusty/lettre.txt
-COPY qq19-3/reponse.txt /tmp/
-RUN chmod 400 /tmp/reponse.txt
-

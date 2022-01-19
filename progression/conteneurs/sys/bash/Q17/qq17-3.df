@@ -1,4 +1,0 @@
-FROM qq17-2 
-
-COPY aide-memoire.sh /home/krusty
-RUN chown krusty:krusty /home/krusty/aide-memoire.sh

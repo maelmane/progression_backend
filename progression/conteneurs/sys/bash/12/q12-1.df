@@ -1,8 +1,0 @@
-FROM system
-
-RUN mkdir /home/krusty/inclassables
-RUN chown root:root /home/krusty
-COPY q12-1/fichiers/* /home/krusty/inclassables/
-RUN chown krusty:krusty /home/krusty/inclassables -R
-
-

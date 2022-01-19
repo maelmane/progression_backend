@@ -1,7 +1,0 @@
-FROM q9-1
-
-RUN mkdir /home/krusty/privé
-RUN echo Ha! Comme la neige a neigé > /home/krusty/privé/poèmes
-RUN chown -R krusty:krusty /home/krusty/privé
-RUN chmod -R 755 /home/krusty/privé
-

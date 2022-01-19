@@ -1,4 +1,0 @@
-FROM q6-1
-
-RUN mkdir -p /media/krusty/clé_usb
-

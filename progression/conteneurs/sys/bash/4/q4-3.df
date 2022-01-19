@@ -1,5 +1,0 @@
-FROM q4-2
-
-RUN cd /home/krusty && mkdir Images && mv *jpg *png *gif Images
-RUN chown krusty:krusty /home/krusty/Images
-

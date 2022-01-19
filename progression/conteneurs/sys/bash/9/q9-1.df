@@ -1,7 +1,0 @@
-FROM system
-
-RUN useradd -s /bin/bash -m sideshowbob && yes diebartdie | passwd sideshowbob 
-
-RUN echo La réponse est : 42 > /home/krusty/illisible.txt
-RUN chown krusty:krusty /home/krusty/illisible.txt
-RUN chmod 000 /home/krusty/illisible.txt

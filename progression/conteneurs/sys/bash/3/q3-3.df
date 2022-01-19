@@ -1,3 +1,0 @@
-FROM installation
-
-RUN apt install manpages-de
