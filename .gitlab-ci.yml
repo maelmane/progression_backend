@@ -79,6 +79,7 @@ deploy_master:
   needs: [const_image]
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull $CI_REGISTRY/progression/progression_backend:test
     - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:staging
     - docker push $CI_REGISTRY/progression/progression_backend:staging
     - chmod 400 /builds/progression/progression_backend.tmp/ID_RSA
@@ -92,6 +93,7 @@ deploy_dev:
   needs: [const_image]
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull $CI_REGISTRY/progression/progression_backend:test
     - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:dev
     - docker push $CI_REGISTRY/progression/progression_backend:dev
     - chmod 400 /builds/progression/progression_backend.tmp/ID_RSA
