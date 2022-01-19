@@ -7,9 +7,8 @@ cache:
   - progression/vendor
 
 stages:
-  - setup
-  - test
   - build_image
+  - test
   - deploy_image
   - build_doc_master
   - build_doc_dev
@@ -32,22 +31,8 @@ variables:
   - echo "CREATE USER IF NOT EXISTS $DB_USERNAME@'%' IDENTIFIED BY \"$DB_PASSWORD\";" | docker exec -i mariadb mysql -uroot -ppassword
   - echo "CREATE DATABASE $DB_DBNAME CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;" | docker exec -i mariadb mysql -uroot -ppassword 
   - echo "GRANT ALL PRIVILEGES ON $DB_DBNAME.* TO $DB_USERNAME@'%';" | docker exec -i mariadb mysql -uroot -ppassword
-  - docker exec -i mariadb mysql -uroot -ppassword $DB_DBNAME < $PROGRESSION_DIR/db/create_db.sql
+  - docker exec -i mariadb mysql -uroot -ppassword $DB_DBNAME < $PROGRESSION_DIR/progression/db/create_db.sql
   - docker exec -i mariadb mysql --default-character-set=utf8 -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME < $PROGRESSION_DIR/progression/tests/données_de_test.sql
-
-
-# Stage setup
-
-# Mise en place
-installation:
-  stage: setup
-  services:
-  - name: git.dti.crosemont.quebec:5050/progression/dind_workaround:latest
-    command: ["--tls=false"]
-    alias: dind
-  script:
-  # Installation des dépendances PHP
-  - docker run -v "$PROGRESSION_DIR/progression/:/tmp/progression/" $CI_REGISTRY/progression/dev:latest php /composer.phar install -d /tmp/progression
 
 
 # Stage test
@@ -55,7 +40,6 @@ installation:
 # Tests unitaires
 test_unitaires:
   stage: test
-  needs: [installation]
   services:
   - name: git.dti.crosemont.quebec:5050/progression/dind_workaround:latest
     command: ["--tls=false"]
@@ -64,12 +48,10 @@ test_unitaires:
   script:
   - cp $PROGRESSION_DIR/progression/app/.env.exemple $PROGRESSION_DIR/progression/tests/.env
   - source $PROGRESSION_DIR/progression/tests/.env
-  # Tests unitaires
-  - docker run --net=tu-net --env-file=$PROGRESSION_DIR/progression/tests/.env -v "$PROGRESSION_DIR/progression/:/tmp/progression/" -e DB_SERVERNAME=mariadb $CI_REGISTRY/progression/dev:latest /tmp/progression/vendor/bin/phpunit --configuration /tmp/progression/phpunit.xml --coverage-text
-  # Analyse statique
-  - docker run -v "$PROGRESSION_DIR/progression/:/tmp/progression/" $CI_REGISTRY/progression/dev:latest php -d memory_limit=1G /tmp/progression/vendor/bin/phpstan analyse -c /tmp/progression/phpstan.neon
+  # Tests unitaires et analyse statique
+  - docker run --net=tu-net --env-file=$PROGRESSION_DIR/progression/tests/.env -e DB_SERVERNAME=mariadb $CI_REGISTRY/progression/progression_backend:test /var/www/progression/tests/exec_tests.sh
   # Linter Prettier
-  - echo "apk update && apk add bash npm && npm install --global prettier @prettier/plugin-php && bash -c 'shopt -s globstar && prettier --use-tabs --print-width 120 --php-version "7.4" -c /tmp/progression/tests/**/*.php /tmp/progression/app/**/*.php'" | docker run -i -v "$PROGRESSION_DIR/progression/:/tmp/progression/" alpine:latest sh
+  - docker run $CI_REGISTRY/progression/dev:latest -v "$PROGRESSION_DIR/progression/:/tmp/progression/" bash -c 'shopt -s globstar && prettier --use-tabs --print-width 120 --php-version "7.4" -c /tmp/progression/tests/**/*.php /tmp/progression/app/**/*.php'
 
 # Stage build_image
 
@@ -81,9 +63,7 @@ const_image:
     command: ["--tls=false"]
     alias: dind
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/progression/progression_backend:$CI_COMMIT_REF_NAME progression
-    - docker push $CI_REGISTRY/progression/progression_backend:$CI_COMMIT_REF_NAME
+    - docker build -t $CI_REGISTRY/progression/progression_backend:test progression
   only:
     - dev
     - master
@@ -96,6 +76,9 @@ deploy_master:
   stage: deploy_image
   needs: [const_image]
   script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:staging
+    - docker push -t $CI_REGISTRY/progression/progression_backend:staging
     - chmod 400 /builds/progression/progression_backend.tmp/ID_RSA
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $CD_USER@$CD_HOST -p $CD_PORT $CD_COMMAND
   only:
@@ -106,6 +89,9 @@ deploy_dev:
   stage: deploy_image
   needs: [const_image]
   script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:dev
+    - docker push -t $CI_REGISTRY/progression/progression_backend:dev
     - chmod 400 /builds/progression/progression_backend.tmp/ID_RSA
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $CD_USER@$CD_HOST -p $CD_PORT $CD_COMMAND_DEV
   only:
@@ -124,7 +110,7 @@ pages_master:
   variables:
     PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/staging/api/v1
   script:
-  - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/publication:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
+  - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
   - mkdir public && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/
   - "! grep -c nil public/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
   only:
@@ -144,7 +130,7 @@ pages_dev:
   variables:
     PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/dev/api/v1
   script:
-  - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/publication:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
+  - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
   - mkdir -p public/dev && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/dev/
   - "! grep -c nil public/dev/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
   only:
