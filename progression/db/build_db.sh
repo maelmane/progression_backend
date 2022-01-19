@@ -10,4 +10,4 @@ GRANT ALL PRIVILEGES ON $DB_DBNAME.* TO $DB_USERNAME@'%';
 
 EOF
 
-mysql --default-character-set=utf8 -v -h$DB_SERVERNAME -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME > /dev/null < $PROGRESSION_DIR/db/create_db.sql
+mysql --default-character-set=utf8 -v -h$DB_SERVERNAME -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME > /dev/null < $(dirname ${BASH_SOURCE[0]})/create_db.sql
