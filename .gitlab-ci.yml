@@ -82,12 +82,8 @@ deploy_master:
     command: ["--tls=false"]
     alias: dind
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker pull $CI_REGISTRY/progression/progression_backend:test
-    - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:staging
-    - docker push $CI_REGISTRY/progression/progression_backend:staging
     - chmod 400 /builds/progression/progression_backend.tmp/ID_RSA
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $CD_USER@$CD_HOST -p $CD_PORT $CD_COMMAND
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $CD_USER@$CD_HOST -p $CD_PORT $CD_COMMAND test staging
   only:
     - master
 
@@ -100,12 +96,8 @@ deploy_dev:
     command: ["--tls=false"]
     alias: dind
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker pull $CI_REGISTRY/progression/progression_backend:test
-    - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:dev
-    - docker push $CI_REGISTRY/progression/progression_backend:dev
     - chmod 400 /builds/progression/progression_backend.tmp/ID_RSA
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $CD_USER@$CD_HOST -p $CD_PORT $CD_COMMAND_DEV
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $CD_USER@$CD_HOST -p $CD_PORT $CD_COMMAND test dev
   only:
     - dev
 
