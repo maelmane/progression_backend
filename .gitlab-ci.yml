@@ -77,8 +77,12 @@ const_image:
 deploy_master:
   stage: deploy_image
   needs: [const_image]
+  services:
+  - name: git.dti.crosemont.quebec:5050/progression/dind_workaround:latest
+    command: ["--tls=false"]
+    alias: dind
   script:
-    - sleep 3 && docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $CI_REGISTRY/progression/progression_backend:test
     - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:staging
     - docker push $CI_REGISTRY/progression/progression_backend:staging
@@ -91,8 +95,12 @@ deploy_master:
 deploy_dev:
   stage: deploy_image
   needs: [const_image]
+  services:
+  - name: git.dti.crosemont.quebec:5050/progression/dind_workaround:latest
+    command: ["--tls=false"]
+    alias: dind
   script:
-    - sleep 3 && docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $CI_REGISTRY/progression/progression_backend:test
     - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:dev
     - docker push $CI_REGISTRY/progression/progression_backend:dev
