@@ -1,3 +1,0 @@
-FROM installation
-
-RUN apt autoremove -y manpages-fr man-db

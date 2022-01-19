@@ -1,5 +1,0 @@
-FROM vim
-
-
-COPY réponse /home/krusty/
-RUN chown krusty:krusty /home/krusty/réponse

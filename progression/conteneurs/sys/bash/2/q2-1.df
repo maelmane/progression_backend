@@ -1,9 +1,0 @@
-FROM vim
-
-RUN touch /tmp/canari
-RUN chown krusty:krusty /tmp/canari
-RUN echo source .bashrc_init >> /home/krusty/.bashrc
-RUN echo vim\&\&rm -f /tmp/canari /home/krusty/.bashrc_init \&\& touch /home/krusty/.bashrc_init >> /home/krusty/.bashrc_init
-
-
-

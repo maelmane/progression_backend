@@ -1,5 +1,0 @@
-FROM q10-0
-
-RUN head -n 10 /etc/passwd|tail -n 6 > /tmp/réponse
-RUN chmod 400 /tmp/réponse
-
