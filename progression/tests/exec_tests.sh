@@ -1,5 +1,4 @@
 #!/bin/bash
-
 echo Création de la BD de test sur $DB_SERVERNAME
 
 $PROGRESSION_DIR/db/build_db.sh && \

@@ -8,7 +8,7 @@ FROM php:apache
 
 # Mise a jour de la liste de package
 RUN apt update && apt upgrade -y && apt autoclean
-RUN apt update && apt install -y unzip wget default-libmysqlclient-dev default-mysql-client python3-yaml git libldap2-dev libyaml-dev libzip-dev python3 python3-pip && apt autoclean
+RUN apt update && apt install -y default-libmysqlclient-dev default-mysql-client python3-yaml libldap2-dev libyaml-dev libzip-dev python3 python3-pip && apt autoclean
 
 RUN pip3 install progression_qc
 
@@ -27,14 +27,15 @@ COPY ldap.conf /etc/ldap
 COPY certs/* /etc/ssl/certs/
 RUN c_rehash
 
-RUN mkdir -p /var/www/progression/app
+RUN mkdir -p /var/www/progression/
 COPY app /var/www/progression/app/
 COPY tests /var/www/progression/tests/
+COPY db /var/www/progression/db/
 
 RUN mkdir -p /var/www/progression/vendor
 COPY --from=composer  /var/www/vendor/ /var/www/progression/vendor/
 RUN mkdir -p /var/www/progression/app/storage
-RUN chown -R www-data:www-data /var/www/progression/app/storage
+RUN chown www-data:www-data /var/www/progression/app/storage
 
 RUN echo AddDefaultCharset utf-8 >> /etc/apache2/apache2.conf
 RUN sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/progression\/app\/html/' /etc/apache2/sites-available/000-default.conf
@@ -45,5 +46,8 @@ RUN chmod +x progression/app/entrypoint.sh
 CMD [ "bash", "progression/app/entrypoint.sh" ]
 
 # Installation des beautifiers pour la standardisation du code soumis
-RUN apt install -y black \
-				   clang-format
+RUN apt install -y black
+RUN apt install -y clang-format
+
+COPY phpstan.neon /var/www/progression/
+COPY phpunit.xml /var/www/progression/
