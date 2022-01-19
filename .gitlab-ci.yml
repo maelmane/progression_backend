@@ -1,5 +1,5 @@
 image: docker:latest
-#image: $CI_REGISTRY/progression/dev:latest 
+#image: $CI_REGISTRY/progression/dev:latest
 
 # Select what we should cache
 cache:
@@ -17,7 +17,7 @@ stages:
 variables:
   PROGRESSION_DIR: $CI_PROJECT_DIR
   DOCKER_HOST: "tcp://dind:2375"
-  
+
 .creation_bd: &creation_bd
   before_script:
   - docker network create tu-net
@@ -29,7 +29,7 @@ variables:
   # Création de la BD
   - echo "DROP DATABASE IF EXISTS $DB_DBNAME;" | docker exec -i mariadb mysql -uroot -ppassword
   - echo "CREATE USER IF NOT EXISTS $DB_USERNAME@'%' IDENTIFIED BY \"$DB_PASSWORD\";" | docker exec -i mariadb mysql -uroot -ppassword
-  - echo "CREATE DATABASE $DB_DBNAME CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;" | docker exec -i mariadb mysql -uroot -ppassword 
+  - echo "CREATE DATABASE $DB_DBNAME CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;" | docker exec -i mariadb mysql -uroot -ppassword
   - echo "GRANT ALL PRIVILEGES ON $DB_DBNAME.* TO $DB_USERNAME@'%';" | docker exec -i mariadb mysql -uroot -ppassword
   - docker exec -i mariadb mysql -uroot -ppassword $DB_DBNAME < $PROGRESSION_DIR/progression/db/create_db.sql
   - docker exec -i mariadb mysql --default-character-set=utf8 -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME < $PROGRESSION_DIR/progression/tests/données_de_test.sql
@@ -65,7 +65,7 @@ const_image:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY/progression/progression_backend:test progression
-    - docker push -t $CI_REGISTRY/progression/progression_backend:test	
+    - docker push $CI_REGISTRY/progression/progression_backend:test
   only:
     - dev
     - master
@@ -80,7 +80,7 @@ deploy_master:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:staging
-    - docker push -t $CI_REGISTRY/progression/progression_backend:staging
+    - docker push $CI_REGISTRY/progression/progression_backend:staging
     - chmod 400 /builds/progression/progression_backend.tmp/ID_RSA
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $CD_USER@$CD_HOST -p $CD_PORT $CD_COMMAND
   only:
@@ -93,7 +93,7 @@ deploy_dev:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:dev
-    - docker push -t $CI_REGISTRY/progression/progression_backend:dev
+    - docker push $CI_REGISTRY/progression/progression_backend:dev
     - chmod 400 /builds/progression/progression_backend.tmp/ID_RSA
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $CD_USER@$CD_HOST -p $CD_PORT $CD_COMMAND_DEV
   only:
