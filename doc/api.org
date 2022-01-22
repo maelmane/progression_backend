@@ -302,7 +302,6 @@ print( formatte_json( decode_json( decode_b64( json_str ) ) ) )
 
 ** Obtenir la configuration du serveur
 
-#+NAME: USER
 #+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
 curl "<<get_api_url()>>/config"
 #+END_SRC
