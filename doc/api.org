@@ -5,17 +5,18 @@
 * Points d'entrée
 ** Publics
 | Méthode | URL               | Description                            | Paramètres                                   | Réponse             |
-| GET     | ~/doc~            | Documentation                          |                                              | str (HTML)          |
 | POST    | ~/auth~           | Authentification                       | username, password ou key_name et key_secret | token, un token JWT |
 | POST    | ~/inscription~    | Inscription                            | username, password, rôle                     | token, un token JWT |
-| GET     | ~/question/{uri}~ | Obtient la question disponible à <uri> | uri                                          | Question            |
+| GET     | ~/config~         | Configuration du serveur               |                                              |                     |
+| GET     | ~/doc~            | Documentation                          |                                              | str (HTML)          |
 
 ** Privés
 Les points d'entrée privés requièrent un token dans l'entête : «Authentification: Bearer <token>»
 
-| Méthode | URL                | Description                       | Paramètres | Réponse |
-| GET     | ~/user~            | Obtient l'utilisateur authentifié |            | User    |
-| GET     | ~/user/{username}~ | Obtient l'utilisateur /username/  | username   | User    |
+| Méthode | URL                | Description                            | Paramètres | Réponse  |
+| GET     | ~/user~            | Obtient l'utilisateur authentifié      |            | User     |
+| GET     | ~/user/{username}~ | Obtient l'utilisateur /username/       | username   | User     |
+| GET     | ~/question/{uri}~  | Obtient la question disponible à <uri> | uri        | Question |
 
 * Ressources
 
@@ -298,6 +299,13 @@ print( formatte_json( decode_json( decode_b64( json_str ) ) ) )
 #+end_src
 
 #+RESULTS: json_pretty
+
+** Obtenir la configuration du serveur
+
+#+NAME: USER
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl "<<get_api_url()>>/config"
+#+END_SRC
 
 ** Authentification en tant qu'utilisateur ~jdoe~
 
