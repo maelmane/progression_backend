@@ -13,16 +13,18 @@
    |
  */
 
-$router->get("/", function () use ($router) {
-	return $router->app->version();
-});
-
 $router->options("{all:.*}", [
 	"middleware" => "cors",
 	function () {
 		return response("");
 	},
 ]);
+
+$router->get("/", function () use ($router) {
+	return $router->app->version();
+});
+
+$router->get("/config", "ConfigCtl@get");
 
 $router->post("/auth/", "LoginCtl@login");
 $router->post("/inscription/", "InscriptionCtl@inscription");
