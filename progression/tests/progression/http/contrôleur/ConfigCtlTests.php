@@ -21,10 +21,24 @@ require_once __DIR__ . "/../../../TestCase.php";
 final class ConfigCtlTests extends TestCase
 {
 	// GET
+	public function test_config_simple_sans_authentification()
+	{
+		putenv("AUTH_LOCAL=false");
+		putenv("AUTH_LDAP=false");
+
+		$résultat_observé = $this->call("GET", "/config/");
+
+		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertJsonStringEqualsJsonString(
+			'{"AUTH":{"LDAP":false,"LOCAL":false}}',
+			$résultat_observé->getContent(),
+		);
+	}
+
 	public function test_config_simple_sans_LDAP()
 	{
-		$_ENV["AUTH_LOCAL"] = true;
-		$_ENV["AUTH_LDAP"] = false;
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
 
 		$résultat_observé = $this->call("GET", "/config/");
 
@@ -37,9 +51,9 @@ final class ConfigCtlTests extends TestCase
 
 	public function test_config_simple_avec_LDAP_et_domaine()
 	{
-		$_ENV["AUTH_LOCAL"] = true;
-		$_ENV["AUTH_LDAP"] = true;
-		$_ENV["LDAP_DOMAINE"] = "exemple.com";
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=true");
+		putenv("LDAP_DOMAINE=exemple.com");
 
 		$résultat_observé = $this->call("GET", "/config/");
 

@@ -29,16 +29,16 @@ class ConfigCtl extends Contrôleur
 
 		$config = [
 			"AUTH" => [
-				"LDAP" => $_ENV["AUTH_LDAP"],
-				"LOCAL" => $_ENV["AUTH_LOCAL"],
+				"LDAP" => getenv("AUTH_LDAP") == "true",
+				"LOCAL" => getenv("AUTH_LOCAL") == "true",
 			],
 		];
 
-		$config_ldap = [
-			"DOMAINE" => $_ENV["LDAP_DOMAINE"],
-		];
+		if (getenv("AUTH_LDAP") === "true") {
+			$config_ldap = [
+				"DOMAINE" => getenv("LDAP_DOMAINE"),
+			];
 
-		if ($_ENV["AUTH_LDAP"] == "true") {
 			$config["LDAP"] = $config_ldap;
 		}
 
