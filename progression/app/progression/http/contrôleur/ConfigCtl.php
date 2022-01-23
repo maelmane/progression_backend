@@ -37,6 +37,7 @@ class ConfigCtl extends Contrôleur
 		if (getenv("AUTH_LDAP") === "true") {
 			$config_ldap = [
 				"DOMAINE" => getenv("LDAP_DOMAINE"),
+				"URL_MDP_REINIT" => getenv("LDAP_URL_MDP_REINIT")
 			];
 
 			$config["LDAP"] = $config_ldap;
