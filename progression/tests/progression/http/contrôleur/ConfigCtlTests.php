@@ -54,12 +54,13 @@ final class ConfigCtlTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=true");
 		putenv("LDAP_DOMAINE=exemple.com");
+		putenv("LDAP_URL_MDP_REINIT=http://portail.exemple.com");
 
 		$résultat_observé = $this->call("GET", "/config/");
 
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertJsonStringEqualsJsonString(
-			'{"AUTH":{"LDAP":true,"LOCAL":true},"LDAP":{"DOMAINE":"exemple.com"}}',
+			'{"AUTH":{"LDAP":true,"LOCAL":true},"LDAP":{"DOMAINE":"exemple.com", "URL_MDP_REINIT":"http://portail.exemple.com"}}',
 			$résultat_observé->getContent(),
 		);
 	}
