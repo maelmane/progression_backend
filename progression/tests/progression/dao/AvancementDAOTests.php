@@ -18,6 +18,7 @@
 
 namespace progression\dao;
 
+use progression\dao\tentative\TentativeDAO;
 use progression\domaine\entité\{Avancement, Question, TentativeProg, Sauvegarde};
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -30,7 +31,7 @@ final class AvancementDAOTests extends TestCase
 		EntitéDAO::get_connexion()->begin_transaction();
 
 		// Tentative
-		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
+		$mockTentativeDao = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
 		$mockTentativeDao
 			->allows()
 			->get_toutes("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
@@ -44,7 +45,7 @@ final class AvancementDAOTests extends TestCase
 			->andReturn([]);
 
 		// Sauvegarde
-		$mockSauvegardeDao = Mockery::mock("progression\dao\SauvegardeDAO");
+		$mockSauvegardeDao = Mockery::mock("progression\\dao\\SauvegardeDAO");
 		$mockSauvegardeDao
 			->allows()
 			->get_toutes("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
@@ -57,7 +58,7 @@ final class AvancementDAOTests extends TestCase
 			)
 			->andReturn([]);
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_tentative_dao()

@@ -54,7 +54,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 		$résultat_attendu->titre = "Question de test";
 
 		// ChargeurHTTP
-		$mockChargeurHTTP = Mockery::mock("progression\dao\question\ChargeurHTTP");
+		$mockChargeurHTTP = Mockery::mock("progression\\dao\\question\\ChargeurHTTP");
 		$mockChargeurHTTP
 			->shouldReceive("get_entêtes")
 			->with("http://exemple.com/question1/info.yml")
@@ -64,10 +64,10 @@ final class ChargeurQuestionHTTPTests extends TestCase
 				"Content-Disposition" => 'filename="info.yml"',
 			]);
 		// ChargeurQuestionFichier
-		$mockChargeurFichier = Mockery::mock("progression\dao\question\ChargeurQuestionFichier");
+		$mockChargeurFichier = Mockery::mock("progression\\dao\\question\\ChargeurQuestionFichier");
 		$mockChargeurFichier->shouldReceive("récupérer_question")->andReturn($résultat_attendu);
 		// ChargeurFactory
-		$mockChargeurFactory = Mockery::mock("progression\dao\question\ChargeurFactory");
+		$mockChargeurFactory = Mockery::mock("progression\\dao\\question\\ChargeurFactory");
 		$mockChargeurFactory->shouldReceive("get_chargeur_http")->andReturn($mockChargeurHTTP);
 		$mockChargeurFactory->shouldReceive("get_chargeur_question_fichier")->andReturn($mockChargeurFichier);
 
@@ -85,7 +85,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 		$résultat_attendu->titre = "Question de test";
 
 		// ChargeurHTTP
-		$mockChargeurHTTP = Mockery::mock("progression\dao\question\ChargeurHTTP");
+		$mockChargeurHTTP = Mockery::mock("progression\\dao\\question\\ChargeurHTTP");
 		$mockChargeurHTTP
 			->shouldReceive("get_entêtes")
 			->with("http://exemple.com/question1/question.zip")
@@ -98,13 +98,13 @@ final class ChargeurQuestionHTTPTests extends TestCase
 			->with("http://exemple.com/question1/question.zip")
 			->andReturn("Contenu du fichier zip");
 		// ChargeurQuestionArchive
-		$mockChargeurArchive = Mockery::mock("progression\dao\question\ChargeurQuestionArchive");
+		$mockChargeurArchive = Mockery::mock("progression\\dao\\question\\ChargeurQuestionArchive");
 		$mockChargeurArchive
 			->shouldReceive("récupérer_question")
 			->with(Mockery::Any(), "zip")
 			->andReturn($résultat_attendu);
 		// ChargeurFactory
-		$mockChargeurFactory = Mockery::mock("progression\dao\question\ChargeurFactory");
+		$mockChargeurFactory = Mockery::mock("progression\\dao\\question\\ChargeurFactory");
 		$mockChargeurFactory->shouldReceive("get_chargeur_http")->andReturn($mockChargeurHTTP);
 		$mockChargeurFactory->shouldReceive("get_chargeur_question_archive")->andReturn($mockChargeurArchive);
 
@@ -122,7 +122,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 		$résultat_attendu->titre = "Question de test";
 
 		// ChargeurHTTP
-		$mockChargeurHTTP = Mockery::mock("progression\dao\question\ChargeurHTTP");
+		$mockChargeurHTTP = Mockery::mock("progression\\dao\\question\\ChargeurHTTP");
 		$mockChargeurHTTP
 			->shouldReceive("get_entêtes")
 			->with("http://exemple.com/question1/question.zip")
@@ -135,13 +135,13 @@ final class ChargeurQuestionHTTPTests extends TestCase
 			->with("http://exemple.com/question1/question.zip")
 			->andReturn("Contenu du fichier zip");
 		// ChargeurQuestionArchive
-		$mockChargeurArchive = Mockery::mock("progression\dao\question\ChargeurQuestionArchive");
+		$mockChargeurArchive = Mockery::mock("progression\\dao\\question\\ChargeurQuestionArchive");
 		$mockChargeurArchive
 			->shouldReceive("récupérer_question")
 			->with(Mockery::Any(), "zip")
 			->andReturn($résultat_attendu);
 		// ChargeurFactory
-		$mockChargeurFactory = Mockery::mock("progression\dao\question\ChargeurFactory");
+		$mockChargeurFactory = Mockery::mock("progression\\dao\\question\\ChargeurFactory");
 		$mockChargeurFactory->shouldReceive("get_chargeur_http")->andReturn($mockChargeurHTTP);
 		$mockChargeurFactory->shouldReceive("get_chargeur_question_archive")->andReturn($mockChargeurArchive);
 
@@ -156,7 +156,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 	public function test_étant_donné_un_url_de_type_inconnu_lorsquon_charge_la_question_on_obtient_une_ChargeurException()
 	{
 		// ChargeurHTTP
-		$mockChargeurHTTP = Mockery::mock("progression\dao\question\ChargeurHTTP");
+		$mockChargeurHTTP = Mockery::mock("progression\\dao\\question\\ChargeurHTTP");
 		$mockChargeurHTTP
 			->shouldReceive("get_entêtes")
 			->with("http://exemple.com/question1/question.inc")
@@ -166,7 +166,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 				"Content-Disposition" => 'filename="question.inc"',
 			]);
 		// ChargeurFactory
-		$mockChargeurFactory = Mockery::mock("progression\dao\question\ChargeurFactory");
+		$mockChargeurFactory = Mockery::mock("progression\\dao\\question\\ChargeurFactory");
 		$mockChargeurFactory->shouldReceive("get_chargeur_http")->andReturn($mockChargeurHTTP);
 
 		try {
@@ -181,7 +181,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 	public function test_étant_donné_un_url_de_taille_non_spécifiée_lorsquon_charge_la_question_on_obtient_une_ChargeurException()
 	{
 		// ChargeurHTTP
-		$mockChargeurHTTP = Mockery::mock("progression\dao\question\ChargeurHTTP");
+		$mockChargeurHTTP = Mockery::mock("progression\\dao\\question\\ChargeurHTTP");
 		$mockChargeurHTTP
 			->shouldReceive("get_entêtes")
 			->with("http://exemple.com/question1/info.yml")
@@ -190,7 +190,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 				"Content-Disposition" => 'filename="info.yml"',
 			]);
 		// ChargeurFactory
-		$mockChargeurFactory = Mockery::mock("progression\dao\question\ChargeurFactory");
+		$mockChargeurFactory = Mockery::mock("progression\\dao\\question\\ChargeurFactory");
 		$mockChargeurFactory->shouldReceive("get_chargeur_http")->andReturn($mockChargeurHTTP);
 
 		try {
@@ -205,7 +205,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 	public function test_étant_donné_un_url_de_type_text_de_taille_trop_grande_lorsquon_charge_la_question_on_obtient_une_ChargeurException()
 	{
 		// ChargeurHTTP
-		$mockChargeurHTTP = Mockery::mock("progression\dao\question\ChargeurHTTP");
+		$mockChargeurHTTP = Mockery::mock("progression\\dao\\question\\ChargeurHTTP");
 		$mockChargeurHTTP
 			->shouldReceive("get_entêtes")
 			->with("http://exemple.com/question1/info.yml")
@@ -215,7 +215,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 				"Content-Disposition" => 'filename="info.yml"',
 			]);
 		// ChargeurFactory
-		$mockChargeurFactory = Mockery::mock("progression\dao\question\ChargeurFactory");
+		$mockChargeurFactory = Mockery::mock("progression\\dao\\question\\ChargeurFactory");
 		$mockChargeurFactory->shouldReceive("get_chargeur_http")->andReturn($mockChargeurHTTP);
 
 		try {
@@ -230,7 +230,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 	public function test_étant_donné_un_url_de_type_application_de_taille_trop_grande_lorsquon_charge_la_question_on_obtient_une_ChargeurException()
 	{
 		// ChargeurHTTP
-		$mockChargeurHTTP = Mockery::mock("progression\dao\question\ChargeurHTTP");
+		$mockChargeurHTTP = Mockery::mock("progression\\dao\\question\\ChargeurHTTP");
 		$mockChargeurHTTP
 			->shouldReceive("get_entêtes")
 			->with("http://exemple.com/question1/question.zip")
@@ -240,7 +240,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 				"Content-Disposition" => 'filename="question.zip"',
 			]);
 		// ChargeurFactory
-		$mockChargeurFactory = Mockery::mock("progression\dao\question\ChargeurFactory");
+		$mockChargeurFactory = Mockery::mock("progression\\dao\\question\\ChargeurFactory");
 		$mockChargeurFactory->shouldReceive("get_chargeur_http")->andReturn($mockChargeurHTTP);
 
 		try {

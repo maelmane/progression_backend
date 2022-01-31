@@ -16,7 +16,7 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-require_once __DIR__ . "/../../../TestCase.php";
+use progression\TestCase;
 
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\User;
@@ -38,7 +38,7 @@ final class InscriptionCtlTests extends TestCase
 		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
 
 		// UserDAO
-		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob")
@@ -49,7 +49,7 @@ final class InscriptionCtlTests extends TestCase
 			->andReturn(null);
 
 		// DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 

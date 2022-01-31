@@ -40,7 +40,7 @@ final class EnregistrerSauvegardeIntTests extends TestCase
 	{
 		// Sauvegarde
 		$sauvegarde = new Sauvegarde(1620150294, "print(\"Hello world!\")");
-		$mockSauvegardeDAO = Mockery::mock("progression\dao\SauvegardeDAO");
+		$mockSauvegardeDAO = Mockery::mock("progression\\dao\\SauvegardeDAO");
 		$mockSauvegardeDAO
 			->shouldReceive("save")
 			->once()
@@ -53,7 +53,7 @@ final class EnregistrerSauvegardeIntTests extends TestCase
 			->andReturn($sauvegarde);
 
 		// DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_sauvegarde_dao")->andReturn($mockSauvegardeDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 

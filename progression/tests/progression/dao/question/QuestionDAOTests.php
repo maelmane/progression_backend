@@ -27,7 +27,7 @@ final class QuestionDAOTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		$mockChargeurFichier = Mockery::mock("progression\dao\question\ChargeurQuestionFichier");
+		$mockChargeurFichier = Mockery::mock("progression\\dao\\question\\ChargeurQuestionFichier");
 		$mockChargeurFichier->shouldReceive("récupérer_question")->andReturn([
 			"type" => "prog",
 			"titre" => "Question de test",
@@ -42,7 +42,7 @@ final class QuestionDAOTests extends TestCase
 			],
 		]);
 
-		$mockFactory = Mockery::mock("progression\dao\question\ChargeurFactory");
+		$mockFactory = Mockery::mock("progression\\dao\\question\\ChargeurFactory");
 		$mockFactory->shouldReceive("get_chargeur_question_fichier")->andReturn($mockChargeurFichier);
 
 		ChargeurFactory::set_instance($mockFactory);

@@ -20,7 +20,7 @@ namespace progression\dao;
 
 use progression\dao\question\QuestionDAO;
 use progression\dao\tentative\{TentativeDAO, TentativeProgDAO};
-use progression\dao\exécuteur\{ExécuteurCache, ExécuteurCompilebox, ExécutionException};
+use progression\dao\exécuteur\{ExécuteurCache, ExécuteurCompilebox, ExécutionException, Standardiseur};
 
 class DAOFactory
 {
@@ -80,6 +80,6 @@ class DAOFactory
 
 	function get_exécuteur()
 	{
-		return new ExécuteurCache(new ExécuteurCompilebox());
+		return new ExécuteurCache(new ExécuteurCompilebox(), new Standardiseur());
 	}
 }

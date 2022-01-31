@@ -34,7 +34,7 @@ final class ObtenirSauvegardeIntTests extends TestCase
 		$sauvegardes = [];
 		$sauvegardes["python"] = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 
-		$mockSauvegardeDAO = Mockery::mock("progression\dao\SauvegardeDAO");
+		$mockSauvegardeDAO = Mockery::mock("progression\\dao\\SauvegardeDAO");
 		$mockSauvegardeDAO
 			->shouldReceive("get_sauvegarde")
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python")
@@ -53,7 +53,7 @@ final class ObtenirSauvegardeIntTests extends TestCase
 			->andReturn([]);
 
 		// DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_sauvegarde_dao")->andReturn($mockSauvegardeDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 	}

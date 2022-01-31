@@ -16,7 +16,7 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-require_once __DIR__ . "/../../../TestCase.php";
+use progression\TestCase;
 
 final class ConfigCtlTests extends TestCase
 {
