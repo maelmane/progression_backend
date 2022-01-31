@@ -31,6 +31,7 @@ class TestTransformer extends Fractal\TransformerAbstract
 			"id" => $test->id,
 			"nom" => $test->nom,
 			"entrée" => $test->entrée,
+			"params" => $test->params,
 			"sortie_attendue" => $test->sortie_attendue,
 			"links" => (isset($test->links) ? $test->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}test/{$test->id}",

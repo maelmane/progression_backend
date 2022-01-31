@@ -44,6 +44,7 @@ CMD [ "bash", "progression/app/entrypoint.sh" ]
 # Installation des beautifiers pour la standardisation du code soumis
 RUN apt install -y black
 RUN apt install -y clang-format
+RUN pip3 install beautysh
 
 COPY phpstan.neon /var/www/progression/
 COPY phpunit.xml /var/www/progression/
