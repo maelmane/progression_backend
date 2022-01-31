@@ -20,6 +20,7 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{Exécutable, Avancement, QuestionProg, RésultatProg, TentativeProg, Test};
 use progression\dao\DAOFactory;
+use progression\dao\tentative\TentativeProgDAO;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -32,7 +33,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		// Avancement actuel
 		$avancement = new Avancement();
 
-		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
+		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
 			->with(
@@ -43,7 +44,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		$mockAvancementDAO->shouldReceive("save")->andReturn($avancement);
 
 		// Mock TentativeDAO
-		$mockTentativeDAO = Mockery::mock("progression\dao\TentativeProgDAO");
+		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeProgDAO");
 		$mockTentativeDAO
 			->shouldReceive("save")
 			->with(
@@ -54,11 +55,11 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			->andReturnArg(2);
 
 		// Mock exécuteur
-		$mockExécuteur = Mockery::mock("progression\dao\Exécuteur");
+		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur->shouldReceive("exécuter")->andReturn("{\"output\": \"Patate poil!\", \"errors\":\"\"}");
 
 		// Mock DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
 		$mockDAOFactory->shouldReceive("get_exécuteur")->andReturn($mockExécuteur);
 		$mockDAOFactory->shouldReceive("get_tentative_prog_dao")->andReturn($mockTentativeDAO);

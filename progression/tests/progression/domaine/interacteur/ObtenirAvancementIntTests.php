@@ -32,7 +32,7 @@ final class ObtenirAvancementIntTests extends TestCase
 		$user_jdoe = new User("jdoe");
 		$avancement = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
 
-		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("jdoe")
@@ -42,7 +42,7 @@ final class ObtenirAvancementIntTests extends TestCase
 			->with(Mockery::any())
 			->andReturn(null);
 
-		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
+		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
@@ -53,7 +53,7 @@ final class ObtenirAvancementIntTests extends TestCase
 			->with("jdoe", "une_question_inexistante")
 			->andReturn(null);
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_avancement_dao()

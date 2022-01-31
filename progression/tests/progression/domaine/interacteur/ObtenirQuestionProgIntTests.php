@@ -20,6 +20,7 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{Question, QuestionProg};
 use progression\dao\DAOFactory;
+use progression\dao\question\QuestionDAO;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -31,7 +32,7 @@ final class ObtenirQuestionProgIntTests extends TestCase
 		$question = new QuestionProg();
 		$question->uri = "file:///prog1/les_fonctions/appeler_une_fonction/info.yml";
 
-		$mockQuestionDao = Mockery::mock("progression\dao\QuestionDAO");
+		$mockQuestionDao = Mockery::mock("progression\\dao\\question\\QuestionDAO");
 		$mockQuestionDao
 			->shouldReceive("get_question")
 			->with("file:///prog1/les_fonctions/appeler_une_fonction/info.yml")
@@ -41,7 +42,7 @@ final class ObtenirQuestionProgIntTests extends TestCase
 			->with("file:///test/de/chemin/non/valide")
 			->andReturn(null);
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_question_dao()

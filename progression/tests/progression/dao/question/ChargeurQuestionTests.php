@@ -28,11 +28,11 @@ final class ChargeurQuestionTests extends TestCase
 	{
 		parent::setUp();
 
-		$mockChargeur = Mockery::mock("progression\dao\question\ChargeurQuestionFichier");
+		$mockChargeur = Mockery::mock("progression\\dao\\question\\ChargeurQuestionFichier");
 		$mockChargeur->shouldReceive("récupérer_question")->andReturn([]);
 
 		// ChargeurFactory
-		$mockChargeurFactory = Mockery::mock("progression\dao\question\ChargeurFactory");
+		$mockChargeurFactory = Mockery::mock("progression\\dao\\question\\ChargeurFactory");
 		$mockChargeurFactory->shouldReceive("get_chargeur_question_fichier")->andReturn($mockChargeur);
 		$mockChargeurFactory->shouldReceive("get_chargeur_question_http")->andReturn($mockChargeur);
 
