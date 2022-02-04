@@ -23,19 +23,17 @@ use progression\domaine\entité\User;
 
 class InscriptionInt extends Interacteur
 {
-	function effectuer_inscription($username, $password, $role = User::ROLE_NORMAL)
+	function effectuer_inscription($username, $password = null, $role = User::ROLE_NORMAL)
 	{
 		$dao = $this->source_dao->get_user_dao();
 
-		$auth_local = getenv("AUTH_LOCAL") !== "false";
+		$auth_local = getenv("AUTH_LOCAL") === "true";
 		$auth_ldap = getenv("AUTH_LDAP") === "true";
-
-		if ($auth_ldap) {
-			return null;
-		}
 
 		if ($auth_local) {
 			return $this->effectuer_inscription_avec_mdp($username, $password, $role);
+		} elseif ($auth_ldap) {
+			return null;
 		} else {
 			return $this->effectuer_inscription_sans_mdp($username, $role);
 		}
@@ -43,6 +41,10 @@ class InscriptionInt extends Interacteur
 
 	private function effectuer_inscription_avec_mdp($username, $password, $role)
 	{
+		if (!$username || !$password) {
+			return null;
+		}
+
 		$dao = $this->source_dao->get_user_dao();
 
 		$user = $dao->get_user($username);
@@ -60,6 +62,6 @@ class InscriptionInt extends Interacteur
 	private function effectuer_inscription_sans_mdp($username, $role)
 	{
 		$dao = $this->source_dao->get_user_dao();
-		return $dao->get_user($username) || $dao->save(new User($username, $role));
+		return $dao->get_user($username) ?? $dao->save(new User($username, $role));
 	}
 }
