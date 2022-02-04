@@ -56,7 +56,7 @@ class LoginInt extends Interacteur
 
 		$user = null;
 
-		$auth_local = getenv("AUTH_LOCAL") !== "false";
+		$auth_local = getenv("AUTH_LOCAL") === "true";
 		$auth_ldap = getenv("AUTH_LDAP") === "true";
 
 		if ($auth_ldap && $domaine) {
