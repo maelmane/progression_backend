@@ -26,7 +26,7 @@ class ExécuteurCompilebox extends Exécuteur
 		"ruby" => 2,
 		"clojure" => 3,
 		"php" => 4,
-		"nodejs" => 5,
+		"javascript" => 5,
 		"scala" => 6,
 		"go" => 7,
 		"cpp" => 8,
