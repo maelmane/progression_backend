@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\ObtenirAvancementInt;
 use progression\domaine\interacteur\ObtenirUserInt;
 use progression\domaine\interacteur\SauvegarderAvancementInt;
+use progression\domaine\interacteur\ObtenirListeAvancementInt;
 use progression\http\transformer\AvancementTransformer;
 use progression\util\Encodage;
 use progression\domaine\entité\{User, Avancement, Question};
