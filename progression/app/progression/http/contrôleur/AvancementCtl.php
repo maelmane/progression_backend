@@ -25,7 +25,6 @@ use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\ObtenirAvancementInt;
 use progression\domaine\interacteur\ObtenirUserInt;
 use progression\domaine\interacteur\SauvegarderAvancementInt;
-use progression\domaine\interacteur\ObtenirListeAvancementInt;
 use progression\http\transformer\AvancementTransformer;
 use progression\util\Encodage;
 use progression\domaine\entité\{User, Avancement, Question};
@@ -42,15 +41,6 @@ class AvancementCtl extends Contrôleur
 		Log::debug("AvancementCtl.get. Retour : ", [$réponse]);
 		return $réponse;
 	}
-
-    public function getTous(Request $request, $username) {
-        Log::debug("AvancementCtl.getTous. Params : ", [$request->all(), $username]);
-
-        $listeAvancements = $this->obtenir_liste_avancement($username);
-        $réponse = $this->valider_et_préparer_réponse_liste_avancements($listeAvancements, $username);
-
-        return $réponse;
-    }
 
 	public function post(Request $request, $username)
 	{
@@ -78,16 +68,6 @@ class AvancementCtl extends Contrôleur
 
 		return $réponse;
 	}
-
-    private function valider_et_préparer_réponse_liste_avancements($listeAvancements, $username) {
-        $résultat_array = [];
-        foreach($listeAvancements as $question_uri => $avancement) {
-            $avancement->id = "{$username}/$question_uri";
-            $avancement_to_array = $this->avancement_to_array($avancement);
-            array_push($résultat_array, $avancement_to_array);
-        }
-        return $this->préparer_réponse($résultat_array);
-    }
 
 	private function valider_et_préparer_réponse($avancement, $username, $question_uri)
 	{
@@ -164,12 +144,6 @@ class AvancementCtl extends Contrôleur
 		Log::debug("AvancementCtl.obtenir_avancement. Retour : ", [$avancement]);
 		return $avancement;
 	}
-
-    private function obtenir_liste_avancement($username) {
-        $avancementInt = new ObtenirListeAvancementInt();
-        $listeAvancements = $avancementInt->get_liste_avancement($username);
-        return $listeAvancements;
-    }
 
 	private function sauvegarder_avancement($username, $question_uri, $avancement)
 	{
