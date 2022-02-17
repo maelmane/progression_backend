@@ -68,18 +68,23 @@ class AvancementDAO extends EntitéDAO
 			$query->bind_result($uri, $etat, $type);
 			while ($query->fetch()) {
 				$avancement = new Avancement($etat, $type);
-				$avancement->tentatives = $this->get_avancement_sans_load($username, $uri)->tentatives;
-				$avancement->sauvegardes = $this->get_avancement_sans_load($username, $uri)->sauvegardes;
-
+				
 				$avancements[$uri] = $avancement;
 			}
 			$query->close();
 		} catch (mysqli_sql_exception $e) {
 			throw new DAOException($e);
 		}
+		
+		foreach($avancements as $uri => $avancement){
+			$avancement->tentatives = $this->get_avancement_sans_load($username, $uri)->tentatives;
+			$avancement->sauvegardes = $this->get_avancement_sans_load($username, $uri)->sauvegardes;
+
+		}
 
 		return $avancements;
 	}
+
 	protected function get_avancement_sans_load($username, $question_uri)
 	{
 			$avancementBidon = new Avancement();

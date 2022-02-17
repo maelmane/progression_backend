@@ -69,7 +69,7 @@ class TentativeDAO extends EntitéDAO
 			return null;
 		}
 	}
-
+	
 	private function get_type($username, $question_uri)
 	{
 		$type = null;
