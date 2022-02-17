@@ -20,6 +20,7 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{TentativeProg, Avancement, Question};
 use progression\dao\DAOFactory;
+use progression\dao\tentative\TentativeDAO;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -29,11 +30,11 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$mockAvancementDao = Mockery::mock("progression\dao\AvancementDAO");
+		$mockAvancementDao = Mockery::mock("progression\\dao\\AvancementDAO");
 
-		$mockTentativeDao = Mockery::mock("progression\dao\TentativeDAO");
+		$mockTentativeDao = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_avancement_dao()

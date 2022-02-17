@@ -19,6 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{Exécutable, Test, RésultatProg};
+use progression\dao\exécuteur\Exécuteur;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -33,7 +34,7 @@ final class ExécuterProgIntTests extends TestCase
 		$_SERVER["REMOTE_ADDR"] = "";
 		$_SERVER["PHP_SELF"] = "";
 
-		$mockExécuteur = Mockery::mock("progression\dao\Exécuteur");
+		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur
 			->shouldReceive("exécuter")
 			->with(
@@ -58,7 +59,7 @@ final class ExécuterProgIntTests extends TestCase
 			)
 			->andReturn("{\"output\": \"\", \"errors\":\"erreur\"}");
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_exécuteur()

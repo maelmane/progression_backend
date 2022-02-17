@@ -29,7 +29,7 @@ final class CréerUserIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$mockUserDao = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDao
 			->allows()
 			->get_user("jdoe")
@@ -39,7 +39,7 @@ final class CréerUserIntTests extends TestCase
 			->get_user("bob")
 			->andReturn(null);
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_user_dao()

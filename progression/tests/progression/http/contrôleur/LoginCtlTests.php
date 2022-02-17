@@ -16,7 +16,7 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-require_once __DIR__ . "/../../../TestCase.php";
+use progression\TestCase;
 
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\{User, Clé};
@@ -36,7 +36,7 @@ final class LoginCtlTests extends TestCase
 		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
 
 		// UserDAO
-		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob")
@@ -47,7 +47,7 @@ final class LoginCtlTests extends TestCase
 			->andReturn(null);
 
 		// CléDAO
-		$mockCléDAO = Mockery::mock("progression\dao\CléDAO");
+		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé valide")
@@ -63,7 +63,7 @@ final class LoginCtlTests extends TestCase
 		$mockCléDAO->shouldReceive("vérifier")->andReturn(false);
 
 		// DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		$mockDAOFactory->shouldReceive("get_clé_dao")->andReturn($mockCléDAO);
 		DAOFactory::setInstance($mockDAOFactory);

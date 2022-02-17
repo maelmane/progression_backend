@@ -24,101 +24,59 @@ use Illuminate\Support\Facades\Cache;
 class ExécuteurCache extends Exécuteur
 {
 	private $_exécuteur;
+	private $_standardiseur;
 
-	public function __construct($exécuteur)
+	public function __construct($exécuteur, $standardiseur)
 	{
 		$this->_exécuteur = $exécuteur;
+		$this->_standardiseur = $standardiseur;
 	}
 
 	public function exécuter($exécutable, $test)
 	{
-		$hash = $this->calculer_hash($exécutable->code, $exécutable->lang, $test->entrée);
-		Log::debug("Hash : $hash");
+		$code_standardisé = $this->standardiser_code($exécutable->code, $exécutable->lang) ?? $exécutable->code;
+
+		$hash = $this->calculer_hash($code_standardisé, $exécutable->lang, $test->entrée, $test->params);
+		Log::debug("Hash: $hash");
 
 		$résultat = $this->obtenir_de_la_cache($hash);
 
-		if ($résultat) {
-			Log::debug("Cache : Hit");
-			return $résultat;
-		}
-		Log::debug("Cache : Miss");
-
-		$hash_non_formaté = $hash;
-
-		$code_standardisé = $this->standardiser_code($exécutable->code, $exécutable->lang);
-		$hash = $this->calculer_hash($code_standardisé, $exécutable->lang, $test->entrée);
-		Log::debug("Hash formaté: $hash");
-
-		$résultat = $this->obtenir_de_la_cache($hash);
-
-		if ($résultat) {
-			Log::debug("Cache : Hit");
-		} else {
-			Log::debug("Cache : Miss");
+		if (!$résultat) {
 			$résultat = $this->_exécuteur->exécuter($exécutable, $test);
 
 			if (!$this->contient_des_erreurs($résultat)) {
-				$this->placer_en_cache($hash, $résultat);
-				$this->placer_en_cache($hash_non_formaté, $résultat);
+				$this->placer_sortie_en_cache($hash, $résultat);
 			}
 		}
 
 		return $résultat;
 	}
 
-	private function calculer_hash($code, $lang, $entrée)
+	private function calculer_hash($code, $lang, $entrée, $params)
 	{
-		return md5($code . $lang . $entrée);
+		return md5($code . $lang . $entrée . $params);
 	}
 
 	private function standardiser_code($code, $lang)
 	{
-		if ($lang == "python") {
-			$beautifier_cmd = ["black", "-"];
-		} elseif ($lang == "cpp") {
-			$beautifier_cmd = ["clang-format", "-"];
-		} elseif ($lang == "java") {
-			$beautifier_cmd = ["clang-format", "-"];
-		} elseif ($lang == "bash") {
-			$beautifier_cmd = ["beautysh", "-"];
-		} else {
-			return $code;
-		}
-
-		$descriptorspec = [
-			0 => ["pipe", "r"],
-			1 => ["pipe", "w"],
-		];
-
-		$proc = proc_open($beautifier_cmd, $descriptorspec, $pipes);
-
-		$stdout = "";
-		if (is_resource($proc)) {
-			fwrite($pipes[0], $code);
-			fclose($pipes[0]);
-
-			$stdout = stream_get_contents($pipes[1]);
-			fclose($pipes[1]);
-		}
-
-		$retour = proc_close($proc);
-		if ($retour != 0) {
-			Log::error("Beautifier erreur code $retour");
-		} else {
-			Log::debug("Code formaté : $stdout");
-		}
-
-		return $retour == 0 ? $stdout : $code;
+		return $this->_standardiseur->standardiser($code, $lang);
 	}
 
 	private function obtenir_de_la_cache($hash)
 	{
-		return Cache::get($hash);
+		$résultat = Cache::get($hash);
+		if ($résultat) {
+			Log::debug("Cache : Hit");
+			return json_encode(["output" => $résultat, "errors" => null]);
+		} else {
+			Log::debug("Cache : Miss");
+			null;
+		}
 	}
 
-	private function placer_en_cache($hash, $résultat)
+	private function placer_sortie_en_cache($hash, $résultat)
 	{
-		return Cache::put($hash, $résultat);
+		return Cache::put($hash, json_decode($résultat, true)["output"]);
 	}
 
 	private function contient_des_erreurs($résultat)

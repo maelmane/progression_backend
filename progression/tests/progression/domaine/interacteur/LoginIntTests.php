@@ -29,7 +29,7 @@ final class LoginIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->allows()
 			->get_user("bob")
@@ -52,7 +52,7 @@ final class LoginIntTests extends TestCase
 			return $user->username == "Banane" && $password == "password";
 		});
 
-		$mockCléDAO = Mockery::mock("progression\dao\CléDAO");
+		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé valide")
@@ -82,7 +82,7 @@ final class LoginIntTests extends TestCase
 			->andReturn(null);
 		$mockCléDAO->shouldReceive("vérifier")->andReturn(false);
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_user_dao()

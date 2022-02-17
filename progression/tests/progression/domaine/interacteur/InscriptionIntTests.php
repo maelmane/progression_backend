@@ -29,9 +29,10 @@ final class InscriptionIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$mockUserDao = Mockery::mock("progression\dao\UserDAO");
+		putenv("AUTH_LOCAL=true");
+		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_user_dao()

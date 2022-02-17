@@ -16,7 +16,7 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-require_once __DIR__ . "/../../../TestCase.php";
+use progression\TestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
@@ -43,7 +43,7 @@ final class TentativeCtlTests extends TestCase
 		$tentative->réussi = true;
 		$tentative->feedback = "feedbackTest";
 
-		$mockTentativeDAO = Mockery::mock("progression\dao\TentativeDAO");
+		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
 			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "9999999999")
@@ -70,14 +70,14 @@ final class TentativeCtlTests extends TestCase
 			new Test("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
 		];
 
-		$mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
+		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");
 		$mockQuestionDAO
 			->shouldReceive("get_question")
 			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 
 		// Exécuteur
-		$mockExécuteur = Mockery::mock("progression\dao\Exécuteur");
+		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur
 			->shouldReceive("exécuter")
 			->withArgs(function ($exec, $test) {
@@ -96,21 +96,21 @@ final class TentativeCtlTests extends TestCase
 			new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest"),
 		]);
 
-		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
+		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($avancement);
 
 		// User
-		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->allows("get_user")
 			->with("jdoe")
 			->andReturn(new User("jdoe"));
 
 		// DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_tentative_dao")->andReturn($mockTentativeDAO);
 		$mockDAOFactory->shouldReceive("get_tentative_prog_dao")->andReturn($mockTentativeDAO);
 		$mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);

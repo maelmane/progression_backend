@@ -27,7 +27,7 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 {
 	public function setUp(): void
 	{
-		$mockCléDAO = Mockery::mock("progression\dao\CléDAO");
+		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
 		$mockCléDAO
 			->allows("get_clé")
 			->with("jdoe", "clé existante")
@@ -41,7 +41,7 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 			);
 		$mockCléDAO->allows("get_clé")->andReturn(null);
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_clé_dao()

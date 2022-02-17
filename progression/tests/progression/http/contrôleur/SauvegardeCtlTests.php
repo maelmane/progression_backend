@@ -16,7 +16,7 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-require_once __DIR__ . "/../../../TestCase.php";
+use progression\TestCase;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\{Sauvegarde, User};
@@ -38,7 +38,7 @@ final class SauvegardeCtlTests extends TestCase
 		$sauvegardes = [];
 		$sauvegardes["python"] = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 
-		$mockSauvegardeDAO = Mockery::mock("progression\dao\SauvegardeDAO");
+		$mockSauvegardeDAO = Mockery::mock("progression\\dao\\SauvegardeDAO");
 		$mockSauvegardeDAO
 			->shouldReceive("get_sauvegarde")
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python")
@@ -50,14 +50,14 @@ final class SauvegardeCtlTests extends TestCase
 		$mockSauvegardeDAO->shouldReceive("save")->andReturn($sauvegarde);
 
 		// User
-		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->allows("get_user")
 			->with("jdoe")
 			->andReturn(new User("jdoe"));
 
 		// DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_sauvegarde_dao")->andReturn($mockSauvegardeDAO);
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 
