@@ -50,6 +50,46 @@ class AvancementDAO extends EntitéDAO
 		return $avancements;
 	}
 
+
+	public function get_tous_avancements_avec_tentatives_etat_sauvegardes_type($username)
+	{
+		$avancements = [];
+		try {
+			$query = EntitéDAO::get_connexion()->prepare(
+				"SELECT question_uri, etat, type FROM avancement WHERE username = ?",
+			);
+
+			$query->bind_param("s", $username);
+			$query->execute();
+
+			$uri = null;
+			$etat = 0;
+			$type = 0;
+			$query->bind_result($uri, $etat, $type);
+			while ($query->fetch()) {
+				$avancement = new Avancement($etat, $type);
+				$avancement->tentatives = $this->get_avancement_sans_load($username, $uri)->tentatives;
+				$avancement->sauvegardes = $this->get_avancement_sans_load($username, $uri)->sauvegardes;
+
+				$avancements[$uri] = $avancement;
+			}
+			$query->close();
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
+		}
+
+		return $avancements;
+	}
+	protected function get_avancement_sans_load($username, $question_uri)
+	{
+			$avancementBidon = new Avancement();
+			$avancementBidon->tentatives = $this->source->get_tentative_dao()->get_toutes($username, $question_uri);
+			$avancementBidon->sauvegardes = $this->source->get_sauvegarde_dao()->get_toutes($username, $question_uri);
+		
+
+		return $avancementBidon;
+	}
+
 	public function get_avancement($username, $question_uri)
 	{
 		$avancement = $this->load($username, $question_uri);
