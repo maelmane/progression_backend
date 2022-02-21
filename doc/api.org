@@ -113,11 +113,13 @@ username/question_uri
 
 *** Propriétés:
 
-| Nom  | Type | Valeurs       |
-|------+------+---------------|
-| état | int  | 0=non débutée |
-|      |      | 1=non réussie |
-|      |      | 2=réussie     |
+| Nom            | Type  | Valeurs       |               |              |
+|----------------+-------+---------------+---------------+--------------|
+| état           | int   | 0=non débutée | 1=non réussie | 2=réussie    |
+| titre          | str   |               |               |              |
+| niveau         | str   |               |               |              |
+| date_avancement| int   | timestamp     |               |              |
+| date_réussite  | int   | timestamp     |               |              |
 
 *** Relations :
 
