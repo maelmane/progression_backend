@@ -47,5 +47,6 @@ for migration in $(ls $wd/migrations.d/[0-9]*.sql)
 do
 	echo -n Migration $migration...
 	echo mysql --default-character-set=utf8 -v -h $DB_SERVERNAME -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME
+	echo 'show databases;' |mysql --default-character-set=utf8 -v -h $DB_SERVERNAME -uroot -ppassword
 	mysql --default-character-set=utf8 -v -h $DB_SERVERNAME -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME < $migration && echo OK
 done
