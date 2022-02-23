@@ -36,8 +36,8 @@ class Avancement
 		$sauvegardes = [],
 		$titre = "",
 		$niveau = "",
-		$date_modification = null,
-		$date_réussite = null
+		$date_modification = 0,
+		$date_réussite = 0
 	) {
 		$this->tentatives = $tentatives;
 		$this->sauvegardes = $sauvegardes;
