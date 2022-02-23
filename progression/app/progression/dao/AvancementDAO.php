@@ -29,7 +29,7 @@ class AvancementDAO extends EntitéDAO
 
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT question_uri, etat, type FROM avancement WHERE username = ?",
+				"SELECT question_uri, etat, type, titre, niveau, date_modification, date_reussite  FROM avancement WHERE username = ?",
 			);
 			$query->bind_param("s", $username);
 			$query->execute();
@@ -37,9 +37,17 @@ class AvancementDAO extends EntitéDAO
 			$uri = null;
 			$etat = 0;
 			$type = 0;
-			$query->bind_result($uri, $etat, $type);
+            $titre = "";
+            $niveau = "";
+            $date_modification = 0;
+            $date_réussite = 0;
+			$query->bind_result($uri, $etat, $type, $titre, $niveau, $date_modification, $date_réussite);
 			while ($query->fetch()) {
 				$avancements[$uri] = new Avancement($etat, $type);
+                $avancements[$uri]->titre = $titre;
+                $avancements[$uri]->niveau = $niveau;
+                $avancements[$uri]->date_modification = $date_modification;
+                $avancements[$uri]->date_réussite = $date_réussite;
 			}
 
 			$query->close();
@@ -92,13 +100,13 @@ class AvancementDAO extends EntitéDAO
 	{
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO avancement ( etat, question_uri, username, type ) VALUES ( ?, ?, ?, " .
+				"INSERT INTO avancement ( etat, question_uri, username, titre, niveau, date_modification, date_reussite, type ) VALUES ( ?, ?, ?, ?, ?, ?, ?, " .
 					Question::TYPE_PROG .
 					')
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ',
 			);
 
-			$query->bind_param("iss", $objet->etat, $question_uri, $username);
+			$query->bind_param("iss", $objet->etat, $question_uri, $username, $objet->titre, $objet->niveau, $objet->date_modification, $objet->date_reussite);
 			$query->execute();
 			$query->close();
 		} catch (mysqli_sql_exception $e) {
