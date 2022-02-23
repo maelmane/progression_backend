@@ -23,6 +23,8 @@ class Avancement
 	public $tentatives;
 	public $sauvegardes;
 	public $etat;
+	public $titre;
+	public $niveau;
 	public $type;
 
 	public function __construct(
@@ -35,5 +37,7 @@ class Avancement
 		$this->sauvegardes = $sauvegardes;
 		$this->etat = $etat;
 		$this->type = $type;
+		$this->titre = "Boucle";
+		$this->niveau = "Base";
 	}
 }
