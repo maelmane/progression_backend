@@ -26,8 +26,8 @@ variables:
   - source $PROGRESSION_DIR/progression/tests/.env
   # Attend au maximum 15 secondes que la BD soit accessible
   - for i in $(seq 15); do if echo "select 1;" | docker exec -i mariadb mysql -uroot -ppassword; then break; fi; sleep 1; done
-  - docker exec -i mariadb ls /initdb/build_db.sh
-  - docker exec -i mariadb mysql --default-character-set=utf8 -uroot -ppassword quiz < $PROGRESSION_DIR/progression/tests/données_de_test.sql
+  - docker exec -i mariadb /initdb/build_db.sh
+  - docker exec -i mariadb mysql --default-character-set=utf8 -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME < $PROGRESSION_DIR/progression/tests/données_de_test.sql
 
 
 # Stage test
