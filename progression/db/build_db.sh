@@ -42,6 +42,8 @@ EOF
 
 # Migrations
 wd=$(dirname ${BASH_SOURCE[0]})
+echo WD: $wd
+ls $wd/migrations.d/*
 for migration in $(ls $wd/migrations.d/[0-9]*.sql)
 do
 	echo -n Migration $migration...
