@@ -2,7 +2,7 @@
 echo Création de la BD de TEST sur $DB_SERVERNAME
 
 DIR=$(dirname "${BASH_SOURCE[0]}")
-echo DIR: $DIR
+
 $DIR/../db/build_db.sh && \
 mysql --default-character-set=utf8 -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < $DIR/données_de_test.sql || exit 2
 
