@@ -21,12 +21,12 @@ variables:
 .creation_bd: &creation_bd
   before_script:
   - docker network create tu-net
-  - docker run --name mariadb --net=tu-net -d -e MYSQL_ROOT_PASSWORD=password -v "$PROGRESSION_DIR/progression/db/:/initdb" mariadb
+  - docker run --name mariadb --net=tu-net -d -e MYSQL_ROOT_PASSWORD=password -v "$PROGRESSION_DIR/progression/db/:/initdb/" mariadb
   - cp $PROGRESSION_DIR/progression/app/.env.exemple $PROGRESSION_DIR/progression/tests/.env
   - source $PROGRESSION_DIR/progression/tests/.env
   # Attend au maximum 15 secondes que la BD soit accessible
   - for i in $(seq 15); do if echo "select 1;" | docker exec -i mariadb mysql -uroot -ppassword; then break; fi; sleep 1; done
-  - docker exec -i -e DB_USERNAME=quiz -e DB_PASSWORD=password -e DB_DBNAME=quiz mariadb /initdb/build_db.sh || docker exec -i mariadb cat /tmp/db_logs
+  - docker exec -i -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=$DB_PASSWORD -e DB_DBNAME=$DB_NAME mariadb find /initdb #/build_db.sh || docker exec -i mariadb cat /tmp/db_logs
   - docker exec -i mariadb mysql --default-character-set=utf8 -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME < $PROGRESSION_DIR/progression/tests/données_de_test.sql
 
 
