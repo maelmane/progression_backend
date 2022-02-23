@@ -41,7 +41,7 @@ test_unitaires:
   - cp $PROGRESSION_DIR/progression/app/.env.exemple $PROGRESSION_DIR/progression/tests/.env
   - source $PROGRESSION_DIR/progression/tests/.env
   # Tests unitaires et analyse statique
-  - docker run --net=tu-net --env-file=$PROGRESSION_DIR/progression/tests/.env -e DB_SERVERNAME=mariadb $CI_REGISTRY/progression/progression_backend:test /var/www/progression/tests/exec_tests.sh
+  - docker run --net=tu-net --env-file=$PROGRESSION_DIR/progression/tests/.env -e DB_SERVERNAME=mariadb -v $PROGRESSION_DIR/progression/:/var/www/progression $CI_REGISTRY/progression/progression_backend:test /var/www/progression/tests/exec_tests.sh
   # Linter Prettier
   - docker run $CI_REGISTRY/progression/dev:latest -v "$PROGRESSION_DIR/progression/:/tmp/progression/" bash -c 'shopt -s globstar && prettier --use-tabs --print-width 120 --php-version "7.4" -c /tmp/progression/tests/**/*.php /tmp/progression/app/**/*.php'
 
