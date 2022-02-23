@@ -1,5 +1,5 @@
 #!/bin/bash
-echo Création de la BD de test sur $DB_SERVERNAME
+echo Création de la BD de TEST sur $DB_SERVERNAME
 
 DIR=$(dirname "${BASH_SOURCE[0]}")
 echo DIR: $DIR
