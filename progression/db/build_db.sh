@@ -1,5 +1,7 @@
+#!/bin/bash
+
 # Création initiale
-&>/dev/null mysql --default-character-set=utf8 -v -h$DB_SERVERNAME -uroot -p$DB_PASSWORD <<EOF
+&>/tmp/db_logs mysql --default-character-set=utf8 -v -uroot -p$DB_PASSWORD <<EOF
 CREATE DATABASE IF NOT EXISTS $DB_DBNAME
 				  CHARACTER SET utf8mb4
 				  COLLATE utf8mb4_general_ci;
@@ -39,8 +41,9 @@ DROP PROCEDURE migration;
 EOF
 
 # Migrations
-for migration in $(ls migrations.d/[0-9]*.sql)
+wd=$(dirname ${BASH_SOURCE[0]})
+for migration in $(ls $wd/migrations.d/[0-9]*.sql)
 do
 	echo -n Migration $migration...
-	mysql --default-character-set=utf8 -v -h$DB_SERVERNAME -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME > /dev/null < $(dirname ${BASH_SOURCE[0]})/$migration && echo OK
+	&>>/tmp/db_logs mysql --default-character-set=utf8 -v -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME < $migration && echo OK
 done
