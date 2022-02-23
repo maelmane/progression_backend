@@ -1,6 +1,7 @@
 DELETE FROM reponse_prog;
 DELETE FROM avancement;
 DELETE FROM sauvegarde;
+DELETE FROM cle;
 DELETE FROM user;
 
 INSERT INTO user VALUES (
