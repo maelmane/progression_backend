@@ -46,6 +46,6 @@ wd=$(dirname ${BASH_SOURCE[0]})
 for migration in $(ls $wd/migrations.d/[0-9]*.sql)
 do
 	echo -n Migration $migration...
-	echo mysql --default-character-set=utf8 -v -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME
-	mysql --default-character-set=utf8 -v -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME < $migration && echo OK
+	echo mysql --default-character-set=utf8 -v -h $DB_SERVERNAME -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME
+	mysql --default-character-set=utf8 -v -h $DB_SERVERNAME -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME < $migration && echo OK
 done
