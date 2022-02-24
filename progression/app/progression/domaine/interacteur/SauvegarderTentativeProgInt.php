@@ -28,12 +28,14 @@ class SauvegarderTentativeProgInt extends Interacteur
 		$avancement = $dao_avancement->get_avancement($username, $question_uri);
 
 		if ($avancement == null) {
-			$avancement = new Avancement(
+			
+			$avancement = new Avancement(	
 				$tentative->réussi ? Question::ETAT_REUSSI : Question::ETAT_NONREUSSI,
 				Question::TYPE_PROG,
 				[$tentative],
-				[],
+				[]
 			);
+			
 			$dao_avancement->save($username, $question_uri, $avancement);
 		} else {
 			$date = (new \DateTime())->getTimestamp();

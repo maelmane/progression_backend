@@ -72,7 +72,7 @@ class AvancementDAO extends EntitéDAO
 
 	protected function load($username, $question_uri)
 	{
-		$état = null;
+		$état = 0;
 		$type = null;
 		$titre = null;
 		$niveau = null;
@@ -115,7 +115,7 @@ class AvancementDAO extends EntitéDAO
 				"INSERT INTO avancement ( etat, question_uri, username, titre, niveau, date_modification, date_reussite, type ) VALUES ( ?, ?, ?, ?, ?, ?, ?, " .
 					Question::TYPE_PROG .
 					')
-                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ), date_modification = VALUES(date_modification), date_reussite = VALUES(date_reussite) ',
+                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ), date_modification = VALUES(date_modification), date_reussite = VALUES(date_reussite)',
 			);
 			$date = (new \DateTime())->getTimestamp();
 
