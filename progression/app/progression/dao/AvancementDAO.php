@@ -105,8 +105,8 @@ class AvancementDAO extends EntitéDAO
 					')
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ',
 			);
-
-			$query->bind_param("issssii", $objet->etat, $question_uri, $username, $objet->titre, $objet->niveau, $objet->date_modification, $objet->date_reussite);
+			$date = (new \DateTime())->getTimestamp();
+			$query->bind_param("issssii", $objet->etat, $question_uri, $username, $objet->titre, $objet->niveau, $date, $objet->date_reussite);
 			$query->execute();
 			$query->close();
 		} catch (mysqli_sql_exception $e) {
