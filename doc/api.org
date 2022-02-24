@@ -369,8 +369,8 @@ curl "<<get_api_url()>>/ebauche/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vt
 #+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
 DATA=$(cat <<EOF
 {
-  "langage":"python",
-  "code": "# Fonction qui calcule et produit en sortie le périmètre du rectangle dont les côtés sont recus en paramètre\ndef périmètre( une_largeur, une_longueur ):\n# +TODO\n    print( 2 * (une_largeur + une_longueur ) )\n\n# -TODO\n# Fonction qui calcule et produit en sortie l'aire du rectangle dont les côtés sont recus en paramètre\n# +TODO\ndef aire( une_largeur, une_longueur ):\n    print(une_lageur * une_longueur)\n# -TODO\n# Programme principal\n# Entrées\nlargeur = int( input() )\nlongueur = int( input() )\n\n# Appel des fonctions, les côtés du rectangle sont transmis en paramètre\npérimètre( largeur, longueur )\n# +TODO\naire( largeur, longueur )\n"
+	"langage":"python",
+	"code":"# Fonction qui calcule et produit en sortie le périmètre du rectangle dont les côtés sont reçus en paramètre. À faire\ndef périmètre( une_largeur, une_longueur ):\n    # -TODO\n    # -VISIBLE\n\n\n    # +VISIBLE\n    # +TODO\n    print(42)\n\n# -TODO\n# Fonction qui calcule et produit en sortie l'aire du rectangle dont les côtés sont reçus en paramètre. À faire\n# +TODO\n\n\n\n# -TODO\n# Programme principal\n# -VISIBLE\n\n# +VISIBLE\n# Entrées\nlargeur = int( input() )\nlongueur = int( input() )\n\n# Appel des fonctions, les côtés du rectangle sont transmis en paramètre. À faire\npérimètre( largeur, longueur )\n# +TODO\n\n\n# -TODO\n# -VISIBLE\n\n\n\n\n\n\n"
 }
 EOF
 )

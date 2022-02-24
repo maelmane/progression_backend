@@ -21,19 +21,11 @@ variables:
 .creation_bd: &creation_bd
   before_script:
   - docker network create tu-net
-  - docker run --name mariadb --net=tu-net -d -e MYSQL_ROOT_PASSWORD=password mariadb
+  - docker run --name mariadb --net=tu-net -d -e MYSQL_ROOT_PASSWORD=password -v "$PROGRESSION_DIR/progression/db/:/initdb/" mariadb
   - cp $PROGRESSION_DIR/progression/app/.env.exemple $PROGRESSION_DIR/progression/tests/.env
   - source $PROGRESSION_DIR/progression/tests/.env
   # Attend au maximum 15 secondes que la BD soit accessible
   - for i in $(seq 15); do if echo "select 1;" | docker exec -i mariadb mysql -uroot -ppassword; then break; fi; sleep 1; done
-  # Création de la BD
-  - echo "DROP DATABASE IF EXISTS $DB_DBNAME;" | docker exec -i mariadb mysql -uroot -ppassword
-  - echo "CREATE USER IF NOT EXISTS $DB_USERNAME@'%' IDENTIFIED BY \"$DB_PASSWORD\";" | docker exec -i mariadb mysql -uroot -ppassword
-  - echo "CREATE DATABASE $DB_DBNAME CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;" | docker exec -i mariadb mysql -uroot -ppassword
-  - echo "GRANT ALL PRIVILEGES ON $DB_DBNAME.* TO $DB_USERNAME@'%';" | docker exec -i mariadb mysql -uroot -ppassword
-  - docker exec -i mariadb mysql -uroot -ppassword $DB_DBNAME < $PROGRESSION_DIR/progression/db/create_db.sql
-  - docker exec -i mariadb mysql --default-character-set=utf8 -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME < $PROGRESSION_DIR/progression/tests/données_de_test.sql
-
 
 # Stage test
 
@@ -49,7 +41,7 @@ test_unitaires:
   - cp $PROGRESSION_DIR/progression/app/.env.exemple $PROGRESSION_DIR/progression/tests/.env
   - source $PROGRESSION_DIR/progression/tests/.env
   # Tests unitaires et analyse statique
-  - docker run --net=tu-net --env-file=$PROGRESSION_DIR/progression/tests/.env -e DB_SERVERNAME=mariadb $CI_REGISTRY/progression/progression_backend:test /var/www/progression/tests/exec_tests.sh
+  - docker run --net=tu-net --env-file=$PROGRESSION_DIR/progression/tests/.env -e DB_SERVERNAME=mariadb -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml -v $PROGRESSION_DIR/progression/autoload.php:/var/www/progression/autoload.php $CI_REGISTRY/progression/progression_backend:test /var/www/progression/tests/exec_tests.sh
   # Linter Prettier
   - docker run $CI_REGISTRY/progression/dev:latest -v "$PROGRESSION_DIR/progression/:/tmp/progression/" bash -c 'shopt -s globstar && prettier --use-tabs --print-width 120 --php-version "7.4" -c /tmp/progression/tests/**/*.php /tmp/progression/app/**/*.php'
 
@@ -66,9 +58,9 @@ const_image:
     - sleep 3 && docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY/progression/progression_backend:test progression
     - docker push $CI_REGISTRY/progression/progression_backend:test
-  only:
-    - dev
-    - master
+#  only:
+#    - dev
+#    - master
 
 
 # Stage deploy_image
