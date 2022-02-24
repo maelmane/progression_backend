@@ -74,18 +74,30 @@ class AvancementDAO extends EntitéDAO
 	{
 		$état = null;
 		$type = null;
+		$titre = null;
+		$niveau = null;
+		$date_modification = 0;
+		$date_réussite = 0;
 		$avancement = null;
+		
 
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT etat, type FROM avancement WHERE question_uri = ? AND username = ?",
+				"SELECT etat, type, titre, niveau, date_modification, date_reussite FROM avancement WHERE question_uri = ? AND username = ?",
 			);
 			$query->bind_param("ss", $question_uri, $username);
 			$query->execute();
-			$query->bind_result($état, $type);
+			$query->bind_result($état, $type, $titre, $niveau, $date_modification, $date_réussite);
 
 			if ($query->fetch()) {
-				$avancement = new Avancement($état, $type);
+				$avancement = new Avancement();
+				$avancement->état = $état;
+				$avancement->type = $type;
+				$avancement->titre = $titre;
+				$avancement->niveau = $niveau;
+				$avancement->date_modification = $date_modification;
+				$avancement->date_réussite = $date_réussite;
+
 			}
 
 			$query->close();
@@ -103,11 +115,11 @@ class AvancementDAO extends EntitéDAO
 				"INSERT INTO avancement ( etat, question_uri, username, titre, niveau, date_modification, date_reussite, type ) VALUES ( ?, ?, ?, ?, ?, ?, ?, " .
 					Question::TYPE_PROG .
 					')
-                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ), date_modification = VALUES(date_modification) ',
+                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ), date_modification = VALUES(date_modification), date_reussite = VALUES(date_reussite) ',
 			);
 			$date = (new \DateTime())->getTimestamp();
 
-			$query->bind_param("issssii", $objet->etat, $question_uri, $username, $objet->titre, $objet->niveau, $date, $objet->date_reussite);
+			$query->bind_param("issssii", $objet->etat, $question_uri, $username, $objet->titre, $objet->niveau, $date, $objet->date_réussite);
 			$query->execute();
 			$query->close();
 		} catch (mysqli_sql_exception $e) {

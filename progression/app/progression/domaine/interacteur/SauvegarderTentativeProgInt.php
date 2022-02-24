@@ -35,13 +35,25 @@ class SauvegarderTentativeProgInt extends Interacteur
 				[],
 			);
 			$dao_avancement->save($username, $question_uri, $avancement);
-		} elseif ($avancement->etat != Question::ETAT_REUSSI && $tentative->réussi) {
-			$avancement->etat = Question::ETAT_REUSSI;
-			$avancement->tentatives[] = $tentative;
+		} else {
+			$date = (new \DateTime())->getTimestamp();
+			if($avancement->etat != Question::ETAT_REUSSI && $tentative->réussi){
+				
+				$avancement->etat = Question::ETAT_REUSSI;
+				$avancement->tentatives[] = $tentative;
+				$avancement->date_réussite = $date;
+			}
+			
+
+			$avancement->date_modification = $date;
 			$dao_avancement->save($username, $question_uri, $avancement);
 		}
-
+			
+		
+		
 		$dao_tentative = $this->source_dao->get_tentative_prog_dao();
 		return $dao_tentative->save($username, $question_uri, $tentative);
 	}
+
+
 }
