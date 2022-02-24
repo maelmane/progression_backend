@@ -28,7 +28,19 @@ class SauvegarderAvancementInt extends Interacteur
 			return null;
 		}
 		$dao_avancement = $this->source_dao->get_avancement_dao();
+
+		$question_de_avancement = $this->récupérer_informations_de_la_question($question_uri);
+		$nouvelAvancement->titre = $question_de_avancement->titre;
+
 		$avancement = $dao_avancement->save($username, $question_uri, $nouvelAvancement);
 		return $avancement;
 	}
+
+	private function récupérer_informations_de_la_question($question_uri){
+
+		$dao_question = $this->source_dao->get_question_dao();
+		$question = $dao_question->get_question($question_uri);
+		return $question;
+	}
+	
 }
