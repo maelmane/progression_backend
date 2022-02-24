@@ -28,18 +28,23 @@ class Avancement
 	public $type;
 
 	public function __construct(
-        $name,
-        $url,
 		$etat = Question::ETAT_DEBUT,
 		$type = Question::TYPE_INCONNU,
 		$tentatives = [],
 		$sauvegardes = []
 	) {
-        $this->userName=$name;
-        $this->urlQuest=$url;
 		$this->tentatives = $tentatives;
 		$this->sauvegardes = $sauvegardes;
 		$this->etat = $etat;
 		$this->type = $type;
 	}
+
+    public function setName($name){
+        $this->userName=$name;
+    }
+
+    public function setUrl($url){
+        $this->urlQuest=$url;
+    }
+
 }

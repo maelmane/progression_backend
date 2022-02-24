@@ -125,7 +125,9 @@ class AvancementDAO extends EntitéDAO
             $query->bind_result($username,$question_uri,$état, $type);
 
             if ($query->fetch()) {
-                $avancement = new Avancement($username,$question_uri,$état, $type);
+                $avancement = new Avancement($état, $type);
+                $avancement->setName($username);
+                $avancement->setUrl($question_uri);
             }
 
             $query->close();
