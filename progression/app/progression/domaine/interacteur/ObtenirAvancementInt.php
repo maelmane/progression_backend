@@ -32,4 +32,13 @@ class ObtenirAvancementInt extends Interacteur
 
 		return $avancement;
 	}
+
+    function getAvancementParToken($token)
+    {
+
+        $avancement = $this->source_dao->get_avancement_dao()->getAvancementParToken($token);
+
+        return $avancement;
+    }
+
 }
