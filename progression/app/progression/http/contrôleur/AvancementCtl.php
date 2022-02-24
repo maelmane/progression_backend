@@ -145,6 +145,7 @@ class AvancementCtl extends Contrôleur
 		return $avancement;
 	}
 
+
 	private function sauvegarder_avancement($username, $question_uri, $avancement)
 	{
 		Log::debug("AvancementCtl.sauvegarder_avancement. Params : ", [$username, $question_uri]);
