@@ -103,9 +103,10 @@ class AvancementDAO extends EntitéDAO
 				"INSERT INTO avancement ( etat, question_uri, username, titre, niveau, date_modification, date_reussite, type ) VALUES ( ?, ?, ?, ?, ?, ?, ?, " .
 					Question::TYPE_PROG .
 					')
-                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ',
+                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ), date_modification = VALUES(date_modification) ',
 			);
 			$date = (new \DateTime())->getTimestamp();
+
 			$query->bind_param("issssii", $objet->etat, $question_uri, $username, $objet->titre, $objet->niveau, $date, $objet->date_reussite);
 			$query->execute();
 			$query->close();
