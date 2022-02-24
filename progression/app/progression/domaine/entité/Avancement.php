@@ -20,17 +20,23 @@ namespace progression\domaine\entité;
 
 class Avancement
 {
+    public $userName;
+    public $urlQuest;
 	public $tentatives;
 	public $sauvegardes;
 	public $etat;
 	public $type;
 
 	public function __construct(
+        $name,
+        $url,
 		$etat = Question::ETAT_DEBUT,
 		$type = Question::TYPE_INCONNU,
 		$tentatives = [],
 		$sauvegardes = []
 	) {
+        $this->userName=$name;
+        $this->urlQuest=$url;
 		$this->tentatives = $tentatives;
 		$this->sauvegardes = $sauvegardes;
 		$this->etat = $etat;
