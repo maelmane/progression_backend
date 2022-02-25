@@ -41,7 +41,7 @@ class ExécuteurCache extends Exécuteur
 
 		$résultat = $this->obtenir_de_la_cache($hash);
 
-		if (!$résultat) {
+		if ($résultat == null) {
 			$résultat = $this->_exécuteur->exécuter($exécutable, $test);
 
 			if (!$this->contient_des_erreurs($résultat)) {
@@ -64,14 +64,13 @@ class ExécuteurCache extends Exécuteur
 
 	private function obtenir_de_la_cache($hash)
 	{
-		$résultat = Cache::get($hash);
-		if ($résultat) {
-			Log::debug("Cache : Hit");
-			return json_encode(["output" => $résultat, "errors" => null]);
-		} else {
+		if (!Cache::has($hash)) {
 			Log::debug("Cache : Miss");
-			null;
+			return null;
 		}
+
+		Log::debug("Cache : Hit");
+		return json_encode(["output" => Cache::get($hash), "errors" => null]);
 	}
 
 	private function placer_sortie_en_cache($hash, $résultat)
