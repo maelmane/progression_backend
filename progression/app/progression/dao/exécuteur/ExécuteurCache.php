@@ -68,10 +68,9 @@ class ExécuteurCache extends Exécuteur
 			Log::debug("Cache : Miss");
 			return null;
 		}
-		
+
 		Log::debug("Cache : Hit");
 		return json_encode(["output" => Cache::get($hash), "errors" => null]);
-
 	}
 
 	private function placer_sortie_en_cache($hash, $résultat)
