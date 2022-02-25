@@ -20,8 +20,6 @@ namespace progression\domaine\entité;
 
 class Avancement
 {
-    public $userName;
-    public $urlQuest;
 	public $tentatives;
 	public $sauvegardes;
 	public $etat;
@@ -39,12 +37,5 @@ class Avancement
 		$this->type = $type;
 	}
 
-    public function setName($name){
-        $this->userName=$name;
-    }
-
-    public function setUrl($url){
-        $this->urlQuest=$url;
-    }
 
 }

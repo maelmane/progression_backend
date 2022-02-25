@@ -108,45 +108,4 @@ class AvancementDAO extends EntitéDAO
 		return $this->get_avancement($username, $question_uri);
 	}
 
-    protected function loadByToken($token)
-    {
-        $username=null;
-        $question_uri=null;
-        $état = null;
-        $type = null;
-        $avancement = null;
-
-        try {
-            $query = EntitéDAO::get_connexion()->prepare(
-                "SELECT username, question_uri, etat, type FROM avancement WHERE token = ?",
-            );
-            $query->bind_param("ss", $token);
-            $query->execute();
-            $query->bind_result($username,$question_uri,$état, $type);
-
-            if ($query->fetch()) {
-                $avancement = new Avancement($état, $type);
-                $avancement->setName($username);
-                $avancement->setUrl($question_uri);
-            }
-
-            $query->close();
-        } catch (mysqli_sql_exception $e) {
-            throw new DAOException($e);
-        }
-
-        return $avancement;
-    }
-
-    public function getAvancementParToken($token)
-    {
-        $avancement = $this->loadByToken($token);
-
-        if ($avancement) {
-            $avancement->tentatives = $this->source->get_tentative_dao()->get_toutes($avancement->userName, $avancement->urlQuest);
-            $avancement->sauvegardes = $this->source->get_sauvegarde_dao()->get_toutes($avancement->userName, $avancement->urlQuest);
-        }
-
-        return $avancement;
-    }
 }

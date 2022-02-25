@@ -23,39 +23,56 @@ use Illuminate\Support\Facades\Log;
 
 class GénérateurDeToken
 {
-	private static ?GénérateurDeToken $instance = null;
+    private static ?GénérateurDeToken $instance = null;
 
-	private function __construct()
-	{
-	}
+    private function __construct()
+    {
+    }
 
-	static function get_instance()
-	{
-		if (GénérateurDeToken::$instance == null) {
-			GénérateurDeToken::$instance = new GénérateurDeToken();
-		}
+    static function get_instance()
+    {
+        if (GénérateurDeToken::$instance == null) {
+            GénérateurDeToken::$instance = new GénérateurDeToken();
+        }
 
-		return GénérateurDeToken::$instance;
-	}
+        return GénérateurDeToken::$instance;
+    }
 
-	static function set_instance(GénérateurDeToken $générateur)
-	{
-		GénérateurDeToken::$instance = $générateur;
-	}
+    static function set_instance(GénérateurDeToken $générateur)
+    {
+        GénérateurDeToken::$instance = $générateur;
+    }
 
-	function générer_token($user)
-	{
-		Log::debug("InscriptionCtl.générer_token. Params : ", [$user]);
+    function générer_token($user)
+    {
+        Log::debug("InscriptionCtl.générer_token. Params : ", [$user]);
 
-		$payload = [
-			"username" => $user->username,
-			"current" => time(),
-			"expired" => time() + $_ENV["JWT_TTL"],
-		];
+        $payload = [
+            "username" => $user->username,
+            "current" => time(),
+            "expired" => time() + $_ENV["JWT_TTL"],
+        ];
 
-		$réponse = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
+        $réponse = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
 
-		Log::debug("InscriptionCtl.générer_token. Retour : ", [$réponse]);
-		return $réponse;
-	}
+        Log::debug("InscriptionCtl.générer_token. Retour : ", [$réponse]);
+        return $réponse;
+    }
+
+    function générerTokenParRessource($user, $idResource, $typeResource, $méthodes=["get"])
+    {
+        Log::debug("GénérateurDeToken.générerTokenParRessource. Params : ", [$user,$typeResource, $idResource,$méthodes]);
+
+        $payload = [
+            "username" => $user->username,
+            "id" => $idResource,
+            "type" => $typeResource,
+            "méthode"=>$méthodes[0],
+        ];
+
+        $réponse = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
+
+        Log::debug("GénérateurDeToken.générerTokenParRessource. Retour : ", [$réponse]);
+        return $réponse;
+    }
 }
