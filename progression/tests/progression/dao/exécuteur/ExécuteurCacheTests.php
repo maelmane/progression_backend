@@ -34,17 +34,17 @@ final class ExécuteurCacheTests extends TestCase
 
 		$this->mock_standardiseur = Mockery::mock("progression\\dao\\exécuteur\\Standardiseur");
 		$this->mock_standardiseur
-			->shouldReceive("standardiser")
-			->with("nouveau code", "python")
-			->andReturn("code standardisé");
+			 ->shouldReceive("standardiser")
+			 ->with("nouveau code", "python")
+			 ->andReturn("code standardisé");
 		$this->mock_standardiseur
-			->shouldReceive("standardiser")
-			->with("nouveau   code", "python")
-			->andReturn("code standardisé");
+			 ->shouldReceive("standardiser")
+			 ->with("nouveau   code", "python")
+			 ->andReturn("code standardisé");
 		$this->mock_standardiseur
-			->shouldReceive("standardiser")
-			->with("nouveau code", "java")
-			->andReturn("code standardisé");
+			 ->shouldReceive("standardiser")
+			 ->with("nouveau code", "java")
+			 ->andReturn("code standardisé");
 	}
 
 	public function tearDown(): void
@@ -58,13 +58,14 @@ final class ExécuteurCacheTests extends TestCase
 		$exécutable = new Exécutable("nouveau code", "python");
 		$test = new Test("test", "sortie", "entrée", "param");
 
-		Cache::shouldReceive("get")
-			->once()
-			->with("e8032dd801819a71571c41b3c87f529a")
-			->andReturn(null);
+		Cache::shouldReceive("has")
+			 ->once()
+			 ->with("e8032dd801819a71571c41b3c87f529a")
+			 ->andReturn(false);
+		Cache::shouldNotReceive("get");
 		Cache::shouldReceive("put")
-			->once()
-			->with("e8032dd801819a71571c41b3c87f529a", "sortie exécutée");
+			 ->once()
+			 ->with("e8032dd801819a71571c41b3c87f529a", "sortie exécutée");
 
 		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
 			$exécutable,
@@ -80,9 +81,13 @@ final class ExécuteurCacheTests extends TestCase
 		$test = new Test("test", "sortie", "entrée", "param");
 
 		Cache::shouldReceive("get")
-			->once()
-			->with("e8032dd801819a71571c41b3c87f529a")
-			->andReturn("sortie prise en cache");
+			 ->once()
+			 ->with("e8032dd801819a71571c41b3c87f529a")
+			 ->andReturn("sortie prise en cache");
+		Cache::shouldReceive("has")
+			 ->once()
+			 ->with("e8032dd801819a71571c41b3c87f529a")
+			 ->andReturn(true);
 		Cache::shouldNotReceive("put");
 
 		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
@@ -93,18 +98,42 @@ final class ExécuteurCacheTests extends TestCase
 		$this->assertEquals('{"output":"sortie prise en cache","errors":null}', $résultat);
 	}
 
+	public function test_étant_donné_une_cache_contenant_le_code_à_exécuter_vide_lorsquon_exécute_le_même_code_avec_le_même_langage_les_mêmes_entrées_et_paramètres_on_obtient_une_chaîne_vide()
+	{
+		$exécutable = new Exécutable("nouveau code", "python");
+		$test = new Test("test", "sortie", "entrée", "param");
+
+		Cache::shouldReceive("get")
+			 ->once()
+			 ->with("e8032dd801819a71571c41b3c87f529a")
+			 ->andReturn("");
+		Cache::shouldReceive("has")
+			 ->once()
+			 ->with("e8032dd801819a71571c41b3c87f529a")
+			 ->andReturn(true);
+		Cache::shouldNotReceive("put");
+
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+			$exécutable,
+			$test,
+		);
+
+		$this->assertEquals('{"output":"","errors":null}', $résultat);
+	}
+	
 	public function test_étant_donné_une_cache_contenant_le_code_à_exécuter_lorsquon_exécute_le_même_code_avec_un_autre_langage_les_mêmes_entrées_et_paramètres_on_obtient_le_code_exécuté()
 	{
 		$exécutable = new Exécutable("nouveau code", "java");
 		$test = new Test("test", "sortie", "entrée", "param");
 
-		Cache::shouldReceive("get")
-			->once()
-			->with("8d7dd086fe94394520c14fe098159378")
-			->andReturn(null);
+		Cache::shouldReceive("has")
+			 ->once()
+			 ->with("8d7dd086fe94394520c14fe098159378")
+			 ->andReturn(false);
+		Cache::shouldNotReceive("get");
 		Cache::shouldReceive("put")
-			->once()
-			->with("8d7dd086fe94394520c14fe098159378", "sortie exécutée");
+			 ->once()
+			 ->with("8d7dd086fe94394520c14fe098159378", "sortie exécutée");
 
 		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
 			$exécutable,
@@ -119,13 +148,14 @@ final class ExécuteurCacheTests extends TestCase
 		$exécutable = new Exécutable("nouveau code", "python");
 		$test = new Test("test", "sortie", "entrée différente", "param");
 
-		Cache::shouldReceive("get")
-			->once()
-			->with("879f8745392494c38a966d01eab2a23e")
-			->andReturn(null);
+		Cache::shouldReceive("has")
+			 ->once()
+			 ->with("879f8745392494c38a966d01eab2a23e")
+			 ->andReturn(false);
+		Cache::shouldNotReceive("get");
 		Cache::shouldReceive("put")
-			->once()
-			->with("879f8745392494c38a966d01eab2a23e", "sortie exécutée");
+			 ->once()
+			 ->with("879f8745392494c38a966d01eab2a23e", "sortie exécutée");
 
 		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
 			$exécutable,
@@ -140,13 +170,14 @@ final class ExécuteurCacheTests extends TestCase
 		$exécutable = new Exécutable("nouveau code", "python");
 		$test = new Test("test", "sortie", "entrée", "autre param");
 
-		Cache::shouldReceive("get")
-			->once()
-			->with("78e4674804ee6f7955997243441507d8")
-			->andReturn(null);
+		Cache::shouldReceive("has")
+			 ->once()
+			 ->with("78e4674804ee6f7955997243441507d8")
+			 ->andReturn(false);
+		Cache::shouldNotReceive("get");
 		Cache::shouldReceive("put")
-			->once()
-			->with("78e4674804ee6f7955997243441507d8", "sortie exécutée");
+			 ->once()
+			 ->with("78e4674804ee6f7955997243441507d8", "sortie exécutée");
 
 		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
 			$exécutable,
@@ -161,10 +192,14 @@ final class ExécuteurCacheTests extends TestCase
 		$exécutable = new Exécutable("nouveau   code", "python");
 		$test = new Test("test", "sortie", "entrée", "param");
 
+		Cache::shouldReceive("has")
+			 ->once()
+			 ->with("e8032dd801819a71571c41b3c87f529a")
+			 ->andReturn(true);
 		Cache::shouldReceive("get")
-			->once()
-			->with("e8032dd801819a71571c41b3c87f529a")
-			->andReturn("sortie prise en cache");
+			 ->once()
+			 ->with("e8032dd801819a71571c41b3c87f529a")
+			 ->andReturn("sortie prise en cache");
 		Cache::shouldNotReceive("put");
 
 		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
