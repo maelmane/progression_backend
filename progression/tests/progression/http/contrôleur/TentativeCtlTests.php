@@ -83,7 +83,7 @@ final class TentativeCtlTests extends TestCase
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "python";
 			})
-			->andReturn('{"output": "Bonjour\nAllo\n", "errors":"" }');
+			->andReturn([["output" => "Bonjour\nAllo\n", "errors" => "" ]]);
 		$mockExécuteur
 			->shouldReceive("exécuter")
 			->withArgs(function ($exec, $test) {
