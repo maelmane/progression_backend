@@ -67,7 +67,7 @@ class GénérateurDeToken
             "username" => $user->username,
             "id" => $idResource,
             "type" => $typeResource,
-            "méthode"=>$méthodes,
+            "méthode" => $méthodes,
         ];
 
         $réponse = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");

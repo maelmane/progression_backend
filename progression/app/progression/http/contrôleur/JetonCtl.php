@@ -6,8 +6,6 @@ use http\Env\Request;
 
 class JetonCtl
 {
-
-
     public function post(Request $request, $username){
         $b=$request.body;
         $id=$b.idRessource;
@@ -15,5 +13,4 @@ class JetonCtl
         $token= GénérateurDeToken::get_instance()->générerTokenParRessource($username,$id,$type);
         return $this->réponse_json(["Token" => $token]);
     }
-
 }
