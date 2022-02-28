@@ -24,13 +24,22 @@ use progression\domaine\entité\RésultatProg;
 
 class ExécuterProgInt extends Interacteur
 {
-	public function exécuter($exécutable, $test)
+	public function exécuter($exécutable, $tests)
 	{
 		$this->loguer_code($exécutable);
 
-		$comp_resp = $this->source_dao->get_exécuteur()->exécuter($exécutable, $test);
+		$comp_resp = $this->source_dao->get_exécuteur()->exécuter($exécutable, $tests);
 
-		return new RésultatProg($this->extraire_sortie_standard($comp_resp), $this->extraire_sortie_erreur($comp_resp));
+		if (!$comp_resp) {
+			return null;
+		}
+
+		$résultats = [];
+		foreach ($comp_resp as $réponse) {
+			$résultats[] = new RésultatProg($réponse["output"], $réponse["errors"]);
+		}
+
+		return $résultats;
 	}
 
 	protected function loguer_code($exécutable)
@@ -44,15 +53,5 @@ class ExécuterProgInt extends Interacteur
 			" Code : " .
 			$exécutable->code;
 		syslog(LOG_INFO, $com_log);
-	}
-
-	protected function extraire_sortie_standard($sorties)
-	{
-		return str_replace("\r", "", json_decode($sorties, true)["output"]);
-	}
-
-	protected function extraire_sortie_erreur($sorties)
-	{
-		return json_decode($sorties, true)["errors"];
 	}
 }
