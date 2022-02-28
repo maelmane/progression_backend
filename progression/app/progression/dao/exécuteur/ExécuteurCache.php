@@ -32,17 +32,25 @@ class ExécuteurCache extends Exécuteur
 		$this->_standardiseur = $standardiseur;
 	}
 
-	public function exécuter($exécutable, $test)
+	public function exécuter($exécutable, $tests)
 	{
-		$code_standardisé = $this->standardiser_code($exécutable->code, $exécutable->lang) ?? $exécutable->code;
+		$résultats = [];
 
-		$hash = $this->calculer_hash($code_standardisé, $exécutable->lang, $test->entrée, $test->params);
+		$code_standardisé = $this->standardiser_code($exécutable->code, $exécutable->lang) ?? $exécutable->code;
+		$entrées = "";
+		$params = "";
+		foreach ($tests as $test) {
+			$entrées .= $test->entrée;
+			$params .= $test->params;
+		}
+
+		$hash = $this->calculer_hash($code_standardisé, $exécutable->lang, $entrées, $params);
 		Log::debug("Hash: $hash");
 
 		$résultat = $this->obtenir_de_la_cache($hash);
 
 		if ($résultat == null) {
-			$résultat = $this->_exécuteur->exécuter($exécutable, $test);
+			$résultat = $this->_exécuteur->exécuter($exécutable, $tests);
 
 			if (!$this->contient_des_erreurs($résultat)) {
 				$this->placer_sortie_en_cache($hash, $résultat);
@@ -70,16 +78,21 @@ class ExécuteurCache extends Exécuteur
 		}
 
 		Log::debug("Cache : Hit");
-		return json_encode(["output" => Cache::get($hash), "errors" => null]);
+		return Cache::get($hash);
 	}
 
 	private function placer_sortie_en_cache($hash, $résultat)
 	{
-		return Cache::put($hash, json_decode($résultat, true)["output"]);
+		return Cache::put($hash, $résultat);
 	}
 
 	private function contient_des_erreurs($résultat)
 	{
-		return json_decode($résultat, true)["errors"];
+		foreach ($résultat as $res) {
+			if ($res["errors"]) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
