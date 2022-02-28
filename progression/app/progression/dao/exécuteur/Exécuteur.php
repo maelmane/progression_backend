@@ -20,7 +20,7 @@ namespace progression\dao\exécuteur;
 
 class Exécuteur
 {
-	public function exécuter($exécutable, $test)
+	public function exécuter($exécutable, $tests)
 	{
 		return null;
 	}
