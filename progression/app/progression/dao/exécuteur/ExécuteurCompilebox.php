@@ -40,16 +40,22 @@ class ExécuteurCompilebox extends Exécuteur
 		"typescript" => 16,
 	];
 
-	public function exécuter($exécutable, $test)
+	public function exécuter($exécutable, $tests)
 	{
 		//post le code à remotecompiler
 		$url_rc = $_ENV["COMPILEBOX_URL"];
 
+		$tests_out=[];
+		foreach($tests as $test){
+			$tests_out[] = ["stdin" => $test->entrée,
+							"params" => $test->params];
+		}
+
 		$data_rc = [
 			"language" => self::langages[$exécutable->lang],
 			"code" => $exécutable->code,
-			"parameters" => "\"" . $test->params . "\"",
-			"stdin" => $test->entrée,
+			"parameters" => "",
+			"tests" => $tests_out,
 			"vm_name" => "remotecompiler",
 		];
 
@@ -64,6 +70,6 @@ class ExécuteurCompilebox extends Exécuteur
 
 		$comp_resp = file_get_contents($url_rc, false, $context);
 
-		return $comp_resp;
+		return json_decode(str_replace("\r", "", $comp_resp), true);
 	}
 }
