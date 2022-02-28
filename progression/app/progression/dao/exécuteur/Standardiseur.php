@@ -32,9 +32,9 @@ class Standardiseur
 		} elseif ($lang == "bash") {
 			$beautifier_cmd = ["beautysh", "-"];
 		} elseif ($lang == "javascript") {
-			$beautifier_cmd = ["standard", "--fix", "-"];
+			$beautifier_cmd = ["npx", "standard", "--fix", "-"];
 		} elseif ($lang == "typescript") {
-			$beautifier_cmd = ["ts-standard", "--fix", "--project", "/tmp/tsconfig.eslint.json", "-"];
+			$beautifier_cmd = ["npx", "ts-standard", "--fix", "--project", "/tmp/tsconfig.eslint.json", "-"];
 		} else {
 			Log::warning("Aucun beautifier trouvé pour $lang");
 			return $code;
