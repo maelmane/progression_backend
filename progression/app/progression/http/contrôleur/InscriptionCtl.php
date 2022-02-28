@@ -29,7 +29,6 @@ class InscriptionCtl extends Contrôleur
 	{
 		Log::debug("InscriptionCtl.inscription. Params : ", $request->all());
 		Log::info("{$request->ip()} - Tentative d'inscription : {$request->input("username")}");
-
 		$auth_local = getenv("AUTH_LOCAL") !== "false";
 		$auth_ldap = getenv("AUTH_LDAP") === "true";
 

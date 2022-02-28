@@ -45,7 +45,7 @@ class GénérateurDeToken
 
     function générer_token($user)
     {
-        Log::debug("InscriptionCtl.générer_token. Params : ", [$user]);
+        Log::debug("GénérateurDeToken.générer_token. Params : ", [$user]);
 
         $payload = [
             "username" => $user->username,
