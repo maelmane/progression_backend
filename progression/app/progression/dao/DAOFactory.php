@@ -71,6 +71,10 @@ class DAOFactory
 	function get_clé_dao()
 	{
 		return new CléDAO($this);
+	}	
+	function get_commentaire_dao()
+	{
+		return new CommentaireDAO($this);
 	}
 
 	function get_sauvegarde_dao()
