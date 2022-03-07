@@ -20,16 +20,18 @@ namespace progression\domaine\entité;
 
 class Commentaire
 {
-	public $id;
+	public $numéro;
   public $message;
   public $créateur;	
+  public $date;	
 
 	 
 
 
-	public function __construct($id, $message, $créateur)
+	public function __construct($numéro, $date, $message, $créateur)
 	{
-		$this->id = $id;
+		$this->numéro = $numéro;
+    $this->date = $date;
 		$this->message = $message;
 		$this->créateur = $créateur;
 	
