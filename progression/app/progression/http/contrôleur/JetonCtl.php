@@ -11,6 +11,7 @@ class JetonCtl
         $id=$b.idRessource;
         $type=$b.typeRessource;
         $token= GénérateurDeToken::get_instance()->générerTokenParRessource($username,$id,$type);
-        return ["Token" => $token];
+        $réponse = $this->préparer_réponse($token);
+        return $réponse;
     }
 }
