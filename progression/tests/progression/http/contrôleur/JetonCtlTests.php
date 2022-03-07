@@ -24,80 +24,15 @@ use progression\dao\DAOFactory;
 use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
 use Firebase\JWT\JWT;
+use progression\http\contrôleur\JetonCtl;
 
 final class JetonCtlTests extends TestCase
 {
-	public $user;
+	public function test_création_de_jeton_pour_lien_vers_exercice_par_autre_fonctionn() {
+		$jetonCtrl = new JetonCtl();
 
-	public function setUp(): void
-	{
-		parent::setUp();
+		
 
-		$this->user = new GenericUser(["username" => "MrGeneric", "rôle" => User::ROLE_NORMAL]);
-
-		// UserDAO
-		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("MrGeneric")
-			->andReturn(new User("MrGeneric"));
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("UtilisateurInexistant")
-			->andReturn(null);
-
-		// CléDAO
-		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
-		$mockCléDAO
-			->shouldReceive("get_clé")
-			->with("MrGeneric", "clé valide")
-			->andReturn(new Clé(null, (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_AUTH));
-		$mockCléDAO
-			->shouldReceive("vérifier")
-			->with("MrGeneric", "clé valide", "secret")
-			->andReturn(true);
-		$mockCléDAO
-			->shouldReceive("get_clé")
-			->with("MrGeneric", "clé invalide")
-			->andReturn(null);
-		$mockCléDAO->shouldReceive("vérifier")->andReturn(false);
-
-		// DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
-		$mockDAOFactory->shouldReceive("get_clé_dao")->andReturn($mockCléDAO);
-		DAOFactory::setInstance($mockDAOFactory);
-
-		//Mock du générateur de token
-		GénérateurDeToken::set_instance(
-			new class extends GénérateurDeToken {
-				public function __construct()
-				{
-				}
-
-				function générer_token($user)
-				{
-					return "token valide";
-				}
-			},
-		);
-	}
-
-	public function tearDown(): void
-	{
-		Mockery::close();
-	}
-
-    #  AUTH LDAP
-	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_LDAP_lorsquon_appelle_login_lutilisateur_sans_domaine_on_obtient_une_erreur_401()
-	{
-		putenv("AUTH_LOCAL=false");
-		putenv("AUTH_LDAP=true");
-
-		$résultat_observé = $this->call("POST", "/auth", ["username" => "UtilisateurInexistant", "password" => "password"]);
-
-		$this->assertEquals(401, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_observé->getContent());
 	}
 
 
