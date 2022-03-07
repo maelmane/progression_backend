@@ -20,7 +20,7 @@ namespace progression\domaine\entité;
 
 use PHPUnit\Framework\TestCase;
 
-final class CommentaireTest extends TestCase
+final class CommentaireTests extends TestCase
 {
 	public function test_commentaire_instancié_avec_toutes_les_valeurs_des_attributs_retourne_les_bonnes_valeurs_des_attributs()
 	{
@@ -33,6 +33,6 @@ final class CommentaireTest extends TestCase
 		$this->assertEquals($idAttendu, $commentaire->id);
 		$this->assertEquals($messageAttendu, $commentaire->message);
 		$this->assertEquals($créateurAttendu, $commentaire->créateur);
-        $this->assertEquals($créateurAttendu, "Un mauvais créateur qui fait échouer le test");
+        //$this->assertEquals($créateurAttendu, "Un mauvais créateur qui fait échouer le test");
 	}
 }
