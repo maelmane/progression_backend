@@ -3,6 +3,7 @@ DELETE FROM avancement;
 DELETE FROM sauvegarde;
 DELETE FROM cle;
 DELETE FROM user;
+DELETE FROM commentaire;
 
 INSERT INTO user VALUES (
   "jdoe",
@@ -107,4 +108,16 @@ INSERT INTO reponse_prog VALUES (
   "print(\"Allo tout le monde!\")",
   1,
   4
+);
+
+INSERT INTO commentaire VALUES(
+  1,
+  "le 1er message",
+  "Jean"
+);
+
+INSERT INTO commentaire VALUES(
+  2,
+  "le 2er message",
+  "Pat"
 );
