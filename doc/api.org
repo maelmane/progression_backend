@@ -223,6 +223,24 @@ username/question_uri/date_soumission/numéro
 | résultat        | bool |           |
 | feedback        | str  |           |
 
+** Commentaire
+
+Un commentaire peut etre ajouter par un enseignant, un enseignant peut ajouter un commentaire par ligne de code.
+
+*** Identifiant :
+username/question_uri/numéro
+
+*** Propriétés:
+
+| Nom             | Type | Valeurs   |
+|-----------------+------+-----------|
+| message         | str  |           |
+| createur        | str  |           |
+| date            | int  |           |
+| numéro          | int  |           |
+
+
+
 ** Sauvegarde automatique
 
 La sauvegarde automatique du travail d'un utilisateur pour une question et dans un langage spécifique
