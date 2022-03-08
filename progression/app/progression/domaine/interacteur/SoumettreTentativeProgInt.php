@@ -65,11 +65,12 @@ class SoumettreTentativeProgInt extends Interacteur
 
     private function créerAvancement($tentative) {
         return new Avancement(
-            $tentative->réussi ? Question::ETAT_REUSSI : Question::ETAT_NONREUSSI,
+            Question::ETAT_NONREUSSI,
             Question::TYPE_PROG,
             [$tentative],
             []
         );
+
     }
 
     private function sauvegarderAvancement($username, $uriQuestion, $avancement) {
