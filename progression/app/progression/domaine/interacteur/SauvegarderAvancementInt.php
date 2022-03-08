@@ -33,20 +33,28 @@ class SauvegarderAvancementInt extends Interacteur
 		$question_de_avancement = $this->récupérer_informations_de_la_question($question_uri);
 		$nouvelAvancement->titre = $question_de_avancement->titre;
 		$nouvelAvancement->niveau = $question_de_avancement->niveau;
-		//
-		$date = (new \DateTime())->getTimestamp();
-		$nouvelAvancement->date_modification = $date;
-		
-		//mettre 
+        $nouvelAvancement = $this->mettreÀJourDateModificationEtDateRéussie($nouvelAvancement);
 		$avancement = $dao_avancement->save($username, $question_uri, $nouvelAvancement);
 		return $avancement;
 	}
 
-	private function récupérer_informations_de_la_question($question_uri){
-
+	private function récupérer_informations_de_la_question($question_uri) {
 		$dao_question = $this->source_dao->get_question_dao();
 		$question = $dao_question->get_question($question_uri);
 		return $question;
 	}
+
+    private function mettreÀJourDateModificationEtDateRéussie($avancement) {
+        $date = (new \DateTime())->getTimestamp();
+        if(sizeof($avancement->tentative) >= 0) {
+            $tentative = $avancement->tentative[0];
+            if($avancement->etat != Question::ETAT_REUSSI && $tentative->réussi){
+                $avancement->etat = Question::ETAT_REUSSI;
+                $avancement->date_réussite = $date;
+            }
+        }
+        $avancement->date_modification = $date;
+        return $avancement;
+    }
 	
 }

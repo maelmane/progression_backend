@@ -18,6 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
+use progression\domaine\entité\{Avancement, Question};
+
 class SoumettreTentativeProgInt extends Interacteur
 {
 	public function soumettre_tentative($username, $question, $tentative)
@@ -35,13 +37,39 @@ class SoumettreTentativeProgInt extends Interacteur
 			}
 			$traiterTentativeProgInt = new TraiterTentativeProgInt();
 			$tentativeTraité = $traiterTentativeProgInt->traiter_résultats($question, $tentative);
+
+            $avancement = $this->récupérerAvancement($username, $question->uri);
+            $this->sauvegarderAvancement($username, $question->uri, $avancement);
+
 			$interacteurSauvegarde = new SauvegarderTentativeProgInt();
 			$interacteurSauvegarde->sauvegarder($username, $question->uri, $tentativeTraité);
 			return $tentativeTraité;
 		}
 		return null;
-
-		//On récupère l'avancement
-		//On check s'il existe
 	}
+
+    private function récupérerAvancement($username, $uriQuestion, $tentative) {
+        $dao_avancement = $this->source_dao->get_avancement_dao();
+        $avancement = $dao_avancement->get_avancement($username, $uriQuestion);
+
+        if ($avancement == null) {
+            $avancement = $this->créerAvancement($tentative);
+        }
+
+        return $avancement;
+    }
+
+    private function créerAvancement($tentative) {
+        return new Avancement(
+            $tentative->réussi ? Question::ETAT_REUSSI : Question::ETAT_NONREUSSI,
+            Question::TYPE_PROG,
+            [$tentative],
+            []
+        );
+    }
+
+    private function sauvegarderAvancement($username, $uriQuestion, $avancement) {
+        $interacteurAvancement = new SauvegarderAvancementInt();
+        $interacteurAvancement->sauvegarder($username, $uriQuestion, $avancement);
+    }
 }
