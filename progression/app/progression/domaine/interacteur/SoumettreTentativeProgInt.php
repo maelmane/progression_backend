@@ -31,10 +31,8 @@ class SoumettreTentativeProgInt extends Interacteur
 
 		if ($exécutable) {
 			$exécuterProgInt = new ExécuterProgInt();
-			foreach ($question->tests as $i => $test) {
-				$résultat = $exécuterProgInt->exécuter($exécutable, $test);
-				$tentative->résultats[$i] = $résultat;
-			}
+			$tentative->résultats = $exécuterProgInt->exécuter($exécutable, $question->tests);
+
 			$traiterTentativeProgInt = new TraiterTentativeProgInt();
 			$tentativeTraité = $traiterTentativeProgInt->traiter_résultats($question, $tentative);
 
