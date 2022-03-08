@@ -35,8 +35,58 @@ final class CommentaireDAOTests extends TestCase
 
     public function test_chercher_commentaire_a_partir_id
     {
-        $reponse_attendue = new Commentaire{1,"le 1er message","Jean"};
+        $reponse_attendue = new Commentaire(1,"le 1er message","Jean");
         $reponse_observee = (new CommentaireDAO()->get_commentaire(1));
-        $this->assertEquals($réponse_attendue, $résponse_observée);
+        $this->assertEquals($reponse_attendue, $reponse_observee);
+    }
+
+    public function test_chercher_commentaire_non_existant
+    {
+        $reponse_attendue = null;
+        $reponse_observee = (new CommentaireDAO()->get_commentaire(-1));
+        $this->assertEquals($reponse_attendue, $reponse_observee);
+    }
+
+    public function test_chercher_commentaire_tous_un_createur
+    {
+        $reponse_attendue = [
+            1 => new Commentaire(null,"le 1er message","Jean");
+            3 => new Commentaire(null,"le 3er message","Jean");
+        ]
+
+        $reponse_observee=(new CommentaireDAO()->get_toutes("Jean");
+        $this->assertEquals($reponse_attendue, $reponse_observee);
+    }
+
+    public function test_chercher_commentaire_tous_un_createur_non_existant
+    {
+        $reponse_attendue = []
+        $reponse_observee=(new CommentaireDAO()->get_toutes("abc");
+        $this->assertEquals($reponse_attendue, $reponse_observee);
+    }
+
+    public function test_sauvegarder_un_commentaire_inexistant
+    {
+        $commentaire = new Commentaire(999,"Le message a sauvegarder","Yuki");
+        $dao = new CommentaireDAO();
+
+        $dao->save($commentaire);
+
+        $reponse_observee = $dao->get_commentaire(999);
+        $this->assertEquals( $commentaire, $reponse_observee);
+    }
+
+    public function test_sauvegarder_un_commentaire_existant
+    {
+        $commentaire = new Commentaire(1,"le 1er message","Jean");
+        $dao = new CommentaireDAO();
+
+        try {
+			$dao->save($commentaire);
+			$this->fail();
+		} catch (DAOException $e) {
+			// Exception est lancée
+			$this->assertTrue(true);
+		} 
     }
 }

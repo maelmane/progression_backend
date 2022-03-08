@@ -121,3 +121,9 @@ INSERT INTO commentaire VALUES(
   "le 2er message",
   "Pat"
 );
+
+INSERT INTO commentaire VALUES(
+  3,
+  "le 3er message",
+  "Jean"
+);

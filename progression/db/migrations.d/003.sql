@@ -9,7 +9,7 @@ DELIMITER &&
 
 		  START TRANSACTION;
 		  
-		  CREATE TABLE `user` (
+		  /*CREATE TABLE `user` (
 			`username`	varchar(255),
 			`password`	varchar(255),
 			`actif`		int NOT NULL DEFAULT 1,
@@ -29,14 +29,7 @@ DELIMITER &&
 		  );
 
  
-		  CREATE TABLE `commentaire` (
-			`id`      	 int NOT NULL AUTO_INCREMENT,
-			`message`    TEXT NULL,
-			`createur`	 varchar(255),
-			PRIMARY KEY (`id`),
-			FOREIGN KEY (`username`, `question_uri`, `date_soumission`) REFERENCES reponse_prog(`username`, `question_uri`, `date_soumission`),
-			FOREIGN KEY (`username`) REFERENCES `user`(`username`)
-		  );
+		  
 
 		  CREATE TABLE `sauvegarde` (
 			`username`			varchar(255) NOT NULL,
@@ -77,6 +70,16 @@ DELIMITER &&
 			`tests_reussis`  int NOT NULL DEFAULT 0,
 			PRIMARY KEY (`username`, `question_uri`, `date_soumission`),
 			FOREIGN KEY (`username`, `question_uri`) REFERENCES avancement(`username`, `question_uri`)
+		  );
+		  */
+
+		  CREATE TABLE `commentaire` (
+			`id`      	 int NOT NULL AUTO_INCREMENT,
+			`message`    TEXT NULL,
+			`createur`	 varchar(255),
+			PRIMARY KEY (`id`),
+			FOREIGN KEY (`username`, `question_uri`, `date_soumission`) REFERENCES reponse_prog(`username`, `question_uri`, `date_soumission`),
+			FOREIGN KEY (`username`) REFERENCES `user`(`username`)
 		  );
 
 		  UPDATE `version` SET `version` = 1;
