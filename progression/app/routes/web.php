@@ -70,5 +70,5 @@ $router->group(["middleware" => ["auth", "validationPermissions"]], function () 
 	// Résultat
 	$router->post("/test/{username}/{question_uri}/{numero:[[:digit:]]+}", "NotImplementedCtl@get");
     // Jeton
-    $router->get("/jeton/{username}", "JetonCtl@post");
+    $router->post("/jeton/{username}", "JetonCtl@post");
 });
