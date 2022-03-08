@@ -38,7 +38,7 @@ class SoumettreTentativeProgInt extends Interacteur
 			$traiterTentativeProgInt = new TraiterTentativeProgInt();
 			$tentativeTraité = $traiterTentativeProgInt->traiter_résultats($question, $tentative);
 
-            $avancement = $this->récupérerAvancement($username, $question->uri);
+            $avancement = $this->récupérerAvancement($username, $question->uri, $tentativeTraité);
             $this->sauvegarderAvancement($username, $question->uri, $avancement);
 
 			$interacteurSauvegarde = new SauvegarderTentativeProgInt();
