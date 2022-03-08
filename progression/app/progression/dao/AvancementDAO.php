@@ -91,7 +91,7 @@ class AvancementDAO extends EntitéDAO
 
 			if ($query->fetch()) {
 				$avancement = new Avancement();
-				$avancement->état = $état;
+				$avancement->etat = $état;
 				$avancement->type = $type;
 				$avancement->titre = $titre;
 				$avancement->niveau = $niveau;

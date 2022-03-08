@@ -3,7 +3,7 @@ DELIMITER &&
   CREATE PROCEDURE migration()
   proc: BEGIN
 		  SET @version := (SELECT `version` FROM `version`);
-		  IF @version >= 1 THEN
+		  IF @version >= 2 THEN
 			LEAVE proc;
 		  END IF;
 
@@ -16,8 +16,8 @@ DELIMITER &&
                 date_modification int(10) NOT NULL,
                 date_reussite int(10));
 
-
-          UPDATE `version` SET `version` = 1;
+      
+          UPDATE `version` SET `version` = 2;
 		  COMMIT;
 
 		END &&

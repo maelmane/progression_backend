@@ -59,24 +59,37 @@ INSERT INTO sauvegarde VALUES (
 );
 
 INSERT INTO avancement VALUES (
-  "bob",
+  "bob",/*USER*/
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-  0,
-  3
+  /**/
+  0,/**/
+  3,/*ÉTAT*/
+  "Bob",/*TITRE*/
+  "facile",/*NIVEAU*/
+  1645739981,/*DATE*/
+  1645739959 /*DATE*/
 );
 
 INSERT INTO avancement VALUES (
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction",
   1,
-  3
+  3,
+  "Bob",
+  "facile",
+  1645739981,
+  1645739959
 );
 
 INSERT INTO avancement VALUES (
   "Stefany",
   "https://exemple.com",
   1,
-  3
+  3,
+  "Bob",
+  "facile",
+  1645739981,
+  1645739959
 );
 
 INSERT INTO reponse_prog VALUES (
@@ -87,6 +100,7 @@ INSERT INTO reponse_prog VALUES (
   "print(\"Tourlou le monde!\")",
   0,
   2
+  
 );
 
 INSERT INTO reponse_prog VALUES (
