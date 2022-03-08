@@ -44,6 +44,12 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->get_tentative_prog_dao()
 			->andReturn($mockTentativeDao);
 
+
+			/***/
+
+
+
+			/***/
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 	public function tearDown(): void
@@ -134,6 +140,8 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 	public function test_étant_donné_une_deuxième_tentative_nonréussie_à_une_question_non_réussie_lorsquon_la_sauvegarde_lavancement_nest_pas_sauvegardé_et_on_obtient_la_tentative()
 	{
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
+		
+		//Comentaire
 
 		DAOFactory::getInstance()
 			->get_avancement_dao()
@@ -144,9 +152,20 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 					new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", []),
 				]),
 			);
+			/*
 		DAOFactory::getInstance()
 			->get_avancement_dao()
 			->shouldNotReceive("save");
+			*/
+		$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, 
+		[new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", []) ]);
+		
+
+		//Il ne faudrait pas retourner un avancement
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldReceive("save")
+			->once();
 
 		DAOFactory::getInstance()
 			->get_tentative_prog_dao()
@@ -167,9 +186,10 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 
 	public function test_étant_donné_une_deuxième_tentative_réussie_à_une_question_non_réussie_lorsquon_la_sauvegarde_lavancement_est_aussi_sauvegardé_et_on_obtient_la_tentative()
 	{
+		/** */
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, true, 1, "feedback", []);
 
-		$avancement = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [
+		$avancement_attendu = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [
 			new TentativeProg(1, "print('code')", 1616531000, false, 0, "feedback", []),
 			$tentative,
 		]);
@@ -188,10 +208,13 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->get_avancement_dao()
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($user, $uri, $av) use ($avancement) {
-				return $user == "Bob" && $uri == "https://example.com/question" && $av == $avancement;
+			->withArgs(function ($user, $uri, $av) use ($avancement_attendu) {
+				$av->date_modification = $avancement_attendu->date_modification;
+				$av->date_réussite =$avancement_attendu->date_réussite;
+				return $user == "Bob" && $uri == "https://example.com/question" && $av == $avancement_attendu;
+
 			})
-			->andReturn($avancement);
+			->andReturn($avancement_attendu);
 
 		DAOFactory::getInstance()
 			->get_tentative_prog_dao()
@@ -203,10 +226,10 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->andReturn($tentative);
 
 		$résultat_attendu = $tentative;
-
+		
 		$interacteur = new SauvegarderTentativeProgInt();
 		$résultat_observé = $interacteur->sauvegarder("Bob", "https://example.com/question", $tentative);
-
+		
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 

@@ -40,5 +40,8 @@ class SoumettreTentativeProgInt extends Interacteur
 			return $tentativeTraité;
 		}
 		return null;
+
+		//On récupère l'avancement
+		//On check s'il existe
 	}
 }

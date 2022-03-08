@@ -51,7 +51,7 @@ class SauvegarderTentativeProgInt extends Interacteur
 			$dao_avancement->save($username, $question_uri, $avancement);
 		}
 			
-		
+		//Faire le refactoring à SoumettreAvancement. (On ne touche pas l'avancement ici)
 		
 		$dao_tentative = $this->source_dao->get_tentative_prog_dao();
 		return $dao_tentative->save($username, $question_uri, $tentative);
