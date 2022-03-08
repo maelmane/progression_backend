@@ -64,7 +64,7 @@ class GénérateurDeToken
         Log::debug("GénérateurDeToken.générerTokenParRessource. Params : ", [$user,$typeResource, $idResource,$méthodes]);
 
         $payload = [
-            "username" => $user->username,
+            "username" => $user,
             "id" => $idResource,
             "type" => $typeResource,
             "méthode" => $méthodes,
