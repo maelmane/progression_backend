@@ -46,12 +46,20 @@ class SauvegarderAvancementInt extends Interacteur
 
     private function mettreÀJourDateModificationEtDateRéussie($avancement) {
         $date = (new \DateTime())->getTimestamp();
-        if(!empty($avancement->tentative)) {
-            $tentative = $avancement->tentative[0];
+        if(!empty($avancement->tentatives)) {
+			$tentatives = $avancement->tentatives;
+			$tentative = $tentatives[0];
+			foreach($tentatives as $t){
+				if($t->réussi == Question::ETAT_REUSSI){
+					$tentative = $t;
+				}
+			}
+            
             if($avancement->etat != Question::ETAT_REUSSI && $tentative->réussi){
                 $avancement->etat = Question::ETAT_REUSSI;
                 $avancement->date_réussite = $date;
             }
+			//$avancement->etat = Question::ETAT_NONREUSSI;
         }
         $avancement->date_modification = $date;
         return $avancement;

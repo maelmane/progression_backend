@@ -36,11 +36,16 @@ class SoumettreTentativeProgInt extends Interacteur
 			$traiterTentativeProgInt = new TraiterTentativeProgInt();
 			$tentativeTraité = $traiterTentativeProgInt->traiter_résultats($question, $tentative);
 
+			/** */
+			
+			/** */
             $avancement = $this->récupérerAvancement($username, $question->uri, $tentativeTraité);
             $this->sauvegarderAvancement($username, $question->uri, $avancement);
 
+			/** */
 			$interacteurSauvegarde = new SauvegarderTentativeProgInt();
 			$interacteurSauvegarde->sauvegarder($username, $question->uri, $tentativeTraité);
+			/** */
 			return $tentativeTraité;
 		}
 		return null;
@@ -53,7 +58,8 @@ class SoumettreTentativeProgInt extends Interacteur
         if ($avancement == null) {
             $avancement = $this->créerAvancement($tentative);
         }
-
+		$avancement->tentatives[] = $tentative;
+		
         return $avancement;
     }
 
