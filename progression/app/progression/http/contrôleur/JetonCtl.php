@@ -25,8 +25,4 @@ class JetonCtl extends Contrôleur
         
         return $réponse;
     }
-
-    public function fake(Request $request){
-        return $request->input("username");;
-    }
 }
