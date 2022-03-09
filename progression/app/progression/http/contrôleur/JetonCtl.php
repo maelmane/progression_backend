@@ -14,7 +14,7 @@ class JetonCtl extends Contrôleur
     *
     * @return string Un URL qui donne accès à la ressource. 
     */
-    public function post(Request $request){
+    public function post(Request $request) {
         $username = $request->input("username");
         $idRessource = $request->input("idRessource");
         $typeRessource = $request->input("typeRessource");
