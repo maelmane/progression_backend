@@ -33,7 +33,7 @@ final class JetonCtlTests extends TestCase
     
     $user = new GenericUser(["username" => "MrGeneric", "rôle" => User::ROLE_NORMAL]);
     
-    $response = $this->actingAs($user)->call("POST", "/jeton", ["username" => "MrGeneric", "idRessource" => "IdentifiantRessource", "typeRessource" => "avancement"]);
+    $response = $this->actingAs($user)->call("POST", "/jeton/MrGeneric", ["username" => "MrGeneric", "idRessource" => "IdentifiantRessource", "typeRessource" => "avancement"]);
     
     $this->assertEquals(200, $response->status());
 	}
