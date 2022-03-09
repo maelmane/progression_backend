@@ -19,8 +19,7 @@
 use progression\TestCase;
 
 use progression\http\contrôleur\GénérateurDeToken;
-use progression\domaine\entité\{User, Clé};
-use progression\dao\DAOFactory;
+use progression\domaine\entité\{User};
 use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
 use Firebase\JWT\JWT;
@@ -28,13 +27,14 @@ use progression\http\contrôleur\JetonCtl;
 
 final class JetonCtlTests extends TestCase
 {
-	public function test_création_de_jeton_pour_lien_vers_exercice_par_autre_fonctionn() {
-		$jetonCtrl = new JetonCtl();
-
-		
-
+	public function test_création_de_jeton_qui_donne_accès_à_un_avancement() {
+    putenv("AUTH_LDAP=true");
+    putenv("AUTH_LOCAL=true");
+    
+    $user = new GenericUser(["username" => "MrGeneric", "rôle" => User::ROLE_NORMAL]);
+    
+    $response = $this->actingAs($user)->call("POST", "/jeton", ["username" => "MrGeneric", "idRessource" => "IdentifiantRessource", "typeRessource" => "avancement"]);
+    
+    $this->assertEquals(200, $response->status());
 	}
-
-
-
 }

@@ -36,6 +36,4 @@ class Avancement
 		$this->etat = $etat;
 		$this->type = $type;
 	}
-
-
 }

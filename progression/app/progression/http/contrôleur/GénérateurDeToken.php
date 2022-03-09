@@ -59,9 +59,9 @@ class GénérateurDeToken
         return $réponse;
     }
 
-    function générerTokenParRessource($user, $idResource, $typeResource, $méthodes=["get"])
+    function générer_token_pour_ressourc($user, $idResource, $typeResource, $méthodes=["get"])
     {
-        Log::debug("GénérateurDeToken.générerTokenParRessource. Params : ", [$user,$typeResource, $idResource,$méthodes]);
+        Log::debug("GénérateurDeToken.générer_token_pour_ressource. Params : ", [$user,$typeResource, $idResource,$méthodes]);
 
         $payload = [
             "username" => $user,
@@ -72,7 +72,7 @@ class GénérateurDeToken
 
         $réponse = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
 
-        Log::debug("GénérateurDeToken.générerTokenParRessource. Retour : ", [$réponse]);
+        Log::debug("GénérateurDeToken.générer_token_pour_ressource. Retour : ", [$réponse]);
         return $réponse;
     }
 }
