@@ -59,6 +59,16 @@ class GénérateurDeToken
         return $réponse;
     }
 
+    /**
+    * Génère un token JWT en fonction de paramètres décrivant une ressource. 
+    *
+    * @param string $user L'utilisateur associé à la ressource.
+    * @param string $ideResource L'identifiant de la ressource ($username.$uriQuestion).
+    * @param string $typeResource Le type de la ressource (ex.: avancement).
+    * @param string $méthode La méthode de requête http.
+    *
+    * @return string Un JWT signé par le serveur. 
+    */
     function générer_token_pour_ressource($user, $idResource, $typeResource, $méthodes=["get"])
     {
         Log::debug("GénérateurDeToken.générer_token_pour_ressource. Params : ", [$user, $typeResource, $idResource, $méthodes]);
