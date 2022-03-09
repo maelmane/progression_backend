@@ -18,6 +18,7 @@
 
 use progression\TestCase;
 
+use progression\dao\DAOFactory;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\{User};
 use Illuminate\Http\Request;
@@ -27,13 +28,34 @@ use progression\http\contrôleur\JetonCtl;
 
 final class JetonCtlTests extends TestCase
 {
+  public $user;
+
+	public function setUp(): void
+	{
+		parent::setUp();
+		$this->user = new GenericUser(["username" => "MrGeneric", "rôle" => User::ROLE_NORMAL]);
+
+		$_ENV["APP_URL"] = "https://example.com/";
+
+		// UserDAO
+		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("MrGeneric")
+			->andReturn(new User("MrGeneric"));
+
+		DAOFactory::setInstance($mockDAOFactory);
+	}
+
+	public function tearDown(): void
+	{
+		Mockery::close();
+	}
 	public function test_création_de_jeton_qui_donne_accès_à_un_avancement() {
-    putenv("AUTH_LDAP=false");
+    putenv("AUTH_LDAP=true");
     putenv("AUTH_LOCAL=true");
     
-    $user = new GenericUser(["username" => "MrGeneric", "rôle" => User::ROLE_NORMAL]);
-    
-    $response = $this->actingAs($user)->call("POST", "/jeton/MrGeneric", ["username" => "MrGeneric", "idRessource" => "IdentifiantRessource", "typeRessource" => "avancement"]);
+    $response = $this->actingAs(this->user)->call("POST", "/jeton/MrGeneric", ["username" => "MrGeneric", "idRessource" => "IdentifiantRessource", "typeRessource" => "avancement"]);
     
     $this->assertEquals(200, $response->status());
 	}
