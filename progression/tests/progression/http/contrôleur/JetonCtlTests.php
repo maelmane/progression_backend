@@ -28,7 +28,7 @@ use progression\http\contrôleur\JetonCtl;
 final class JetonCtlTests extends TestCase
 {
 	public function test_création_de_jeton_qui_donne_accès_à_un_avancement() {
-    putenv("AUTH_LDAP=true");
+    putenv("AUTH_LDAP=false");
     putenv("AUTH_LOCAL=true");
     
     $user = new GenericUser(["username" => "MrGeneric", "rôle" => User::ROLE_NORMAL]);

@@ -59,9 +59,9 @@ class GénérateurDeToken
         return $réponse;
     }
 
-    function générer_token_pour_ressourc($user, $idResource, $typeResource, $méthodes=["get"])
+    function générer_token_pour_ressource($user, $idResource, $typeResource, $méthodes=["get"])
     {
-        Log::debug("GénérateurDeToken.générer_token_pour_ressource. Params : ", [$user,$typeResource, $idResource,$méthodes]);
+        Log::debug("GénérateurDeToken.générer_token_pour_ressource. Params : ", [$user, $typeResource, $idResource, $méthodes]);
 
         $payload = [
             "username" => $user,
