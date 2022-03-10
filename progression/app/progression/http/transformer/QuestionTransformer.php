@@ -37,6 +37,9 @@ class QuestionTransformer extends Fractal\TransformerAbstract
 			"titre" => $question->titre,
 			"description" => $question->description,
 			"énoncé" => $question->enonce,
+			"feedback_pos" => $question->feedback_pos,
+			"feedback_neg" => $question->feedback_neg,
+			"feedback_err" => $question->feedback_err,
 			"auteur" => $question->auteur,
 			"licence" => $question->licence,
 			"links" => [
