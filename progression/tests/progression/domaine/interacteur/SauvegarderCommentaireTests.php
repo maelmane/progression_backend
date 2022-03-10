@@ -20,15 +20,23 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Commentaire;
 use progression\dao\DAOFactory;
+use PHPUnit\Framework\TestCase;
+use Mockery;
 
-class ObtenirCommentaire extends Interacteur
+final class SauvegarderCommentaireTests extends TestCase
 {
-	public function get_commentaire($numéroSeq)
+	public function setUp(): void
 	{
-		$dao = DAOFactory::getInstance()->get_commentaire_dao();
+		parent::setUp();
 
-		$commentaire = $dao->get_commentaire($numéroSeq);
-    
-		return $commentaire;
+		$commentaire = new Commentaire(1234, "il faut déclarer la variable avant de l'instancier ", "John", "2021-06-26 00:00:00");
+
 	}
+
+	public function tearDown(): void
+	{
+		Mockery::close();
+		DAOFactory::setInstance(null);
+	}
+
 }
