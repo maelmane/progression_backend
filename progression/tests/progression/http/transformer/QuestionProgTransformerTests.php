@@ -44,6 +44,9 @@ final class QuestionProgTransformerTests extends TestCase
 		$question->auteur = "Albert Einstein";
 		$question->licence = "poétique";
 		$question->niveau = "débutant";
+		$question->feedback_pos = "Bravo !";
+		$question->feedback_neg = "Pas fort...";
+		$question->feedback_err = "Erreur :(";
 
 		$item = (new QuestionProgTransformer())->transform([
 			"question" => $question,

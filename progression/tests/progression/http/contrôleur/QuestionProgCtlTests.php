@@ -44,6 +44,9 @@ final class QuestionProgCtlTests extends TestCase
 		$question->auteur = "Albert Einstein";
 		$question->licence = "poétique";
 		$question->niveau = "débutant";
+		$question->feedback_pos = "Bravo !";
+		$question->feedback_neg = "Pas fort...";
+		$question->feedback_err = "Erreur :(";
 		// Ébauches
 		$question->exécutables["python"] = new Exécutable("print(\"Hello world\")", "python");
 		$question->exécutables["java"] = new Exécutable("System.out.println(\"Hello world\")", "java");
