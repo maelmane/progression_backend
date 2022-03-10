@@ -1,9 +1,9 @@
+DELETE FROM commentaire;
 DELETE FROM reponse_prog;
 DELETE FROM avancement;
 DELETE FROM sauvegarde;
 DELETE FROM cle;
 DELETE FROM user;
-DELETE FROM commentaire;
 
 INSERT INTO user VALUES (
   "jdoe",

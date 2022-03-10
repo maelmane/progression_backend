@@ -33,39 +33,39 @@ final class CommentaireDAOTests extends TestCase
 		EntitéDAO::get_connexion()->rollback();
 	}
 
-    public function test_chercher_commentaire_a_partir_id
+    public function test_chercher_commentaire_a_partir_id()
     {
         $reponse_attendue = new Commentaire(1,"le 1er message","Jean");
-        $reponse_observee = (new CommentaireDAO()->get_commentaire(1));
+        $reponse_observee = (new CommentaireDAO())->get_commentaire(1);
         $this->assertEquals($reponse_attendue, $reponse_observee);
     }
 
-    public function test_chercher_commentaire_non_existant
+    public function test_chercher_commentaire_non_existant()
     {
         $reponse_attendue = null;
-        $reponse_observee = (new CommentaireDAO()->get_commentaire(-1));
+        $reponse_observee = (new CommentaireDAO())->get_commentaire(-1);
         $this->assertEquals($reponse_attendue, $reponse_observee);
     }
 
-    public function test_chercher_commentaire_tous_un_createur
+    public function test_chercher_commentaire_tous_un_createur()
     {
         $reponse_attendue = [
-            1 => new Commentaire(null,"le 1er message","Jean");
-            3 => new Commentaire(null,"le 3er message","Jean");
-        ]
+            1 => new Commentaire(null,"le 1er message","Jean"),
+            3 => new Commentaire(null,"le 3er message","Jean"),
+        ];
 
-        $reponse_observee=(new CommentaireDAO()->get_toutes("Jean");
+        $reponse_observee=(new CommentaireDAO())->get_toutes("Jean");
         $this->assertEquals($reponse_attendue, $reponse_observee);
     }
 
-    public function test_chercher_commentaire_tous_un_createur_non_existant
+    public function test_chercher_commentaire_tous_un_createur_non_existant()
     {
-        $reponse_attendue = []
-        $reponse_observee=(new CommentaireDAO()->get_toutes("abc");
+        $reponse_attendue = [];
+        $reponse_observee=(new CommentaireDAO())->get_toutes("abc");
         $this->assertEquals($reponse_attendue, $reponse_observee);
     }
 
-    public function test_sauvegarder_un_commentaire_inexistant
+    public function test_sauvegarder_un_commentaire_inexistant()
     {
         $commentaire = new Commentaire(999,"Le message a sauvegarder","Yuki");
         $dao = new CommentaireDAO();
@@ -76,7 +76,7 @@ final class CommentaireDAOTests extends TestCase
         $this->assertEquals( $commentaire, $reponse_observee);
     }
 
-    public function test_sauvegarder_un_commentaire_existant
+    public function test_sauvegarder_un_commentaire_existant()
     {
         $commentaire = new Commentaire(1,"le 1er message","Jean");
         $dao = new CommentaireDAO();
