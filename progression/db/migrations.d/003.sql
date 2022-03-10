@@ -3,7 +3,7 @@ DELIMITER &&
   CREATE PROCEDURE migration()
   proc: BEGIN
 		  SET @version := (SELECT `version` FROM `version`);
-		  IF @version >= 1 THEN
+		  IF @version >= 3 THEN
 			LEAVE proc;
 		  END IF;
 
@@ -77,12 +77,16 @@ DELIMITER &&
 			`id`      	 int NOT NULL AUTO_INCREMENT,
 			`message`    TEXT NULL,
 			`createur`	 varchar(255),
+			`usernameReponseProg`  varchar(255) NOT NULL,
+			`question_uri` varchar(1024) CHARACTER SET latin1,
+			`date_soumission` 	int(10) NOT NULL,
+			`username`  varchar(255),
 			PRIMARY KEY (`id`),
-			FOREIGN KEY (`username`, `question_uri`, `date_soumission`) REFERENCES reponse_prog(`username`, `question_uri`, `date_soumission`),
-			FOREIGN KEY (`username`) REFERENCES `user`(`username`)
+			FOREIGN KEY (`usernameReponseProg`, `question_uri`, `date_soumission`) REFERENCES reponse_prog(`username`, `question_uri`, `date_soumission`),
+			FOREIGN KEY (`username`) REFERENCES user(`username`)
 		  );
 
-		  UPDATE `version` SET `version` = 1;
+		  UPDATE `version` SET `version` = 3;
 		  COMMIT;
 
 		END &&
