@@ -23,11 +23,11 @@ use progression\dao\DAOFactory;
 
 class ObtenirCommentaire extends Interacteur
 {
-	public function get_commentaire($id)
+	public function get_commentaire($numéroSeq)
 	{
 		$dao = DAOFactory::getInstance()->get_commentaire_dao();
 
-		$commentaire = $dao->get_commentaire($id);
+		$commentaire = $dao->get_commentaire($numéroSeq);
     
 		return $commentaire;
 	}
