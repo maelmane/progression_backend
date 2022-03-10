@@ -133,7 +133,7 @@ INSERT INTO commentaire VALUES(
 INSERT INTO commentaire VALUES(
   3,
   "le 3er message",
-  "bob12",
+  "Pat",
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
   1615696276,

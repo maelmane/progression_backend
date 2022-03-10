@@ -35,7 +35,7 @@ final class CommentaireDAOTests extends TestCase
 
     public function test_chercher_commentaire_a_partir_id()
     {
-        $reponse_attendue = new Commentaire(1,"le 1er message","Jean");
+        $reponse_attendue = new Commentaire(1,1615696276,"le 1er message","Jean");
         $reponse_observee = (new CommentaireDAO())->get_commentaire(1);
         $this->assertEquals($reponse_attendue, $reponse_observee);
     }
@@ -50,11 +50,11 @@ final class CommentaireDAOTests extends TestCase
     public function test_chercher_commentaire_tous_un_createur()
     {
         $reponse_attendue = [
-            1 => new Commentaire(null,"le 1er message","Jean"),
-            3 => new Commentaire(null,"le 3er message","Jean"),
+            1 => new Commentaire(2,1620150375,"le 1er message","Jean"),
+            3 => new Commentaire(3,1620150375,"le 3er message","Jean"),
         ];
 
-        $reponse_observee=(new CommentaireDAO())->get_toutes("Jean");
+        $reponse_observee=(new CommentaireDAO())->get_toutes("Pat");
         $this->assertEquals($reponse_attendue, $reponse_observee);
     }
 
@@ -67,7 +67,7 @@ final class CommentaireDAOTests extends TestCase
 
     public function test_sauvegarder_un_commentaire_inexistant()
     {
-        $commentaire = new Commentaire(999,"Le message a sauvegarder","Yuki");
+        $commentaire = new Commentaire(999,1620150375,"Le message a sauvegarder","Yuki");
         $dao = new CommentaireDAO();
 
         $dao->save($commentaire);
@@ -78,7 +78,7 @@ final class CommentaireDAOTests extends TestCase
 
     public function test_sauvegarder_un_commentaire_existant()
     {
-        $commentaire = new Commentaire(1,"le 1er message","Jean");
+        $commentaire = new Commentaire(1,1620150375,"le 1er message","Jean");
         $dao = new CommentaireDAO();
 
         try {
