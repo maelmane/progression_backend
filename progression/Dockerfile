@@ -45,6 +45,9 @@ CMD [ "bash", "progression/app/entrypoint.sh" ]
 RUN apt install -y black
 RUN apt install -y clang-format
 RUN pip3 install beautysh
+RUN apt install -y npm
+RUN npm --global install standard typescript ts-standard
+RUN touch /tmp/tsconfig.eslint.json
 
 COPY phpstan.neon /var/www/progression/
 COPY phpunit.xml /var/www/progression/
