@@ -8,14 +8,13 @@ use Illuminate\Support\Facades\Log;
 class JetonCtl extends Contrôleur
 {
     /**
-    * Génère un URL qui inclut un JWT et qui donne accès à une ressource (ex.: un avancement). 
+    * Génère un JWT qui donne accès à une ressource (ex.: un avancement).
     *
-    * @param Request $request Les informations identifiant la ressource.
+    * @param Request $request Les informations identifiant la ressource et un $username de l'étudiant concerné.
     *
     * @return string Un URL qui donne accès à la ressource. 
     */
-    public function post(Request $request) {
-        $username = $request->input("username");
+    public function post(Request $request, $username) {
         $idRessource = $request->input("idRessource");
         $typeRessource = $request->input("typeRessource");
         
