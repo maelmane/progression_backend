@@ -60,7 +60,7 @@ class AuthServiceProvider extends ServiceProvider
 				try {
 					$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
 					// Compare le Unix Timestamp courant et l'expiration du token.
-					if ($tokenDécodé->expired!=null && time() > $tokenDécodé->expired) {
+					if (isset($tokenDécodé->expired) && time() > $tokenDécodé->expired) {
                         return null;
                     } else {
 						// Recherche de l'utilisateur
