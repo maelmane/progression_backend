@@ -114,28 +114,31 @@ INSERT INTO commentaire VALUES(
   1,
   "le 1er message",
   "Jean",
+  1615696276,
+  14,
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-  1615696276,
-  "jdoe"
+  1615696276
 );
 
 INSERT INTO commentaire VALUES(
   2,
   "le 2er message",
   "Pat",
+  1615696276,
+  12,
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-  1615696276,
-  "jdoe"
+  1615696276
 );
 
 INSERT INTO commentaire VALUES(
   3,
   "le 3er message",
   "Pat",
+  1615696276,
+  14,
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-  1615696276,
-  "jdoe"
+  1615696276
 );

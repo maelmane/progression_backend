@@ -74,16 +74,16 @@ DELIMITER &&
 		  */
 
 		  CREATE TABLE `commentaire` (
-			`id`      	 int NOT NULL AUTO_INCREMENT,
-			`message`    TEXT NULL,
-			`createur`	 varchar(255),
-			`usernameReponseProg`  varchar(255) NOT NULL,
-			`question_uri` varchar(1024) CHARACTER SET latin1,
+			`id`      	 	int NOT NULL AUTO_INCREMENT,
+			`message`   		TEXT NOT NULL,
+			`createur`	 	varchar(255) NOT NULL,
+			`date`	 	 	int(10) NOT NULL,
+			`numeroLigne`		int(10) NOT NULL,			
+			`username`  		varchar(255) NOT NULL,
+			`question_uri`  	varchar(1024) CHARACTER SET latin1 NOT NULL,
 			`date_soumission` 	int(10) NOT NULL,
-			`username`  varchar(255),
 			PRIMARY KEY (`id`),
-			FOREIGN KEY (`usernameReponseProg`, `question_uri`, `date_soumission`) REFERENCES reponse_prog(`username`, `question_uri`, `date_soumission`),
-			FOREIGN KEY (`username`) REFERENCES user(`username`)
+			FOREIGN KEY (`username`, `question_uri`, `date_soumission`) REFERENCES reponse_prog(`username`, `question_uri`, `date_soumission`)
 		  );
 
 		  UPDATE `version` SET `version` = 3;
