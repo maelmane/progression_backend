@@ -18,7 +18,7 @@ class JetonCtl extends Contrôleur
         $idRessource = $request->input("idRessource");
         $typeRessource = $request->input("typeRessource");
         
-        $token = GénérateurDeToken::get_instance()->générer_token_pour_ressource($username, $idRessource, $typeRessource);
+        $token = GénérateurDeToken::get_instance()->générer_token_pour_ressource($username, $typeRessource, $idRessource);
         $réponse = $this->préparer_réponse($token);
         Log::debug("JetonCtl.post. Retour : ", [$réponse]);
         
