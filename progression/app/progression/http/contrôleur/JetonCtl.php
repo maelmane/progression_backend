@@ -2,16 +2,17 @@
 
 namespace progression\http\contrôleur;
 
-use http\Env\Request;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
-class JetonCtl
+class JetonCtl extends Contrôleur
 {
     public function post(Request $request, $username){
-        $b=$request.body;
-        $id=$b.idRessource;
-        $type=$b.typeRessource;
-        $token= GénérateurDeToken::get_instance()->générerTokenParRessource($username,$id,$type);
+        $id=$request->input("idRessource");
+        $type=$request->input("typeRessource");
+        $token= GénérateurDeToken::get_instance()->générerTokenParRessource($username,$type,$id);
         $réponse = $this->préparer_réponse($token);
+        Log::debug("JetonCtl.post. Retour : ", [$réponse]);
         return $réponse;
     }
 }
