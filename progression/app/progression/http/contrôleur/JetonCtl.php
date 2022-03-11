@@ -7,10 +7,17 @@ use Illuminate\Support\Facades\Log;
 
 class JetonCtl extends Contrôleur
 {
-    public function post(Request $request, $username){
-        $id=$request->input("idRessource");
-        $type=$request->input("typeRessource");
-        $token= GénérateurDeToken::get_instance()->générerTokenParRessource($username,$type,$id);
+    /**
+    * Génère un JWT qui donne accès à une ressource (ex.: un avancement).
+    *
+    * @param Request $request Les informations identifiant la ressource et un $username de l'étudiant concerné.
+    *
+    * @return string Un URL qui donne accès à la ressource. 
+    */
+    public function post(Request $request, $username) {
+        $idRessource = $request->input("idRessource");
+        $typeRessource = $request->input("typeRessource");
+        $token = GénérateurDeToken::get_instance()->générer_token_pour_ressource($username, $typeRessource, $idRessource);
         $réponse = $this->préparer_réponse($token);
         Log::debug("JetonCtl.post. Retour : ", [$réponse]);
         return $réponse;
