@@ -48,7 +48,7 @@ class GénérateurDeToken
         Log::debug("GénérateurDeToken.générer_token. Params : ", [$user]);
 
         $payload = [
-            "typeToken" => "régulier",
+            //"typeToken" => "régulier",
             "username" => $user->username,
             "current" => time(),
             "expired" => time() + $_ENV["JWT_TTL"],
@@ -70,15 +70,15 @@ class GénérateurDeToken
     *
     * @return string Un JWT signé par le serveur. 
     */
-    function générer_token_ressource($username, $typeRessource, $uri, $method=["get"])
+    function générer_token_ressource($username, $typeRessource, $uriQuestion, $method=["get"])
     {
         $payload = [
-            "typeToken" => "ressource",
+            //"typeToken" => "ressource",
             "username" => $username,
             "current" => time(),
             "expired" => time() + strtotime("+ 2 years"),
             "typeRessource" => $typeRessource,
-            "uri" => $uri,
+            "uriQuestion" => $uriQuestion,
             "method" => $method,
         ];
 
