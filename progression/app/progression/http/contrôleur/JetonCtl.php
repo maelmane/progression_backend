@@ -15,10 +15,12 @@ class JetonCtl extends Contrôleur
     * @return string Un URL qui donne accès à la ressource. 
     */
     public function post(Request $request, $username) {
-        $idRessource = $request->input("idRessource");
+        $uri = $request->input("uri");
         $typeRessource = $request->input("typeRessource");
-        $token = GénérateurDeToken::get_instance()->générer_token_pour_ressource($username, $typeRessource, $idRessource);
+
+        $token = GénérateurDeToken::get_instance()->générer_token_ressource($username, $typeRessource, $uri);
         $réponse = $this->préparer_réponse($token);
+        
         Log::debug("JetonCtl.post. Retour : ", [$réponse]);
         return $réponse;
     }

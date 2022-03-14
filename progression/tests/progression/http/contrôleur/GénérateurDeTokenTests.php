@@ -100,6 +100,44 @@ final class GénérateurDeTokenTests extends TestCase
 		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_observé->getContent());
 	}
 
+	public function test_le_token_généré_contient_les_bons_paramètres()
+	{
+		$username = "UtilisateurLambda";
+		$uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+		$typeRessource = "Avancement";
 
+		$tokenRessource = GénérateurDeToken::get_instance()->générer_token_ressource($username, $typeRessource, $uri);
+		
+		try {
+			$tokenRessourceDécodé = JWT::decode($tokenRessource, $_ENV["JWT_SECRET"], ["HS256"]);
+		} catch (Exception $e) {
+			//TODO: Logger
+		}
+		
+		$this->assertEquals($username, $tokenRessourceDécodé->username);
+		$this->assertEquals($typeRessource, $tokenRessourceDécodé->typeRessource);
+		$this->assertEquals($uri, $tokenRessourceDécodé->uri);
+	}
 
+	public function test_le_token_généré_expire_2_ans_plus_tard()
+	{
+		$username = "UtilisateurLambda";
+		$uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
+		$typeRessource = "Avancement";
+
+		$tokenRessource = GénérateurDeToken::get_instance()->générer_token_ressource($username, $typeRessource, $uri);
+		
+		try {
+			$tokenRessourceDécodé = JWT::decode($tokenRessource, $_ENV["JWT_SECRET"], ["HS256"]);
+		} catch (Exception $e) {
+			//TODO: Logger
+		}
+
+		$current = $tokenRessourceDécodé->current;
+		$expiration = $tokenRessourceDécodé->expired;
+		
+		$this->assertEquals($username, $tokenRessourceDécodé->username);
+		$this->assertEquals($typeRessource, $tokenRessourceDécodé->typeRessource);
+		$this->assertEquals($uri, $tokenRessourceDécodé->uri);
+	}
 }
