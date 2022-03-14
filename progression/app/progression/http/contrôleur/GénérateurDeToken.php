@@ -69,12 +69,12 @@ class GénérateurDeToken
     *
     * @return string Un JWT signé par le serveur. 
     */
-    function générer_token_pour_ressource($user, $typeResource, $idResource, $method=["get"])
+    function générer_token_pour_ressource($user, $typeRessource, $idRessource, $method=["get"])
     {
         $payload = [
             "username" => $user,
-            "ressource" => $typeResource,
-            "id" => $idResource,
+            "ressource" => $typeRessource,
+            "id" => $idRessource,
             "method" => $method,
         ];
 
