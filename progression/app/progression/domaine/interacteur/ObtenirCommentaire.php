@@ -23,12 +23,10 @@ use progression\dao\DAOFactory;
 
 class ObtenirCommentaire extends Interacteur
 {
-	public function get_commentaire($numéroSeq)
+	public function get_commentaire($tentative)
 	{
-		$dao = DAOFactory::getInstance()->get_commentaire_dao();
+    $commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15)
 
-		$commentaire = $dao->get_commentaire($numéroSeq);
-    
 		return $commentaire;
 	}
 }
