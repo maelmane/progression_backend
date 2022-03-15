@@ -74,7 +74,7 @@ DELIMITER &&
 		  */
 
 		  CREATE TABLE `commentaire` (
-			`id`      	 	int NOT NULL AUTO_INCREMENT,
+			`id`      	 	int NOT NULL ,
 			`message`   		TEXT NOT NULL,
 			`createur`	 	varchar(255) NOT NULL,
 			`date`	 	 	int(10) NOT NULL,
@@ -83,7 +83,8 @@ DELIMITER &&
 			`question_uri`  	varchar(1024) CHARACTER SET latin1 NOT NULL,
 			`date_soumission` 	int(10) NOT NULL,
 			PRIMARY KEY (`id`),
-			FOREIGN KEY (`username`, `question_uri`, `date_soumission`) REFERENCES reponse_prog(`username`, `question_uri`, `date_soumission`)
+			FOREIGN KEY (`username`, `question_uri`, `date_soumission`) REFERENCES reponse_prog(`username`, `question_uri`, `date_soumission`),
+			FOREIGN KEY (`createur`) REFERENCES user(`username`)
 		  );
 
 		  UPDATE `version` SET `version` = 3;
