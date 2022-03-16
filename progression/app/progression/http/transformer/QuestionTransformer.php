@@ -41,7 +41,12 @@ class QuestionTransformer extends Fractal\TransformerAbstract
 			"licence" => $question->licence,
 			"links" => [
 				"self" => $_ENV["APP_URL"] . "question/" . $chemin_encodé,
-			],
+			],			
+			"feedback" => [
+				"positive" => $question->feedback_pos,
+				"négative" => $question->feedback_neg,
+				"erreur" => $question->feedback_err,
+			]
 		];
 
 		return $data_out;
