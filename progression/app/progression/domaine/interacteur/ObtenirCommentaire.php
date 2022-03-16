@@ -23,9 +23,9 @@ use progression\dao\DAOFactory;
 
 class ObtenirCommentaire extends Interacteur
 {
-	public function get_commentaire($tentative)
+	public function get_commentaire()
 	{
-    $commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15)
+    $commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15);
 
 		return $commentaire;
 	}

@@ -23,7 +23,7 @@ use progression\dao\DAOFactory;
 
 class SauvegarderCommentaire extends Interacteur
 {
-	public function sauvegarder_commentaire($id , $message, $créateur)
+	public function sauvegarder_commentaire($id , $message, $créateur, $date, $numeroLigne)
 	{
 		if (!$message || !$créateur) {
 			return null;
@@ -35,8 +35,8 @@ class SauvegarderCommentaire extends Interacteur
 			return null;
 		}
 
-		$commentaire = new Commentaire($id , $message, $créateur);
-
-		return $dao->save($commentaire);
+		$commentaire = new Commentaire($id , $message, $créateur, $date, $numeroLigne);
+		//return $dao->save($commentaire);
+		return $commentaire;
 	}
 }
