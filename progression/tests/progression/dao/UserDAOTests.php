@@ -35,10 +35,15 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_on_obtient_son_profil()
 	{
+		
+		$avancement1= new Avancement(1, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
+		
+		$avancement2= new Avancement(0, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
+
 		$réponse_attendue = new User("bob");
 		$réponse_attendue->avancements = [
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement(1, 3),
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement(0, 3),
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => $avancement1,
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $avancement2,
 		];
 		$réponse_attendue->clés = [
 			"clé de test" => new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
@@ -71,10 +76,14 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_le_sauvegarde_il_est_modifié_dans_la_BD_et_on_obtient_son_profil_modifié()
 	{
+		$avancement1= new Avancement(1, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
+		
+		$avancement2= new Avancement(0, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
+
 		$réponse_attendue = new User("bob", User::ROLE_ADMIN);
 		$réponse_attendue->avancements = [
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement(1, 3),
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement(0, 3),
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => $avancement1,
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $avancement2,
 		];
 		$réponse_attendue->clés = [
 			"clé de test" => new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),

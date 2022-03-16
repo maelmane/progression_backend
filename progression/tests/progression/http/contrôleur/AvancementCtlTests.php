@@ -166,7 +166,7 @@ final class AvancementCtlTests extends TestCase
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
 		]);
-
+		
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementCtlTests_nouvelAvancement.json",
