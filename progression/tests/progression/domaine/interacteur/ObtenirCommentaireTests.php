@@ -28,47 +28,23 @@ final class ObtenirCommentaireTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-
-		$commentaire = new Commentaire(1234, "il faut déclarer la variable avant de l'instancier ", "John", "2021-06-26 00:00:00");
-
-		$mockCommentaireDAO = Mockery::mock("progression\\dao\\CommentaireDAO");
-		$mockCommentaireDAO
-			->shouldReceive("get_Commentaire")
-			->with("jdoe", 1234)
-			->andReturn($commentaire);
-		$mockCommentaireDAO
-			->shouldReceive("get_Commentaire")
-			->with("jdoe", 9999)
-			->andReturn(null);
-
-		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_Commentaire_dao()
-			->andReturn($mockCommentaireDAO);
-		DAOFactory::setInstance($mockDAOFactory);
-	}
-
-	public function tearDown(): void
-	{
-		Mockery::close();
-		DAOFactory::setInstance(null);
+		$commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15);
 	}
 
 	public function test_étant_donné_un_Commentaire_existante_lorsquon_la_recherche_par_numéro_on_obtient_un_objet_Commentaire_correspondant()
 	{
-		$int = new ObtenirCommentaireInt();
+		$commentaireAttendu = new ObtenirCommentaire();
 
 		$this->assertEquals(
-			new Commentaire(null, "2021-06-25 00:00:00", "2021-06-26 00:00:00", 1),
-			$int->get_Commentaire("jdoe", 1234),
+			$commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15),
+			$commentaireAttendu->get_Commentaire(),
 		);
 	}
 
-	public function test_étant_donné_une_Commentaire_inexistante_lorsquon_la_recherche_par_username_et_numéro_on_obtient_null()
+	public function test_étant_donné_une_Commentaire_lorsquon_le_compare_a_un_autre_commentaire_on_obtient_null()
 	{
-		$int = new ObtenirCommentaireInt();
+		$commentaireAttendu = new ObtenirCommentaire();
 
-		$this->assertNull($int->get_Commentaire("jdoe", 9999));
+		$this->assertNotEquals($commentaireAttendu->get_Commentaire(),new Commentaire(12, 122456747, "message envoyer poar interacteurMocker", "createur Mock",14));
 	}
 }
