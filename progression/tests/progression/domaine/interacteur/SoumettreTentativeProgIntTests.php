@@ -123,4 +123,16 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		// Assertion
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
+
+
+	public function test_récupérerAvancement_null_retourne_un_avancement(){
+
+		//Mocker get_avancement
+		DAOFactory::getInstance()
+		->get_avancement()
+		->shouldReceive
+
+		//Mocker créerAvancement
+	}
+
 }
