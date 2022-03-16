@@ -29,14 +29,19 @@ final class SauvegarderCommentaireTests extends TestCase
 	{
 		parent::setUp();
 
-		$commentaire = new Commentaire(1234, "il faut déclarer la variable avant de l'instancier ", "John", "2021-06-26 00:00:00");
+		$commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15);
 
 	}
 
-	public function tearDown(): void
+
+
+	public function test_étant_donné_un_Commentaire_existante_lorsquon_le_sauvegarde_obtient_un_Commentaire_sauvegarder_dans_la_BD()
 	{
-		Mockery::close();
-		DAOFactory::setInstance(null);
-	}
+		$commentaireAttendu = new ObtenirCommentaire();
 
+		$this->assertEquals(
+			$commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15),
+			$commentaireAttendu->get_Commentaire(),
+		);
+	}
 }
