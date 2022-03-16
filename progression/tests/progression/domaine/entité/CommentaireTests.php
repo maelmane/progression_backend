@@ -24,17 +24,19 @@ final class CommentaireTests extends TestCase
 {
 	public function test_commentaire_instancié_avec_toutes_les_valeurs_des_attributs_retourne_les_bonnes_valeurs_des_attributs()
 	{
-		$numéroAttendu = 999;
+		$idAttendu = 999;
+		$messageAttendu = "Un nouveau message attendu.";
+		$créateurAttendu = "Nouveau Créateur";
 		$dateAttendu = 20220307;
-        $messageAttendu = "Un nouveau message attendu.";
-        $créateurAttendu = "Nouveau Créateur";
+        $numeroLigneAttendu = 15;
+        
 
-        $commentaire = new Commentaire($numéroAttendu, $dateAttendu, $messageAttendu, $créateurAttendu);
+        $commentaire = new Commentaire($idAttendu, $dateAttendu, $messageAttendu, $créateurAttendu, $numeroLigneAttendu);
 
-		$this->assertEquals($numéroAttendu, $commentaire->numéro);
+		$this->assertEquals($idAttendu, $commentaire->id);
 		$this->assertEquals($dateAttendu, $commentaire->date);
 		$this->assertEquals($messageAttendu, $commentaire->message);
 		$this->assertEquals($créateurAttendu, $commentaire->créateur);
-        //$this->assertEquals($créateurAttendu, "Un mauvais créateur qui fait échouer le test");
+        $this->assertEquals($numeroLigneAttendu, $commentaire->numeroLigne);
 	}
 }
