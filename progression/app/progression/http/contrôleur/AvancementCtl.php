@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\ObtenirAvancementInt;
 use progression\domaine\interacteur\ObtenirUserInt;
 use progression\domaine\interacteur\SauvegarderAvancementInt;
+use progression\domaine\interacteur\ObtenirQuestionInt;
 use progression\http\transformer\AvancementTransformer;
 use progression\util\Encodage;
 use progression\domaine\entité\{User, Avancement, Question};
@@ -101,10 +102,25 @@ class AvancementCtl extends Contrôleur
 	{
 		Log::debug("AvancementCtl.créer_ou_sauvegarder_avancement. Params : ", [$avancement, $username, $question_uri]);
 
+		$avancement_envoyé;
+
+		if ($avancement) {
+			$avancement_envoyé = $avancement;
+		} else {
+			$questionInt = new ObtenirQuestionInt();
+			$question = $questionInt->get_question(Encodage::base64_decode_url($question_uri));
+			$av = new Avancement();
+			$av->titre = $question->titre;
+			$av->niveau = $question->niveau;
+			$av->etat = QUESTION::ETAT_DEBUT;
+			$av->type = QUESTION::TYPE_PROG;
+			$avancement_envoyé = $av;
+		}
+
 		$avancement_sauvegardé = $this->sauvegarder_avancement(
 			$username,
 			$question_uri,
-			$avancement ?? new Avancement(),
+			$avancement_envoyé,
 		);
 
 		$réponse = $avancement_sauvegardé;
