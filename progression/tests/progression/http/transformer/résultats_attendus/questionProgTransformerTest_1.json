@@ -9,5 +9,10 @@
 	"links": {
 		"self": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
 	},
+	"feedback": {
+		"positive": "Bravo! tu as réussi à appeler une fonction paramétrée !",
+		"négative": "Attention, consulte les règles concernant l'appel d'une fonction paramétrée.",
+		"erreur": "Attention, erreur d'écriture, vérifie les règles du langage au sujet des fonctions paramétrées."
+	},
 	"sous-type": "questionProg"
 }
