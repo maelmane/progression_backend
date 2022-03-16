@@ -32,7 +32,7 @@ class SoumettreTentativeProgInt extends Interacteur
 		if ($exécutable) {
 			$tentative->résultats = $this->exécuterProg($exécutable, $question->tests);
 			$tentativeTraité = $this->traiterTentativeProg($question, $tentative);
-            $avancement = $this->récupérerAvancement($username, $question->uri, $tentativeTraité);
+            $avancement = $this->récupérerAvancement($username, $question, $tentativeTraité);
 
 			// Mise à jour du titre, du niveau et des dates
 			$question_de_avancement = $this->récupérer_informations_de_la_question($question->uri);
@@ -50,26 +50,28 @@ class SoumettreTentativeProgInt extends Interacteur
 		return null;
 	}
 
-    private function récupérerAvancement($username, $uriQuestion, $tentative) {
+    private function récupérerAvancement($username, $question, $tentative) {
         $dao_avancement = $this->source_dao->get_avancement_dao();
-        $avancement = $dao_avancement->get_avancement($username, $uriQuestion);
+        $avancement = $dao_avancement->get_avancement($username, $question->uri);
 
         if ($avancement == null) {
-            $avancement = $this->créerAvancement($tentative);
+            $avancement = $this->créerAvancement($tentative, $question);
         }
 		$avancement->tentatives[] = $tentative;
 		
         return $avancement;
     }
 
-    private function créerAvancement($tentative) {
-        return new Avancement(
+    private function créerAvancement($tentative, $question) {
+        $avancement = new Avancement(
             Question::ETAT_NONREUSSI,
             Question::TYPE_PROG,
             [$tentative],
             []
         );
-
+		$avancement->titre = $question->titre;
+		$avancement->niveau = $question->niveau;
+		return $avancement;
     }
 
 	private function mettreÀJourDateModificationEtDateRéussiePourAvancement($avancement) {
