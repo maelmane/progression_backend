@@ -69,6 +69,6 @@ $router->group(["middleware" => ["auth", "validationPermissions"]], function () 
 	$router->get("/tentative/{username}/{question_uri}/{timestamp:[[:digit:]]{10}}/resultats", "NotImplementedCtl@get");
 	// Résultat
 	$router->post("/test/{username}/{question_uri}/{numero:[[:digit:]]+}", "NotImplementedCtl@get");
-    	// Jeton
-    	$router->post("/jeton/{username}", "JetonCtl@post");
+    // Jeton
+    $router->post("/jeton/{username}", "JetonCtl@post");
 });

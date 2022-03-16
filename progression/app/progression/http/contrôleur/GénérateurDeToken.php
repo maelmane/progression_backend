@@ -64,7 +64,7 @@ class GénérateurDeToken
     *
     * @param string $user L'utilisateur associé à la ressource.
     * @param string $typeResource Le type de la ressource (ex.: avancement).
-    * @param string $ideResource L'identifiant de la ressource ($username.$uriQuestion).
+    * @param string $ideRessource L'identifiant de la ressource ($username.$uriQuestion).
     * @param string $method La méthode de requête http.
     *
     * @return string Un JWT signé par le serveur. 

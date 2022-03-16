@@ -2,7 +2,7 @@
 
 namespace progression\providers;
 
-use Illuminate\Support\Facades\Log;
+
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\GenericUser;
@@ -46,13 +46,15 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 		Gate::define("access-user", [UserPolicy::class, "access"]);
-
+        Gate::define("access-ressource", [RessourcePolicy::class, "access"]);
 		Gate::define("update-avancement", function ($user) {
 			return false;
 		});
 
 		// Décode le token de la requête.
 		$this->app["auth"]->viaRequest("api", function ($request) {
+
+
 			$parties_token = explode(" ", $request->header("Authorization"));
 			if (count($parties_token) == 2 && strtolower($parties_token[0]) == "bearer") {
 				$token = $parties_token[1];
@@ -65,11 +67,13 @@ class AuthServiceProvider extends ServiceProvider
                     } else {
 						// Recherche de l'utilisateur
 						$user = (new ObtenirUserInt())->get_user($tokenDécodé->username);
-
-						return new GenericUser([
-							"username" => $user->username,
-							"rôle" => $user->rôle,
-						]);
+                        if (isset($tokenDécodé->ressource)){
+                            $request['informationRessource']=$tokenDécodé->ressource."/".$tokenDécodé->id;
+                        }
+                        return new GenericUser([
+                            "username" => $user->username,
+                            "rôle" => $user->rôle,
+                        ]);
 					}
 				} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
 					Log::error(

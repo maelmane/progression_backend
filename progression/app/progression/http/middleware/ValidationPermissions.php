@@ -33,17 +33,26 @@ class ValidationPermissions
 		$utilisateurRecherché = (new ObtenirUserInt())->get_user($utilisateurRequête ?? $utilisateurConnecté->username);
 
 		if ($utilisateurRecherché && Gate::allows("access-user", $utilisateurRecherché)) {
+            if ($request->has("informationRessource")) {
+                if(Gate::denies("access-ressource", [$request->input("informationRessource"), $request->path()])){
+                    return $this->messageErreur();
+                }
+            }
 			return $next($request);
 		} else {
-			return response()->json(
-				["erreur" => "Opération interdite."],
-				403,
-				[
-					"ContentType" => "application/vnd.api+json",
-					"Charset" => "utf8",
-				],
-				JSON_UNESCAPED_UNICODE,
-			);
+			return $this->messageErreur();
 		}
 	}
+
+    private function messageErreur(){
+        return response()->json(
+            ["erreur" => "Opération interdite."],
+            403,
+            [
+                "ContentType" => "application/vnd.api+json",
+                "Charset" => "utf8",
+            ],
+            JSON_UNESCAPED_UNICODE,
+        );
+    }
 }
