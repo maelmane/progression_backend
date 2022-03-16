@@ -34,7 +34,6 @@ class TentativeProgTransformer extends TentativeTransformer
 			"code" => $tentative->code,
 			"tests_réussis" => $tentative->tests_réussis,
 		]);
-
 		return $data_out;
 	}
 

@@ -17,11 +17,15 @@
 */
 
 namespace progression\domaine\interacteur;
-
+use progression\domaine\interacteur\ObtenirCommentaire;
 class ObtenirTentativeInt extends Interacteur
 {
 	function get_tentative($username, $question_uri, $date)
 	{
-		return $this->source_dao->get_tentative_dao()->get_tentative($username, $question_uri, $date);
+		$tentative = $this->source_dao->get_tentative_dao()->get_tentative($username, $question_uri, $date);
+		
+		$obtenirCommentaireInt = new ObtenirCommentaire();
+		$tentative->commentaires = $obtenirCommentaireInt->get_commentaire();
+		return $tentative;
 	}
 }
