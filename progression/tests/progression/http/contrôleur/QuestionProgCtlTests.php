@@ -44,6 +44,9 @@ final class QuestionProgCtlTests extends TestCase
 		$question->auteur = "Albert Einstein";
 		$question->licence = "poétique";
 		$question->niveau = "débutant";
+		$question->feedback_pos= "Bravo! tu as réussi à appeler une fonction paramétrée !",
+		$question->feedback_neg= "Attention, consulte les règles concernant l'appel d'une fonction paramétrée.",
+		$question->feedback_err= "Attention, erreur d'écriture, vérifie les règles du langage au sujet des fonctions paramétrées."
 		// Ébauches
 		$question->exécutables["python"] = new Exécutable("print(\"Hello world\")", "python");
 		$question->exécutables["java"] = new Exécutable("System.out.println(\"Hello world\")", "java");
