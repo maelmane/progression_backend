@@ -113,7 +113,7 @@ INSERT INTO reponse_prog VALUES (
 INSERT INTO commentaire VALUES(
   1,
   "le 1er message",
-  "Jean",
+  "jdoe",
   1615696276,
   14,
   "bob",
@@ -124,7 +124,7 @@ INSERT INTO commentaire VALUES(
 INSERT INTO commentaire VALUES(
   2,
   "le 2er message",
-  "Pat",
+  "admin",
   1615696276,
   12,
   "bob",
@@ -135,7 +135,7 @@ INSERT INTO commentaire VALUES(
 INSERT INTO commentaire VALUES(
   3,
   "le 3er message",
-  "Pat",
+  "Stefany",
   1615696276,
   14,
   "bob",
