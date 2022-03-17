@@ -18,7 +18,6 @@
 
 namespace progression\domaine\interacteur;
 
-use DateTime;
 use progression\domaine\entité\{Avancement, Question};
 
 class SauvegarderAvancementInt extends Interacteur
@@ -29,7 +28,6 @@ class SauvegarderAvancementInt extends Interacteur
 			return null;
 		}
 		$dao_avancement = $this->source_dao->get_avancement_dao();
-
 		$avancement = $dao_avancement->save($username, $question_uri, $nouvelAvancement);
 		return $avancement;
 	}

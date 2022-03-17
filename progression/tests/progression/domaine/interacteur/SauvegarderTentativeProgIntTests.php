@@ -94,7 +94,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 
-	public function test_étant_donné_une_deuxième_tentative_nonréussie_à_une_question_non_réussie_lorsquon_la_sauvegarde_on_obtient_la_tentative()
+	public function test_étant_donné_une_deuxième_tentative_non_réussie_à_une_question_non_réussie_lorsquon_la_sauvegarde_on_obtient_la_tentative()
 	{
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
 
@@ -129,7 +129,6 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->andReturn($tentative);
 
 		$résultat_attendu = $tentative;
-
 		$interacteur = new SauvegarderTentativeProgInt();
 		$résultat_observé = $interacteur->sauvegarder("Bob", "https://example.com/question", $tentative);
 

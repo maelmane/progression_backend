@@ -35,7 +35,6 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_on_obtient_son_profil()
 	{
-
 		$avancement1 = new Avancement(1, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
 		$avancement2 = new Avancement(0, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
 
