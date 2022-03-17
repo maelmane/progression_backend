@@ -46,7 +46,7 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 		Gate::define("access-user", [UserPolicy::class, "access"]);
-        Gate::define("access-ressource", [RessourcePolicy::class, "access"]);
+
 		Gate::define("update-avancement", function ($user) {
 			return false;
 		});
