@@ -2,15 +2,10 @@
 	"data": {
 		"type": "test",
 		"id": "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
-		"attributes": { "nom": "2 salutations", "entrée": "2", "sortie_attendue": "Bonjour\nBonjour\n", "params": null },
+		"attributes": { "nom": "2 salutations", "entrée": "2", "sortie_attendue": "Bonjour\nBonjour\n", "params": null, "positive": "Bravo! Vous avez réussi ce test !", "négative": "Dommage! Le résultat est incorrect pour ce test !", "erreur": "Erreur de syntaxe! Revoir les opérations dans le langage sélectionné !" },
 		"links": {
 			"self": "https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 			"related": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
-		},
-		"feedback": {
-			"positive": "Bravo! Vous avez réussi ce test !",
-			"négative": "Dommage! Le résultat est incorrect pour ce test !",
-			"erreur": "Erreur de syntaxe! Revoir les opérations dans le langage sélectionné !"
 		}
 	}
 }
