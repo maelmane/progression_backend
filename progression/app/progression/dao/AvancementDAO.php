@@ -37,17 +37,17 @@ class AvancementDAO extends EntitéDAO
 			$uri = null;
 			$etat = 0;
 			$type = 0;
-            $titre = "";
-            $niveau = "";
-            $date_modification = 0;
-            $date_réussie = 0;
+			$titre = "";
+			$niveau = "";
+			$date_modification = 0;
+			$date_réussie = 0;
 			$query->bind_result($uri, $etat, $type, $titre, $niveau, $date_modification, $date_réussie);
 			while ($query->fetch()) {
 				$avancements[$uri] = new Avancement($etat, $type);
-                $avancements[$uri]->titre = $titre;
-                $avancements[$uri]->niveau = $niveau;
-                $avancements[$uri]->date_modification = $date_modification;
-                $avancements[$uri]->date_réussie = $date_réussie;
+				$avancements[$uri]->titre = $titre;
+				$avancements[$uri]->niveau = $niveau;
+				$avancements[$uri]->date_modification = $date_modification;
+				$avancements[$uri]->date_réussie = $date_réussie;
 			}
 
 			$query->close();
@@ -96,12 +96,7 @@ class AvancementDAO extends EntitéDAO
 				$avancement->titre = $titre;
 				$avancement->niveau = $niveau;
 				$avancement->date_modification = $date_modification;
-<<<<<<< HEAD
-				$avancement->date_réussite = $date_réussite;
-=======
 				$avancement->date_réussie = $date_réussie;
-
->>>>>>> 5e09558d7251de8aba721d8f739216eda4a7f8e7
 			}
 
 			$query->close();
