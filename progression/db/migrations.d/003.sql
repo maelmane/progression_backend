@@ -15,7 +15,7 @@ DELIMITER &&
 			`message`   		TEXT NOT NULL,
 			`createur`	 	varchar(255) NOT NULL,
 			`date`	 	 	int(10) NOT NULL,
-			`numeroLigne`		int(10) NOT NULL,			
+			`numéro_ligne`		int(10) NOT NULL,			
 			`username`  		varchar(255) NOT NULL,
 			`question_uri`  	varchar(1024) CHARACTER SET latin1 NOT NULL,
 			`date_soumission` 	int(10) NOT NULL,
