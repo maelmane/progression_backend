@@ -36,6 +36,11 @@ class TestTransformer extends Fractal\TransformerAbstract
 			"links" => (isset($test->links) ? $test->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}test/{$test->id}",
 			],
+			"feedback" => [
+				"positive" => $test->feedback_pos,
+				"négative" => $test->feedback_neg,
+				"erreur" => $test->feedback_err,
+			]
 		];
 
 		return $data;
