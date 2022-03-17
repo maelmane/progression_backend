@@ -40,6 +40,11 @@ final class TestTransformerTests extends TestCase
 				"self" =>
 					"https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 			],
+			"feedback" => [
+				"positive" => "Bravo! Vous avez réussi ce test !",
+				"négative" => "Dommage! Le résultat est incorrect pour ce test !",
+				"erreur" => "Erreur de syntaxe! Revoir les opérations dans le langage sélectionné !",
+			]
 		];
 		$résultat_obtenu = $testTransformer->transform($test);
 
