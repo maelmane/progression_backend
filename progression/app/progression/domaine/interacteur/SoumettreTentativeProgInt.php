@@ -90,7 +90,7 @@ class SoumettreTentativeProgInt extends Interacteur
 
 			if ($avancement->etat != Question::ETAT_REUSSI && $tentative->réussi) {
 				$avancement->etat = Question::ETAT_REUSSI;
-				$avancement->date_réussite = $date;
+				$avancement->date_réussie = $date;
 			}
 		}
 		$avancement->date_modification = $date;

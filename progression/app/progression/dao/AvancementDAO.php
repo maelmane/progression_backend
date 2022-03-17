@@ -37,17 +37,17 @@ class AvancementDAO extends EntitéDAO
 			$uri = null;
 			$etat = 0;
 			$type = 0;
-			$titre = "";
-			$niveau = "";
-			$date_modification = 0;
-			$date_réussite = 0;
-			$query->bind_result($uri, $etat, $type, $titre, $niveau, $date_modification, $date_réussite);
+            $titre = "";
+            $niveau = "";
+            $date_modification = 0;
+            $date_réussie = 0;
+			$query->bind_result($uri, $etat, $type, $titre, $niveau, $date_modification, $date_réussie);
 			while ($query->fetch()) {
 				$avancements[$uri] = new Avancement($etat, $type);
-				$avancements[$uri]->titre = $titre;
-				$avancements[$uri]->niveau = $niveau;
-				$avancements[$uri]->date_modification = $date_modification;
-				$avancements[$uri]->date_réussite = $date_réussite;
+                $avancements[$uri]->titre = $titre;
+                $avancements[$uri]->niveau = $niveau;
+                $avancements[$uri]->date_modification = $date_modification;
+                $avancements[$uri]->date_réussie = $date_réussie;
 			}
 
 			$query->close();
@@ -77,7 +77,7 @@ class AvancementDAO extends EntitéDAO
 		$titre = null;
 		$niveau = null;
 		$date_modification = 0;
-		$date_réussite = 0;
+		$date_réussie = 0;
 		$avancement = null;
 
 
@@ -87,7 +87,7 @@ class AvancementDAO extends EntitéDAO
 			);
 			$query->bind_param("ss", $question_uri, $username);
 			$query->execute();
-			$query->bind_result($état, $type, $titre, $niveau, $date_modification, $date_réussite);
+			$query->bind_result($état, $type, $titre, $niveau, $date_modification, $date_réussie);
 
 			if ($query->fetch()) {
 				$avancement = new Avancement();
@@ -96,7 +96,12 @@ class AvancementDAO extends EntitéDAO
 				$avancement->titre = $titre;
 				$avancement->niveau = $niveau;
 				$avancement->date_modification = $date_modification;
+<<<<<<< HEAD
 				$avancement->date_réussite = $date_réussite;
+=======
+				$avancement->date_réussie = $date_réussie;
+
+>>>>>>> 5e09558d7251de8aba721d8f739216eda4a7f8e7
 			}
 
 			$query->close();
@@ -117,7 +122,7 @@ class AvancementDAO extends EntitéDAO
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ), date_modification = VALUES(date_modification), date_reussite = VALUES(date_reussite)',
 			);
 
-			$query->bind_param("issssii", $objet->etat, $question_uri, $username, $objet->titre, $objet->niveau, $objet->date_modification, $objet->date_réussite);
+			$query->bind_param("issssii", $objet->etat, $question_uri, $username, $objet->titre, $objet->niveau, $objet->date_modification, $objet->date_réussie);
 			$query->execute();
 			$query->close();
 		} catch (mysqli_sql_exception $e) {
