@@ -37,7 +37,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			->allows()
 			->get_user("jdoe")
 			->andReturn(new User("jdoe"));
-		
+
 
 
 		//Mock Question
@@ -46,16 +46,16 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		$question->exécutables = ["python" => new Exécutable("print(\"Allo le monde\")", "python")];
 		$question->tests = [0 => new Test("#1", "Allo le monde", "")];
 		$question->uri = "https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour";
-		
+
 		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");
-		$mockQuestionDAO 
+		$mockQuestionDAO
 			->shouldReceive("get_question")
 			->with(
 				"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour"
 
 			)
 			->andReturn($question);
-		
+
 
 		// Avancement actuel
 		$avancement = new Avancement();
@@ -83,7 +83,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 
 		// Mock exécuteur
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
-		$mockExécuteur->shouldReceive("exécuter")->andReturn([["output" => "Patate poil!", "errors" => "" ]]);
+		$mockExécuteur->shouldReceive("exécuter")->andReturn([["output" => "Patate poil!", "errors" => ""]]);
 
 		// Mock DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -152,43 +152,9 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		// Assertion
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
-	/*
-	//récupérerAvancement()
-	public function test_récupérerAvancement_null_retourne_un_avancement(){
-		$question = $this->bidon_question();
-		$tentative = $this->bidon_tentative();
 
-
-
-		//Mocker get_avancement
-		DAOFactory::getInstance()
-		->créerAvancement()
-		->shouldReceive("créerAvancement")
-		->once()
-		->withArgs(
-
-			function($tentative, $question) use($tentative, $question){
-				return $tentative->
-			}
-
-		)
-		->andReturn($avancement);
-		
-		//Mocker créerAvancement
-	}
-	*/
-	//créerAvancement
-
-	//mettreÀJourDateModificationEtDateRéussiePourAvancement
-
-	//sauvegarderAvancement
-
-
-	//récupérer_informations_de_la_question
-
-
-
-	private function bidon_question(){
+	private function bidon_question()
+	{
 		$question = new QuestionProg();
 		$question->uri =
 			"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour";
@@ -212,7 +178,8 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		return $question;
 	}
 
-	private function bidon_tentative(){
+	private function bidon_tentative()
+	{
 		$tentative = new TentativeProg(
 			"python",
 			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",

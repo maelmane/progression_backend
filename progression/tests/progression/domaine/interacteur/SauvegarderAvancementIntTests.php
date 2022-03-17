@@ -52,8 +52,7 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->allows()
 			->get_avancement_dao()
 			->andReturn($mockAvancementDAO);
-		/***/ 
-		
+
 		$question = new QuestionProg();
 		$question->uri = "file:///prog1/les_fonctions/appeler_une_fonction/info.yml";
 
@@ -67,14 +66,13 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->with("file:///test/de/chemin/non/valide")
 			->andReturn(null);
 
-		
+
 		$mockDAOFactory
 			->allows()
 			->get_question_dao()
 			->andReturn($mockQuestionDao);
 		DAOFactory::setInstance($mockDAOFactory);
-		
-		/**/
+
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 	public function tearDown(): void
@@ -90,7 +88,6 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->once()
 			->withArgs(["jdoe", "file:///prog1/les_fonctions/appeler_une_fonction/info.yml", Mockery::any()])
 			->andReturnArg(2);
-//QUESTION DAO Obtenir question interactceur test. On a changé l'intéracteur. On fait 
 		$interacteur = new SauvegarderAvancementInt();
 		$résultat_observé = $interacteur->sauvegarder(
 			"jdoe",

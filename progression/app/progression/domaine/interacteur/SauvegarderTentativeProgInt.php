@@ -25,6 +25,4 @@ class SauvegarderTentativeProgInt extends Interacteur
 		$dao_tentative = $this->source_dao->get_tentative_prog_dao();
 		return $dao_tentative->save($username, $question_uri, $tentative);
 	}
-
-
 }

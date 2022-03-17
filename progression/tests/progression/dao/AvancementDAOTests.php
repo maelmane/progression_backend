@@ -90,9 +90,8 @@ final class AvancementDAOTests extends TestCase
 		$résultat_attendu->type = Question::TYPE_PROG;
 		$résultat_attendu->titre = "Bob";
 		$résultat_attendu->niveau = "facile";
-		$résultat_attendu->date_modification= 1645739981;
-		$résultat_attendu->date_réussite= 1645739959;
-		
+		$résultat_attendu->date_modification = 1645739981;
+		$résultat_attendu->date_réussite = 1645739959;
 
 		$résponse_observée = (new AvancementDAO())->get_avancement(
 			"bob",

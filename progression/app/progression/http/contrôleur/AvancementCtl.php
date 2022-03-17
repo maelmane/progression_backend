@@ -167,7 +167,6 @@ class AvancementCtl extends Contrôleur
 		$avancementInt = new SauvegarderAvancementInt();
 		$chemin = Encodage::base64_decode_url($question_uri);
 
-		
 		$nouvel_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);
 		$nouvel_avancement->id = "$username/$question_uri";
 

@@ -44,12 +44,6 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->get_tentative_prog_dao()
 			->andReturn($mockTentativeDao);
 
-
-			/***/
-
-
-
-			/***/
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 	public function tearDown(): void
@@ -77,7 +71,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
-	
+
 	public function test_étant_donné_une_première_tentative_réussie_lorsquon_la_sauvegarde_on_obtient_la_tentative()
 	{
 
@@ -99,11 +93,11 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
-	
+
 	public function test_étant_donné_une_deuxième_tentative_nonréussie_à_une_question_non_réussie_lorsquon_la_sauvegarde_on_obtient_la_tentative()
 	{
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
-		
+
 		DAOFactory::getInstance()
 			->get_tentative_prog_dao()
 			->shouldReceive("save")
@@ -112,7 +106,7 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 				return $user == "Bob" && $uri == "https://example.com/question" && $t == $tentative;
 			})
 			->andReturn($tentative);
-		
+
 		$résultat_attendu = $tentative;
 
 		$interacteur = new SauvegarderTentativeProgInt();
@@ -123,7 +117,6 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 
 	public function test_étant_donné_une_deuxième_tentative_réussie_à_une_question_non_réussie_lorsquon_la_sauvegarde_on_obtient_la_tentative()
 	{
-		/** */
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, true, 1, "feedback", []);
 
 		DAOFactory::getInstance()
@@ -136,10 +129,10 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 			->andReturn($tentative);
 
 		$résultat_attendu = $tentative;
-		
+
 		$interacteur = new SauvegarderTentativeProgInt();
 		$résultat_observé = $interacteur->sauvegarder("Bob", "https://example.com/question", $tentative);
-		
+
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 

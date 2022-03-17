@@ -50,9 +50,6 @@ class AvancementTransformer extends Fractal\TransformerAbstract
 	{
 		$tentatives = $avancement->tentatives;
 
-		
-
-		
 		foreach ($tentatives as $tentative) {
 			$tentative->id = "{$avancement->id}/{$tentative->date_soumission}";
 			$tentative->links = [

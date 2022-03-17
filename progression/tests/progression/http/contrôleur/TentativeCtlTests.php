@@ -83,7 +83,7 @@ final class TentativeCtlTests extends TestCase
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "python";
 			})
-			->andReturn([["output" => "Bonjour\nAllo\n", "errors" => "" ]]);
+			->andReturn([["output" => "Bonjour\nAllo\n", "errors" => ""]]);
 		$mockExécuteur
 			->shouldReceive("exécuter")
 			->withArgs(function ($exec, $test) {
@@ -154,7 +154,6 @@ final class TentativeCtlTests extends TestCase
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_obtenu->getContent());
 	}
 
-	/* ==================================================================================================================================================== */
 	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_on_obtient_la_TentativeProg_avec_ses_résultats_et_ses_relations_sous_forme_json()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
