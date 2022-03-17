@@ -54,7 +54,7 @@ class AvancementCtl extends Contrôleur
 		} elseif ($request->avancement && !$this->valider_permissions()) {
 			$réponse = $this->réponse_json(["erreur" => "Opération interdite."], 403);
 		} else {
-			$avancement = (isset($request->avancement)) ? $request->avancement : null;
+			$avancement = $request->avancement;
 
 			$avancement_sauvegardé = $this->créer_ou_sauvegarder_avancement(
 				$avancement,
