@@ -24,18 +24,18 @@ class Commentaire
   public $message;
   public $créateur;	
   public $date;	
-  public $numeroLigne;
+  public $numéro_ligne;
 
 	 
 
 
-	public function __construct($id, $date, $message, $créateur,$numeroLigne)
+	public function __construct($id, $date, $message, $créateur,$numéro_ligne)
 	{
 		$this->id = $id;
 		$this->date = $date;
 		$this->message = $message;
 		$this->créateur = $créateur;
-    $this->numeroLigne = $numeroLigne;
+    $this->numéro_ligne = $numéro_ligne;
 	
 	}
 

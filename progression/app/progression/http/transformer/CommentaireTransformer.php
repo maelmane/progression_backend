@@ -32,7 +32,7 @@ class CommentaireTransformer extends Fractal\TransformerAbstract
 			"message" => $commentaire->message,
 			"créateur" => $commentaire->créateur,
             "date" => $commentaire->date,
-			"numeroLigne" => $commentaire->numeroLigne,
+			"numéro_ligne" => $commentaire->numéro_ligne,
 			"links" => (isset($commentaire->links) ? $commentaire->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}commentaire/{$commentaire->id}",
 			],
