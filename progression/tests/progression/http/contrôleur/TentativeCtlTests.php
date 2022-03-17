@@ -102,6 +102,8 @@ final class TentativeCtlTests extends TestCase
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($avancement);
 
+		$mockAvancementDAO->shouldReceive("save")->andReturn($avancement);
+
 		// User
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
@@ -152,6 +154,7 @@ final class TentativeCtlTests extends TestCase
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_obtenu->getContent());
 	}
 
+	/* ==================================================================================================================================================== */
 	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_on_obtient_la_TentativeProg_avec_ses_résultats_et_ses_relations_sous_forme_json()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(

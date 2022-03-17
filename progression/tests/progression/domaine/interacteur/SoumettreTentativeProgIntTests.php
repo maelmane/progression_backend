@@ -30,13 +30,6 @@ final class SoumettreTentativeProgIntTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		/*
-		$mockQuestionDao = Mockery::mock("progression\\dao\\question\\QuestionDAO");
-		$mockQuestionDao
-			->shouldReceive("get_question")
-			->with("file:///prog1/les_fonctions/appeler_une_fonction/info.yml")
-			->andReturn($question);
-		*/
 
 		//Mock User
 		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");

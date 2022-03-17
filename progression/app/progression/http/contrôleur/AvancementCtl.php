@@ -54,7 +54,7 @@ class AvancementCtl extends Contrôleur
 		} elseif ($request->avancement && !$this->valider_permissions()) {
 			$réponse = $this->réponse_json(["erreur" => "Opération interdite."], 403);
 		} else {
-			$avancement = $request->avancement;
+			$avancement = (isset($request->avancement)) ? $request->avancement : null;
 
 			$avancement_sauvegardé = $this->créer_ou_sauvegarder_avancement(
 				$avancement,
@@ -102,13 +102,12 @@ class AvancementCtl extends Contrôleur
 	{
 		Log::debug("AvancementCtl.créer_ou_sauvegarder_avancement. Params : ", [$avancement, $username, $question_uri]);
 
-		$avancement_envoyé;
+		$avancement_envoyé = $avancement;
 
-		if ($avancement) {
-			$avancement_envoyé = $avancement;
-		} else {
+		if ($avancement_envoyé != null) {
+			$chemin = Encodage::base64_decode_url($question_uri);
 			$questionInt = new ObtenirQuestionInt();
-			$question = $questionInt->get_question(Encodage::base64_decode_url($question_uri));
+			$question = $questionInt->get_question($chemin);
 			$av = new Avancement();
 			$av->titre = $question->titre;
 			$av->niveau = $question->niveau;

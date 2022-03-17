@@ -61,6 +61,11 @@ final class AvancementCtlTests extends TestCase
 			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 
+		$mockQuestionDAO
+			->shouldReceive("get_question")
+			->with("https://depot.com/roger/questions_prog/nouvelle_question")
+			->andReturn($question);
+
 		// Avancement
 		$avancement_nouveau = new Avancement();
 
