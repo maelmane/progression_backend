@@ -79,8 +79,7 @@ class AvancementDAO extends EntitéDAO
 		$date_modification = 0;
 		$date_réussie = 0;
 		$avancement = null;
-
-
+		
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
 				"SELECT etat, type, titre, niveau, date_modification, date_reussite FROM avancement WHERE question_uri = ? AND username = ?",
