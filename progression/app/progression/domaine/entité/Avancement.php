@@ -27,7 +27,7 @@ class Avancement
 	public $titre;
 	public $niveau;
 	public $date_modification;
-	public $date_réussite;
+	public $date_réussie;
 
 	public function __construct(
 		$etat = Question::ETAT_DEBUT,
@@ -37,7 +37,7 @@ class Avancement
 		$titre = "",
 		$niveau = "",
 		$date_modification = 0,
-		$date_réussite = 0
+		$date_réussie = 0
 	) {
 		$this->tentatives = $tentatives;
 		$this->sauvegardes = $sauvegardes;
@@ -46,6 +46,6 @@ class Avancement
 		$this->titre = $titre;
 		$this->niveau = $niveau;
 		$this->date_modification = $date_modification;
-		$this->date_réussite = $date_réussite;
+		$this->date_réussie = $date_réussie;
 	}
 }

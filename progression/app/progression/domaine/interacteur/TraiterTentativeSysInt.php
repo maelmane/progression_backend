@@ -22,7 +22,7 @@ use progression\domaine\entité\Question;
 
 class TraiterTentativeSysInt extends Interacteur
 {
-	function vérifier_réussite($infos)
+	function vérifier_réussie($infos)
 	{
 		$résultats = ["essayé" => "true"];
 
