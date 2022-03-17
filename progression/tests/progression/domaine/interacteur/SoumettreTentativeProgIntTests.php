@@ -38,8 +38,6 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			->get_user("jdoe")
 			->andReturn(new User("jdoe"));
 
-
-
 		//Mock Question
 		$question = new QuestionProg();
 		$question->titre = "Question de test";
@@ -55,7 +53,6 @@ final class SoumettreTentativeProgIntTests extends TestCase
 
 			)
 			->andReturn($question);
-
 
 		// Avancement actuel
 		$avancement = new Avancement();
