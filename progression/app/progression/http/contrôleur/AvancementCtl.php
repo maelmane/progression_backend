@@ -104,7 +104,7 @@ class AvancementCtl extends Contrôleur
 
 		$avancement_envoyé = $avancement;
 
-		if ($avancement_envoyé != null) {
+		if ($avancement_envoyé == null) {
 			$chemin = Encodage::base64_decode_url($question_uri);
 			$questionInt = new ObtenirQuestionInt();
 			$question = $questionInt->get_question($chemin);
