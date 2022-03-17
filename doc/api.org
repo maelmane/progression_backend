@@ -115,7 +115,7 @@ username/question_uri
 
 | Nom               | Type   | Valeurs       | Description                                                            |
 |-------------------+--------+---------------+------------------------------------------------------------------------|
-| etat              | int    | 0=non débutée | Aucune tentative envoyé                                                |
+| état              | int    | 0=non débutée | Aucune tentative envoyé                                                |
 |                   |        | 1=non réussie | Au moins une tentative, mais aucune ne sont réussies.                  |
 |                   |        | 2=réussie     | Au moins une tentative dont une réussie                                |
 | titre             | str    |               | Le titre de la question tel qu’il était lors de la dernière tentative  |

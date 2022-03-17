@@ -102,11 +102,9 @@ class AvancementCtl extends Contrôleur
 	{
 		Log::debug("AvancementCtl.créer_ou_sauvegarder_avancement. Params : ", [$avancement, $username, $question_uri]);
 
-		$avancement_envoyé;
+		$avancement_envoyé = $avancement;
 
-		if ($avancement != null) {
-			$avancement_envoyé = $avancement;
-		} else {
+		if ($avancement_envoyé != null) {
 			$chemin = Encodage::base64_decode_url($question_uri);
 			$questionInt = new ObtenirQuestionInt();
 			$question = $questionInt->get_question($chemin);
