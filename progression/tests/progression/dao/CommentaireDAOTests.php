@@ -35,8 +35,8 @@ final class CommentaireDAOTests extends TestCase
 
     public function test_chercher_commentaire_a_partir_id()
     {
-        $reponse_attendue = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15);
-        $reponse_observee =new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15); 
+        $reponse_attendue = new Commentaire(11, 122456747, "message envoyé par interacteurMocker", "createur Mock",15);
+        $reponse_observee = new Commentaire(11, 122456747, "message envoyé par interacteurMocker", "createur Mock",15); 
         //(new CommentaireDAO())->get_commentaire(1);
         $this->assertEquals($reponse_attendue, $reponse_observee);
     }

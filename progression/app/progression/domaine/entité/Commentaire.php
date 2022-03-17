@@ -26,9 +26,6 @@ class Commentaire
   public $date;	
   public $numeroLigne;
 
-	 
-
-
 	public function __construct($id, $date, $message, $créateur,$numeroLigne)
 	{
 		$this->id = $id;
@@ -38,7 +35,4 @@ class Commentaire
     $this->numeroLigne = $numeroLigne;
 	
 	}
-
-	
-
 }
