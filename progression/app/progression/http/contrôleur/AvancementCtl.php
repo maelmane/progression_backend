@@ -54,7 +54,7 @@ class AvancementCtl extends Contrôleur
 		} elseif ($request->avancement && !$this->valider_permissions()) {
 			$réponse = $this->réponse_json(["erreur" => "Opération interdite."], 403);
 		} else {
-			$avancement = (isset($request->avancement)) ? $request->avancement : null;
+			$avancement = $request->avancement;
 
 			$avancement_sauvegardé = $this->créer_ou_sauvegarder_avancement(
 				$avancement,
@@ -104,7 +104,7 @@ class AvancementCtl extends Contrôleur
 
 		$avancement_envoyé = $avancement;
 
-		if ($avancement_envoyé != null) {
+		if ($avancement_envoyé == null) {
 			$chemin = Encodage::base64_decode_url($question_uri);
 			$questionInt = new ObtenirQuestionInt();
 			$question = $questionInt->get_question($chemin);

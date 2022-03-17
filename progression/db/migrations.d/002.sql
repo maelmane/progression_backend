@@ -8,15 +8,13 @@ DELIMITER &&
 		  END IF;
 
 		  START TRANSACTION;
-		  
-          
+
             ALTER TABLE `avancement`
             ADD (titre varchar(255) NOT NULL DEFAULT "", 
                 niveau varchar(255) NOT NULL DEFAULT "",
                 date_modification int(10) NOT NULL,
                 date_reussite int(10));
 
-      
           UPDATE `version` SET `version` = 2;
 		  COMMIT;
 
