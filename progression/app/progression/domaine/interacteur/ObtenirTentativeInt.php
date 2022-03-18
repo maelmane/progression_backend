@@ -25,7 +25,9 @@ class ObtenirTentativeInt extends Interacteur
 		$tentative = $this->source_dao->get_tentative_dao()->get_tentative($username, $question_uri, $date);
 		
 		$obtenirCommentaireInt = new ObtenirCommentaire();
-		$tentative->commentaires = $obtenirCommentaireInt->get_commentaire();
+		if($tentative){
+			$tentative->commentaires = $obtenirCommentaireInt->get_commentaire();
+		}
 		return $tentative;
 	}
 }
