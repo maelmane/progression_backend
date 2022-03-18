@@ -69,6 +69,7 @@ class AuthServiceProvider extends ServiceProvider
 						$user = (new ObtenirUserInt())->get_user($tokenDécodé->username);
                         if (isset($tokenDécodé->ressource)){
                             $request['informationRessource']=$tokenDécodé->ressource."/".$tokenDécodé->id;
+                            $request['méthode']=$tokenDécodé->method[0];
                         }
                         return new GenericUser([
                             "username" => $user->username,
