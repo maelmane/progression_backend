@@ -36,7 +36,7 @@ final class CommentaireTransformerTests extends TestCase
 			"message" => "message envoyer poar interacteurMocker",
 			"créateur" => "createur Mock",
             "date" => 122456747,
-			"numeroLigne" =>15,
+			"numéro_ligne" =>15,
 			"links" => [
 				"self" =>
 					"https://example.com/commentaire/11",

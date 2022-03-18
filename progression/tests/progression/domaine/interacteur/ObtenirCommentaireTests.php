@@ -34,9 +34,11 @@ final class ObtenirCommentaireTests extends TestCase
 	public function test_étant_donné_un_Commentaire_existante_lorsquon_la_recherche_par_numéro_on_obtient_un_objet_Commentaire_correspondant()
 	{
 		$commentaireAttendu = new ObtenirCommentaire();
-
+		$commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15);
+		$commentaire2 = new Commentaire(13, 1224432747, "message de test", "createur Test",22);
+		$commentaires = array($commentaire,$commentaire2);
 		$this->assertEquals(
-			$commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15),
+			$commentaires,
 			$commentaireAttendu->get_Commentaire(),
 		);
 	}

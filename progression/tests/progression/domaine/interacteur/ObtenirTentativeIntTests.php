@@ -22,6 +22,7 @@ use progression\domaine\entité\TentativeProg;
 use progression\dao\DAOFactory;
 use progression\dao\tentative\TentativeDAO;
 use PHPUnit\Framework\TestCase;
+use progression\domaine\interacteur\ObtenirCommentaire;
 use Mockery;
 
 final class ObtenirTentativeIntTests extends TestCase
@@ -57,6 +58,7 @@ final class ObtenirTentativeIntTests extends TestCase
 	public function test_étant_donné_une_tentative_avec_des_attributs_lorsque_cherché_par_user_id_question_id_et_date_soumission_on_obtient_un_objet_tentative_correspondant()
 	{
 		$interacteur = new ObtenirTentativeInt();
+		$interacteur2 = new ObtenirCommentaire();
 		$résultat_obtenu = $interacteur->get_tentative(
 			"jdoe",
 			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
@@ -64,7 +66,7 @@ final class ObtenirTentativeIntTests extends TestCase
 		);
 
 		$résultat_attendu = new TentativeProg("java", "System.out.println();", 1614711760);
-
+		$résultat_attendu->commentaires = $interacteur2->get_commentaire();		
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
@@ -72,7 +74,7 @@ final class ObtenirTentativeIntTests extends TestCase
 	{
 		$interacteur = new ObtenirTentativeInt();
 		$résultat_obtenu = $interacteur->get_tentative("patate", "une_question_inexistante", 1614711760);
-
+		
 		$this->assertNull($résultat_obtenu);
 	}
 }

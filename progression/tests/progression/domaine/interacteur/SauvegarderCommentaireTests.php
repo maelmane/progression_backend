@@ -38,9 +38,11 @@ final class SauvegarderCommentaireTests extends TestCase
 	public function test_étant_donné_un_Commentaire_existante_lorsquon_le_sauvegarde_obtient_un_Commentaire_sauvegarder_dans_la_BD()
 	{
 		$commentaireAttendu = new ObtenirCommentaire();
-
+		$commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15);
+		$commentaire2 = new Commentaire(13, 1224432747, "message de test", "createur Test",22);
+		$commentaires = array($commentaire,$commentaire2);
 		$this->assertEquals(
-			$commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15),
+			$commentaires,
 			$commentaireAttendu->get_Commentaire(),
 		);
 	}

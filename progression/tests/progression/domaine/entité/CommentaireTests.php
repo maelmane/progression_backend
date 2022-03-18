@@ -37,6 +37,6 @@ final class CommentaireTests extends TestCase
 		$this->assertEquals($dateAttendu, $commentaire->date);
 		$this->assertEquals($messageAttendu, $commentaire->message);
 		$this->assertEquals($créateurAttendu, $commentaire->créateur);
-        $this->assertEquals($numeroLigneAttendu, $commentaire->numeroLigne);
+        $this->assertEquals($numeroLigneAttendu, $commentaire->numéro_ligne);
 	}
 }
