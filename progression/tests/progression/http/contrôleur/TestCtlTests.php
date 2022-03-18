@@ -41,7 +41,7 @@ final class TestCtlTests extends TestCase
 		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		$question->tests = [
-			new Test("2 salutations", "Bonjour\nBonjour\n", "2"),
+			new Test("2 salutations", "Bonjour\nBonjour\n", "2", null, "Bravo! Vous avez réussi ce test !", "Dommage! Le résultat est incorrect pour ce test !", "Erreur de syntaxe! Revoir les opérations dans le langage sélectionné !"),
 			new Test("Aucune salutation", "", "0"),
 		];
 
