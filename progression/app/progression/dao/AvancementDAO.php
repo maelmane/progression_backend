@@ -35,8 +35,8 @@ class AvancementDAO extends EntitéDAO
 			$query->execute();
 
 			$uri = null;
-			$etat = 0;
-			$type = 0;
+			$etat = QUESTION::ETAT_DEBUT;
+			$type = QUESTION::TYPE_INCONNU;
 			$titre = "";
 			$niveau = "";
 			$date_modification = 0;
@@ -72,8 +72,8 @@ class AvancementDAO extends EntitéDAO
 
 	protected function load($username, $question_uri)
 	{
-		$état = 0;
-		$type = null;
+		$état = QUESTION::ETAT_DEBUT;
+		$type = QUESTION::TYPE_INCONNU;
 		$titre = null;
 		$niveau = null;
 		$date_modification = 0;
