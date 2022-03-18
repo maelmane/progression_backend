@@ -57,8 +57,11 @@ class SoumettreTentativeProgInt extends Interacteur
 
 		if ($avancement == null) {
 			$avancement = $this->créerAvancement($tentative, $question);
+		}else
+		{
+			$avancement->tentatives[] = $tentative;
 		}
-		$avancement->tentatives[] = $tentative;
+	 	
 
 		return $avancement;
 	}
@@ -79,20 +82,13 @@ class SoumettreTentativeProgInt extends Interacteur
 	private function mettreÀJourDateModificationEtDateRéussiePourAvancement($avancement)
 	{
 		$date = (new \DateTime())->getTimestamp();
-		if (!empty($avancement->tentatives)) {
-			$tentatives = $avancement->tentatives;
-			$tentative = $tentatives[0];
-			foreach ($tentatives as $t) {
-				if ($t->réussi == Question::ETAT_REUSSI) {
-					$tentative = $t;
-				}
-			}
+		$tentative = $avancement->tentatives[0];
 
-			if ($avancement->etat != Question::ETAT_REUSSI && $tentative->réussi) {
-				$avancement->etat = Question::ETAT_REUSSI;
-				$avancement->date_réussie = $date;
-			}
+		if ($avancement->etat != Question::ETAT_REUSSI && $tentative->réussi) {
+			$avancement->etat = Question::ETAT_REUSSI;
+			$avancement->date_réussie = $date;
 		}
+		
 		$avancement->date_modification = $date;
 		return $avancement;
 	}
