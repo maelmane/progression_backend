@@ -31,21 +31,21 @@ class CommentaireDAO extends EntitéDAO
 		$message = null;
 		$créateur = null;
 		$date = null;
-		$numeroLigne = null;
+		$numéro_ligne = null;
 
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT message, createur, date, numeroLigne FROM commentaire WHERE id = ?  ",
+				"SELECT message, createur, date, numéro_ligne FROM commentaire WHERE id = ?  ",
 			);
 			$query->bind_param("i", $id);
 
 			$query->execute();
-			$query->bind_result($message,$créateur,$date ,$numeroLigne);
+			$query->bind_result($message,$créateur,$date ,$numéro_ligne);
 
 			$résultat = $query->fetch();
 			$query->close();
 			if ($résultat) {
-				$commentaire = new Commentaire($id , $message, $créateur, $date, $numeroLigne);
+				$commentaire = new Commentaire($id , $message, $créateur, $date, $numéro_ligne);
 			}
 		} catch (mysqli_sql_exception $e) {
 			throw new DAOException($e);
@@ -62,10 +62,10 @@ class CommentaireDAO extends EntitéDAO
 		$id = null;
 		$message = null;
 		$date = null;
-		$numeroLigne = null;
+		$numéro_ligne = null;
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT id, message, date, numeroLigne FROM commentaire WHERE createur = ? ",
+				"SELECT id, message, date, numéro_ligne FROM commentaire WHERE createur = ? ",
 			);
 			$query->bind_param("s", $créateur);
 
@@ -73,7 +73,7 @@ class CommentaireDAO extends EntitéDAO
 			$query->bind_result($id, $message, $date);
 
 			while ($query->fetch()) {
-				$commentaires[$id] = new Commentaire(null , $message, $créateur, $date, $numeroLigne);
+				$commentaires[$id] = new Commentaire(null , $message, $créateur, $date, $numéro_ligne);
 			}
 			$query->close();
 		} catch (mysqli_sql_exception $e) {
