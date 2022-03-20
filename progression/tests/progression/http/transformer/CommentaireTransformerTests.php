@@ -27,7 +27,7 @@ final class CommentaireTransformerTests extends TestCase
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15);
+		$commentaire = new Commentaire(11,"message envoyer poar interacteurMocker", "createur Mock",122456747,15);
 
 		
 		$commentaireTransformer = new CommentaireTransformer();
