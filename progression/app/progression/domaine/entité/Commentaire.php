@@ -26,12 +26,12 @@ class Commentaire
   public $date;	
   public $numéro_ligne;
 
-	public function __construct($id, $date, $message, $créateur,$numéro_ligne)
+	public function __construct($id, $message, $créateur, $date,$numéro_ligne)
 	{
-		$this->id = $id;
-		$this->date = $date;
+		$this->id = $id;		
 		$this->message = $message;
 		$this->créateur = $créateur;
+    $this->date = $date;
     $this->numéro_ligne = $numéro_ligne;
 	
 	}
