@@ -30,4 +30,17 @@ class ObtenirCommentaire extends Interacteur
     $commentaires = array($commentaire,$commentaire2);
 		return $commentaires;
 	}
+	public function get_commentaire_par_id($id)
+	{
+    //$commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15);
+    $commentaire = $this->source_dao->get_commentaire_dao()->get_commentaire($id);
+		return $commentaire;
+	}
+  public function get_commentaire_par_tentative($username, $question_uri, $date)
+	{
+    //$commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15);
+    $commentaire = $this->source_dao->get_commentaire_dao()->get_toutes($username, $question_uri, $date);
+		return $commentaire;
+	}
+
 }
