@@ -25,21 +25,14 @@ use Mockery;
 
 final class ObtenirCommentaireTests extends TestCase
 {
-	public function setUp(): void
-	{
-		parent::setUp();
-		$commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15);
-	}
 
 	public function test_étant_donné_un_Commentaire_existante_lorsquon_la_recherche_par_numéro_on_obtient_un_objet_Commentaire_correspondant()
 	{
 		$commentaireAttendu = new ObtenirCommentaire();
-		$commentaire = new Commentaire(11, 122456747, "message envoyer poar interacteurMocker", "createur Mock",15);
-		$commentaire2 = new Commentaire(13, 1224432747, "message de test", "createur Test",22);
-		$commentaires = array($commentaire,$commentaire2);
+		$commentaire = new Commentaire( 3,"le 3er message","Stefany",1615696276,14);
 		$this->assertEquals(
-			$commentaires,
-			$commentaireAttendu->get_Commentaire(),
+			$commentaire,
+			$commentaireAttendu->get_commentaire_par_id(3),
 		);
 	}
 
@@ -47,6 +40,20 @@ final class ObtenirCommentaireTests extends TestCase
 	{
 		$commentaireAttendu = new ObtenirCommentaire();
 
-		$this->assertNotEquals($commentaireAttendu->get_Commentaire(),new Commentaire(12, 122456747, "message envoyer poar interacteurMocker", "createur Mock",14));
+		$this->assertNotEquals($commentaireAttendu->get_commentaire_par_id(3),new Commentaire(  3,"le 2er message","Stefany",1615696276,14));
 	}
+	public function test_étant_donné_des_Commentaires_existante_lorsquon_la_recherche_par_tentative_on_obtient_un_liste_de_Commentaires_correspondant()
+	{
+		$commentaireAttendu = new ObtenirCommentaire();
+		
+		$commentaire = new Commentaire( 1,"le 1er message","jdoe",1615696276,14);
+		$commentaire2 = new Commentaire( 2,"le 2er message","admin",1615696276,14);
+		$commentaire3 = new Commentaire( 3,"le 3er message","Stefany",1615696276,14);
+		$commentaires = array($commentaire,$commentaire2,$commentaire3);
+		$this->assertEquals(
+			$commentaires,
+			$commentaireAttendu->get_commentaire_par_tentative("bob","https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",1615696276),
+		);
+	}
+
 }
