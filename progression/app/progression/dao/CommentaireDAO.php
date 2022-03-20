@@ -35,7 +35,7 @@ class CommentaireDAO extends EntitéDAO
 
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT message, createur, date, numéro_ligne FROM commentaire WHERE id = ?  ",
+				"SELECT message, créateur, date, numéro_ligne FROM commentaire WHERE id = ?  ",
 			);
 			$query->bind_param("i", $id);
 
@@ -54,23 +54,22 @@ class CommentaireDAO extends EntitéDAO
 		return $commentaire;
 	}
 
-	public function get_toutes($créateur)
+	public function get_toutes($username, $question_uri, $timestamp)
 	{
-	
-		$commentaires = [];
-
-		$id = null;
-		$message = null;
-		$date = null;
-		$numéro_ligne = null;
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT id, message, date, numéro_ligne FROM commentaire WHERE createur = ? ",
-			);
-			$query->bind_param("s", $créateur);
-
+				'SELECT id, message, créateur, date, numéro_ligne FROM commentaire WHERE username = ? AND question_uri = ? AND date_soumission = ?',);
+			$query->bind_param("ssi", $username, $question_uri, $timestamp);
 			$query->execute();
-			$query->bind_result($id, $message, $date);
+
+			$commentaires = [];
+			'SELECT id, message, créateur, date, numéro_ligne FROM commentaire WHERE username = “bob” AND question_uri = “https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction” AND date_soumission = 1615696276';
+			$id = null;
+			$message = null;
+			$créateur = null;
+			$date = null;
+			$numéro_ligne = null;
+			$query->bind_result($id, $message, $créateur, $date, $numéro_ligne);
 
 			while ($query->fetch()) {
 				$commentaires[$id] = new Commentaire(null , $message, $créateur, $date, $numéro_ligne);
@@ -87,7 +86,7 @@ class CommentaireDAO extends EntitéDAO
 	{
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO commentaire ( id, message, createur ) VALUES ( ?, ?, ? )",
+				"INSERT INTO commentaire ( id, message, créateur ) VALUES ( ?, ?, ? )",
 			);
 
 
