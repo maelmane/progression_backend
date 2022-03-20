@@ -31,12 +31,12 @@ final class CommentaireTests extends TestCase
         $numeroLigneAttendu = 15;
         
 
-        $commentaire = new Commentaire($idAttendu, $dateAttendu, $messageAttendu, $créateurAttendu, $numeroLigneAttendu);
+        $commentaire = new Commentaire($idAttendu, $messageAttendu, $créateurAttendu, $dateAttendu, $numeroLigneAttendu);
 
 		$this->assertEquals($idAttendu, $commentaire->id);
-		$this->assertEquals($dateAttendu, $commentaire->date);
 		$this->assertEquals($messageAttendu, $commentaire->message);
 		$this->assertEquals($créateurAttendu, $commentaire->créateur);
+		$this->assertEquals($dateAttendu, $commentaire->date);
         $this->assertEquals($numeroLigneAttendu, $commentaire->numéro_ligne);
 	}
 }
