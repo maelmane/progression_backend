@@ -2,7 +2,7 @@
 
 namespace progression\providers;
 
-
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\GenericUser;
@@ -13,6 +13,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
 use UnexpectedValueException;
 use DomainException;
+
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -53,8 +54,6 @@ class AuthServiceProvider extends ServiceProvider
 
 		// Décode le token de la requête.
 		$this->app["auth"]->viaRequest("api", function ($request) {
-
-
 			$parties_token = explode(" ", $request->header("Authorization"));
 			if (count($parties_token) == 2 && strtolower($parties_token[0]) == "bearer") {
 				$token = $parties_token[1];
@@ -62,14 +61,14 @@ class AuthServiceProvider extends ServiceProvider
 				try {
 					$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
 					// Compare le Unix Timestamp courant et l'expiration du token.
-					if (isset($tokenDécodé->expired) && time() > $tokenDécodé->expired) {
+					if (!isset($tokenDécodé->ressource) && time() > $tokenDécodé->expired) {
                         return null;
                     } else {
 						// Recherche de l'utilisateur
 						$user = (new ObtenirUserInt())->get_user($tokenDécodé->username);
                         if (isset($tokenDécodé->ressource)){
                             $request['informationRessource']=$tokenDécodé->ressource."/".$tokenDécodé->id;
-                            $request['méthode']=$tokenDécodé->method[0];
+                            $request['méthode']=$tokenDécodé->method;
                         }
                         return new GenericUser([
                             "username" => $user->username,

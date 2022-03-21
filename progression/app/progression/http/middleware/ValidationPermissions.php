@@ -34,7 +34,7 @@ class ValidationPermissions
 
 		if ($utilisateurRecherché && Gate::allows("access-user", $utilisateurRecherché)) {
             if ($request->has("informationRessource")) {
-                if( !( $request->input("informationRessource") === $request->path() && $request->input("méthode") == $request->method() )){
+                if( !($request->input("informationRessource") === $request->path() && in_array($request->method(), $request->input("méthode"))) ){
                     return $this->messageErreur();
                 }
             }
