@@ -55,8 +55,6 @@ final class GénérateurDeTokenTests extends TestCase
   public function test_étant_donné_la_création_dun_token_avec_ressources_avec_un_user_le_token_contient_le_bon_username()
   {
     $token = GénérateurDeToken::get_instance()->générer_token($this->user, $this->ressources, $this->expiration);
-    //print_r($_ENV["JWT_SECRET"]);
-    //print_r($token);
     $tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
     $this->assertEquals($this->user->username, $tokenDécodé->username);
   }

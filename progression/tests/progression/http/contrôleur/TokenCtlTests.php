@@ -35,7 +35,6 @@ final class TokenCtlTests extends TestCase
 		parent::setUp();
 		$this->user = new GenericUser(["username" => "TurboPascal", "rôle" => User::ROLE_NORMAL]);
 
-		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
@@ -57,7 +56,6 @@ final class TokenCtlTests extends TestCase
 
 		$this->expiration = 0;
 
-		//Mock du générateur de token
 		GénérateurDeToken::set_instance(
 		new class extends GénérateurDeToken {
 			public function __construct()
