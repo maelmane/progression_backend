@@ -75,7 +75,7 @@ final class LoginCtlTests extends TestCase
 				{
 				}
 
-				function générer_token($user)
+				function générer_token($user, $ressources = null, $expiration = 0)
 				{
 					return "token valide";
 				}

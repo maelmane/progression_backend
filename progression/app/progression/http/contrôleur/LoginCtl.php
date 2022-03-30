@@ -102,7 +102,8 @@ class LoginCtl extends Contrôleur
 	{
 		Log::debug("LoginCtl.générer_token. Params : ", [$user]);
 
-		$token = GénérateurDeToken::get_instance()->générer_token($user);
+		$expirationToken = time() + $_ENV["JWT_TTL"];
+		$token = GénérateurDeToken::get_instance()->générer_token($user, null, $expirationToken);
 
 		Log::debug("LoginCtl.générer_token. Retour : ", [$token]);
 		return $token;

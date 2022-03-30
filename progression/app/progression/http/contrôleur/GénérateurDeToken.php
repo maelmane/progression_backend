@@ -43,19 +43,18 @@ class GénérateurDeToken
 		GénérateurDeToken::$instance = $générateur;
 	}
 
-	function générer_token($user)
-	{
-		Log::debug("InscriptionCtl.générer_token. Params : ", [$user]);
+	function générer_token($user, $ressources = null, $expiration = 0)
+    {
+        $payload = [
+            "username" => $user->username,
+            "current" => time(),
+            "expired" => $expiration,
+            "ressources" => $ressources
+        ];
 
-		$payload = [
-			"username" => $user->username,
-			"current" => time(),
-			"expired" => time() + $_ENV["JWT_TTL"],
-		];
-
-		$réponse = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
-
-		Log::debug("InscriptionCtl.générer_token. Retour : ", [$réponse]);
-		return $réponse;
-	}
+        $JWT = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
+        Log::debug("GénérateurDeJeton.générer_jeton. Retour : ", [$JWT]);
+        
+        return $JWT;
+    }
 }
