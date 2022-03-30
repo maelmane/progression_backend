@@ -86,6 +86,7 @@ final class LoginCtlTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		GénérateurDeToken::set_instance(null);
 	}
 
 	#  AUTH LDAP

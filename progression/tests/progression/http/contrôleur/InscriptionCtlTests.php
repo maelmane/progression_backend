@@ -53,7 +53,7 @@ final class InscriptionCtlTests extends TestCase
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 
-		//Mock du générateur de jeton
+		//Mock du générateur de token
 		GénérateurDeToken::set_instance(
 			new class extends GénérateurDeToken {
 				public function __construct()
@@ -62,7 +62,7 @@ final class InscriptionCtlTests extends TestCase
 
 				function générer_token($user, $ressources = null, $expiration = 0)
 				{
-					return "jeton valide";
+					return "token valide";
 				}
 			},
 		);
@@ -75,17 +75,17 @@ final class InscriptionCtlTests extends TestCase
 	}
 
 	#  AUTH_LOCAL = false
-	public function test_étant_donné_un_utilisateur_existant_sans_authentification_lorsquon_inscrit_de_nouveau_on_obtient_un_jeton_pour_lutilisateur()
+	public function test_étant_donné_un_utilisateur_existant_sans_authentification_lorsquon_inscrit_de_nouveau_on_obtient_un_token_pour_lutilisateur()
 	{
 		putenv("AUTH_LOCAL=false");
 
 		$résultat_observé = $this->call("POST", "/inscription", ["username" => "bob"]);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Jeton":"jeton valide"}', $résultat_observé->getContent());
+		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
 	}
 
-	public function test_étant_donné_un_utilisateur_inexistant_sans_authentification_lorsquon_linscrit_il_est_sauvegardé_et_on_obtient_un_jeton()
+	public function test_étant_donné_un_utilisateur_inexistant_sans_authentification_lorsquon_linscrit_il_est_sauvegardé_et_on_obtient_un_token()
 	{
 		putenv("AUTH_LOCAL=false");
 
@@ -101,7 +101,7 @@ final class InscriptionCtlTests extends TestCase
 		$résultat_observé = $this->call("POST", "/inscription", ["username" => "Marcel"]);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Jeton":"jeton valide"}', $résultat_observé->getContent());
+		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
 	}
 
 	# AUTH_LOCAL = true
@@ -115,7 +115,7 @@ final class InscriptionCtlTests extends TestCase
 		$this->assertEquals('{"erreur":"Échec de l\'inscription."}', $résultat_observé->getContent());
 	}
 
-	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_linscrit_il_est_sauvegardé_et_on_obtient_un_jeton()
+	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_linscrit_il_est_sauvegardé_et_on_obtient_un_token()
 	{
 		putenv("AUTH_LOCAL=true");
 
@@ -138,7 +138,7 @@ final class InscriptionCtlTests extends TestCase
 		$résultat_observé = $this->call("POST", "/inscription", ["username" => "Marcel", "password" => "test"]);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Jeton":"jeton valide"}', $résultat_observé->getContent());
+		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
 	}
 
 	# Identifiants invalides

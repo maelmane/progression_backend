@@ -38,7 +38,7 @@ class GénérateurDeToken
 		return GénérateurDeToken::$instance;
 	}
 
-	static function set_instance(GénérateurDeToken $générateur)
+	static function set_instance(?GénérateurDeToken $générateur)
 	{
 		GénérateurDeToken::$instance = $générateur;
 	}
