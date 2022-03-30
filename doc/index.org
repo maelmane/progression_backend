@@ -1,7 +1,0 @@
-#+TITLE: Sitemap for project org
-
-- [[file:api.org][API Progression]]
-- [[file:systeme_sequence.org][Schéma de séquence de résolution d'un exercice]]
-- [[file:soumission_sequence.org][Schéma de séquence de soumission d'une tentative]]
-- [[file:contenu/structure.org][Structure de contenu Progression]]
-- [[file:routes.org][routes]]
