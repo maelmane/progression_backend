@@ -37,9 +37,6 @@ class InscriptionCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => "Inscription locale non supportée."], 403);
 		}
 
-		$user = null;
-		$token = null;
-
 		$erreurs = $this->valider_paramètres($request);
 		if ($erreurs) {
 			$réponse = $this->réponse_json(["erreur" => $erreurs], 400);

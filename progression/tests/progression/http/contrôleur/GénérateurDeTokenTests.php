@@ -32,30 +32,31 @@ final class GénérateurDeTokenTests extends TestCase
         $this->user = new User("Pascal");
         $this->expiration = time() + $_ENV["JWT_TTL"];
         $this->ressources = '{
-      "ressources": [
-        {
-          "type": "avancement",
-          "id": "username/uri_question",
-          "method": "GET"
-        },
-        {
-          "type": "tentative",
-          "id": "username/uri_question/date_soumission",
-          "method": "GET"
-        },
-        {
-          "type": "commentaire",
-          "id": "username/question_uri/date_soumission/numéro",
-          "method": "POST"
-        }
-      ]
-    }';
+          "username": "Pascal",
+          "current": "2022-03-28T00:00:00.000Z",
+          "expired": "2024-03-28T00:00:00.000Z",
+          "ressources": [
+            {
+              "url": "avancement/username/uri_question",
+              "method": "GET"
+            },
+            {
+              "id": "tentative/username/uri_question/date_soumission",
+              "method": "GET"
+            },
+            {
+              "url": "commentaire/username/question_uri/date_soumission/numéro",
+              "method": "POST"
+            }
+          ]
+        }';
     }
 
     public function test_étant_donné_la_création_dun_token_avec_ressources_avec_un_user_le_token_contient_le_bon_username()
     {
         $token = GénérateurDeToken::get_instance()->générer_token($this->user, $this->ressources, $this->expiration);
-        print_r($_ENV["JWT_SECRET"]);
+        //print_r($_ENV["JWT_SECRET"]);
+        //print_r($token);
         $tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
         $this->assertEquals($this->user->username, $tokenDécodé->username);
     }

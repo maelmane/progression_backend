@@ -52,20 +52,20 @@ final class TokenCtlTests extends TestCase
 		$this->ressources = '{
 			"ressources": [
 			  {
-				"type": "avancement",
-				"id": "username/uri_question",
-				"method": "GET"
+				"url": "avancement/username/uri_question",
+              	"method": "GET"
 			  }
 			]
 		  }';
 
-        //print_r($_ENV["JWT_SECRET"]);
 		$this->expiration = time() + $_ENV["JWT_TTL"];
+
 	}
 	
 	public function tearDown(): void
 	{
 		Mockery::close();
+		GénérateurDeToken::set_instance(null);
 	}
 
 	public function test_étant_donné_un_jeton_qui_donne_accès_à_un_avancement_on_reçoit_un_token_avec_les_ressources_donnant_accès_à_cet_avancement() {
@@ -74,14 +74,12 @@ final class TokenCtlTests extends TestCase
 		
 		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/token/TurboPascal", ["ressources" => $this->ressources, "expiration" => $this->expiration]);
 		
-		//print_r($résultatObtenu->content());
+		print_r($résultatObtenu->content());
         $token = $résultatObtenu->content();
 
-        $tokenTest = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IlR1cmJvUGFzY2FsIiwiY3VycmVudCI6MTY0ODYxNjA5MCwiZXhwaXJlZCI6MTY0ODcwMjQ5MCwicmVzc291cmNlcyI6Intcblx0XHRcdFwicmVzc291cmNlc1wiOiBbXG5cdFx0XHQgIHtcblx0XHRcdFx0XCJ0eXBlXCI6IFwiYXZhbmNlbWVudFwiLFxuXHRcdFx0XHRcImlkXCI6IFwidXNlcm5hbWUvdXJpX3F1ZXN0aW9uXCIsXG5cdFx0XHRcdFwibWV0aG9kXCI6IFwiR0VUXCJcblx0XHRcdCAgfVxuXHRcdFx0XVxuXHRcdCAgfSJ9.DQgEhlNVRLN262D0WaEHonO7MD3f8WPmatRP5PsxvGI";
-       
+		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
 
-		$tokenDécodé = JWT::decode($tokenTest, $_ENV["JWT_SECRET"], ["HS256"]);
-
+		print_r($résultatObtenu->status());
 		$this->assertEquals(200, $résultatObtenu->status());
 		
 		//$this->assertEquals($this->user->username, $tokenDécodé->username);

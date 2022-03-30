@@ -14,6 +14,7 @@ class TokenCtl extends Contrôleur
         $user = new User($username);
 
         $token = GénérateurDeToken::get_instance()->générer_token($user, $ressources, $expiration);
+        //$réponse = $token;
         $réponse = $this->préparer_réponse($token);
         Log::debug("TokenCtl.post. Réponse : ", [$réponse]);
         
