@@ -18,12 +18,12 @@
 
 use progression\TestCase;
 
+use Firebase\JWT\JWT;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\User;
 use progression\dao\DAOFactory;
 use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
-use Firebase\JWT\JWT;
 
 final class InscriptionCtlTests extends TestCase
 {

@@ -18,11 +18,11 @@ along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 
 use progression\TestCase;
 
+use Firebase\JWT\JWT;
 use progression\dao\DAOFactory;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\{User};
 use Illuminate\Auth\GenericUser;
-use Firebase\JWT\JWT;
 
 final class TokenCtlTests extends TestCase
 {
