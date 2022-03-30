@@ -21,10 +21,8 @@ use progression\TestCase;
 use progression\dao\DAOFactory;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\{User};
-use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
 use Firebase\JWT\JWT;
-use progression\http\contrôleur\TokenCtl;
 
 final class TokenCtlTests extends TestCase
 {
@@ -32,19 +30,18 @@ final class TokenCtlTests extends TestCase
 	public $ressources;
 	public $expiration;
 
-	
 	public function setUp(): void
 	{
 		parent::setUp();
 		$this->user = new GenericUser(["username" => "TurboPascal", "rôle" => User::ROLE_NORMAL]);
-		
+
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
-		->shouldReceive("get_user")
-		->with("TurboPascal")
-		->andReturn(new User("TurboPascal"));
-		
+			->shouldReceive("get_user")
+			->with("TurboPascal")
+			->andReturn(new User("TurboPascal"));
+
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		DAOFactory::setInstance($mockDAOFactory);
@@ -58,32 +55,45 @@ final class TokenCtlTests extends TestCase
 			]
 		  }';
 
-		$this->expiration = time() + $_ENV["JWT_TTL"];
+		$this->expiration = 0;
 
+		//Mock du générateur de token
+		GénérateurDeToken::set_instance(
+		new class extends GénérateurDeToken {
+			public function __construct()
+			{
+			}
+
+			function générer_token($user, $ressources = null, $expiration = 0)
+			{
+				$payload = [
+					"username" => $user->username,
+					"current" => strtotime("6 october 2022"),
+					"expired" => strtotime("8 october 2022"),
+					"ressources" => $ressources
+				];
+
+				$JWT = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
+				return $JWT;
+			}
+		},
+		);
 	}
-	
+
 	public function tearDown(): void
 	{
 		Mockery::close();
 		GénérateurDeToken::set_instance(null);
 	}
 
-	public function test_étant_donné_un_jeton_qui_donne_accès_à_un_avancement_on_reçoit_un_token_avec_les_ressources_donnant_accès_à_cet_avancement() {
-		putenv("AUTH_LDAP=true");
-		putenv("AUTH_LOCAL=true");
-		
+	public function test_étant_donné_un_jeton_qui_donne_accès_à_un_avancement_on_reçoit_un_token_avec_les_ressources_donnant_accès_à_cet_avancement()
+	{
+		$tokenAttendu = '{"Token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IlR1cmJvUGFzY2FsIiwiY3VycmVudCI6MTY2NTAxNDQwMCwiZXhwaXJlZCI6MTY2NTE4NzIwMCwicmVzc291cmNlcyI6Intcblx0XHRcdFwicmVzc291cmNlc1wiOiBbXG5cdFx0XHQgIHtcblx0XHRcdFx0XCJ1cmxcIjogXCJhdmFuY2VtZW50XC91c2VybmFtZVwvdXJpX3F1ZXN0aW9uXCIsXG4gICAgICAgICAgICAgIFx0XCJtZXRob2RcIjogXCJHRVRcIlxuXHRcdFx0ICB9XG5cdFx0XHRdXG5cdFx0ICB9In0.2TuNjLVqper8NbQ5Y3zbnOTsKKS-ZUu92HvBuYtc1Ik"}';
+
 		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/token/TurboPascal", ["ressources" => $this->ressources, "expiration" => $this->expiration]);
-		
-		print_r($résultatObtenu->content());
-        $token = $résultatObtenu->content();
+		$tokenObtenu = $résultatObtenu->getContent();
 
-		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
-
-		print_r($résultatObtenu->status());
 		$this->assertEquals(200, $résultatObtenu->status());
-		
-		//$this->assertEquals($this->user->username, $tokenDécodé->username);
-		//$this->assertEquals($this->user->username, $tokenDécodé->ressources);
-		//$this->assertEquals($this->user->username, $tokenDécodé->expiration);
+		$this->assertEquals($tokenAttendu, $tokenObtenu);
 	}
 }

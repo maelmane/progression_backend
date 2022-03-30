@@ -1,4 +1,20 @@
 <?php
+/*
+   This file is part of Progression.
+
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\http\contrôleur;
 
@@ -8,16 +24,17 @@ use progression\domaine\entité\{User};
 
 class TokenCtl extends Contrôleur
 {
-    public function post(Request $request, $username) {
+    public function post(Request $request, $username)
+    {
         $ressources = $request->input("ressources");
         $expiration = time() + $_ENV["JWT_TTL"]; //TODO: redéfinir pour une plus longue durée.
         $user = new User($username);
 
         $token = GénérateurDeToken::get_instance()->générer_token($user, $ressources, $expiration);
         //$réponse = $token;
-        $réponse = $this->préparer_réponse($token);
+        $réponse = $this->préparer_réponse(["Token" => $token]);
         Log::debug("TokenCtl.post. Réponse : ", [$réponse]);
-        
+
         return $réponse;
     }
 }

@@ -23,27 +23,27 @@ use Illuminate\Support\Facades\Log;
 
 class GénérateurDeToken
 {
-	private static ?GénérateurDeToken $instance = null;
+    private static ?GénérateurDeToken $instance = null;
 
-	private function __construct()
-	{
-	}
+    private function __construct()
+    {
+    }
 
-	static function get_instance()
-	{
-		if (GénérateurDeToken::$instance == null) {
-			GénérateurDeToken::$instance = new GénérateurDeToken();
-		}
+    static function get_instance()
+    {
+        if (GénérateurDeToken::$instance == null) {
+            GénérateurDeToken::$instance = new GénérateurDeToken();
+        }
 
-		return GénérateurDeToken::$instance;
-	}
+        return GénérateurDeToken::$instance;
+    }
 
-	static function set_instance(?GénérateurDeToken $générateur)
-	{
-		GénérateurDeToken::$instance = $générateur;
-	}
+    static function set_instance(?GénérateurDeToken $générateur)
+    {
+        GénérateurDeToken::$instance = $générateur;
+    }
 
-	function générer_token($user, $ressources = null, $expiration = 0)
+    function générer_token($user, $ressources = null, $expiration = 0)
     {
         $payload = [
             "username" => $user->username,
@@ -54,7 +54,7 @@ class GénérateurDeToken
 
         $JWT = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
         Log::debug("GénérateurDeToken.générer_token. Retour : ", [$JWT]);
-        
+
         return $JWT;
     }
 }
