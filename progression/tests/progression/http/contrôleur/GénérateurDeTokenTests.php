@@ -21,27 +21,27 @@ use progression\domaine\entité\User;
 
 final class GénérateurDeTokenTests extends TestCase
 {
-  public $user;
-  public $expiration;
-  public $ressources;
+	public $user;
+	public $expiration;
+	public $ressources;
 
-  public function setUp(): void
-  {
-    parent::setUp();
-    $this->user = new User("Pascal");
-  }
+	public function setUp(): void
+	{
+		parent::setUp();
+		$this->user = new User("Pascal");
+	}
 
-  public function test_étant_donné_la_création_dun_token_sans_ressources_la_ressource_est_null()
-  {
-    $token = GénérateurDeToken::get_instance()->générer_token($this->user);
-    $tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
-    $this->assertEquals(null, $tokenDécodé->ressources);
-  }
+	public function test_étant_donné_la_création_dun_token_sans_ressources_la_ressource_est_null()
+	{
+		$token = GénérateurDeToken::get_instance()->générer_token($this->user);
+		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
+		$this->assertEquals(null, $tokenDécodé->ressources);
+	}
 
-  public function test_étant_donné_la_création_dun_token_sans_date_dexpiration_la_date_dexpiration_par_défaut_est_0()
-  {
-    $token = GénérateurDeToken::get_instance()->générer_token($this->user, null);
-    $tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
-    $this->assertEquals(0, $tokenDécodé->expired);
-  }
+	public function test_étant_donné_la_création_dun_token_sans_date_dexpiration_la_date_dexpiration_par_défaut_est_0()
+	{
+		$token = GénérateurDeToken::get_instance()->générer_token($this->user, null);
+		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
+		$this->assertEquals(0, $tokenDécodé->expired);
+	}
 }

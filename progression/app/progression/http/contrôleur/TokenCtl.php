@@ -24,15 +24,15 @@ use progression\domaine\entité\{User};
 
 class TokenCtl extends Contrôleur
 {
-    public function post(Request $request, $username)
-    {
-        $ressources = $request->input("ressources");
-        $user = new User($username);
+	public function post(Request $request, $username)
+	{
+		$ressources = $request->input("ressources");
+		$user = new User($username);
 
-        $token = GénérateurDeToken::get_instance()->générer_token($user, $ressources);
-        $réponse = $this->préparer_réponse(["Token" => $token]);
-        Log::debug("TokenCtl.post. Réponse : ", [$réponse]);
+		$token = GénérateurDeToken::get_instance()->générer_token($user, $ressources);
+		$réponse = $this->préparer_réponse(["Token" => $token]);
+		Log::debug("TokenCtl.post. Réponse : ", [$réponse]);
 
-        return $réponse;
-    }
+		return $réponse;
+	}
 }

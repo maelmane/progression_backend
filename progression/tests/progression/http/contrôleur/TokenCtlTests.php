@@ -48,24 +48,24 @@ final class TokenCtlTests extends TestCase
 
 		//Mock du générateur de token
 		GénérateurDeToken::set_instance(
-		new class extends GénérateurDeToken {
-			public function __construct()
-			{
-			}
+			new class extends GénérateurDeToken {
+				public function __construct()
+				{
+				}
 
-			function générer_token($user, $ressources = null, $expiration = 0)
-			{
-				$payload = [
-					"username" => $user->username,
-					"current" => strtotime("6 october 2022"),
-					"expired" => strtotime("8 october 2022"),
-					"ressources" => $ressources
-				];
+				function générer_token($user, $ressources = null, $expiration = 0)
+				{
+					$payload = [
+						"username" => $user->username,
+						"current" => strtotime("6 october 2022"),
+						"expired" => strtotime("8 october 2022"),
+						"ressources" => $ressources,
+					];
 
-				$JWT = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
-				return $JWT;
-			}
-		},
+					$JWT = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
+					return $JWT;
+				}
+			},
 		);
 	}
 
@@ -77,9 +77,12 @@ final class TokenCtlTests extends TestCase
 
 	public function test_étant_donné_un_jeton_qui_donne_accès_à_un_avancement_on_reçoit_un_token_avec_les_ressources_donnant_accès_à_cet_avancement()
 	{
-		$tokenAttendu = '{"Token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IlR1cmJvUGFzY2FsIiwiY3VycmVudCI6MTY2NTAxNDQwMCwiZXhwaXJlZCI6MTY2NTE4NzIwMCwicmVzc291cmNlcyI6InJlc3NvdXJjZXMifQ.q-xFQDfwVdXXR14uOobkmj-aaOm2mUEtTZ_CgOoymTA"}';
+		$tokenAttendu =
+			'{"Token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IlR1cmJvUGFzY2FsIiwiY3VycmVudCI6MTY2NTAxNDQwMCwiZXhwaXJlZCI6MTY2NTE4NzIwMCwicmVzc291cmNlcyI6InJlc3NvdXJjZXMifQ.q-xFQDfwVdXXR14uOobkmj-aaOm2mUEtTZ_CgOoymTA"}';
 
-		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/token/TurboPascal", ["ressources" => "ressources"]);
+		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/token/TurboPascal", [
+			"ressources" => "ressources",
+		]);
 		$tokenObtenu = $résultatObtenu->getContent();
 
 		$this->assertEquals(200, $résultatObtenu->status());
