@@ -32,6 +32,7 @@ final class TokenCtlTests extends TestCase
 
 	public function setUp(): void
 	{
+		//UserDAO
 		parent::setUp();
 		$this->user = new GenericUser(["username" => "TurboPascal", "rôle" => User::ROLE_NORMAL]);
 
@@ -45,17 +46,7 @@ final class TokenCtlTests extends TestCase
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 
-		$this->ressources = '{
-			"ressources": [
-			  {
-				"url": "avancement/username/uri_question",
-              	"method": "GET"
-			  }
-			]
-		  }';
-
-		$this->expiration = 0;
-
+		//Mock du générateur de token
 		GénérateurDeToken::set_instance(
 		new class extends GénérateurDeToken {
 			public function __construct()
@@ -86,9 +77,9 @@ final class TokenCtlTests extends TestCase
 
 	public function test_étant_donné_un_jeton_qui_donne_accès_à_un_avancement_on_reçoit_un_token_avec_les_ressources_donnant_accès_à_cet_avancement()
 	{
-		$tokenAttendu = '{"Token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IlR1cmJvUGFzY2FsIiwiY3VycmVudCI6MTY2NTAxNDQwMCwiZXhwaXJlZCI6MTY2NTE4NzIwMCwicmVzc291cmNlcyI6Intcblx0XHRcdFwicmVzc291cmNlc1wiOiBbXG5cdFx0XHQgIHtcblx0XHRcdFx0XCJ1cmxcIjogXCJhdmFuY2VtZW50XC91c2VybmFtZVwvdXJpX3F1ZXN0aW9uXCIsXG4gICAgICAgICAgICAgIFx0XCJtZXRob2RcIjogXCJHRVRcIlxuXHRcdFx0ICB9XG5cdFx0XHRdXG5cdFx0ICB9In0.2TuNjLVqper8NbQ5Y3zbnOTsKKS-ZUu92HvBuYtc1Ik"}';
+		$tokenAttendu = '{"Token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IlR1cmJvUGFzY2FsIiwiY3VycmVudCI6MTY2NTAxNDQwMCwiZXhwaXJlZCI6MTY2NTE4NzIwMCwicmVzc291cmNlcyI6InJlc3NvdXJjZXMifQ.q-xFQDfwVdXXR14uOobkmj-aaOm2mUEtTZ_CgOoymTA"}';
 
-		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/token/TurboPascal", ["ressources" => $this->ressources, "expiration" => $this->expiration]);
+		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/token/TurboPascal", ["ressources" => "ressources"]);
 		$tokenObtenu = $résultatObtenu->getContent();
 
 		$this->assertEquals(200, $résultatObtenu->status());

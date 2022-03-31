@@ -27,10 +27,9 @@ class TokenCtl extends Contrôleur
     public function post(Request $request, $username)
     {
         $ressources = $request->input("ressources");
-        $expiration = time() + strtotime("+ 2 years");
         $user = new User($username);
 
-        $token = GénérateurDeToken::get_instance()->générer_token($user, $ressources, $expiration);
+        $token = GénérateurDeToken::get_instance()->générer_token($user, $ressources);
         $réponse = $this->préparer_réponse(["Token" => $token]);
         Log::debug("TokenCtl.post. Réponse : ", [$réponse]);
 

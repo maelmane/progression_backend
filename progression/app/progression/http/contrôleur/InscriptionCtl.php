@@ -76,8 +76,16 @@ class InscriptionCtl extends Contrôleur
 					$request->input("username"),
 			);
 
+			$ressources = '{
+				"ressources": [
+				  {
+					"url": "user/*",
+					"method": "*"
+				  }
+				]
+			  }';
 			$expirationToken = time() + $_ENV["JWT_TTL"];
-			$token = GénérateurDeToken::get_instance()->générer_token($user, null, $expirationToken);
+			$token = GénérateurDeToken::get_instance()->générer_token($user, $ressources, $expirationToken);
 			$réponse = $this->préparer_réponse(["Token" => $token]);
 		} else {
 			Log::notice(
