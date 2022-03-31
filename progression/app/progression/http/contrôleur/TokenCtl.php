@@ -20,12 +20,14 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use progression\domaine\entité\{User};
+use progression\domaine\entité\User;
 
 class TokenCtl extends Contrôleur
 {
 	public function post(Request $request, $username)
 	{
+		Log::debug("TokenCtl.post. Params : ", [$request, $username]);
+
 		$ressources = $request->input("ressources");
 		$user = new User($username);
 

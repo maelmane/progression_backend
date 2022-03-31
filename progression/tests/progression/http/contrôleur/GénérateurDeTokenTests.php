@@ -22,13 +22,26 @@ use progression\domaine\entité\User;
 final class GénérateurDeTokenTests extends TestCase
 {
 	public $user;
-	public $expiration;
-	public $ressources;
 
 	public function setUp(): void
 	{
 		parent::setUp();
 		$this->user = new User("Pascal");
+	}
+
+	public function test_étant_donné_la_création_dun_token_avec_ressources_et_date_dexpiration_un_token_avec_les_informations_correspondante_est_créé()
+	{
+		$expirationAttendue = strtotime("31 March 2022");
+		$ressourcesAttendue = "ressources";
+		$token = GénérateurDeToken::get_instance()->générer_token(
+			$this->user,
+			$ressourcesAttendue,
+			$expirationAttendue,
+		);
+		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
+		$this->assertEquals($this->user->username, $tokenDécodé->username);
+		$this->assertEquals($ressourcesAttendue, $tokenDécodé->ressources);
+		$this->assertEquals($expirationAttendue, $tokenDécodé->expired);
 	}
 
 	public function test_étant_donné_la_création_dun_token_sans_ressources_la_ressource_est_null()

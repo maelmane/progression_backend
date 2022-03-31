@@ -19,7 +19,6 @@
 namespace progression\http\contrôleur;
 
 use Firebase\JWT\JWT;
-use Illuminate\Support\Facades\Log;
 
 class GénérateurDeToken
 {
@@ -53,7 +52,6 @@ class GénérateurDeToken
 		];
 
 		$JWT = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
-		Log::debug("GénérateurDeToken.générer_token. Retour : ", [$JWT]);
 
 		return $JWT;
 	}

@@ -21,15 +21,11 @@ use progression\TestCase;
 use Firebase\JWT\JWT;
 use progression\dao\DAOFactory;
 use progression\http\contrôleur\GénérateurDeToken;
-use progression\domaine\entité\{User};
+use progression\domaine\entité\User;
 use Illuminate\Auth\GenericUser;
 
 final class TokenCtlTests extends TestCase
 {
-	public $user;
-	public $ressources;
-	public $expiration;
-
 	public function setUp(): void
 	{
 		//UserDAO
@@ -67,7 +63,7 @@ final class TokenCtlTests extends TestCase
 		GénérateurDeToken::set_instance(null);
 	}
 
-	public function test_étant_donné_un_jeton_qui_donne_accès_à_un_avancement_on_reçoit_un_token_avec_les_ressources_donnant_accès_à_cet_avancement()
+	public function test_étant_donné_un_jeton_qui_donne_accès_à_une_ressource_on_reçoit_un_token_avec_les_informations_donnant_accès_à_cette_ressource()
 	{
 		$tokenAttendu = '{"Token":"token valide"}';
 
