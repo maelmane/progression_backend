@@ -60,9 +60,7 @@ class AuthServiceProvider extends ServiceProvider
 				try {
 					$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
 					// Compare le Unix Timestamp courant et l'expiration du token.
-					if (time() > $tokenDécodé->expired) {
-						return null;
-					} else {
+					if (time() < $tokenDécodé->expired || $tokenDécodé->expired == 0) {
 						// Recherche de l'utilisateur
 						$user = (new ObtenirUserInt())->get_user($tokenDécodé->username);
 
@@ -70,6 +68,8 @@ class AuthServiceProvider extends ServiceProvider
 							"username" => $user->username,
 							"rôle" => $user->rôle,
 						]);
+					} else {
+						return null;
 					}
 				} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
 					Log::error(
