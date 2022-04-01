@@ -71,5 +71,4 @@ $router->group(["middleware" => ["auth", "validationPermissions"]], function () 
 	$router->post("/test/{username}/{question_uri}/{numero:[[:digit:]]+}", "NotImplementedCtl@get");
 	// Token
 	$router->post("/token/{username}/", "TokenCtl@post");
-
 });

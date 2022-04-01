@@ -56,7 +56,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 
 		// Mock exécuteur
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
-		$mockExécuteur->shouldReceive("exécuter")->andReturn([["output" => "Patate poil!", "errors" => "" ]]);
+		$mockExécuteur->shouldReceive("exécuter")->andReturn([["output" => "Patate poil!", "errors" => ""]]);
 
 		// Mock DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");

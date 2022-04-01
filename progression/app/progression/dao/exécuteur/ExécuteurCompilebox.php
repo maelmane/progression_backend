@@ -45,10 +45,9 @@ class ExécuteurCompilebox extends Exécuteur
 		//post le code à remotecompiler
 		$url_rc = $_ENV["COMPILEBOX_URL"];
 
-		$tests_out=[];
-		foreach($tests as $test){
-			$tests_out[] = ["stdin" => $test->entrée,
-							"params" => $test->params];
+		$tests_out = [];
+		foreach ($tests as $test) {
+			$tests_out[] = ["stdin" => $test->entrée, "params" => $test->params];
 		}
 
 		$data_rc = [
