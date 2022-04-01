@@ -18,7 +18,6 @@ along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 
 use progression\TestCase;
 
-use Firebase\JWT\JWT;
 use progression\dao\DAOFactory;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\User;
@@ -30,13 +29,13 @@ final class TokenCtlTests extends TestCase
 	{
 		//UserDAO
 		parent::setUp();
-		$this->user = new GenericUser(["username" => "TurboPascal", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser(["username" => "UtilisateurLambda", "rôle" => User::ROLE_NORMAL]);
 
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
-			->with("TurboPascal")
-			->andReturn(new User("TurboPascal"));
+			->with("UtilisateurLambda")
+			->andReturn(new User("UtilisateurLambda"));
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
@@ -63,11 +62,11 @@ final class TokenCtlTests extends TestCase
 		GénérateurDeToken::set_instance(null);
 	}
 
-	public function test_étant_donné_un_jeton_qui_donne_accès_à_une_ressource_on_reçoit_un_token_avec_les_informations_donnant_accès_à_cette_ressource()
+	public function test_étant_donné_un_token_qui_donne_accès_à_une_ressource_on_reçoit_un_token_avec_les_informations_donnant_accès_à_cette_ressource()
 	{
 		$tokenAttendu = '{"Token":"token valide"}';
 
-		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/token/TurboPascal", [
+		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/token/UtilisateurLambda", [
 			"ressources" => "ressources",
 		]);
 		$tokenObtenu = $résultatObtenu->getContent();

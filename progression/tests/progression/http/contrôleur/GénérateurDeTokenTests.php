@@ -26,7 +26,7 @@ final class GénérateurDeTokenTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		$this->user = new User("Pascal");
+		$this->user = new User("UtilisateurLambda");
 	}
 
 	public function test_étant_donné_la_création_dun_token_avec_ressources_et_date_dexpiration_un_token_avec_les_informations_correspondante_est_créé()
