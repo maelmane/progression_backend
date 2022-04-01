@@ -29,7 +29,7 @@ final class GénérateurDeTokenTests extends TestCase
 		$this->user = new User("UtilisateurLambda");
 	}
 
-	public function test_étant_donné_la_création_dun_token_avec_ressources_et_date_dexpiration_un_token_avec_les_informations_correspondante_est_créé()
+	public function test_étant_donné_la_création_dun_token_avec_ressources_et_date_dexpiration_un_token_avec_les_informations_correspondantes_est_créé()
 	{
 		$expirationAttendue = strtotime("31 March 2022");
 		$ressourcesAttendue = "ressources";
