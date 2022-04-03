@@ -100,7 +100,7 @@ class TentativeCtl extends Contrôleur
 				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
 			} catch (ExécutionException $e) {
 				Log::error($e->getMessage());
-				Log::error($e->getPrevious()->getMessage());
+				if($e->getPrevious()) Log::error($e->getPrevious()->getMessage());
 				return $this->réponse_json(["erreur" => "Service non disponible."], 503);
 			}
 			if ($tentative == null) {
