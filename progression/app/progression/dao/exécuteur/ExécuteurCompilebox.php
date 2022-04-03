@@ -68,7 +68,12 @@ class ExécuteurCompilebox extends Exécuteur
 		];
 		$context = stream_context_create($options_rc);
 
-		$comp_resp = file_get_contents($url_rc, false, $context);
+		try{
+			$comp_resp = file_get_contents($url_rc, false, $context);
+		}
+		catch(\ErrorException $e){
+			throw new ExécutionException("Compilebox non disponible", 503, $e);
+		}
 
 		return json_decode(str_replace("\r", "", $comp_resp), true);
 	}

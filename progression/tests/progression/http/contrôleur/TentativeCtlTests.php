@@ -89,7 +89,7 @@ final class TentativeCtlTests extends TestCase
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "java";
 			})
-			->andThrow(new ExécutionException(null, "test://TentativeCtlTests.php"));
+			->andThrow(new ExécutionException("Erreur test://TentativeCtlTests.php"));
 
 		// Avancement
 		$avancement = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [
