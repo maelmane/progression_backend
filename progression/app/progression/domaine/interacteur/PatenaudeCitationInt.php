@@ -18,7 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-class PatenaudeCitationInt extends Interacteur{
+class PatenaudeCitationInt extends Interacteur
+{
 	const CapitainePatenaude = [
 		"Qui sème le vent récolte du blé d’inde pis des pétates. (Capitaine Patenaude)",
 		"Il est parti comme une vache dans un jeu de quilles ! (Capitaine Patenaude)",
@@ -55,7 +56,8 @@ class PatenaudeCitationInt extends Interacteur{
 		"Jouer au ping-pong tout seul, c’est bon pour le cardio-vasculaire, mais c’est plate rare ! (Capitaine Patenaude)",
 	];
 
-	public function get_citation(){
+	public function get_citation()
+	{
 		return self::CapitainePatenaude[rand(0, count(self::CapitainePatenaude) - 1)];
 	}
 }
