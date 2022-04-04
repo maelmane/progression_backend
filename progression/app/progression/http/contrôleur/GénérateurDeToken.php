@@ -51,8 +51,8 @@ class GénérateurDeToken
 			"ressources" => $ressources,
 		];
 
-		$JWT = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
+		$token = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
 
-		return $JWT;
+		return $token;
 	}
 }
