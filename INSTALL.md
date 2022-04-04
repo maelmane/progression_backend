@@ -59,8 +59,7 @@ docker-compose up -d db
 (laissez quelques secondes de démarrage au SGBD)
 
 ```
-docker exec -it progression_db bash
-cd /tmp/ && ./build_db.sh
+docker exec -it progression_db /docker-entrypoint-initdb.d/build_db.sh
 ```
 
 Fermer le terminal avec Ctrl-D ou `exit`

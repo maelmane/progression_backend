@@ -18,8 +18,6 @@
 
 namespace progression\domaine\interacteur;
 
-use Exception;
-use progression\dao\exécuteur\ExécutionException;
 use progression\domaine\entité\RésultatProg;
 
 class ExécuterProgInt extends Interacteur
