@@ -42,78 +42,81 @@ final class ExécuterProgIntTests extends TestCase
 					return $param == new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
 				}),
 				Mockery::on(function ($param) {
-					return $param == [ new Test("premier test", "ok\n", "1") ];
+					return $param == [new Test("premier test", "ok\n", "1")];
 				}),
 			)
-			->andReturn([[ "output" => "ok\n", "errors" => "" ]]);
-				$mockExécuteur
+			->andReturn([["output" => "ok\n", "errors" => ""]]);
+		$mockExécuteur
 			->shouldReceive("exécuter")
 			->with(
 				Mockery::on(function ($param) {
 					return $param == new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
 				}),
 				Mockery::on(function ($param) {
-					return $param == [ new Test("premier test", "ok\n", "1"), new Test("deuxième test", "ok\nok\n", "2") ];
+					return $param == [
+						new Test("premier test", "ok\n", "1"),
+						new Test("deuxième test", "ok\nok\n", "2"),
+					];
 				}),
 			)
 			->andReturn([["output" => "ok\n", "errors" => ""], ["output" => "ok\nok\n", "errors" => ""]]);
 
-				$mockExécuteur
+		$mockExécuteur
 			->shouldReceive("exécuter")
 			->with(
 				Mockery::on(function ($param) {
 					return $param == new Exécutable("a=a", "python");
 				}),
 				Mockery::on(function ($param) {
-					return $param == [ new Test("premier test", "ok\n", "1") ];
+					return $param == [new Test("premier test", "ok\n", "1")];
 				}),
 			)
-			->andReturn([[ "output" => "", "errors" => "erreur" ]]);
+			->andReturn([["output" => "", "errors" => "erreur"]]);
 
-				$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-				$mockDAOFactory
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
+		$mockDAOFactory
 			->allows()
 			->get_exécuteur()
 			->andReturn($mockExécuteur);
-				DAOFactory::setInstance($mockDAOFactory);
-			}
+		DAOFactory::setInstance($mockDAOFactory);
+	}
 
-				public function tearDown(): void
-				{
-					Mockery::close();
-					DAOFactory::setInstance(null);
-				}
+	public function tearDown(): void
+	{
+		Mockery::close();
+		DAOFactory::setInstance(null);
+	}
 
-				public function test_étant_donné_un_exécutable_valide_et_un_test_lorsquon_les_soumet_pour_exécution_on_obtient_un_résultat_de_test_avec_ses_sorties_standards()
-				{
-					$exécutable_valide = new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
-					$test = [ new Test("premier test", "ok\n", "1") ];
+	public function test_étant_donné_un_exécutable_valide_et_un_test_lorsquon_les_soumet_pour_exécution_on_obtient_un_résultat_de_test_avec_ses_sorties_standards()
+	{
+		$exécutable_valide = new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
+		$test = [new Test("premier test", "ok\n", "1")];
 
-					$résultat_observé = (new ExécuterProgInt())->exécuter($exécutable_valide, $test);
+		$résultat_observé = (new ExécuterProgInt())->exécuter($exécutable_valide, $test);
 
-					$résultat_attendu = [ new RésultatProg("ok\n", "") ];
-					$this->assertEquals($résultat_attendu, $résultat_observé);
-				}
+		$résultat_attendu = [new RésultatProg("ok\n", "")];
+		$this->assertEquals($résultat_attendu, $résultat_observé);
+	}
 
-				public function test_étant_donné_un_exécutable_valide_et_deux_tests_lorsquon_les_soumet_pour_exécution_on_obtient_deux_résultats_de_test_avec_ses_sorties_standards()
-				{
-					$exécutable_valide = new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
-					$test = [ new Test("premier test", "ok\n", "1"), new Test("deuxième test", "ok\nok\n", "2") ];
+	public function test_étant_donné_un_exécutable_valide_et_deux_tests_lorsquon_les_soumet_pour_exécution_on_obtient_deux_résultats_de_test_avec_ses_sorties_standards()
+	{
+		$exécutable_valide = new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
+		$test = [new Test("premier test", "ok\n", "1"), new Test("deuxième test", "ok\nok\n", "2")];
 
-					$résultat_observé = (new ExécuterProgInt())->exécuter($exécutable_valide, $test);
+		$résultat_observé = (new ExécuterProgInt())->exécuter($exécutable_valide, $test);
 
-					$résultat_attendu = [ new RésultatProg("ok\n", ""), new RésultatProg("ok\nok\n", "") ];
-					$this->assertEquals($résultat_attendu, $résultat_observé);
-				}
-				
-				public function test_étant_donné_un_exécutable_d_erreur_et_un_test_lorsquon_les_soumet_pour_exécution_on_obtient_un_résultat_de_test_avec_ses_sorties_d_erreur()
-				{
-					$exécutable_erreur = new Exécutable("a=a", "python");
-					$test = [ new Test("premier test", "ok\n", "1") ];
+		$résultat_attendu = [new RésultatProg("ok\n", ""), new RésultatProg("ok\nok\n", "")];
+		$this->assertEquals($résultat_attendu, $résultat_observé);
+	}
 
-					$résultat_observé = (new ExécuterProgInt())->exécuter($exécutable_erreur, $test);
+	public function test_étant_donné_un_exécutable_d_erreur_et_un_test_lorsquon_les_soumet_pour_exécution_on_obtient_un_résultat_de_test_avec_ses_sorties_d_erreur()
+	{
+		$exécutable_erreur = new Exécutable("a=a", "python");
+		$test = [new Test("premier test", "ok\n", "1")];
 
-					$résultat_attendu = [ new RésultatProg("", "erreur") ];
-					$this->assertEquals($résultat_attendu, $résultat_observé);
-				}
-			}
+		$résultat_observé = (new ExécuterProgInt())->exécuter($exécutable_erreur, $test);
+
+		$résultat_attendu = [new RésultatProg("", "erreur")];
+		$this->assertEquals($résultat_attendu, $résultat_observé);
+	}
+}
