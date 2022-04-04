@@ -109,7 +109,9 @@ class LoginCtl extends Contrôleur
 				"method": "*"
 			  }
 			]
-		  }';
+			$ressources = '{ "ressources": [ {
+			                     "url": "*",
+			                     "method": "*" } ] }';
 		$expirationToken = time() + $_ENV["JWT_TTL"];
 		$token = GénérateurDeToken::get_instance()->générer_token($user, $ressources, $expirationToken);
 
