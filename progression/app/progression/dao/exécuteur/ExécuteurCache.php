@@ -48,10 +48,9 @@ class ExécuteurCache extends Exécuteur
 		Log::debug("Hash: $hash");
 
 		$résultat = null;
-		try{
+		try {
 			$résultat = $this->obtenir_de_la_cache($hash);
-		}
-		catch(\Throwable $e){
+		} catch (\Throwable $e) {
 			Log::error("Cache non disponible");
 			Log::error($e->getMessage());
 		}
@@ -60,10 +59,9 @@ class ExécuteurCache extends Exécuteur
 			$résultat = $this->_exécuteur->exécuter($exécutable, $tests);
 
 			if (!$this->contient_des_erreurs($résultat)) {
-				try{
+				try {
 					$this->placer_sortie_en_cache($hash, $résultat);
-				}
-				catch(\Throwable $e){
+				} catch (\Throwable $e) {
 					Log::error("Cache non disponible");
 					Log::error($e->getMessage());
 				}
