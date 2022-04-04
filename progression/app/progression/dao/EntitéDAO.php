@@ -57,6 +57,6 @@ class EntitéDAO
 			$_ENV["DB_PASSWORD"],
 			$_ENV["DB_DBNAME"],
 		);
-		EntitéDAO::$conn->set_charset("utf8");
+		EntitéDAO::$conn->set_charset("utf8mb4");
 	}
 }

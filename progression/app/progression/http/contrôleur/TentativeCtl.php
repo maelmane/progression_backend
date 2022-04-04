@@ -88,8 +88,8 @@ class TentativeCtl extends Contrôleur
 			if ($validation->fails()) {
 				Log::notice(
 					"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					__CLASS__ .
-					") Paramètres invalides",
+						__CLASS__ .
+						") Paramètres invalides",
 				);
 				return $this->réponse_json(["erreur" => $validation->errors()], 400);
 			}
@@ -100,19 +100,22 @@ class TentativeCtl extends Contrôleur
 				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
 			} catch (ExécutionException $e) {
 				Log::error($e->getMessage());
-				if($e->getPrevious()) Log::error($e->getPrevious()->getMessage());
+				if ($e->getPrevious()) {
+					Log::error($e->getPrevious()->getMessage());
+				}
 				return $this->réponse_json(["erreur" => "Service non disponible."], 503);
 			}
 			if ($tentative == null) {
 				Log::notice(
-					"({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Requête intraitable (Tentative == null)",
+					"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+						__CLASS__ .
+						") Requête intraitable (Tentative == null)",
 				);
 				return $this->réponse_json(["erreur" => "Requête intraitable."], 400);
 			}
 
 			$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
 			$réponse = $this->item($tentative, new TentativeProgTransformer());
-
 		} elseif ($question instanceof QuestionSys) {
 			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["erreur" => "Question système non implémentée."], 501);

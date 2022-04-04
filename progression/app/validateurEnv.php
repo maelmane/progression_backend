@@ -2,8 +2,8 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-if(file_exists(__DIR__.".env")){
-    $dotenv->load();
+if (file_exists(__DIR__ . ".env")) {
+	$dotenv->load();
 }
 $dotenv->required("APP_URL")->allowedRegexValues('(.*/$)');
 $dotenv->required("APP_NAME")->allowedRegexValues("(.*)");
