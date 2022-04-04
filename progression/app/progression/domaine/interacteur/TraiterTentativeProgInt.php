@@ -20,49 +20,6 @@ namespace progression\domaine\interacteur;
 
 class TraiterTentativeProgInt extends Interacteur
 {
-	public $citations = [
-		"Les logiciels sont comme le sexe, c'est meilleur lorsque c'est libre. (Linus Torvalds)",
-		"Vraiment, je ne suis pas là pour détruire Microsoft. Ca sera juste un effet secondaire tout à fait involontaire. (Linus Torvalds)",
-		"Si la connerie était sans fil, ça ferait bien longtemps que mon voisin serait à la pointe de la technologie. (N.Annereau)",
-		"Hacker vaillant, rien d'impossible.",
-		"Il y a 10 types de personnes dans le monde : ceux qui comprennent le binaire et ceux qui ne le comprennent pas.",
-		"Il y a 11 types de personnes dans le monde : ceux qui comprennent le binaire réfléchi et ceux qui ne le comprennent pas.",
-		"Le vrai danger, ce n'est pas quand les ordinateurs penseront comme les hommes, c'est quand les hommes penseront comme les ordinateurs. (Sydney Harris)",
-		"Le principe de l'évolution est beaucoup plus rapide en informatique que chez le bipède. (Jean Dion)",
-		"L'avènement du cyberespace a eu pour principale conséquence d'abaisser le seuil de patience de l'humain postmoderne à un dixième de seconde. (Jean Dion)",
-		"L'ordinateur est un appareil sophistiqué auquel on fait porter une housse la nuit en cas de poussière et le chapeau durant la journée en cas d'erreur. (Philippe Bouvard)",
-		"Les trous noirs, ce sont les endroits où Dieu a fait des divisions par zéro.",
-		"Commit du soir, espoir. Build du matin, chagrin.",
-		"L'époque des PC est terminée. (Lou Gerstner, Directeur d'IBM, 1998)",
-		"Je crois qu'OS/2 est destiné à être le système d'exploitation le plus important de tous les temps. (Bill Gates, PDG et fondateur de Microsoft, 1988)",
-		"La souris, qu'est-ce que c'est ? (Jacques Chirac devant un ordinateur, décembre 1996)",
-		"Les virus ne seraient souvent, au départ, que de vulgaires erreurs de programmation, des bugs. (Le Nouvel Observateur, cité dans SVM, juin 1994)",
-		"Selon le cabinet d'études Strategic Inc., Ethernet est condamné par son manque d'avantages économiques et techniques. (LMI, 1981)",
-		"Il n'y a aucune raison pour laquelle quiconque désirerait avoir un ordinateur à la maison. (Ken Olsen, président fondateur de Digital, 1977)",
-		"Si vous désirez voyager autour du monde et être invité a discourir un peu partout il suffit d'écrire une version d'Unix. (Linus Torvalds)",
-		"L'informatique, en tant que discipline, ne traite pas plus des ordinateurs que l'astronomie ne le fait des téléscopes. (E. W. Dijkstra)",
-		"Les simulations, comme les bikinis, montrent pas mal de choses mais cachent le principal. (Hubert Kirrman)",
-		"Prétendre que le secret des sources est une sécurité supplémentaire est un abus de confiance caractérisé. (PC Expert octobre 98)",
-		"Demander si un ordinateur peut penser revient à demander si un sous-marin peut nager. (Edsgar Dijkstra)",
-		"Une organisation traitant ses développeurs comme s'ils étaient abrutis se retrouvera vite riche d'une équipe d'informaticiens uniquement capables de se comporter comme s'ils l'étaient. (B. Stroustrup)",
-		"Le nombre de prédictions concernant la fin de la loi de Moore tend à doubler tous les 18 mois. (H. Eychenne)",
-		"Les ordinateurs sont inutiles. Ils ne donnent que des réponses. (Pablo Picasso)",
-		"Je pense qu'il y a un marché mondial pour environ 5 ordinateurs. (Thomas WATSON, président d'IBM, 1943)",
-		"Je n'ai pas peur des ordinateurs. J'ai peur qu'ils viennent à nous manquer. (Isaac Asimov)",
-		"Sur internet, on peut écouter la radio tout en payant le téléphone. (Anne Roumanoff)",
-		"Internet, c'est dingue : on y cherche rien et on trouve tout ! (Anne Roumanoff)",
-		"Si nous avions su dès le départ qu'il fallait gagner de l'argent, nous l'aurions fait. (Antoine Bourdillon, DG de la startup Clicvision, mars 2001)",
-		"Qui a besoin de voir des films d'horreur lorsqu'il a déjà Windows 95 ? (Christine Comaford, PC Week, 27 septembre 1995)",
-		"S'il faut deux secondes pour transmettre une page par le réseau Numeris et quarante-cinq secondes pour l'imprimer, il y a un problème. (F. Hodbert, directeur des produits Numeris chez Matra)",
-		"La vitesse a toujours été importante, sinon nul n'aurait besoin d'ordinateur. (S. Cray)",
-		"Lorsque vous ne savez pas utiliser l'outil informatique, vous ne vous rendez pas compte de la chance que vous avez tant que vous n'apprenez pas à vous en servir.(Mereck)",
-		"Le libre, c'est avant tout d'avoir de la notoriété. (Wikipedia FR)",
-		"Méfiez vous d'un ordinateur que vous ne pouvez jeter par la fenêtre. (Steve Wozniak)",
-		"Avec Windows 98, nous étions au bord du gouffre. Avec Windows ME, nous avons fait un grand pas en avant.",
-		"Qui pourrait se sentir mal de pirater Windows XP? Ils nous ont pourtant infligé ME et 95!",
-		"L'informatique c'est passer 15 jours a gagner 15 mili-secondes.",
-	];
-
 	public $CapitainePatenaude = [
 		"Qui sème le vent récolte du blé d’inde pis des pétates. (Capitaine Patenaude)",
 		"Il est parti comme une vache dans un jeu de quilles ! (Capitaine Patenaude)",
@@ -126,14 +83,8 @@ class TraiterTentativeProgInt extends Interacteur
 			$tentative->réussi = false;
 			if ($question->feedback_err) {
 				$tentative->feedback = $question->feedback_err;
-			} else {
-				$date = date("j n");
-				if ($date === "1 4") {
-					$feedback_err = $this->CapitainePatenaude[rand(0, count($this->CapitainePatenaude) - 1)];
-				} else {
-					$feedback_err = $this->citations[rand(0, count($this->citations) - 1)];
-				}
-				$tentative->feedback = $feedback_err;
+			} elseif (date("j n") === "1 4") {
+				$tentative->feedback = $this->CapitainePatenaude[rand(0, count($this->CapitainePatenaude) - 1)];
 			}
 		} elseif ($nb_tests_réussis == count($question->tests)) {
 			$tentative->réussi = true;
