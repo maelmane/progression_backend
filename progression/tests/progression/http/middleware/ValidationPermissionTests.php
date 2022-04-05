@@ -19,6 +19,7 @@
 use progression\TestCase;
 
 use progression\http\middleware\ValidationPermissions;
+use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\User;
 use progression\dao\{DAOFactory, UserDAO};
 use Illuminate\Auth\GenericUser;
@@ -26,6 +27,8 @@ use Illuminate\Auth\GenericUser;
 final class ValidationPermissionsTests extends TestCase
 {
 	public $user;
+
+	public $headers;
 
 	public function setup(): void
 	{
@@ -49,6 +52,10 @@ final class ValidationPermissionsTests extends TestCase
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		DAOFactory::setInstance($mockDAOFactory);
+
+		//Token pour header requête
+		$token = GénérateurDeToken::get_instance()->générer_token("bob", "*");
+		$this->headers = ["HTTP_Authorization" => "Bearer " . $token];
 	}
 
 	public function tearDown(): void
@@ -59,7 +66,7 @@ final class ValidationPermissionsTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_normal_bob_connecté_lorsquon_demande_une_ressource_pour_ce_même_utilisateur_on_obtient_OK()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/bob");
+		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/bob", [], [], [], $this->headers);
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/profil_bob.json",
@@ -69,7 +76,7 @@ final class ValidationPermissionsTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_normal_bob_connecté_lorsquon_demande_une_ressource_pour_l_utilisateur_jdoe_on_obtient_erreur_403()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe");
+		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe", [], [], [], $this->headers);
 
 		$this->assertEquals(403, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Opération interdite."}', $résultat_obtenu->getContent());
@@ -78,7 +85,7 @@ final class ValidationPermissionsTests extends TestCase
 	public function test_étant_donné_un_utilisateur_admin_connecté_lorsquon_demande_une_ressource_pour_l_utilisateur_existant_bob_on_obtient_son_profil()
 	{
 		$admin = new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]);
-		$résultat_obtenu = $this->actingAs($admin)->call("GET", "/user/bob");
+		$résultat_obtenu = $this->actingAs($admin)->call("GET", "/user/bob", [], [], [], $this->headers);
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/profil_bob.json",
@@ -88,11 +95,24 @@ final class ValidationPermissionsTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquon_demande_une_ressource_pour_null_on_obtient_son_propre_profil()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/");
+		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/", [], [], [], $this->headers);
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/profil_bob.json",
 			$résultat_obtenu->getContent(),
 		);
 	}
+
+	// public function test_étant_donné_un_token_pour_un_utilisateur_bob_existant_qui_donne_access_a_toutes_les_ressources_la_permission_est_accordée_et_on_obtient_un_code_200()
+	// {
+
+	// 	$token = GénérateurDeToken::get_instance()->générer_token("bob", "*", $expiration);
+	// 	$method = "GET";
+	// 	$route = "/user/bob";
+	// 	$headers = ["HTTP_Authorization" => "Bearer " . $token];
+
+	// 	$résultatObtenu = $this->call($method, $route, [], [], [], $headers);
+
+	// 	$this->assertEquals(200, $résultatObtenu->status());
+	// }
 }

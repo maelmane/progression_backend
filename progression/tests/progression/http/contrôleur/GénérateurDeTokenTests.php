@@ -17,7 +17,6 @@ use progression\TestCase;
 
 use Firebase\JWT\JWT;
 use progression\http\contrôleur\GénérateurDeToken;
-use progression\domaine\entité\User;
 
 final class GénérateurDeTokenTests extends TestCase
 {

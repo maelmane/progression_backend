@@ -19,9 +19,11 @@
 namespace progression\http\middleware;
 
 use Closure;
+use Firebase\JWT\JWT;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
-use progression\domaine\entité\User;
 use progression\domaine\interacteur\ObtenirUserInt;
+use Exception;
 
 class ValidationPermissions
 {
@@ -32,7 +34,11 @@ class ValidationPermissions
 
 		$utilisateurRecherché = (new ObtenirUserInt())->get_user($utilisateurRequête ?? $utilisateurConnecté->username);
 
-		if ($utilisateurRecherché && Gate::allows("access-user", $utilisateurRecherché)) {
+		if (
+			$utilisateurRecherché &&
+			Gate::allows("access-user", $utilisateurRecherché) &&
+			$this->validerRessourceDemandée($request)
+		) {
 			return $next($request);
 		} else {
 			return response()->json(
@@ -45,5 +51,33 @@ class ValidationPermissions
 				JSON_UNESCAPED_UNICODE,
 			);
 		}
+	}
+
+	private function validerRessourceDemandée($request)
+	{
+		$token = trim(str_ireplace("bearer", "", $request->header("Authorization")));
+
+		if ($token) {
+			try {
+				$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
+			} catch (Exception $e) {
+				Log::error($e); //TODO: logger complètement l'erreur.
+				return false;
+			}
+
+			if ($tokenDécodé->ressources == "*") {
+				return true;
+			}
+
+			$path = $request->path();
+			$ressourceDemandéePath = substr($path, 0, strpos($path, "/"));
+			$ressourceDemandéeToken = substr($tokenDécodé->ressources, 0, strpos($tokenDécodé->ressources, "/"));
+
+			if ($ressourceDemandéeToken == $ressourceDemandéePath) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

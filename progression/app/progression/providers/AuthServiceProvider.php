@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\GenericUser;
-use progression\dao\DAOFactory;
 use progression\domaine\interacteur\ObtenirUserInt;
 use progression\domaine\entité\User;
 use Firebase\JWT\JWT;
@@ -53,10 +52,8 @@ class AuthServiceProvider extends ServiceProvider
 
 		// Décode le token de la requête.
 		$this->app["auth"]->viaRequest("api", function ($request) {
-			$parties_token = explode(" ", $request->header("Authorization"));
-			if (count($parties_token) == 2 && strtolower($parties_token[0]) == "bearer") {
-				$token = $parties_token[1];
-
+			$token = trim(str_ireplace("bearer", "", $request->header("Authorization")));
+			if ($token) {
 				try {
 					$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
 					// Compare le Unix Timestamp courant et l'expiration du token.
