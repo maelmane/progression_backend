@@ -50,12 +50,10 @@ final class AuthServiceProviderCtlTests extends TestCase
 	public function test_étant_donné_un_token_pour_un_utilisateur_existant_qui_expire_dans_30_minutes_lautorisation_daccès_est_donnée_par_le_système_avec_un_code_200()
 	{
 		$expiration = time() + 30 * 60;
-		$user = new User("UtilisateurLambda");
-		$token = GénérateurDeToken::get_instance()->générer_token($user, "ressources_test", $expiration);
+		$token = GénérateurDeToken::get_instance()->générer_token("UtilisateurLambda", "ressources_test", $expiration);
 		$method = "GET";
 		$route = "/user/UtilisateurLambda";
 		$headers = ["HTTP_Authorization" => "Bearer " . $token];
-		print_r($token);
 
 		$résultatObtenu = $this->call($method, $route, [], [], [], $headers);
 
@@ -65,8 +63,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 	public function test_étant_donné_un_token_pour_un_utilisateur_existant_dont_la_date_dexpiration_est_0_lautorisation_daccès_est_donnée_par_le_système_avec_un_code_200()
 	{
 		$expiration = 0;
-		$user = new User("UtilisateurLambda");
-		$token = GénérateurDeToken::get_instance()->générer_token($user, "ressources_test", $expiration);
+		$token = GénérateurDeToken::get_instance()->générer_token("UtilisateurLambda", "ressources_test", $expiration);
 		$method = "GET";
 		$route = "/user/UtilisateurLambda";
 		$headers = ["HTTP_Authorization" => "Bearer " . $token];
@@ -76,11 +73,10 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertEquals(200, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_token_pour_un_utilisateur_existant_dont_la_date_dexpiration_est_échue_depuis_30_minutes_lautorisation_daccès_est_refusée_par_le_système_avec_un_code_401()
+	public function test_étant_donné_un_token_pour_un_utilisateur_existant_dont_la_date_dexpiration_est_échue_depuis_1_seconde_lautorisation_daccès_est_refusée_par_le_système_avec_un_code_401()
 	{
-		$expiration = time() - 30 * 60;
-		$user = new User("UtilisateurLambda");
-		$token = GénérateurDeToken::get_instance()->générer_token($user, "ressources_test", $expiration);
+		$expiration = time() - 1;
+		$token = GénérateurDeToken::get_instance()->générer_token("UtilisateurLambda", "ressources_test", $expiration);
 		$method = "GET";
 		$route = "/user/UtilisateurLambda";
 		$headers = ["HTTP_Authorization" => "Bearer " . $token];

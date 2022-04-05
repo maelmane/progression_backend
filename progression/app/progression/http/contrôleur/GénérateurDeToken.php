@@ -42,10 +42,10 @@ class GénérateurDeToken
 		GénérateurDeToken::$instance = $générateur;
 	}
 
-	function générer_token($user, $ressources = null, $expiration = 0)
+	function générer_token($username, $ressources = null, $expiration = 0)
 	{
 		$payload = [
-			"username" => $user->username,
+			"username" => $username,
 			"current" => time(),
 			"expired" => $expiration,
 			"ressources" => $ressources,

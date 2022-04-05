@@ -21,40 +21,28 @@ use progression\domaine\entité\User;
 
 final class GénérateurDeTokenTests extends TestCase
 {
-	public $user;
-
-	public function setUp(): void
-	{
-		parent::setUp();
-		$this->user = new User("UtilisateurLambda");
-	}
-
 	public function test_étant_donné_la_création_dun_token_avec_ressources_et_date_dexpiration_un_token_avec_les_informations_correspondantes_est_créé()
 	{
-		$expirationAttendue = strtotime("31 March 2022");
+		$expectedUsername = "UtilisteurLambda";
+
+		$expirationAttendue = "1648684800";
 		$ressourcesAttendue = "ressources";
 		$token = GénérateurDeToken::get_instance()->générer_token(
-			$this->user,
+			$expectedUsername,
 			$ressourcesAttendue,
 			$expirationAttendue,
 		);
 		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
-		$this->assertEquals($this->user->username, $tokenDécodé->username);
+		$this->assertEquals($expectedUsername, $tokenDécodé->username);
 		$this->assertEquals($ressourcesAttendue, $tokenDécodé->ressources);
 		$this->assertEquals($expirationAttendue, $tokenDécodé->expired);
 	}
 
-	public function test_étant_donné_la_création_dun_token_sans_ressources_la_ressource_est_null()
+	public function test_étant_donné_la_création_dun_token_sans_ressource_et_sans_date_dexpiration_la_ressource_est_null_et_la_date_dexpiration_est_0()
 	{
-		$token = GénérateurDeToken::get_instance()->générer_token($this->user);
+		$token = GénérateurDeToken::get_instance()->générer_token("UtilisteurLambda");
 		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
 		$this->assertEquals(null, $tokenDécodé->ressources);
-	}
-
-	public function test_étant_donné_la_création_dun_token_sans_date_dexpiration_la_date_dexpiration_par_défaut_est_0()
-	{
-		$token = GénérateurDeToken::get_instance()->générer_token($this->user, null);
-		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
 		$this->assertEquals(0, $tokenDécodé->expired);
 	}
 }
