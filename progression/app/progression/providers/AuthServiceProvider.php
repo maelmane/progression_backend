@@ -46,14 +46,20 @@ class AuthServiceProvider extends ServiceProvider
 
 		Gate::define("access-user", [UserPolicy::class, "access"]);
 
+		Gate::define("access-ressource", function($request) {
+			return true;
+		});
+
 		Gate::define("update-avancement", function ($user) {
 			return false;
 		});
 
 		// Décode le token de la requête.
 		$this->app["auth"]->viaRequest("api", function ($request) {
-			$token = trim(str_ireplace("bearer", "", $request->header("Authorization")));
-			if ($token) {
+			$parties_token = explode(" ", $request->header("Authorization"));
+			if (count($parties_token) == 2 && strtolower($parties_token[0]) == "bearer") {
+				$token = $parties_token[1];
+
 				try {
 					$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
 					// Compare le Unix Timestamp courant et l'expiration du token.

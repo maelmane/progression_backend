@@ -36,8 +36,7 @@ class ValidationPermissions
 
 		if (
 			$utilisateurRecherché &&
-			Gate::allows("access-user", $utilisateurRecherché) &&
-			$this->validerRessourceDemandée($request)
+			Gate::allows("access-user", $utilisateurRecherché) 
 		) {
 			return $next($request);
 		} else {
