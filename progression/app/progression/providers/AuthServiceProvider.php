@@ -48,16 +48,16 @@ class AuthServiceProvider extends ServiceProvider
 
 		Gate::define("acces-ressource", function ($user, $request) {
 			$tokenDécodé = $this->obtenirTokenDécodé($request);
-			
+
 			if ($tokenDécodé) {
 				$jsonDécodé = json_decode($tokenDécodé->ressources, false);
 				$urlAutorisé = $jsonDécodé->ressources->url;
-				$méthodeAutorisée = $jsonDécodé->ressources->method; 
+				$méthodeAutorisée = $jsonDécodé->ressources->method;
 				$positionWildcard = strpos($urlAutorisé, "*");
 				$ressourceAutorisée = substr($urlAutorisé, 0, $positionWildcard);
 				$ressourceDemandée = substr($request->path(), 0, $positionWildcard);
 
-				return ($ressourceDemandée == $ressourceAutorisée) && ($méthodeAutorisée == $request->method()) ;
+				return $ressourceDemandée == $ressourceAutorisée && $méthodeAutorisée == $request->method();
 			}
 
 			return false;
@@ -71,7 +71,7 @@ class AuthServiceProvider extends ServiceProvider
 
 		$this->app["auth"]->viaRequest("api", function ($request) {
 			$tokenDécodé = $this->obtenirTokenDécodé($request);
-			
+
 			if ($tokenDécodé && (time() < $tokenDécodé->expired || $tokenDécodé->expired == 0)) {
 				$user = (new ObtenirUserInt())->get_user($tokenDécodé->username);
 
@@ -80,7 +80,7 @@ class AuthServiceProvider extends ServiceProvider
 					"rôle" => $user->rôle,
 				]);
 			}
-			
+
 			return null;
 		});
 	}

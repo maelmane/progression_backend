@@ -102,17 +102,4 @@ final class ValidationPermissionsTests extends TestCase
 			$résultat_obtenu->getContent(),
 		);
 	}
-
-	// public function test_étant_donné_un_token_pour_un_utilisateur_bob_existant_qui_donne_access_a_toutes_les_ressources_la_permission_est_accordée_et_on_obtient_un_code_200()
-	// {
-
-	// 	$token = GénérateurDeToken::get_instance()->générer_token("bob", "*", $expiration);
-	// 	$method = "GET";
-	// 	$route = "/user/bob";
-	// 	$headers = ["HTTP_Authorization" => "Bearer " . $token];
-
-	// 	$résultatObtenu = $this->call($method, $route, [], [], [], $headers);
-
-	// 	$this->assertEquals(200, $résultatObtenu->status());
-	// }
 }
