@@ -1,4 +1,20 @@
 <?php
+/*
+   This file is part of Progression.
+
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\providers;
 
@@ -6,32 +22,19 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\GenericUser;
-use Illuminate\Http\Request;
 use progression\domaine\interacteur\ObtenirUserInt;
 use progression\domaine\entité\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
 use UnexpectedValueException;
 use DomainException;
-use Exception;
-use Vtiful\Kernel\Excel;
 
 class AuthServiceProvider extends ServiceProvider
 {
-	/**
-	 * Register any application services.
-	 *
-	 * @return void
-	 */
 	public function register()
 	{
 	}
 
-	/**
-	 * Boot the authentication services for the application.
-	 *
-	 * @return void
-	 */
 	public function boot()
 	{
 		Gate::guessPolicyNamesUsing(function ($modelClass) {
@@ -52,24 +55,23 @@ class AuthServiceProvider extends ServiceProvider
 
 			if ($tokenDécodé) {
 				$jsonDécodé = json_decode($tokenDécodé->ressources, false);
-				print_r($jsonDécodé);
 				$urlAutorisé = $jsonDécodé->ressources->url;
 				$méthodeAutorisée = $jsonDécodé->ressources->method;
 				$positionWildcard = strpos($urlAutorisé, "*");
 
 				if ($positionWildcard === false) {
-					$estAutorisé = ($request->path() == $urlAutorisé) && ($request->method() == $méthodeAutorisée || $méthodeAutorisée == "*");
-					print_r("Pas de wildcard");
-				}
-				elseif ($positionWildcard === 0) {
-					$estAutorisé = ($request->method() == $méthodeAutorisée || $méthodeAutorisée == "*");
-					print_r("Wildcard à la position 0");
-				}
-				else {
-					$ressourceDemandée = substr($request->path(), 0, $positionWildcard);
+					$estAutorisé =
+						$request->path() == $urlAutorisé &&
+						($request->method() == $méthodeAutorisée || $méthodeAutorisée == "*");
+				} elseif ($positionWildcard === 0) {
+					$estAutorisé = $request->method() == $méthodeAutorisée || $méthodeAutorisée == "*";
+				} else {
+					$ressourceDemandée = substr($request->path(), 0, $positionWildcard - 1);
 					$ressourceAutorisée = substr($urlAutorisé, 0, $positionWildcard - 1);
-					$estAutorisé = $ressourceDemandée == $ressourceAutorisée && ($request->method() == $méthodeAutorisée || $méthodeAutorisée == "*");
-					print_r("Wildcard après la position 0");
+					$estAutorisé =
+						$ressourceDemandée == $ressourceAutorisée &&
+						($request->method() == $méthodeAutorisée || $méthodeAutorisée == "*");
+					print_r($ressourceDemandée . "  Autorisé =>  " . $ressourceAutorisée);
 				}
 			}
 

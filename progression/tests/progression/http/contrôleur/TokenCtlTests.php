@@ -35,13 +35,13 @@ final class TokenCtlTests extends TestCase
 			return true;
 		});
 
-		$this->user = new GenericUser(["username" => "UtilisateurLambda", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser(["username" => "utilisateur_lambda", "rôle" => User::ROLE_NORMAL]);
 
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
-			->with("UtilisateurLambda")
-			->andReturn(new User("UtilisateurLambda"));
+			->with("utilisateur_lambda")
+			->andReturn(new User("utilisateur_lambda"));
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
@@ -72,7 +72,7 @@ final class TokenCtlTests extends TestCase
 	{
 		$tokenAttendu = '{"Token":"token valide"}';
 
-		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/token/UtilisateurLambda", [
+		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/token/utilisateur_lambda", [
 			"ressources" => "ressources",
 		]);
 		$tokenObtenu = $résultatObtenu->getContent();

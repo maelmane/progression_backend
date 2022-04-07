@@ -19,9 +19,7 @@
 use progression\TestCase;
 
 use progression\domaine\entité\{Question, QuestionProg, Exécutable, Test, User};
-use progression\http\contrôleur\QuestionCtl;
 use progression\dao\DAOFactory;
-use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
 
 final class QuestionProgCtlTests extends TestCase

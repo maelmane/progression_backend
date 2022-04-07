@@ -20,7 +20,6 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use progression\domaine\entité\User;
 
 class TokenCtl extends Contrôleur
 {

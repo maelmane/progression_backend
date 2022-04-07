@@ -21,9 +21,7 @@ use progression\TestCase;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\{User, Clé};
 use progression\dao\DAOFactory;
-use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
-use Firebase\JWT\JWT;
 
 final class LoginCtlTests extends TestCase
 {
