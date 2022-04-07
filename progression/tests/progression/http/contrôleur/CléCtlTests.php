@@ -30,7 +30,7 @@ final class CléCtlTests extends TestCase
 	{
 		parent::setUp();
 
-		\Gate::before(function () {
+		Gate::define("acces-ressource", function () {
 			return true;
 		});
 

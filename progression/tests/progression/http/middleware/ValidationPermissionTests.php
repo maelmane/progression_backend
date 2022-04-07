@@ -34,6 +34,10 @@ final class ValidationPermissionsTests extends TestCase
 	{
 		parent::setUp();
 
+		Gate::define("acces-ressource", function () {
+			return true;
+		});
+
 		$_ENV["AUTH_TYPE"] = "ldap";
 		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
 
