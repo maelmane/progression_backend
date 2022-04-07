@@ -30,7 +30,7 @@ final class SauvegardeCtlTests extends TestCase
 	{
 		parent::setUp();
 
-		Gate::define("acces-ressource", function () {
+		\Gate::define("acces-ressource", function () {
 			return true;
 		});
 
