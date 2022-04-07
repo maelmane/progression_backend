@@ -45,6 +45,6 @@ final class TentativeDAOTests extends TestCase
 	{
 		$résultat_observé = (new TentativeDAO())->get_toutes("exemple", "exemple", 0);
 
-		$this->assertEquals([], $résultat_observé);
+		$this->assertNull($résultat_observé);
 	}
 }
