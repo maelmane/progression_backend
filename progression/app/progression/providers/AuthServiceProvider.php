@@ -57,7 +57,7 @@ class AuthServiceProvider extends ServiceProvider
 				$ressourceAutorisée = substr($urlAutorisé, 0, $positionWildcard);
 				$ressourceDemandée = substr($request->path(), 0, $positionWildcard);
 
-				return $ressourceDemandée == $ressourceAutorisée && $méthodeAutorisée == $request->method();
+				return ($ressourceDemandée == $ressourceAutorisée) && ($méthodeAutorisée == $request->method());
 			}
 
 			return false;
