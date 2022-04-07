@@ -88,6 +88,6 @@ class TentativeDAO extends EntitéDAO
 			throw new DAOException($e);
 		}
 
-		return $type ?? Question::TYPE_INCONNU;
+		return $type;
 	}
 }
