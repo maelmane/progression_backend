@@ -79,7 +79,7 @@ class InscriptionCtl extends Contrôleur
 			$ressources = '{
 				"ressources": {
 				  "url": "*",
-				  "method": "GET"
+				  "method": "*"
 				}
 			  }';
 			$expirationToken = time() + $_ENV["JWT_TTL"];
