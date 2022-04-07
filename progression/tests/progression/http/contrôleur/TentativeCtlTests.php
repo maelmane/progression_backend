@@ -32,6 +32,10 @@ final class TentativeCtlTests extends TestCase
 	{
 		parent::setUp();
 
+		\Gate::define("acces-ressource", function () {
+			return true;
+		});
+
 		$_ENV["AUTH_TYPE"] = "no";
 		$_ENV["APP_URL"] = "https://example.com/";
 

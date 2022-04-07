@@ -22,13 +22,20 @@ use progression\dao\DAOFactory;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\User;
 use Illuminate\Auth\GenericUser;
+use Illuminate\Support\Facades\Gate;
 
 final class TokenCtlTests extends TestCase
 {
 	public function setUp(): void
 	{
+
 		//UserDAO
 		parent::setUp();
+
+		\Gate::define("acces-ressource", function () {
+			return true;
+		});
+
 		$this->user = new GenericUser(["username" => "UtilisateurLambda", "rôle" => User::ROLE_NORMAL]);
 
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");

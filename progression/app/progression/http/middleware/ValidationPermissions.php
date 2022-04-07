@@ -19,11 +19,8 @@
 namespace progression\http\middleware;
 
 use Closure;
-use Firebase\JWT\JWT;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use progression\domaine\interacteur\ObtenirUserInt;
-use Exception;
 
 class ValidationPermissions
 {
@@ -34,7 +31,11 @@ class ValidationPermissions
 
 		$utilisateurRecherché = (new ObtenirUserInt())->get_user($utilisateurRequête ?? $utilisateurConnecté->username);
 
-		if ($utilisateurRecherché && Gate::allows("access-user", $utilisateurRecherché)) {
+		if (
+			$utilisateurRecherché &&
+			Gate::allows("access-user", $utilisateurRecherché) &&
+			Gate::allows("acces-ressource", $request)
+		) {
 			return $next($request);
 		} else {
 			return response()->json(
