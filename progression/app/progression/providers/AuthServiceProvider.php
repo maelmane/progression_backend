@@ -47,20 +47,33 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 		Gate::define("acces-ressource", function ($user, $request) {
+			$estAutorisé = false;
 			$tokenDécodé = $this->obtenirTokenDécodé($request);
 
 			if ($tokenDécodé) {
 				$jsonDécodé = json_decode($tokenDécodé->ressources, false);
+				print_r($jsonDécodé);
 				$urlAutorisé = $jsonDécodé->ressources->url;
 				$méthodeAutorisée = $jsonDécodé->ressources->method;
 				$positionWildcard = strpos($urlAutorisé, "*");
-				$ressourceAutorisée = substr($urlAutorisé, 0, $positionWildcard);
-				$ressourceDemandée = substr($request->path(), 0, $positionWildcard);
 
-				return ($ressourceDemandée == $ressourceAutorisée) && ($méthodeAutorisée == $request->method() || $méthodeAutorisée == "*");
+				if ($positionWildcard === false) {
+					$estAutorisé = ($request->path() == $urlAutorisé) && ($request->method() == $méthodeAutorisée || $méthodeAutorisée == "*");
+					print_r("Pas de wildcard");
+				}
+				elseif ($positionWildcard === 0) {
+					$estAutorisé = ($request->method() == $méthodeAutorisée || $méthodeAutorisée == "*");
+					print_r("Wildcard à la position 0");
+				}
+				else {
+					$ressourceDemandée = substr($request->path(), 0, $positionWildcard);
+					$ressourceAutorisée = substr($urlAutorisé, 0, $positionWildcard - 1);
+					$estAutorisé = $ressourceDemandée == $ressourceAutorisée && ($request->method() == $méthodeAutorisée || $méthodeAutorisée == "*");
+					print_r("Wildcard après la position 0");
+				}
 			}
 
-			return false;
+			return $estAutorisé;
 		});
 
 		Gate::define("access-user", [UserPolicy::class, "access"]);
@@ -74,6 +87,7 @@ class AuthServiceProvider extends ServiceProvider
 
 			if ($tokenDécodé && (time() < $tokenDécodé->expired || $tokenDécodé->expired == 0)) {
 				$user = (new ObtenirUserInt())->get_user($tokenDécodé->username);
+				print_r($tokenDécodé);
 
 				return new GenericUser([
 					"username" => $user->username,
