@@ -71,7 +71,6 @@ class AuthServiceProvider extends ServiceProvider
 					$estAutorisé =
 						$ressourceDemandée == $ressourceAutorisée &&
 						($request->method() == $méthodeAutorisée || $méthodeAutorisée == "*");
-					print_r($ressourceDemandée . "  Autorisé =>  " . $ressourceAutorisée);
 				}
 			}
 
@@ -89,7 +88,6 @@ class AuthServiceProvider extends ServiceProvider
 
 			if ($tokenDécodé && (time() < $tokenDécodé->expired || $tokenDécodé->expired == 0)) {
 				$user = (new ObtenirUserInt())->get_user($tokenDécodé->username);
-				print_r($tokenDécodé);
 
 				return new GenericUser([
 					"username" => $user->username,
