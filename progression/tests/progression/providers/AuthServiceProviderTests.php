@@ -57,7 +57,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		Mockery::close();
 	}
 
-	public function test_étant_donné_un_token_pour_un_utilisateur_existant_qui_expire_dans_30_minutes_lautorisation_daccès_est_donnée_par_le_système_avec_un_code_200()
+	public function test_étant_donné_un_token_pour_un_utilisateur_existant_qui_expire_dans_1_seconde_lautorisation_daccès_est_donnée_par_le_système_avec_un_code_200()
 	{
 		$ressources = '{
 			"ressources": {
@@ -65,7 +65,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 			  "method": "GET"
 			}
 		  }';
-		$expiration = time() + 30 * 60;
+		$expiration = time() + 1;
 		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $ressources, $expiration);
 		$method = "GET";
 		$route = "/user/utilisateur_lambda";
