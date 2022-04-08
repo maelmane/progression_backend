@@ -23,9 +23,9 @@ final class GénérateurDeTokenTests extends TestCase
 	public function test_étant_donné_la_création_dun_token_avec_ressources_et_date_dexpiration_un_token_avec_les_informations_correspondantes_est_créé()
 	{
 		$expectedUsername = "utilisateur_lambda";
-
 		$expirationAttendue = "1648684800";
 		$ressourcesAttendue = "ressources";
+
 		$token = GénérateurDeToken::get_instance()->générer_token(
 			$expectedUsername,
 			$ressourcesAttendue,
@@ -41,7 +41,7 @@ final class GénérateurDeTokenTests extends TestCase
 	{
 		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda");
 		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
-		$this->assertEquals(null, $tokenDécodé->ressources);
+		$this->assertNull($tokenDécodé->ressources);
 		$this->assertEquals(0, $tokenDécodé->expired);
 	}
 }
