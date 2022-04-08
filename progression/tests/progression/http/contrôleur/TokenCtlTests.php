@@ -28,7 +28,6 @@ final class TokenCtlTests extends TestCase
 {
 	public function setUp(): void
 	{
-		//UserDAO
 		parent::setUp();
 
 		\Gate::define("acces-ressource", function () {

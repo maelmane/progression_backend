@@ -93,9 +93,9 @@ class AuthServiceProvider extends ServiceProvider
 					"username" => $user->username,
 					"rôle" => $user->rôle,
 				]);
+			} else {
+				return null;
 			}
-
-			return null;
 		});
 	}
 

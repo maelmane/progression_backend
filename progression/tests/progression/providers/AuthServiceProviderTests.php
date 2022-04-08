@@ -20,13 +20,13 @@ use progression\TestCase;
 
 use progression\dao\DAOFactory;
 use progression\http\contrôleur\GénérateurDeToken;
-use progression\domaine\entité\{User};
+use progression\domaine\entité\User;
+use Illuminate\Auth\GenericUser;
 
 final class AuthServiceProviderCtlTests extends TestCase
 {
 	public function setUp(): void
 	{
-		//UserDAO
 		parent::setUp();
 
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -38,6 +38,14 @@ final class AuthServiceProviderCtlTests extends TestCase
 			->shouldReceive("get_user")
 			->with("autre_utilisateur")
 			->andReturn(new User("autre_utilisateur"));
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("utilisateur_innocent")
+			->andReturn(new User("utilisateur_innocent"));
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("utilisateur_malveillant")
+			->andReturn(new User("utilisateur_malveillant"));
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
@@ -178,6 +186,54 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$headers = ["HTTP_Authorization" => "Bearer " . $token];
 
 		$résultatObtenu = $this->call($method, $route, [], [], [], $headers);
+
+		$this->assertEquals(403, $résultatObtenu->status());
+	}
+
+	public function test_étant_donné_un_utilisateur_malveillant_qui_tente_dobtenir_un_token_pour_accéder_aux_ressources_dun_utilisateur_innocent_lacces_aux_ressources_nest_pas_autorisé_et_renvoie_une_erreur_403()
+	{
+		$ressourcesUtilisateurMalveillant = '{
+			"ressources": {
+			  "url": "*",
+			  "method": "*"
+			}
+		  }';
+
+		$expiration = 0;
+		$token = GénérateurDeToken::get_instance()->générer_token(
+			"utilisateur_malveillant",
+			$ressourcesUtilisateurMalveillant,
+			$expiration,
+		);
+		$method = "POST";
+		$route = "/token/utilisateur_malveillant";
+	
+		$ressourcesUtilisateurInnocent = '{
+			"ressources": {
+			  "url": "user/utilisateur_innocent",
+			  "method": "GET"
+			}
+		  }';
+
+		  $headers = ["HTTP_Authorization" => "Bearer " . $token];
+
+		$responseTokenCtl = $this->call(
+			$method,
+			$route,
+			["ressources" => $ressourcesUtilisateurInnocent],
+			[],
+			[],
+			$headers,
+		);
+
+		$tokenJson = json_decode($responseTokenCtl->getContent(), false);
+		$token = $tokenJson->Token;
+		print_r($token);
+		$method = "GET";
+		$route = "/user/utilisateur_innocent";
+		$headers = ["HTTP_Authorization" => "Bearer " . $token];
+
+		$résultatObtenu = $responseTokenCtl = $this->call($method, $route, [], [], [], $headers);
 
 		$this->assertEquals(403, $résultatObtenu->status());
 	}
