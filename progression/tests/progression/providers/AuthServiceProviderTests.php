@@ -25,9 +25,13 @@ use Illuminate\Auth\GenericUser;
 
 final class AuthServiceProviderCtlTests extends TestCase
 {
+	public $utilisateurLambda;
+
 	public function setUp(): void
 	{
 		parent::setUp();
+
+		$this->utilisateurLambda = new GenericUser(["username" => "utilisateur_lambda", "rôle" => User::ROLE_NORMAL]);
 
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
@@ -57,7 +61,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		Mockery::close();
 	}
 
-	public function test_étant_donné_un_token_pour_un_utilisateur_existant_qui_expire_dans_1_seconde_lautorisation_daccès_est_donnée_par_le_système_avec_un_code_200()
+	public function test_étant_donné_un_token_pour_un_utilisateur_existant_lorsque_le_token_expire_dans_1_seconde_on_obtient_un_code_200()
 	{
 		$ressources = '{
 			"ressources": {
@@ -66,7 +70,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 			}
 		  }';
 		$expiration = time() + 1;
-		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $ressources, $expiration);
+		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $expiration, $ressources);
 		$method = "GET";
 		$route = "/user/utilisateur_lambda";
 		$headers = ["HTTP_Authorization" => "Bearer " . $token];
@@ -76,7 +80,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertEquals(200, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_token_pour_un_utilisateur_existant_dont_la_date_dexpiration_est_0_lautorisation_daccès_est_donnée_avec_un_code_200()
+	public function test_étant_donné_un_token_pour_un_utilisateur_existant_lorsque_la_date_dexpiration_du_token_est_0_on_obtient_un_code_200()
 	{
 		$ressources = '{
 			"ressources": {
@@ -85,7 +89,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 			}
 		  }';
 		$expiration = 0;
-		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $ressources, $expiration);
+		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $expiration, $ressources);
 		$method = "GET";
 		$route = "/user/utilisateur_lambda";
 		$headers = ["HTTP_Authorization" => "Bearer " . $token];
@@ -95,7 +99,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertEquals(200, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_token_pour_un_utilisateur_existant_dont_la_date_dexpiration_est_échue_depuis_1_seconde_lautorisation_daccès_est_refusée_avec_un_code_401()
+	public function test_étant_donné_un_token_pour_un_utilisateur_existant_lorsque_la_date_dexpiration_est_échue_depuis_1_seconde_on_obtient_une_erreur_401()
 	{
 		$ressources = '{
 			"ressources": {
@@ -104,7 +108,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 			}
 		  }';
 		$expiration = time() - 1;
-		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $ressources, $expiration);
+		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $expiration, $ressources);
 		$method = "GET";
 		$route = "/user/utilisateur_lambda";
 		$headers = ["HTTP_Authorization" => "Bearer " . $token];
@@ -114,7 +118,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertEquals(401, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_token_pour_un_utilisateur_existant_qui_essaie_deffectuer_un_get_alors_quil_ne_peut_faire_quun_post_lautorisation_daccès_est_refusée_avec_un_code_403()
+	public function test_étant_donné_un_token_pour_un_utilisateur_existant_lorsquon_effectue_un_get_alors_quil_ne_peut_faire_quun_post_on_obtient_une_erreur_403()
 	{
 		$ressources = '{
 			"ressources": {
@@ -123,17 +127,17 @@ final class AuthServiceProviderCtlTests extends TestCase
 			}
 		  }';
 		$expiration = 0;
-		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $ressources, $expiration);
+		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $expiration, $ressources);
 		$method = "GET";
 		$route = "/user/utilisateur_lambda";
 		$headers = ["HTTP_Authorization" => "Bearer " . $token];
 
-		$résultatObtenu = $this->call($method, $route, [], [], [], $headers);
+		$résultatObtenu = $this->actingAs($this->utilisateurLambda)->call($method, $route, [], [], [], $headers);
 
 		$this->assertEquals(403, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_token_pour_un_utilisateur_existant_qui_essaie_deffectuer_un_get_et_qui_peut_effectuer_toutes_les_méthodes_de_requête_avec_létoile_lacces_est_autorisé()
+	public function test_étant_donné_un_token_pour_un_utilisateur_existant_qui_peut_effectuer_toutes_les_méthodes_de_requête_avec_létoile_lorsquon_effectue_un_get_on_obtient_un_code_200()
 	{
 		$ressources = '{
 			"ressources": {
@@ -142,17 +146,17 @@ final class AuthServiceProviderCtlTests extends TestCase
 			}
 		  }';
 		$expiration = 0;
-		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $ressources, $expiration);
+		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $expiration, $ressources);
 		$method = "GET";
 		$route = "/user/utilisateur_lambda";
 		$headers = ["HTTP_Authorization" => "Bearer " . $token];
 
-		$résultatObtenu = $this->call($method, $route, [], [], [], $headers);
+		$résultatObtenu = $this->actingAs($this->utilisateurLambda)->call($method, $route, [], [], [], $headers);
 
 		$this->assertEquals(200, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_token_pour_un_utilisateur_existant_qui_donne_access_a_ce_user_lautorisation_est_donnée_avec_un_code_200()
+	public function test_étant_donné_un_token_pour_un_utilisateur_existant_qui_donne_access_a_cet_utilisateur_lorsquon_effectue_une_requête_dacces_à_ses_ressources_on_obtient_un_code_200()
 	{
 		$ressources = '{
 			"ressources": {
@@ -161,17 +165,17 @@ final class AuthServiceProviderCtlTests extends TestCase
 			}
 		  }';
 		$expiration = 0;
-		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $ressources, $expiration);
+		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $expiration, $ressources);
 		$method = "GET";
 		$route = "/user/utilisateur_lambda";
 		$headers = ["HTTP_Authorization" => "Bearer " . $token];
 
-		$résultatObtenu = $this->call($method, $route, [], [], [], $headers);
+		$résultatObtenu = $this->actingAs($this->utilisateurLambda)->call($method, $route, [], [], [], $headers);
 
 		$this->assertEquals(200, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_token_pour_un_autre_utilisateur_lacces_est_refuse_avec_le_code_403_au_detenteur_de_ce_token_sil_essaie_de_faire_une_requête_à_une_ressource_non_inclue_dans_sont_token()
+	public function test_étant_donné_un_token_pour_un_autre_utilisateur_lorsquon_effectue_une_requete_pour_accéder_aux_ressources_dun_autre_utilsateur_on_obtient_une_erreur_403()
 	{
 		$ressources = '{
 			"ressources": {
@@ -180,18 +184,22 @@ final class AuthServiceProviderCtlTests extends TestCase
 			}
 		  }';
 		$expiration = 0;
-		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $ressources, $expiration);
+		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $expiration, $ressources);
 		$method = "GET";
 		$route = "/user/utilisateur_lambda";
 		$headers = ["HTTP_Authorization" => "Bearer " . $token];
 
-		$résultatObtenu = $this->call($method, $route, [], [], [], $headers);
+		$résultatObtenu = $this->actingAs($this->utilisateurLambda)->call($method, $route, [], [], [], $headers);
 
 		$this->assertEquals(403, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_utilisateur_malveillant_qui_tente_dobtenir_un_token_pour_accéder_aux_ressources_dun_utilisateur_innocent_lacces_aux_ressources_nest_pas_autorisé_et_renvoie_une_erreur_403()
+	public function test_étant_donné_un_utilisateur_malveillant_lorsquon_fabrique_un_token_pour_accéder_aux_ressources_dun_utilisateur_innocent_on_obtient_une_erreur_403()
 	{
+		$utilisateurMalveillant = new GenericUser([
+			"username" => "utilisateur_malveillant",
+			"rôle" => User::ROLE_NORMAL,
+		]);
 		$ressourcesUtilisateurMalveillant = '{
 			"ressources": {
 			  "url": "*",
@@ -202,12 +210,13 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$expiration = 0;
 		$token = GénérateurDeToken::get_instance()->générer_token(
 			"utilisateur_malveillant",
-			$ressourcesUtilisateurMalveillant,
 			$expiration,
+			$ressourcesUtilisateurMalveillant,
 		);
 		$method = "POST";
 		$route = "/token/utilisateur_malveillant";
-	
+		$headers = ["HTTP_Authorization" => "Bearer " . $token];
+
 		$ressourcesUtilisateurInnocent = '{
 			"ressources": {
 			  "url": "user/utilisateur_innocent",
@@ -215,9 +224,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 			}
 		  }';
 
-		  $headers = ["HTTP_Authorization" => "Bearer " . $token];
-
-		$responseTokenCtl = $this->call(
+		$responseTokenCtl = $this->actingAs($utilisateurMalveillant)->call(
 			$method,
 			$route,
 			["ressources" => $ressourcesUtilisateurInnocent],
@@ -228,7 +235,6 @@ final class AuthServiceProviderCtlTests extends TestCase
 
 		$tokenJson = json_decode($responseTokenCtl->getContent(), false);
 		$token = $tokenJson->Token;
-		print_r($token);
 		$method = "GET";
 		$route = "/user/utilisateur_innocent";
 		$headers = ["HTTP_Authorization" => "Bearer " . $token];
@@ -238,7 +244,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertEquals(403, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_token_avec_étoile_dans_le_path_lacces_est_autorisé_avec_le_code_200_au_detenteur_de_ce_token_sil_essaie_de_faire_une_requête_à_une_ressource_située_après_létoile()
+	public function test_étant_donné_un_token_avec_étoile_dans_le_path_lorsquon_effectue_une_requête_pour_les_ressources_après_après_létoile_on_obtient_un_code_200()
 	{
 		$ressources = '{
 			"ressources": {
@@ -247,7 +253,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 			}
 		  }';
 		$expiration = 0;
-		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $ressources, $expiration);
+		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $expiration, $ressources);
 		$method = "GET";
 		$route = "/user/utilisateur_lambda";
 		$headers = ["HTTP_Authorization" => "Bearer " . $token];
@@ -257,7 +263,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertEquals(200, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_token_avec_étoile_dans_le_path_lacces_est_refusé_avec_le_code_403_au_detenteur_de_ce_token_sil_essaie_de_faire_une_requête_à_une_non_autorisée_située_avant_létoile()
+	public function test_étant_donné_un_token_avec_étoile_dans_le_path_lorsquon_effectue_une_requête_a_une_ressource_avant_létoile_on_obtient_une_erreur_403()
 	{
 		$ressources = '{
 			"ressources": {
@@ -266,7 +272,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 			}
 		  }';
 		$expiration = 0;
-		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $ressources, $expiration);
+		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $expiration, $ressources);
 		$method = "GET";
 		$route = "/user/utilisateur_lambda";
 		$headers = ["HTTP_Authorization" => "Bearer " . $token];

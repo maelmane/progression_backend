@@ -42,8 +42,16 @@ class GénérateurDeToken
 		GénérateurDeToken::$instance = $générateur;
 	}
 
-	function générer_token($username, $ressources = null, $expiration = 0)
-	{
+	function générer_token(
+		$username,
+		$expiration = 0,
+		$ressources = '{
+		"ressources": {
+		  "url": "*",
+		  "method": "*"
+		}
+	  }'
+	) {
 		$payload = [
 			"username" => $username,
 			"current" => time(),

@@ -29,7 +29,8 @@ class TokenCtl extends Contrôleur
 
 		$ressources = $request->input("ressources");
 
-		$token = GénérateurDeToken::get_instance()->générer_token($username, $ressources);
+		$expirationToken = 0;
+		$token = GénérateurDeToken::get_instance()->générer_token($username, $expirationToken, $ressources);
 		$réponse = $this->préparer_réponse(["Token" => $token]);
 		Log::debug("TokenCtl.post. Réponse : ", [$réponse]);
 

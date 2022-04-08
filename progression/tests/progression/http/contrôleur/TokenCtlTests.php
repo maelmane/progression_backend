@@ -67,7 +67,7 @@ final class TokenCtlTests extends TestCase
 		GénérateurDeToken::set_instance(null);
 	}
 
-	public function test_étant_donné_un_token_qui_donne_accès_à_une_ressource_on_reçoit_un_token_avec_les_informations_donnant_accès_à_cette_ressource()
+	public function test_étant_donné_un_token_qui_donne_accès_à_une_ressource_lorsquon_effectue_un_post_on_obtient_un_token_avec_les_ressources_voulues()
 	{
 		$tokenAttendu = '{"Token":"token valide"}';
 
