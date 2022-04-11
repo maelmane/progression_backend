@@ -18,7 +18,6 @@
 
 use progression\TestCase;
 
-use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\User;
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
