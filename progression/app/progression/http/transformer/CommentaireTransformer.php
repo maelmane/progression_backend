@@ -16,17 +16,28 @@
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\interacteur;
-class ObtenirTentativeInt extends Interacteur
+namespace progression\http\transformer;
+
+use League\Fractal;
+use progression\domaine\entité\Commentaire;
+
+class CommentaireTransformer extends Fractal\TransformerAbstract
 {
-	function get_tentative($username, $question_uri, $date)
+	public $type = "commentaire";
+
+	public function transform(Commentaire $commentaire)
 	{
-		$tentative = $this->source_dao->get_tentative_dao()->get_tentative($username, $question_uri, $date);
-		if ($tentative) {
-			$tentative->commentaires = $this->source_dao
-				->get_commentaire_dao()
-				->get_commentaires_par_tentative($username, $question_uri, $date);
-		}
-		return $tentative;
+		$data_out = [
+			"id" => $commentaire->id,
+			"message" => $commentaire->message,
+			"créateur" => $commentaire->créateur,
+			"date" => $commentaire->date,
+			"numéro_ligne" => $commentaire->numéro_ligne,
+			"links" => (isset($commentaire->links) ? $commentaire->links : []) + [
+				"self" => "{$_ENV["APP_URL"]}commentaire/{$commentaire->id}",
+			],
+		];
+
+		return $data_out;
 	}
 }
