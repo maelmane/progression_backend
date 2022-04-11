@@ -20,6 +20,15 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Exécutable;
 
+// Matche le contenu de toutes les zones TODO
+
+define("REGEX_MATCH_TODOS", "/(?s:.*?\+TODO.*?\n(.*?))(?:\n?.*-TODO|\Z)/m");
+//                            ^               ^ ^     ^             ^
+//                            |               | |     |             └  ou la fin du document
+//                            |               | |     └ jusqu'à une nouvelle ligne commençant par -TODO
+//                            |               | └ matche le contenu
+//                            |               └ à partir de la ligne suivant +TODO
+//                            └sans égard aux sauts de ligne, matche tout ce qui suit un TODO
 class PréparerProgInt
 {
 	public function préparer_exécutable($question, $tentative)
@@ -60,7 +69,7 @@ class PréparerProgInt
 		$todoIndex = 0;
 		$todoStatut = false;
 
-		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code_utilisateur, $todos_utilisateur);
+		preg_match_all(REGEX_MATCH_TODOS, $code_utilisateur, $todos_utilisateur);
 		foreach ($codeÉbauche as $ligne) {
 			if ($todoStatut && strpos($ligne, "-TODO")) {
 				$todoStatut = false;
@@ -84,8 +93,8 @@ class PréparerProgInt
 
 	private function vérifierNombreTodos($ébauche, $code_utilisateur)
 	{
-		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code_utilisateur, $todos_utilisateur);
-		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $ébauche, $todos_ébauche);
+		preg_match_all(REGEX_MATCH_TODOS, $code_utilisateur, $todos_utilisateur);
+		preg_match_all(REGEX_MATCH_TODOS, $ébauche, $todos_ébauche);
 
 		$nb_todos_utilisateur = count($todos_utilisateur[1]);
 		$nb_todos_ébauche = count($todos_ébauche[1]);
