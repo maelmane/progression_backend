@@ -23,11 +23,13 @@ class Tentative
 	public $date_soumission;
 	public $réussi;
 	public $feedback;
+	public $commentaires;
 
-	public function __construct($date_soumission = null, $réussi = false, $feedback = null)
+	public function __construct($date_soumission = null, $réussi = false, $feedback = null, $commentaires = [])
 	{
 		$this->date_soumission = $date_soumission;
 		$this->réussi = $réussi;
 		$this->feedback = $feedback;
+		$this->commentaires = $commentaires;
 	}
 }

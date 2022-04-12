@@ -50,7 +50,8 @@ class EntitéDAO
 
 	private static function create_connection()
 	{
-		mysqli_report(MYSQLI_REPORT_STRICT | MYSQLI_REPORT_ALL);
+		// Limite les exceptions lancées aux erreurs rapportées par MySQL
+		mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 		EntitéDAO::$conn = new \mysqli(
 			$_ENV["DB_SERVERNAME"],
 			$_ENV["DB_USERNAME"],
