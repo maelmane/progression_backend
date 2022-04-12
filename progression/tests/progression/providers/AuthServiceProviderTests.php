@@ -156,7 +156,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertEquals(200, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_token_pour_un_utilisateur_existant_qui_donne_access_a_cet_utilisateur_lorsquon_effectue_une_requête_dacces_à_ses_ressources_on_obtient_un_code_200()
+	public function test_étant_donné_un_token_pour_un_utilisateur_existant_qui_donne_access_à_cet_utilisateur_lorsquon_effectue_une_requête_dacces_à_ses_ressources_on_obtient_un_code_200()
 	{
 		$ressources = '{
 			"ressources": {
@@ -175,7 +175,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertEquals(200, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_token_pour_un_autre_utilisateur_lorsquon_effectue_une_requete_pour_accéder_aux_ressources_dun_autre_utilsateur_on_obtient_une_erreur_403()
+	public function test_étant_donné_un_token_pour_un_autre_utilisateur_lorsquon_effectue_une_requête_pour_accéder_aux_ressources_dun_autre_utilisateur_on_obtient_une_erreur_403()
 	{
 		$ressources = '{
 			"ressources": {
@@ -244,7 +244,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertEquals(403, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_token_avec_étoile_dans_le_path_lorsquon_effectue_une_requête_pour_les_ressources_après_après_létoile_on_obtient_un_code_200()
+	public function test_étant_donné_un_token_avec_étoile_dans_le_path_lorsquon_effectue_une_requête_pour_les_ressources_après_létoile_on_obtient_un_code_200()
 	{
 		$ressources = '{
 			"ressources": {
@@ -263,7 +263,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertEquals(200, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_token_avec_étoile_dans_le_path_lorsquon_effectue_une_requête_a_une_ressource_avant_létoile_on_obtient_une_erreur_403()
+	public function test_étant_donné_un_token_avec_étoile_dans_le_path_lorsquon_effectue_une_requête_à_une_ressource_avant_létoile_on_obtient_une_erreur_403()
 	{
 		$ressources = '{
 			"ressources": {

@@ -20,7 +20,7 @@ use progression\http\contrôleur\GénérateurDeToken;
 
 final class GénérateurDeTokenTests extends TestCase
 {
-	public function test_étant_donné_un_nom_dutilisateur_une_ressources_et_date_dexpiration_lorsquon_génère_un_token_on_obtient_un_token_avec_les_informations_correspondantes()
+	public function test_étant_donné_un_nom_dutilisateur_une_ressource_et_une_date_dexpiration_lorsquon_génère_un_token_on_obtient_un_token_avec_les_informations_correspondantes()
 	{
 		$expectedUsername = "utilisateur_lambda";
 		$expirationAttendue = "1648684800";
@@ -50,6 +50,6 @@ final class GénérateurDeTokenTests extends TestCase
 		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda");
 		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
 		$this->assertEquals($ressourcesAttendue, $tokenDécodé->ressources);
-		$this->assertEquals(0, $tokenDécodé->expired);
+		$this->assertEquals($expirationAttendue, $tokenDécodé->expired);
 	}
 }

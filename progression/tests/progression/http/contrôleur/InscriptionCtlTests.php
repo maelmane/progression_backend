@@ -51,6 +51,8 @@ final class InscriptionCtlTests extends TestCase
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 
+		//$mockGénérateurDeToken = Mockery::mock("")
+
 		//Mock du générateur de token
 		GénérateurDeToken::set_instance(
 			new class extends GénérateurDeToken {
