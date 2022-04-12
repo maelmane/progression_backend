@@ -223,6 +223,24 @@ username/question_uri/date_soumission/numéro
 | résultat        | bool |           |
 | feedback        | str  |           |
 
+** Commentaire
+
+Un message sur une tentative écrit par un utilisateur.
+
+*** Identifiant :
+username/question_uri/date_soumission/numéro
+
+*** Propriétés:
+
+| Nom             | Type | Valeurs   |
+|-----------------+------+-----------|
+| message         | str  |           |
+| créateur        | str  |           |
+| date            | int  |           |
+| numéro_ligne    | int  |           |
+
+
+
 ** Sauvegarde automatique
 
 La sauvegarde automatique du travail d'un utilisateur pour une question et dans un langage spécifique

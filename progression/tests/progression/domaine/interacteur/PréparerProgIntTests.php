@@ -263,6 +263,56 @@ final class PréparerProgIntTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
+	public function test_étant_donné_une_questionprog_avec_un_todo_et_une_tentative_très_longue_lorsque_prépare_on_obtient_objet_exécutable_comportant_le_code_utilisateur_entre_todos()
+	{
+		$longue_réponse = str_repeat("#", 20000);
+		$long_résultat = "#+TODO\n" . $longue_réponse . "\n#-TODO\n";
+
+		$résultat_attendu = new Exécutable($long_résultat, "python");
+
+		$question = new QuestionProg();
+		$question->exécutables["python"] = new Exécutable("#+TODO\n#-TODO\n", "python");
+
+		$tentative = new TentativeProg(
+			"python",
+			"#+TODO\n" .
+				$longue_réponse .
+				"\n#-TODO
+             # Ne devrait pas être ici",
+		);
+
+		$interacteur = new PréparerProgInt();
+		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
+	public function test_étant_donné_une_questionprog_très_longue_avec_un_todo_et_une_tentative_lorsque_prépare_on_obtient_objet_exécutable_comportant_le_code_utilisateur_entre_todos()
+	{
+		$long_préambule = str_repeat("#", 20000);
+		$longue_question = $long_préambule . "#+TODO\n#-TODO\n";
+		$long_résultat = $long_préambule . "#+TODO\n             print(\"Allo le monde\")\n#-TODO\n";
+
+		$résultat_attendu = new Exécutable($long_résultat, "python");
+
+		$question = new QuestionProg();
+		$question->exécutables["python"] = new Exécutable($longue_question, "python");
+
+		$tentative = new TentativeProg(
+			"python",
+			"#Long préambule ici
+             #+TODO
+             print(\"Allo le monde\")
+             #-TODO
+             # Ne devrait pas être ici",
+		);
+
+		$interacteur = new PréparerProgInt();
+		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
 	public function test_étant_donné_une_question_et_une_tentative_pour_un_langage_sans_ébauche_lorsquon_prépare_lexécutable_on_obtient_null()
 	{
 		$question = new QuestionProg();
