@@ -23,11 +23,10 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\ObtenirAvancementInt;
-use progression\domaine\interacteur\ObtenirUserInt;
 use progression\domaine\interacteur\SauvegarderAvancementInt;
 use progression\http\transformer\AvancementTransformer;
 use progression\util\Encodage;
-use progression\domaine\entité\{User, Avancement, Question};
+use progression\domaine\entité\Avancement;
 
 class AvancementCtl extends Contrôleur
 {

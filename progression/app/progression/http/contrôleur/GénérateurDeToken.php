@@ -19,6 +19,7 @@
 namespace progression\http\contrôleur;
 
 use Firebase\JWT\JWT;
+use progression\util\RessourceHelper;
 
 class GénérateurDeToken
 {
@@ -45,13 +46,14 @@ class GénérateurDeToken
 	function générer_token(
 		$username,
 		$expiration = 0,
-		$ressources = '{
-		"ressources": {
-		  "url": "*",
-		  "method": "*"
-		}
-	  }'
+		$ressources = null
 	) {
+
+		if (!$ressources) {
+			$ressourcesHelper = new RessourceHelper();
+			$ressources = $ressourcesHelper->obtenirEnJson();
+		}
+
 		$payload = [
 			"username" => $username,
 			"current" => time(),

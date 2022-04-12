@@ -28,6 +28,8 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
 use UnexpectedValueException;
 use DomainException;
+use progression\util\RessourceHelper;
+
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -50,31 +52,14 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 		Gate::define("acces-ressource", function ($user, $request) {
-			$estAutorisé = false;
 			$tokenDécodé = $this->obtenirTokenDécodé($request);
 
-			if ($tokenDécodé) {
-				$jsonDécodé = json_decode($tokenDécodé->ressources, false);
-				$urlAutorisé = $jsonDécodé->ressources->url;
-				$méthodeAutorisée = $jsonDécodé->ressources->method;
-				$positionWildcard = strpos($urlAutorisé, "*");
-
-				if ($positionWildcard === false) {
-					$estAutorisé =
-						$request->path() == $urlAutorisé &&
-						($request->method() == $méthodeAutorisée || $méthodeAutorisée == "*");
-				} elseif ($positionWildcard === 0) {
-					$estAutorisé = $request->method() == $méthodeAutorisée || $méthodeAutorisée == "*";
-				} else {
-					$ressourceDemandée = substr($request->path(), 0, $positionWildcard - 1);
-					$ressourceAutorisée = substr($urlAutorisé, 0, $positionWildcard - 1);
-					$estAutorisé =
-						$ressourceDemandée == $ressourceAutorisée &&
-						($request->method() == $méthodeAutorisée || $méthodeAutorisée == "*");
-				}
+			if(!$tokenDécodé) {
+				return false;
+			} else {
+				$ressourceHelper = new RessourceHelper($tokenDécodé);
+				return $ressourceHelper->vérifierSiContientUrl($request->path()) && $ressourceHelper->vérifierSiContientMethod($request->method());
 			}
-
-			return $estAutorisé;
 		});
 
 		Gate::define("access-user", [UserPolicy::class, "access"]);

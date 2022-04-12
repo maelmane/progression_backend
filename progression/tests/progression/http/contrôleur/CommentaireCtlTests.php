@@ -20,7 +20,6 @@ use progression\TestCase;
 use progression\dao\DAOFactory;
 use progression\domaine\entité\{Question, TentativeProg, Commentaire, QuestionProg, User};
 use Illuminate\Auth\GenericUser;
-use Illuminate\Support\Facades\Log;
 
 final class CommentaireCtlTests extends TestCase
 {
@@ -29,6 +28,11 @@ final class CommentaireCtlTests extends TestCase
 	public function setup(): void
 	{
 		parent::setUp();
+
+		\Gate::define("acces-ressource", function () {
+			return true;
+		});
+
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
