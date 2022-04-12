@@ -20,7 +20,6 @@ namespace progression\http\middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Gate;
-use progression\domaine\entité\User;
 use progression\domaine\interacteur\ObtenirUserInt;
 
 class ValidationPermissions
@@ -32,7 +31,11 @@ class ValidationPermissions
 
 		$utilisateurRecherché = (new ObtenirUserInt())->get_user($utilisateurRequête ?? $utilisateurConnecté->username);
 
-		if ($utilisateurRecherché && Gate::allows("access-user", $utilisateurRecherché)) {
+		if (
+			$utilisateurRecherché &&
+			Gate::allows("access-user", $utilisateurRecherché) &&
+			Gate::allows("acces-ressource", $request)
+		) {
 			return $next($request);
 		} else {
 			return response()->json(

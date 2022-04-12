@@ -20,8 +20,6 @@ use progression\TestCase;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\{Avancement, User};
-use progression\http\contrôleur\UserCtl;
-use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
 
 final class UserCtlTests extends TestCase
@@ -30,6 +28,10 @@ final class UserCtlTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
+
+		\Gate::define("acces-ressource", function () {
+			return true;
+		});
 
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 

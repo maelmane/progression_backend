@@ -29,6 +29,11 @@ final class SauvegardeCtlTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
+
+		\Gate::define("acces-ressource", function () {
+			return true;
+		});
+
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 
 		$_ENV["APP_URL"] = "https://example.com/";

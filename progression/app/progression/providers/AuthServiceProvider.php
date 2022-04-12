@@ -1,4 +1,20 @@
 <?php
+/*
+   This file is part of Progression.
+
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\providers;
 
@@ -6,7 +22,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\GenericUser;
-use progression\dao\DAOFactory;
 use progression\domaine\interacteur\ObtenirUserInt;
 use progression\domaine\entité\User;
 use Firebase\JWT\JWT;
@@ -16,21 +31,10 @@ use DomainException;
 
 class AuthServiceProvider extends ServiceProvider
 {
-	/**
-	 * Register any application services.
-	 *
-	 * @return void
-	 */
 	public function register()
 	{
-		//
 	}
 
-	/**
-	 * Boot the authentication services for the application.
-	 *
-	 * @return void
-	 */
 	public function boot()
 	{
 		Gate::guessPolicyNamesUsing(function ($modelClass) {
@@ -45,51 +49,80 @@ class AuthServiceProvider extends ServiceProvider
 			}
 		});
 
+		Gate::define("acces-ressource", function ($user, $request) {
+			$estAutorisé = false;
+			$tokenDécodé = $this->obtenirTokenDécodé($request);
+
+			if ($tokenDécodé) {
+				$jsonDécodé = json_decode($tokenDécodé->ressources, false);
+				$urlAutorisé = $jsonDécodé->ressources->url;
+				$méthodeAutorisée = $jsonDécodé->ressources->method;
+				$positionWildcard = strpos($urlAutorisé, "*");
+
+				if ($positionWildcard === false) {
+					$estAutorisé =
+						$request->path() == $urlAutorisé &&
+						($request->method() == $méthodeAutorisée || $méthodeAutorisée == "*");
+				} elseif ($positionWildcard === 0) {
+					$estAutorisé = $request->method() == $méthodeAutorisée || $méthodeAutorisée == "*";
+				} else {
+					$ressourceDemandée = substr($request->path(), 0, $positionWildcard - 1);
+					$ressourceAutorisée = substr($urlAutorisé, 0, $positionWildcard - 1);
+					$estAutorisé =
+						$ressourceDemandée == $ressourceAutorisée &&
+						($request->method() == $méthodeAutorisée || $méthodeAutorisée == "*");
+				}
+			}
+
+			return $estAutorisé;
+		});
+
 		Gate::define("access-user", [UserPolicy::class, "access"]);
 
 		Gate::define("update-avancement", function ($user) {
 			return false;
 		});
 
-		// Décode le token de la requête.
 		$this->app["auth"]->viaRequest("api", function ($request) {
-			$parties_token = explode(" ", $request->header("Authorization"));
-			if (count($parties_token) == 2 && strtolower($parties_token[0]) == "bearer") {
-				$token = $parties_token[1];
+			$tokenDécodé = $this->obtenirTokenDécodé($request);
 
-				try {
-					$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
-					// Compare le Unix Timestamp courant et l'expiration du token.
-					if (time() > $tokenDécodé->expired) {
-						return null;
-					} else {
-						// Recherche de l'utilisateur
-						$user = (new ObtenirUserInt())->get_user($tokenDécodé->username);
+			if ($tokenDécodé && (time() < $tokenDécodé->expired || $tokenDécodé->expired == 0)) {
+				$user = (new ObtenirUserInt())->get_user($tokenDécodé->username);
 
-						return new GenericUser([
-							"username" => $user->username,
-							"rôle" => $user->rôle,
-						]);
-					}
-				} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
-					Log::error(
-						"(" .
-							$request->ip() .
-							") - " .
-							$request->method() .
-							" " .
-							$request->path() .
-							"(" .
-							__CLASS__ .
-							")" .
-							" " .
-							$e,
-					);
-					return null;
-				}
+				return new GenericUser([
+					"username" => $user->username,
+					"rôle" => $user->rôle,
+				]);
 			} else {
 				return null;
 			}
 		});
+	}
+
+	private function obtenirTokenDécodé($request)
+	{
+		if ($request->header("Authorization")) {
+			$token = trim(str_ireplace("bearer", "", $request->header("Authorization")));
+
+			try {
+				return JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
+			} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
+				Log::error(
+					"(" .
+						$request->ip() .
+						") - " .
+						$request->method() .
+						" " .
+						$request->path() .
+						"(" .
+						__CLASS__ .
+						")" .
+						" " .
+						$e,
+				);
+				return null;
+			}
+		}
+		return null;
 	}
 }

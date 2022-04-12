@@ -29,6 +29,11 @@ final class AvancementCtlTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
+
+		\Gate::define("acces-ressource", function () {
+			return true;
+		});
+
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 		$this->admin = new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]);
 

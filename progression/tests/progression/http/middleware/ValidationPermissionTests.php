@@ -18,9 +18,8 @@
 
 use progression\TestCase;
 
-use progression\http\middleware\ValidationPermissions;
 use progression\domaine\entité\User;
-use progression\dao\{DAOFactory, UserDAO};
+use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
 
 final class ValidationPermissionsTests extends TestCase
@@ -30,6 +29,10 @@ final class ValidationPermissionsTests extends TestCase
 	public function setup(): void
 	{
 		parent::setUp();
+
+		\Gate::define("acces-ressource", function () {
+			return true;
+		});
 
 		$_ENV["AUTH_TYPE"] = "ldap";
 		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);

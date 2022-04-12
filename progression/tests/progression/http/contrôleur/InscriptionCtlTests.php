@@ -21,9 +21,7 @@ use progression\TestCase;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\User;
 use progression\dao\DAOFactory;
-use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
-use Firebase\JWT\JWT;
 
 final class InscriptionCtlTests extends TestCase
 {
@@ -53,6 +51,8 @@ final class InscriptionCtlTests extends TestCase
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 
+		//$mockGénérateurDeToken = Mockery::mock("")
+
 		//Mock du générateur de token
 		GénérateurDeToken::set_instance(
 			new class extends GénérateurDeToken {
@@ -60,7 +60,7 @@ final class InscriptionCtlTests extends TestCase
 				{
 				}
 
-				function générer_token($user)
+				function générer_token($user, $ressources = null, $expiration = 0)
 				{
 					return "token valide";
 				}
@@ -71,6 +71,7 @@ final class InscriptionCtlTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		GénérateurDeToken::set_instance(null);
 	}
 
 	#  AUTH_LOCAL = false
