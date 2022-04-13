@@ -12,6 +12,6 @@ class UserPolicy
 	{
 		return $user && $cible && $user->username == $cible->username
 			? Response::allow()
-			: Response::deny("Opération interdite.");
+			: Response::deny("Opération interdite, tiglidite");
 	}
 }

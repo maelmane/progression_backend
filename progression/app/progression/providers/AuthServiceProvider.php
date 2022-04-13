@@ -30,7 +30,6 @@ use UnexpectedValueException;
 use DomainException;
 use progression\util\RessourceHelper;
 
-
 class AuthServiceProvider extends ServiceProvider
 {
 	public function register()
@@ -54,12 +53,17 @@ class AuthServiceProvider extends ServiceProvider
 		Gate::define("acces-ressource", function ($user, $request) {
 			$tokenDécodé = $this->obtenirTokenDécodé($request);
 
-			if(!$tokenDécodé) {
-				return false;
-			} else {
-				$ressourceHelper = new RessourceHelper($tokenDécodé);
-				return $ressourceHelper->vérifierSiContientUrl($request->path()) && $ressourceHelper->vérifierSiContientMethod($request->method());
+			if ($tokenDécodé) {
+				$ressourcesDécodées = json_decode($tokenDécodé->ressources, false);
+				if (
+					$this->vérifierPathEstDansUrlAutorisé($request->path(), $ressourcesDécodées->ressources->url) &&
+					$this->vérifierMethodEstAutorisé($request->method(), $ressourcesDécodées->ressources->method)
+				) {
+					return true;
+				}
 			}
+
+			return false;
 		});
 
 		Gate::define("access-user", [UserPolicy::class, "access"]);
@@ -109,5 +113,33 @@ class AuthServiceProvider extends ServiceProvider
 			}
 		}
 		return null;
+	}
+
+	private function vérifierPathEstDansUrlAutorisé($urlDemandé, $urlAutorisé)
+	{
+		foreach ($urlAutorisé as $url) {
+			$positionWildcard = strpos($url, "*");
+			if ($positionWildcard === 0) {
+				return true;
+			} elseif ($positionWildcard === false) {
+				if ($urlDemandé == $url) {
+					return true;
+				}
+			} else {
+				$urlTronqué = substr($urlDemandé, 0, $positionWildcard - 1);
+				if (substr($url, 0, $positionWildcard - 1) == $urlTronqué) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private function vérifierMethodEstAutorisé($methodDemandé, $methodAutorisé)
+	{
+		if ($methodDemandé == $methodAutorisé || $methodAutorisé == "*") {
+			return true;
+		}
+		return false;
 	}
 }

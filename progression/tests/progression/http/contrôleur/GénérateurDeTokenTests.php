@@ -24,7 +24,7 @@ final class GénérateurDeTokenTests extends TestCase
 	{
 		$expectedUsername = "utilisateur_lambda";
 		$expirationAttendue = "1648684800";
-		$ressourcesAttendue = "ressources";
+		$ressourcesAttendue = json_encode(["ressources" => ["url" => ["*"], "method" => "*"]]);
 
 		$token = GénérateurDeToken::get_instance()->générer_token(
 			$expectedUsername,
@@ -41,12 +41,8 @@ final class GénérateurDeTokenTests extends TestCase
 	public function test_étant_donné_un_token_généré_avec_un_nom_dutilisateur_seulement_lorsquon_génère_un_token_on_obtient_un_token_avec_ses_valeurs_par_défaut_sauf_le_nom_dutilisateur()
 	{
 		$expirationAttendue = "0";
-		$ressourcesAttendue = '{
-		"ressources": {
-		  "url": "*",
-		  "method": "*"
-		}
-	  }';
+		$url = ["*"];
+		$ressourcesAttendue = json_encode(["ressources" => ["url" => ["*"], "method" => "*"]]);
 		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda");
 		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
 		$this->assertEquals($ressourcesAttendue, $tokenDécodé->ressources);
