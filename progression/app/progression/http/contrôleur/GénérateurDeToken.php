@@ -19,7 +19,6 @@
 namespace progression\http\contrôleur;
 
 use Firebase\JWT\JWT;
-use progression\util\RessourceHelper;
 
 class GénérateurDeToken
 {

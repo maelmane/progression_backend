@@ -28,7 +28,6 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
 use UnexpectedValueException;
 use DomainException;
-use progression\util\RessourceHelper;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -56,7 +55,7 @@ class AuthServiceProvider extends ServiceProvider
 			if ($tokenDécodé) {
 				$ressourcesDécodées = json_decode($tokenDécodé->ressources, false);
 				if (
-					$this->vérifierPathEstDansUrlAutorisé($request->path(), $ressourcesDécodées->ressources->url) &&
+					$this->vérifierPathEstAutorisé($request->path(), $ressourcesDécodées->ressources->url) &&
 					$this->vérifierMethodEstAutorisé($request->method(), $ressourcesDécodées->ressources->method)
 				) {
 					return true;
@@ -115,7 +114,7 @@ class AuthServiceProvider extends ServiceProvider
 		return null;
 	}
 
-	private function vérifierPathEstDansUrlAutorisé($urlDemandé, $urlAutorisé)
+	private function vérifierPathEstAutorisé($urlDemandé, $urlAutorisé)
 	{
 		foreach ($urlAutorisé as $url) {
 			$positionWildcard = strpos($url, "*");
