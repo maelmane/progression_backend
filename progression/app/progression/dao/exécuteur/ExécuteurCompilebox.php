@@ -45,10 +45,9 @@ class ExécuteurCompilebox extends Exécuteur
 		//post le code à remotecompiler
 		$url_rc = $_ENV["COMPILEBOX_URL"];
 
-		$tests_out=[];
-		foreach($tests as $test){
-			$tests_out[] = ["stdin" => $test->entrée,
-							"params" => $test->params];
+		$tests_out = [];
+		foreach ($tests as $test) {
+			$tests_out[] = ["stdin" => $test->entrée ?? "", "params" => $test->params ?? ""];
 		}
 
 		$data_rc = [
@@ -68,7 +67,11 @@ class ExécuteurCompilebox extends Exécuteur
 		];
 		$context = stream_context_create($options_rc);
 
-		$comp_resp = file_get_contents($url_rc, false, $context);
+		try {
+			$comp_resp = file_get_contents($url_rc, false, $context);
+		} catch (\ErrorException $e) {
+			throw new ExécutionException("Compilebox non disponible", 503, $e);
+		}
 
 		return json_decode(str_replace("\r", "", $comp_resp), true);
 	}

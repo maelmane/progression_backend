@@ -50,6 +50,12 @@ $router->group(["middleware" => ["auth", "validationPermissions"]], function () 
 	// Clé
 	$router->post("/user/{username}/cles", "CléCtl@post");
 	$router->get("/cle/{username}/{nom}", "CléCtl@get");
+	// Commentaire
+	$router->post(
+		"/tentative/{username}/{question_uri}/{timestamp:[[:digit:]]{10}}/commentaires",
+		"CommentaireCtl@post",
+	);
+	$router->get("/commentaire/{username}/{question_uri}/{timestamp:[[:digit:]]{10}}/{numéro}", "CommentaireCtl@get");
 	// Sauvegarde
 	$router->post("/avancement/{username}/{question_uri}/sauvegardes", "SauvegardeCtl@post");
 	$router->get("/sauvegarde/{username}/{question_uri}/{langage}", "SauvegardeCtl@get");

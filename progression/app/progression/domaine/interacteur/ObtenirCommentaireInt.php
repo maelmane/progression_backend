@@ -18,38 +18,21 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\RésultatProg;
+use progression\domaine\entité\Commentaire;
+use progression\dao\DAOFactory;
 
-class ExécuterProgInt extends Interacteur
+class ObtenirCommentaireInt extends Interacteur
 {
-	public function exécuter($exécutable, $tests)
+	public function get_commentaire_par_id($id)
 	{
-		$this->loguer_code($exécutable);
-
-		$comp_resp = $this->source_dao->get_exécuteur()->exécuter($exécutable, $tests);
-
-		if (!$comp_resp) {
-			return null;
-		}
-
-		$résultats = [];
-		foreach ($comp_resp as $réponse) {
-			$résultats[] = new RésultatProg($réponse["output"], $réponse["errors"]);
-		}
-
-		return $résultats;
+		$commentaire = $this->source_dao->get_commentaire_dao()->get_commentaire($id);
+		return $commentaire;
 	}
-
-	protected function loguer_code($exécutable)
+	public function get_commentaires_par_tentative($username, $question_uri, $date)
 	{
-		$com_log =
-			$_SERVER["REMOTE_ADDR"] .
-			" - " .
-			$_SERVER["PHP_SELF"] .
-			" : lang : " .
-			$exécutable->lang .
-			" Code : " .
-			$exécutable->code;
-		syslog(LOG_INFO, $com_log);
+		$commentaires = $this->source_dao
+			->get_commentaire_dao()
+			->get_commentaires_par_tentative($username, $question_uri, $date);
+		return $commentaires;
 	}
 }

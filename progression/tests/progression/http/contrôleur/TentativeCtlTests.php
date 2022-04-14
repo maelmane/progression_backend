@@ -20,7 +20,7 @@ use progression\TestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
-use progression\domaine\entité\{Avancement, Test, Exécutable, Question, TentativeProg, QuestionProg, User};
+use progression\domaine\entité\{Avancement, Test, Exécutable, Question, TentativeProg, Commentaire, QuestionProg, User};
 
 use Illuminate\Auth\GenericUser;
 
@@ -44,6 +44,7 @@ final class TentativeCtlTests extends TestCase
 		$tentative->feedback = "feedbackTest";
 
 		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
+
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
 			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "9999999999")
@@ -53,6 +54,16 @@ final class TentativeCtlTests extends TestCase
 			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "1614374490")
 			->andReturn($tentative);
 		$mockTentativeDAO->shouldReceive("save")->andReturn($tentative);
+
+		// Commentaire
+		$commentaire = new Commentaire(99, "le 99iem message", "mock", 1615696276, 14);
+
+		$mockCommentaireDAO = Mockery::mock("progression\\dao\\CommentaireDAO");
+
+		$mockCommentaireDAO
+			->shouldReceive("get_commentaires_par_tentative")
+			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", 1614374490)
+			->andReturn($commentaire);
 
 		// Question
 		$question = new QuestionProg();
@@ -89,7 +100,7 @@ final class TentativeCtlTests extends TestCase
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "java";
 			})
-			->andThrow(new ExécutionException(null, "test://TentativeCtlTests.php"));
+			->andThrow(new ExécutionException("Erreur test://TentativeCtlTests.php"));
 
 		// Avancement
 		$avancement = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [
@@ -114,6 +125,7 @@ final class TentativeCtlTests extends TestCase
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_tentative_dao")->andReturn($mockTentativeDAO);
+		$mockDAOFactory->shouldReceive("get_commentaire_dao")->andReturn($mockCommentaireDAO);
 		$mockDAOFactory->shouldReceive("get_tentative_prog_dao")->andReturn($mockTentativeDAO);
 		$mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);
 		$mockDAOFactory->shouldReceive("get_exécuteur")->andReturn($mockExécuteur);

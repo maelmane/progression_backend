@@ -1,3 +1,4 @@
+DELETE FROM commentaire;
 DELETE FROM reponse_prog;
 DELETE FROM avancement;
 DELETE FROM sauvegarde;
@@ -121,4 +122,37 @@ INSERT INTO reponse_prog VALUES (
   "print(\"Allo tout le monde!\")",
   1,
   4
+);
+
+INSERT INTO commentaire VALUES(
+  "bob",
+  "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+  1615696276,
+  1,
+  "le 1er message",
+  "jdoe",
+  1615696276,
+  14
+);
+
+INSERT INTO commentaire VALUES(
+  "bob",
+  "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+  1615696276,
+  2,
+  "le 2er message",
+  "admin",
+  1615696276,
+  12
+);
+
+INSERT INTO commentaire VALUES(
+  "bob",
+  "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+  1615696276,
+  3,
+  "le 3er message",
+  "Stefany",
+  1615696276,
+  14
 );

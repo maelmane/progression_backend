@@ -47,13 +47,24 @@ class ExécuteurCache extends Exécuteur
 		$hash = $this->calculer_hash($code_standardisé, $exécutable->lang, $entrées, $params);
 		Log::debug("Hash: $hash");
 
-		$résultat = $this->obtenir_de_la_cache($hash);
+		$résultat = null;
+		try {
+			$résultat = $this->obtenir_de_la_cache($hash);
+		} catch (\Throwable $e) {
+			Log::error("Cache non disponible");
+			Log::error($e->getMessage());
+		}
 
 		if ($résultat == null) {
 			$résultat = $this->_exécuteur->exécuter($exécutable, $tests);
 
 			if (!$this->contient_des_erreurs($résultat)) {
-				$this->placer_sortie_en_cache($hash, $résultat);
+				try {
+					$this->placer_sortie_en_cache($hash, $résultat);
+				} catch (\Throwable $e) {
+					Log::error("Cache non disponible");
+					Log::error($e->getMessage());
+				}
 			}
 		}
 

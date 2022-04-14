@@ -23,7 +23,7 @@ use progression\domaine\entité\{Tentative, TentativeProg};
 class TentativeProgTransformer extends TentativeTransformer
 {
 	public $type = "tentative";
-	protected $availableIncludes = ["resultats"];
+	protected $availableIncludes = ["resultats", "commentaires"];
 
 	public function transform(Tentative $tentative)
 	{
@@ -34,7 +34,6 @@ class TentativeProgTransformer extends TentativeTransformer
 			"code" => $tentative->code,
 			"tests_réussis" => $tentative->tests_réussis,
 		]);
-
 		return $data_out;
 	}
 
