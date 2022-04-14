@@ -74,7 +74,6 @@ final class SauvegarderTentativeProgIntTests extends TestCase
 
 	public function test_étant_donné_une_première_tentative_réussie_lorsquon_la_sauvegarde_on_obtient_la_tentative()
 	{
-
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, true, 1, "feedback", []);
 
 		DAOFactory::getInstance()

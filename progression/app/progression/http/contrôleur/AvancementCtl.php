@@ -116,11 +116,7 @@ class AvancementCtl extends Contrôleur
 			$avancement_envoyé = $av;
 		}
 
-		$avancement_sauvegardé = $this->sauvegarder_avancement(
-			$username,
-			$question_uri,
-			$avancement_envoyé,
-		);
+		$avancement_sauvegardé = $this->sauvegarder_avancement($username, $question_uri, $avancement_envoyé);
 
 		$réponse = $avancement_sauvegardé;
 		Log::debug("AvancementCtl.créer_ou_sauvegarder_avancement. Retour : ", [$réponse]);

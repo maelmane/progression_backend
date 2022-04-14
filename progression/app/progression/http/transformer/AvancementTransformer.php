@@ -32,7 +32,7 @@ class AvancementTransformer extends Fractal\TransformerAbstract
 		$data_out = [
 			"id" => $avancement->id,
 			"état" => $avancement->etat,
-			"titre" =>  $avancement->titre,
+			"titre" => $avancement->titre,
 			"niveau" => $avancement->niveau,
 			"date_modification" => $avancement->date_modification,
 			"date_réussie" => $avancement->date_réussie,

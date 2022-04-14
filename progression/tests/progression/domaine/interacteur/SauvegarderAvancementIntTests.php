@@ -66,7 +66,6 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->with("file:///test/de/chemin/non/valide")
 			->andReturn(null);
 
-
 		$mockDAOFactory
 			->allows()
 			->get_question_dao()
@@ -113,7 +112,11 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->andReturnArg(2);
 
 		$interacteur = new SauvegarderAvancementInt();
-		$résultat_observé = $interacteur->sauvegarder("jdoe", "file:///prog1/les_fonctions/appeler_une_fonction/info.yml", $avancement);
+		$résultat_observé = $interacteur->sauvegarder(
+			"jdoe",
+			"file:///prog1/les_fonctions/appeler_une_fonction/info.yml",
+			$avancement,
+		);
 
 		$this->assertEquals($avancement, $résultat_observé);
 	}

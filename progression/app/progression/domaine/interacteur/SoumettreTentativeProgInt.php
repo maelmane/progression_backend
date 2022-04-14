@@ -57,23 +57,16 @@ class SoumettreTentativeProgInt extends Interacteur
 
 		if ($avancement == null) {
 			$avancement = $this->créerAvancement($tentative, $question);
-		}else
-		{
+		} else {
 			$avancement->tentatives[] = $tentative;
 		}
-	 	
 
 		return $avancement;
 	}
 
 	private function créerAvancement($tentative, $question)
 	{
-		$avancement = new Avancement(
-			Question::ETAT_NONREUSSI,
-			Question::TYPE_PROG,
-			[$tentative],
-			[]
-		);
+		$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, [$tentative], []);
 		$avancement->titre = $question->titre;
 		$avancement->niveau = $question->niveau;
 		return $avancement;

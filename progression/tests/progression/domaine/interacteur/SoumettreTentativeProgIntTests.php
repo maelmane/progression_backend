@@ -18,7 +18,16 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Exécutable, Avancement, Question, QuestionProg, RésultatProg, TentativeProg, Test, User};
+use progression\domaine\entité\{
+	Exécutable,
+	Avancement,
+	Question,
+	QuestionProg,
+	RésultatProg,
+	TentativeProg,
+	Test,
+	User,
+};
 use progression\dao\DAOFactory;
 use progression\dao\tentative\TentativeProgDAO;
 use PHPUnit\Framework\TestCase;
@@ -43,14 +52,14 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		$question->titre = "Question de test";
 		$question->exécutables = ["python" => new Exécutable("print(\"Allo le monde\")", "python")];
 		$question->tests = [0 => new Test("#1", "Allo le monde", "")];
-		$question->uri = "https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour";
+		$question->uri =
+			"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour";
 
 		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");
 		$mockQuestionDAO
 			->shouldReceive("get_question")
 			->with(
-				"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour"
-
+				"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour",
 			)
 			->andReturn($question);
 

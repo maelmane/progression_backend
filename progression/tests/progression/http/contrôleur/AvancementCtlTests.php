@@ -184,7 +184,7 @@ final class AvancementCtlTests extends TestCase
 
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
 			"question_uri" =>
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 			"avancement" => $avancementTest,
 		]);
 
@@ -208,7 +208,7 @@ final class AvancementCtlTests extends TestCase
 
 		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/roger/avancements", [
 			"question_uri" =>
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 			"avancement" => $avancementTest,
 		]);
 
@@ -224,7 +224,7 @@ final class AvancementCtlTests extends TestCase
 		$avancementTest = ["test" => "test valeur"];
 		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/jdoe/avancements", [
 			"question_uri" =>
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 			"avancement" => $avancementTest,
 		]);
 
@@ -240,7 +240,7 @@ final class AvancementCtlTests extends TestCase
 		$avancementTest = ["état" => 42];
 		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/jdoe/avancements", [
 			"question_uri" =>
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 			"avancement" => $avancementTest,
 		]);
 
