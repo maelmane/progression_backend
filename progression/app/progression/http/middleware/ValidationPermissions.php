@@ -26,16 +26,7 @@ class ValidationPermissions
 {
 	public function handle($request, Closure $next)
 	{
-		$utilisateurRequête = $request->username;
-		$utilisateurConnecté = $request->user();
-
-		$utilisateurRecherché = (new ObtenirUserInt())->get_user($utilisateurRequête ?? $utilisateurConnecté->username);
-
-		if (
-			$utilisateurRecherché &&
-			Gate::allows("access-user", $utilisateurRecherché) &&
-			Gate::allows("acces-ressource", $request)
-		) {
+		if (Gate::allows("acces-utilisateur", $request)) {
 			return $next($request);
 		} else {
 			return response()->json(

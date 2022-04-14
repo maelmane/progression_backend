@@ -26,12 +26,14 @@ use Illuminate\Auth\GenericUser;
 final class AuthServiceProviderCtlTests extends TestCase
 {
 	public $utilisateurLambda;
+	public $token;
 
 	public function setUp(): void
 	{
 		parent::setUp();
 
 		$this->utilisateurLambda = new GenericUser(["username" => "utilisateur_lambda", "rôle" => User::ROLE_NORMAL]);
+		$this->token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda");
 
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
@@ -50,6 +52,10 @@ final class AuthServiceProviderCtlTests extends TestCase
 			->shouldReceive("get_user")
 			->with("utilisateur_malveillant")
 			->andReturn(new User("utilisateur_malveillant"));
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("utilisateur_inexistant")
+			->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
@@ -101,6 +107,18 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$résultatObtenu = $this->call($method, $route, [], [], [], $headers);
 
 		$this->assertEquals(401, $résultatObtenu->status());
+	}
+
+	public function test_étant_donné_un_token_pour_un_utilisateur_inexistant_lorsque_lorsquon_tente_dacceder_a_une_ressource_on_obtient_une_erreur_403()
+	{
+		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_inexistant");
+		$method = "GET";
+		$route = "/user/utilisateur_lambda";
+		$headers = ["HTTP_Authorization" => "Bearer " . $token];
+
+		$résultatObtenu = $this->call($method, $route, [], [], [], $headers);
+
+		$this->assertEquals(403, $résultatObtenu->status());
 	}
 
 	public function test_étant_donné_un_token_pour_un_utilisateur_existant_lorsquon_effectue_un_get_alors_quil_ne_peut_faire_quun_post_on_obtient_une_erreur_403()

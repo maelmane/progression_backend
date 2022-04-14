@@ -28,6 +28,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
 use UnexpectedValueException;
 use DomainException;
+use progression\domaine\interacteur\ObtenirUserIntTests;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -39,7 +40,7 @@ class AuthServiceProvider extends ServiceProvider
 	{
 		Gate::guessPolicyNamesUsing(function ($modelClass) {
 			if ($modelClass == "progression\domaine\entité\User") {
-				return "access-user";
+				return "acces-utilisateur";
 			}
 		});
 
@@ -49,7 +50,26 @@ class AuthServiceProvider extends ServiceProvider
 			}
 		});
 
-		Gate::define("acces-ressource", function ($user, $request) {
+		//La sortie est récupérée par ValidationPermission.php, avec function handle($request, Closure $next)
+		$this->app["auth"]->viaRequest("api", function ($request) {
+			$tokenDécodé = $this->obtenirTokenDécodé($request);
+			$obtenirUserInteracteur = new ObtenirUserInt();
+			return $obtenirUserInteracteur->get_user($tokenDécodé->username);
+		});
+
+		Gate::define("acces-utilisateur", function ($user, $request) {
+			$tokenDécodé = $this->obtenirTokenDécodé($request);
+
+			if ($tokenDécodé) {
+				$usernameRequêteUrl = $user->username;
+				$usernameToken = $tokenDécodé->username;
+				return $usernameRequêteUrl == $usernameToken;
+			}
+
+			return false;
+		});
+
+		/* 		Gate::define("acces-ressource", function ($user, $request) {
 			$tokenDécodé = $this->obtenirTokenDécodé($request);
 
 			if ($tokenDécodé) {
@@ -63,27 +83,10 @@ class AuthServiceProvider extends ServiceProvider
 			}
 
 			return false;
-		});
-
-		Gate::define("access-user", [UserPolicy::class, "access"]);
+		}); */
 
 		Gate::define("update-avancement", function ($user) {
 			return false;
-		});
-
-		$this->app["auth"]->viaRequest("api", function ($request) {
-			$tokenDécodé = $this->obtenirTokenDécodé($request);
-
-			if ($tokenDécodé && (time() < $tokenDécodé->expired || $tokenDécodé->expired == 0)) {
-				$user = (new ObtenirUserInt())->get_user($tokenDécodé->username);
-
-				return new GenericUser([
-					"username" => $user->username,
-					"rôle" => $user->rôle,
-				]);
-			} else {
-				return null;
-			}
 		});
 	}
 
