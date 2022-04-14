@@ -18,6 +18,15 @@ class Authenticate
 	//La sortie est récupérée par AuthServiceProvider.php, avec $this->app["auth"]->viaRequest("api", function ($request)
 	public function handle($request, Closure $next, $guard = null)
 	{
+		if ($this->auth->guard($guard)->guest()) {
+			Log::warning(
+				"(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")",
+			);
+			return response()->json(["erreur" => "Utilisateur non autorisé."], 401, [
+				"Content-Type" => "application/json;charset=UTF-8",
+				"Charset" => "utf-8",
+			]);
+		}
 		Log::info("(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")");
 		return $next($request);
 	}

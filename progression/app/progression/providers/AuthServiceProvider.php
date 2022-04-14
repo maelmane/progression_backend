@@ -52,35 +52,30 @@ class AuthServiceProvider extends ServiceProvider
 
 		//La sortie est récupérée par ValidationPermission.php, avec function handle($request, Closure $next)
 		$this->app["auth"]->viaRequest("api", function ($request) {
-			$tokenDécodé = $this->obtenirTokenDécodé($request);
+			$tokenEncodé = trim(str_ireplace("bearer", "", $request->header("Authorization")));
+			$tokenDécodé = $this->décoderToken($tokenEncodé, $request);
 			$obtenirUserInteracteur = new ObtenirUserInt();
 			return $obtenirUserInteracteur->get_user($tokenDécodé->username);
 		});
 
 		Gate::define("acces-utilisateur", function ($user, $request) {
-			$tokenDécodé = $this->obtenirTokenDécodé($request);
+			$token = trim(str_ireplace("bearer", "", $request->header("Authorization")));
+			$tokenDécodé = $this->décoderToken($token, $request);
 
-			if ($tokenDécodé && (time() < $tokenDécodé->expired || $tokenDécodé->expired == 0)) {
-				$usernameRequêteUrl = $user->username;
-				$usernameToken = $tokenDécodé->username;
-				return $usernameRequêteUrl == $usernameToken;
-			}
+			if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé) && $this->vérifierRessourceAutorisé($tokenDécodé, $request) && $user->username == $tokenDécodé->username) {
+				return true;
+			} 
 
 			return false;
 		});
 
 		Gate::define("acces-ressource", function ($user, $request) {
-			$tokenDécodé = $this->obtenirTokenDécodé($request);
+			$token = $request->input("tkres");
+			$tokenDécodé = $this->décoderToken($token, $request);
 
-			if ($tokenDécodé && (time() < $tokenDécodé->expired || $tokenDécodé->expired == 0)) {
-				$ressourcesDécodées = json_decode($tokenDécodé->ressources, false);
-				if (
-					$this->vérifierPathEstAutorisé($request->path(), $ressourcesDécodées->ressources->url) &&
-					$this->vérifierMethodEstAutorisé($request->method(), $ressourcesDécodées->ressources->method)
-				) {
-					return true;
-				}
-			}
+			if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé) && $this->vérifierRessourceAutorisé($tokenDécodé, $request)) {
+				return true;
+			} 
 
 			return false;
 		});
@@ -90,34 +85,48 @@ class AuthServiceProvider extends ServiceProvider
 		});
 	}
 
-	private function obtenirTokenDécodé($request)
+	private function décoderToken($tokenEncodé, $request)
 	{
-		if ($request->header("Authorization")) {
-			$token = trim(str_ireplace("bearer", "", $request->header("Authorization")));
-
-			try {
-				return JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
-			} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
-				Log::error(
+		try {
+			return JWT::decode($tokenEncodé, $_ENV["JWT_SECRET"], ["HS256"]);
+		} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
+			Log::error(
+				"(" .
+					$request->ip() .
+					") - " .
+					$request->method() .
+					" " .
+					$request->path() .
 					"(" .
-						$request->ip() .
-						") - " .
-						$request->method() .
-						" " .
-						$request->path() .
-						"(" .
-						__CLASS__ .
-						")" .
-						" " .
-						$e,
-				);
-				return null;
-			}
+					__CLASS__ .
+					")" .
+					" " .
+					$e,
+			);
+			return null;
 		}
-		return null;
 	}
 
-	private function vérifierPathEstAutorisé($urlDemandé, $urlAutorisé)
+	private function vérifierExpirationToken($token) {
+		return time() < $token->expired || $token->expired == 0;
+	}
+
+	private function vérifierRessourceAutorisé($token, $request) {
+		$ressourcesDécodées = json_decode($token->ressources, false);
+		return $this->vérifierPathAutorisé($request->path(), $ressourcesDécodées->ressources->url) &&
+					$this->vérifierMethodAutorisé($request->method(), $ressourcesDécodées->ressources->method);
+
+	}
+
+	private function vérifierMethodAutorisé($methodDemandé, $methodAutorisé)
+	{
+		if ($methodDemandé == $methodAutorisé || $methodAutorisé == "*") {
+			return true;
+		}
+		return false;
+	}
+
+	private function vérifierPathAutorisé($urlDemandé, $urlAutorisé)
 	{
 		foreach ($urlAutorisé as $url) {
 			$positionWildcard = strpos($url, "*");
@@ -133,14 +142,6 @@ class AuthServiceProvider extends ServiceProvider
 					return true;
 				}
 			}
-		}
-		return false;
-	}
-
-	private function vérifierMethodEstAutorisé($methodDemandé, $methodAutorisé)
-	{
-		if ($methodDemandé == $methodAutorisé || $methodAutorisé == "*") {
-			return true;
 		}
 		return false;
 	}
