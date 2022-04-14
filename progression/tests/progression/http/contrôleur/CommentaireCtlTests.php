@@ -33,6 +33,10 @@ final class CommentaireCtlTests extends TestCase
 			return true;
 		});
 
+		\Gate::define("acces-utilisateur", function () {
+			return true;
+		});
+
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
@@ -74,7 +78,7 @@ final class CommentaireCtlTests extends TestCase
 		DAOFactory::setInstance(null);
 	}
 
-	public function test_étant_donné_le_username_dun_utilisateurr_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_on_obtient_le_commentaire_avec_ses_relations_sous_forme_json()
+	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_on_obtient_le_commentaire_avec_ses_relations_sous_forme_json()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",

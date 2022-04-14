@@ -34,6 +34,10 @@ final class AvancementCtlTests extends TestCase
 			return true;
 		});
 
+		\Gate::define("acces-utilisateur", function () {
+			return true;
+		});
+
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 		$this->admin = new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]);
 

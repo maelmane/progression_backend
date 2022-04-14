@@ -33,6 +33,10 @@ final class UserCtlTests extends TestCase
 			return true;
 		});
 
+		\Gate::define("acces-utilisateur", function () {
+			return true;
+		});
+
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 
 		$_ENV["APP_URL"] = "https://example.com/";

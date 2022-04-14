@@ -36,6 +36,10 @@ final class TentativeCtlTests extends TestCase
 			return true;
 		});
 
+		\Gate::define("acces-utilisateur", function () {
+			return true;
+		});
+
 		$_ENV["AUTH_TYPE"] = "no";
 		$_ENV["APP_URL"] = "https://example.com/";
 

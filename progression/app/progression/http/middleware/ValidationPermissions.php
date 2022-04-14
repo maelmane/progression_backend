@@ -26,7 +26,7 @@ class ValidationPermissions
 {
 	public function handle($request, Closure $next)
 	{
-		if (Gate::allows("acces-utilisateur", $request)) {
+		if (Gate::allows("acces-utilisateur", $request) && Gate::allows("acces-ressource", $request)) {
 			return $next($request);
 		} else {
 			return response()->json(

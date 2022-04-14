@@ -95,7 +95,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertEquals(200, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_token_pour_un_utilisateur_existant_lorsque_la_date_dexpiration_est_échue_depuis_1_seconde_on_obtient_une_erreur_401()
+	public function test_étant_donné_un_token_pour_un_utilisateur_existant_lorsque_la_date_dexpiration_est_échue_depuis_1_seconde_on_obtient_une_erreur_403()
 	{
 		$ressources = json_encode(["ressources" => ["url" => ["*"], "method" => "*"]]);
 		$expiration = time() - 1;
@@ -106,7 +106,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 
 		$résultatObtenu = $this->call($method, $route, [], [], [], $headers);
 
-		$this->assertEquals(401, $résultatObtenu->status());
+		$this->assertEquals(403, $résultatObtenu->status());
 	}
 
 	public function test_étant_donné_un_token_pour_un_utilisateur_inexistant_lorsque_lorsquon_tente_dacceder_a_une_ressource_on_obtient_une_erreur_403()

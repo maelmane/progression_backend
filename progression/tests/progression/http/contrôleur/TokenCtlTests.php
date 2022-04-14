@@ -34,6 +34,10 @@ final class TokenCtlTests extends TestCase
 			return true;
 		});
 
+		\Gate::define("acces-utilisateur", function () {
+			return true;
+		});
+
 		$this->user = new GenericUser(["username" => "utilisateur_lambda", "rôle" => User::ROLE_NORMAL]);
 
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");

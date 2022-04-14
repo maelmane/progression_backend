@@ -60,7 +60,7 @@ class AuthServiceProvider extends ServiceProvider
 		Gate::define("acces-utilisateur", function ($user, $request) {
 			$tokenDécodé = $this->obtenirTokenDécodé($request);
 
-			if ($tokenDécodé) {
+			if ($tokenDécodé && (time() < $tokenDécodé->expired || $tokenDécodé->expired == 0)) {
 				$usernameRequêteUrl = $user->username;
 				$usernameToken = $tokenDécodé->username;
 				return $usernameRequêteUrl == $usernameToken;
@@ -69,10 +69,10 @@ class AuthServiceProvider extends ServiceProvider
 			return false;
 		});
 
-		/* 		Gate::define("acces-ressource", function ($user, $request) {
+		Gate::define("acces-ressource", function ($user, $request) {
 			$tokenDécodé = $this->obtenirTokenDécodé($request);
 
-			if ($tokenDécodé) {
+			if ($tokenDécodé && (time() < $tokenDécodé->expired || $tokenDécodé->expired == 0)) {
 				$ressourcesDécodées = json_decode($tokenDécodé->ressources, false);
 				if (
 					$this->vérifierPathEstAutorisé($request->path(), $ressourcesDécodées->ressources->url) &&
@@ -83,7 +83,7 @@ class AuthServiceProvider extends ServiceProvider
 			}
 
 			return false;
-		}); */
+		});
 
 		Gate::define("update-avancement", function ($user) {
 			return false;
