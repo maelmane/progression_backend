@@ -21,14 +21,12 @@ namespace progression\providers;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Auth\GenericUser;
 use progression\domaine\interacteur\ObtenirUserInt;
 use progression\domaine\entité\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
 use UnexpectedValueException;
 use DomainException;
-use progression\domaine\interacteur\ObtenirUserIntTests;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -50,7 +48,7 @@ class AuthServiceProvider extends ServiceProvider
 			}
 		});
 
-		//La sortie est récupérée par ValidationPermission.php, avec function handle($request, Closure $next)
+		//La sortie représente l'utilisateur connecté, si existant dans la BD, et est fourni au framework
 		$this->app["auth"]->viaRequest("api", function ($request) {
 			$tokenEncodé = trim(str_ireplace("bearer", "", $request->header("Authorization")));
 			$tokenDécodé = $this->décoderToken($tokenEncodé, $request);
@@ -58,29 +56,36 @@ class AuthServiceProvider extends ServiceProvider
 			return $obtenirUserInteracteur->get_user($tokenDécodé->username);
 		});
 
+		//Le paramètre $user est fourni par le framework et est l'utilisateur connecté.
 		Gate::define("acces-utilisateur", function ($user, $request) {
 			$token = trim(str_ireplace("bearer", "", $request->header("Authorization")));
 			$tokenDécodé = $this->décoderToken($token, $request);
 
-			if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé) && $this->vérifierRessourceAutorisé($tokenDécodé, $request) && $user->username == $tokenDécodé->username) {
+			if (
+				$tokenDécodé &&
+				$this->vérifierExpirationToken($tokenDécodé) &&
+				($user->username == $request->username || $request->username === null)
+			) {
 				return true;
-			} 
+			}
 
 			return false;
 		});
 
 		Gate::define("acces-ressource", function ($user, $request) {
-			$token = $request->input("tkres");
-			$tokenDécodé = $this->décoderToken($token, $request);
+			$tokenRessource = $request->input("tkres");
+			$tokenRégulier = trim(str_ireplace("bearer", "", $request->header("Authorization")));
+			$tokenRessourceDécodé = $this->décoderToken($tokenRessource, $request);
+			$tokenRégulierDécodé = $this->décoderToken($tokenRégulier, $request);
 
-			if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé) && $this->vérifierRessourceAutorisé($tokenDécodé, $request)) {
+			if (
+				$tokenRessourceDécodé && $tokenRégulierDécodé &&
+				$this->vérifierExpirationToken($tokenRessourceDécodé) &&
+				$this->vérifierRessourceAutorisé($tokenRessourceDécodé, $request)
+			) {
 				return true;
-			} 
+			}
 
-			return false;
-		});
-
-		Gate::define("update-avancement", function ($user) {
 			return false;
 		});
 	}
@@ -107,15 +112,16 @@ class AuthServiceProvider extends ServiceProvider
 		}
 	}
 
-	private function vérifierExpirationToken($token) {
+	private function vérifierExpirationToken($token)
+	{
 		return time() < $token->expired || $token->expired == 0;
 	}
 
-	private function vérifierRessourceAutorisé($token, $request) {
+	private function vérifierRessourceAutorisé($token, $request)
+	{
 		$ressourcesDécodées = json_decode($token->ressources, false);
 		return $this->vérifierPathAutorisé($request->path(), $ressourcesDécodées->ressources->url) &&
-					$this->vérifierMethodAutorisé($request->method(), $ressourcesDécodées->ressources->method);
-
+			$this->vérifierMethodAutorisé($request->method(), $ressourcesDécodées->ressources->method);
 	}
 
 	private function vérifierMethodAutorisé($methodDemandé, $methodAutorisé)

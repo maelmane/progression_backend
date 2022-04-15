@@ -49,8 +49,6 @@ class AvancementCtl extends Contrôleur
 
 		if ($validateur->fails()) {
 			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
-		} elseif ($request->avancement && !$this->valider_permissions()) {
-			$réponse = $this->réponse_json(["erreur" => "Opération interdite."], 403);
 		} else {
 			$avancement = $request->avancement;
 
@@ -125,11 +123,6 @@ class AvancementCtl extends Contrôleur
 		);
 
 		return $validateur;
-	}
-
-	private function valider_permissions()
-	{
-		return Gate::allows("update-avancement");
 	}
 
 	private function obtenir_avancement($username, $question_uri)

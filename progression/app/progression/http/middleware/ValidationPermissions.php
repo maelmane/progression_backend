@@ -20,19 +20,14 @@ namespace progression\http\middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Gate;
-use progression\domaine\interacteur\ObtenirUserInt;
 
 class ValidationPermissions
 {
 	public function handle($request, Closure $next)
 	{
-		if (
-			$request->input("tkres") &&
-			Gate::allows("acces-utilisateur", $request) &&
-			Gate::allows("acces-ressource", $request)
-		) {
+		if ($request->input("tkres") === null && Gate::allows("acces-utilisateur", $request)) {
 			return $next($request);
-		} elseif ($request->input("tkres") === null && Gate::allows("acces-utilisateur", $request)) {
+		} elseif ($request->input("tkres") && Gate::allows("acces-ressource", $request)) {
 			return $next($request);
 		} else {
 			return response()->json(

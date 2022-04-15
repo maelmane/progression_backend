@@ -21,29 +21,25 @@ use progression\TestCase;
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
 use progression\domaine\entité\{Avancement, Test, Exécutable, Question, TentativeProg, Commentaire, QuestionProg, User};
+use progression\http\contrôleur\GénérateurDeToken;
 
 use Illuminate\Auth\GenericUser;
 
 final class TentativeCtlTests extends TestCase
 {
 	public $user;
+	public $headers;
 
 	public function setUp(): void
 	{
 		parent::setUp();
 
-		\Gate::define("acces-ressource", function () {
-			return true;
-		});
-
-		\Gate::define("acces-utilisateur", function () {
-			return true;
-		});
-
 		$_ENV["AUTH_TYPE"] = "no";
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$token = GénérateurDeToken::get_instance()->générer_token("jdoe");
+		$this->headers = ["HTTP_Authorization" => "Bearer " . $token];
 
 		// Tentative
 		$tentative = new TentativeProg("python", "codeTest", "1614374490");
@@ -151,7 +147,7 @@ final class TentativeCtlTests extends TestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
-			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
+			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490", [], [], [], $this->headers
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -165,7 +161,7 @@ final class TentativeCtlTests extends TestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
-			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/9999999999",
+			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/9999999999", [], [], [], $this->headers
 		);
 
 		$this->assertEquals(404, $résultat_obtenu->status());
@@ -177,7 +173,7 @@ final class TentativeCtlTests extends TestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives?include=resultats",
-			["langage" => "python", "code" => "#+TODO\nprint(\"Hello world!\")"],
+			["langage" => "python", "code" => "#+TODO\nprint(\"Hello world!\")"], [], [], $this->headers
 		);
 		$this->assertEquals(200, $résultat_obtenu->status());
 		$heure_courante = time();
@@ -197,7 +193,7 @@ final class TentativeCtlTests extends TestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
-			["langage" => "python"],
+			["langage" => "python"], [], [], $this->headers
 		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
@@ -209,7 +205,7 @@ final class TentativeCtlTests extends TestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
-			["langage" => "java", "code" => "#+TODO\nprint(\"on ne se rendra pas à exécuter ceci\")"],
+			["langage" => "java", "code" => "#+TODO\nprint(\"on ne se rendra pas à exécuter ceci\")"], [], [], $this->headers
 		);
 
 		$this->assertEquals(503, $résultat_obtenu->status());
@@ -221,10 +217,46 @@ final class TentativeCtlTests extends TestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
-			["langage" => "python", "code" => "print(\"Hello world!\")"],
+			["langage" => "python", "code" => "print(\"Hello world!\")"], [], [], $this->headers
 		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Requête intraitable."}', $résultat_obtenu->getContent());
+	}
+
+	public function test_étant_donné_le_token_ressource_dun_autre_utilisateur_lorsque_lutilisateur_lambda_utilise_ce_token_comme_token_ressource_on_obtient_un_code_200()
+	{
+		$expiration = 0;
+		$ressources = json_encode(["ressources" => ["url" => ["tentative/jdoe/*", "avancement/jdoe/*"], "method" => "GET"]]);
+		$tokenRessource = GénérateurDeToken::get_instance()->générer_token(
+			"jdoe",
+			$expiration,
+			$ressources,
+		);
+		$method = "GET";
+		$route = "/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490";
+
+		$résultatObtenu = $this->actingAs($this->user)->call($method,
+		$route, ["tkres" => $tokenRessource], [], [], $this->headers);
+		
+		$this->assertEquals(200, $résultatObtenu->status());
+	}
+
+	public function test_étant_donné_le_token_ressource_dun_autre_utilisateur_qui_ne_contient_pas_les_bonnes_ressources_lorsque_lutilisateur_lambda_utilise_ce_token_comme_token_ressource_on_obtient_un_code_403()
+	{
+		$expiration = 0;
+		$ressources = json_encode(["ressources" => ["url" => ["mauvais/url/*", "url/mauvais/*"], "method" => "GET"]]);
+		$tokenRessource = GénérateurDeToken::get_instance()->générer_token(
+			"jdoe",
+			$expiration,
+			$ressources,
+		);
+		$method = "GET";
+		$route = "/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490";
+
+		$résultatObtenu = $this->actingAs($this->user)->call($method,
+		$route, ["tkres" => $tokenRessource], [], [], $this->headers);
+		
+		$this->assertEquals(403, $résultatObtenu->status());
 	}
 }

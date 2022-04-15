@@ -91,7 +91,7 @@ final class ValidationPermissionsTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquon_demande_une_ressource_pour_null_on_obtient_son_propre_profil()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/");
+		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/", [], [], [], $this->headers);
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/profil_bob.json",
