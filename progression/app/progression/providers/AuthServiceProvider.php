@@ -79,7 +79,8 @@ class AuthServiceProvider extends ServiceProvider
 			$tokenRégulierDécodé = $this->décoderToken($tokenRégulier, $request);
 
 			if (
-				$tokenRessourceDécodé && $tokenRégulierDécodé &&
+				$tokenRessourceDécodé &&
+				$tokenRégulierDécodé &&
 				$this->vérifierExpirationToken($tokenRessourceDécodé) &&
 				$this->vérifierRessourceAutorisé($tokenRessourceDécodé, $request)
 			) {
