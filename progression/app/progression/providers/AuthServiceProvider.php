@@ -64,7 +64,7 @@ class AuthServiceProvider extends ServiceProvider
 			if (
 				$tokenDécodé &&
 				$this->vérifierExpirationToken($tokenDécodé) &&
-				$this->vérifierRessourceAutorisé($token, $request) &&
+				$this->vérifierRessourceAutorisé($tokenDécodé, $request) &&
 				($user->username == $request->username || $request->username === null)
 			) {
 				return true;
