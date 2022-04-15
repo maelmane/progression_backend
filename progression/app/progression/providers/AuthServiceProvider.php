@@ -82,6 +82,7 @@ class AuthServiceProvider extends ServiceProvider
 				$tokenRessourceDécodé &&
 				$tokenRégulierDécodé &&
 				$this->vérifierExpirationToken($tokenRessourceDécodé) &&
+				$this->vérifierExpirationToken($tokenRessourceDécodé) &&
 				$this->vérifierRessourceAutorisé($tokenRessourceDécodé, $request)
 			) {
 				return true;
