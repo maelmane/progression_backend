@@ -13,36 +13,43 @@
 ** Privés
 Les points d'entrée privés requièrent un token dans l'entête : «Authentification: Bearer <token>»
 
-| Méthode | URL                | Description                            | Paramètres | Réponse  |
-| GET     | ~/user~            | Obtient l'utilisateur authentifié      |            | User     |
-| GET     | ~/user/{username}~ | Obtient l'utilisateur /username/       | username   | User     |
-| GET     | ~/question/{uri}~  | Obtient la question disponible à <uri> | uri        | Question |
+| Méthode | URL                 | Description                            | Paramètres                                  | Réponse             |
+| GET     | ~/user~             | Obtient l'utilisateur authentifié      |                                             | User                |
+| GET     | ~/user/{username}~  | Obtient l'utilisateur /username/       | username                                    | User                |
+| GET     | ~/question/{uri}~   | Obtient la question disponible à <uri> | uri                                         | Question            |
+| POST    | ~/token/{username}~ | Obtient un token pour {username}       | username, ressources demandées en json      | token, un token JWT |
 
 * Ressources
 
 Les ressources échangées sont représentées en format [[https://jsonapi.org][JSON-API]]
 
-** Utilisateur
 
-Un utilisateur du système.
+** Avancement
+
+L'avancement d'un utilisateur pour une question
 
 *** Identifiant :
-username
+username/question_uri
 
-*** Propriétés:
+*** Propriétés :
 
-| Nom      | Type | Valeurs          |
-|----------+------+------------------|
-| username | str  |                  |
-| rôle     | int  | 0=normal,1=admin |
-|----------+------+------------------|
+| Nom  | Type | Valeurs       |
+|------+------+---------------|
+| état | int  | 0=non débutée |
+|      |      | 1=non réussie |
+|      |      | 2=réussie     |
 
 *** Relations :
 
-| Nom         | Cardinalité | Type       | description         |
-|-------------+-------------+------------+---------------------|
-| avancements | 1-n         | Avancement | Liste d'avancements |
+| Nom        | Cardinalité | Type       | Description                    |
+|------------+-------------+------------+--------------------------------|
+| tentatives | 1-n         | Tentatives | liste de Tentatives effectuées |
 
+*** Liens :
+
+| Nom       | Description                      |
+|-----------+----------------------------------|
+| tentative | Soumettre une nouvelle tentative |
 ** Clé
 
 Une clé donnant accès à un sous-ensemble des services ou ressources de l'API. Les clés peuvent être octroyées temporairement ou être révoquées. Une clé peut être utilisée en lieu et place d'un mot de passe au moment d'effectuer une authentification. Le token JWT retourné après une authentification réussie peut être utilisé pour accéder aux services et ressources donnés par la portée de la clé.
@@ -61,6 +68,36 @@ username/nom
 |             |        | 0=Révoquée         | La clé est révoquée pour tout service ou ressource        |
 |             |        | 1=Authentification | La clé peut être utilisée pour authentifier l'utilisateur |
 |-------------+--------+--------------------+-----------------------------------------------------------|
+
+** Commentaire
+
+Un message sur une tentative écrit par un utilisateur.
+
+*** Identifiant :
+username/question_uri/date_soumission/numéro
+
+*** Propriétés:
+
+| Nom             | Type | Valeurs   |
+|-----------------+------+-----------|
+| message         | str  |           |
+| créateur        | str  |           |
+| date            | int  |           |
+| numéro_ligne    | int  |           |
+
+** Ébauche
+
+Une ébauche de solution fournie comme point de départ à la résolution de l'exercice
+
+*** Identifiant :
+question_uri/langage
+
+*** Propriétés:
+
+| Nom     | Type | Valeurs |
+|---------+------+---------|
+| langage | str  |         |
+| code    | str  |         |
 
 ** Question
 
@@ -104,46 +141,40 @@ Une question spécifiquement de programmation
 | ebauches   | 1-n         | Ébauche    | liste d'ébauches de Solution  |
 | tests      | 1-n         | Test       | liste de Tests de validation  |
 
-** Avancement
+** Ressource
+*** Identifiant : 
+*** Propriétés : 
+*** Relations : 
+*** Liens: 
+** Résultat
 
-L'avancement d'un utilisateur pour une question
+Le résultat d'un test pour une solution proposée.
 
 *** Identifiant :
-username/question_uri
+username/question_uri/date_soumission/numéro
 
 *** Propriétés:
 
-| Nom  | Type | Valeurs       |
-|------+------+---------------|
-| état | int  | 0=non débutée |
-|      |      | 1=non réussie |
-|      |      | 2=réussie     |
+| Nom             | Type | Valeurs   |
+|-----------------+------+-----------|
+| sortie_observée | str  |           |
+| sortie_erreur   | str  |           |
+| résultat        | bool |           |
+| feedback        | str  |           |
 
-*** Relations :
+** Sauvegarde automatique
 
-| Nom        | Cardinalité | Type       | Description                    |
-|------------+-------------+------------+--------------------------------|
-| tentatives | 1-n         | Tentatives | liste de Tentatives effectuées |
-
-*** Liens :
-
-| Nom       | Description                      |
-|-----------+----------------------------------|
-| tentative | Soumettre une nouvelle tentative |
-
-** Ébauche
-
-Une ébauche de solution fournie comme point de départ à la résolution de l'exercice
+La sauvegarde automatique du travail d'un utilisateur pour une question et dans un langage spécifique
 
 *** Identifiant :
-question_uri/langage
+username/question_uri/langage
 
 *** Propriétés:
 
-| Nom     | Type | Valeurs |
-|---------+------+---------|
-| langage | str  |         |
-| code    | str  |         |
+| Nom             | Type | Valeurs   |
+|-----------------+------+-----------|
+| date_sauvegarde | int  | timestamp |
+| code            | str  |           |
 
 ** Tentative
 
@@ -207,53 +238,26 @@ question_uri/numéro
 | entrée          | str  |         |
 | sortie_attendue | str  |         |
 
-** Résultat
+** Utilisateur
 
-Le résultat d'un test pour une solution proposée.
+Un utilisateur du système.
 
 *** Identifiant :
-username/question_uri/date_soumission/numéro
+username
 
 *** Propriétés:
 
-| Nom             | Type | Valeurs   |
-|-----------------+------+-----------|
-| sortie_observée | str  |           |
-| sortie_erreur   | str  |           |
-| résultat        | bool |           |
-| feedback        | str  |           |
+| Nom      | Type | Valeurs          |
+|----------+------+------------------|
+| username | str  |                  |
+| rôle     | int  | 0=normal,1=admin |
+|----------+------+------------------|
 
-** Commentaire
+*** Relations :
 
-Un message sur une tentative écrit par un utilisateur.
-
-*** Identifiant :
-username/question_uri/date_soumission/numéro
-
-*** Propriétés:
-
-| Nom             | Type | Valeurs   |
-|-----------------+------+-----------|
-| message         | str  |           |
-| créateur        | str  |           |
-| date            | int  |           |
-| numéro_ligne    | int  |           |
-
-
-
-** Sauvegarde automatique
-
-La sauvegarde automatique du travail d'un utilisateur pour une question et dans un langage spécifique
-
-*** Identifiant :
-username/question_uri/langage
-
-*** Propriétés:
-
-| Nom             | Type | Valeurs   |
-|-----------------+------+-----------|
-| date_sauvegarde | int  | timestamp |
-| code            | str  |           |
+| Nom         | Cardinalité | Type       | description         |
+|-------------+-------------+------------+---------------------|
+| avancements | 1-n         | Avancement | Liste d'avancements |
 
 
 * Exemples
