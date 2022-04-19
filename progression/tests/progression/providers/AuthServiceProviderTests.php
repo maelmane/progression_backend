@@ -22,7 +22,6 @@ use progression\dao\DAOFactory;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\User;
 use Illuminate\Auth\GenericUser;
-use Firebase\JWT\JWT;
 
 final class AuthServiceProviderCtlTests extends TestCase
 {
