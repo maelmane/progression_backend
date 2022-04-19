@@ -18,12 +18,20 @@
 
 namespace progression;
 
-use Laravel\Lumen\Testing\TestCase as BaseTestCase;
+use progression\TestCase;
 
-abstract class TestCase extends BaseTestCase
+class ContrôleurTestCase extends TestCase
 {
-	public function createApplication()
+	public function setUp(): void
 	{
-		return require __DIR__ . "/../../app/bootstrap/app.php";
+		parent::setUp();
+
+		\Gate::define("acces-ressource", function () {
+			return true;
+		});
+
+		\Gate::define("acces-utilisateur", function () {
+			return true;
+		});
 	}
 }

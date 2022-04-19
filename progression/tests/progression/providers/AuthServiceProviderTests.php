@@ -203,27 +203,84 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertEquals(403, $résultatObtenu->status());
 	}
 
-	public function test_étant_donné_un_utilisateur_malveillant_qui_fabrique_un_token_avec_le_mauvais_secret_lorsquil_fait_une_requête_on_obtient_une_erreur_403()
+	public function test_étant_donné_le_token_ressource_dun_autre_utilisateur_lorsque_lutilisateur_lambda_utilise_ce_token_comme_token_ressource_on_obtient_un_code_200()
 	{
-		$utilisateurMalveillant = new GenericUser([
-			"username" => "utilisateur_malveillant",
-			"rôle" => User::ROLE_NORMAL,
+		$expiration = 0;
+		$ressources = json_encode([
+			"ressources" => ["url" => ["user/autre_utilisateur", "avancement/autre_utilisateur/*"], "method" => "GET"],
 		]);
-
-		$payload = [
-			"username" => "utilisateur_malveillant",
-			"current" => time(),
-			"expired" => 0,
-			"ressources" => json_encode(["ressources" => ["url" => ["*"], "method" => "*"]]),
-		];
-
-		$token = JWT::encode($payload, "MAUVAIS_SECRET", "HS256");
-
+		$tokenRessource = GénérateurDeToken::get_instance()->générer_token(
+			"autre_utilisateur",
+			$expiration,
+			$ressources,
+		);
 		$method = "GET";
-		$route = "/user/utilisateur_malveillant";
-		$headers = ["HTTP_Authorization" => "Bearer " . $token];
+		$route = "user/autre_utilisateur";
+		$headers = ["HTTP_Authorization" => "Bearer " . $this->token];
 
-		$résultatObtenu = $this->actingAs($utilisateurMalveillant)->call($method, $route, [], [], [], $headers);
+		$résultatObtenu = $this->actingAs($this->utilisateurLambda)->call(
+			$method,
+			$route,
+			["tkres" => $tokenRessource],
+			[],
+			[],
+			$headers,
+		);
+
+		$this->assertEquals(200, $résultatObtenu->status());
+	}
+
+	public function test_étant_donné_le_token_ressource_qui_donne_acces_a_toutes_les_ressources_dun_contrôleur_lorsque_lutilisateur_lambda_utilise_ce_token_comme_token_ressource_on_obtient_un_code_200()
+	{
+		$expiration = 0;
+		$ressources = json_encode([
+			"ressources" => [
+				"url" => ["user/*", "avancement/autre_utilisateur/*", "autre_url/autre_url"],
+				"method" => "GET",
+			],
+		]);
+		$tokenRessource = GénérateurDeToken::get_instance()->générer_token(
+			"autre_utilisateur",
+			$expiration,
+			$ressources,
+		);
+		$method = "GET";
+		$route = "user/autre_utilisateur";
+		$headers = ["HTTP_Authorization" => "Bearer " . $this->token];
+
+		$résultatObtenu = $this->actingAs($this->utilisateurLambda)->call(
+			$method,
+			$route,
+			["tkres" => $tokenRessource],
+			[],
+			[],
+			$headers,
+		);
+
+		$this->assertEquals(200, $résultatObtenu->status());
+	}
+
+	public function test_étant_donné_le_token_ressource_dun_autre_utilisateur_qui_ne_contient_pas_les_bonnes_ressources_lorsque_lutilisateur_lambda_utilise_ce_token_comme_token_ressource_on_obtient_un_code_403()
+	{
+		$expiration = 0;
+		$ressources = json_encode(["ressources" => ["url" => ["mauvais/url/*", "url/mauvais/*"], "method" => "GET"]]);
+		$tokenRessource = GénérateurDeToken::get_instance()->générer_token(
+			"autre_utilisateur",
+			$expiration,
+			$ressources,
+		);
+		$method = "GET";
+		$route = "/user/autre_utilisateur";
+		$headers = ["HTTP_Authorization" => "Bearer " . $this->token];
+
+		$résultatObtenu = $this->actingAs($this->utilisateurLambda)->call(
+			$method,
+			$route,
+			["tkres" => $tokenRessource],
+			[],
+			[],
+			$headers,
+		);
 
 		$this->assertEquals(403, $résultatObtenu->status());
 	}

@@ -16,27 +16,19 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use progression\TestCase;
+use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\{Clé, User};
 use Illuminate\Auth\GenericUser;
 
-final class CléCtlTests extends TestCase
+final class CléCtlTests extends ContrôleurTestCase
 {
 	public $user;
 
 	public function setUp(): void
 	{
 		parent::setUp();
-
-		\Gate::define("acces-ressource", function () {
-			return true;
-		});
-
-		\Gate::define("acces-utilisateur", function () {
-			return true;
-		});
 
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 		$this->admin = new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]);

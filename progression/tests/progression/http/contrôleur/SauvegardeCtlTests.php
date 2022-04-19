@@ -16,27 +16,19 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use progression\TestCase;
+use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\{Sauvegarde, User};
 use Illuminate\Auth\GenericUser;
 
-final class SauvegardeCtlTests extends TestCase
+final class SauvegardeCtlTests extends ContrôleurTestCase
 {
 	public $user;
 
 	public function setUp(): void
 	{
 		parent::setUp();
-
-		\Gate::define("acces-ressource", function () {
-			return true;
-		});
-
-		\Gate::define("acces-utilisateur", function () {
-			return true;
-		});
 
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 
@@ -78,7 +70,6 @@ final class SauvegardeCtlTests extends TestCase
 		Mockery::close();
 	}
 
-	// GET
 	public function test_étant_donné_une_sauvegarde_existante_lorsquon_fait_une_requête_get_on_obtient_une_sauvegarde()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
@@ -92,6 +83,7 @@ final class SauvegardeCtlTests extends TestCase
 			$résultat_observé->getContent(),
 		);
 	}
+
 	public function test_étant_donné_une_sauvegarde_inexistante_lorsquon_fait_une_requête_get_on_obtient_un_message_une_erreur_404()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
@@ -103,7 +95,6 @@ final class SauvegardeCtlTests extends TestCase
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
 	}
 
-	// POST
 	public function test_étant_donné_une_sauvegarde_sans_langage_lorquon_fait_une_requête_post_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
@@ -120,6 +111,7 @@ final class SauvegardeCtlTests extends TestCase
 			$résultat_observé->getContent(),
 		);
 	}
+
 	public function test_étant_donné_une_sauvegarde_sans_code_lorquon_fait_une_requête_post_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
@@ -133,6 +125,7 @@ final class SauvegardeCtlTests extends TestCase
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals('{"erreur":{"code":["Le champ code est obligatoire."]}}', $résultat_observé->getContent());
 	}
+
 	public function test_étant_donné_un_username_luri_dune_question_un_code_et_un_langage_lorsquon_appelle_post_on_obtient_une_sauvegarde()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(

@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use progression\TestCase;
+use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\http\contrôleur\GénérateurDeToken;
@@ -24,19 +24,11 @@ use progression\domaine\entité\User;
 use Illuminate\Auth\GenericUser;
 use Illuminate\Support\Facades\Gate;
 
-final class TokenCtlTests extends TestCase
+final class TokenCtlTests extends ContrôleurTestCase
 {
 	public function setUp(): void
 	{
 		parent::setUp();
-
-		\Gate::define("acces-ressource", function () {
-			return true;
-		});
-
-		\Gate::define("acces-utilisateur", function () {
-			return true;
-		});
 
 		$this->user = new GenericUser(["username" => "utilisateur_lambda", "rôle" => User::ROLE_NORMAL]);
 
