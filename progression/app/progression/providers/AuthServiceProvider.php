@@ -118,7 +118,7 @@ class AuthServiceProvider extends ServiceProvider
 
 	private function vérifierExpirationToken($token)
 	{
-		return time() < $token->expired || $token->expired == 0;
+		return time() < $token->expired || $token->expired === 0;
 	}
 
 	private function vérifierRessourceAutorisé($token, $request)
