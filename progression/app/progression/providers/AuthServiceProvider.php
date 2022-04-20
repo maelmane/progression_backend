@@ -75,17 +75,13 @@ class AuthServiceProvider extends ServiceProvider
 
 		Gate::define("acces-ressource", function ($user, $request) {
 			$tokenRessource = $request->input("tkres");
-			$tokenRégulier = trim(str_ireplace("bearer", "", $request->header("Authorization")));
 			$tokenRessourceDécodé = $this->décoderToken($tokenRessource, $request);
-			$tokenRégulierDécodé = $this->décoderToken($tokenRégulier, $request);
 
 			if (
 				$tokenRessourceDécodé &&
-				$tokenRégulierDécodé &&
+				$request->username == $tokenRessourceDécodé->username &&
 				$this->vérifierExpirationToken($tokenRessourceDécodé) &&
-				$this->vérifierExpirationToken($tokenRégulierDécodé) &&
-				$this->vérifierRessourceAutorisé($tokenRessourceDécodé, $request) &&
-				$this->vérifierRessourceAutorisé($tokenRégulierDécodé, $request)
+				$this->vérifierRessourceAutorisé($tokenRessourceDécodé, $request)
 			) {
 				return true;
 			}
