@@ -114,17 +114,17 @@ class AuthServiceProvider extends ServiceProvider
 
 	private function vérifierExpirationToken($token)
 	{
-		return time() < $token->expired || $token->expired == 0;
+		return time() < $token->expired || $token->expired === 0;
 	}
 
-	private function vérifierRessourceAutorisé($token, $request)
+	private function vérifierRessourceAutorisée($token, $request)
 	{
 		$ressourcesDécodées = json_decode($token->ressources, false);
 		return $this->vérifierPathAutorisé($request->path(), $ressourcesDécodées->ressources->url) &&
 			$this->vérifierMethodAutorisé($request->method(), $ressourcesDécodées->ressources->method);
 	}
 
-	private function vérifierMethodAutorisé($methodDemandé, $methodAutorisé)
+	private function vérifierMéthodeAutorisée($methodDemandé, $methodAutorisé)
 	{
 		if ($methodDemandé == $methodAutorisé || $methodAutorisé == "*") {
 			return true;
