@@ -121,7 +121,7 @@ class AuthServiceProvider extends ServiceProvider
 		return time() < $token->expired || $token->expired === 0;
 	}
 
-	private function vérifierRessourceAutorisé($token, $request)
+	private function vérifierRessourceAutorisée($token, $request)
 	{
 		$ressourcesDécodées = json_decode($token->ressources, false);
 		return $this->vérifierPathAutorisé($request->path(), $ressourcesDécodées->ressources->url) &&
