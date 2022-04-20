@@ -128,7 +128,7 @@ class AuthServiceProvider extends ServiceProvider
 			$this->vérifierMethodAutorisé($request->method(), $ressourcesDécodées->ressources->method);
 	}
 
-	private function vérifierMethodAutorisé($methodDemandé, $methodAutorisé)
+	private function vérifierMéthodeAutorisée($methodDemandé, $methodAutorisé)
 	{
 		if ($methodDemandé == $methodAutorisé || $methodAutorisé == "*") {
 			return true;
