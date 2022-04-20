@@ -22,7 +22,7 @@ use progression\dao\DAOFactory;
 use progression\domaine\entité\{Avancement, User};
 use Illuminate\Auth\GenericUser;
 
-final class UserCtlTests extends TestCase
+final class UserCtlTests extends ContrôleurTestCase
 {
 	public $user;
 	public function setUp(): void
