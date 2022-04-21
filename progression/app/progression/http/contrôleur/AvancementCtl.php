@@ -105,20 +105,7 @@ class AvancementCtl extends Contrôleur
 		$avancement_envoyé = $avancement;
 
 		if ($avancement_envoyé == null) {
-			$chemin = Encodage::base64_decode_url($question_uri);
-			$questionInt = new ObtenirQuestionInt();
-			$question = $questionInt->get_question($chemin);
-			$av = new Avancement(
-				QUESTION::ETAT_DEBUT,
-				QUESTION::ETAT_DEBUT,
-				[],
-				[],
-				$question->titre,
-				$question->niveau,
-				0,
-				0,
-			);
-			$avancement_envoyé = $av;
+			$avancement_envoyé = $this->créer_avancement($question_uri);
 		}
 
 		$avancement_sauvegardé = $this->sauvegarder_avancement($username, $question_uri, $avancement_envoyé);
@@ -173,5 +160,27 @@ class AvancementCtl extends Contrôleur
 
 		Log::debug("AvancementCtl.sauvegarder_avancement. Retour : ", [$nouvel_avancement]);
 		return $nouvel_avancement;
+	}
+
+	private function créer_avancement($question_uri)
+	{
+		Log::debug("AvancementCtl.créer_avancement. Params : ", [$question_uri]);
+
+		$chemin = Encodage::base64_decode_url($question_uri);
+		$questionInt = new ObtenirQuestionInt();
+		$question = $questionInt->get_question($chemin);
+		$avancement = new Avancement(
+			QUESTION::ETAT_DEBUT,
+			QUESTION::ETAT_DEBUT,
+			[],
+			[],
+			$question->titre,
+			$question->niveau,
+			0,
+			0,
+		);
+
+		Log::debug("AvancementCtl.créer_avancement. Retour : ", [$avancement]);
+		return $avancement;
 	}
 }
