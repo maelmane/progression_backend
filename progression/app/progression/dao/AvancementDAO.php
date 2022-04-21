@@ -74,8 +74,8 @@ class AvancementDAO extends EntitéDAO
 	{
 		$état = QUESTION::ETAT_DEBUT;
 		$type = QUESTION::TYPE_INCONNU;
-		$titre = null;
-		$niveau = null;
+		$titre = "";
+		$niveau = "";
 		$date_modification = 0;
 		$date_réussite = 0;
 		$avancement = null;
