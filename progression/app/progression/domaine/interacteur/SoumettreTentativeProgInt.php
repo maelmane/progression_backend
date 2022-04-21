@@ -38,7 +38,7 @@ class SoumettreTentativeProgInt extends Interacteur
 			$question_de_avancement = $this->récupérer_informations_de_la_question($question->uri);
 			$avancement->titre = $question_de_avancement->titre;
 			$avancement->niveau = $question_de_avancement->niveau;
-			$avancement = $this->mettreÀJourDateModificationEtDateRéussiePourAvancement($avancement);
+			$avancement = $this->mettreÀJourDates($avancement);
 
 			$this->sauvegarderAvancement($username, $question->uri, $avancement);
 
@@ -72,7 +72,7 @@ class SoumettreTentativeProgInt extends Interacteur
 		return $avancement;
 	}
 
-	private function mettreÀJourDateModificationEtDateRéussiePourAvancement($avancement)
+	private function mettreÀJourDates($avancement)
 	{
 		$date = (new \DateTime())->getTimestamp();
 		if (!empty($avancement->tentatives)) {
