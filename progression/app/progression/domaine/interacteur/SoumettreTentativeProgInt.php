@@ -85,20 +85,17 @@ class SoumettreTentativeProgInt extends Interacteur
 
 	private function exécuterProg($exécutable, $testsQuestion)
 	{
-		$exécuterProgInt = new ExécuterProgInt();
-		return $exécuterProgInt->exécuter($exécutable, $testsQuestion);
+		return (new ExécuterProgInt())->exécuter($exécutable, $testsQuestion);
 	}
 
 	private function traiterTentativeProg($question, $tentative)
 	{
-		$traiterTentativeProgInt = new TraiterTentativeProgInt();
-		return $traiterTentativeProgInt->traiter_résultats($question, $tentative);
+		return (new TraiterTentativeProgInt())->traiter_résultats($question, $tentative);
 	}
 
 	private function sauvegarderAvancement($username, $uriQuestion, $avancement)
 	{
-		$interacteurAvancement = new SauvegarderAvancementInt();
-		$interacteurAvancement->sauvegarder($username, $uriQuestion, $avancement);
+		(new SauvegarderAvancementInt())->sauvegarder($username, $uriQuestion, $avancement);
 	}
 
 	private function récupérer_informations_de_la_question($question_uri)
