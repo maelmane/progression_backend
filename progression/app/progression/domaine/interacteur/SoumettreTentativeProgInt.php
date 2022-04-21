@@ -67,8 +67,6 @@ class SoumettreTentativeProgInt extends Interacteur
 	private function créerAvancement($tentative, $question)
 	{
 		$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, [$tentative], []);
-		$avancement->titre = $question->titre;
-		$avancement->niveau = $question->niveau;
 		return $avancement;
 	}
 
