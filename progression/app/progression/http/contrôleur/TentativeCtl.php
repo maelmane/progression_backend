@@ -60,6 +60,21 @@ class TentativeCtl extends Contrôleur
 	public function post(Request $request, $username, $question_uri)
 	{
 		Log::debug("TentativeCtl.post. Params : ", [$request->all(), $username]);
+
+		$TAILLE_CODE_MAX = (int) $_ENV["TAILLE_CODE_MAX"];
+		$taille_code = mb_strlen($request->code);
+		if ($taille_code > $TAILLE_CODE_MAX) {
+			Log::error(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					__CLASS__ .
+					") Le code soumis ${taille_code} > ${TAILLE_CODE_MAX} caractères.",
+			);
+			return $this->réponse_json(
+				["erreur" => "Le code soumis ${taille_code} > ${TAILLE_CODE_MAX} caractères."],
+				413,
+			);
+		}
+
 		$tentative = null;
 		$réponse = null;
 
