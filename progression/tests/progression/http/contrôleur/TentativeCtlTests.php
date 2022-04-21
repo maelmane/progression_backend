@@ -21,7 +21,6 @@ use progression\ContrôleurTestCase;
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
 use progression\domaine\entité\{Avancement, Test, Exécutable, Question, TentativeProg, Commentaire, QuestionProg, User};
-use progression\http\contrôleur\GénérateurDeToken;
 
 use Illuminate\Auth\GenericUser;
 

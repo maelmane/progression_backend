@@ -25,7 +25,10 @@ class ValidationPermissions
 {
 	public function handle($request, Closure $next)
 	{
-		if Gate::allows("acces-utilisateur", $request) || ($request->input("tkres") && Gate::allows("acces-ressource", $request)) {
+		if (
+			Gate::allows("acces-utilisateur", $request) ||
+			($request->input("tkres") && Gate::allows("acces-ressource", $request))
+		) {
 			return $next($request);
 		} else {
 			return response()->json(

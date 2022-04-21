@@ -16,14 +16,14 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use progression\TestCase;
+use progression\ContrôleurTestCase;
 
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\User;
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
 
-final class InscriptionCtlTests extends TestCase
+final class InscriptionCtlTests extends ContrôleurTestCase
 {
 	public $user;
 
@@ -50,8 +50,6 @@ final class InscriptionCtlTests extends TestCase
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		DAOFactory::setInstance($mockDAOFactory);
-
-		//$mockGénérateurDeToken = Mockery::mock("")
 
 		//Mock du générateur de token
 		GénérateurDeToken::set_instance(

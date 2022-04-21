@@ -48,7 +48,6 @@ class AuthServiceProvider extends ServiceProvider
 			}
 		});
 
-		//La sortie représente l'utilisateur connecté, si existant dans la BD, et est fourni au framework
 		$this->app["auth"]->viaRequest("api", function ($request) {
 			$tokenEncodé = trim(str_ireplace("bearer", "", $request->header("Authorization")));
 			$tokenDécodé = $this->décoderToken($tokenEncodé, $request);
@@ -56,7 +55,6 @@ class AuthServiceProvider extends ServiceProvider
 			return $obtenirUserInteracteur->get_user($tokenDécodé->username);
 		});
 
-		//Le paramètre $user est fourni par le framework et est l'utilisateur connecté.
 		Gate::define("acces-utilisateur", function ($user, $request) {
 			$token = trim(str_ireplace("bearer", "", $request->header("Authorization")));
 			$tokenDécodé = $this->décoderToken($token, $request);
@@ -64,7 +62,7 @@ class AuthServiceProvider extends ServiceProvider
 			if (
 				$tokenDécodé &&
 				$this->vérifierExpirationToken($tokenDécodé) &&
-				$this->vérifierRessourceAutorisé($tokenDécodé, $request) &&
+				$this->vérifierRessourceAutorisée($tokenDécodé, $request) &&
 				($user->username == $request->username || $request->username === null)
 			) {
 				return true;
@@ -81,7 +79,7 @@ class AuthServiceProvider extends ServiceProvider
 				$tokenRessourceDécodé &&
 				$request->username == $tokenRessourceDécodé->username &&
 				$this->vérifierExpirationToken($tokenRessourceDécodé) &&
-				$this->vérifierRessourceAutorisé($tokenRessourceDécodé, $request)
+				$this->vérifierRessourceAutorisée($tokenRessourceDécodé, $request)
 			) {
 				return true;
 			}
@@ -119,36 +117,38 @@ class AuthServiceProvider extends ServiceProvider
 
 	private function vérifierRessourceAutorisée($token, $request)
 	{
-		$ressourcesDécodées = json_decode($token->ressources, false);
-		return $this->vérifierPathAutorisé($request->path(), $ressourcesDécodées->ressources->url) &&
-			$this->vérifierMethodAutorisé($request->method(), $ressourcesDécodées->ressources->method);
-	}
+		$autorisé = false;
+		$ressourcesDécodées = json_decode($token->ressources, true);
 
-	private function vérifierMéthodeAutorisée($methodDemandé, $methodAutorisé)
-	{
-		if ($methodDemandé == $methodAutorisé || $methodAutorisé == "*") {
-			return true;
-		}
-		return false;
-	}
+		foreach ($ressourcesDécodées as $ressource) {
+			$urlAutorisé = $ressource["url"];
+			$méthodeAutorisée = $ressource["method"];
 
-	private function vérifierPathAutorisé($urlDemandé, $urlAutorisé)
-	{
-		foreach ($urlAutorisé as $url) {
-			$positionWildcard = strpos($url, "*");
+			$positionWildcard = strpos($urlAutorisé, "*");
 			if ($positionWildcard === 0) {
-				return true;
+				$autorisé = true;
 			} elseif ($positionWildcard === false) {
-				if ($urlDemandé == $url) {
-					return true;
+				if ($request->path() == $urlAutorisé) {
+					$autorisé = true;
 				}
 			} else {
-				$urlTronqué = substr($urlDemandé, 0, $positionWildcard - 1);
-				if (substr($url, 0, $positionWildcard - 1) == $urlTronqué) {
-					return true;
+				$urlTronqué = substr($request->path(), 0, $positionWildcard - 1);
+				if (substr($urlAutorisé, 0, $positionWildcard - 1) == $urlTronqué) {
+					$autorisé = true;
 				}
 			}
+
+			if ($autorisé && $méthodeAutorisée != "*") {
+				if ($méthodeAutorisée != $request->method()) {
+					$autorisé = false;
+				}
+			}
+
+			if ($autorisé) {
+				return true;
+			}
 		}
+
 		return false;
 	}
 }

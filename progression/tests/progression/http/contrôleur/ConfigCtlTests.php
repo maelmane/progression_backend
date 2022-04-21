@@ -16,9 +16,9 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use progression\TestCase;
+use progression\ContrôleurTestCase;
 
-final class ConfigCtlTests extends TestCase
+final class ConfigCtlTests extends ContrôleurTestCase
 {
 	// GET
 	public function test_config_simple_sans_authentification()

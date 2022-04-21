@@ -16,14 +16,14 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use progression\TestCase;
+use progression\ContrôleurTestCase;
 
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\{User, Clé};
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
 
-final class LoginCtlTests extends TestCase
+final class LoginCtlTests extends ContrôleurTestCase
 {
 	public $user;
 

@@ -22,7 +22,6 @@ use progression\dao\DAOFactory;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\User;
 use Illuminate\Auth\GenericUser;
-use Illuminate\Support\Facades\Gate;
 
 final class TokenCtlTests extends ContrôleurTestCase
 {
