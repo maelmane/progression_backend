@@ -35,7 +35,7 @@ class AvancementTransformer extends Fractal\TransformerAbstract
 			"titre" => $avancement->titre,
 			"niveau" => $avancement->niveau,
 			"date_modification" => $avancement->date_modification,
-			"date_réussie" => $avancement->date_réussie,
+			"date_réussite" => $avancement->date_réussite,
 			"links" => (isset($avancement->links) ? $avancement->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}avancement/{$avancement->id}",
 			],

@@ -121,7 +121,7 @@ username/question_uri
 | titre             | str    |               | Le titre de la question tel qu’il était lors de la dernière tentative  |
 | niveau            | str    |               | Le niveau de la question tel qu’il était lors de la dernière tentative |
 | date_modification | int    |               | La date de la dernière tentative                                       |
-| date_réussie      | int    |               | La date de la dernière tentative réussie                               |
+| date_réussie      | int    |               | La date de la première tentative réussie                               |
 
 *** Relations :
 
