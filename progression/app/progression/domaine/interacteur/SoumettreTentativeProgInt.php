@@ -75,20 +75,9 @@ class SoumettreTentativeProgInt extends Interacteur
 	private function mettreÀJourDates($avancement)
 	{
 		$date = (new \DateTime())->getTimestamp();
-		if (!empty($avancement->tentatives)) {
-			$tentatives = $avancement->tentatives;
-			$tentative = $tentatives[0];
-			foreach ($tentatives as $t) {
-				if ($t->réussi == Question::ETAT_REUSSI) {
-					$tentative = $t;
-					break;
-				}
-			}
-
-			if ($avancement->etat != Question::ETAT_REUSSI && $tentative->réussi) {
-				$avancement->etat = Question::ETAT_REUSSI;
-				$avancement->date_réussite = $date;
-			}
+		if ($avancement->etat != Question::ETAT_REUSSI) {
+			$avancement->etat = Question::ETAT_REUSSI;
+			$avancement->date_réussite = $date;
 		}
 		$avancement->date_modification = $date;
 		return $avancement;
