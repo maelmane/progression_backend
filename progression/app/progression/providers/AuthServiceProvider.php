@@ -140,6 +140,11 @@ class AuthServiceProvider extends ServiceProvider
 				$élémentsPathAutorisé = explode("/", $urlAutorisé);
 				$élémentsPathDemandé = explode("/", $request->path());
 
+				print_r($urlAutorisé);
+				print_r($élémentsPathAutorisé);
+				print_r($request->path());
+				print_r($élémentsPathDemandé);
+
 				if (count($élémentsPathAutorisé) !== count($élémentsPathDemandé)) {
 					$autorisé = false;
 				} else {

@@ -22,7 +22,7 @@ use progression\dao\DAOFactory;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\User;
 use Illuminate\Auth\GenericUser;
-use progression\http\contrôleur\CommentaireCtl;
+use progression\http\contrôleur\NotImplementedCtl;
 
 final class AuthServiceProviderCtlTests extends TestCase
 {
@@ -302,7 +302,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$ressources = json_encode([["url" => "user/autre_utilisateur/relation*", "method" => "GET"]]);
 		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
 
-		$résultatObtenu = $this->actingAs($this->utilisateurLambda)->call(
+		$this->actingAs($this->utilisateurLambda)->call(
 			"GET",
 			"/user/autre_utilisateur",
 			["tkres" => $tokenRessource],
@@ -314,23 +314,38 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertResponseStatus(403);
 	}
 
-	// public function test_étant_donné_le_token_ressource_dun_autre_utilisateur_où_létoile_est_à_un_endroit_approprié_dans_le_path_ressource_demandée_lorsque_lutilisateur_lambda_utilise_ce_token_comme_token_ressource_on_obtient_un_code_200()
-	// {
-	// 	$this->expectsJobs('progression\http\contrôleur\commentairectl');
+	//Utilisé avec 501 parce que c'est uniquement ce que retourne le contrôleur utilisé pour ce test. 501 veut dire que le contrôleur a été atteint après que la requête ait été jugée valide par le Middleware.
+	public function test_étant_donné_le_token_ressource_dun_autre_utilisateur_où_létoile_est_à_un_endroit_approprié_dans_le_path_ressource_authorisée_lorsque_lutilisateur_lambda_utilise_ce_token_comme_token_ressource_on_obtient_un_code_501()
+	{
+		$ressources = json_encode([["url" => "user/*/avancements", "method" => "GET"]]);
+		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
 
-	// 	$ressources = json_encode([["url" => "*", "method" => "POST"]]);
-	// 	$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
+		$this->actingAs($this->utilisateurLambda)->call(
+			"GET",
+			"/user/autre_utilisateur/avancements",
+			["tkres" => $tokenRessource],
+			[],
+			[],
+			["HTTP_Authorization" => "Bearer " . $this->token],
+		);
 
-	// 	$résultatObtenu = $this->actingAs($this->utilisateurLambda)->call(
-	// 		"POST",
-	// 		"/commentaire/utilisateur_lambda",
-	// 		["tkres" => $tokenRessource],
-	// 		[],
-	// 		[],
-	// 		["HTTP_Authorization" => "Bearer " . $this->token],
-	// 	);
+		$this->assertResponseStatus(501);
+	}
 
-	// 	print_r($résultatObtenu->content());
-	// 	$this->assertEquals(200, $résultatObtenu->status());
-	// }
+	public function test_étant_donné_le_token_ressource_dun_autre_utilisateur_qui_a_une_étoile_dans_le_path_ressource_authorisée_lorsque_lutilisateur_lambda_utilise_ce_token_pour_une_autre_ressource_non_autorisée_on_obtient_403()
+	{
+		$ressources = json_encode([["url" => "user/*/avancements", "method" => "GET"]]);
+		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
+
+		$this->actingAs($this->utilisateurLambda)->call(
+			"GET",
+			"/user/autre_utilisateur/relationships/avancements",
+			["tkres" => $tokenRessource],
+			[],
+			[],
+			["HTTP_Authorization" => "Bearer " . $this->token],
+		);
+
+		$this->assertResponseStatus(403);
+	}
 }
