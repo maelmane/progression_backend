@@ -131,10 +131,26 @@ class AuthServiceProvider extends ServiceProvider
 				if ($request->path() == $urlAutorisé) {
 					$autorisé = true;
 				}
-			} else {
+			} elseif ($positionWildcard === strlen($urlAutorisé) - 1) {
 				$urlTronqué = substr($request->path(), 0, $positionWildcard - 1);
 				if (substr($urlAutorisé, 0, $positionWildcard - 1) == $urlTronqué) {
 					$autorisé = true;
+				}
+			} elseif ($positionWildcard < strlen($urlAutorisé) - 1) {
+				$élémentsPathAutorisé = explode("/", $urlAutorisé);
+				$élémentsPathDemandé = explode("/", $request->path());
+
+				if (count($élémentsPathAutorisé) !== count($élémentsPathDemandé)) {
+					$autorisé = false;
+				} else {
+					$autorisé = true;
+					for ($i = 0; $i < count($élémentsPathAutorisé); $i++) {
+						if ($élémentsPathAutorisé[$i] !== "*") {
+							if ($élémentsPathAutorisé[$i] !== $élémentsPathDemandé[$i]) {
+								$autorisé = false;
+							}
+						}
+					}
 				}
 			}
 

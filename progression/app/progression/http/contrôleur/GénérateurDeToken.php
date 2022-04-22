@@ -49,6 +49,7 @@ class GénérateurDeToken
 			"current" => time(),
 			"expired" => $expiration,
 			"ressources" => $ressources,
+			"version" => 1,
 		];
 
 		$token = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
