@@ -15,7 +15,6 @@ class Authenticate
 		$this->auth = $auth;
 	}
 
-	//La sortie est récupérée par AuthServiceProvider.php, avec $this->app["auth"]->viaRequest("api", function ($request)
 	public function handle($request, Closure $next, $guard = null)
 	{
 		if ($this->auth->guard($guard)->guest()) {

@@ -51,8 +51,13 @@ class AuthServiceProvider extends ServiceProvider
 		$this->app["auth"]->viaRequest("api", function ($request) {
 			$tokenEncodé = trim(str_ireplace("bearer", "", $request->header("Authorization")));
 			$tokenDécodé = $this->décoderToken($tokenEncodé, $request);
-			$obtenirUserInteracteur = new ObtenirUserInt();
-			return $obtenirUserInteracteur->get_user($tokenDécodé->username);
+
+			if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
+				$obtenirUserInteracteur = new ObtenirUserInt();
+				return $obtenirUserInteracteur->get_user($tokenDécodé->username);
+			}
+
+			return null;
 		});
 
 		Gate::define("acces-utilisateur", function ($user, $request) {
@@ -61,7 +66,6 @@ class AuthServiceProvider extends ServiceProvider
 
 			if (
 				$tokenDécodé &&
-				$this->vérifierExpirationToken($tokenDécodé) &&
 				$this->vérifierRessourceAutorisée($tokenDécodé, $request) &&
 				($user->username == $request->username || $request->username === null)
 			) {
@@ -123,8 +127,8 @@ class AuthServiceProvider extends ServiceProvider
 		foreach ($ressourcesDécodées as $ressource) {
 			$urlAutorisé = $ressource["url"];
 			$méthodeAutorisée = $ressource["method"];
-
 			$positionWildcard = strpos($urlAutorisé, "*");
+
 			if ($positionWildcard === 0) {
 				$autorisé = true;
 			} elseif ($positionWildcard === false) {
@@ -139,11 +143,6 @@ class AuthServiceProvider extends ServiceProvider
 			} elseif ($positionWildcard < strlen($urlAutorisé) - 1) {
 				$élémentsPathAutorisé = explode("/", $urlAutorisé);
 				$élémentsPathDemandé = explode("/", $request->path());
-
-				print_r($urlAutorisé);
-				print_r($élémentsPathAutorisé);
-				print_r($request->path());
-				print_r($élémentsPathDemandé);
 
 				if (count($élémentsPathAutorisé) !== count($élémentsPathDemandé)) {
 					$autorisé = false;
