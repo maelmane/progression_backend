@@ -129,7 +129,7 @@ class AuthServiceProvider extends ServiceProvider
 			$méthodeAutorisée = $ressource["method"];
 			$positionWildcard = strpos($urlAutorisé, "*");
 
-			if ($positionWildcard === 0) {
+			if ($urlAutorisé === "*") {
 				$autorisé = true;
 			} elseif ($positionWildcard === false && $request->path() === $urlAutorisé) {
 				$autorisé = true;
