@@ -3,6 +3,7 @@
 #+PROPERTY: header-args:bash :results output :exports both :noweb yes
 
 * Points d'entrée
+
 ** Publics
 | Méthode | URL               | Description                            | Paramètres                                   | Réponse             |
 | POST    | ~/auth~           | Authentification                       | username, password ou key_name et key_secret | token, un token JWT |
@@ -22,7 +23,6 @@ Les points d'entrée privés requièrent un token dans l'entête : «Authentific
 * Ressources
 
 Les ressources échangées sont représentées en format [[https://jsonapi.org][JSON-API]]
-
 
 ** Avancement
 
