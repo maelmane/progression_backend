@@ -19,17 +19,33 @@
 namespace progression\dao;
 
 use mysqli_sql_exception;
-use progression\domaine\entité\{Avancement, Question};
+use progression\domaine\entité\{Avancement, Question, TentativeProg};
 
 class AvancementDAO extends EntitéDAO
 {
-	public function get_tous($username)
+
+	const QUERY_SELECT = "avancement.question_uri, avancement.etat, avancement.type, avancement.titre, avancement.niveau, avancement.date_modification, avancement.date_reussite ";
+	const QUERY_FROM = "JOIN avancement ON user.username = avancement.username ";
+
+	public static function construire_avancement( $data ){
+		return new Avancement(
+			$data["etat"],
+			$data["type"],
+			[],
+			[],
+			$data["titre"],
+			$data["niveau"],
+			$data["date_modification"],
+			$data["date_reussite"]);
+	}
+	
+	public function get_tous($username, $includes=[])
 	{
 		$avancements = [];
 
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT question_uri, etat, type, titre, niveau, date_modification, date_reussite  FROM avancement WHERE username = ?",
+				"SELECT avancement.question_uri, etat, type, titre, niveau, date_modification, date_reussite, langage, code, date_soumission, reussi, tests_reussis FROM avancement JOIN reponse_prog ON avancement.username = reponse_prog.username AND avancement.question_uri = reponse_prog.question_uri WHERE avancement.username = ?",
 			);
 			$query->bind_param("s", $username);
 			$query->execute();
@@ -41,13 +57,27 @@ class AvancementDAO extends EntitéDAO
 			$niveau = "";
 			$date_modification = 0;
 			$date_réussite = 0;
-			$query->bind_result($uri, $etat, $type, $titre, $niveau, $date_modification, $date_réussite);
+			$langage = null;
+			$code = null;
+			$date_soumission = null;
+			$réussi = false;
+			$tests_réussis = 0;
+			$query->bind_result($uri, $etat, $type, $titre, $niveau, $date_modification, $date_réussite, $langage, $code, $date_soumission, $réussi, $tests_réussis);
 			while ($query->fetch()) {
-				$avancements[$uri] = new Avancement($etat, $type);
-				$avancements[$uri]->titre = $titre;
-				$avancements[$uri]->niveau = $niveau;
-				$avancements[$uri]->date_modification = $date_modification;
-				$avancements[$uri]->date_réussite = $date_réussite;
+				if( ! in_array($uri, $avancements)){
+					$avancements[$uri] = new Avancement($etat, $type);
+					$avancements[$uri]->titre = $titre;
+					$avancements[$uri]->niveau = $niveau;
+					$avancements[$uri]->date_modification = $date_modification;
+					$avancements[$uri]->date_réussite = $date_réussite;
+				}
+				$avancements[$uri]->tentatives[$date_soumission] = new TentativeProg(
+					$langage,
+					$code,
+					$date_soumission,
+					$réussi,
+					$tests_réussis					
+				);
 			}
 
 			$query->close();
@@ -58,19 +88,21 @@ class AvancementDAO extends EntitéDAO
 		return $avancements;
 	}
 
-	public function get_avancement($username, $question_uri)
+	public function get_avancement($username, $question_uri, $includes=[])
 	{
 		$avancement = $this->load($username, $question_uri);
 
 		if ($avancement) {
-			$avancement->tentatives = $this->source->get_tentative_dao()->get_toutes($username, $question_uri);
-			$avancement->sauvegardes = $this->source->get_sauvegarde_dao()->get_toutes($username, $question_uri);
+			if (in_array("tentatives", $includes))
+				$avancement->tentatives = $this->source->get_tentative_dao()->get_toutes($username, $question_uri);
+			if (in_array("sauvegardes", $includes))
+				$avancement->sauvegardes = $this->source->get_sauvegarde_dao()->get_toutes($username, $question_uri);
 		}
 
 		return $avancement;
 	}
 
-	protected function load($username, $question_uri)
+  	protected function load($username, $question_uri)
 	{
 		$état = QUESTION::ETAT_DEBUT;
 		$type = QUESTION::TYPE_INCONNU;
@@ -111,8 +143,8 @@ class AvancementDAO extends EntitéDAO
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
 				"INSERT INTO avancement ( etat, question_uri, username, titre, niveau, date_modification, date_reussite, type ) VALUES ( ?, ?, ?, ?, ?, ?, ?, " .
-					Question::TYPE_PROG .
-					')
+				Question::TYPE_PROG .
+				')
                                               ON DUPLICATE KEY UPDATE etat = VALUES( etat ), date_modification = VALUES(date_modification), date_reussite = VALUES(date_reussite)',
 			);
 

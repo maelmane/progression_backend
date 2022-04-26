@@ -19,34 +19,58 @@
 namespace progression\dao;
 
 use mysqli_sql_exception;
-use progression\domaine\entité\User;
+use progression\domaine\entité\{User, Avancement, Clé};
 
 class UserDAO extends EntitéDAO
 {
-	public function get_user($username)
-	{
-		$objet = new User($username);
+	const QUERY_SELECT = "user.username, user.role ";
+	const QUERY_FROM = " user "; 
 
+	public function get_user($username, $includes=[])
+	{
 		try {
-			$query = EntitéDAO::get_connexion()->prepare("SELECT username, role FROM user WHERE username = ? ");
-			$query->bind_param("s", $objet->username);
+			$query_select = UserDAO::QUERY_SELECT;
+			$query_from = UserDAO::QUERY_FROM;
+			
+			if (in_array("avancements", $includes)){
+				$query_select .= ", " . AvancementDAO::QUERY_SELECT;
+				$query_from .= " " . AvancementDAO::QUERY_FROM;
+			}
+			if (in_array("clés", $includes)){
+				$query_select .= ", " . CléDAO::QUERY_SELECT;
+				$query_from .= " " . CléDAO::QUERY_FROM;
+			}
+
+			$query_where = "WHERE user.username = ? ";
+			$query = EntitéDAO::get_connexion()->prepare("SELECT " . $query_select . "FROM " . $query_from . $query_where);
+			$query->bind_param("s", $username);
 
 			$query->execute();
 
-			$query->bind_result($objet->username, $objet->rôle);
+			$row = array();
+			EntitéDAO::stmt_bind_assoc( $query, $row );
 
-			$résultat = $query->fetch();
+			$user = null;
+			while( $query->fetch() ){
+				if (!$user) $user = new User( $row["username"], $row["role"] );
+				
+				if (in_array("avancements", $includes)){
+					if (!in_array( $row["question_uri"], $user->avancements ) ) {
+						$user->avancements[ $row["question_uri"] ] = AvancementDAO::construire_avancement( $row );
+					}
+				}
+				if (in_array("clés", $includes)){
+					if (!in_array( $row["nom"], $user->clés ) ) {
+						$user->clés[ $row["nom"] ] = CléDAO::construire_clé( $row );
+					}
+				}
+			}
 			$query->close();
 		} catch (mysqli_sql_exception $e) {
 			throw new DAOException($e);
 		}
 
-		if ($résultat != null) {
-			$objet->avancements = $this->source->get_avancement_dao()->get_tous($username);
-			$objet->clés = $this->source->get_clé_dao()->get_toutes($username);
-		}
-
-		return $résultat != null ? $objet : null;
+		return $user;
 	}
 
 	public function save($objet)

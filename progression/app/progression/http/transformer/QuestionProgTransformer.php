@@ -22,7 +22,7 @@ use progression\util\Encodage;
 
 class QuestionProgTransformer extends QuestionTransformer
 {
-	protected $availableIncludes = ["tests", "ebauches"];
+	protected array $availableIncludes = ["tests", "ebauches"];
 
 	public function transform($data_in)
 	{

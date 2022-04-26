@@ -24,7 +24,7 @@ use progression\domaine\entité\Tentative;
 class TentativeTransformer extends Fractal\TransformerAbstract
 {
 	public $type = "tentative";
-	protected $availableIncludes = ["commentaires"];
+	protected array $availableIncludes = ["commentaires"];
 
 	public function transform(Tentative $tentative)
 	{

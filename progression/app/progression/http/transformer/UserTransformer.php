@@ -26,7 +26,7 @@ class UserTransformer extends Fractal\TransformerAbstract
 {
 	public $type = "user";
 
-	protected $availableIncludes = ["avancements", "cles"];
+	protected array $availableIncludes = ["avancements", "cles"];
 
 	public function transform(User $user)
 	{

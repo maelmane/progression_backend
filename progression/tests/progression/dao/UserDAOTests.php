@@ -39,6 +39,51 @@ final class UserDAOTests extends TestCase
 		$avancement2 = new Avancement(0, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
 
 		$réponse_attendue = new User("bob");
+		$réponse_attendue->avancements = [];
+		$réponse_attendue->clés = [];
+
+		$résponse_observée = (new UserDAO())->get_user("bob");
+		$this->assertEquals($réponse_attendue, $résponse_observée);
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_incluant_les_avancements_on_obtient_son_profil_et_ses_avancements()
+	{
+		$avancement1 = new Avancement(1, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
+		$avancement2 = new Avancement(0, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
+
+		$réponse_attendue = new User("bob");
+		$réponse_attendue->avancements = [
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => $avancement1,
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $avancement2,
+		];
+		$réponse_attendue->clés = [];
+
+		$résponse_observée = (new UserDAO())->get_user("bob", ["avancements"]);
+		$this->assertEquals($réponse_attendue, $résponse_observée);
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_incluant_les_clés_on_obtient_son_profil_et_ses_clés()
+	{
+		$avancement1 = new Avancement(1, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
+		$avancement2 = new Avancement(0, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
+
+		$réponse_attendue = new User("bob");
+		$réponse_attendue->avancements = [];
+		$réponse_attendue->clés = [
+			"clé de test" => new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
+			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
+		];
+
+		$résponse_observée = (new UserDAO())->get_user("bob", ["clés"]);
+		$this->assertEquals($réponse_attendue, $résponse_observée);
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_incluant_les_avancements_et_les_clés_on_obtient_son_profil_et_ses_avancements_et_clés()
+	{
+		$avancement1 = new Avancement(1, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
+		$avancement2 = new Avancement(0, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
+
+		$réponse_attendue = new User("bob");
 		$réponse_attendue->avancements = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => $avancement1,
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $avancement2,
@@ -48,7 +93,7 @@ final class UserDAOTests extends TestCase
 			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
 		];
 
-		$résponse_observée = (new UserDAO())->get_user("bob");
+		$résponse_observée = (new UserDAO())->get_user("bob", ["avancements", "clés"]);
 		$this->assertEquals($réponse_attendue, $résponse_observée);
 	}
 
@@ -78,14 +123,8 @@ final class UserDAOTests extends TestCase
 		$avancement2 = new Avancement(0, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
 
 		$réponse_attendue = new User("bob", User::ROLE_ADMIN);
-		$réponse_attendue->avancements = [
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => $avancement1,
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $avancement2,
-		];
-		$réponse_attendue->clés = [
-			"clé de test" => new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
-			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
-		];
+		$réponse_attendue->avancements = [];
+		$réponse_attendue->clés = [];
 
 		$user_test = (new UserDAO())->get_user("bob");
 		$user_test->rôle = User::ROLE_ADMIN;

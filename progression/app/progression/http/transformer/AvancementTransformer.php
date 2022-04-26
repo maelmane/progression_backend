@@ -25,7 +25,7 @@ class AvancementTransformer extends Fractal\TransformerAbstract
 {
 	public $type = "avancement";
 
-	protected $availableIncludes = ["tentatives", "sauvegardes"];
+	protected array $availableIncludes = ["tentatives", "sauvegardes"];
 
 	public function transform(Avancement $avancement)
 	{

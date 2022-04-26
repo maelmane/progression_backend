@@ -23,6 +23,17 @@ use progression\domaine\entité\Clé;
 
 class CléDAO extends EntitéDAO
 {
+	const QUERY_SELECT = "cle.nom, cle.hash, cle.creation, cle.expiration, cle.portee ";
+	const QUERY_FROM = "JOIN cle ON cle.username = cle.username ";
+
+	public static function construire_clé( $data ){
+		return new Clé(
+			null,
+			$data["creation"],
+			$data["expiration"],
+			$data["portee"]);
+	}
+
 	public function get_clé($username, $nom)
 	{
 		$clé = null;

@@ -50,7 +50,6 @@ final class ObtenirAvancementIntTests extends TestCase
 			->andReturn($avancement);
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("jdoe", "une_question_inexistante")
 			->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
