@@ -61,18 +61,25 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 		Gate::define("acces-utilisateur", function ($user, $request) {
+			$autorisé = false;
 			$token = trim(str_ireplace("bearer", "", $request->header("Authorization")));
 			$tokenDécodé = $this->décoderToken($token, $request);
 
 			if (
 				$tokenDécodé &&
 				$this->vérifierRessourceAutorisée($tokenDécodé, $request) &&
-				($user->username == $request->username || $request->username === null)
+				$user->username == $request->username
 			) {
-				return true;
+				$autorisé = true;
+			} elseif (
+				$tokenDécodé &&
+				$this->vérifierRessourceAutorisée($tokenDécodé, $request) &&
+				$request->path() == "user"
+			) {
+				$autorisé = true;
 			}
 
-			return false;
+			return $autorisé;
 		});
 
 		Gate::define("acces-ressource", function ($user, $request) {
@@ -156,12 +163,14 @@ class AuthServiceProvider extends ServiceProvider
 
 	private function vérifierMéthodeAutorisée($méthodeAutorisée, $méthodeDemandée)
 	{
+		$autorisé = false;
+
 		if ($méthodeAutorisée === "*") {
-			return true;
+			$autorisé = true;
 		} elseif (strtolower($méthodeAutorisée) === strtolower($méthodeDemandée)) {
-			return true;
-		} else {
-			return false;
+			$autorisé = true;
 		}
+
+		return $autorisé;
 	}
 }

@@ -254,7 +254,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertResponseStatus(403);
 	}
 
-	public function test_étant_donné_un_token_ressource_où_létoile_dans_lurl_est_plus_loin_que_lurl_de_la_ressource_demandée_lorsquon_effectue_une_requête_on_obtient_403()
+	public function test_étant_donné_un_token_ressource_où_les_étoiles_dans_lurl_est_plus_loin_que_lurl_de_la_ressource_demandée_lorsquon_effectue_une_requête_on_obtient_403()
 	{
 		$ressources = json_encode([["url" => "user/autre_utilisateur/relation**", "method" => "GET"]]);
 		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
@@ -271,7 +271,6 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertResponseStatus(403);
 	}
 
-	//Utilisé avec 501 parce que c'est uniquement ce que retourne le contrôleur utilisé pour ce test. 501 veut dire que le contrôleur a été atteint après que la requête ait été jugée valide par le Middleware.
 	public function test_étant_donné_un_token_ressource_qui_a_une_étoile_à_lintérieur_de_lurl_lorsque_quon_effectue_une_requête_pour_une_ressource_autoriée_on_obtient_501()
 	{
 		$ressources = json_encode([["url" => "user/*/avancements", "method" => "GET"]]);
@@ -285,7 +284,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 			[],
 			["HTTP_Authorization" => "Bearer " . $this->token],
 		);
-
+		//Utilisé avec 501 parce que c'est uniquement ce que retourne le contrôleur utilisé pour ce test. 501 veut dire que le contrôleur a été atteint après que la requête ait été jugée valide par le Middleware.
 		$this->assertResponseStatus(501);
 	}
 
