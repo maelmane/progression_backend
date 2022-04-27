@@ -44,14 +44,19 @@ INSERT INTO cle VALUES (
   1
 );
 
-INSERT INTO sauvegarde VALUES (
+INSERT INTO sauvegarde(
+  `username`,
+  `question_uri`,
+  `date_sauvegarde`,
+  `langage`,
+  `code`
+  ) VALUES (
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
   1620150294,
   "python",
-  "print(\"Hello world!\")"
-);
-INSERT INTO sauvegarde VALUES (
+  "print(\"Hello world!\")" ), 
+  (
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
   1620150375,

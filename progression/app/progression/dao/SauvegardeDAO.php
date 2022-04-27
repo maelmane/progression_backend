@@ -1,25 +1,26 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\dao;
 
-use mysqli_sql_exception;
+use Illuminate\Database\QueryException;
 use progression\domaine\entité\Sauvegarde;
+use progression\models\SauvegardeMdl;
 
 class SauvegardeDAO extends EntitéDAO
 {
@@ -28,22 +29,14 @@ class SauvegardeDAO extends EntitéDAO
 		$sauvegardes = [];
 
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT date_sauvegarde, langage, code type FROM sauvegarde WHERE username = ? AND question_uri = ?",
-			);
-			$query->bind_param("ss", $username, $question_uri);
-			$query->execute();
+			$data = SauvegardeMdl::where("username", $username)
+				->where("question_uri", $question_uri)
+				->get();
 
-			$date_sauvegarde = null;
-			$langage = null;
-			$code = null;
-			$query->bind_result($date_sauvegarde, $langage, $code);
-			while ($query->fetch()) {
-				$sauvegardes[$langage] = new Sauvegarde($date_sauvegarde, $code);
+			foreach ($data as $item) {
+				$sauvegardes[$item->langage] = $this->construire($item);
 			}
-
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 
@@ -52,34 +45,25 @@ class SauvegardeDAO extends EntitéDAO
 
 	public function get_sauvegarde($username, $question_uri, $langage)
 	{
-		$sauvegarde = null;
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				'SELECT
-					sauvegarde.date_sauvegarde,
-					sauvegarde.code
-				FROM sauvegarde
-				WHERE username = ? 
-				AND question_uri = ?
-				AND langage = ?',
+			return $this->construire(
+				SauvegardeMdl::where("username", $username)
+					->where("question_uri", $question_uri)
+					->where("langage", $langage)
+					->first(),
 			);
-			$query->bind_param("sss", $username, $question_uri, $langage);
-			$query->execute();
-
-			$code = null;
-			$date_sauvegarde = null;
-			$query->bind_result($date_sauvegarde, $code);
-
-			if ($query->fetch()) {
-				$sauvegarde = new Sauvegarde($date_sauvegarde, $code);
-			}
-
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
+	}
 
-		return $sauvegarde;
+	private function construire($data)
+	{
+		if ($data == null) {
+			return null;
+		}
+
+		return new Sauvegarde($data->date_sauvegarde, $data->code);
 	}
 
 	public function save($username, $question_uri, $langage, $sauvegarde)
