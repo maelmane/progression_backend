@@ -124,49 +124,44 @@ class AuthServiceProvider extends ServiceProvider
 		$autorisé = false;
 		$ressourcesDécodées = json_decode($token->ressources, true);
 
-		foreach ($ressourcesDécodées as $ressource) {
-			$urlAutorisé = $ressource["url"];
-			$méthodeAutorisée = $ressource["method"];
-			$positionWildcard = strpos($urlAutorisé, "*");
-
-			if ($urlAutorisé === "*") {
-				$autorisé = true;
-			} elseif ($positionWildcard === false && $request->path() === $urlAutorisé) {
-				$autorisé = true;
-			} elseif ($positionWildcard === strlen($urlAutorisé) - 1) {
-				$urlDemandéTronqué = substr($request->path(), 0, $positionWildcard - 1);
-				if ($urlDemandéTronqué === substr($urlAutorisé, 0, $positionWildcard - 1)) {
+		if ($ressourcesDécodées) {
+			foreach ($ressourcesDécodées as $ressource) {
+				if (
+					$this->vérifierUrlAutorisé($ressource["url"], $request->path()) &&
+					$this->vérifierMéthodeAutorisée($ressource["method"], $request->method())
+				) {
 					$autorisé = true;
 				}
-			} elseif ($positionWildcard < strlen($urlAutorisé) - 1) {
-				$élémentsUrlAutorisé = explode("/", $urlAutorisé);
-				$élémentsUrlDemandé = explode("/", $request->path());
-
-				if (count($élémentsUrlAutorisé) !== count($élémentsUrlDemandé)) {
-					$autorisé = false;
-				} else {
-					$autorisé = true;
-					for ($i = 0; $i < count($élémentsUrlAutorisé); $i++) {
-						if ($élémentsUrlAutorisé[$i] !== "*") {
-							if ($élémentsUrlAutorisé[$i] !== $élémentsUrlDemandé[$i]) {
-								$autorisé = false;
-							}
-						}
-					}
-				}
 			}
+		}
+		return $autorisé;
+	}
 
-			if ($autorisé && $méthodeAutorisée != "*") {
-				if ($méthodeAutorisée != $request->method()) {
-					$autorisé = false;
-				}
-			}
+	private function vérifierUrlAutorisé($urlAutorisé, $urlDemandé)
+	{
+		$élémentsUrlAutorisé = explode("/", $urlAutorisé);
+		$élémentsUrlDemandé = explode("/", $urlDemandé);
 
-			if ($autorisé) {
-				return true;
+		for ($i = 0; $i < count($élémentsUrlAutorisé); $i++) {
+			if ($élémentsUrlAutorisé[$i] === "**") {
+				$élémentsUrlDemandé = array_slice($élémentsUrlDemandé, 0, $i + 1);
+				$élémentsUrlDemandé[$i] = "**";
+			} elseif ($élémentsUrlAutorisé[$i] === "*" && $élémentsUrlDemandé[$i]) {
+				$élémentsUrlDemandé[$i] = "*";
 			}
 		}
 
-		return false;
+		return $élémentsUrlAutorisé === $élémentsUrlDemandé;
+	}
+
+	private function vérifierMéthodeAutorisée($méthodeAutorisée, $méthodeDemandée)
+	{
+		if ($méthodeAutorisée === "*") {
+			return true;
+		} elseif (strtolower($méthodeAutorisée) === strtolower($méthodeDemandée)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
