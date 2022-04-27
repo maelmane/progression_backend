@@ -23,6 +23,7 @@ class Tentative
 	public $date_soumission;
 	public $réussi;
 	public $feedback;
+	public $temps_exécution;
 	public $commentaires;
 
 	public function __construct($date_soumission = null, $réussi = false, $feedback = null, $commentaires = [])

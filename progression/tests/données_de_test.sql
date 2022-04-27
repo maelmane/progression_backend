@@ -87,7 +87,8 @@ INSERT INTO reponse_prog VALUES (
   "python",
   "print(\"Tourlou le monde!\")",
   0,
-  2
+  2,
+  3456
 );
 
 INSERT INTO reponse_prog VALUES (
@@ -97,7 +98,8 @@ INSERT INTO reponse_prog VALUES (
   "python",
   "print(\"Allo le monde!\")",
   0,
-  3
+  3,
+  34567
 );
 
 INSERT INTO reponse_prog VALUES (
@@ -107,7 +109,8 @@ INSERT INTO reponse_prog VALUES (
   "python",
   "print(\"Allo tout le monde!\")",
   1,
-  4
+  4,
+  345633
 );
 
 INSERT INTO commentaire VALUES(

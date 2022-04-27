@@ -32,11 +32,11 @@ class TentativeProgDAO extends TentativeDAO
 				'SELECT reponse_prog.langage,
 				reponse_prog.code,
 				reponse_prog.date_soumission,
-                reponse_prog.reussi,
-                reponse_prog.tests_reussis
-			 FROM reponse_prog
-			 WHERE username = ? 
-			 AND question_uri = ?',
+				reponse_prog.reussi,
+				reponse_prog.tests_reussis
+				FROM reponse_prog
+				WHERE username = ? 
+				AND question_uri = ?',
 			);
 			$query->bind_param("ss", $username, $question_uri);
 			$query->execute();
@@ -69,12 +69,13 @@ class TentativeProgDAO extends TentativeDAO
 				'SELECT reponse_prog.langage,
 				reponse_prog.code,
 				reponse_prog.date_soumission,
-                reponse_prog.reussi,
-                reponse_prog.tests_reussis
-			 FROM reponse_prog
-			 WHERE username = ? 
-             AND question_uri = ?
-             AND date_soumission = ?',
+				reponse_prog.reussi,
+				reponse_prog.tests_reussis,
+				reponse_prog.temps_exécution
+				FROM reponse_prog
+				WHERE username = ? 
+				AND question_uri = ?
+				AND date_soumission = ?',
 			);
 			$query->bind_param("ssi", $username, $question_uri, $timestamp);
 			$query->execute();
@@ -84,10 +85,18 @@ class TentativeProgDAO extends TentativeDAO
 			$date_soumission = null;
 			$réussi = false;
 			$tests_réussis = 0;
-			$query->bind_result($langage, $code, $date_soumission, $réussi, $tests_réussis);
+			$temps_exécution = null;
+			$query->bind_result($langage, $code, $date_soumission, $réussi, $tests_réussis, $temps_exécution);
 
 			if ($query->fetch()) {
-				$tentative = new TentativeProg($langage, $code, $date_soumission, $réussi, $tests_réussis);
+				$tentative = new TentativeProg(
+					$langage,
+					$code,
+					$date_soumission,
+					$réussi,
+					$tests_réussis,
+					$temps_exécution,
+				);
 			}
 
 			$query->close();
@@ -102,10 +111,10 @@ class TentativeProgDAO extends TentativeDAO
 	{
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO reponse_prog ( question_uri, username, langage, code, date_soumission, reussi, tests_reussis ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",
+				"INSERT INTO reponse_prog ( question_uri, username, langage, code, date_soumission, reussi, tests_reussis, temps_exécution ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )",
 			);
 			$query->bind_param(
-				"ssssiii",
+				"ssssiiii",
 				$question_uri,
 				$username,
 				$objet->langage,
@@ -113,6 +122,7 @@ class TentativeProgDAO extends TentativeDAO
 				$objet->date_soumission,
 				$objet->réussi,
 				$objet->tests_réussis,
+				$objet->temps_exécution,
 			);
 			$query->execute();
 			$query->close();

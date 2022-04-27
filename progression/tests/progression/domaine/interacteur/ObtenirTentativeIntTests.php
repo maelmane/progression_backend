@@ -20,6 +20,7 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\TentativeProg;
 use progression\domaine\entité\Commentaire;
+use progression\domaine\entité\RésultatProg;
 use progression\dao\DAOFactory;
 use progression\dao\tentative\TentativeDAO;
 use PHPUnit\Framework\TestCase;

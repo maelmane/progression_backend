@@ -24,12 +24,19 @@ class RésultatProg
 	public $sortie_erreur;
 	public $résultat;
 	public $feedback;
+	public $temps_exécution;
 
-	public function __construct($sortie_observée, $sortie_erreur, $résultat = false, $feedback = null)
-	{
+	public function __construct(
+		$sortie_observée,
+		$sortie_erreur,
+		$résultat = false,
+		$feedback = null,
+		$temps_exécution = null
+	) {
 		$this->résultat = $résultat;
 		$this->feedback = $feedback;
 		$this->sortie_observée = $sortie_observée;
 		$this->sortie_erreur = $sortie_erreur;
+		$this->temps_exécution = $temps_exécution;
 	}
 }
