@@ -44,7 +44,7 @@ $router->group(["middleware" => "auth"], function () use ($router) {
 
 $router->group(["middleware" => ["auth", "validationPermissions"]], function () use ($router) {
 	// User
-	$router->get("/user[/{username}]", "UserCtl@get");
+	$router->get("/user/{username}", "UserCtl@get");
 	$router->get("/user/{username}/relationships/avancements", "NotImplementedCtl@get");
 	$router->get("/user/{username}/avancements", "NotImplementedCtl@get");
 	// Clé

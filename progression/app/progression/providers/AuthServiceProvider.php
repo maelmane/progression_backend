@@ -61,7 +61,6 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 		Gate::define("acces-utilisateur", function ($user, $request) {
-			$autorisé = false;
 			$token = trim(str_ireplace("bearer", "", $request->header("Authorization")));
 			$tokenDécodé = $this->décoderToken($token, $request);
 
@@ -70,16 +69,10 @@ class AuthServiceProvider extends ServiceProvider
 				$this->vérifierRessourceAutorisée($tokenDécodé, $request) &&
 				$user->username == $request->username
 			) {
-				$autorisé = true;
-			} elseif (
-				$tokenDécodé &&
-				$this->vérifierRessourceAutorisée($tokenDécodé, $request) &&
-				$request->path() == "user"
-			) {
-				$autorisé = true;
+				return true;
 			}
 
-			return $autorisé;
+			return false;
 		});
 
 		Gate::define("acces-ressource", function ($user, $request) {
