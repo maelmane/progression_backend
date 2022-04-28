@@ -33,6 +33,7 @@ class RésultatProgTransformer extends Fractal\TransformerAbstract
 			"sortie_erreur" => $réponse->sortie_erreur,
 			"résultat" => $réponse->résultat,
 			"feedback" => $réponse->feedback,
+			"temps_exec" => $réponse->temps_exécution,
 			"links" => (isset($réponse->links) ? $réponse->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}resultat/{$réponse->id}",
 			],

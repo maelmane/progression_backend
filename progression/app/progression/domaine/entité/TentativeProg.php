@@ -24,6 +24,7 @@ class TentativeProg extends Tentative
 	public $code;
 	public $tests_réussis;
 	public $résultats;
+	public $temps_exécution;
 
 	public function __construct(
 		$langage,
@@ -31,13 +32,16 @@ class TentativeProg extends Tentative
 		$date_soumission = null,
 		$réussi = false,
 		$tests_réussis = 0,
+		$temps_exécution = null,
 		$feedback = null,
-		$résultats = []
+		$résultats = [],
+		$commentaires = []
 	) {
-		parent::__construct($date_soumission, $réussi, $feedback);
+		parent::__construct($date_soumission, $réussi, $feedback, $commentaires);
 		$this->langage = $langage;
 		$this->code = $code;
 		$this->tests_réussis = $tests_réussis;
+		$this->temps_exécution = $temps_exécution;
 		$this->résultats = $résultats;
 	}
 }

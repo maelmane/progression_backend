@@ -56,7 +56,10 @@ final class SoumettreTentativeProgIntTests extends TestCase
 
 		// Mock exécuteur
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
-		$mockExécuteur->shouldReceive("exécuter")->andReturn([["output" => "Patate poil!", "errors" => ""]]);
+		$mockExécuteur->shouldReceive("exécuter")->andReturn([
+			"temps_exec" => 0.122,
+			"résultats" => [["output" => "Patate poil!", "errors" => "", "time" => 0.1]],
+		]);
 
 		// Mock DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -115,10 +118,11 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			1615696286,
 			false,
 			0,
+			122,
 			"feedbackGénéralNégatif",
 		);
 
-		$résultat_attendu->résultats = [new RésultatProg("Patate poil!", "", false, "feedbackNégatif")];
+		$résultat_attendu->résultats = [new RésultatProg("Patate poil!", "", false, "feedbackNégatif", 100)];
 
 		// Assertion
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
