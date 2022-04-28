@@ -16,7 +16,7 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use progression\TestCase;
+use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
@@ -24,9 +24,10 @@ use progression\domaine\entité\{Avancement, Test, Exécutable, Question, Tentat
 
 use Illuminate\Auth\GenericUser;
 
-final class TentativeCtlTests extends TestCase
+final class TentativeCtlTests extends ContrôleurTestCase
 {
 	public $user;
+	public $headers;
 
 	public function setUp(): void
 	{

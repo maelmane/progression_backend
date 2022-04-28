@@ -31,9 +31,6 @@ class LoginCtl extends Contrôleur
 		Log::debug("LoginCtl.login. Params : ", $request->all());
 		Log::info("{$request->ip()} - Tentative de login : {$request->input("username")}");
 
-		$user = null;
-		$token = null;
-
 		$erreurs = $this->valider_paramètres($request);
 		if ($erreurs) {
 			$réponse = $this->réponse_json(["erreur" => $erreurs], 400);
@@ -102,7 +99,8 @@ class LoginCtl extends Contrôleur
 	{
 		Log::debug("LoginCtl.générer_token. Params : ", [$user]);
 
-		$token = GénérateurDeToken::get_instance()->générer_token($user);
+		$expirationToken = time() + $_ENV["JWT_TTL"];
+		$token = GénérateurDeToken::get_instance()->générer_token($user->username, $expirationToken);
 
 		Log::debug("LoginCtl.générer_token. Retour : ", [$token]);
 		return $token;
