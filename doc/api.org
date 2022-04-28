@@ -172,7 +172,7 @@ Tentative
 | sous-type       | str  | tentativeProg                                              |
 |                 |      | tentativeSys                                               |
 |                 |      | tentativeBD                                                |
-| réussi          | bool | vrai ssi la tentative a correctement répondu à la question  |
+| réussi          | bool | vrai ssi la tentative a correctement répondu à la question |
 
 ** Tentative (sous-type tentativeProg)
 
