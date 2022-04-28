@@ -121,7 +121,6 @@ class AuthServiceProvider extends ServiceProvider
 
 	private function vérifierRessourceAutorisée($token, $request)
 	{
-		$autorisé = false;
 		$ressourcesDécodées = json_decode($token->ressources, true);
 
 		if ($ressourcesDécodées) {
@@ -129,13 +128,13 @@ class AuthServiceProvider extends ServiceProvider
 				if (
 					strlen($ressource["url"]) > 0 &&
 					strlen($ressource["method"]) > 0 &&
-					preg_match($ressource["url"], $request->path()) &&
-					preg_match($ressource["method"], $request->method())
+					preg_match("#".$ressource["url"]."#", $request->path()) &&
+					preg_match("#".$ressource["method"]."#i", $request->method())
 				) {
-					$autorisé = true;
-				}
+					return true;
+				} 
 			}
 		}
-		return $autorisé;
+		return false;
 	}
 }
