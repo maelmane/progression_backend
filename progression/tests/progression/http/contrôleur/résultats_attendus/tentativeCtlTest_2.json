@@ -9,7 +9,8 @@
 			"sous-type": "tentativeProg",
 			"langage": "python",
 			"code": "codeTest",
-			"tests_réussis": 2
+			"tests_réussis": 2,
+			"temps_exécution": 5
 		},
 		"links": {
 			"self": "https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490"

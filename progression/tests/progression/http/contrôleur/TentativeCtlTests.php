@@ -42,6 +42,7 @@ final class TentativeCtlTests extends TestCase
 		$tentative->tests_réussis = 2;
 		$tentative->réussi = true;
 		$tentative->feedback = "feedbackTest";
+		$tentative->temps_exécution = 5;
 
 		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
 
@@ -94,7 +95,10 @@ final class TentativeCtlTests extends TestCase
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "python";
 			})
-			->andReturn([["output" => "Bonjour\nAllo\n", "errors" => ""]]);
+			->andReturn([
+				"temps_exec" => 0.551,
+				"résultats" => [["output" => "Bonjour\nAllo\n", "errors" => "", "time" => 0.03]],
+			]);
 		$mockExécuteur
 			->shouldReceive("exécuter")
 			->withArgs(function ($exec, $test) {
@@ -218,5 +222,32 @@ final class TentativeCtlTests extends TestCase
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Requête intraitable."}', $résultat_obtenu->getContent());
+	}
+
+	public function test_étant_donné_une_tentative_ayant_du_code_dépassant_la_taille_maximale_de_caractères_on_obtient_une_erreur_413()
+	{
+		$_ENV["TAILLE_CODE_MAX"] = 23;
+		$testCode = "#+TODO\n日本語でのテストです\n#-TODO";
+
+		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/avancement/jdoe/une_question/tentatives", [
+			"langage" => "python",
+			"code" => "$testCode",
+		]);
+
+		$this->assertEquals(413, $résultat_obtenu->status());
+		$this->assertEquals('{"erreur":"Le code soumis 24 > 23 caractères."}', $résultat_obtenu->getContent());
+	}
+
+	public function test_étant_donné_une_tentative_ayant_exactement_la_taille_maximale_de_caractères_on_obtient_un_code_200()
+	{
+		$_ENV["TAILLE_CODE_MAX"] = 24;
+		$testCode = "#+TODO\n日本語でのテストです\n#-TODO";
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
+			["langage" => "python", "code" => "$testCode"],
+		);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
 	}
 }

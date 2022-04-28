@@ -17,7 +17,6 @@
 */
 
 namespace progression\domaine\interacteur;
-
 class SoumettreTentativeProgInt extends Interacteur
 {
 	public function soumettre_tentative($username, $question, $tentative)
@@ -29,7 +28,9 @@ class SoumettreTentativeProgInt extends Interacteur
 
 		if ($exécutable) {
 			$exécuterProgInt = new ExécuterProgInt();
-			$tentative->résultats = $exécuterProgInt->exécuter($exécutable, $question->tests);
+			$réponseExécution = $exécuterProgInt->exécuter($exécutable, $question->tests);
+			$tentative->temps_exécution = $réponseExécution["temps_exécution"];
+			$tentative->résultats = $réponseExécution["résultats"];
 
 			$traiterTentativeProgInt = new TraiterTentativeProgInt();
 			$tentativeTraité = $traiterTentativeProgInt->traiter_résultats($question, $tentative);
