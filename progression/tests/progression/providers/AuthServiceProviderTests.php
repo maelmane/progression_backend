@@ -275,7 +275,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 
 	public function test_étant_donné_un_token_ressource_avec_un_regex_supplémentaire_à_la_fin_de_lurl_lorsque_quon_effectue_une_requête_pour_une_ressource_autoriée_on_obtient_501()
 	{
-		$ressources = json_encode([["url" => "/user\/autre_utilisateur\/(.*)/", "method" => "/get/i"]]);
+		$ressources = json_encode([["url" => "/user\/autre_utilisateur/", "method" => "/get/i"]]);
 		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
 
 		$this->call(
