@@ -120,11 +120,11 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertResponseStatus(200);
 	}
 
-	public function test_étant_donné_un_token_pour_un_utilisateur_lambda_lorsquon_effectue_une_requête_pour_accéder_aux_ressources_dun_utilisateur_innocent_on_obtient_une_erreur_403()
+	public function test_étant_donné_un_token_pour_un_utilisateur_lambda_lorsquon_effectue_une_requête_pour_accéder_aux_ressources_dun_autre_utilisateur_on_obtient_une_erreur_403()
 	{
 		$résultatObtenu = $this->call(
 			"GET",
-			"/user/utilisateur_innocent",
+			"/user/autre_utilisateur",
 			[],
 			[],
 			[],
@@ -309,9 +309,9 @@ final class AuthServiceProviderCtlTests extends TestCase
 
 	public function test_étant_donné_un_token_expiré_et_un_token_ressource_valide_lorsquon_effectue_une_requête_on_obtient_401()
 	{
+		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", time() - 1, $ressources);
 		$ressources = json_encode([["url" => "/^user\/autre_utilisateur$/", "method" => "/get/i"]]);
 		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
-		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", time() - 1, $ressources);
 
 		$this->call(
 			"GET",
@@ -327,8 +327,6 @@ final class AuthServiceProviderCtlTests extends TestCase
 
 	public function test_étant_donné_un_token_avec_une_mauvaise_signature_et_un_token_ressource_valide_lorsquon_effectue_une_requête_on_obtient_401()
 	{
-		$ressources = json_encode([["url" => "/^user\/autre_utilisateur$/", "method" => "/get/i"]]);
-		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
 		$payload = [
 			"username" => "utilisateur_lambda",
 			"current" => time(),
@@ -337,6 +335,9 @@ final class AuthServiceProviderCtlTests extends TestCase
 			"version" => 1,
 		];
 		$token = JWT::encode($payload, "mauvais_secret", "HS256");
+
+		$ressources = json_encode([["url" => "/^user\/autre_utilisateur$/", "method" => "/get/i"]]);
+		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
 
 		$this->call(
 			"GET",
@@ -350,7 +351,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertResponseStatus(401);
 	}
 
-	public function test_étant_donné_un_token_valide_et_un_token_ressource_expiré_lorsquon_effectue_une_requête_on_obtient_403()
+	public function test_étant_donné_un_token_valide_et_un_token_ressource_expiré_lorsquon_requiert_une_ressource_dun_autre_utilisateur_on_obtient_403()
 	{
 		$ressources = json_encode([["url" => "/^user\/autre_utilisateur$/", "method" => "/get/i"]]);
 		$tokenRessource = GénérateurDeToken::get_instance()->générer_token(
@@ -371,7 +372,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertResponseStatus(403);
 	}
 
-	public function test_étant_donné_un_token_valide_et_un_token_ressource_avec_une_mauvaise_signature_lorsquon_effectue_une_requête_on_obtient_403()
+	public function test_étant_donné_un_token_valide_et_un_token_ressource_avec_une_mauvaise_signature_lorsquon_requiert_une_ressource_dun_autre_utilisateur_on_obtient_403()
 	{
 		$ressources = json_encode([["url" => "/^user\/autre_utilisateur$/", "method" => "/get/i"]]);
 		$payload = [
@@ -395,7 +396,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertResponseStatus(403);
 	}
 
-	public function test_étant_donné_un_token_valide_et_un_token_ressource_mal_formaté_sans_ressources_lorsquon_effectue_une_requête_on_obtient_403()
+	public function test_étant_donné_un_token_valide_et_un_token_ressource_mal_formaté_sans_ressources_lorsquon_requiert_une_ressource_dun_autre_utilisateur_on_obtient_403()
 	{
 		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, null);
 
@@ -411,7 +412,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertResponseStatus(403);
 	}
 
-	public function test_étant_donné_un_token_valide_et_un_token_ressource_mal_formaté_sans_url_lorsquon_effectue_une_requête_on_obtient_403()
+	public function test_étant_donné_un_token_valide_et_un_token_ressource_mal_formaté_sans_url_lorsquon_requiert_une_ressource_dun_autre_utilisateur_on_obtient_403()
 	{
 		$ressources = json_encode([["url" => "", "method" => "/.*/"]]);
 		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
@@ -428,7 +429,7 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertResponseStatus(403);
 	}
 
-	public function test_étant_donné_un_token_valide_et_un_token_ressource_mal_formaté_sans_méthode_lorsquon_effectue_une_requête_on_obtient_403()
+	public function test_étant_donné_un_token_valide_et_un_token_ressource_mal_formaté_sans_méthode_lorsquon_requiert_une_ressource_dun_autre_utilisateur_on_obtient_403()
 	{
 		$ressources = json_encode([["url" => "/.*/", "method" => ""]]);
 		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
