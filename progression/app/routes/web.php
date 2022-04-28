@@ -44,7 +44,7 @@ $router->group(["middleware" => "auth"], function () use ($router) {
 
 $router->group(["middleware" => ["auth", "validationPermissions"]], function () use ($router) {
 	// User
-	$router->get("/user[/{username}]", "UserCtl@get");
+	$router->get("/user/{username}", "UserCtl@get");
 	$router->get("/user/{username}/relationships/avancements", "NotImplementedCtl@get");
 	$router->get("/user/{username}/avancements", "NotImplementedCtl@get");
 	// Clé
@@ -75,4 +75,6 @@ $router->group(["middleware" => ["auth", "validationPermissions"]], function () 
 	$router->get("/tentative/{username}/{question_uri}/{timestamp:[[:digit:]]{10}}/resultats", "NotImplementedCtl@get");
 	// Résultat
 	$router->post("/test/{username}/{question_uri}/{numero:[[:digit:]]+}", "NotImplementedCtl@get");
+	// Token
+	$router->post("/token/{username}/", "TokenCtl@post");
 });

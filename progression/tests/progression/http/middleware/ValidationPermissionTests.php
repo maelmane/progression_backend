@@ -18,14 +18,15 @@
 
 use progression\TestCase;
 
-use progression\http\middleware\ValidationPermissions;
 use progression\domaine\entité\User;
-use progression\dao\{DAOFactory, UserDAO};
+use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
+use progression\http\contrôleur\GénérateurDeToken;
 
 final class ValidationPermissionsTests extends TestCase
 {
 	public $user;
+	public $headers;
 
 	public function setup(): void
 	{
@@ -33,6 +34,8 @@ final class ValidationPermissionsTests extends TestCase
 
 		$_ENV["AUTH_TYPE"] = "ldap";
 		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
+		$token = GénérateurDeToken::get_instance()->générer_token("bob");
+		$this->headers = ["HTTP_Authorization" => "Bearer " . $token];
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -59,7 +62,7 @@ final class ValidationPermissionsTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_normal_bob_connecté_lorsquon_demande_une_ressource_pour_ce_même_utilisateur_on_obtient_OK()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/bob");
+		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/bob", [], [], [], $this->headers);
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/profil_bob.json",
@@ -69,7 +72,7 @@ final class ValidationPermissionsTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_normal_bob_connecté_lorsquon_demande_une_ressource_pour_l_utilisateur_jdoe_on_obtient_erreur_403()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe");
+		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe", [], [], [], $this->headers);
 
 		$this->assertEquals(403, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Opération interdite."}', $résultat_obtenu->getContent());
@@ -79,16 +82,6 @@ final class ValidationPermissionsTests extends TestCase
 	{
 		$admin = new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]);
 		$résultat_obtenu = $this->actingAs($admin)->call("GET", "/user/bob");
-
-		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/profil_bob.json",
-			$résultat_obtenu->getContent(),
-		);
-	}
-
-	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquon_demande_une_ressource_pour_null_on_obtient_son_propre_profil()
-	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/");
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/profil_bob.json",

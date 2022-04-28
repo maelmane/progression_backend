@@ -19,7 +19,6 @@
 namespace progression\http\contrôleur;
 
 use Firebase\JWT\JWT;
-use Illuminate\Support\Facades\Log;
 
 class GénérateurDeToken
 {
@@ -38,24 +37,23 @@ class GénérateurDeToken
 		return GénérateurDeToken::$instance;
 	}
 
-	static function set_instance(GénérateurDeToken $générateur)
+	static function set_instance(?GénérateurDeToken $générateur)
 	{
 		GénérateurDeToken::$instance = $générateur;
 	}
 
-	function générer_token($user)
+	function générer_token($username, $expiration = 0, $ressources = '[{"url":".*","method":".*"}]')
 	{
-		Log::debug("InscriptionCtl.générer_token. Params : ", [$user]);
-
 		$payload = [
-			"username" => $user->username,
+			"username" => $username,
 			"current" => time(),
-			"expired" => time() + $_ENV["JWT_TTL"],
+			"expired" => $expiration,
+			"ressources" => $ressources,
+			"version" => 1,
 		];
 
-		$réponse = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
+		$token = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
 
-		Log::debug("InscriptionCtl.générer_token. Retour : ", [$réponse]);
-		return $réponse;
+		return $token;
 	}
 }

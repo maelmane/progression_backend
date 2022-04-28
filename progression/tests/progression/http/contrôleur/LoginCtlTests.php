@@ -16,16 +16,14 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use progression\TestCase;
+use progression\ContrôleurTestCase;
 
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\{User, Clé};
 use progression\dao\DAOFactory;
-use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
-use Firebase\JWT\JWT;
 
-final class LoginCtlTests extends TestCase
+final class LoginCtlTests extends ContrôleurTestCase
 {
 	public $user;
 
@@ -75,7 +73,7 @@ final class LoginCtlTests extends TestCase
 				{
 				}
 
-				function générer_token($user)
+				function générer_token($user, $ressources = null, $expiration = 0)
 				{
 					return "token valide";
 				}
@@ -86,6 +84,7 @@ final class LoginCtlTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		GénérateurDeToken::set_instance(null);
 	}
 
 	#  AUTH LDAP
@@ -313,23 +312,4 @@ final class LoginCtlTests extends TestCase
 			$résultat_observé->content(),
 		);
 	}
-
-	//Intestable tant que la connexion à LDAP se fera à même l'interacteur
-	/*
-	   public function test_étant_donné_lutilisateur_inexistant_roger_et_une_authentification_de_type_no_lorsquon_appelle_login_on_obtient_un_code_403()
-	   {
-	   $_ENV['AUTH_TYPE'] = "ldap";
-	   $_ENV['JWT_SECRET'] = "secret";
-	   $_ENV['JWT_TTL'] = 3333;
-
-	   $résultat_observé = $this->actingAs($this->user)->call(
-	   "POST",
-	   "/auth",
-	   ["username"=>"marcel", "password"=>"test"]
-	   );
-	   
-	   $this->assertEquals(403, $résultat_observé->status());
-	   $this->assertEquals('{"erreur":"Accès refusé."}', $résultat_observé->getContent());
-	   }
-	 */
 }

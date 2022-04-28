@@ -15,20 +15,21 @@
 	 You should have received a copy of the GNU General Public License
 	 along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
-use progression\TestCase;
+
+use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{Question, TentativeProg, Commentaire, QuestionProg, User};
+use progression\domaine\entité\{Commentaire, User};
 use Illuminate\Auth\GenericUser;
-use Illuminate\Support\Facades\Log;
 
-final class CommentaireCtlTests extends TestCase
+final class CommentaireCtlTests extends ContrôleurTestCase
 {
 	public $user;
 
 	public function setup(): void
 	{
 		parent::setUp();
+
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
@@ -70,7 +71,7 @@ final class CommentaireCtlTests extends TestCase
 		DAOFactory::setInstance(null);
 	}
 
-	public function test_étant_donné_le_username_dun_utilisateurr_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_on_obtient_le_commentaire_avec_ses_relations_sous_forme_json()
+	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_on_obtient_le_commentaire_avec_ses_relations_sous_forme_json()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",

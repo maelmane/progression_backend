@@ -16,30 +16,22 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\http\middleware;
+namespace progression;
 
-use Closure;
-use Illuminate\Support\Facades\Gate;
+use progression\TestCase;
 
-class ValidationPermissions
+class ContrôleurTestCase extends TestCase
 {
-	public function handle($request, Closure $next)
+	public function setUp(): void
 	{
-		if (
-			Gate::allows("acces-utilisateur", $request) ||
-			($request->input("tkres") && Gate::allows("acces-ressource", $request))
-		) {
-			return $next($request);
-		} else {
-			return response()->json(
-				["erreur" => "Opération interdite."],
-				403,
-				[
-					"ContentType" => "application/vnd.api+json",
-					"Charset" => "utf8",
-				],
-				JSON_UNESCAPED_UNICODE,
-			);
-		}
+		parent::setUp();
+
+		\Gate::define("acces-ressource", function () {
+			return true;
+		});
+
+		\Gate::define("acces-utilisateur", function () {
+			return true;
+		});
 	}
 }

@@ -37,9 +37,6 @@ class InscriptionCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => "Inscription locale non supportée."], 403);
 		}
 
-		$user = null;
-		$token = null;
-
 		$erreurs = $this->valider_paramètres($request);
 		if ($erreurs) {
 			$réponse = $this->réponse_json(["erreur" => $erreurs], 400);
@@ -79,7 +76,8 @@ class InscriptionCtl extends Contrôleur
 					$request->input("username"),
 			);
 
-			$token = GénérateurDeToken::get_instance()->générer_token($user);
+			$expirationToken = time() + $_ENV["JWT_TTL"];
+			$token = GénérateurDeToken::get_instance()->générer_token($user->username, $expirationToken);
 			$réponse = $this->préparer_réponse(["Token" => $token]);
 		} else {
 			Log::notice(

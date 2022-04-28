@@ -23,11 +23,10 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\ObtenirAvancementInt;
-use progression\domaine\interacteur\ObtenirUserInt;
 use progression\domaine\interacteur\SauvegarderAvancementInt;
 use progression\http\transformer\AvancementTransformer;
 use progression\util\Encodage;
-use progression\domaine\entité\{User, Avancement, Question};
+use progression\domaine\entité\Avancement;
 
 class AvancementCtl extends Contrôleur
 {
@@ -50,8 +49,6 @@ class AvancementCtl extends Contrôleur
 
 		if ($validateur->fails()) {
 			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
-		} elseif ($request->avancement && !$this->valider_permissions()) {
-			$réponse = $this->réponse_json(["erreur" => "Opération interdite."], 403);
 		} else {
 			$avancement = $request->avancement;
 
@@ -126,11 +123,6 @@ class AvancementCtl extends Contrôleur
 		);
 
 		return $validateur;
-	}
-
-	private function valider_permissions()
-	{
-		return Gate::allows("update-avancement");
 	}
 
 	private function obtenir_avancement($username, $question_uri)
