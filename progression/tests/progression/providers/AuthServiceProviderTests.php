@@ -229,9 +229,7 @@ final class AuthServiceProviderTests extends TestCase
 	{
 		$tokenUtilisateurMalveillant = GénérateurDeToken::get_instance()->générer_token("utilisateur_malveillant");
 
-		$ressourcesUtilisateurInnocent = json_encode([
-			["url" => "^user\/utilisateur_innocent$", "method" => "post"],
-		]);
+		$ressourcesUtilisateurInnocent = json_encode([["url" => "^user\/utilisateur_innocent$", "method" => "post"]]);
 
 		$responseTokenCtl = $this->call(
 			"POST",
