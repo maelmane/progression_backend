@@ -256,9 +256,26 @@ final class AuthServiceProviderCtlTests extends TestCase
 		$this->assertResponseStatus(403);
 	}
 
-	public function test_étant_donné_un_token_ressource_qui_donne_uniquement_access_à_un_sous_ensemble_de_ressources_lorsque_quon_effectue_une_requête_pour_une_ressource_autoriée_on_obtient_501()
+	public function test_étant_donné_un_token_ressource_avec_un_regex_supplémentaire_à_lintérieur_de_lurl_lorsque_quon_effectue_une_requête_pour_une_ressource_autoriée_on_obtient_501()
 	{
 		$ressources = json_encode([["url" => "/user\/([^\/]*)\/avancements/", "method" => "/get/i"]]);
+		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
+
+		$this->call(
+			"GET",
+			"/user/autre_utilisateur/avancements",
+			["tkres" => $tokenRessource],
+			[],
+			[],
+			["HTTP_Authorization" => "Bearer " . $this->token],
+		);
+		//Utilisé avec 501 parce que c'est uniquement ce que retourne le contrôleur utilisé pour ce test. 501 veut dire que le contrôleur a été atteint après que la requête ait été jugée valide par le Middleware.
+		$this->assertResponseStatus(501);
+	}
+
+	public function test_étant_donné_un_token_ressource_avec_un_regex_supplémentaire_à_la_fin_de_lurl_lorsque_quon_effectue_une_requête_pour_une_ressource_autoriée_on_obtient_501()
+	{
+		$ressources = json_encode([["url" => "/user\/autre_utilisateur\/(.*)/", "method" => "/get/i"]]);
 		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
 
 		$this->call(
