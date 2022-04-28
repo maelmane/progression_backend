@@ -149,6 +149,26 @@ final class AuthServiceProviderTests extends TestCase
 		$this->assertResponseStatus(200);
 	}
 
+	public function test_étant_donné_un_token_avec_un_url_lorsquon_effectue_une_requête_a_un_url_valide_mais_non_autorisée_on_obtient_un_code_403()
+	{
+		$ressources = json_encode([["url" => "/^user\/utilisateur_lambda$/", "method" => "/post/i"]]);
+		$tokenUtilisateurLambda = GénérateurDeToken::get_instance()->générer_token(
+			"utilisateur_lambda",
+			0,
+			$ressources,
+		);
+		$résultatObtenu = $this->call(
+			"POST",
+			"/user/utilisateur_lambda/cles",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "Bearer " . $tokenUtilisateurLambda],
+		);
+
+		$this->assertResponseStatus(403);
+	}
+
 	public function test_étant_donné_un_token_pour_un_utilisateur_lambda_lorsquon_effectue_une_requête_pour_accéder_aux_ressources_dun_autre_utilisateur_on_obtient_une_erreur_403()
 	{
 		$résultatObtenu = $this->call(
@@ -255,9 +275,9 @@ final class AuthServiceProviderTests extends TestCase
 
 	public function test_étant_donné_un_token_expiré_et_un_token_ressource_valide_lorsquon_effectue_une_requête_on_obtient_401()
 	{
+		$tokenUtilisateurLambda = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", time() - 1);
 		$ressources = json_encode([["url" => "/^user\/autre_utilisateur$/", "method" => "/get/i"]]);
 		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
-		$tokenUtilisateurLambda = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", time() - 1);
 
 		$this->call(
 			"GET",
@@ -273,13 +293,13 @@ final class AuthServiceProviderTests extends TestCase
 
 	public function test_étant_donné_un_token_valide_et_un_token_ressource_expiré_lorsquon_effectue_une_requête_pour_ses_propres_ressources_on_obtient_200()
 	{
+		$tokenUtilisateurLambda = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda");
 		$ressources = json_encode([["url" => "/^user\/autre_utilisateur$/", "method" => "/get/i"]]);
 		$tokenRessource = GénérateurDeToken::get_instance()->générer_token(
 			"autre_utilisateur",
 			time() - 1,
 			$ressources,
 		);
-		$tokenUtilisateurLambda = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda");
 
 		$this->call(
 			"GET",
