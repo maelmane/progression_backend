@@ -126,31 +126,16 @@ class AuthServiceProvider extends ServiceProvider
 
 		if ($ressourcesDécodées) {
 			foreach ($ressourcesDécodées as $ressource) {
-				print_r($ressource["url"]);
-				print_r($request->path());
-				$urlAutoriséPattern = $ressource["url"];
-				print_r(preg_match($urlAutoriséPattern, $request->path()));
 				if (
+					strlen($ressource["url"]) > 0 &&
+					strlen($ressource["method"]) > 0 &&
 					preg_match($ressource["url"], $request->path()) &&
-					$this->vérifierMéthodeAutorisée($ressource["method"], $request->method())
+					preg_match($ressource["method"], $request->method())
 				) {
 					$autorisé = true;
 				}
 			}
 		}
-		return $autorisé;
-	}
-
-	private function vérifierMéthodeAutorisée($méthodeAutorisée, $méthodeDemandée)
-	{
-		$autorisé = false;
-
-		if ($méthodeAutorisée === "*") {
-			$autorisé = true;
-		} elseif (strtolower($méthodeAutorisée) === strtolower($méthodeDemandée)) {
-			$autorisé = true;
-		}
-
 		return $autorisé;
 	}
 }
