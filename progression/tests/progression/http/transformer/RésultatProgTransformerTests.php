@@ -28,7 +28,7 @@ final class RésultatProgTransformerTests extends TestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 		$résultatProgTransformer = new RésultatProgTransformer();
 
-		$résultat = new RésultatProg("Bonjour\nBonjour\n", "", true, "Bon travail!");
+		$résultat = new RésultatProg("Bonjour\nBonjour\n", "", true, "Bon travail!", 15);
 		$résultat->numéro = 0;
 		$résultat->id =
 			"bob" .
@@ -43,6 +43,7 @@ final class RésultatProgTransformerTests extends TestCase
 			"sortie_erreur" => "",
 			"résultat" => true,
 			"feedback" => "Bon travail!",
+			"temps_exec" => 15,
 			"links" => [
 				"self" =>
 					"https://example.com/resultat/bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",

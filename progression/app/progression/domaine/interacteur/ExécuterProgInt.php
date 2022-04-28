@@ -27,17 +27,25 @@ class ExécuterProgInt extends Interacteur
 		$this->loguer_code($exécutable);
 
 		$comp_resp = $this->source_dao->get_exécuteur()->exécuter($exécutable, $tests);
-
 		if (!$comp_resp) {
 			return null;
 		}
+		$réponse = [];
+		$résultats = null;
 
-		$résultats = [];
-		foreach ($comp_resp as $réponse) {
-			$résultats[] = new RésultatProg($réponse["output"], $réponse["errors"]);
+		$réponse["temps_exécution"] = $comp_resp["temps_exec"] * 1000;
+
+		foreach ($comp_resp["résultats"] as $résultat) {
+			$résultats[] = new RésultatProg(
+				$résultat["output"],
+				$résultat["errors"],
+				false,
+				null,
+				$résultat["time"] * 1000,
+			);
 		}
-
-		return $résultats;
+		$réponse["résultats"] = $résultats;
+		return $réponse;
 	}
 
 	protected function loguer_code($exécutable)

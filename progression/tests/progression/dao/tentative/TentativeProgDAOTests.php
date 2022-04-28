@@ -37,8 +37,7 @@ final class TentativeProgDAOTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_non_réussie_lorsquon_récupère_la_tentative_on_obtient_une_tentative_de_type_prog()
 	{
-		$résultat_attendu = new TentativeProg("python", "print(\"Tourlou le monde!\")", 1615696276, false, 2);
-
+		$résultat_attendu = new TentativeProg("python", "print(\"Tourlou le monde!\")", 1615696276, false, 2, 3456);
 		$résultat_observé = (new TentativeDAO())->get_tentative(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
@@ -50,7 +49,7 @@ final class TentativeProgDAOTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_réussie_lorsquon_récupère_la_tentative_on_obtient_une_tentative_de_type_prog()
 	{
-		$résultat_attendu = new TentativeProg("python", "print(\"Allo tout le monde!\")", 1615696296, true, 4);
+		$résultat_attendu = new TentativeProg("python", "print(\"Allo tout le monde!\")", 1615696296, true, 4, 345633);
 
 		$résultat_observé = (new TentativeDAO())->get_tentative(
 			"bob",
@@ -78,10 +77,9 @@ final class TentativeProgDAOTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_lorsquon_sauvegarde_la_tentative_on_obtient_une_nouvelle_insertion_dans_la_table_reponse_prog()
 	{
-		$tentative_test = new TentativeProg("python", "testCode", 123456789, true, 2);
+		$tentative_test = new TentativeProg("python", "testCode", 123456789, true, 2, 1234);
 
-		$résultat_attendue = new TentativeProg("python", "testCode", 123456789, true, 2);
-
+		$résultat_attendue = new TentativeProg("python", "testCode", 123456789, true, 2, 1234);
 		$résultat_observé = (new TentativeDAO())->save("Stefany", "https://exemple.com", $tentative_test);
 		$this->assertEquals($résultat_attendue, $résultat_observé);
 

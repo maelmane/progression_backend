@@ -180,11 +180,12 @@ Une tentative de réponse à une question.
 
 *** Propriétés:
 
-| Nom           | Type | Valeurs             |
-|---------------+------+---------------------|
-| langage       | str  |                     |
-| code          | str  |                     |
-| tests_réussis | int  | nb de tests réussis |
+| Nom             | Type | Valeurs                 |
+|-----------------+------+-------------------------|
+| langage         | str  |                         |
+| code            | str  |                         |
+| tests_réussis   | int  | nb de tests réussis     |
+| temps_exécution | int  | temps d'exécution en ms |
 
 *** Relations :
 
@@ -216,12 +217,13 @@ username/question_uri/date_soumission/numéro
 
 *** Propriétés:
 
-| Nom             | Type | Valeurs   |
-|-----------------+------+-----------|
-| sortie_observée | str  |           |
-| sortie_erreur   | str  |           |
-| résultat        | bool |           |
-| feedback        | str  |           |
+| Nom             | Type | Valeurs                 |
+|-----------------+------+-------------------------|
+| sortie_observée | str  |                         |
+| sortie_erreur   | str  |                         |
+| résultat        | bool |                         |
+| feedback        | str  |                         |
+| temps_exécution | int  | temps d'exécution en ms |
 
 ** Commentaire
 

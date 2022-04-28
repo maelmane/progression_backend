@@ -27,7 +27,7 @@ final class TentativeTransformerTests extends TestCase
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$tentative = new TentativeProg("python", "codeTest", 1614711760, false, 2, "feedBackTest");
+		$tentative = new TentativeProg("python", "codeTest", 1614711760, false, 2, 34567, "feedBackTest");
 		$tentative->id =
 			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760";
 		$tentativeTransformer = new TentativeProgTransformer();
@@ -41,6 +41,7 @@ final class TentativeTransformerTests extends TestCase
 			"feedback" => "feedBackTest",
 			"langage" => "python",
 			"code" => "codeTest",
+			"temps_exécution" => 34567,
 			"links" => [
 				"self" =>
 					"https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",

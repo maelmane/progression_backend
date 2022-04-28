@@ -42,6 +42,7 @@ final class TentativeCtlTests extends TestCase
 		$tentative->tests_réussis = 2;
 		$tentative->réussi = true;
 		$tentative->feedback = "feedbackTest";
+		$tentative->temps_exécution = 5;
 
 		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
 
@@ -94,7 +95,10 @@ final class TentativeCtlTests extends TestCase
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "python";
 			})
-			->andReturn([["output" => "Bonjour\nAllo\n", "errors" => ""]]);
+			->andReturn([
+				"temps_exec" => 0.551,
+				"résultats" => [["output" => "Bonjour\nAllo\n", "errors" => "", "time" => 0.03]],
+			]);
 		$mockExécuteur
 			->shouldReceive("exécuter")
 			->withArgs(function ($exec, $test) {
