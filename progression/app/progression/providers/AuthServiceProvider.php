@@ -126,8 +126,12 @@ class AuthServiceProvider extends ServiceProvider
 
 		if ($ressourcesDécodées) {
 			foreach ($ressourcesDécodées as $ressource) {
+				print_r($ressource["url"]);
+				print_r($request->path());
+				$urlAutoriséPattern = $ressource["url"];
+				print_r(preg_match($urlAutoriséPattern, $request->path()));
 				if (
-					$this->vérifierUrlAutorisé($ressource["url"], $request->path()) &&
+					preg_match($ressource["url"], $request->path()) &&
 					$this->vérifierMéthodeAutorisée($ressource["method"], $request->method())
 				) {
 					$autorisé = true;
@@ -135,23 +139,6 @@ class AuthServiceProvider extends ServiceProvider
 			}
 		}
 		return $autorisé;
-	}
-
-	private function vérifierUrlAutorisé($urlAutorisé, $urlDemandé)
-	{
-		$élémentsUrlAutorisé = explode("/", $urlAutorisé);
-		$élémentsUrlDemandé = explode("/", $urlDemandé);
-
-		for ($i = 0; $i < count($élémentsUrlAutorisé); $i++) {
-			if ($élémentsUrlAutorisé[$i] === "**") {
-				$élémentsUrlDemandé = array_slice($élémentsUrlDemandé, 0, $i + 1);
-				$élémentsUrlDemandé[$i] = "**";
-			} elseif ($élémentsUrlAutorisé[$i] === "*" && $élémentsUrlDemandé[$i]) {
-				$élémentsUrlDemandé[$i] = "*";
-			}
-		}
-
-		return $élémentsUrlAutorisé === $élémentsUrlDemandé;
 	}
 
 	private function vérifierMéthodeAutorisée($méthodeAutorisée, $méthodeDemandée)
