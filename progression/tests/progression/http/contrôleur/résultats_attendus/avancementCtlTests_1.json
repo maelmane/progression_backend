@@ -2,7 +2,13 @@
 	"data": {
 		"type": "avancement",
 		"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-		"attributes": { "état": 2 },
+		"attributes": {
+			"état": 2,
+			"titre": "",
+			"niveau": "",
+			"date_modification": 0,
+			"date_réussite": 0
+		},
 		"links": {
 			"self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
 		},
