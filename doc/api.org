@@ -50,6 +50,7 @@ username/question_uri
 | Nom       | Description                      |
 |-----------+----------------------------------|
 | tentative | Soumettre une nouvelle tentative |
+
 ** Clé
 
 Une clé donnant accès à un sous-ensemble des services ou ressources de l'API. Les clés peuvent être octroyées temporairement ou être révoquées. Une clé peut être utilisée en lieu et place d'un mot de passe au moment d'effectuer une authentification. Le token JWT retourné après une authentification réussie peut être utilisé pour accéder aux services et ressources donnés par la portée de la clé.
@@ -141,11 +142,6 @@ Une question spécifiquement de programmation
 | ebauches   | 1-n         | Ébauche    | liste d'ébauches de Solution  |
 | tests      | 1-n         | Test       | liste de Tests de validation  |
 
-** Ressource
-*** Identifiant : 
-*** Propriétés : 
-*** Relations : 
-*** Liens: 
 ** Résultat
 
 Le résultat d'un test pour une solution proposée.
@@ -182,7 +178,6 @@ Une tentative de réponse à une question.
 
 *** Identifiant :
 username/question_uri/date_soumission
-
 
 *** Hiérarchie
 
@@ -237,6 +232,10 @@ question_uri/numéro
 | nom             | str  |         |
 | entrée          | str  |         |
 | sortie_attendue | str  |         |
+
+** Token ressource
+
+Génère un token JWT qui définit l'accès à des ressources en fonction de leur méthode de leur url.
 
 ** Utilisateur
 
@@ -420,16 +419,37 @@ curl "<<get_api_url()>>/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY
 curl "<<get_api_url()>>/test/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9jb250ZW51L3Byb2dfMS85YmRmNWYxYS00ODlhLTQ0MWYtOWU2ZS0yYzg3YmJhNThiZjgvaW5mby55bWw/0" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
+** Obtenir un token ressource qui donne accès à un avancement de ~jdoe~ pour la question «Les fonctions avec paramètres/Rectangle»
+
+#+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
+  ressources=$(cat <<EOF
+  {
+   [
+	    {
+		    "url":"^avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9jb250ZW51L3Byb2dfMS85YmRmNWYxYS00ODlhLTQ0MWYtOWU2ZS0yYzg3YmJhNThiZjgvaW5mby55bWw$",
+		    "method":"^GET$"
+	    }
+   ]
+  }
+    EOF
+      )
+#+END_SRC
+
+
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl -X POST "<<get_api_url()>>/token/jdoe" -H "Authorization: Bearer $TOKEN" -d ressources
+#+END_SRC
+
 ** Créer ou mettre à jour la sauvegarde de ~jdoe~ pour la question «Les fonctions avec paramètres/Rectangle» et un code ~python~
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
-DATA=$(cat <<EOF
-{
-  "langage":"python",
-  "code": "#+TODO\nSystem.out.println('Allo le monde');\n#-TODO"
-}
-EOF
-)
+  DATA=$(cat <<EOF
+  {
+    "langage":"python",
+    "code": "#+TODO\nSystem.out.println('Allo le monde');\n#-TODO"
+  }
+  EOF
+      )
 #+END_SRC
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
