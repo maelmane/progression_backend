@@ -20,3 +20,5 @@
 ** Sauvegarde
 ~POST /sauvegarde/{username}/{question_uri}~
 ~GET /sauvegarde/{username}/{question_uri}/{langage}~
+** Token
+~POST /token/{username}~
