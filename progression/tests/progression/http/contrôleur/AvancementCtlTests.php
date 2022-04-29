@@ -50,7 +50,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 			->with("Marcel")
 			->andReturn(null);
 
-		// Question
+		// Question Appeler une fonction
 		$question = new QuestionProg();
 		$question->type = Question::TYPE_PROG;
 		$question->nom = "appeler_une_fonction_paramétrée";
@@ -60,6 +60,16 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		$mockQuestionDAO
 			->shouldReceive("get_question")
 			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->andReturn($question);
+
+		// Question Nouvelle Question
+		$question = new QuestionProg();
+		$question->type = Question::TYPE_PROG;
+		$question->nom = "nouvelle question";
+		$question->uri = "https://depot.com/roger/questions_prog/nouvelle_question";
+		$mockQuestionDAO
+			->shouldReceive("get_question")
+			->with("https://depot.com/roger/questions_prog/nouvelle_question")
 			->andReturn($question);
 
 		// Avancement

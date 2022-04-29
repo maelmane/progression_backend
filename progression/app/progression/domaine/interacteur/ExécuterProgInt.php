@@ -24,8 +24,6 @@ class ExécuterProgInt extends Interacteur
 {
 	public function exécuter($exécutable, $tests)
 	{
-		$this->loguer_code($exécutable);
-
 		$comp_resp = $this->source_dao->get_exécuteur()->exécuter($exécutable, $tests);
 		if (!$comp_resp) {
 			return null;
@@ -33,7 +31,7 @@ class ExécuterProgInt extends Interacteur
 		$réponse = [];
 		$résultats = null;
 
-		$réponse["temps_exécution"] = $comp_resp["temps_exec"] * 1000;
+		$réponse["temps_exécution"] = intval($comp_resp["temps_exec"] * 1000);
 
 		foreach ($comp_resp["résultats"] as $résultat) {
 			$résultats[] = new RésultatProg(
@@ -41,23 +39,10 @@ class ExécuterProgInt extends Interacteur
 				$résultat["errors"],
 				false,
 				null,
-				$résultat["time"] * 1000,
+				intval($résultat["time"] * 1000),
 			);
 		}
 		$réponse["résultats"] = $résultats;
 		return $réponse;
-	}
-
-	protected function loguer_code($exécutable)
-	{
-		$com_log =
-			$_SERVER["REMOTE_ADDR"] .
-			" - " .
-			$_SERVER["PHP_SELF"] .
-			" : lang : " .
-			$exécutable->lang .
-			" Code : " .
-			$exécutable->code;
-		syslog(LOG_INFO, $com_log);
 	}
 }

@@ -24,9 +24,10 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\ObtenirAvancementInt;
 use progression\domaine\interacteur\SauvegarderAvancementInt;
+use progression\domaine\interacteur\ObtenirQuestionInt;
 use progression\http\transformer\AvancementTransformer;
 use progression\util\Encodage;
-use progression\domaine\entité\Avancement;
+use progression\domaine\entité\{User, Avancement, Question};
 
 class AvancementCtl extends Contrôleur
 {
@@ -98,13 +99,14 @@ class AvancementCtl extends Contrôleur
 	{
 		Log::debug("AvancementCtl.créer_ou_sauvegarder_avancement. Params : ", [$avancement, $username, $question_uri]);
 
-		$avancement_sauvegardé = $this->sauvegarder_avancement(
-			$username,
-			$question_uri,
-			$avancement ?? new Avancement(),
-		);
+		$avancement_envoyé = $avancement;
 
-		$réponse = $avancement_sauvegardé;
+		if ($avancement_envoyé == null) {
+			$avancement_envoyé = $this->créer_avancement($question_uri);
+		}
+
+		$réponse = $this->sauvegarder_avancement($username, $question_uri, $avancement_envoyé);
+
 		Log::debug("AvancementCtl.créer_ou_sauvegarder_avancement. Retour : ", [$réponse]);
 		return $réponse;
 	}
@@ -149,5 +151,23 @@ class AvancementCtl extends Contrôleur
 
 		Log::debug("AvancementCtl.sauvegarder_avancement. Retour : ", [$nouvel_avancement]);
 		return $nouvel_avancement;
+	}
+
+	private function créer_avancement($question_uri)
+	{
+		Log::debug("AvancementCtl.créer_avancement. Params : ", [$question_uri]);
+
+		$chemin = Encodage::base64_decode_url($question_uri);
+		$question = (new ObtenirQuestionInt())->get_question($chemin);
+		$avancement = new Avancement(
+			QUESTION::ETAT_DEBUT,
+			QUESTION::TYPE_PROG,
+			[],
+			$question->titre,
+			$question->niveau,
+		);
+
+		Log::debug("AvancementCtl.créer_avancement. Retour : ", [$avancement]);
+		return $avancement;
 	}
 }

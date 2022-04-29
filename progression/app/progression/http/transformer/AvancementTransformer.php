@@ -32,6 +32,10 @@ class AvancementTransformer extends Fractal\TransformerAbstract
 		$data_out = [
 			"id" => $avancement->id,
 			"état" => $avancement->etat,
+			"titre" => $avancement->titre,
+			"niveau" => $avancement->niveau,
+			"date_modification" => $avancement->date_modification,
+			"date_réussite" => $avancement->date_réussite,
 			"links" => (isset($avancement->links) ? $avancement->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}avancement/{$avancement->id}",
 			],
@@ -43,6 +47,7 @@ class AvancementTransformer extends Fractal\TransformerAbstract
 	public function includeTentatives($avancement)
 	{
 		$tentatives = $avancement->tentatives;
+
 		foreach ($tentatives as $tentative) {
 			$tentative->id = "{$avancement->id}/{$tentative->date_soumission}";
 			$tentative->links = [
