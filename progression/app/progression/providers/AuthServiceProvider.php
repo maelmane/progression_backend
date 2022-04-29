@@ -97,7 +97,7 @@ class AuthServiceProvider extends ServiceProvider
 		try {
 			return JWT::decode($tokenEncodé, $_ENV["JWT_SECRET"], ["HS256"]);
 		} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
-			Log::error(
+			Log::notice(
 				"(" .
 					$request->ip() .
 					") - " .
@@ -108,7 +108,7 @@ class AuthServiceProvider extends ServiceProvider
 					__CLASS__ .
 					")" .
 					" " .
-					$e,
+					$e->getMessage(),
 			);
 			return null;
 		}
