@@ -36,9 +36,7 @@ final class AvancementDAOTests extends TestCase
 			->allows()
 			->get_toutes("Bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn([new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)]);
-		$mockTentativeDao
-			->shouldReceive("get_toutes")
-			->andReturn([]);
+		$mockTentativeDao->shouldReceive("get_toutes")->andReturn([]);
 
 		// Sauvegarde
 		$mockSauvegardeDao = Mockery::mock("progression\\dao\\SauvegardeDAO");
@@ -46,9 +44,7 @@ final class AvancementDAOTests extends TestCase
 			->allows()
 			->get_toutes("Bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn([new Sauvegarde(1620150294, "print(\"Hello world!\")")]);
-		$mockSauvegardeDao
-			->shouldReceive("get_toutes")
-			->andReturn([]);
+		$mockSauvegardeDao->shouldReceive("get_toutes")->andReturn([]);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
@@ -118,7 +114,7 @@ final class AvancementDAOTests extends TestCase
 			"https://depot.com/roger/une_nouvelle_question",
 			$nouvel_avancement,
 		);
-		
+
 		$this->assertEquals($nouvel_avancement, $résponse_observée);
 
 		// L'avancement a été sauvegardé
@@ -160,7 +156,7 @@ final class AvancementDAOTests extends TestCase
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 			$avancement,
 		);
-		
+
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 
 		// L'avancement a été sauvegardé
@@ -171,6 +167,4 @@ final class AvancementDAOTests extends TestCase
 
 		$this->assertEquals($résponse_observée, $résponse_observée);
 	}
-
-	
 }
