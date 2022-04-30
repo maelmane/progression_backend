@@ -59,8 +59,34 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeProgDAO");
 		$mockTentativeDAO
 			->shouldReceive("save")
-			->with("jdoe", "https://example.com/question", Mockery::any())
-			->andReturnArg(2);
+			->withArgs(function ($username, $uri, $tentative) {
+				return $username == "jdoe" && $uri == "https://example.com/question" && $tentative->langage == "python";
+			})
+			->andReturn(
+				new TentativeProg(
+					langage: "python",
+					code: "#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
+					date_soumission: 1615696286,
+					réussi: true,
+					tests_réussis: 1,
+					temps_exécution: 122,
+				),
+			);
+		$mockTentativeDAO
+			->shouldReceive("save")
+			->withArgs(function ($username, $uri, $tentative) {
+				return $username == "jdoe" && $uri == "https://example.com/question" && $tentative->langage == "java";
+			})
+			->andReturn(
+				new TentativeProg(
+					langage: "java",
+					code: "#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
+					date_soumission: 1615696286,
+					réussi: false,
+					tests_réussis: 0,
+					temps_exécution: 122,
+				),
+			);
 
 		// Mock exécuteur
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
@@ -139,9 +165,8 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			tests_réussis: 0,
 			temps_exécution: 122,
 			feedback: "feedbackGénéralPositif",
+			résultats: [new RésultatProg("sortieTest", "", true, "feedbackPositif", 100)],
 		);
-
-		self::$ancienneTentativeRéussie->résultats = [new RésultatProg("sortieTest", "", true, "feedbackPositif", 100)];
 
 		// Avancement réussi
 		self::$ancienAvancementRéussi = new Avancement(
@@ -163,11 +188,8 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			tests_réussis: 0,
 			temps_exécution: 122,
 			feedback: "feedbackGénéralNégatif",
+			résultats: [new RésultatProg("Incorrecte", "", false, "feedbackNégatif", 100)],
 		);
-
-		self::$ancienneTentativeÉchouée->résultats = [
-			new RésultatProg("Incorrecte", "", false, "feedbackNégatif", 100),
-		];
 
 		// Avancement échoué
 		self::$ancienAvancementÉchoué = new Avancement(
@@ -199,13 +221,6 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		$mockDAOFactory = DAOFactory::getInstance();
 		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
 
-		$interacteur = new SoumettreTentativeProgInt();
-		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
-			self::$question,
-			self::$tentativeSoumiseIncorrecte,
-		);
-
 		$tentative_attendue = new TentativeProg(
 			langage: "java",
 			code: "#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
@@ -214,9 +229,15 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			tests_réussis: 0,
 			temps_exécution: 122,
 			feedback: "feedbackGénéralNégatif",
+			résultats: [new RésultatProg("Incorrecte", "", false, "feedbackNégatif", 100)],
 		);
 
-		$tentative_attendue->résultats = [new RésultatProg("Incorrecte", "", false, "feedbackNégatif", 100)];
+		$interacteur = new SoumettreTentativeProgInt();
+		$tentative_obtenue = $interacteur->soumettre_tentative(
+			"jdoe",
+			self::$question,
+			self::$tentativeSoumiseIncorrecte,
+		);
 
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);
 	}
@@ -231,9 +252,8 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			tests_réussis: 0,
 			temps_exécution: 122,
 			feedback: "feedbackGénéralNégatif",
+			résultats: [new RésultatProg("Incorrecte", "", false, "feedbackNégatif", 100)],
 		);
-
-		$tentative_attendue->résultats = [new RésultatProg("Incorrecte", "", false, "feedbackNégatif", 100)];
 
 		$nouvelAvancement = new Avancement(
 			etat: Question::ETAT_NONREUSSI,
@@ -281,9 +301,8 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			tests_réussis: 0,
 			temps_exécution: 122,
 			feedback: "feedbackGénéralNégatif",
+			résultats: [new RésultatProg("Incorrecte", "", false, "feedbackNégatif", 100)],
 		);
-
-		$tentative_attendue->résultats = [new RésultatProg("Incorrecte", "", false, "feedbackNégatif", 100)];
 
 		$nouvelAvancement = new Avancement(
 			etat: Question::ETAT_REUSSI,
@@ -329,9 +348,8 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			tests_réussis: 1,
 			temps_exécution: 122,
 			feedback: "feedbackGénéralPositif",
+			résultats: [new RésultatProg("sortieTest", "", true, "feedbackPositif", 100)],
 		);
-
-		$tentative_attendue->résultats = [new RésultatProg("sortieTest", "", true, "feedbackPositif", 100)];
 
 		$nouvelAvancement = new Avancement(
 			etat: Question::ETAT_REUSSI,
@@ -378,9 +396,8 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			tests_réussis: 1,
 			temps_exécution: 122,
 			feedback: "feedbackGénéralPositif",
+			résultats: [new RésultatProg("sortieTest", "", true, "feedbackPositif", 100)],
 		);
-
-		$tentative_attendue->résultats = [new RésultatProg("sortieTest", "", true, "feedbackPositif", 100)];
 
 		$nouvelAvancement = new Avancement(
 			etat: Question::ETAT_REUSSI,
