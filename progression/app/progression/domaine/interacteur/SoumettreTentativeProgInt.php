@@ -41,9 +41,7 @@ class SoumettreTentativeProgInt extends Interacteur
 			$avancement = $this->mettre_à_jour_dates_et_état($avancement, $tentativeTraitée->date_soumission);
 
 			$this->sauvegarder_avancement($username, $question->uri, $avancement);
-
-			$interacteurSauvegarde = new SauvegarderTentativeProgInt();
-			$tentativeSauvegardée = $interacteurSauvegarde->sauvegarder($username, $question->uri, $tentativeTraitée);
+			$this->sauvegarder_tentative($username, $question->uri, $tentativeTraitée);
 
 			return $tentativeTraitée;
 		}
@@ -95,5 +93,11 @@ class SoumettreTentativeProgInt extends Interacteur
 	private function sauvegarder_avancement($username, $uriQuestion, $avancement)
 	{
 		(new SauvegarderAvancementInt())->sauvegarder($username, $uriQuestion, $avancement);
+	}
+
+	private function sauvegarder_tentative($username, $uriQuestion, $tentative)
+	{
+		$interacteurSauvegarde = new SauvegarderTentativeProgInt();
+		$tentativeSauvegardée = $interacteurSauvegarde->sauvegarder($username, $uriQuestion, $tentative);
 	}
 }
