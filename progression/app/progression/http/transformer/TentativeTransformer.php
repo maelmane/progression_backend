@@ -42,7 +42,7 @@ class TentativeTransformer extends Fractal\TransformerAbstract
 		return $data_out;
 	}
 
-	public function includeCommentaires($tentative)
+	public function includeCommentaires(Tentative $tentative)
 	{
 		$commentaires = $tentative->commentaires;
 		foreach ($commentaires as $numéro => $commentaire) {

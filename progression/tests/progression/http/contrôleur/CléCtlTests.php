@@ -16,19 +16,20 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use progression\TestCase;
+use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\{Clé, User};
 use Illuminate\Auth\GenericUser;
 
-final class CléCtlTests extends TestCase
+final class CléCtlTests extends ContrôleurTestCase
 {
 	public $user;
 
 	public function setUp(): void
 	{
 		parent::setUp();
+
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 		$this->admin = new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]);
 
@@ -93,14 +94,6 @@ final class CléCtlTests extends TestCase
 
 		$this->assertEquals(404, $résultat_observé->status());
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
-	}
-
-	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquon_demande_une_clé_pour_un_autre_utilisateur_on_obtient_une_erreur_403()
-	{
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/cle/bob/une%20cle/");
-
-		$this->assertEquals(403, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Opération interdite."}', $résultat_observé->getContent());
 	}
 
 	public function test_étant_donné_un_utilisateur_admin_connecté_lorsquon_demande_une_clé_pour_un_autre_utilisateur_on_obtient_un_objet_clé_sans_secret()
@@ -192,20 +185,5 @@ final class CléCtlTests extends TestCase
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals('{"erreur":{"expiration":["Expiration invalide"]}}', $résultat_observé->getContent());
-	}
-
-	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquon_requiert_une_clé_dauthentification_pour_un_autre_utilisateur_on_obtient_une_erreur_403()
-	{
-		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/bob/cles", ["nom" => "nouvelle cle"]);
-
-		$this->assertEquals(403, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Opération interdite."}', $résultat_observé->getContent());
-	}
-
-	public function test_étant_donné_un_utilisateur_admin_connecté_lorsquil_requiert_une_clé_dauthentification_pour_un_autre_utilisateur_on_obtient_une_clé_générée_aléatoirement()
-	{
-		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", ["nom" => "nouvelle cle"]);
-
-		$this->assertEquals(200, $résultat_observé->status());
 	}
 }

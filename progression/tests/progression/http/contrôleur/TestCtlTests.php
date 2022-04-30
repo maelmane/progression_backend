@@ -16,15 +16,13 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use progression\TestCase;
+use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\{QuestionProg, Question, Test, User};
-use progression\http\contrôleur\TestCtl;
-use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
 
-final class TestCtlTests extends TestCase
+final class TestCtlTests extends ContrôleurTestCase
 {
 	public $user;
 

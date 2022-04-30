@@ -39,7 +39,7 @@ username
 
 *** Relations :
 
-| Nom         | Cardinalité | Type       | description         |
+| Nom         | Cardinalité | Type       | Description         |
 |-------------+-------------+------------+---------------------|
 | avancements | 1-n         | Avancement | Liste d'avancements |
 
@@ -56,7 +56,7 @@ username/nom
 |-------------+--------+--------------------+-----------------------------------------------------------|
 | secret      | string |                    | valeur secrète de la clé                                  |
 | création    | int    |                    | Timestamp de création                                     |
-| expriration | int    |                    | Timestamp d'expiration, 0=n'expire jamais                 |
+| expiration  | int    |                    | Timestamp d'expiration, 0=n'expire jamais                 |
 | portée      | int    |                    | Service ou ressource accessible par la clé.               |
 |             |        | 0=Révoquée         | La clé est révoquée pour tout service ou ressource        |
 |             |        | 1=Authentification | La clé peut être utilisée pour authentifier l'utilisateur |
@@ -99,7 +99,7 @@ Question
 Une question spécifiquement de programmation
 
 *** Relations :
-| Nom        | Cardinalité | Type       | description                   |
+| Nom        | Cardinalité | Type       | Description                   |
 |------------+-------------+------------+-------------------------------|
 | ebauches   | 1-n         | Ébauche    | liste d'ébauches de Solution  |
 | tests      | 1-n         | Test       | liste de Tests de validation  |
@@ -113,11 +113,15 @@ username/question_uri
 
 *** Propriétés:
 
-| Nom  | Type | Valeurs       |
-|------+------+---------------|
-| état | int  | 0=non débutée |
-|      |      | 1=non réussie |
-|      |      | 2=réussie     |
+| Nom               | Type   | Valeurs       | Description                                                            |
+|-------------------+--------+---------------+------------------------------------------------------------------------|
+| état              | int    | 0=non débutée | Aucune tentative envoyée                                               |
+|                   |        | 1=non réussie | Au moins une tentative, mais aucune n'est réussie                      |
+|                   |        | 2=réussie     | Au moins une tentative dont une réussie                                |
+| titre             | str    |               | Le titre de la question tel qu'il était lors de la dernière tentative  |
+| niveau            | str    |               | Le niveau de la question tel qu'il était lors de la dernière tentative |
+| date_modification | int    |               | La date de la dernière tentative                                       |
+| date_réussie      | int    |               | La date de la première tentative réussie                               |
 
 *** Relations :
 

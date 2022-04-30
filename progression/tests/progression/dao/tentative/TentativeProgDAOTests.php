@@ -18,7 +18,7 @@
 
 namespace progression\dao\tentative;
 
-use progression\domaine\entité\TentativeProg;
+use progression\domaine\entité\{TentativeProg, RésultatProg};
 use PHPUnit\Framework\TestCase;
 use progression\dao\{DAOException, DAOFactory};
 use progression\dao\EntitéDAO;
@@ -77,13 +77,17 @@ final class TentativeProgDAOTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_lorsquon_sauvegarde_la_tentative_on_obtient_une_nouvelle_insertion_dans_la_table_reponse_prog()
 	{
-		$tentative_test = new TentativeProg("python", "testCode", 123456789, true, 2, 1234);
+		$tentative_test = new TentativeProg("python", "testCode", 123456789, true, 2, 1234, "Feedback", [
+			new RésultatProg("Incorrecte", "", false, "feedbackNégatif", 100),
+		]);
+
+		$résultat_attendu = new TentativeProg("python", "testCode", 123456789, true, 2, 1234);
 
 		$résultat_attendue = new TentativeProg("python", "testCode", 123456789, true, 2, 1234);
 		$résultat_observé = (new TentativeDAO())->save("Stefany", "https://exemple.com", $tentative_test);
-		$this->assertEquals($résultat_attendue, $résultat_observé);
+		$this->assertEquals($résultat_attendu, $résultat_observé);
 
 		$résultat_observé = (new TentativeDAO())->get_tentative("Stefany", "https://exemple.com", 123456789);
-		$this->assertEquals($résultat_attendue, $résultat_observé);
+		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 }

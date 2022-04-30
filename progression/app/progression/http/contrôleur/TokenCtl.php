@@ -16,30 +16,24 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\http\middleware;
+namespace progression\http\contrôleur;
 
-use Closure;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
-class ValidationPermissions
+class TokenCtl extends Contrôleur
 {
-	public function handle($request, Closure $next)
+	public function post(Request $request, $username)
 	{
-		if (
-			Gate::allows("acces-utilisateur", $request) ||
-			($request->input("tkres") && Gate::allows("acces-ressource", $request))
-		) {
-			return $next($request);
-		} else {
-			return response()->json(
-				["erreur" => "Opération interdite."],
-				403,
-				[
-					"ContentType" => "application/vnd.api+json",
-					"Charset" => "utf8",
-				],
-				JSON_UNESCAPED_UNICODE,
-			);
-		}
+		Log::debug("TokenCtl.post. Params : ", [$request, $username]);
+
+		$ressources = $request->input("ressources");
+
+		$expirationToken = $request->input("expiration") ?? 0;
+		$token = GénérateurDeToken::get_instance()->générer_token($username, $expirationToken, $ressources);
+		$réponse = $this->préparer_réponse(["Token" => $token]);
+		Log::debug("TokenCtl.post. Réponse : ", [$réponse]);
+
+		return $réponse;
 	}
 }
