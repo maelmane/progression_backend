@@ -82,12 +82,15 @@ final class AvancementDAOTests extends TestCase
 	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_objet_avancement_correspondant()
 	{
 		$résultat_attendu = new Avancement(
-			0,
-			0,
-			[new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)],
-			[new Sauvegarde(1620150294, "print(\"Hello world!\")")],
+			etat: Question::ETAT_DEBUT,
+			type: Question::TYPE_PROG,
+			tentatives: [new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)],
+			titre: "Bob",
+			niveau: "facile",
+			date_modification: 1645739981,
+			date_réussite: 1645739959,
+			sauvegardes: [new Sauvegarde(1620150294, "print(\"Hello world!\")")],
 		);
-		$résultat_attendu->type = Question::TYPE_PROG;
 
 		$résponse_observée = (new AvancementDAO())->get_avancement(
 			"bob",

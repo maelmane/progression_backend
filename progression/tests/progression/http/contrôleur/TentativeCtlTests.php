@@ -16,7 +16,7 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use progression\TestCase;
+use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
@@ -24,9 +24,10 @@ use progression\domaine\entité\{Avancement, Test, Exécutable, Question, Tentat
 
 use Illuminate\Auth\GenericUser;
 
-final class TentativeCtlTests extends TestCase
+final class TentativeCtlTests extends ContrôleurTestCase
 {
 	public $user;
+	public $headers;
 
 	public function setUp(): void
 	{
@@ -54,7 +55,7 @@ final class TentativeCtlTests extends TestCase
 			->shouldReceive("get_tentative")
 			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "1614374490")
 			->andReturn($tentative);
-		$mockTentativeDAO->shouldReceive("save")->andReturn($tentative);
+		$mockTentativeDAO->shouldReceive("save")->andReturnArg(2);
 
 		// Commentaire
 		$commentaire = new Commentaire(99, "le 99iem message", "mock", 1615696276, 14);
@@ -106,16 +107,17 @@ final class TentativeCtlTests extends TestCase
 			})
 			->andThrow(new ExécutionException("Erreur test://TentativeCtlTests.php"));
 
-		// Avancement
+		//Avancement
 		$avancement = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [
 			new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest"),
 		]);
-
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($avancement);
+
+		$mockAvancementDAO->allows("save")->andReturn($avancement);
 
 		// User
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -128,10 +130,10 @@ final class TentativeCtlTests extends TestCase
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_tentative_dao")->andReturn($mockTentativeDAO);
 		$mockDAOFactory->shouldReceive("get_commentaire_dao")->andReturn($mockCommentaireDAO);
+		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
 		$mockDAOFactory->shouldReceive("get_tentative_prog_dao")->andReturn($mockTentativeDAO);
 		$mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);
 		$mockDAOFactory->shouldReceive("get_exécuteur")->andReturn($mockExécuteur);
-		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);
@@ -176,11 +178,14 @@ final class TentativeCtlTests extends TestCase
 			["langage" => "python", "code" => "#+TODO\nprint(\"Hello world!\")"],
 		);
 		$this->assertEquals(200, $résultat_obtenu->status());
+
 		$heure_courante = time();
 		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
-		if ($heure_courante - $heure_tentative > 1) {
-			$this->fail();
-		}
+		$this->assertLessThan(
+			1,
+			$heure_courante - $heure_tentative,
+			"Heure courante: {$heure_courante}, Heure tentative: {$heure_tentative}",
+		);
 
 		$this->assertJsonStringEqualsJsonString(
 			sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_1.json"), $heure_tentative),
@@ -242,6 +247,7 @@ final class TentativeCtlTests extends TestCase
 	{
 		$_ENV["TAILLE_CODE_MAX"] = 24;
 		$testCode = "#+TODO\n日本語でのテストです\n#-TODO";
+
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",

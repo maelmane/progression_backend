@@ -24,16 +24,28 @@ class Avancement
 	public $sauvegardes;
 	public $etat;
 	public $type;
+	public $titre;
+	public $niveau;
+	public $date_modification;
+	public $date_réussite;
 
 	public function __construct(
 		$etat = Question::ETAT_DEBUT,
 		$type = Question::TYPE_INCONNU,
 		$tentatives = [],
+		$titre = "",
+		$niveau = "",
+		$date_modification = 0,
+		$date_réussite = 0,
 		$sauvegardes = []
 	) {
 		$this->tentatives = $tentatives;
 		$this->sauvegardes = $sauvegardes;
 		$this->etat = $etat;
 		$this->type = $type;
+		$this->titre = $titre;
+		$this->niveau = $niveau;
+		$this->date_modification = $date_modification;
+		$this->date_réussite = $date_réussite;
 	}
 }

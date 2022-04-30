@@ -16,16 +16,14 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use progression\TestCase;
+use progression\ContrôleurTestCase;
 
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\User;
 use progression\dao\DAOFactory;
-use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
-use Firebase\JWT\JWT;
 
-final class InscriptionCtlTests extends TestCase
+final class InscriptionCtlTests extends ContrôleurTestCase
 {
 	public $user;
 
@@ -60,7 +58,7 @@ final class InscriptionCtlTests extends TestCase
 				{
 				}
 
-				function générer_token($user)
+				function générer_token($user, $ressources = null, $expiration = 0)
 				{
 					return "token valide";
 				}
@@ -71,6 +69,7 @@ final class InscriptionCtlTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		GénérateurDeToken::set_instance(null);
 	}
 
 	#  AUTH_LOCAL = false

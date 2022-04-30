@@ -16,19 +16,20 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use progression\TestCase;
+use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\{Question, QuestionProg, Avancement, TentativeProg, User};
 use Illuminate\Auth\GenericUser;
 
-final class AvancementCtlTests extends TestCase
+final class AvancementCtlTests extends ContrôleurTestCase
 {
 	public $user;
 
 	public function setUp(): void
 	{
 		parent::setUp();
+
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 		$this->admin = new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]);
 
@@ -49,7 +50,7 @@ final class AvancementCtlTests extends TestCase
 			->with("Marcel")
 			->andReturn(null);
 
-		// Question
+		// Question Appeler une fonction
 		$question = new QuestionProg();
 		$question->type = Question::TYPE_PROG;
 		$question->nom = "appeler_une_fonction_paramétrée";
@@ -59,6 +60,16 @@ final class AvancementCtlTests extends TestCase
 		$mockQuestionDAO
 			->shouldReceive("get_question")
 			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->andReturn($question);
+
+		// Question Nouvelle Question
+		$question = new QuestionProg();
+		$question->type = Question::TYPE_PROG;
+		$question->nom = "nouvelle question";
+		$question->uri = "https://depot.com/roger/questions_prog/nouvelle_question";
+		$mockQuestionDAO
+			->shouldReceive("get_question")
+			->with("https://depot.com/roger/questions_prog/nouvelle_question")
 			->andReturn($question);
 
 		// Avancement
@@ -132,20 +143,6 @@ final class AvancementCtlTests extends TestCase
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
 	}
 
-	// POST
-	public function test_étant_donné_un_utilisateur_inexistant_dans_la_requete_lorsquon_appelle_post_avec_un_avancement_on_obtient_une_erreur_403()
-	{
-		$avancementTest = ["état" => Question::ETAT_REUSSI];
-
-		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/Marcel/avancements", [
-			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
-			"avancement" => $avancementTest,
-		]);
-
-		$this->assertEquals(403, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Opération interdite."}', $résultat_observé->getContent());
-	}
-
 	public function test_étant_donné_le_chemin_dune_question_non_fourni_dans_la_requete_lorsquon_appelle_post_avec_un_avancement_on_obtient_une_erreur_400()
 	{
 		$avancementTest = ["état" => Question::ETAT_REUSSI];
@@ -173,19 +170,7 @@ final class AvancementCtlTests extends TestCase
 			$résultat_observé->getContent(),
 		);
 	}
-	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_avec_un_avancement_on_obtient_une_erreur_403()
-	{
-		$avancementTest = ["état" => Question::ETAT_REUSSI];
 
-		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
-			"question_uri" =>
-				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-			"avancement" => $avancementTest,
-		]);
-
-		$this->assertEquals(403, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Opération interdite."}', $résultat_observé->getContent());
-	}
 	public function test_étant_donné_un_admin_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_on_obtient_le_meme_resultat_quun_utilisateur_normal()
 	{
 		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/jdoe/avancements", [
