@@ -60,22 +60,22 @@ INSERT INTO sauvegarde VALUES (
 );
 
 INSERT INTO avancement VALUES (
-  "bob",
+  "Bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
   0,
   3,
-  "Bob",
+  "Un titre",
   "facile",
   1645739981,
   1645739959 
 );
 
 INSERT INTO avancement VALUES (
-  "bob",
+  "Bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction",
   1,
   3,
-  "Bob",
+  "Un titre",
   "facile",
   1645739981,
   1645739959

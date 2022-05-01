@@ -86,7 +86,15 @@ class AvancementDAO extends EntitéDAO
 
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT etat, type, titre, niveau, date_modification, date_reussite FROM avancement WHERE question_uri = ? AND username = ?",
+				"SELECT
+				    etat,
+				    type,
+				    titre,
+				    niveau,
+				    date_modification,
+				    date_reussite
+				FROM avancement
+				WHERE question_uri = ? AND username = ?",
 			);
 			$query->bind_param("ss", $question_uri, $username);
 			$query->execute();
@@ -114,10 +122,25 @@ class AvancementDAO extends EntitéDAO
 	{
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO avancement ( etat, question_uri, username, titre, niveau, date_modification, date_reussite, type ) VALUES ( ?, ?, ?, ?, ?, ?, ?, " .
+				"INSERT INTO avancement (
+				    etat,
+				    question_uri,
+				    username,
+				    titre,
+				    niveau,
+				    date_modification,
+				    date_reussite,
+				    type )
+				VALUES ( ?, ?, ?, ?, ?, ?, ?, " .
 					Question::TYPE_PROG .
 					')
-                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ), date_modification = VALUES(date_modification), date_reussite = VALUES(date_reussite)',
+				ON DUPLICATE KEY
+				UPDATE
+				    etat = VALUES( etat ),
+				    titre = VALUES( titre ),
+				    niveau = VALUES( niveau ),
+				    date_modification = VALUES(date_modification),
+				    date_reussite = VALUES(date_reussite)',
 			);
 
 			$query->bind_param(
