@@ -16,16 +16,18 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-require_once __DIR__ . "/../../../TestCase.php";
+use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{Avancement, Test, Exécutable, Question, TentativeProg, QuestionProg, User};
+use progression\dao\exécuteur\ExécutionException;
+use progression\domaine\entité\{Avancement, Test, Exécutable, Question, TentativeProg, Commentaire, QuestionProg, User};
 
 use Illuminate\Auth\GenericUser;
 
-final class TentativeCtlTests extends TestCase
+final class TentativeCtlTests extends ContrôleurTestCase
 {
 	public $user;
+	public $headers;
 
 	public function setUp(): void
 	{
@@ -34,15 +36,17 @@ final class TentativeCtlTests extends TestCase
 		$_ENV["AUTH_TYPE"] = "no";
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 
 		// Tentative
 		$tentative = new TentativeProg("python", "codeTest", "1614374490");
 		$tentative->tests_réussis = 2;
 		$tentative->réussi = true;
 		$tentative->feedback = "feedbackTest";
+		$tentative->temps_exécution = 5;
 
-		$mockTentativeDAO = Mockery::mock("progression\dao\TentativeDAO");
+		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
+
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
 			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "9999999999")
@@ -51,7 +55,17 @@ final class TentativeCtlTests extends TestCase
 			->shouldReceive("get_tentative")
 			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "1614374490")
 			->andReturn($tentative);
-		$mockTentativeDAO->shouldReceive("save")->andReturn($tentative);
+		$mockTentativeDAO->shouldReceive("save")->andReturnArg(2);
+
+		// Commentaire
+		$commentaire = new Commentaire(99, "le 99iem message", "mock", 1615696276, 14);
+
+		$mockCommentaireDAO = Mockery::mock("progression\\dao\\CommentaireDAO");
+
+		$mockCommentaireDAO
+			->shouldReceive("get_commentaires_par_tentative")
+			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", 1614374490)
+			->andReturn($commentaire);
 
 		// Question
 		$question = new QuestionProg();
@@ -69,51 +83,66 @@ final class TentativeCtlTests extends TestCase
 			new Test("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
 		];
 
-		$mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
+		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");
 		$mockQuestionDAO
 			->shouldReceive("get_question")
-			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", Mockery::any())
+			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 
 		// Exécuteur
-		$mockExécuteur = Mockery::mock("progression\dao\Exécuteur");
+		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur
 			->shouldReceive("exécuter")
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "python";
 			})
-			->andReturn('{"output": "Bonjour\nAllo\n", "errors":"" }');
+			->andReturn([
+				"temps_exec" => 0.551,
+				"résultats" => [["output" => "Bonjour\nAllo\n", "errors" => "", "time" => 0.03]],
+			]);
 		$mockExécuteur
 			->shouldReceive("exécuter")
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "java";
 			})
-			->andReturn(false);
+			->andThrow(new ExécutionException("Erreur test://TentativeCtlTests.php"));
 
-		// Avancement
+		//Avancement
 		$avancement = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [
 			new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest"),
 		]);
-
-		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
+		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($avancement);
 
+		$mockAvancementDAO->allows("save")->andReturn($avancement);
+
+		// User
+		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
+		$mockUserDAO
+			->allows("get_user")
+			->with("jdoe")
+			->andReturn(new User("jdoe"));
+
 		// DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_tentative_dao")->andReturn($mockTentativeDAO);
+		$mockDAOFactory->shouldReceive("get_commentaire_dao")->andReturn($mockCommentaireDAO);
+		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
 		$mockDAOFactory->shouldReceive("get_tentative_prog_dao")->andReturn($mockTentativeDAO);
 		$mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);
 		$mockDAOFactory->shouldReceive("get_exécuteur")->andReturn($mockExécuteur);
-		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
+		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
+
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_get_on_obtient_la_TentativeProg_et_ses_relations_sous_forme_json()
@@ -124,13 +153,13 @@ final class TentativeCtlTests extends TestCase
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/tentativeCtlTest_2.json",
 			$résultat_obtenu->getContent(),
 		);
 	}
 
-	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
+	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_un_timestamp_inexistant_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
@@ -145,12 +174,21 @@ final class TentativeCtlTests extends TestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
-			"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24?include=resultats",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives?include=resultats",
 			["langage" => "python", "code" => "#+TODO\nprint(\"Hello world!\")"],
 		);
 		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertStringMatchesFormatFile(
-			__DIR__ . "/résultats_attendus/tentativeCtlTest_1.json",
+
+		$heure_courante = time();
+		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
+		$this->assertLessThan(
+			1,
+			$heure_courante - $heure_tentative,
+			"Heure courante: {$heure_courante}, Heure tentative: {$heure_tentative}",
+		);
+
+		$this->assertJsonStringEqualsJsonString(
+			sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_1.json"), $heure_tentative),
 			$résultat_obtenu->getContent(),
 		);
 	}
@@ -159,11 +197,11 @@ final class TentativeCtlTests extends TestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
-			"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
 			["langage" => "python"],
 		);
 
-		$this->assertEquals(422, $résultat_obtenu->status());
+		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":{"code":["Le champ code est obligatoire."]}}', $résultat_obtenu->getContent());
 	}
 
@@ -171,7 +209,7 @@ final class TentativeCtlTests extends TestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
-			"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
 			["langage" => "java", "code" => "#+TODO\nprint(\"on ne se rendra pas à exécuter ceci\")"],
 		);
 
@@ -183,11 +221,39 @@ final class TentativeCtlTests extends TestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
-			"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
 			["langage" => "python", "code" => "print(\"Hello world!\")"],
 		);
 
-		$this->assertEquals(422, $résultat_obtenu->status());
+		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Requête intraitable."}', $résultat_obtenu->getContent());
+	}
+
+	public function test_étant_donné_une_tentative_ayant_du_code_dépassant_la_taille_maximale_de_caractères_on_obtient_une_erreur_413()
+	{
+		$_ENV["TAILLE_CODE_MAX"] = 23;
+		$testCode = "#+TODO\n日本語でのテストです\n#-TODO";
+
+		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/avancement/jdoe/une_question/tentatives", [
+			"langage" => "python",
+			"code" => "$testCode",
+		]);
+
+		$this->assertEquals(413, $résultat_obtenu->status());
+		$this->assertEquals('{"erreur":"Le code soumis 24 > 23 caractères."}', $résultat_obtenu->getContent());
+	}
+
+	public function test_étant_donné_une_tentative_ayant_exactement_la_taille_maximale_de_caractères_on_obtient_un_code_200()
+	{
+		$_ENV["TAILLE_CODE_MAX"] = 24;
+		$testCode = "#+TODO\n日本語でのテストです\n#-TODO";
+
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
+			["langage" => "python", "code" => "$testCode"],
+		);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
 	}
 }

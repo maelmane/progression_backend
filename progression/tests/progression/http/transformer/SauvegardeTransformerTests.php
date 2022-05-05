@@ -38,7 +38,7 @@ final class SauvegardeTransformerTests extends TestCase
 
 		$sauvegardeTransformer = new SauvegardeTransformer();
 		$résultats_obtenus = $sauvegardeTransformer->transform($sauvegarde);
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/sauvegardeTransformerTest_1.json",
 			json_encode($résultats_obtenus),
 		);

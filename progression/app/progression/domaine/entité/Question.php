@@ -31,12 +31,15 @@ class Question
 	const TYPE_BD = 2;
 	const TYPE_PROG = 3;
 
-	public $nom = "";
-	public $uri = "";
+	public $nom = null;
+	public $uri = null;
 	public $actif = 1;
-	public $titre = "";
-	public $description = "";
-	public $enonce = "";
+	public $niveau = null;
+	public $titre = null;
+	public $description = null;
+	public $enonce = null;
+	public $auteur = null;
+	public $licence = null;
 	public $feedback_pos = null;
 	public $feedback_neg = null;
 	public $feedback_err = null;

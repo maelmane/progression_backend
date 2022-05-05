@@ -1,3 +1,0 @@
-FROM system
-
-RUN useradd -s /bin/bash -m mario && yes motdepasse | passwd mario

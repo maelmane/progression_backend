@@ -1,33 +1,22 @@
 #+SETUPFILE: https://plafrance.pages.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg.setup
 #+TITLE: API Progression
-#+PROPERTY: header-args:sh :results output
-#+PROPERTY: header-args:sh :exports both
-
-#+begin_warning
-  Cette documentation est proposée à titre indicatif seulement et peut changer à tout moment.
-#+end_warning
-
-
-
-* Versions
-Les versions de l'api sont accessibles à des URL distincts pour assurer la rétrocompatibilité.
-
-| Version | URL        |
-|       1 | ~/api/v1/~ |
+#+PROPERTY: header-args:bash :results output :exports both :noweb yes
 
 * Points d'entrée
 ** Publics
-| Méthode | URL               | Description                            | Paramètres         | Réponse             |
-| GET     | ~/doc~            | Documentation                          |                    | str (HTML)          |
-| POST    | ~/auth~           | Authentification                       | username, password | token, un token JWT |
-| GET     | ~/question/{uri}~ | Obtient la question disponible à <uri> | uri                | Question            |
+| Méthode | URL               | Description                            | Paramètres                                   | Réponse             |
+| POST    | ~/auth~           | Authentification                       | username, password ou key_name et key_secret | token, un token JWT |
+| POST    | ~/inscription~    | Inscription                            | username, password, rôle                     | token, un token JWT |
+| GET     | ~/config~         | Configuration du serveur               |                                              |                     |
+| GET     | ~/doc~            | Documentation                          |                                              | str (HTML)          |
 
 ** Privés
 Les points d'entrée privés requièrent un token dans l'entête : «Authentification: Bearer <token>»
 
-| Méthode | URL                | Description                       | Paramètres | Réponse |
-| GET     | ~/user~            | Obtient l'utilisateur authentifié |            | User    |
-| GET     | ~/user/{username}~ | Obtient l'utilisateur /username/  | username   | User    |
+| Méthode | URL                | Description                            | Paramètres | Réponse  |
+| GET     | ~/user~            | Obtient l'utilisateur authentifié      |            | User     |
+| GET     | ~/user/{username}~ | Obtient l'utilisateur /username/       | username   | User     |
+| GET     | ~/question/{uri}~  | Obtient la question disponible à <uri> | uri        | Question |
 
 * Ressources
 
@@ -50,9 +39,28 @@ username
 
 *** Relations :
 
-| Nom         | Cardinalité | Type       | description         |
+| Nom         | Cardinalité | Type       | Description         |
 |-------------+-------------+------------+---------------------|
 | avancements | 1-n         | Avancement | Liste d'avancements |
+
+** Clé
+
+Une clé donnant accès à un sous-ensemble des services ou ressources de l'API. Les clés peuvent être octroyées temporairement ou être révoquées. Une clé peut être utilisée en lieu et place d'un mot de passe au moment d'effectuer une authentification. Le token JWT retourné après une authentification réussie peut être utilisé pour accéder aux services et ressources donnés par la portée de la clé.
+
+*** Identifiant :
+username/nom
+
+*** Propriétés : 
+
+| Nom         | Type   | Valeurs            | Description                                               |
+|-------------+--------+--------------------+-----------------------------------------------------------|
+| secret      | string |                    | valeur secrète de la clé                                  |
+| création    | int    |                    | Timestamp de création                                     |
+| expiration  | int    |                    | Timestamp d'expiration, 0=n'expire jamais                 |
+| portée      | int    |                    | Service ou ressource accessible par la clé.               |
+|             |        | 0=Révoquée         | La clé est révoquée pour tout service ou ressource        |
+|             |        | 1=Authentification | La clé peut être utilisée pour authentifier l'utilisateur |
+|-------------+--------+--------------------+-----------------------------------------------------------|
 
 ** Question
 
@@ -91,7 +99,7 @@ Question
 Une question spécifiquement de programmation
 
 *** Relations :
-| Nom        | Cardinalité | Type       | description                   |
+| Nom        | Cardinalité | Type       | Description                   |
 |------------+-------------+------------+-------------------------------|
 | ebauches   | 1-n         | Ébauche    | liste d'ébauches de Solution  |
 | tests      | 1-n         | Test       | liste de Tests de validation  |
@@ -105,11 +113,15 @@ username/question_uri
 
 *** Propriétés:
 
-| Nom  | Type | Valeurs       |
-|------+------+---------------|
-| état | int  | 0=non débutée |
-|      |      | 1=non réussie |
-|      |      | 2=réussie     |
+| Nom               | Type   | Valeurs       | Description                                                            |
+|-------------------+--------+---------------+------------------------------------------------------------------------|
+| état              | int    | 0=non débutée | Aucune tentative envoyée                                               |
+|                   |        | 1=non réussie | Au moins une tentative, mais aucune n'est réussie                      |
+|                   |        | 2=réussie     | Au moins une tentative dont une réussie                                |
+| titre             | str    |               | Le titre de la question tel qu'il était lors de la dernière tentative  |
+| niveau            | str    |               | Le niveau de la question tel qu'il était lors de la dernière tentative |
+| date_modification | int    |               | La date de la dernière tentative                                       |
+| date_réussie      | int    |               | La date de la première tentative réussie                               |
 
 *** Relations :
 
@@ -172,11 +184,12 @@ Une tentative de réponse à une question.
 
 *** Propriétés:
 
-| Nom           | Type | Valeurs             |
-|---------------+------+---------------------|
-| langage       | str  |                     |
-| code          | str  |                     |
-| tests_réussis | int  | nb de tests réussis |
+| Nom             | Type | Valeurs                 |
+|-----------------+------+-------------------------|
+| langage         | str  |                         |
+| code            | str  |                         |
+| tests_réussis   | int  | nb de tests réussis     |
+| temps_exécution | int  | temps d'exécution en ms |
 
 *** Relations :
 
@@ -195,7 +208,6 @@ question_uri/numéro
 
 | Nom             | Type | Valeurs |
 |-----------------+------+---------|
-| numéro          | int  |         |
 | nom             | str  |         |
 | entrée          | str  |         |
 | sortie_attendue | str  |         |
@@ -209,13 +221,31 @@ username/question_uri/date_soumission/numéro
 
 *** Propriétés:
 
+| Nom             | Type | Valeurs                 |
+|-----------------+------+-------------------------|
+| sortie_observée | str  |                         |
+| sortie_erreur   | str  |                         |
+| résultat        | bool |                         |
+| feedback        | str  |                         |
+| temps_exécution | int  | temps d'exécution en ms |
+
+** Commentaire
+
+Un message sur une tentative écrit par un utilisateur.
+
+*** Identifiant :
+username/question_uri/date_soumission/numéro
+
+*** Propriétés:
+
 | Nom             | Type | Valeurs   |
 |-----------------+------+-----------|
-| numéro          | int  | # du test |
-| sortie_observée | str  |           |
-| sortie_erreur   | str  |           |
-| résultat        | bool |           |
-| feedback        | str  |           |
+| message         | str  |           |
+| créateur        | str  |           |
+| date            | int  |           |
+| numéro_ligne    | int  |           |
+
+
 
 ** Sauvegarde automatique
 
@@ -234,121 +264,234 @@ username/question_uri/langage
 
 * Exemples
 
-#+begin_warning
-Les exemples marqués ~LIVE~ reflètent les résultats réels sur la plus récente version de l'API disponible sur ~https://progression.dti.crosemont.quebec/api/v1/~.
+#+NAME: get_api_url
+#+begin_src sh :exports none
+if [ -z "$PROGRESSION_API_URL" ]
+then
+	echo -n "https://progression.dti.crosemont.quebec/api/v1"
+else
+	echo -n $PROGRESSION_API_URL
+fi
+#+end_src
 
-Les exemples marqués ~PROTOTYPE~ sont générés manuellement à titre indicatif et ne reflètent nécessairement pas les résultats réels.
+#+begin_warning
+Les exemples reflètent les résultats réels sur la plus récente version de l'API disponible sur call_get_api_url().
 #+end_warning
 
-#+NAME: get_token
-#+BEGIN_SRC sh :eval yes :results output :exports none
-RET=$(curl "https://progression.dti.crosemont.quebec/api/v1/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | cut -d '"' -f 4)
-printf "%s" $RET
+#+name: setup
+#+BEGIN_SRC bash :eval yes :session *bash* :exports none :results none
+curl() {
+	/usr/bin/curl -s -w "\n" "$@" | base64
+}
+
+export -f curl
+
+export TOKEN=$(/usr/bin/curl "<<get_api_url()>>/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | grep -Po '(?<=Token":").*(?=")')
+
+if [ -z "$TOKEN" ]
+then
+	export TOKEN=$(/usr/bin/curl "<<get_api_url()>>/inscription" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | grep -Po '(?<=Token":").*(?=")')
+fi
+
 #+END_SRC
 
 #+NAME: json_pretty
 #+begin_src python :eval yes :var json_str="{}" :results output :exports none
 import json
 import sys
+import base64
 
-print( json.dumps( json.loads(json_str), ensure_ascii=False, indent=4 ) )
+def decode_b64( b64_str ):
+    try:
+        return base64.b64decode(b64_str)
+    except:
+        return b64_str
+
+def decode_json( json_str ):    
+    try:
+        return json.loads(json_str)
+    except:
+        return json_str
+
+def formatte_json( json_str ):
+    try:
+        return json.dumps( json_str, ensure_ascii=False, indent=4 )
+    except:
+        return json_str
+    
+print( formatte_json( decode_json( decode_b64( json_str ) ) ) )
 #+end_src
 
-** Authentification en tant qu'utilisateur ~jdoe~ : ~LIVE~
+#+RESULTS: json_pretty
 
+** Obtenir la configuration du serveur
 
-#+BEGIN_SRC sh :eval yes :results output
-curl "https://progression.dti.crosemont.quebec/api/v1/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json"
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl "<<get_api_url()>>/config"
 #+END_SRC
 
-** Obtenir le profil de l'utilisateur authentifié ~jdoe~ : ~LIVE~
+** Authentification en tant qu'utilisateur ~jdoe~
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "https://progression.dti.crosemont.quebec/api/v1/user" -H "Authorization: Bearer $TOKEN"
+#+NAME: AUTHENTIFICATION
+#+BEGIN_SRC bash :eval yes
+curl "<<get_api_url()>>/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json"
 #+END_SRC
 
-** Obtenir la question «appeler_une_fonction_paramétrée» et ses tests: ~LIVE~
+#+RESULTS:
 
-Cette question est disponible à l'URL suivant : https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_param%C3%A9tr%C3%A9e
+** Obtenir le profil de l'utilisateur authentifié ~jdoe~
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU?include=tests" -H "Authorization: Bearer $TOKEN"
+#+NAME: USER
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl "<<get_api_url()>>/user" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir la question «appeler_une_fonction_paramétrée», ses tests et ses ébauches: ~LIVE~
+** Obtenir la question «Les fonctions avec paramètres/Rectangle» et ses tests: 
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "https://progression.dti.crosemont.quebec/api/v1/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU?include=tests,ebauches" -H "Authorization: Bearer $TOKEN"
+Cette question est disponible à l'URL suivant :
+https://progression.pages.dti.crosemont.quebec/contenu/prog_1/9bdf5f1a-489a-441f-9e6e-2c87bba58bf8/info.yml
+
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl "<<get_api_url()>>/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9jb250ZW51L3Byb2dfMS85YmRmNWYxYS00ODlhLTQ0MWYtOWU2ZS0yYzg3YmJhNThiZjgvaW5mby55bWw?include=tests" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Créer l'avancement de jdoe à la question «appeler_une_fonction_paramétrée» : ~LIVE~
+** Obtenir la question «Les fonctions avec paramètres/Rectangle», ses tests et ses ébauches: 
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl "<<get_api_url()>>/question/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9jb250ZW51L3Byb2dfMS85YmRmNWYxYS00ODlhLTQ0MWYtOWU2ZS0yYzg3YmJhNThiZjgvaW5mby55bWw?include=tests,ebauches" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Créer l'avancement de jdoe à la question «Les fonctions avec paramètres/Rectangle»
+
+#+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
 DATA=$(cat <<EOF
 {
-  "question_uri":"aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU"
+  "question_uri":"aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9jb250ZW51L3Byb2dfMS85YmRmNWYxYS00ODlhLTQ0MWYtOWU2ZS0yYzg3YmJhNThiZjgvaW5mby55bWw"
 }
 EOF
 )
-
-curl -X POST --data "$DATA" https://progression.dti.crosemont.quebec/api/v1/user/jdoe/avancements -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir l'avancement de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
-
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "https://progression.dti.crosemont.quebec/api/v1/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU" -H "Authorization: Bearer $TOKEN"
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl --data "$DATA" <<get_api_url()>>/user/jdoe/avancements -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir l'ébauche de solution en Python pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
+** Obtenir l'avancement de ~jdoe~ pour la question «Les fonctions avec paramètres/Rectangle»
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "https://progression.dti.crosemont.quebec/api/v1/ebauche/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/python" -H "Authorization: Bearer $TOKEN"
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl "<<get_api_url()>>/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9jb250ZW51L3Byb2dfMS85YmRmNWYxYS00ODlhLTQ0MWYtOWU2ZS0yYzg3YmJhNThiZjgvaW5mby55bWw" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Soumettre une tentative de solution à la question «appeler_une_fonction_paramétrée» et récupérer les résultats : ~LIVE~
+** Obtenir l'ébauche de solution en Python pour la question «Les fonctions avec paramètres/Rectangle»
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl "<<get_api_url()>>/ebauche/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9jb250ZW51L3Byb2dfMS85YmRmNWYxYS00ODlhLTQ0MWYtOWU2ZS0yYzg3YmJhNThiZjgvaW5mby55bWw/python" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Soumettre une tentative de solution à la question «Les fonctions avec paramètres/Rectangle» et récupérer les résultats
+
+#+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
+DATA=$(cat <<EOF
+{
+	"langage":"python",
+	"code":"# Fonction qui calcule et produit en sortie le périmètre du rectangle dont les côtés sont reçus en paramètre. À faire\ndef périmètre( une_largeur, une_longueur ):\n    # -TODO\n    # -VISIBLE\n\n\n    # +VISIBLE\n    # +TODO\n    print(42)\n\n# -TODO\n# Fonction qui calcule et produit en sortie l'aire du rectangle dont les côtés sont reçus en paramètre. À faire\n# +TODO\n\n\n\n# -TODO\n# Programme principal\n# -VISIBLE\n\n# +VISIBLE\n# Entrées\nlargeur = int( input() )\nlongueur = int( input() )\n\n# Appel des fonctions, les côtés du rectangle sont transmis en paramètre. À faire\npérimètre( largeur, longueur )\n# +TODO\n\n\n# -TODO\n# -VISIBLE\n\n\n\n\n\n\n"
+}
+EOF
+)
+#+END_SRC
+
+#+NAME: get_tentative
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*) :cache yes
+curl --data "$DATA" <<get_api_url()>>/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9jb250ZW51L3Byb2dfMS85YmRmNWYxYS00ODlhLTQ0MWYtOWU2ZS0yYzg3YmJhNThiZjgvaW5mby55bWw/tentatives?include=resultats -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+#+begin_src bash :eval yes :session *bash* :results none :exports none
+sleep 1 #Petit moment d'attente pour s'assurer que la prochaine tentative n'aura pas le même timestamp
+#+end_src
+
+** Obtenir une tentative de solution préalablement soumise pour la question «Les fonctions avec paramètres/Rectangle»
+
+#+NAME: get_timestamp
+#+BEGIN_SRC bash :eval yes :session *bash* :var RES_TENTATIVE=get_tentative :results output :exports none
+TIMESTAMP=$(echo $RES_TENTATIVE | grep -Po '(?<="date_soumission": )\d*')
+#+END_SRC
+
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl "<<get_api_url()>>/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9jb250ZW51L3Byb2dfMS85YmRmNWYxYS00ODlhLTQ0MWYtOWU2ZS0yYzg3YmJhNThiZjgvaW5mby55bWw/$TIMESTAMP" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Obtenir le test numéro 0 pour la question «Les fonctions avec paramètres/Rectangle»
+
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl "<<get_api_url()>>/test/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9jb250ZW51L3Byb2dfMS85YmRmNWYxYS00ODlhLTQ0MWYtOWU2ZS0yYzg3YmJhNThiZjgvaW5mby55bWw/0" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Créer ou mettre à jour la sauvegarde de ~jdoe~ pour la question «Les fonctions avec paramètres/Rectangle» et un code ~python~
+
+#+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
 DATA=$(cat <<EOF
 {
   "langage":"python",
-  "code": "#+TODO\nprint(1)\n#-TODO"
+  "code": "#+TODO\nSystem.out.println('Allo le monde');\n#-TODO"
 }
 EOF
 )
-
-curl -X POST --data "$DATA" https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU?include=resultats -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir une tentative de solution préalablement soumise pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
-
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "https://progression.dti.crosemont.quebec/api/v1/tentative/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1617040175" -H "Authorization: Bearer $TOKEN"
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl --data "$DATA" <<get_api_url()>>/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/sauvegardes -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Obtenir le test numéro 0 pour la question «appeler_une_fonction_paramétrée» : ~LIVE~
+** Obtenir la dernière sauvegarde de ~jdoe~ pour la question «Les fonctions avec paramètres/Rectangle» effectuée avec le langage ~python~: 
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "https://progression.dti.crosemont.quebec/api/v1/test/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vcHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/0" -H "Authorization: Bearer $TOKEN"
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl "<<get_api_url()>>/sauvegarde/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/python" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
-** Créer ou mettre à jour la sauvegarde de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» et un code ~python~ : ~LIVE~
+** Créer une clé d'authentification pour ~jdoe~
 
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
+#+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
 DATA=$(cat <<EOF
 {
-  "langage":"python",
-  "code": "#+TODO\nSystem.out.println('Hi !');\n#-TODO"
+  "nom":"cléAuth$(head -c 9 /dev/urandom|base64|tr '/+' '_-')",
+  "portée":1
+}
+EOF
+)
+#+END_SRC
+
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl --data "$DATA" "<<get_api_url()>>/user/jdoe/cles" -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+#+END_SRC
+
+** Authentification par clé d'authentification pour ~jdoe~
+
+#+BEGIN_SRC bash :eval yes :session *bash* :results none :exports none
+DATA=$(cat <<EOF
+{
+  "nom":"cléAuth$(head -c 9 /dev/urandom|base64|tr '/+' '_-')",
+  "portée":1
 }
 EOF
 )
 
-curl -X POST --data "$DATA" https://progression.dti.crosemont.quebec/api/v1/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/sauvegardes -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+RES_CLE=$(/usr/bin/curl --data "$DATA" "<<get_api_url()>>/user/jdoe/cles" -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN")
+
+NOM_CLE=$(echo $RES_CLE | grep -Po '(?<="id":"jdoe\\/)[^"]*')
+SECRET=$(echo $RES_CLE | grep -Po '(?<="secret":")\w*')
 #+END_SRC
 
-** Obtenir la dernière sauvegarde de ~jdoe~ pour la question «appeler_une_fonction_paramétrée» effectuée avec le langage ~python~: ~LIVE~
-
-#+BEGIN_SRC sh :eval yes :var TOKEN=get_token :post json_pretty(*this*) :results output
-curl "https://progression.dti.crosemont.quebec/api/v1/sauvegarde/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/python" -H "Authorization: Bearer $TOKEN"
+#+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
+DATA=$(cat <<EOF
+{
+  "username":"jdoe",
+  "key_name":"$NOM_CLE",
+  "key_secret":"$SECRET"
+}
+EOF
+)
 #+END_SRC
 
+#+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+curl --data "$DATA" "<<get_api_url()>>/auth" -H "Content-Type: application/json"
+#+END_SRC

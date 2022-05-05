@@ -1,8 +1,0 @@
-FROM system
-
-COPY q11-2/canrm /tmp/
-COPY q11-2/un_script.sh /home/krusty/
-RUN echo canari > /tmp/canari
-RUN chown krusty:krusty /home/krusty/un_script.sh
-RUN chmod +s /tmp/canrm
-RUN chmod -x /home/krusty/un_script.sh

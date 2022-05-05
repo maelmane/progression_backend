@@ -16,15 +16,13 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-require_once __DIR__ . "/../../../TestCase.php";
+use progression\ContrôleurTestCase;
 
 use progression\domaine\entité\{Question, QuestionProg, Exécutable, User};
-use progression\http\contrôleur\ÉbaucheCtl;
 use progression\dao\DAOFactory;
-use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
 
-final class ÉbaucheCtlTests extends TestCase
+final class ÉbaucheCtlTests extends ContrôleurTestCase
 {
 	public $user;
 
@@ -42,14 +40,14 @@ final class ÉbaucheCtlTests extends TestCase
 		$question->exécutables["python"] = new Exécutable("print(\"Hello world\")", "python");
 		$question->exécutables["java"] = new Exécutable("System.out.println(\"Hello world\")", "java");
 
-		$mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
+		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");
 		$mockQuestionDAO
 			->shouldReceive("get_question")
-			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", Mockery::any())
+			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 
 		// DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
@@ -67,7 +65,7 @@ final class ÉbaucheCtlTests extends TestCase
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/ébaucheCtlTests_1.json",
 			$résultat_obtenu->getContent(),
 		);

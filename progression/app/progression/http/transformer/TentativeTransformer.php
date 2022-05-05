@@ -24,6 +24,7 @@ use progression\domaine\entité\Tentative;
 class TentativeTransformer extends Fractal\TransformerAbstract
 {
 	public $type = "tentative";
+	protected $availableIncludes = ["commentaires"];
 
 	public function transform(Tentative $tentative)
 	{
@@ -32,11 +33,24 @@ class TentativeTransformer extends Fractal\TransformerAbstract
 			"date_soumission" => $tentative->date_soumission,
 			"feedback" => $tentative->feedback,
 			"réussi" => $tentative->réussi,
+			"temps_exécution" => $tentative->temps_exécution,
 			"links" => (isset($tentative->links) ? $tentative->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}tentative/{$tentative->id}",
 			],
 		];
 
 		return $data_out;
+	}
+
+	public function includeCommentaires(Tentative $tentative)
+	{
+		$commentaires = $tentative->commentaires;
+		foreach ($commentaires as $numéro => $commentaire) {
+			$commentaire->id = "{$tentative->id}/{$numéro}";
+			$commentaire->links = [
+				"related" => "{$_ENV["APP_URL"]}tentative/{$tentative->id}",
+			];
+		}
+		return $this->collection($commentaires, new CommentaireTransformer(), "commentaire");
 	}
 }

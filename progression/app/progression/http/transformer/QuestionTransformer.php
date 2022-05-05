@@ -28,15 +28,17 @@ class QuestionTransformer extends Fractal\TransformerAbstract
 	public function transform($data_in)
 	{
 		$question = $data_in["question"];
-		$username = $data_in["username"];
 
 		$chemin_encodé = Encodage::base64_encode_url($question->uri);
 
 		$data_out = [
 			"id" => $chemin_encodé,
+			"niveau" => $question->niveau,
 			"titre" => $question->titre,
 			"description" => $question->description,
 			"énoncé" => $question->enonce,
+			"auteur" => $question->auteur,
+			"licence" => $question->licence,
 			"links" => [
 				"self" => $_ENV["APP_URL"] . "question/" . $chemin_encodé,
 			],

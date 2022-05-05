@@ -1,0 +1,12 @@
+type: prog
+
+ébauches: {
+  "python": ""
+}
+
+tests: [
+  {
+    sortie: ""
+  }
+]
+

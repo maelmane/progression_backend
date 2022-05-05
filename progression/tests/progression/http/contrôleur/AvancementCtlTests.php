@@ -16,69 +16,95 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-require_once __DIR__ . "/../../../TestCase.php";
+use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\{Question, QuestionProg, Avancement, TentativeProg, User};
 use Illuminate\Auth\GenericUser;
 
-final class AvancementCtlTests extends TestCase
+final class AvancementCtlTests extends ContrôleurTestCase
 {
 	public $user;
 
 	public function setUp(): void
 	{
 		parent::setUp();
+
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 		$this->admin = new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		// UserDAO
-		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("jdoe")
 			->andReturn(new User("jdoe"));
 		$mockUserDAO
 			->shouldReceive("get_user")
+			->with("roger")
+			->andReturn(new User("roger"));
+		$mockUserDAO
+			->shouldReceive("get_user")
 			->with("Marcel")
 			->andReturn(null);
 
-		// Question
+		// Question Appeler une fonction
 		$question = new QuestionProg();
 		$question->type = Question::TYPE_PROG;
 		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
-		$mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
+		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");
 		$mockQuestionDAO
 			->shouldReceive("get_question")
-			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", Mockery::any())
+			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->andReturn($question);
+
+		// Question Nouvelle Question
+		$question = new QuestionProg();
+		$question->type = Question::TYPE_PROG;
+		$question->nom = "nouvelle question";
+		$question->uri = "https://depot.com/roger/questions_prog/nouvelle_question";
+		$mockQuestionDAO
+			->shouldReceive("get_question")
+			->with("https://depot.com/roger/questions_prog/nouvelle_question")
 			->andReturn($question);
 
 		// Avancement
-		$avancement = new Avancement(0, 0, [
+		$avancement_nouveau = new Avancement();
+
+		$avancement_réussi = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [
 			new TentativeProg("python", "codeTest", [], 1614965817, false, 2, "feedbackTest"),
 		]);
-		$avancement->etat = 1;
-		$avancement->type = Question::TYPE_PROG;
-		$avancementPost = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG);
 
-		$mockAvancementDAO = Mockery::mock("progression\dao\AvancementDAO");
+		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
-			->andReturn($avancement);
-		$mockAvancementDAO->shouldReceive("save")->andReturn($avancementPost);
+			->andReturn($avancement_réussi);
+		$mockAvancementDAO
+			->shouldReceive("save")
+			->with("jdoe", "https://depot.com/roger/questions_prog/nouvelle_question", Mockery::any())
+			->andReturn($avancement_nouveau);
 
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("Marcel", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->with("jdoe", "https://depot.com/roger/questions_inexistante")
 			->andReturn(null);
 
+		$mockAvancementDAO
+			->shouldReceive("get_avancement")
+			->with("roger", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->andReturn($avancement_réussi);
+		$mockAvancementDAO
+			->shouldReceive("save")
+			->with("roger", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", Mockery::any())
+			->andReturn($avancement_réussi);
+
 		// DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		$mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);
 		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
@@ -100,7 +126,7 @@ final class AvancementCtlTests extends TestCase
 		);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementCtlTests_1.json",
 			$résultat_observé->getContent(),
 		);
@@ -110,76 +136,70 @@ final class AvancementCtlTests extends TestCase
 	{
 		$résultat_observé = $this->actingAs($this->user)->call(
 			"GET",
-			"/avancement/Marcel/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX2luZXhpc3RhbnRl",
 		);
 
 		$this->assertEquals(404, $résultat_observé->status());
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
 	}
 
-	// POST
-	public function test_étant_donné_le_chemin_dune_question_non_fourni_dans_la_requete_lorsquon_appelle_post_sans_avancement_on_obtient_un_message_derreur()
+	public function test_étant_donné_le_chemin_dune_question_non_fourni_dans_la_requete_lorsquon_appelle_post_avec_un_avancement_on_obtient_une_erreur_400()
 	{
+		$avancementTest = ["état" => Question::ETAT_REUSSI];
+
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
-			"avancement" => "{test}",
+			"avancement" => $avancementTest,
 		]);
 
-		$this->assertEquals(422, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Requête intraitable"}', $résultat_observé->getContent());
+		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertEquals(
+			'{"erreur":{"question_uri":["Le champ question uri est obligatoire."]}}',
+			$résultat_observé->getContent(),
+		);
 	}
 
 	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_on_obtient_un_nouvel_avancement_avec_ses_valeurs_par_defaut()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
-			"question_uri" =>
-				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
 		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertStringEqualsFile(
-			__DIR__ . "/résultats_attendus/avancementCtlTests_1.json",
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/avancementCtlTests_nouvelAvancement.json",
 			$résultat_observé->getContent(),
 		);
 	}
-	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_avec_un_avancement_on_obtient_une_erreur_403()
-	{
-		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
-			"question_uri" =>
-				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-			"avancement" => "{test}",
-		]);
 
-		$this->assertEquals(403, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_observé->getContent());
-	}
-	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_dans_le_body_on_obtient_le_meme_resultat_quun_utilisateur_normal()
+	public function test_étant_donné_un_admin_et_le_chemin_dune_question_lorsquon_appelle_post_sans_avancement_on_obtient_le_meme_resultat_quun_utilisateur_normal()
 	{
 		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/jdoe/avancements", [
-			"question_uri" =>
-				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
 		]);
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertStringEqualsFile(
-			__DIR__ . "/résultats_attendus/avancementCtlTests_1.json",
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/avancementCtlTests_nouvelAvancement.json",
 			$résultat_observé->getContent(),
 		);
 	}
-	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_avancement_dans_le_body_on_obtient_lavancement_modifié()
+	public function test_étant_donné_un_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_avancement_on_obtient_lavancement_modifié()
 	{
 		$avancementTest = ["état" => Question::ETAT_REUSSI];
-		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/jdoe/avancements", [
+
+		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/roger/avancements", [
 			"question_uri" =>
 				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 			"avancement" => $avancementTest,
 		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementCtlTests_2.json",
 			$résultat_observé->getContent(),
 		);
 	}
-	public function test_étant_donné_le_username_dun_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_avancement_dans_le_body_mais_sans_etat_on_obtient_un_message_derreur()
+
+	public function test_étant_donné_un_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_avancement_sans_etat_on_obtient_une_erreur_400()
 	{
 		$avancementTest = ["test" => "test valeur"];
 		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/jdoe/avancements", [
@@ -188,9 +208,25 @@ final class AvancementCtlTests extends TestCase
 			"avancement" => $avancementTest,
 		]);
 
-		$this->assertEquals(422, $résultat_observé->status());
+		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
-			'{"erreur":"Le champ état est obligatoire pour traiter la requête"}',
+			'{"erreur":{"avancement.état":["The avancement.état field is required when avancement is present."]}}',
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_admin_et_le_chemin_dune_question_lorsquon_appelle_post_avec_l_état_d_avancement_invalide_on_obtient_une_erreur_400()
+	{
+		$avancementTest = ["état" => 42];
+		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/jdoe/avancements", [
+			"question_uri" =>
+				"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"avancement" => $avancementTest,
+		]);
+
+		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertEquals(
+			'{"erreur":{"avancement.état":["The avancement.état must be between 0 and 2."]}}',
 			$résultat_observé->getContent(),
 		);
 	}

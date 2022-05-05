@@ -41,13 +41,16 @@ final class QuestionProgTransformerTests extends TestCase
 		$question->description = "Appel d\'une fonction existante recevant un paramètre";
 		$question->enonce =
 			"La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
+		$question->auteur = "Albert Einstein";
+		$question->licence = "poétique";
+		$question->niveau = "débutant";
 
 		$item = (new QuestionProgTransformer())->transform([
 			"question" => $question,
 			"username" => $username,
 		]);
 
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/questionProgTransformerTest_1.json",
 			json_encode($item),
 		);
@@ -75,7 +78,7 @@ final class QuestionProgTransformerTests extends TestCase
 			$tests[] = $résultat;
 		}
 
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/questionProgTransformerTest_2.json",
 			json_encode($tests),
 		);
@@ -118,7 +121,7 @@ final class QuestionProgTransformerTests extends TestCase
 			$ébauches[] = $résultat;
 		}
 
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/questionProgTransformerTest_3.json",
 			json_encode($ébauches),
 		);

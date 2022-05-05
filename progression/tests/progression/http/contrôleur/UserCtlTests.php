@@ -16,15 +16,13 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-require_once __DIR__ . "/../../../TestCase.php";
+use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\{Avancement, User};
-use progression\http\contrôleur\UserCtl;
-use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
 
-final class UserCtlTests extends TestCase
+final class UserCtlTests extends ContrôleurTestCase
 {
 	public $user;
 	public function setUp(): void
@@ -42,14 +40,14 @@ final class UserCtlTests extends TestCase
 		];
 
 		// UserDAO
-		$mockUserDAO = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("jdoe")
 			->andReturn($user);
 
 		// DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
@@ -57,6 +55,7 @@ final class UserCtlTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	public function test_étant_donné_le_nom_dun_utilisateur_lorsquon_appelle_get_on_obtient_lutilisateur_et_ses_relations_sous_forme_json()
@@ -64,7 +63,7 @@ final class UserCtlTests extends TestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe");
 
 		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/userCtlTest_1.json",
 			$résultat_obtenu->getContent(),
 		);

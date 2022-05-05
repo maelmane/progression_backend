@@ -1,8 +1,0 @@
-FROM system
-
-RUN groupadd installation
-RUN usermod -a -G installation krusty
-RUN echo Cmnd_Alias INSTALL = /usr/bin/apt, /usr/bin/apt-get, /usr/bin/apt-cache >> /etc/sudoers
-RUN echo %installation ALL=\(ALL\) NOPASSWD: INSTALL >> /etc/sudoers
-
-RUN dpkg-reconfigure locales

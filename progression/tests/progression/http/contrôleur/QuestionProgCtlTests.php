@@ -16,15 +16,13 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-require_once __DIR__ . "/../../../TestCase.php";
+use progression\ContrôleurTestCase;
 
 use progression\domaine\entité\{Question, QuestionProg, Exécutable, Test, User};
-use progression\http\contrôleur\QuestionCtl;
 use progression\dao\DAOFactory;
-use Illuminate\Http\Request;
 use Illuminate\Auth\GenericUser;
 
-final class QuestionProgCtlTests extends TestCase
+final class QuestionProgCtlTests extends ContrôleurTestCase
 {
 	public $user;
 
@@ -41,7 +39,9 @@ final class QuestionProgCtlTests extends TestCase
 		$question->description = "Appel d'une fonction existante recevant un paramètre";
 		$question->enonce =
 			"La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
-
+		$question->auteur = "Albert Einstein";
+		$question->licence = "poétique";
+		$question->niveau = "débutant";
 		// Ébauches
 		$question->exécutables["python"] = new Exécutable("print(\"Hello world\")", "python");
 		$question->exécutables["java"] = new Exécutable("System.out.println(\"Hello world\")", "java");
@@ -52,18 +52,18 @@ final class QuestionProgCtlTests extends TestCase
 			new Test("Aucune salutation", "", "0"),
 		];
 
-		$mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
+		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");
 		$mockQuestionDAO
 			->shouldReceive("get_question")
-			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", Mockery::any())
+			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 		$mockQuestionDAO
 			->shouldReceive("get_question")
-			->with(Mockery::any(), Mockery::any())
+			->with(Mockery::any())
 			->andReturn(null);
 
 		// DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
@@ -71,6 +71,7 @@ final class QuestionProgCtlTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	public function test_étant_donné_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_la_question_et_ses_relations_sous_forme_json()
@@ -81,20 +82,20 @@ final class QuestionProgCtlTests extends TestCase
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertStringEqualsFile(
+		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/questionCtlTests_1.json",
 			$résultat_obtenu->getContent(),
 		);
 	}
 
-	public function test_étant_donné_le_chemin_dune_question_inexistante_lorsquon_appelle_get_on_obtient_ressource_non_trouvée()
+	public function test_étant_donné_le_chemin_dune_question_inexistante_lorsquon_appelle_get_on_obtient_une_erreur_400()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
 			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25faW5leGlzdGFudGU",
 		);
 
-		$this->assertEquals(404, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_obtenu->getContent());
+		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals('{"erreur":"Type de question inconnu."}', $résultat_obtenu->getContent());
 	}
 }

@@ -1,9 +1,10 @@
 <?php
-require_once "/var/www/progression/vendor/" . "autoload.php";
+require_once __DIR__ . "/../vendor/autoload.php";
 
-$dotenv = Dotenv\Dotenv::createImmutable("/var/www/progression/app/");
-$dotenv->load();
-
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+if (file_exists(__DIR__ . ".env")) {
+	$dotenv->load();
+}
 $dotenv->required("APP_URL")->allowedRegexValues('(.*/$)');
 $dotenv->required("APP_NAME")->allowedRegexValues("(.*)");
 $dotenv->required("APP_TIMEZONE")->allowedValues(["UTC"]);
@@ -14,7 +15,9 @@ $dotenv->required("DB_DBNAME")->allowedRegexValues("(.*)");
 $dotenv->required("DB_USERNAME")->allowedRegexValues("([a-zA-Z0-9_]+)");
 $dotenv->required("DB_PASSWORD")->allowedRegexValues("(.*)");
 
-$dotenv->required("AUTH_TYPE")->allowedRegexValues("(no|local|ldap)");
+$dotenv->ifpresent("AUTH_LOCAL")->isBoolean();
+$dotenv->ifpresent("AUTH_LDAP")->isBoolean();
+
 $dotenv->required("HTTP_ORIGIN")->allowedRegexValues("(.*)");
 
 $dotenv->required("QUESTION_TAILLE_MAX")->isInteger();

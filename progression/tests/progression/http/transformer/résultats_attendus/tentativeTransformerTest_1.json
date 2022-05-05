@@ -1,0 +1,27 @@
+[
+    {
+        "feedback": "feedback",
+        "id": "roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760/0",
+        "links": {
+            "related": "https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760"
+        },
+        "numéro": 0,
+        "résultat": false,
+        "sortie_erreur": "error",
+        "sortie_observée": "output",
+        "temps_exécution": 123
+    },
+    {
+        "feedback": "feedback 2",
+        "id": "roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760/1",
+        "links": {
+            "related": "https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760"
+        },
+        "numéro": 1,
+        "résultat": true,
+        "sortie_erreur": "error 2",
+        "sortie_observée": "output 2",
+        "temps_exécution": 456
+    }
+	
+]

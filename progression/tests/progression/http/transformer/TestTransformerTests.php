@@ -26,15 +26,15 @@ final class TestTransformerTests extends TestCase
 	public function test_étant_donné_un_test_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
 		$testTransformer = new TestTransformer();
-		$test = new Test("Somme de deux nombres", "42", "21\n21\n");
+		$test = new Test("Somme de deux nombres", "42", "21\n21\n", "-h");
 		$test->numéro = 0;
 		$test->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0";
 
 		$résultat_attendu = [
 			"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
-			"numéro" => 0,
 			"nom" => "Somme de deux nombres",
 			"entrée" => "21\n21\n",
+			"params" => "-h",
 			"sortie_attendue" => "42",
 			"links" => [
 				"self" =>

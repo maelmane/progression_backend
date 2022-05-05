@@ -19,46 +19,27 @@
 namespace progression\http\middleware;
 
 use Closure;
-use progression\domaine\entité\User;
-use progression\domaine\interacteur\ObtenirUserInt;
+use Illuminate\Support\Facades\Gate;
 
 class ValidationPermissions
 {
 	public function handle($request, Closure $next)
 	{
-		$nomUtilisateur = $request->username;
-		$utilisateurConnecté = $request->user();
-
-		if (!$nomUtilisateur) {
-			$utilisateurRecherché = $utilisateurConnecté;
+		if (
+			Gate::allows("acces-utilisateur", $request) ||
+			($request->input("tkres") && Gate::allows("acces-ressource", $request))
+		) {
+			return $next($request);
 		} else {
-			$utilisateurInt = new ObtenirUserInt();
-			$utilisateurRecherché = $utilisateurInt->get_user($nomUtilisateur);
+			return response()->json(
+				["erreur" => "Opération interdite."],
+				403,
+				[
+					"ContentType" => "application/vnd.api+json",
+					"Charset" => "utf8",
+				],
+				JSON_UNESCAPED_UNICODE,
+			);
 		}
-
-		$réponse = response()->json(
-			["erreur" => "Accès interdit."],
-			403,
-			[
-				"Content-Type" => "application/vnd.api+json",
-				"Charset" => "utf-8",
-			],
-			JSON_UNESCAPED_UNICODE,
-		);
-
-		if ($utilisateurRecherché && $utilisateurConnecté) {
-			switch ($utilisateurConnecté->rôle) {
-				case User::ROLE_NORMAL:
-					if ($utilisateurConnecté->username == $utilisateurRecherché->username) {
-						$réponse = $next($request);
-					}
-					break;
-				case User::ROLE_ADMIN:
-					$réponse = $next($request);
-					break;
-			}
-		}
-
-		return $réponse;
 	}
 }

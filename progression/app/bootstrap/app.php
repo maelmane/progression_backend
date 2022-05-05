@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/../autoload.php";
+require_once __DIR__ . "/../../autoload.php";
 require_once __DIR__ . "/../../vendor/autoload.php";
 
 date_default_timezone_set(env("APP_TIMEZONE", "UTC"));
@@ -70,10 +70,12 @@ $app->routeMiddleware([
 ]);
 
 $app->routeMiddleware([
-	"validationPermissions" =>
-		$_ENV["AUTH_TYPE"] == "no"
-			? progression\http\middleware\Bypass::class
-			: progression\http\middleware\ValidationPermissions::class,
+	//	"validationPermissions" =>
+	//		$_ENV["AUTH_TYPE"] == "no"
+	//			? progression\http\middleware\Bypass::class
+	//			: progression\http\middleware\ValidationPermissions::class,
+
+	"validationPermissions" => progression\http\middleware\ValidationPermissions::class,
 ]);
 
 $app->routeMiddleware([
@@ -95,6 +97,8 @@ $app->middleware([progression\http\middleware\Cors::class]);
 
 // $app->register(App\Providers\AppServiceProvider::class);
 $app->register(progression\providers\AuthServiceProvider::class);
+$app->register(Illuminate\Redis\RedisServiceProvider::class);
+
 // $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
@@ -117,5 +121,7 @@ $app->router->group(
 		require __DIR__ . "/../routes/web.php";
 	},
 );
+
+$app->configure("database");
 
 return $app;

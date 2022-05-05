@@ -35,7 +35,7 @@ final class TraiterTentativeProgIntTests extends TestCase
 
 		$tentative = new TentativeProg("python", "testCode");
 		$tentative->résultats = [new RésultatProg("ok\n", ""), new RésultatProg("ok\nok\nok\nok\nok\n", "")];
-		$résultat_attendu = new TentativeProg("python", "testCode", null, true, 2, "Bravo!", [
+		$résultat_attendu = new TentativeProg("python", "testCode", null, true, 2, null, "Bravo!", [
 			new RésultatProg("ok\n", "", true, "Test 0 passé"),
 			new RésultatProg("ok\nok\nok\nok\nok\n", "", true, "Test 1 passé"),
 		]);
@@ -76,6 +76,7 @@ final class TraiterTentativeProgIntTests extends TestCase
 			null,
 			false,
 			1,
+			null,
 			"As-tu essayé de ne pas faire ça?",
 			[
 				new RésultatProg("ok\n", "", true, "Test 0 passé"),
@@ -103,17 +104,23 @@ final class TraiterTentativeProgIntTests extends TestCase
 		$tentative = new TentativeProg("python", "testCode");
 		$tentative->résultats = [new RésultatProg("ok\n", ""), new RésultatProg("", "testErreur")];
 
-		$résultat_attendu = new TentativeProg("python", "testCode", null, false, 1, "Revise la syntaxe de ton code", [
-			new RésultatProg("ok\n", "", true, "Test 0 passé"),
-			new RésultatProg("", "testErreur", false, "Erreur!"),
-		]);
+		$résultat_attendu = new TentativeProg(
+			"python",
+			"testCode",
+			null,
+			false,
+			1,
+			null,
+			"Revise la syntaxe de ton code",
+			[new RésultatProg("ok\n", "", true, "Test 0 passé"), new RésultatProg("", "testErreur", false, "Erreur!")],
+		);
 
 		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($question, $tentative);
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 
-	public function test_étant_donné_une_TentativeProg_avec_une_erreur_sans_feedback_d_erreur_prévu_lorsquon_la_traite_on_obtient_une_TentativeProg_traitée_et_nonréussie_avec_feedback_aléatoire()
+	public function test_étant_donné_une_TentativeProg_avec_une_erreur_sans_feedback_d_erreur_prévu_lorsquon_la_traite_on_obtient_une_TentativeProg_traitée_et_nonréussie_sans_feedback_d_erreur()
 	{
 		$question = new QuestionProg();
 		$question->tests = [
@@ -126,8 +133,13 @@ final class TraiterTentativeProgIntTests extends TestCase
 		$tentative = new TentativeProg("python", "testCode");
 		$tentative->résultats = [new RésultatProg("ok\n", ""), new RésultatProg("", "testErreur")];
 
+		$résultat_attendu = new TentativeProg("python", "testCode", null, false, 1, null, null, [
+			new RésultatProg("ok\n", "", true, "Test 0 passé"),
+			new RésultatProg("", "testErreur", false, null),
+		]);
+
 		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($question, $tentative);
 
-		$this->assertNotEmpty($résultat_observé->feedback);
+		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 }

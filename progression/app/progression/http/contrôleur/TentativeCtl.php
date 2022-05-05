@@ -25,7 +25,7 @@ use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransfor
 use progression\domaine\interacteur\{ObtenirTentativeInt, ObtenirQuestionInt, SoumettreTentativeProgInt};
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
-use progression\dao\ExécutionException;
+use progression\dao\exécuteur\ExécutionException;
 use progression\util\Encodage;
 use DomainException, LengthException, RuntimeException;
 
@@ -59,6 +59,22 @@ class TentativeCtl extends Contrôleur
 
 	public function post(Request $request, $username, $question_uri)
 	{
+		Log::debug("TentativeCtl.post. Params : ", [$request->all(), $username]);
+
+		$TAILLE_CODE_MAX = (int) $_ENV["TAILLE_CODE_MAX"];
+		$taille_code = mb_strlen($request->code);
+		if ($taille_code > $TAILLE_CODE_MAX) {
+			Log::error(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					__CLASS__ .
+					") Le code soumis ${taille_code} > ${TAILLE_CODE_MAX} caractères.",
+			);
+			return $this->réponse_json(
+				["erreur" => "Le code soumis ${taille_code} > ${TAILLE_CODE_MAX} caractères."],
+				413,
+			);
+		}
+
 		$tentative = null;
 		$réponse = null;
 
@@ -76,14 +92,21 @@ class TentativeCtl extends Contrôleur
 			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["erreur" => "Ressource indisponible sur le serveur distant."], 502);
 		} catch (DomainException $erreur) {
-			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			return $this->réponse_json(["erreur" => "Requête intraitable."], 422);
+			Log::notice(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Question inexistante",
+			);
+			return $this->réponse_json(["erreur" => "Requête intraitable."], 400);
 		}
 
 		if ($question instanceof QuestionProg) {
-			$validation = $this->validationTentativeProg($request);
+			$validation = $this->valider_paramètres($request);
 			if ($validation->fails()) {
-				return $this->réponse_json(["erreur" => $validation->errors()], 422);
+				Log::notice(
+					"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+						__CLASS__ .
+						") Paramètres invalides",
+				);
+				return $this->réponse_json(["erreur" => $validation->errors()], 400);
 			}
 			$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
 
@@ -92,24 +115,36 @@ class TentativeCtl extends Contrôleur
 				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
 			} catch (ExécutionException $e) {
 				Log::error($e->getMessage());
+				if ($e->getPrevious()) {
+					Log::error($e->getPrevious()->getMessage());
+				}
 				return $this->réponse_json(["erreur" => "Service non disponible."], 503);
 			}
-			if ($tentative != null) {
-				$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
-				$réponse = $this->item($tentative, new TentativeProgTransformer());
-			} else {
-				return $this->réponse_json(["erreur" => "Requête intraitable."], 422);
+			if ($tentative == null) {
+				Log::notice(
+					"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+						__CLASS__ .
+						") Requête intraitable (Tentative == null)",
+				);
+				return $this->réponse_json(["erreur" => "Requête intraitable."], 400);
 			}
+
+			$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
+			$réponse = $this->item($tentative, new TentativeProgTransformer());
 		} elseif ($question instanceof QuestionSys) {
+			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["erreur" => "Question système non implémentée."], 501);
 		} elseif ($question instanceof QuestionBD) {
+			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["erreur" => "Question BD non implémentée."], 501);
 		}
+
+		Log::debug("TentativeCtl.post. Retour : ", $réponse);
 
 		return $this->préparer_réponse($réponse);
 	}
 
-	public function validationTentativeProg($request)
+	private function valider_paramètres($request)
 	{
 		return Validator::make(
 			$request->all(),
