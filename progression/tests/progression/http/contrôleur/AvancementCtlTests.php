@@ -79,21 +79,25 @@ final class AvancementCtlTests extends ContrôleurTestCase
 			new TentativeProg("python", "codeTest", [], 1614965817, false, 2, "feedbackTest"),
 		]);
 
+		$avancements = ["uri_a" => new Avancement(), "uri_b" => new Avancement()];
+
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($avancement_réussi);
 		$mockAvancementDAO
+			->shouldReceive("get_tous")
+			->with("jdoe")
+			->andReturn($avancements);
+		$mockAvancementDAO
 			->shouldReceive("save")
 			->with("jdoe", "https://depot.com/roger/questions_prog/nouvelle_question", Mockery::any())
 			->andReturn($avancement_nouveau);
-
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
 			->with("jdoe", "https://depot.com/roger/questions_inexistante")
 			->andReturn(null);
-
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
 			->with("roger", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
@@ -125,9 +129,20 @@ final class AvancementCtlTests extends ContrôleurTestCase
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 		);
 
-		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertResponseStatus(200);
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementCtlTests_1.json",
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_pour_tous_les_avancements_lorsquon_appelle_get_on_obtient_tous_les_avancements_et_ses_relations_sous_forme_json()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/jdoe/avancements");
+
+		$this->assertResponseStatus(200);
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/avancementCtlTestsArray.json",
 			$résultat_observé->getContent(),
 		);
 	}
@@ -139,7 +154,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX2luZXhpc3RhbnRl",
 		);
 
-		$this->assertEquals(404, $résultat_observé->status());
+		$this->assertResponseStatus(404);
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
 	}
 
@@ -151,7 +166,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 			"avancement" => $avancementTest,
 		]);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertResponseStatus(400);
 		$this->assertEquals(
 			'{"erreur":{"question_uri":["Le champ question uri est obligatoire."]}}',
 			$résultat_observé->getContent(),
@@ -164,7 +179,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
 		]);
 
-		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertResponseStatus(200);
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementCtlTests_nouvelAvancement.json",
 			$résultat_observé->getContent(),
@@ -176,7 +191,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		$résultat_observé = $this->actingAs($this->admin)->call("POST", "/user/jdoe/avancements", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
 		]);
-		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertResponseStatus(200);
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementCtlTests_nouvelAvancement.json",
 			$résultat_observé->getContent(),
@@ -192,7 +207,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 			"avancement" => $avancementTest,
 		]);
 
-		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertResponseStatus(200);
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementCtlTests_2.json",
 			$résultat_observé->getContent(),
@@ -208,7 +223,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 			"avancement" => $avancementTest,
 		]);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertResponseStatus(400);
 		$this->assertEquals(
 			'{"erreur":{"avancement.état":["The avancement.état field is required when avancement is present."]}}',
 			$résultat_observé->getContent(),
@@ -224,7 +239,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 			"avancement" => $avancementTest,
 		]);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertResponseStatus(400);
 		$this->assertEquals(
 			'{"erreur":{"avancement.état":["The avancement.état must be between 0 and 2."]}}',
 			$résultat_observé->getContent(),

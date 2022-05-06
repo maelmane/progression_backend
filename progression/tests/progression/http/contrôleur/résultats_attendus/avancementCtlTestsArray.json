@@ -1,0 +1,62 @@
+[
+	{
+		"data": {
+			"attributes": {
+				"date_modification": 0,
+				"date_réussite": 0,
+				"niveau": "",
+				"titre": "",
+				"état": 0
+			},
+			"id": "uri_a",
+			"links": {
+				"self": "https://example.com/avancement/uri_a"
+			},
+			"relationships": {
+				"sauvegardes": {
+					"links": {
+						"related": "https://example.com/avancement/uri_a/sauvegardes",
+						"self": "https://example.com/avancement/uri_a/relationships/sauvegardes"
+					}
+				},
+				"tentatives": {
+					"links": {
+						"related": "https://example.com/avancement/uri_a/tentatives",
+						"self": "https://example.com/avancement/uri_a/relationships/tentatives"
+					}
+				}
+			},
+			"type": "avancement"
+		}
+	},
+	{
+		"data": {
+			"attributes": {
+				"date_modification": 0,
+				"date_réussite": 0,
+				"niveau": "",
+				"titre": "",
+				"état": 0
+			},
+			"id": "uri_a",
+			"links": {
+				"self": "https://example.com/avancement/uri_a"
+			},
+			"relationships": {
+				"sauvegardes": {
+					"links": {
+						"related": "https://example.com/avancement/uri_a/sauvegardes",
+						"self": "https://example.com/avancement/uri_a/relationships/sauvegardes"
+					}
+				},
+				"tentatives": {
+					"links": {
+						"related": "https://example.com/avancement/uri_a/tentatives",
+						"self": "https://example.com/avancement/uri_a/relationships/tentatives"
+					}
+				}
+			},
+			"type": "avancement"
+		}
+	}
+]

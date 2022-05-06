@@ -19,7 +19,6 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\ObtenirAvancementInt;
@@ -39,6 +38,24 @@ class AvancementCtl extends Contrôleur
 		$réponse = $this->valider_et_préparer_réponse($avancement, $username, $question_uri);
 
 		Log::debug("AvancementCtl.get. Retour : ", [$réponse]);
+		return $réponse;
+	}
+
+	public function get_avancements(Request $request, $username)
+	{
+		Log::debug("AvancementCtl.get_tous. Params : ", [$request->all(), $username]);
+
+		$avancements_bruts = $this->obtenir_avancement($username, null);
+		$avancements_traités = [];
+
+		foreach ($avancements_bruts as $avancement) {
+			$avancement->id = key($avancements_bruts);
+			$avancements_traités[] = $this->avancement_to_array($avancement);
+		}
+
+		$réponse = $this->préparer_réponse($avancements_traités);
+
+		Log::debug("AvancementCtl.get_tous. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
@@ -132,8 +149,12 @@ class AvancementCtl extends Contrôleur
 		Log::debug("AvancementCtl.obtenir_avancement. Params : ", [$username, $question_uri]);
 
 		$avancementInt = new ObtenirAvancementInt();
-		$chemin = Encodage::base64_decode_url($question_uri);
-		$avancement = $avancementInt->get_avancement($username, $chemin);
+		if ($question_uri) {
+			$chemin = Encodage::base64_decode_url($question_uri);
+			$avancement = $avancementInt->get_avancement($username, $chemin);
+		} else {
+			$avancement = $avancementInt->get_avancement($username, null);
+		}
 
 		Log::debug("AvancementCtl.obtenir_avancement. Retour : ", [$avancement]);
 		return $avancement;

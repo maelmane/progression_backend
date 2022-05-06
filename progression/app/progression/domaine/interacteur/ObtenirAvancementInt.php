@@ -18,17 +18,18 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Avancement;
-
 class ObtenirAvancementInt extends Interacteur
 {
 	function get_avancement($username, $question_uri)
 	{
-		if ($this->source_dao->get_user_dao()->get_user($username) == null) {
-			return null;
-		}
+		$avancement = null;
+		$user = $this->source_dao->get_user_dao()->get_user($username); 
 
-		$avancement = $this->source_dao->get_avancement_dao()->get_avancement($username, $question_uri);
+		if ($user && $question_uri) {
+			$avancement = $this->source_dao->get_avancement_dao()->get_avancement($username, $question_uri);
+		} elseif ($user && $question_uri === null) {
+			$avancement = $this->source_dao->get_avancement_dao()->get_tous($username);
+		}
 
 		return $avancement;
 	}
