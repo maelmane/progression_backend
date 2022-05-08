@@ -118,6 +118,16 @@ deploy_pilote:
   only:
     - master
 
+tag_latest:
+  stage: deploy_image
+  needs: [const_image]
+  script:
+    - docker pull $CI_REGISTRY/progression/progression_backend:test
+    - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:latest   
+    - docker push $CI_REGISTRY/progression/progression_backend:latest
+  only:
+    - master
+
 # Déploiement sur /staging
 deploy_staging:
   stage: deploy_image
@@ -129,9 +139,6 @@ deploy_staging:
     - *preparer_contexte
     - *login
   script:
-    - docker pull $CI_REGISTRY/progression/progression_backend:test
-    - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:latest   
-    - docker push $CI_REGISTRY/progression/progression_backend:latest
     - docker-compose -p staging up -d progression
   only:
     - master
