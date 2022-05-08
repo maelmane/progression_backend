@@ -59,20 +59,13 @@ linter:
 
 # Construction de l'image
 const_image:
-  stage: build_image
+  stage: build_image  
+  before_script: *login
+
   script:
     - docker build -t $CI_REGISTRY/progression/progression_backend:test progression
-  only:
-    - master
-    - dev
-
-# Pousser l'image dans le dépôt distant
-push_image:
-  stage: build_image
-  needs: [const_image]
-  before_script: *login
-  script:
     - docker push $CI_REGISTRY/progression/progression_backend:test
+
   only:
     - master
     - dev
@@ -83,7 +76,7 @@ push_image:
 # Déploiement sur /dev
 deploy_dev:
   stage: deploy_image
-  needs: [push_image, test_unitaires, linter]
+  needs: [const_image, test_unitaires, linter]
   environment:
     name: dev
     url: https://progression.dti.crosemont.quebec/dev/
@@ -98,7 +91,7 @@ deploy_dev:
 # Déploiement sur /demo
 deploy_demo:
   stage: deploy_image
-  needs: [push_image]
+  needs: [const_image]
   environment:
     name: demo
     url: https://progression.dti.crosemont.quebec/demo/
@@ -113,7 +106,7 @@ deploy_demo:
 # Déploiement sur /pilote
 deploy_pilote:
   stage: deploy_image
-  needs: [push_image]
+  needs: [const_image]
   environment:
     name: pilote
     url: https://progression.dti.crosemont.quebec/pilote/
@@ -128,7 +121,7 @@ deploy_pilote:
 # Déploiement sur /staging
 deploy_staging:
   stage: deploy_image
-  needs: [push_image]
+  needs: [const_image]
   environment:
     name: staging
     url: https://progression.dti.crosemont.quebec/staging/
