@@ -12,8 +12,7 @@ stages:
   - build_image
   - test
   - deploy_image
-  - build_doc_master
-  - build_doc_dev
+  - build_doc
   - deploy_doc
 
 variables:
@@ -141,7 +140,7 @@ deploy_staging:
 
 # Production de la documentation master
 pages_master:
-  stage: build_doc_master
+  stage: build_doc
   needs: [deploy_staging]
   variables:
     PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/staging/api/v1
@@ -158,7 +157,7 @@ pages_master:
 
 # Production de la documentation dev
 pages_dev:
-  stage: build_doc_dev
+  stage: build_doc
   needs: [deploy_dev]
   variables:
     PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/dev/api/v1
