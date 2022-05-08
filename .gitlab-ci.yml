@@ -20,20 +20,14 @@ variables:
   PROGRESSION_DIR: $CI_PROJECT_DIR
   DOCKER_TLS_CERTDIR: ""
 
-.creation_bd: &creation_bd
-  before_script:
-  - docker network create tu-net
-  - docker run --name mariadb --net=tu-net -d -e MYSQL_ROOT_PASSWORD=password -v "$PROGRESSION_DIR/progression/db/:/initdb/" mariadb
-  - cp $PROGRESSION_DIR/progression/app/.env.exemple $PROGRESSION_DIR/progression/tests/.env
-  - source $PROGRESSION_DIR/progression/tests/.env
-  # Attend au maximum 15 secondes que la BD soit accessible
-  - for i in $(seq 15); do if echo "select 1;" | docker exec -i mariadb mysql -uroot -ppassword; then break; fi; sleep 1; done
-
 # Stage test
 
 # Tests unitaires
 test_unitaires:
   stage: test
+  needs: 
+    - job: const_image
+      optional: true
   environment: tests
   script:
     - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml tests 
@@ -41,10 +35,10 @@ test_unitaires:
 # Linter
 linter:
   stage: test
+  needs: []
   environment: tests
   script:
     - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests lint
-
 
 
 # Stage build_image
@@ -53,13 +47,22 @@ linter:
 const_image:
   stage: build_image
   script:
-    - sleep 3 && docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY/progression/progression_backend:test progression
-    - docker push $CI_REGISTRY/progression/progression_backend:test
   only:
     - master
     - dev
 
+# Pousser l'image dans le dépôt distant
+push_image:
+  stage: build_image
+  needs: [const_image]
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $CI_REGISTRY/progression/progression_backend:test
+  only:
+    - master
+    - dev
 
 # Stage deploy_image
 
@@ -77,7 +80,7 @@ const_image:
 # Déploiement sur /dev
 deploy_dev:
   stage: deploy_image
-  needs: [const_image]
+  needs: [test_unitaires, linter]
   environment:
     name: dev
     url: https://progression.dti.crosemont.quebec/dev/
@@ -139,6 +142,7 @@ deploy_staging:
 # Production de la documentation master
 pages_master:
   stage: build_doc_master
+  needs: [deploy_staging]
   variables:
     PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/staging/api/v1
   script:
@@ -155,6 +159,7 @@ pages_master:
 # Production de la documentation dev
 pages_dev:
   stage: build_doc_dev
+  needs: [deploy_dev]
   variables:
     PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/dev/api/v1
   script:
