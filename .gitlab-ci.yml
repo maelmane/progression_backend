@@ -30,7 +30,9 @@ test_unitaires:
   environment: tests
   script:
     - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml tests 
-      
+  except:
+    - master
+
 # Linter
 linter:
   stage: test
@@ -38,7 +40,8 @@ linter:
   environment: tests
   script:
     - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests lint
-
+  except:
+    - master
 
 # Stage build_image
 
@@ -46,7 +49,7 @@ linter:
 const_image:
   stage: build_image
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    << *login
     - docker build -t $CI_REGISTRY/progression/progression_backend:test progression
   only:
     - master
@@ -57,7 +60,7 @@ push_image:
   stage: build_image
   needs: [const_image]
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    << *login
     - docker push $CI_REGISTRY/progression/progression_backend:test
   only:
     - master
@@ -87,7 +90,7 @@ deploy_dev:
     << *preparer_contexte
   script:
     << *login
-    - docker-compose -p $ up -d progression
+    - docker-compose -p dev up -d progression
   only:
     - dev
 
@@ -132,11 +135,29 @@ deploy_staging:
     << *preparer_contexte
   script:
     << *login
+    - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:latest   
+    - docker push $CI_REGISTRY/progression/progression_backend:latest
     - docker-compose -p staging up -d progression
   only:
     - master
 
 # Stage build_doc
+
+# Production de la documentation dev
+pages_dev:
+  stage: build_doc
+  needs: [deploy_dev]
+  variables:
+    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/dev/api/v1
+  script:
+  - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
+  - mkdir -p public/dev && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/dev/
+  - "! grep -c nil public/dev/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
+  only:
+    - dev
+  artifacts:
+    paths:
+    - public
 
 # Production de la documentation master
 pages_master:
@@ -153,22 +174,6 @@ pages_master:
   only:
     - dev
     - master
-  artifacts:
-    paths:
-    - public
-
-# Production de la documentation dev
-pages_dev:
-  stage: build_doc
-  needs: [deploy_dev]
-  variables:
-    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/dev/api/v1
-  script:
-  - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
-  - mkdir -p public/dev && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/dev/
-  - "! grep -c nil public/dev/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
-  only:
-    - dev
   artifacts:
     paths:
     - public
