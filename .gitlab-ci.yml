@@ -141,7 +141,9 @@ deploy_staging:
 # Production de la documentation master
 pages_master:
   stage: build_doc
-  needs: [deploy_staging]
+  needs:
+    - job: deploy_staging
+      optional: true
   variables:
     PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/staging/api/v1
   script:
