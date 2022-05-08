@@ -19,6 +19,18 @@ variables:
   PROGRESSION_DIR: $CI_PROJECT_DIR
   DOCKER_TLS_CERTDIR: ""
 
+
+.preparer_contexte: &preparer_contexte
+    - apk add ca-certificates
+    - mkdir ~/.ssh && cp $ID_RSA ~/.ssh/id_rsa
+    - docker context create --docker host=ssh://$CD_USER@$CD_HOST:$CD_PORT --description="Production" prod
+    - docker context use prod
+
+.login: &login
+    - DOCKER_HOST= 
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    
+
 # Stage test
 
 # Tests unitaires
@@ -66,18 +78,8 @@ push_image:
     - master
     - dev
 
+
 # Stage deploy_image
-
-.preparer_contexte: &preparer_contexte
-    - apk add ca-certificates
-    - mkdir ~/.ssh && cp $ID_RSA ~/.ssh/id_rsa
-    - docker context create --docker host=ssh://$CD_USER@$CD_HOST:$CD_PORT --description="Production" prod
-    - docker context use prod
-
-.login: &login
-    - DOCKER_HOST= 
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-
 
 # Déploiement sur /dev
 deploy_dev:
