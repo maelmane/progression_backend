@@ -60,8 +60,9 @@ linter:
 # Construction de l'image
 const_image:
   stage: build_image
-  script:
+  before_script:
     << *login
+  script:
     - docker build -t $CI_REGISTRY/progression/progression_backend:test progression
   only:
     - master
@@ -71,8 +72,9 @@ const_image:
 push_image:
   stage: build_image
   needs: [const_image]
-  script:
+  before_script:
     << *login
+  script:
     - docker push $CI_REGISTRY/progression/progression_backend:test
   only:
     - master
@@ -90,8 +92,8 @@ deploy_dev:
     url: https://progression.dti.crosemont.quebec/dev/
   before_script:
     << *preparer_contexte
-  script:
     << *login
+  script:
     - docker-compose -p dev up -d progression
   only:
     - dev
@@ -105,8 +107,8 @@ deploy_demo:
     url: https://progression.dti.crosemont.quebec/demo/
   before_script:
     << *preparer_contexte
-  script:
     << *login
+  script:
     - docker-compose -p demo up -d progression
   only:
     - master
@@ -120,8 +122,8 @@ deploy_pilote:
     url: https://progression.dti.crosemont.quebec/pilote/
   before_script:
     << *preparer_contexte
-  script:
     << *login
+  script:
     - docker-compose -p pilote up -d progression
   only:
     - master
@@ -135,8 +137,8 @@ deploy_staging:
     url: https://progression.dti.crosemont.quebec/staging/
   before_script:
     << *preparer_contexte
-  script:
     << *login
+  script:
     - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:latest   
     - docker push $CI_REGISTRY/progression/progression_backend:latest
     - docker-compose -p staging up -d progression
