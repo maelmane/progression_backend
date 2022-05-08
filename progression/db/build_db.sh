@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Création initiale
-mysql --default-character-set=utf8 -h $DB_SERVERNAME -v -uroot -p$DB_PASSWORD <<EOF
+mysql --default-character-set=utf8 -h $DB_SERVERNAME -v -uroot -p$MYSQL_ROOT_PASSWORD <<EOF
 CREATE DATABASE IF NOT EXISTS $DB_DBNAME
 				  CHARACTER SET utf8mb4
 				  COLLATE utf8mb4_general_ci;
