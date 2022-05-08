@@ -1,0 +1,64 @@
+version: "3.4"
+services:
+  db:
+    image: mariadb
+    container_name: progression_db_$CI_ENVIRONMENT_SLUG
+    env_file: $ENV_FILE
+    volumes:
+      - /var/lib/mysql
+    #  - "./progression_backend/progression/db/:/docker-entrypoint-initdb.d/"
+    restart: always
+
+  redis:
+    image: redis:latest
+    container_name: progression_redis_$CI_ENVIRONMENT_SLUG
+    volumes:
+      - /data
+    restart: always
+
+  progression:
+    image: git.dti.crosemont.quebec:5050/progression/progression_backend:test
+    build: progression
+    container_name: progression_$CI_ENVIRONMENT_SLUG
+    env_file: $ENV_FILE
+    ports:
+      - 127.0.0.1:$INSTANCE_PORT:80
+    #En développement, monte les source dans le conteneur
+    #volumes:
+    #  - "./progression_backend/progression/app/:/var/www/progression/app/"
+    restart: always
+    depends_on:
+      - db
+      - redis
+
+  tests:
+    image: git.dti.crosemont.quebec:5050/progression/progression_backend:test
+    container_name: progression_tests_$CI_ENVIRONMENT_SLUG
+    #volumes:
+    #  - "./progression_backend/progression/app/:/var/www/progression/app/"
+    #  - "./progression_backend/progression/tests/:/var/www/progression/tests/"
+    #  - "./progression_backend/progression/db/:/var/www/progression/db/"
+    restart: "no"
+    env_file: $ENV_FILE    
+    command: bash /var/www/progression/tests/exec_tests.sh
+    depends_on:
+      - db
+
+  lint:
+    # On utilise l'image progression/dev parce que prettier est un package npm que l'on ne veut pas inclure dans progression_backend
+    image: git.dti.crosemont.quebec:5050/progression/dev:latest
+    container_name: progression_lint_$CI_ENVIRONMENT_SLUG
+    volumes:
+      - "./progression/app/:/tmp/progression/app/"
+      - "./progression/tests/:/tmp/progression/tests/"
+    restart: "no"
+    command: prettier --use-tabs --print-width 120 --php-version "7.4" -c /tmp/progression/**/*.php
+
+  doc:
+    image: git.dti.crosemont.quebec:5050/progression/dev:latest
+    #volumes:
+    #  - "./progression_backend/progression/:/progression/"
+    #  - "./progression_backend/doc/:/tmp/doc/"
+    #  - "./doc/:/tmp/progression/app/html/doc/"
+    command: bash -c 'if which emacs; then emacs --batch --load /root/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all; else (echo "Veuillez installer les outils de production de la documentation (voir Dockerfile)" && exit); fi'
+
