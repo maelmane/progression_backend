@@ -34,14 +34,17 @@ variables:
 # Tests unitaires
 test_unitaires:
   stage: test
-  <<: *creation_bd
+  environment: tests
   script:
-  - cp $PROGRESSION_DIR/progression/app/.env.exemple $PROGRESSION_DIR/progression/tests/.env
-  - source $PROGRESSION_DIR/progression/tests/.env
-  # Tests unitaires et analyse statique
-  - docker run --net=tu-net --env-file=$PROGRESSION_DIR/progression/tests/.env -e DB_SERVERNAME=mariadb -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml -v $PROGRESSION_DIR/progression/autoload.php:/var/www/progression/autoload.php $CI_REGISTRY/progression/progression_backend:test /var/www/progression/tests/exec_tests.sh
-  # Linter Prettier
-  - docker run -v "$PROGRESSION_DIR/progression/:/tmp/progression/" $CI_REGISTRY/progression/dev:latest bash -c 'shopt -s globstar && prettier --use-tabs --print-width 120 --php-version "7.4" -c /tmp/progression/tests/**/*.php /tmp/progression/app/**/*.php'
+    - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml tests 
+      
+# Linter
+linter:
+  stage: test
+  environment: tests
+  script:
+    - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests lint
+
 
 
 # Stage build_image
@@ -102,7 +105,7 @@ deploy_demo:
     - master
 
 # Déploiement sur /pilote
-deploy_demo:
+deploy_pilote:
   stage: deploy_image
   needs: [const_image]
   environment:
@@ -117,7 +120,7 @@ deploy_demo:
     - master
 
 # Déploiement sur /staging
-deploy_demo:
+deploy_staging:
   stage: deploy_image
   needs: [const_image]
   environment:
