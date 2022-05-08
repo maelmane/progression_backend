@@ -129,6 +129,7 @@ deploy_staging:
     - *preparer_contexte
     - *login
   script:
+    - docker pull $CI_REGISTRY/progression/progression_backend:test
     - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:latest   
     - docker push $CI_REGISTRY/progression/progression_backend:latest
     - docker-compose -p staging up -d progression
