@@ -422,7 +422,7 @@ curl "<<get_api_url()>>/test/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb25
 ** Obtenir un token ressource qui donne accès à un avancement de ~jdoe~ pour la question «Les fonctions avec paramètres/Rectangle»
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results none :exports code
-  ressources=$(cat <<EOF
+  DATA=$(cat <<EOF
   {
    [
 	    {
