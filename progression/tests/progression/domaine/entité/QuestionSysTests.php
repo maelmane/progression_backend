@@ -1,0 +1,41 @@
+<?php
+/*
+	This file is part of Progression.
+
+	Progression is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Progression is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+namespace progression\domaine\entité;
+
+use PHPUnit\Framework\TestCase;
+
+final class QuestionSysTests extends TestCase
+{
+	public function test_étant_donné_une_QuestionSys_instanciée_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
+	{
+		$exécutables_attendu = ["execTestSys0", "execSys1"];
+		$tests_attendu = ["testSys0", "testSys1"];
+
+		$résultat_obtenu = new QuestionSys("imageDocker", "Bob", "verificationTest", "solutionTest");
+		$résultat_obtenu->exécutables = ["execTestSys0", "execSys1"];
+		$résultat_obtenu->tests = ["testSys0", "testSys1"];
+
+		$this->assertEquals("imageDocker", $résultat_obtenu->image);
+		$this->assertEquals("Bob", $résultat_obtenu->user);
+		$this->assertEquals("verificationTest", $résultat_obtenu->verification);
+		$this->assertEquals("solutionTest", $résultat_obtenu->solution_courte);
+		$this->assertEquals($exécutables_attendu, $résultat_obtenu->exécutables);
+		$this->assertEquals($tests_attendu, $résultat_obtenu->tests);
+	}
+}
