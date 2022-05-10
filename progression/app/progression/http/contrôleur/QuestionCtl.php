@@ -24,6 +24,7 @@ use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\interacteur\ObtenirQuestionInt;
 use progression\http\transformer\QuestionProgTransformer;
 use progression\util\Encodage;
+use progression\dao\question\ChargeurException;
 use DomainException, LengthException, RuntimeException;
 
 class QuestionCtl extends Contrôleur
@@ -56,6 +57,14 @@ class QuestionCtl extends Contrôleur
 					") ERR: {$erreur->getMessage()}",
 			);
 			$réponse = $this->réponse_json(["erreur" => "Requête intraitable."], 400);
+		} catch (ChargeurException $erreur) {
+			Log::notice(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					__CLASS__ .
+					") ERR: {$erreur->getMessage()}",
+			);
+
+			$réponse = $this->réponse_json(["erreur" => "Question indisponible"], 400);
 		}
 
 		Log::debug("QuestionCtl.get. Retour : ", [$réponse]);
