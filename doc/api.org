@@ -242,13 +242,13 @@ autre utilisateur.
 
 *** Propriétés :
 
-| Nom             | Type | Valeurs |
-|-----------------+------+---------|
-| username        | str  |         |
-| current         | int  |timestamp|
-| expired         | int  |timestamp|
-| ressources      | str  |         |
-| version         | int  |         |
+| Nom             | Type |  Valeurs  |
+|-----------------+------+-----------|
+| username        | str  |           |
+| current         | int  | timestamp |
+| expired         | int  | timestamp |
+| ressources      | str  |           |
+| version         | int  |           |
 
 ** Utilisateur
 
