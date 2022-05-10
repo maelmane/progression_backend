@@ -437,7 +437,7 @@ curl "<<get_api_url()>>/test/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb25
 
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
-curl -X POST "<<get_api_url()>>/token/jdoe" -H "Authorization: Bearer $TOKEN" -d ressources
+curl --data "$DATA" "<<get_api_url()>>/token/jdoe" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Créer ou mettre à jour la sauvegarde de ~jdoe~ pour la question «Les fonctions avec paramètres/Rectangle» et un code ~python~
