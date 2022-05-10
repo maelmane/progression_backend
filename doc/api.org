@@ -245,8 +245,8 @@ autre utilisateur.
 | Nom             | Type | Valeurs |
 |-----------------+------+---------|
 | username        | str  |         |
-| current         | int  |         |
-| expired         | int  |         |
+| current         | int  |timestamp|
+| expired         | int  |timestamp|
 | ressources      | str  |         |
 | version         | int  |         |
 
