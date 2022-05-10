@@ -36,18 +36,6 @@ class UserCtl extends Contrôleur
 		return $réponse;
 	}
 
-	public function getAvancements(Request $request, $username = null)
-	{
-		Log::debug("UserCtl.get. Params : ", [$request->all(), $username]);
-
-		$user = $this->obtenir_user($username ?? $request->user()->username);
-		$avancements = $user->avancements;
-
-		Log::debug("UserCtl.getAvancements. Retour: ", [$avancements]);
-
-		return $avancements;
-	}
-
 	private function obtenir_user($username)
 	{
 		Log::debug("UserCtl.obtenir_user. Params : ", [$username]);
