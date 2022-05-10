@@ -237,7 +237,18 @@ question_uri/numéro
 
 Une description des ressources auxquelles le détenteur du token peut accéder, ainsi que la date jusqu'à laquelle il est valide. Une date d'expiration de 0 signifie que le token n'expire jamais.
 
-Les ressources sont définies par leur URI et par la méthode de requête HTTP, avec une expression régulière. Un token ressource peut décrire une ou plusieurs ressources. Il permet d'accéder aux ressoures d'un autre utilisateur.
+Les ressources sont définies par leur URI et par la méthode de requête HTTP, avec une expression régulière. Un token ressource peut décrire une ou plusieurs ressources. Le token ressource est fourni en plus du token régulier, afin d'accéder aux ressources d'un
+autre utilisateur.
+
+*** Propriétés :
+
+| Nom             | Type | Valeurs |
+|-----------------+------+---------|
+| username        | str  |         |
+| curent          | int  |         |
+| expired         | int  |         |
+| ressources      | str  |         |
+| version         | int  |         |
 
 ** Utilisateur
 
