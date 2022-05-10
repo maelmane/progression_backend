@@ -26,7 +26,7 @@ Les ressources échangées sont représentées en format [[https://jsonapi.org][
 
 ** Avancement
 
-L'avancement d'un utilisateur pour une question
+L'avancement d'un utilisateur pour une question.
 
 *** Identifiant :
 username/question_uri
