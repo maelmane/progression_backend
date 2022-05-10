@@ -84,7 +84,7 @@ deploy_dev:
     - *preparer_contexte
     - *login
   script:
-    - docker-compose -p dev up -d progression
+    - TAG_DEPLOY=dev docker-compose -p dev up -d progression
   only:
     - dev
 
@@ -99,7 +99,7 @@ deploy_demo:
     - *preparer_contexte
     - *login
   script:
-    - docker-compose -p demo up -d progression
+    - TAG_DEPLOY=latest docker-compose -p demo up -d progression
   only:
     - master
 
@@ -114,7 +114,7 @@ deploy_pilote:
     - *preparer_contexte
     - *login
   script:
-    - docker-compose -p pilote up -d progression
+    - TAG_DEPLOY=latest docker-compose -p pilote up -d progression
   only:
     - master
 
@@ -141,7 +141,7 @@ deploy_staging:
     - *preparer_contexte
     - *login
   script:
-    - docker-compose -p staging up -d progression
+    - TAG_DEPLOY=latest docker-compose -p staging up -d progression
   only:
     - master
 
