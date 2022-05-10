@@ -23,7 +23,7 @@ class ObtenirAvancementInt extends Interacteur
 	function get_avancement($username, $question_uri)
 	{
 		$avancement = null;
-		$user = $this->source_dao->get_user_dao()->get_user($username); 
+		$user = $this->source_dao->get_user_dao()->get_user($username);
 
 		if ($user && $question_uri) {
 			$avancement = $this->source_dao->get_avancement_dao()->get_avancement($username, $question_uri);
