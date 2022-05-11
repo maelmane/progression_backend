@@ -23,24 +23,25 @@ use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
-final class ObtenirAvancementIntTests extends TestCase
+final class ObtenirAvancementsIntTests extends TestCase
 {
 	public function setUp(): void
 	{
 		parent::setUp();
 
-		$avancement = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
+		$avancement1 = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée_1", "jdoe");
+		$avancement2 = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée_2", "jdoe");
 
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 
 		$mockAvancementDAO
-			->shouldReceive("get_avancement")
-			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée")
-			->andReturn($avancement);
+			->shouldReceive("get_tous")
+			->with("jdoe")
+			->andReturn([$avancement1, $avancement2]);
 		$mockAvancementDAO
-			->shouldReceive("get_avancement")
-			->with("jdoe", "une_question_inexistante")
-			->andReturn(null);
+			->shouldReceive("get_tous")
+			->with("bob")
+			->andReturn([]);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
@@ -56,24 +57,24 @@ final class ObtenirAvancementIntTests extends TestCase
 		DAOFactory::setInstance(null);
 	}
 
-	public function test_étant_donné_un_avancement_avec_un_username_et_question_uri_existant_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_objet_avancementprog_correspondant()
+	public function test_étant_donné_une_collection_d_avancements_pour_un_utilsateur_existant_lorsquon_cherche_par_username_on_obtient_une_collection_d_avancementprog_correspondant()
 	{
-		$interacteur = new ObtenirAvancementInt();
-		$résultat_obtenu = $interacteur->get_avancement(
-			"jdoe",
-			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
-		);
+		$interacteur = new ObtenirAvancementsInt();
+		$résultat_obtenu = $interacteur->get_avancements("jdoe");
 
-		$résultat_attendu = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
+		$résultat_attendu = [
+			new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée_1", "jdoe"),
+			new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée_2", "jdoe"),
+		];
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
-	public function test_étant_donné_un_user_existant_et_une_question_uri_inexistante_lorsquon_cherche_par_username_et_question_uri_on_obtient_null()
+	public function test_étant_donné_un_avancement_avec_un_user_sans_avancements_lorsquon_cherche_par_username_on_obtient_un_tableau_vide()
 	{
-		$interacteur = new ObtenirAvancementInt();
-		$résultat_obtenu = $interacteur->get_avancement("jdoe", "une_question_inexistante");
+		$interacteur = new ObtenirAvancementsInt();
+		$résultat_obtenu = $interacteur->get_avancements("bob");
 
-		$this->assertNull($résultat_obtenu);
+		$this->assertEquals([], $résultat_obtenu);
 	}
 }

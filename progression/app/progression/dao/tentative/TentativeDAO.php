@@ -35,10 +35,8 @@ class TentativeDAO extends EntitéDAO
 			return $this->source->get_tentative_sys_dao()->get_toutes($username, $question_uri);
 		} elseif ($type == Question::TYPE_BD) {
 			return $this->source->get_tentative_bd_dao()->get_toutes($username, $question_uri);
-		} elseif ($type == Question::TYPE_INCONNU) {
-			return [];
 		} else {
-			return null;
+			return [];
 		}
 	}
 

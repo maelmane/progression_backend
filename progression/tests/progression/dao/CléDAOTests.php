@@ -54,6 +54,15 @@ final class CléDAOTests extends TestCase
 		$this->assertEquals($résultat_attendu, $clés);
 	}
 
+	public function test_étant_un_utilisateur_sans_clé_lorsquon_les_récupère_toutes_on_obtient_un_tableau_vide()
+	{
+		$dao = new CléDAO();
+		$clés = $dao->get_toutes("jdoe");
+
+		$résultat_attendu = [];
+		$this->assertEquals($résultat_attendu, $clés);
+	}
+
 	public function test_étant_donné_une_clé_inexistante_lorsquon_la_sauvegarde_on_la_retrouve_dans_la_bd()
 	{
 		$clé = new Clé(9999, 1624593600, 1624680000, Clé::PORTEE_AUTH);

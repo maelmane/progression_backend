@@ -87,6 +87,43 @@ final class AvancementDAOTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
 
+	public function test_étant_donné_un_utilisateur_ayant_des_avancements_lorsquon_cherche_par_username_on_obtient_un_tableau_d_objets_avancement()
+	{
+		$résultat_attendu = [
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement(
+				etat: Question::ETAT_DEBUT,
+				type: Question::TYPE_PROG,
+				tentatives: [],
+				titre: "Un titre",
+				niveau: "facile",
+				date_modification: 1645739981,
+				date_réussite: 1645739959,
+				sauvegardes: [],
+			),
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement(
+				etat: Question::ETAT_NONREUSSI,
+				type: Question::TYPE_PROG,
+				tentatives: [],
+				titre: "Un titre",
+				niveau: "facile",
+				date_modification: 1645739981,
+				date_réussite: 1645739959,
+				sauvegardes: [],
+			),
+		];
+
+		$résponse_observée = (new AvancementDAO())->get_tous("Bob");
+		$this->assertEquals($résultat_attendu, $résponse_observée);
+	}
+
+	public function test_étant_donné_un_utilisateur_sans_avancement_lorsquon_cherche_par_username_on_obtient_un_tableau_vide()
+	{
+		$résultat_attendu = [];
+
+		$résponse_observée = (new AvancementDAO())->get_tous("jdoe");
+		$this->assertEquals($résultat_attendu, $résponse_observée);
+	}
+
 	public function test_étant_donné_un_avancement_inexistant_lorsquon_le_cherche_par_username_et_question_uri_on_obtient_null()
 	{
 		$résponse_observée = (new AvancementDAO())->get_avancement(
