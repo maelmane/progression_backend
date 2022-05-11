@@ -21,25 +21,15 @@ namespace progression\domaine\entité;
 class QuestionSys extends Question
 {
 	public $image;
-	public $user;
-	public $verification;
+	public $utilisateur;
 	public $solution_courte;
-	public $exécutables;
 	public $tests;
 
-	public function __construct(
-		$image = null,
-		$user = null,
-		$verification = null,
-		$solution_courte = null,
-		$exécutables = [],
-		$tests = []
-	) {
+	public function __construct($image = null, $utilisateur = null, $solution_courte = null, $tests = [])
+	{
 		$this->image = $image;
-		$this->user = $user;
-		$this->verification = $verification;
+		$this->utilisateur = $utilisateur;
 		$this->solution_courte = $solution_courte;
-		$this->exécutables = $exécutables;
 		$this->tests = $tests;
 	}
 }

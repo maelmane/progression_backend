@@ -22,14 +22,12 @@ class TentativeSys extends Tentative
 {
 	public $conteneur;
 	public $réponse;
-	public $commandes;
 	public $tests_réussis;
 	public $résultats;
 
 	public function __construct(
 		$conteneur = null,
 		$réponse = null,
-		$commandes = [],
 		$date_soumission = null,
 		$réussi = false,
 		$tests_réussis = 0,
@@ -40,7 +38,6 @@ class TentativeSys extends Tentative
 		parent::__construct($date_soumission, $réussi, $feedback, $commentaires);
 		$this->conteneur = $conteneur;
 		$this->réponse = $réponse;
-		$this->commandes = $commandes;
 		$this->tests_réussis = $tests_réussis;
 		$this->résultats = $résultats;
 	}

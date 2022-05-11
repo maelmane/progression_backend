@@ -24,18 +24,15 @@ final class TentativeSysTests extends TestCase
 {
 	public function test_étant_donné_une_TentativeSys_instanciée_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
 	{
-		$commandes_attendu = ["commande1", "commande2"];
 		$résultats_attendu = ["résultat1", "résultat2"];
 		$commentaires_attendu = ["commentaire1", "commentaire2"];
 
-		$commandes = ["commande1", "commande2"];
 		$résultats = ["résultat1", "résultat2"];
 		$commentaires = ["commentaire1", "commentaire2"];
 
 		$tentativeSysTest = new TentativeSys(
 			"conteneurTest",
 			"reponseTest",
-			$commandes,
 			3456,
 			true,
 			2,
@@ -46,7 +43,6 @@ final class TentativeSysTests extends TestCase
 
 		$this->assertEquals("conteneurTest", $tentativeSysTest->conteneur);
 		$this->assertEquals("reponseTest", $tentativeSysTest->réponse);
-		$this->assertEquals($commandes_attendu, $tentativeSysTest->commandes);
 		$this->assertEquals(3456, $tentativeSysTest->date_soumission);
 		$this->assertTrue($tentativeSysTest->réussi);
 		$this->assertEquals(2, $tentativeSysTest->tests_réussis);

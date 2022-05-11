@@ -24,18 +24,14 @@ final class QuestionSysTests extends TestCase
 {
 	public function test_étant_donné_une_QuestionSys_instanciée_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
 	{
-		$exécutables_attendu = ["execTestSys0", "execSys1"];
 		$tests_attendu = ["testSys0", "testSys1"];
 
-		$résultat_obtenu = new QuestionSys("imageDocker", "Bob", "verificationTest", "solutionTest");
-		$résultat_obtenu->exécutables = ["execTestSys0", "execSys1"];
+		$résultat_obtenu = new QuestionSys("imageDocker", "Bob", "solutionTest");
 		$résultat_obtenu->tests = ["testSys0", "testSys1"];
 
 		$this->assertEquals("imageDocker", $résultat_obtenu->image);
-		$this->assertEquals("Bob", $résultat_obtenu->user);
-		$this->assertEquals("verificationTest", $résultat_obtenu->verification);
+		$this->assertEquals("Bob", $résultat_obtenu->utilisateur);
 		$this->assertEquals("solutionTest", $résultat_obtenu->solution_courte);
-		$this->assertEquals($exécutables_attendu, $résultat_obtenu->exécutables);
 		$this->assertEquals($tests_attendu, $résultat_obtenu->tests);
 	}
 }
