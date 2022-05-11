@@ -110,4 +110,15 @@ final class SauvegardeDAOTests extends TestCase
 		);
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
+
+	public function test_étant_donné_une_liste_de_sauvegardes_vide_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_tableau_vide()
+	{
+		$résultat_attendu = [];
+
+		$résponse_observée = (new SauvegardeDAO())->get_toutes(
+			"jdoe",
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+		);
+		$this->assertEquals($résultat_attendu, $résponse_observée);
+	}
 }

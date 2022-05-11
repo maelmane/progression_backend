@@ -19,7 +19,6 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\ObtenirAvancementInt;
@@ -35,8 +34,9 @@ class AvancementCtl extends Contrôleur
 	{
 		Log::debug("AvancementCtl.get. Params : ", [$request->all(), $username, $question_uri]);
 
-		$avancement = $this->obtenir_avancement($username, $question_uri);
-		$réponse = $this->valider_et_préparer_réponse($avancement, $username, $question_uri);
+		$avancements = $this->obtenir_avancement($username, $question_uri);
+
+		$réponse = $this->valider_et_préparer_réponse($avancements, $username, $question_uri);
 
 		Log::debug("AvancementCtl.get. Retour : ", [$réponse]);
 		return $réponse;
@@ -73,25 +73,14 @@ class AvancementCtl extends Contrôleur
 
 		if ($avancement) {
 			$avancement->id = "{$username}/$question_uri";
-			$réponse_array = $this->avancement_to_array($avancement);
+			$réponse = $this->item($avancement, new AvancementTransformer());
 		} else {
-			$réponse_array = null;
+			$réponse = null;
 		}
 
-		$réponse = $this->préparer_réponse($réponse_array);
+		$réponse = $this->préparer_réponse($réponse);
 
 		Log::debug("AvancementCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
-		return $réponse;
-	}
-
-	private function avancement_to_array($avancement)
-	{
-		Log::debug("AvancementCtl.avancement_to_array. Params : ", [$avancement]);
-
-		$réponse = $this->item($avancement, new AvancementTransformer());
-
-		Log::debug("AvancementCtl.avancement_to_array. Retour : ", [$réponse]);
-
 		return $réponse;
 	}
 
@@ -132,6 +121,7 @@ class AvancementCtl extends Contrôleur
 		Log::debug("AvancementCtl.obtenir_avancement. Params : ", [$username, $question_uri]);
 
 		$avancementInt = new ObtenirAvancementInt();
+
 		$chemin = Encodage::base64_decode_url($question_uri);
 		$avancement = $avancementInt->get_avancement($username, $chemin);
 
