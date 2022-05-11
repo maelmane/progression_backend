@@ -21,7 +21,7 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use progression\domaine\interacteur\{ObtenirAvancementInt, ObtenirAvancementsInt};
+use progression\domaine\interacteur\ObtenirAvancementInt;
 use progression\domaine\interacteur\SauvegarderAvancementInt;
 use progression\domaine\interacteur\ObtenirQuestionInt;
 use progression\http\transformer\AvancementTransformer;
@@ -30,15 +30,11 @@ use progression\domaine\entité\{User, Avancement, Question};
 
 class AvancementCtl extends Contrôleur
 {
-	public function get(Request $request, $username, $question_uri = null)
+	public function get(Request $request, $username, $question_uri)
 	{
 		Log::debug("AvancementCtl.get. Params : ", [$request->all(), $username, $question_uri]);
 
-		if ($question_uri) {
-			$avancements = $this->obtenir_avancement($username, $question_uri);
-		} else {
-			$avancements = $this->obtenir_avancements($username);
-		}
+		$avancements = $this->obtenir_avancement($username, $question_uri);
 
 		$réponse = $this->valider_et_préparer_réponse($avancements, $username, $question_uri);
 
@@ -71,20 +67,13 @@ class AvancementCtl extends Contrôleur
 		return $réponse;
 	}
 
-	private function valider_et_préparer_réponse($avancements, $username, $question_uri)
+	private function valider_et_préparer_réponse($avancement, $username, $question_uri)
 	{
-		Log::debug("AvancementCtl.valider_et_préparer_réponse. Params : ", [$avancements, $username, $question_uri]);
+		Log::debug("AvancementCtl.valider_et_préparer_réponse. Params : ", [$avancement, $username, $question_uri]);
 
-		if ($avancements) {
-			if (is_array($avancements)) {
-				foreach ($avancements as $id => $avancement) {
-					$avancement->id = $id;
-				}
-				$réponse = $this->collection($avancements, new AvancementTransformer());
-			} else {
-				$avancements->id = "{$username}/$question_uri";
-				$réponse = $this->item($avancements, new AvancementTransformer());
-			}
+		if ($avancement) {
+			$avancement->id = "{$username}/$question_uri";
+			$réponse = $this->item($avancement, new AvancementTransformer());
 		} else {
 			$réponse = null;
 		}
@@ -138,18 +127,6 @@ class AvancementCtl extends Contrôleur
 
 		Log::debug("AvancementCtl.obtenir_avancement. Retour : ", [$avancement]);
 		return $avancement;
-	}
-
-	private function obtenir_avancements($username)
-	{
-		Log::debug("AvancementCtl.obtenir_avancements. Params : ", [$username]);
-
-		$avancementInt = new ObtenirAvancementsInt();
-
-		$avancements = $avancementInt->get_avancements($username);
-
-		Log::debug("AvancementCtl.obtenir_avancements. Retour : ", [$avancements]);
-		return $avancements;
 	}
 
 	private function sauvegarder_avancement($username, $question_uri, $avancement)
