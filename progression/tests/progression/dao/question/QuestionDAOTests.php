@@ -18,7 +18,7 @@
 
 namespace progression\dao\question;
 
-use progression\domaine\entité\{Question, QuestionProg, Exécutable, Test};
+use progression\domaine\entité\{Question, QuestionProg, QuestionSys, Exécutable, Test};
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -68,4 +68,34 @@ final class QuestionDAOTests extends TestCase
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
+
+	/*public function test_étant_donné_un_fichier_de_question_sys_valide_lorsquon_charge_la_question_on_obtient_un_objet_QuestionSys_correspondant()
+	{
+		$mockChargeurFichier = Mockery::mock("progression\\dao\\question\\ChargeurQuestionFichier");
+		$mockChargeurFichier->shouldReceive("récupérer_question")->andReturn([
+			"type" => "sys",
+			"titre" => "Question permissions",
+			"tests" => [
+				[
+					"entrée" => "",
+					"sortie" => "Bonsoir à tous",
+				],
+			],
+		]);
+		$mockFactory = Mockery::mock("progression\\dao\\question\\ChargeurFactory");
+		$mockFactory->shouldReceive("get_chargeur_question_fichier")->andReturn($mockChargeurFichier);
+
+		$résultat_attendu = new QuestionSys();
+		$résultat_attendu->titre = "Question permissions";
+		$résultat_attendu->tests = [0 => new TestSys("#1", "Bonsoir à tous", "")];
+		$résultat_attendu->uri = "file://" . __DIR__ . "/démo/permissions_sys/permissions/info.yml";
+
+		$résultat_obtenu = (new QuestionDAO())->get_question(
+			"file://" . __DIR__ . "/démo/permissions_sys/permissions/info.yml",
+		);
+
+		print_r($résultat_obtenu);
+
+		//$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}*/
 }
