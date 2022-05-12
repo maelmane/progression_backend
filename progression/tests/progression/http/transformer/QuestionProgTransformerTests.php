@@ -18,7 +18,7 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\{QuestionProg, Exécutable, Test};
+use progression\domaine\entité\{QuestionProg, Exécutable, TestProg};
 use PHPUnit\Framework\TestCase;
 
 final class QuestionProgTransformerTests extends TestCase
@@ -62,8 +62,8 @@ final class QuestionProgTransformerTests extends TestCase
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		$question->tests = [
-			new Test("2 salutations", "Bonjour\nBonjour\n", "2"),
-			new Test("Aucune salutation", "", "0"),
+			new TestProg("2 salutations", "Bonjour\nBonjour\n", "2"),
+			new TestProg("Aucune salutation", "", "0"),
 		];
 
 		$questionProgTransformer = new QuestionProgTransformer();

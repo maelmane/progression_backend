@@ -18,7 +18,7 @@
 
 namespace progression\dao\question;
 
-use progression\domaine\entité\{Question, QuestionProg, QuestionSys, Exécutable, Test};
+use progression\domaine\entité\{Question, QuestionProg, QuestionSys, Exécutable, TestProg};
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -59,7 +59,7 @@ final class QuestionDAOTests extends TestCase
 		$résultat_attendu = new QuestionProg();
 		$résultat_attendu->titre = "Question de test";
 		$résultat_attendu->exécutables = ["python" => new Exécutable("print(\"Allo le monde\")", "python")];
-		$résultat_attendu->tests = [0 => new Test("#1", "Allo le monde", "")];
+		$résultat_attendu->tests = [0 => new TestProg("#1", "Allo le monde", "")];
 		$résultat_attendu->uri = "file://" . __DIR__ . "/démo/boucles/boucle_énumérée/info.yml";
 
 		$résultat_obtenu = (new QuestionDAO())->get_question(

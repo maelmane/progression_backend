@@ -25,7 +25,7 @@ use progression\domaine\entité\{
 	QuestionProg,
 	RésultatProg,
 	TentativeProg,
-	Test,
+	TestProg,
 	User,
 };
 use progression\dao\DAOFactory;
@@ -122,7 +122,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		self::$question->niveau = "facile";
 		self::$question->uri = "https://example.com/question";
 		self::$question->tests = [
-			new Test(
+			new TestProg(
 				nom: "nomTest",
 				sortie_attendue: "sortieTest",
 				entrée: "entréeTest",

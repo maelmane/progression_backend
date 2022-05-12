@@ -20,7 +20,16 @@ use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
-use progression\domaine\entité\{Avancement, Test, Exécutable, Question, TentativeProg, Commentaire, QuestionProg, User};
+use progression\domaine\entité\{
+	Avancement,
+	TestProg,
+	Exécutable,
+	Question,
+	TentativeProg,
+	Commentaire,
+	QuestionProg,
+	User,
+};
 
 use Illuminate\Auth\GenericUser;
 
@@ -80,7 +89,7 @@ final class TentativeCtlTests extends ContrôleurTestCase
 		$question->exécutables["java"] = new Exécutable("//+TODO\nSystem.out.println(\"Hello world!\")", "java");
 		// Tests
 		$question->tests = [
-			new Test("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
+			new TestProg("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
 		];
 
 		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");

@@ -20,7 +20,7 @@ namespace progression\domaine\entité;
 
 use PHPUnit\Framework\TestCase;
 
-final class TestTests extends TestCase
+final class TestTestProg extends TestCase
 {
 	public function test_étant_donné_un_Test_instancié_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
 	{
@@ -31,7 +31,7 @@ final class TestTests extends TestCase
 		$feedback_pos_attendu = "testFbp";
 		$feedback_neg_attendu = "testFbn";
 
-		$résultat_obtenu = new Test(
+		$résultat_obtenu = new TestProg(
 			"testNom",
 			"testSortie",
 			"testEntrée",
@@ -54,7 +54,7 @@ final class TestTests extends TestCase
 		$feedback_pos_attendu = null;
 		$feedback_neg_attendu = null;
 
-		$résultat_obtenu = new Test("testNom", "testSortie", "testEntrée");
+		$résultat_obtenu = new TestProg("testNom", "testSortie", "testEntrée");
 
 		$this->assertEquals($params_attendu, $résultat_obtenu->params);
 		$this->assertEquals($feedback_pos_attendu, $résultat_obtenu->feedback_pos);

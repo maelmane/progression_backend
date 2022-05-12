@@ -18,7 +18,7 @@
 
 namespace progression\dao\question;
 
-use progression\domaine\entité\{QuestionProg, Exécutable, Test};
+use progression\domaine\entité\{QuestionProg, Exécutable, TestProg};
 use DomainException;
 
 class DécodeurQuestionProg extends DécodeurQuestion
@@ -53,7 +53,7 @@ class DécodeurQuestionProg extends DécodeurQuestion
 	{
 		$tests = [];
 		foreach ($infos_question["tests"] as $i => $test) {
-			$tests[] = new Test(
+			$tests[] = new TestProg(
 				$test["nom"] ?? "#" . $i + 1,
 				$test["sortie"],
 				$test["entrée"] ?? null,

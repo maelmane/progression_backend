@@ -19,7 +19,7 @@
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{QuestionProg, Question, Test, User};
+use progression\domaine\entité\{QuestionProg, Question, TestProg, User};
 use Illuminate\Auth\GenericUser;
 
 final class TestCtlTests extends ContrôleurTestCase
@@ -39,8 +39,8 @@ final class TestCtlTests extends ContrôleurTestCase
 		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		$question->tests = [
-			new Test("2 salutations", "Bonjour\nBonjour\n", "2"),
-			new Test("Aucune salutation", "", "0"),
+			new TestProg("2 salutations", "Bonjour\nBonjour\n", "2"),
+			new TestProg("Aucune salutation", "", "0"),
 		];
 
 		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");

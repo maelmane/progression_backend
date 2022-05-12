@@ -16,28 +16,24 @@
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\http\transformer;
+namespace progression\domaine\entité;
 
-use progression\domaine\entité\TestProg;
-use League\Fractal;
-
-class TestTransformer extends Fractal\TransformerAbstract
+class TestProg extends Test
 {
-	public $type = "test";
+	public $entrée;
+	public $params;
 
-	public function transform(TestProg $test)
-	{
-		$data = [
-			"id" => $test->id,
-			"nom" => $test->nom,
-			"entrée" => $test->entrée,
-			"params" => $test->params,
-			"sortie_attendue" => $test->sortie_attendue,
-			"links" => (isset($test->links) ? $test->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}test/{$test->id}",
-			],
-		];
-
-		return $data;
+	public function __construct(
+		$nom,
+		$sortie_attendue,
+		$entrée = "",
+		$params = "",
+		$feedback_pos = null,
+		$feedback_neg = null,
+		$feedback_err = null
+	) {
+		parent::__construct($nom, $sortie_attendue, $feedback_pos, $feedback_neg, $feedback_err);
+		$this->entrée = $entrée;
+		$this->params = $params;
 	}
 }
