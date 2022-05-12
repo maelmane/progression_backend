@@ -116,7 +116,6 @@ URI
 Question          
 ▲                 
 ├ QuestionProg    
-├ QuestionProgEval
 ├ QuestionSys     
 └ QuestionBD
 #+end_src
@@ -127,11 +126,13 @@ Question
 | Nom         | Type | Valeurs      |
 |-------------+------+--------------|
 | uri         | str  |              |
+| niveau      | str  |              |
 | titre       | str  |              |
 | description | str  |              |
 | énoncé      | str  |              |
+| auteur      | str  |              |
+| licence     | str  |              |
 | sous-type   | str  | questionProg |
-|             |      | (obsolète)   |
 |             |      | questionSys  |
 |             |      | questionBD   |
 
@@ -144,6 +145,15 @@ Une question spécifiquement de programmation.
 |------------+-------------+------------+-------------------------------|
 | ebauches   | 1-n         | Ébauche    | liste d'ébauches de Solution  |
 | tests      | 1-n         | Test       | liste de Tests de validation  |
+
+** Question (sous-type QuestionSys)
+
+Une question spécifiquement de type système
+
+*** Relations :
+| Nom     | Cardinalité | Type | Description                  |
+|---------+-------------+------+------------------------------|
+| tests   | 1-n         | Test | liste de Tests de validation |
 
 ** Résultat
 
@@ -214,6 +224,24 @@ Une tentative de réponse à une question.
 |-----------------+------+-------------------------|
 | langage         | str  |                         |
 | code            | str  |                         |
+| tests_réussis   | int  | nb de tests réussis     |
+| temps_exécution | int  | temps d'exécution en ms |
+
+*** Relations :
+
+| Nom       | Cardinalité | Type     | Description           |
+|-----------+-------------+----------+-----------------------|
+| résultats | 1-n         | Résultat | les résultats de test |
+
+** Tentative (sous-type tentativeSys)
+
+Une tentative de réponse à une question.
+
+*** Propriétés:
+
+| Nom             | Type | Valeurs                 |
+|-----------------+------+-------------------------|
+| réponse         | str  |                         |
 | tests_réussis   | int  | nb de tests réussis     |
 | temps_exécution | int  | temps d'exécution en ms |
 
