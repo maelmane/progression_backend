@@ -33,7 +33,6 @@ class Question
 
 	public $nom = null;
 	public $uri = null;
-	public $actif = 1;
 	public $niveau = null;
 	public $titre = null;
 	public $description = null;
@@ -43,5 +42,4 @@ class Question
 	public $feedback_pos = null;
 	public $feedback_neg = null;
 	public $feedback_err = null;
-	public $etat = Question::ETAT_DEBUT;
 }
