@@ -5,7 +5,11 @@ titre: Toutes les permissions
 
 description: Exercice simple sur les changements de permissions.
 
-énoncé: Appliquez les commandes nécessaires au changement des permissions pour le fichier bonjour.txt. Le fihicer doit être public pour tous.
+énoncé: Appliquez les commandes nécessaires au changement des permissions pour le fichier bonjour.txt. Le fichier doit être public pour tous.
+
+image: http://liendelimage.com:3000
+
+utilisateur: matt
 
 rétroactions:
   positive: Bravo! tu es un pro des permissions
