@@ -22,9 +22,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransformer, TentativeBDTransformer};
-use progression\domaine\interacteur\{ObtenirTentativeInt, ObtenirQuestionInt, SoumettreTentativeProgInt};
+use progression\domaine\interacteur\{
+	ObtenirTentativeInt,
+	ObtenirQuestionInt,
+	SoumettreTentativeProgInt,
+	SauvegarderAvancementInt,
+	SauvegarderTentativeProgInt,
+};
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
+use progression\domaine\entité\Test;
 use progression\dao\exécuteur\ExécutionException;
 use progression\util\Encodage;
 use DomainException, LengthException, RuntimeException;
@@ -77,7 +84,6 @@ class TentativeCtl extends Contrôleur
 
 		$tentative = null;
 		$réponse = null;
-
 		$chemin = Encodage::base64_decode_url($question_uri);
 
 		$question = null;
@@ -108,10 +114,22 @@ class TentativeCtl extends Contrôleur
 				);
 				return $this->réponse_json(["erreur" => $validation->errors()], 400);
 			}
+
+			if (!empty($request->test)) {
+				$question->tests = [
+					new Test(
+						$request->test["nom"] ?? "",
+						$request->test["sortie_attendue"] ?? "",
+						$request->test["entrée"] ?? "",
+						$request->test["params"] ?? "",
+					),
+				];
+				Log::debug("TentativeCtl.post. Tests question : ", [$question->tests]);
+			}
 			$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
 
-			$tentativeInt = new SoumettreTentativeProgInt();
 			try {
+				$tentativeInt = new SoumettreTentativeProgInt();
 				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
 			} catch (ExécutionException $e) {
 				Log::error($e->getMessage());
@@ -127,6 +145,29 @@ class TentativeCtl extends Contrôleur
 						") Requête intraitable (Tentative == null)",
 				);
 				return $this->réponse_json(["erreur" => "Requête intraitable."], 400);
+			}
+
+			try {
+				if (empty($request->test)) {
+					$avancementInt = new SauvegarderAvancementInt();
+					$sauvegardeTentativeInt = new SauvegarderTentativeProgInt();
+					$avancement = $avancementInt->récupérer_avancement($username, $question, $tentative);
+					$avancement->titre = $question->titre;
+					$avancement->niveau = $question->niveau;
+					$avancementInt->mettre_à_jour_dates_et_état(
+						$avancement,
+						$tentative->date_soumission,
+						$username,
+						$question->uri,
+					);
+					$sauvegardeTentativeInt->sauvegarder($username, $question->uri, $tentative);
+				}
+			} catch (ExécutionException $e) {
+				Log::error($e->getMessage());
+				if ($e->getPrevious()) {
+					Log::error($e->getPrevious()->getMessage());
+				}
+				return $this->réponse_json(["erreur" => "Service non disponible."], 503);
 			}
 
 			$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
