@@ -31,7 +31,7 @@ use progression\domaine\interacteur\{
 };
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
-use progression\domaine\entité\Test;
+use progression\domaine\entité\TestProg;
 use progression\dao\exécuteur\ExécutionException;
 use progression\util\Encodage;
 use DomainException, LengthException, RuntimeException;
@@ -117,7 +117,7 @@ class TentativeCtl extends Contrôleur
 
 			if (!empty($request->test)) {
 				$question->tests = [
-					new Test(
+					new TestProg(
 						$request->test["nom"] ?? "",
 						$request->test["sortie_attendue"] ?? "",
 						$request->test["entrée"] ?? "",
