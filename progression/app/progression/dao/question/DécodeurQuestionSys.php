@@ -27,15 +27,23 @@ class DécodeurQuestionSys extends DécodeurQuestion
 	{
 		parent::load($question, $infos_question);
 
-		$question->utilisateur = $infos_question["utilisateur"];
-		$question->image = $infos_question["image"];
-		if (isset($infos_question["solution_courte"])) {
-			$question->solution_courte = $infos_question["solution_courte"];
-		}
+		$question = self::load_infos_sys($question, $infos_question);
+
 		$question->tests = self::load_tests($infos_question);
 
 		if (count($question->tests) == 0) {
 			throw new DomainException("Le fichier ne peut pas être décodé. Les tests sont manquants.");
+		}
+
+		return $question;
+	}
+
+	protected static function load_infos_sys($question, $infos_question)
+	{
+		$question->utilisateur = $infos_question["utilisateur"];
+		$question->image = $infos_question["image"];
+		if (isset($infos_question["solution_courte"])) {
+			$question->solution_courte = $infos_question["solution_courte"];
 		}
 
 		return $question;
