@@ -24,6 +24,8 @@ class SoumettreTentativeSysInt extends Interacteur
 {
 	public function soumettre_tentative($username, $question, $tentative)
 	{
+		$tentativeTraitée = null;
+
 		if ($question->réponse && $this->vérifier_réponse_courte($question, $tentative)) {
 			$tentative->temps_exécution = 0;
 			$tentative->réussi = true;
@@ -46,7 +48,7 @@ class SoumettreTentativeSysInt extends Interacteur
 	{
 		$valide = false;
 
-		if ($question->réponse[0] == "~" && $question->réponse[str_len($question->réponse) - 1] == "~") {
+		if ($question->réponse[0] == "~" && $question->réponse[strlen($question->réponse) - 1] == "~") {
 			if (preg_match($question->réponse, $tentative->réponse)) {
 				$valide = true;
 			}
@@ -72,6 +74,6 @@ class SoumettreTentativeSysInt extends Interacteur
 
 	private function traiter_tentative_sys($tentative, $rétroactions, $tests)
 	{
-		return (new TraiterTentativeInt())->traiter_résultats($tentative, $rétroactions, $tests);
+		return (new TraiterTentativeSysInt())->traiter_résultats($tentative, $rétroactions, $tests);
 	}
 }

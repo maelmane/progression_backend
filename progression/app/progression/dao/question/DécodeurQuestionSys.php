@@ -60,7 +60,6 @@ class DécodeurQuestionSys extends DécodeurQuestion
 				$test["utilisateur"] ?? null,
 				$test["feedback_pos"] ?? null,
 				$test["feedback_neg"] ?? null,
-				$test["feedback_err"] ?? null,
 			);
 		}
 
