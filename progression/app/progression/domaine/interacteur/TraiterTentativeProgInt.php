@@ -20,11 +20,12 @@ namespace progression\domaine\interacteur;
 
 class TraiterTentativeProgInt extends Interacteur
 {
-	function traiter_résultats($question, $tentative)
+	function traiter_résultats($tentative, $rétroactions, $tests)
 	{
 		$nb_tests_réussis = 0;
 		$erreur = false;
-		foreach ($question->tests as $i => $test) {
+
+		foreach ($tests as $i => $test) {
 			if ($this->vérifier_solution($tentative->résultats[$i], $test->sortie_attendue)) {
 				$tentative->résultats[$i]->feedback = $test->feedback_pos;
 				$tentative->résultats[$i]->résultat = true;
@@ -41,24 +42,21 @@ class TraiterTentativeProgInt extends Interacteur
 				}
 			}
 		}
-
 		$tentative->tests_réussis = $nb_tests_réussis;
-
 		if ($erreur) {
 			$tentative->réussi = false;
-			if ($question->feedback_err) {
-				$tentative->feedback = $question->feedback_err;
+			if ($rétroactions["feedback_err"]) {
+				$tentative->feedback = $rétroactions["feedback_err"];
 			} elseif (date("j n") === "1 4") {
 				$tentative->feedback = (new PatenaudeCitationInt())->get_citation();
 			}
-		} elseif ($nb_tests_réussis == count($question->tests)) {
+		} elseif ($nb_tests_réussis == count($tests)) {
 			$tentative->réussi = true;
-			$tentative->feedback = $question->feedback_pos;
+			$tentative->feedback = $rétroactions["feedback_pos"];
 		} else {
 			$tentative->réussi = false;
-			$tentative->feedback = $question->feedback_neg;
+			$tentative->feedback = $rétroactions["feedback_neg"];
 		}
-
 		return $tentative;
 	}
 

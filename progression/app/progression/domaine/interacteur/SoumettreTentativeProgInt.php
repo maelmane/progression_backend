@@ -33,51 +33,14 @@ class SoumettreTentativeProgInt extends Interacteur
 			$résultats = $this->exécuter_prog($exécutable, $question->tests);
 			$tentative->temps_exécution = $résultats["temps_exécution"];
 			$tentative->résultats = $résultats["résultats"];
-			$tentativeTraitée = $this->traiterTentativeProg($question, $tentative);
-			$avancement = $this->récupérer_avancement($username, $question, $tentativeTraitée);
-
-			$avancement->titre = $question->titre;
-			$avancement->niveau = $question->niveau;
-			$avancement = $this->mettre_à_jour_dates_et_état($avancement, $tentativeTraitée->date_soumission);
-
-			$this->sauvegarder_avancement($username, $question->uri, $avancement);
-			$this->sauvegarder_tentative($username, $question->uri, $tentativeTraitée);
+			$rétroactions["feedback_pos"] = $question->feedback_pos;
+			$rétroactions["feedback_neg"] = $question->feedback_neg;
+			$rétroactions["feedback_err"] = $question->feedback_err;
+			$tentativeTraitée = $this->traiterTentativeProg($tentative, $rétroactions, $question->tests);
 
 			return $tentativeTraitée;
 		}
 		return null;
-	}
-
-	private function récupérer_avancement($username, $question, $tentative)
-	{
-		$dao_avancement = $this->source_dao->get_avancement_dao();
-		$avancement = $dao_avancement->get_avancement($username, $question->uri);
-
-		if ($avancement === null) {
-			$avancement = $this->créer_avancement($question);
-		}
-		$avancement->tentatives[] = $tentative;
-		return $avancement;
-	}
-
-	private function créer_avancement($question)
-	{
-		$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, []);
-		return $avancement;
-	}
-
-	private function mettre_à_jour_dates_et_état($avancement, $date)
-	{
-		if (
-			$avancement->etat != Question::ETAT_REUSSI &&
-			$avancement->tentatives[array_key_last($avancement->tentatives)]->réussi
-		) {
-			$avancement->etat = Question::ETAT_REUSSI;
-			$avancement->date_réussite = $date;
-		}
-
-		$avancement->date_modification = $date;
-		return $avancement;
 	}
 
 	private function exécuter_prog($exécutable, $testsQuestion)
@@ -85,19 +48,8 @@ class SoumettreTentativeProgInt extends Interacteur
 		return (new ExécuterProgInt())->exécuter($exécutable, $testsQuestion);
 	}
 
-	private function traiterTentativeProg($question, $tentative)
+	private function traiterTentativeProg($tentative, $rétroactions, $tests)
 	{
-		return (new TraiterTentativeProgInt())->traiter_résultats($question, $tentative);
-	}
-
-	private function sauvegarder_avancement($username, $uriQuestion, $avancement)
-	{
-		(new SauvegarderAvancementInt())->sauvegarder($username, $uriQuestion, $avancement);
-	}
-
-	private function sauvegarder_tentative($username, $uriQuestion, $tentative)
-	{
-		$interacteurSauvegarde = new SauvegarderTentativeProgInt();
-		$tentativeSauvegardée = $interacteurSauvegarde->sauvegarder($username, $uriQuestion, $tentative);
+		return (new TraiterTentativeProgInt())->traiter_résultats($tentative, $rétroactions, $tests);
 	}
 }

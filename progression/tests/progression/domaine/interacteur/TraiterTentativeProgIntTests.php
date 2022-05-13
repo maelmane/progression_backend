@@ -23,15 +23,15 @@ use PHPUnit\Framework\TestCase;
 
 final class TraiterTentativeProgIntTests extends TestCase
 {
-	public function test_étant_donné_une_TentativeProg_correcte_lorsquon_la_traite_on_obtient_une_TentativeProg_traitée_et_réussie()
+	public function test_étant_donné_une_TentativeProg_correcte_lorsquon_la_traite_on_obtient_une_TentativeProg_traitée_et_réussie_avec_un_feedback_positif()
 	{
 		$question = new QuestionProg();
 		$question->tests = [
 			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
 			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
 		];
-		$question->feedback_pos = "Bravo!";
-		$question->feedback_neg = "Non!";
+		$rétroactions["feedback_pos"] = "Bravo!";
+		$rétroactions["feedback_neg"] = "Non!";
 
 		$tentative = new TentativeProg("python", "testCode");
 		$tentative->résultats = [new RésultatProg("ok\n", ""), new RésultatProg("ok\nok\nok\nok\nok\n", "")];
@@ -40,12 +40,12 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new RésultatProg("ok\nok\nok\nok\nok\n", "", true, "Test 1 passé"),
 		]);
 
-		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($question, $tentative);
+		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($tentative, $rétroactions, $tests);
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 
-	public function test_étant_donné_une_TentativeProg_incorrecte_lorsquon_la_traite_on_obtient_une_TentativeProg_traitée_et_nonréussie_avec_feedback_positif()
+	public function test_étant_donné_une_TentativeProg_incorrecte_lorsquon_la_traite_on_obtient_une_TentativeProg_traitée_et_nonréussie_avec_feedback_négatif()
 	{
 		$question = new QuestionProg();
 		$question->tests = [
@@ -60,8 +60,8 @@ final class TraiterTentativeProgIntTests extends TestCase
 				"Test 2 échoué",
 			),
 		];
-		$question->feedback_pos = "Bravo!";
-		$question->feedback_neg = "As-tu essayé de ne pas faire ça?";
+		$rétroactions["feedback_pos"] = "Bravo!";
+		$rétroactions["feedback_neg"] = "As-tu essayé de ne pas faire ça?";
 
 		$tentative = new TentativeProg("python", "testCode");
 		$tentative->résultats = [
@@ -85,7 +85,7 @@ final class TraiterTentativeProgIntTests extends TestCase
 			],
 		);
 
-		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($question, $tentative);
+		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($tentative, $rétroactions, $tests);
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
@@ -105,9 +105,10 @@ final class TraiterTentativeProgIntTests extends TestCase
 				"Erreur!",
 			),
 		];
-		$question->feedback_pos = "Bravo!";
-		$question->feedback_neg = "As-tu essayé de ne pas faire ça?";
-		$question->feedback_err = "Revise la syntaxe de ton code";
+
+		$rétroactions["feedback_pos"] = "Bravo!";
+		$rétroactions["feedback_neg"] = "As-tu essayé de ne pas faire ça?";
+		$rétroactions["feedback_err"] = "Revise la syntaxe de ton code";
 
 		$tentative = new TentativeProg("python", "testCode");
 		$tentative->résultats = [new RésultatProg("ok\n", ""), new RésultatProg("", "testErreur")];
@@ -123,7 +124,7 @@ final class TraiterTentativeProgIntTests extends TestCase
 			[new RésultatProg("ok\n", "", true, "Test 0 passé"), new RésultatProg("", "testErreur", false, "Erreur!")],
 		);
 
-		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($question, $tentative);
+		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($tentative, $rétroactions, $tests);
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
@@ -135,8 +136,9 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
 			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
 		];
-		$question->feedback_pos = "Bravo!";
-		$question->feedback_neg = "As-tu essayé de ne pas faire ça?";
+		$rétroactions["feedback_pos"] = "Bravo!";
+		$rétroactions["feedback_neg"] = "As-tu essayé de ne pas faire ça?";
+		$rétroactions["feedback_err"] = null;
 
 		$tentative = new TentativeProg("python", "testCode");
 		$tentative->résultats = [new RésultatProg("ok\n", ""), new RésultatProg("", "testErreur")];
@@ -146,7 +148,7 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new RésultatProg("", "testErreur", false, null),
 		]);
 
-		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($question, $tentative);
+		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($tentative, $rétroactions, $tests);
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
