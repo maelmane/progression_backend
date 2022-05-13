@@ -106,12 +106,7 @@ final class QuestionDAOTests extends TestCase
 		$résultat_attendu->utilisateur = "matt";
 
 		$résultat_attendu->tests = [
-			0 => new TestSys(
-				"toutes permissions",
-				"-rwx rwx rwx",
-				"Bien joué!",
-				"Encore un effort! Toutes les permissions ne sont pas octroyées",
-			),
+			0 => new TestSys("toutes permissions", "-rwx rwx rwx"),
 		];
 		$résultat_attendu->tests[0]->validation = "ls –l test.txt";
 		$résultat_attendu->tests[0]->utilisateur = "matt";
@@ -120,8 +115,6 @@ final class QuestionDAOTests extends TestCase
 		$résultat_obtenu = (new QuestionDAO())->get_question(
 			"file://" . __DIR__ . "/démo/permissions_sys/permissions/info.yml",
 		);
-
-		print_r($résultat_obtenu);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
@@ -164,12 +157,7 @@ final class QuestionDAOTests extends TestCase
 		$résultat_attendu->solution_courte = 34;
 
 		$résultat_attendu->tests = [
-			0 => new TestSys(
-				"toutes permissions",
-				"-rwx rwx rwx",
-				"Bien joué!",
-				"Encore un effort! Toutes les permissions ne sont pas octroyées",
-			),
+			0 => new TestSys("toutes permissions", "-rwx rwx rwx"),
 		];
 		$résultat_attendu->tests[0]->validation = "ls –l test.txt";
 		$résultat_attendu->tests[0]->utilisateur = "matt";
@@ -178,8 +166,6 @@ final class QuestionDAOTests extends TestCase
 		$résultat_obtenu = (new QuestionDAO())->get_question(
 			"file://" . __DIR__ . "/démo/permissions_sys/permissions/info.yml",
 		);
-
-		print_r($résultat_obtenu);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}

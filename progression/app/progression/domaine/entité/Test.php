@@ -24,19 +24,12 @@ class Test
 	public $sortie_attendue;
 	public $feedback_pos;
 	public $feedback_neg;
-	public $feedback_err;
 
-	public function __construct(
-		$nom,
-		$sortie_attendue,
-		$feedback_pos = null,
-		$feedback_neg = null,
-		$feedback_err = null
-	) {
+	public function __construct($nom, $sortie_attendue, $feedback_pos = null, $feedback_neg = null)
+	{
 		$this->nom = $nom;
 		$this->sortie_attendue = $sortie_attendue;
 		$this->feedback_pos = $feedback_pos;
 		$this->feedback_neg = $feedback_neg;
-		$this->feedback_err = $feedback_err;
 	}
 }

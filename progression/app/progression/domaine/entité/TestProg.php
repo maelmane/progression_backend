@@ -22,6 +22,7 @@ class TestProg extends Test
 {
 	public $entrée;
 	public $params;
+	public $feedback_err;
 
 	public function __construct(
 		$nom,
@@ -32,7 +33,8 @@ class TestProg extends Test
 		$feedback_neg = null,
 		$feedback_err = null
 	) {
-		parent::__construct($nom, $sortie_attendue, $feedback_pos, $feedback_neg, $feedback_err);
+		parent::__construct($nom, $sortie_attendue, $feedback_pos, $feedback_neg);
+		$this->feedback_err = $feedback_err;
 		$this->entrée = $entrée;
 		$this->params = $params;
 	}

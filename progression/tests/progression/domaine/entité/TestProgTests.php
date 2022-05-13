@@ -20,7 +20,7 @@ namespace progression\domaine\entité;
 
 use PHPUnit\Framework\TestCase;
 
-final class TestTestProg extends TestCase
+final class TestProgTests extends TestCase
 {
 	public function test_étant_donné_un_TestProg_instancié_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
 	{

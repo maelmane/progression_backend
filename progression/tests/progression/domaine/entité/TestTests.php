@@ -28,27 +28,23 @@ final class TestTests extends TestCase
 		$sortie_attendu = "testSortie";
 		$feedback_pos_attendu = "testFbp";
 		$feedback_neg_attendu = "testFbn";
-		$feedback_err_attendu = "testFbe";
 
-		$résultat_obtenu = new Test("testNom", "testSortie", "testFbp", "testFbn", "testFbe");
+		$résultat_obtenu = new Test("testNom", "testSortie", "testFbp", "testFbn");
 
 		$this->assertEquals($nom_attendu, $résultat_obtenu->nom);
 		$this->assertEquals($sortie_attendu, $résultat_obtenu->sortie_attendue);
 		$this->assertEquals($feedback_pos_attendu, $résultat_obtenu->feedback_pos);
 		$this->assertEquals($feedback_neg_attendu, $résultat_obtenu->feedback_neg);
-		$this->assertEquals($feedback_err_attendu, $résultat_obtenu->feedback_err);
 	}
 
 	public function test_étant_donné_un_Test_instancié_avec_ses_paramètres_null_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_nulles()
 	{
 		$feedback_pos_attendu = null;
 		$feedback_neg_attendu = null;
-		$feedback_err_attendu = null;
 
 		$résultat_obtenu = new Test("testNom", "testSortie");
 
 		$this->assertEquals($feedback_pos_attendu, $résultat_obtenu->feedback_pos);
 		$this->assertEquals($feedback_neg_attendu, $résultat_obtenu->feedback_neg);
-		$this->assertEquals($feedback_err_attendu, $résultat_obtenu->feedback_err);
 	}
 }
