@@ -31,7 +31,7 @@ use progression\domaine\interacteur\{
 };
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
-use progression\domaine\entité\Test;
+use progression\domaine\entité\TestProg;
 use progression\dao\exécuteur\ExécutionException;
 use progression\util\Encodage;
 use DomainException, LengthException, RuntimeException;
@@ -116,14 +116,16 @@ class TentativeCtl extends Contrôleur
 			}
 
 			if (!empty($request->test)) {
-				$question->tests = [
-					new Test(
-						$request->test["nom"] ?? "",
-						$request->test["sortie_attendue"] ?? "",
-						$request->test["entrée"] ?? "",
-						$request->test["params"] ?? "",
-					),
-				];
+				if (isset($request->test["entrée"]) || isset($request->test["params"])) {
+					$question->tests = [
+						new TestProg(
+							$request->test["nom"] ?? "",
+							$request->test["sortie_attendue"] ?? "",
+							$request->test["entrée"] ?? "",
+							$request->test["params"] ?? "",
+						),
+					];
+				}
 				Log::debug("TentativeCtl.post. Tests question : ", [$question->tests]);
 			}
 			$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());

@@ -27,6 +27,8 @@ class DécodeurQuestionSys extends DécodeurQuestion
 	{
 		parent::load($question, $infos_question);
 
+		$question = self::load_infos_sys($question, $infos_question);
+
 		$question->tests = self::load_tests($infos_question);
 
 		if (count($question->tests) == 0) {
@@ -36,20 +38,31 @@ class DécodeurQuestionSys extends DécodeurQuestion
 		return $question;
 	}
 
+	protected static function load_infos_sys($question, $infos_question)
+	{
+		$question->utilisateur = $infos_question["utilisateur"];
+		$question->image = $infos_question["image"];
+		if (isset($infos_question["solution_courte"])) {
+			$question->solution_courte = $infos_question["solution_courte"];
+		}
+
+		return $question;
+	}
+
 	protected static function load_tests($infos_question)
 	{
 		$tests = [];
-		/*	foreach ($infos_question["tests"] as $i => $test) {
+		foreach ($infos_question["tests"] as $i => $test) {
 			$tests[] = new TestSys(
 				$test["nom"] ?? "#" . $i + 1,
 				$test["sortie"],
-                $test["validation"],
-                $test["utilisateur"] ?? null,
-				$test["rétroactions"]["positive"] ?? null,
-				$test["rétroactions"]["négative"] ?? null,
-				$test["rétroactions"]["erreur"] ?? null,
+				$test["validation"],
+				$test["utilisateur"] ?? null,
+				$test["feedback_pos"] ?? null,
+				$test["feedback_neg"] ?? null,
+				$test["feedback_err"] ?? null,
 			);
-		}*/
+		}
 
 		return $tests;
 	}

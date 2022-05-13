@@ -30,6 +30,10 @@ final class TraiterTentativeProgIntTests extends TestCase
 			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
 			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
 		];
+		$tests = [
+			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
+			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
+		];
 		$rétroactions["feedback_pos"] = "Bravo!";
 		$rétroactions["feedback_neg"] = "Non!";
 
@@ -49,6 +53,18 @@ final class TraiterTentativeProgIntTests extends TestCase
 	{
 		$question = new QuestionProg();
 		$question->tests = [
+			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
+			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
+			new TestProg(
+				"troisième test",
+				"ok\nok\nok\nok\nok\nok\nok\nok\nok\nok\n",
+				"10",
+				null,
+				"Test 2 passé",
+				"Test 2 échoué",
+			),
+		];
+		$tests = [
 			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
 			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
 			new TestProg(
@@ -105,6 +121,18 @@ final class TraiterTentativeProgIntTests extends TestCase
 				"Erreur!",
 			),
 		];
+		$tests = [
+			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué", "Erreur!"),
+			new TestProg(
+				"deuxième test",
+				"ok\nok\nok\nok\nok\n",
+				"5",
+				null,
+				"Test 1 passé",
+				"Test 1 échoué",
+				"Erreur!",
+			),
+		];
 
 		$rétroactions["feedback_pos"] = "Bravo!";
 		$rétroactions["feedback_neg"] = "As-tu essayé de ne pas faire ça?";
@@ -133,6 +161,10 @@ final class TraiterTentativeProgIntTests extends TestCase
 	{
 		$question = new QuestionProg();
 		$question->tests = [
+			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
+			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
+		];
+		$tests = [
 			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
 			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
 		];
