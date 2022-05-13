@@ -24,5 +24,54 @@ class SoumettreTentativeSysInt extends Interacteur
 {
 	public function soumettre_tentative($username, $question, $tentative)
 	{
+		if ($question->réponse && $this->vérifier_réponse_courte($question, $tentative)) {
+			$tentative->temps_exécution = 0;
+			$tentative->réussi = true;
+			$tentative->tests_réussis = 1;
+			$tentativeTraité = $tentative;
+		}
+
+		if ($question->tests != null && count($question->tests) > 0) {
+			$tentative = $this->exécuter_validation($question, $tentative);
+			$rétroactions["feedback_pos"] = $question->feedback_pos;
+			$rétroactions["feedback_neg"] = $question->feedback_neg;
+			$rétroactions["feedback_err"] = $question->feedback_err;
+			$tentativeTraitée = $this->traiter_tentative_sys($tentative, $rétroactions, $question->tests);
+		}
+
+		return $tentativeTraitée;
+	}
+
+	private function vérifier_réponse_courte($question, $tentative)
+	{
+		$valide = false;
+
+		if ($question->réponse[0] == "~" && $question->réponse[str_len($question->réponse) - 1] == "~") {
+			if (preg_match($question->réponse, $tentative->réponse)) {
+				$valide = true;
+			}
+		} elseif ($question->réponse == $tentative->réponse) {
+			$valide = true;
+		}
+		return $valide;
+	}
+
+	private function exécuter_validation($question, $tentative)
+	{
+		$résultats = $this->exécuter_sys($question, $tentative);
+		$tentative->temps_exécution = $résultats["temps_exécution"];
+		$tentative->résultats = $résultats["résultats"];
+
+		return $tentative;
+	}
+
+	private function exécuter_sys($question, $tentative)
+	{
+		return (new ExécuterSysInt())->exécuter($question, $tentative);
+	}
+
+	private function traiter_tentative_sys($tentative, $rétroactions, $tests)
+	{
+		return (new TraiterTentativeInt())->traiter_résultats($tentative, $rétroactions, $tests);
 	}
 }
