@@ -30,12 +30,13 @@ class TentativeSys extends Tentative
 		$réponse = null,
 		$date_soumission = null,
 		$réussi = false,
+		$temps_exécution = null,
 		$tests_réussis = 0,
 		$feedback = null,
 		$résultats = [],
 		$commentaires = []
 	) {
-		parent::__construct($date_soumission, $réussi, $feedback, $commentaires);
+		parent::__construct($date_soumission, $réussi, $temps_exécution, $feedback, $commentaires);
 		$this->conteneur = $conteneur;
 		$this->réponse = $réponse;
 		$this->tests_réussis = $tests_réussis;

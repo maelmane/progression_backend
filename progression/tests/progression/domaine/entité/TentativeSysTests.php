@@ -35,6 +35,7 @@ final class TentativeSysTests extends TestCase
 			"reponseTest",
 			3456,
 			true,
+			100,
 			2,
 			"Bravo!",
 			$résultats,
@@ -45,6 +46,7 @@ final class TentativeSysTests extends TestCase
 		$this->assertEquals("reponseTest", $tentativeSysTest->réponse);
 		$this->assertEquals(3456, $tentativeSysTest->date_soumission);
 		$this->assertTrue($tentativeSysTest->réussi);
+		$this->assertEquals(100, $tentativeSysTest->temps_exécution);
 		$this->assertEquals(2, $tentativeSysTest->tests_réussis);
 		$this->assertEquals("Bravo!", $tentativeSysTest->feedback);
 		$this->assertEquals($résultats_attendu, $tentativeSysTest->résultats);
