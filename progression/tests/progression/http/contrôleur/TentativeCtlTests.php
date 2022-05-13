@@ -37,6 +37,7 @@ final class TentativeCtlTests extends ContrôleurTestCase
 {
 	public $user;
 	public $headers;
+	protected static $ancienne_tentative;
 
 	public function setUp(): void
 	{
@@ -87,6 +88,10 @@ final class TentativeCtlTests extends ContrôleurTestCase
 		// Ébauches
 		$question->exécutables["python"] = new Exécutable("#+TODO\nprint(\"Hello world!\")", "python");
 		$question->exécutables["java"] = new Exécutable("//+TODO\nSystem.out.println(\"Hello world!\")", "java");
+		$question->exécutables["tentativeRéussie"] = new Exécutable(
+			"#+TODO\nprint(\"Hello world!\")",
+			"tentativeRéussie",
+		);
 		// Tests
 		$question->tests = [
 			new TestProg("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
@@ -116,6 +121,15 @@ final class TentativeCtlTests extends ContrôleurTestCase
 			})
 			->andThrow(new ExécutionException("Erreur test://TentativeCtlTests.php"));
 
+		$mockExécuteur
+			->shouldReceive("exécuter")
+			->withArgs(function ($exec, $test) {
+				return $exec->lang == "tentativeRéussie";
+			})
+			->andReturn([
+				"temps_exec" => 0.551,
+				"résultats" => [["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03]],
+			]);
 		//Avancement
 		$avancement = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [
 			new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest"),
@@ -146,6 +160,12 @@ final class TentativeCtlTests extends ContrôleurTestCase
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);
+
+		self::$ancienne_tentative = new TentativeProg(
+			langage: "python",
+			code: "codeTest",
+			date_soumission: "1614374490",
+		);
 	}
 
 	public function tearDown(): void
@@ -179,17 +199,188 @@ final class TentativeCtlTests extends ContrôleurTestCase
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_obtenu->getContent());
 	}
 
-	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_on_obtient_la_TentativeProg_avec_ses_résultats_et_ses_relations_sous_forme_json()
+	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_le_timestamp_une_tentative_réussie_et_un_avancement_réussi_lorsquon_appelle_post_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeProg_avec_ses_résultats_et_ses_relations_sous_forme_json()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives?include=resultats",
+			["langage" => "tentativeRéussie", "code" => "#+TODO\nprint(\"Hello world!\")"],
+		);
+		$heure_courante = time();
+		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
+		self::$ancienne_tentative->tests_réussis = 2;
+		self::$ancienne_tentative->réussi = true;
+		self::$ancienne_tentative->feedback = "feedbackTest";
+		self::$ancienne_tentative->temps_exécution = 5;
+		$ancien_avancement = new Avancement(
+			etat: Question::ETAT_REUSSI,
+			type: Question::TYPE_PROG,
+			tentatives: [self::$ancienne_tentative],
+		);
+
+		$nouvel_avancement = new Avancement(
+			etat: Question::ETAT_REUSSI,
+			type: Question::TYPE_PROG,
+			tentatives: [
+				self::$ancienne_tentative,
+				new TentativeProg(
+					langage: "tentativeRéussie",
+					code: "#+TODO\nprint(\"Hello world!\")",
+					date_soumission: $heure_tentative,
+					réussi: true,
+					tests_réussis: 2,
+					feedback: "Bon travail!",
+				),
+			],
+		);
+
+		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
+		$mockAvancementDAO
+			->shouldReceive("get_avancement")
+			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->andReturn($ancien_avancement);
+
+		$mockAvancementDAO
+			->shouldReceive("save")
+			->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
+				return $user == "jdoe" &&
+					$uri == "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" &&
+					$av == $nouvel_avancement;
+			})
+			->andReturn($nouvel_avancement);
+
+		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
+
+		$mockTentativeDAO
+			->shouldReceive("get_tentative")
+			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "1614374490")
+			->andReturn(self::$ancienne_tentative);
+		$mockTentativeDAO->shouldReceive("save")->andReturnArg(2);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertLessThan(
+			1,
+			$heure_courante - $heure_tentative,
+			"Heure courante: {$heure_courante}, Heure tentative: {$heure_tentative}",
+		);
+
+		$this->assertJsonStringEqualsJsonString(
+			sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_4.json"), $heure_tentative),
+			$résultat_obtenu->getContent(),
+		);
+	}
+	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_le_timestamp_une_tentative_réussie_et_un_avancement_non_réussi_lorsquon_appelle_post_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeProg_avec_ses_résultats_et_ses_relations_sous_forme_json()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives?include=resultats",
+			["langage" => "tentativeRéussie", "code" => "#+TODO\nprint(\"Hello world!\")"],
+		);
+		$heure_courante = time();
+		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
+		self::$ancienne_tentative = new TentativeProg(
+			langage: "python",
+			code: "codeTest",
+			date_soumission: "1614374490",
+		);
+		self::$ancienne_tentative->tests_réussis = 0;
+		self::$ancienne_tentative->réussi = false;
+		self::$ancienne_tentative->feedback = "feedbackTest";
+		self::$ancienne_tentative->temps_exécution = 5;
+		$ancien_avancement = new Avancement(
+			etat: Question::ETAT_NONREUSSI,
+			type: Question::TYPE_PROG,
+			tentatives: [self::$ancienne_tentative],
+		);
+
+		$nouvel_avancement = new Avancement(
+			etat: Question::ETAT_REUSSI,
+			type: Question::TYPE_PROG,
+			tentatives: [
+				self::$ancienne_tentative,
+				new TentativeProg(
+					langage: "tentativeRéussie",
+					code: "#+TODO\nprint(\"Hello world!\")",
+					date_soumission: $heure_tentative,
+					réussi: true,
+					tests_réussis: 2,
+					feedback: "Bon travail!",
+				),
+			],
+		);
+
+		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
+		$mockAvancementDAO
+			->shouldReceive("get_avancement")
+			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->andReturn($ancien_avancement);
+
+		$mockAvancementDAO
+			->shouldReceive("save")
+			->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
+				return $user == "jdoe" &&
+					$uri == "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" &&
+					$av == $nouvel_avancement;
+			})
+			->andReturn($nouvel_avancement);
+
+		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
+
+		$mockTentativeDAO
+			->shouldReceive("get_tentative")
+			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "1614374490")
+			->andReturn(self::$ancienne_tentative);
+		$mockTentativeDAO->shouldReceive("save")->andReturnArg(2);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertLessThan(
+			1,
+			$heure_courante - $heure_tentative,
+			"Heure courante: {$heure_courante}, Heure tentative: {$heure_tentative}",
+		);
+
+		$this->assertJsonStringEqualsJsonString(
+			sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_4.json"), $heure_tentative),
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_le_timestamp_et_une_tentative_non_réussie_et_un_avancement_non_réussi_lorsquon_appelle_post_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeProg_avec_ses_résultats_et_ses_relations_sous_forme_json()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives?include=resultats",
 			["langage" => "python", "code" => "#+TODO\nprint(\"Hello world!\")"],
 		);
-		$this->assertEquals(200, $résultat_obtenu->status());
-
 		$heure_courante = time();
 		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
+
+		$nouvel_avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, [
+			new TentativeProg("python", "#+TODO\nprint(\"Hello world!\")", $heure_tentative, false, 2, "feedbackTest"),
+		]);
+
+		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
+		$mockAvancementDAO
+			->shouldReceive("get_avancement")
+			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->andReturn(null);
+
+		$mockAvancementDAO
+			->shouldReceive("save")
+			->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
+				return $user == "jdoe" &&
+					$uri == "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" &&
+					$av == $nouvel_avancement;
+			})
+			->andReturn($nouvel_avancement);
+
+		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
+
+		$mockTentativeDAO->shouldNotReceive("get_tentative")->withAnyArgs();
+
+		$mockTentativeDAO->shouldReceive("save")->andReturnArg(2);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
 		$this->assertLessThan(
 			1,
 			$heure_courante - $heure_tentative,
@@ -236,6 +427,39 @@ final class TentativeCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Requête intraitable."}', $résultat_obtenu->getContent());
+	}
+
+	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_avec_un_test_unique_en_parametre_lavancement_et_la_tentative_ne_sont_pas_sauvegardés_et_obtient_la_TentativeProg_avec_ses_résultats_et_ses_relations_sous_forme_json()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives?include=resultats",
+			[
+				"langage" => "python",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+				"test" => ["nom" => "Test bonjour", "sortie_attendue" => "bonjour", "entrée" => "bonjour"],
+			],
+		);
+		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeProgDAO");
+		$mockTentativeDAO->shouldNotReceive("save")->withAnyArgs();
+
+		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
+		$mockAvancementDAO->shouldNotReceive("get_avancement")->withAnyArgs();
+		$mockAvancementDAO->shouldNotReceive("save")->withAnyArgs();
+		$this->assertEquals(200, $résultat_obtenu->status());
+
+		$heure_courante = time();
+		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
+		$this->assertLessThan(
+			1,
+			$heure_courante - $heure_tentative,
+			"Heure courante: {$heure_courante}, Heure tentative: {$heure_tentative}",
+		);
+
+		$this->assertJsonStringEqualsJsonString(
+			sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_3.json"), $heure_tentative),
+			$résultat_obtenu->getContent(),
+		);
 	}
 
 	public function test_étant_donné_une_tentative_ayant_du_code_dépassant_la_taille_maximale_de_caractères_on_obtient_une_erreur_413()
