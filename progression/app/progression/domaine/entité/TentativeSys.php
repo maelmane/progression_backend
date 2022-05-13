@@ -30,8 +30,8 @@ class TentativeSys extends Tentative
 		$réponse = null,
 		$date_soumission = null,
 		$réussi = false,
-		$temps_exécution = null,
 		$tests_réussis = 0,
+		$temps_exécution = null,
 		$feedback = null,
 		$résultats = [],
 		$commentaires = []
