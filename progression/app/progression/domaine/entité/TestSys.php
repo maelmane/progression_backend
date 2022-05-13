@@ -29,10 +29,9 @@ class TestSys extends Test
 		$validation = null,
 		$utilisateur = null,
 		$feedback_pos = null,
-		$feedback_neg = null,
-		$feedback_err = null
+		$feedback_neg = null
 	) {
-		parent::__construct($nom, $sortie_attendue, $feedback_pos, $feedback_neg, $feedback_err);
+		parent::__construct($nom, $sortie_attendue, $feedback_pos, $feedback_neg);
 		$this->validation = $validation;
 		$this->utilisateur = $utilisateur;
 	}
