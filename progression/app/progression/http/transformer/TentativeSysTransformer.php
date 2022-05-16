@@ -18,6 +18,32 @@
 
 namespace progression\http\transformer;
 
+use progression\domaine\entité\{Tentative, TentativeSys};
+
 class TentativeSysTransformer extends TentativeTransformer
 {
+	public $type = "tentative";
+	protected $availableIncludes = ["resultats", "commentaires"];
+
+	public function transform(Tentative $tentative)
+	{
+		$data_out = parent::transform($tentative);
+		$data_out = array_merge($data_out, [
+			"sous-type" => "tentativeSys",
+			"conteneur" => $tentative->conteneur,
+			"réponse" => $tentative->réponse,
+			"tests_réussis" => $tentative->tests_réussis,
+		]);
+		return $data_out;
+	}
+
+	public function includeResultats(TentativeSys $tentative)
+	{
+		foreach ($tentative->résultats as $i => $résultat) {
+			$résultat->numéro = $i;
+			$résultat->id = $tentative->id . "/" . $i;
+			$résultat->links = ["related" => $_ENV["APP_URL"] . "tentative/" . $tentative->id];
+		}
+		return $this->collection($tentative->résultats, new RésultatSysTransformer(), "resultat");
+	}
 }

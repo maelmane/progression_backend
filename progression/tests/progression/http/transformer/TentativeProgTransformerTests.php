@@ -21,7 +21,7 @@ namespace progression\http\transformer;
 use PHPUnit\Framework\TestCase;
 use progression\domaine\entité\{TentativeProg, RésultatProg, Commentaire};
 
-final class TentativeTransformerTests extends TestCase
+final class TentativeProgTransformerTests extends TestCase
 {
 	public function test_étant_donné_une_TentativeProg_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
