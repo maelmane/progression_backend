@@ -94,7 +94,7 @@ class AuthServiceProvider extends ServiceProvider
 	private function décoderToken($tokenEncodé, $request)
 	{
 		try {
-			return json_decode(json_encode(JWT::decode($tokenEncodé, $_ENV["JWT_SECRET"], ["HS256"])), true);
+			return JWT::decode($tokenEncodé, $_ENV["JWT_SECRET"], ["HS256"]);
 		} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
 			Log::notice(
 				"(" .
