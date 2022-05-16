@@ -31,8 +31,10 @@ class ExécuterSysInt extends Interacteur
 		$réponse = [];
 		$résultats = null;
 
+		$réponse["temps_exécution"] = intval($comp_resp["temps_exec"] * 1000);
+
 		foreach ($comp_resp["résultats"] as $résultat) {
-			$résultats[] = new RésultatSys($résultat["output"], false, null);
+			$résultats[] = new RésultatSys($résultat["output"], false, null, intval($résultat["time"] * 1000));
 		}
 		$réponse["résultats"] = $résultats;
 		return $réponse;
