@@ -49,4 +49,39 @@ final class TraiterTentativeSysIntTests extends TestCase
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
+
+	public function test_étant_donné_une_TentativeSys_incorrecte_lorsquon_la_traite_on_obtient_une_TentativeSys_traitée_et_nonréussie_avec_feedback_négatif()
+	{
+		$question = new QuestionSys();
+		$question->tests = [
+			new TestSys("premier test", "reponse test", null, null, "Test 0 passé", "Test 0 échoué"),
+			new TestSys("deuxième test", "Test fonctionnel", null, null, "Test 1 passé", "Test 1 échoué"),
+			new TestSys("troisième test", "Test de validation", null, null, "Test 2 passé", "Test 2 échoué"),
+		];
+		$tests = [
+			new TestSys("premier test", "reponse test", null, null, "Test 0 passé", "Test 0 échoué"),
+			new TestSys("deuxième test", "Test fonctionnel", null, null, "Test 1 passé", "Test 1 échoué"),
+			new TestSys("troisième test", "Test de validation", null, null, "Test 2 passé", "Test 2 échoué"),
+		];
+
+		$rétroactions["feedback_pos"] = "Bon travail!";
+		$rétroactions["feedback_neg"] = "Essaye encore";
+
+		$tentative = new TentativeSys("conteneurTest", "réponseTest");
+		$tentative->résultats = [
+			new RésultatSys("reponse test"),
+			new RésultatSys("Test non fonctionnel"),
+			new RésultatSys("Test validation"),
+		];
+
+		$résultat_attendu = new TentativeSys("conteneurTest", "réponseTest", null, false, 1, null, "Essaye encore", [
+			new RésultatSys("reponse test", true, "Test 0 passé"),
+			new RésultatSys("Test non fonctionnel", false, "Test 1 échoué"),
+			new RésultatSys("Test validation", false, "Test 2 échoué"),
+		]);
+
+		$résultat_observé = (new TraiterTentativeSysInt(null))->traiter_résultats($tentative, $rétroactions, $tests);
+
+		$this->assertEquals($résultat_attendu, $résultat_observé);
+	}
 }
