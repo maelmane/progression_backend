@@ -26,8 +26,6 @@ class SoumettreTentativeSysInt extends Interacteur
 	{
 		$tentativeTraitée = null;
 
-		print_r($question);
-
 		if ($question->solution) {
 			if ($this->vérifier_réponse_courte($question, $tentative)) {
 				$tentative->réussi = true;
