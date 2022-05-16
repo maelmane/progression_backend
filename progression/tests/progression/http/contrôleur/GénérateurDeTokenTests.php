@@ -47,6 +47,7 @@ final class GénérateurDeTokenTests extends ContrôleurTestCase
 		$ressourcesAttendue = [(object) ["url" => ".*", "method" => ".*"]];
 		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda");
 		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
+		print_r($tokenDécodé);
 		$this->assertEquals($ressourcesAttendue, $tokenDécodé->ressources);
 		$this->assertEquals($expirationAttendue, $tokenDécodé->expired);
 	}
