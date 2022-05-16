@@ -120,10 +120,8 @@ class AuthServiceProvider extends ServiceProvider
 
 	private function vérifierRessourceAutorisée($ressources, $request)
 	{
-		Log::notice("Méthode: ".$request->method);
 		if ($ressources) {
 			foreach ($ressources as $ressource) {
-				Log::notice($ressource);
 				if (
 					strlen($ressource["url"]) > 0 &&
 					strlen($ressource["method"]) > 0 &&
