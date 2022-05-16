@@ -120,8 +120,6 @@ class AuthServiceProvider extends ServiceProvider
 
 	private function vérifierRessourceAutorisée($ressources, $request)
 	{
-		//$ressourcesDécodées = json_decode($token->ressources, true);
-
 		if ($ressources) {
 			foreach ($ressources as $ressource) {
 				if (
