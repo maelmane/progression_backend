@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\Validator;
 use progression\domaine\entité\Commentaire;
 use progression\domaine\interacteur\SauvegarderCommentaireInt;
 use progression\http\transformer\CommentaireTransformer;
-use progression\dao\exécuteur\ExécutionException;
 use progression\util\Encodage;
 
 class CommentaireCtl extends Contrôleur
