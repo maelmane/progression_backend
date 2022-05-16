@@ -22,14 +22,14 @@ class QuestionSys extends Question
 {
 	public $image;
 	public $utilisateur;
-	public $solution_courte;
+	public $solution;
 	public $tests;
 
-	public function __construct($image = null, $utilisateur = null, $solution_courte = null, $tests = [])
+	public function __construct($image = null, $utilisateur = null, $solution = null, $tests = [])
 	{
 		$this->image = $image;
 		$this->utilisateur = $utilisateur;
-		$this->solution_courte = $solution_courte;
+		$this->solution = $solution;
 		$this->tests = $tests;
 	}
 }

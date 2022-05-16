@@ -31,7 +31,7 @@ final class QuestionSysTests extends TestCase
 
 		$this->assertEquals("imageDocker", $résultat_obtenu->image);
 		$this->assertEquals("Bob", $résultat_obtenu->utilisateur);
-		$this->assertEquals("solutionTest", $résultat_obtenu->solution_courte);
+		$this->assertEquals("solutionTest", $résultat_obtenu->solution);
 		$this->assertEquals($tests_attendu, $résultat_obtenu->tests);
 	}
 }

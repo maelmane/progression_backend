@@ -26,11 +26,18 @@ class SoumettreTentativeSysInt extends Interacteur
 	{
 		$tentativeTraitée = null;
 
-		if ($question->réponse && $this->vérifier_réponse_courte($question, $tentative)) {
+		print_r($question);
+
+		if ($question->solution) {
+			if ($this->vérifier_réponse_courte($question, $tentative)) {
+				$tentative->réussi = true;
+				$tentative->tests_réussis = 1;
+			} else {
+				$tentative->réussi = false;
+				$tentative->tests_réussis = 0;
+			}
 			$tentative->temps_exécution = 0;
-			$tentative->réussi = true;
-			$tentative->tests_réussis = 1;
-			$tentativeTraité = $tentative;
+			$tentativeTraitée = $tentative;
 		}
 
 		if ($question->tests != null && count($question->tests) > 0) {
@@ -48,11 +55,11 @@ class SoumettreTentativeSysInt extends Interacteur
 	{
 		$valide = false;
 
-		if ($question->réponse[0] == "~" && $question->réponse[strlen($question->réponse) - 1] == "~") {
-			if (preg_match($question->réponse, $tentative->réponse)) {
+		if ($question->solution[0] == "~" && $question->solution[strlen($question->solution) - 1] == "~") {
+			if (preg_match($question->solution, $tentative->réponse)) {
 				$valide = true;
 			}
-		} elseif ($question->réponse == $tentative->réponse) {
+		} elseif ($question->solution == $tentative->réponse) {
 			$valide = true;
 		}
 		return $valide;
