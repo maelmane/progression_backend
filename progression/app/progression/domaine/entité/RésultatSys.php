@@ -23,11 +23,13 @@ class RésultatSys
 	public $sortie_observée;
 	public $résultat;
 	public $feedback;
+	public $temps_exécution;
 
-	public function __construct($sortie_observée, $résultat = false, $feedback = null)
+	public function __construct($sortie_observée, $résultat = false, $feedback = null, $temps_exécution = null)
 	{
 		$this->sortie_observée = $sortie_observée;
 		$this->résultat = $résultat;
 		$this->feedback = $feedback;
+		$this->temps_exécution = $temps_exécution;
 	}
 }

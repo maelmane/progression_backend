@@ -24,10 +24,11 @@ final class RésultatSysTests extends TestCase
 {
 	public function test_étant_donné_un_résultatSys_instanciée_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
 	{
-		$résultat_obtenu = new RésultatSys("34", true, "Bon travail");
+		$résultat_obtenu = new RésultatSys("34", true, "Bon travail", 233);
 
 		$this->assertEquals("34", $résultat_obtenu->sortie_observée);
 		$this->assertTrue($résultat_obtenu->résultat);
 		$this->assertEquals("Bon travail", $résultat_obtenu->feedback);
+		$this->assertEquals(233, $résultat_obtenu->temps_exécution);
 	}
 }
