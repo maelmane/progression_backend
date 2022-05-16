@@ -54,7 +54,7 @@ class AuthServiceProvider extends ServiceProvider
 
 			if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
 				$obtenirUserInteracteur = new ObtenirUserInt();
-				return $obtenirUserInteracteur->get_user($tokenDécodé->username);
+				return $obtenirUserInteracteur->get_user($tokenDécodé["username"]);
 			}
 
 			return null;
@@ -63,10 +63,9 @@ class AuthServiceProvider extends ServiceProvider
 		Gate::define("acces-utilisateur", function ($user, $request) {
 			$token = trim(str_ireplace("bearer", "", $request->header("Authorization")));
 			$tokenDécodé = $this->décoderToken($token, $request);
-
 			if (
 				$tokenDécodé &&
-				$this->vérifierRessourceAutorisée($tokenDécodé, $request) &&
+				$this->vérifierRessourceAutorisée($tokenDécodé["ressources"], $request) &&
 				$user->username == $request->username
 			) {
 				return true;
@@ -81,9 +80,9 @@ class AuthServiceProvider extends ServiceProvider
 
 			if (
 				$tokenRessourceDécodé &&
-				$request->username == $tokenRessourceDécodé->username &&
+				$request->username == $tokenRessourceDécodé["username"] &&
 				$this->vérifierExpirationToken($tokenRessourceDécodé) &&
-				$this->vérifierRessourceAutorisée($tokenRessourceDécodé, $request)
+				$this->vérifierRessourceAutorisée($tokenRessourceDécodé["ressources"], $request)
 			) {
 				return true;
 			}
@@ -95,7 +94,7 @@ class AuthServiceProvider extends ServiceProvider
 	private function décoderToken($tokenEncodé, $request)
 	{
 		try {
-			return JWT::decode($tokenEncodé, $_ENV["JWT_SECRET"], ["HS256"]);
+			return json_decode(json_encode(JWT::decode($tokenEncodé, $_ENV["JWT_SECRET"], ["HS256"])), true);
 		} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
 			Log::notice(
 				"(" .
@@ -116,15 +115,15 @@ class AuthServiceProvider extends ServiceProvider
 
 	private function vérifierExpirationToken($token)
 	{
-		return time() < $token->expired || $token->expired === 0;
+		return time() < $token["expired"] || $token["expired"] === 0;
 	}
 
-	private function vérifierRessourceAutorisée($token, $request)
+	private function vérifierRessourceAutorisée($ressources, $request)
 	{
-		$ressourcesDécodées = json_decode($token->ressources, true);
+		//$ressourcesDécodées = json_decode($token->ressources, true);
 
-		if ($ressourcesDécodées) {
-			foreach ($ressourcesDécodées as $ressource) {
+		if ($ressources) {
+			foreach ($ressources as $ressource) {
 				if (
 					strlen($ressource["url"]) > 0 &&
 					strlen($ressource["method"]) > 0 &&

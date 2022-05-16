@@ -44,7 +44,7 @@ final class GénérateurDeTokenTests extends ContrôleurTestCase
 	public function test_étant_donné_un_token_généré_avec_un_nom_dutilisateur_seulement_lorsquon_génère_un_token_on_obtient_un_token_avec_ses_valeurs_par_défaut_sauf_le_nom_dutilisateur()
 	{
 		$expirationAttendue = "0";
-		$ressourcesAttendue = json_encode([["url" => ".*", "method" => ".*"]]);
+		$ressourcesAttendue = [["url" => ".*", "method" => ".*"]];
 		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda");
 		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
 		$this->assertEquals($ressourcesAttendue, $tokenDécodé->ressources);
