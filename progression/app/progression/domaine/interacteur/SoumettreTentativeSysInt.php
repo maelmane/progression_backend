@@ -42,7 +42,6 @@ class SoumettreTentativeSysInt extends Interacteur
 			$tentative = $this->exécuter_validation($question, $tentative);
 			$rétroactions["feedback_pos"] = $question->feedback_pos;
 			$rétroactions["feedback_neg"] = $question->feedback_neg;
-			$rétroactions["feedback_err"] = $question->feedback_err;
 			$tentativeTraitée = $this->traiter_tentative_sys($tentative, $rétroactions, $question->tests);
 		}
 
