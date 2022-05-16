@@ -26,8 +26,10 @@ use progression\domaine\interacteur\{
 	ObtenirTentativeInt,
 	ObtenirQuestionInt,
 	SoumettreTentativeProgInt,
+	SoumettreTentativeSysInt,
 	SauvegarderAvancementInt,
 	SauvegarderTentativeProgInt,
+	SauvegarderTentativeSysInt,
 };
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
@@ -175,8 +177,62 @@ class TentativeCtl extends Contrôleur
 			$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
 			$réponse = $this->item($tentative, new TentativeProgTransformer());
 		} elseif ($question instanceof QuestionSys) {
-			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			return $this->réponse_json(["erreur" => "Question système non implémentée."], 501);
+			$validation = $this->valider_paramètres_sys($request);
+			if ($validation->fails()) {
+				Log::notice(
+					"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+						__CLASS__ .
+						") Paramètres invalides",
+				);
+				return $this->réponse_json(["erreur" => $validation->errors()], 400);
+			}
+
+			$tentative = new TentativeSys($request->conteneur, $request->réponse, (new \DateTime())->getTimestamp());
+
+			try {
+				$tentativeInt = new SoumettreTentativeSysInt();
+				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
+			} catch (ExécutionException $e) {
+				Log::error($e->getMessage());
+				if ($e->getPrevious()) {
+					Log::error($e->getPrevious()->getMessage());
+				}
+				return $this->réponse_json(["erreur" => "Service non disponible."], 503);
+			}
+			if ($tentative == null) {
+				Log::notice(
+					"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+						__CLASS__ .
+						") Requête intraitable (Tentative == null)",
+				);
+				return $this->réponse_json(["erreur" => "Requête intraitable."], 400);
+			}
+
+			try {
+				if (empty($request->test)) {
+					$avancementInt = new SauvegarderAvancementInt();
+					$sauvegardeTentativeInt = new SauvegarderTentativeSysInt();
+					$avancement = $avancementInt->récupérer_avancement($username, $question, $tentative);
+					$avancement->titre = $question->titre;
+					$avancement->niveau = $question->niveau;
+					$avancementInt->mettre_à_jour_dates_et_état(
+						$avancement,
+						$tentative->date_soumission,
+						$username,
+						$question->uri,
+					);
+					$sauvegardeTentativeInt->sauvegarder($username, $question->uri, $tentative);
+				}
+			} catch (ExécutionException $e) {
+				Log::error($e->getMessage());
+				if ($e->getPrevious()) {
+					Log::error($e->getPrevious()->getMessage());
+				}
+				return $this->réponse_json(["erreur" => "Service non disponible."], 503);
+			}
+
+			$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
+			$réponse = $this->item($tentative, new TentativeSysTransformer());
 		} elseif ($question instanceof QuestionBD) {
 			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["erreur" => "Question BD non implémentée."], 501);
@@ -194,6 +250,19 @@ class TentativeCtl extends Contrôleur
 			[
 				"langage" => "required",
 				"code" => "required",
+			],
+			[
+				"required" => "Le champ :attribute est obligatoire.",
+			],
+		);
+	}
+
+	private function valider_paramètres_sys($request)
+	{
+		return Validator::make(
+			$request->all(),
+			[
+				"conteneur" => "required",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",

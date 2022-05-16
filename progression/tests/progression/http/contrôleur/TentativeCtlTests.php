@@ -23,9 +23,12 @@ use progression\dao\exécuteur\ExécutionException;
 use progression\domaine\entité\{
 	Avancement,
 	TestProg,
+	TestSys,
 	Exécutable,
 	Question,
+	QuestionSys,
 	TentativeProg,
+	TentativeSys,
 	Commentaire,
 	QuestionProg,
 	User,
@@ -38,6 +41,7 @@ final class TentativeCtlTests extends ContrôleurTestCase
 	public $user;
 	public $headers;
 	protected static $ancienne_tentative;
+	protected static $ancienne_tentative_sys;
 
 	public function setUp(): void
 	{
@@ -77,7 +81,7 @@ final class TentativeCtlTests extends ContrôleurTestCase
 			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", 1614374490)
 			->andReturn($commentaire);
 
-		// Question
+		// QuestionProg
 		$question = new QuestionProg();
 		$question->type = Question::TYPE_PROG;
 		$question->nom = "appeler_une_fonction_paramétrée";
@@ -92,7 +96,7 @@ final class TentativeCtlTests extends ContrôleurTestCase
 			"#+TODO\nprint(\"Hello world!\")",
 			"tentativeRéussie",
 		);
-		// Tests
+		// TestsProg
 		$question->tests = [
 			new TestProg("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
 		];
@@ -102,7 +106,6 @@ final class TentativeCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_question")
 			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
-
 		// Exécuteur
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur
@@ -149,12 +152,64 @@ final class TentativeCtlTests extends ContrôleurTestCase
 			->with("jdoe")
 			->andReturn(new User("jdoe"));
 
+		// TentativeSys
+		$tentative = new TentativeSys("leConteneur", "~laRéponse~", "1614374490");
+		$tentative->tests_réussis = 1;
+		$tentative->réussi = true;
+		$tentative->feedback = "feedbackTest";
+		$tentative->temps_exécution = 5;
+
+		$mockTentativeDAO
+			->shouldReceive("get_tentative")
+			->with(
+				"jdoe",
+				"https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
+				"1614374490",
+			)
+			->andReturn($tentative);
+		$mockTentativeDAO->shouldReceive("save")->andReturnArg(2);
+
+		$mockCommentaireDAO
+			->shouldReceive("get_commentaires_par_tentative")
+			->with(
+				"jdoe",
+				"https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
+				"1614374490",
+			)
+			->andReturn($commentaire);
+
+		// QuestionSys
+		$questionSys = new QuestionSys();
+		$questionSys->type = Question::TYPE_SYS;
+		$questionSys->nom = "toutes_les_permissions";
+		$questionSys->solution = "~laSolution~";
+		$questionSys->uri = "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions";
+		$questionSys->feedback_pos = "Bon travail!";
+		$questionSys->feedback_neg = "Encore un effort!";
+
+		$mockQuestionDAO
+			->shouldReceive("get_question")
+			->with("https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions")
+			->andReturn($questionSys);
+
+		//AvancementSys
+		$avancement = new Avancement(Question::ETAT_REUSSI, Question::TYPE_SYS, [
+			new TentativeSys("leConteneur", "~laRéponse~", 1614965817, false, 2, "feedbackTest"),
+		]);
+		$mockAvancementDAO
+			->shouldReceive("get_avancement")
+			->with("jdoe", "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions")
+			->andReturn($avancement);
+
+		$mockAvancementDAO->allows("save")->andReturn($avancement);
+
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_tentative_dao")->andReturn($mockTentativeDAO);
 		$mockDAOFactory->shouldReceive("get_commentaire_dao")->andReturn($mockCommentaireDAO);
 		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
 		$mockDAOFactory->shouldReceive("get_tentative_prog_dao")->andReturn($mockTentativeDAO);
+		$mockDAOFactory->shouldReceive("get_tentative_sys_dao")->andReturn($mockTentativeDAO);
 		$mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);
 		$mockDAOFactory->shouldReceive("get_exécuteur")->andReturn($mockExécuteur);
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
@@ -164,6 +219,12 @@ final class TentativeCtlTests extends ContrôleurTestCase
 		self::$ancienne_tentative = new TentativeProg(
 			langage: "python",
 			code: "codeTest",
+			date_soumission: "1614374490",
+		);
+
+		self::$ancienne_tentative_sys = new TentativeSys(
+			conteneur: "leConteneurDeLancienneTentative",
+			réponse: "laRéponseDeLancienneTentative",
 			date_soumission: "1614374490",
 		);
 	}
@@ -199,7 +260,7 @@ final class TentativeCtlTests extends ContrôleurTestCase
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_obtenu->getContent());
 	}
 
-	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_le_timestamp_une_tentative_réussie_et_un_avancement_réussi_lorsquon_appelle_post_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeProg_avec_ses_résultats_et_ses_relations_sous_forme_json()
+	public function test_étant_donné_une_questionProg_le_username_dun_utilisateur_le_chemin_dune_question_le_timestamp_une_tentative_réussie_et_un_avancement_réussi_lorsquon_appelle_post_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeProg_avec_ses_résultats_et_ses_relations_sous_forme_json()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
@@ -269,6 +330,68 @@ final class TentativeCtlTests extends ContrôleurTestCase
 			$résultat_obtenu->getContent(),
 		);
 	}
+
+	public function test_étant_donné_une_questionSys_le_username_dun_utilisateur_le_chemin_dune_question_le_timestamp_une_tentative_réussie_et_un_avancement_réussi_lorsquon_appelle_post_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeSys_avec_ses_résultats_et_ses_relations_sous_forme_json()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnM/tentatives?include=resultats",
+			["conteneur" => "leConteneurDeLaNouvelleTentative", "réponse" => "~laSolution~"],
+		);
+
+		$heure_courante = time();
+		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
+		self::$ancienne_tentative_sys->tests_réussis = 2;
+		self::$ancienne_tentative_sys->réussi = true;
+		self::$ancienne_tentative_sys->feedback = "feedbackTest";
+		self::$ancienne_tentative_sys->temps_exécution = 5;
+		$ancien_avancement = new Avancement(
+			etat: Question::ETAT_REUSSI,
+			type: Question::TYPE_SYS,
+			tentatives: [self::$ancienne_tentative_sys],
+		);
+
+		$nouvel_avancement = new Avancement(
+			etat: Question::ETAT_REUSSI,
+			type: Question::TYPE_SYS,
+			tentatives: [
+				self::$ancienne_tentative_sys,
+				new TentativeSys(
+					conteneur: "leConteneurDeLaNouvelleTentative",
+					réponse: "~laSolution~",
+					date_soumission: $heure_tentative,
+					réussi: true,
+					tests_réussis: 1,
+					feedback: "Bon travail!",
+				),
+			],
+		);
+
+		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
+
+		$mockTentativeDAO
+			->shouldReceive("get_tentative")
+			->with(
+				"jdoe",
+				"https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
+				"1614374490",
+			)
+			->andReturn(self::$ancienne_tentative_sys);
+		$mockTentativeDAO->shouldReceive("save")->andReturnArg(2);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertLessThan(
+			1,
+			$heure_courante - $heure_tentative,
+			"Heure courante: {$heure_courante}, Heure tentative: {$heure_tentative}",
+		);
+
+		$this->assertJsonStringEqualsJsonString(
+			sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_5.json"), $heure_tentative),
+			$résultat_obtenu->getContent(),
+		);
+	}
+
 	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_le_timestamp_une_tentative_réussie_et_un_avancement_non_réussi_lorsquon_appelle_post_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeProg_avec_ses_résultats_et_ses_relations_sous_forme_json()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
