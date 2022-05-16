@@ -30,9 +30,11 @@ class SoumettreTentativeSysInt extends Interacteur
 			if ($this->vérifier_réponse_courte($question, $tentative)) {
 				$tentative->réussi = true;
 				$tentative->tests_réussis = 1;
+				$tentative->feedback = $question->feedback_pos;
 			} else {
 				$tentative->réussi = false;
 				$tentative->tests_réussis = 0;
+				$tentative->feedback = $question->feedback_neg;
 			}
 			$tentative->temps_exécution = 0;
 			$tentativeTraitée = $tentative;
