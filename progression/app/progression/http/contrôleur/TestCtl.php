@@ -18,8 +18,9 @@
 
 namespace progression\http\contrôleur;
 
-use progression\http\transformer\TestTransformer;
+use progression\http\transformer\{TestTransformer, TestSysTransformer};
 use progression\domaine\interacteur\ObtenirQuestionInt;
+use progression\domaine\entité\{QuestionProg, QuestionSys};
 use progression\util\Encodage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -57,7 +58,13 @@ class TestCtl extends Contrôleur
 
 		if ($question != null) {
 			$test = $this->préparer_test($question, $question_uri, $numero);
-			$test_array = $this->item($test, new TestTransformer());
+			if ($question instanceof QuestionProg) {
+				$test_array = $this->item($test, new TestTransformer());
+			}
+
+			if ($question instanceof QuestionSys) {
+				$test_array = $this->item($test, new TestSysTransformer());
+			}
 		}
 
 		$réponse = $this->préparer_réponse($test_array);
@@ -78,7 +85,13 @@ class TestCtl extends Contrôleur
 				"related" => $_ENV["APP_URL"] . "question/" . $question_uri,
 			];
 
-			$réponse = $this->item($test, new TestTransformer());
+			if ($question instanceof QuestionProg) {
+				$réponse = $this->item($test, new TestTransformer());
+			}
+
+			if ($question instanceof QuestionSys) {
+				$réponse = $this->item($test, new TestSysTransformer());
+			}
 		}
 
 		Log::debug("TestCtl.préparer_test. Retour : ", [$test]);
