@@ -28,7 +28,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 {
 	protected static $questionTests;
 	protected static $questionReponseCourte;
-	protected static $tentativeSoumiseIncorrecte;
+	protected static $tentativeSoumise;
 
 	public function setUp(): void
 	{
@@ -46,7 +46,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
 			->withArgs(function ($question, $tentative) {
-				return $question == self::$questionTests && $tentative == self::$tentativeSoumiseIncorrecte;
+				return $question == self::$questionTests && $tentative == self::$tentativeSoumise;
 			})
 			->andReturn([
 				"temps_exec" => 0.5,
@@ -77,7 +77,15 @@ final class SoumettreTentativeSysIntTests extends TestCase
 		self::$questionTests->feedback_neg = "feedbackGénéralNégatif";
 		self::$questionTests->feedback_pos = "feedbackGénéralPositif";
 
-		self::$tentativeSoumiseIncorrecte = new TentativeSys("Conteneur de test", "reponse de test", 1615696286);
+		self::$questionReponseCourte = new QuestionSys();
+		self::$questionReponseCourte->titre = "Bonsoir";
+		self::$questionReponseCourte->niveau = "facile";
+		self::$questionReponseCourte->uri = "https://example.com/question";
+		self::$questionReponseCourte->solution = "~reponse de test~";
+		self::$questionReponseCourte->feedback_neg = "feedbackGénéralNégatif";
+		self::$questionReponseCourte->feedback_pos = "feedbackGénéralPositif";
+
+		self::$tentativeSoumise = new TentativeSys("Conteneur de test", "~reponse de test~", 1615696286);
 	}
 
 	public function tearDown(): void
@@ -90,7 +98,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	{
 		$tentative_attendue = new TentativeSys(
 			conteneur: "Conteneur de test",
-			réponse: "reponse de test",
+			réponse: "~reponse de test~",
 			date_soumission: 1615696286,
 			réussi: false,
 			tests_réussis: 0,
@@ -100,10 +108,28 @@ final class SoumettreTentativeSysIntTests extends TestCase
 		);
 
 		$interacteur = new SoumettreTentativeSysInt();
+		$tentative_obtenue = $interacteur->soumettre_tentative("jdoe", self::$questionTests, self::$tentativeSoumise);
+
+		$this->assertEquals($tentative_attendue, $tentative_obtenue);
+	}
+
+	public function test_étant_donné_une_questionsys_et_une_tentativesys_lorsqu_on_appelle_soumettre_tentative_avec_une_réponse_courte_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
+	{
+		$tentative_attendue = new TentativeSys(
+			conteneur: "Conteneur de test",
+			réponse: "~reponse de test~",
+			date_soumission: 1615696286,
+			réussi: true,
+			tests_réussis: 1,
+			temps_exécution: 0,
+			feedback: "feedbackGénéralPositif",
+		);
+
+		$interacteur = new SoumettreTentativeSysInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
 			"jdoe",
-			self::$questionTests,
-			self::$tentativeSoumiseIncorrecte,
+			self::$questionReponseCourte,
+			self::$tentativeSoumise,
 		);
 
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);
