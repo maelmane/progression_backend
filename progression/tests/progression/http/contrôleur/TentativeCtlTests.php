@@ -231,7 +231,7 @@ final class TentativeCtlTests extends ContrôleurTestCase
 		//QuestionSys sans solution
 		$questionSys = new QuestionSys();
 		$questionSys->type = Question::TYPE_SYS;
-		$questionSys->nom = "toutes_les_permissions2";
+		$questionSys->nom = "toutes_les_permissions3";
 		$questionSys->uri = "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions3";
 		$questionSys->feedback_pos = "Bon travail!";
 		$questionSys->feedback_neg = "Encore un effort!";
@@ -251,7 +251,7 @@ final class TentativeCtlTests extends ContrôleurTestCase
 			->with("https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions3")
 			->andReturn($questionSys);
 
-		//AvancementSys 2
+		//AvancementSys 3
 		$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_SYS, [
 			new TentativeSys("leConteneur", 1614965817, false, 2, "feedbackTest"),
 		]);
@@ -711,8 +711,6 @@ final class TentativeCtlTests extends ContrôleurTestCase
 			$heure_courante - $heure_tentative,
 			"Heure courante: {$heure_courante}, Heure tentative: {$heure_tentative}",
 		);
-
-		print_r($résultat_obtenu);
 
 		$this->assertJsonStringEqualsJsonString(
 			sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_9.json"), $heure_tentative),

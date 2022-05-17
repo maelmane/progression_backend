@@ -19,7 +19,6 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{Avancement, Question};
-use Illuminate\Support\Facades\Log;
 
 class SoumettreTentativeSysInt extends Interacteur
 {
@@ -32,16 +31,13 @@ class SoumettreTentativeSysInt extends Interacteur
 				$tentative->réussi = true;
 				$tentative->tests_réussis = 1;
 				$tentative->feedback = $question->feedback_pos;
-				Log::debug("ici 1");
 			} else {
 				$tentative->réussi = false;
 				$tentative->tests_réussis = 0;
 				$tentative->feedback = $question->feedback_neg;
-				Log::debug("ici 2");
 			}
 			$tentative->temps_exécution = 0;
 			$tentativeTraitée = $tentative;
-			Log::debug("ici 3");
 		}
 
 		if ($question->tests != null && count($question->tests) > 0) {
