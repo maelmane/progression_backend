@@ -46,7 +46,7 @@ final class QuestionSysTransformerTests extends TestCase
 		$question->niveau = "débutant";
 		$question->image = "imageDeLaQuestion";
 		$question->utilisateur = "Ginette";
-		$question->solution_courte = "laSolution";
+		$question->solution = "laSolution";
 
 		$item = (new QuestionSysTransformer())->transform([
 			"question" => $question,

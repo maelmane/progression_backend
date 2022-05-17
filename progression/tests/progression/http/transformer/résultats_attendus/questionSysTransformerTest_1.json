@@ -12,5 +12,5 @@
 	"sous-type": "questionSys",
     "image": "imageDeLaQuestion",
     "utilisateur" : "Ginette",
-    "solution_courte" : "laSolution"
+    "solution" : "laSolution"
 }

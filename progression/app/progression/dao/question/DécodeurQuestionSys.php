@@ -42,8 +42,8 @@ class DécodeurQuestionSys extends DécodeurQuestion
 	{
 		$question->utilisateur = $infos_question["utilisateur"];
 		$question->image = $infos_question["image"];
-		if (isset($infos_question["solution_courte"])) {
-			$question->solution_courte = $infos_question["solution_courte"];
+		if (isset($infos_question["solution"])) {
+			$question->solution = $infos_question["solution"];
 		}
 
 		return $question;

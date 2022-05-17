@@ -32,7 +32,7 @@ class QuestionSysTransformer extends QuestionTransformer
 			"sous-type" => "questionSys",
 			"image" => $question->image,
 			"utilisateur" => $question->utilisateur,
-			"solution_courte" => $question->solution_courte,
+			"solution" => $question->solution,
 		]);
 
 		return $data_out;

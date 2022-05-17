@@ -1,0 +1,29 @@
+{
+	"data": {
+		"type": "question",
+		"id": "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy",
+		"attributes": {
+			"niveau": "débutant",
+			"titre": "Octroyer toutes le permissions",
+			"description": "Octroiement de toutes les permissions.",
+			"énoncé": "Il faut que l'étudiant trouve les commandes justes pour octroyer toutes les permissions à l'utilisateur krusty.",
+			"auteur": "Albert Einstein",
+			"licence": "poétique",
+			"sous-type": "questionSys",
+            "image": "l'image",
+            "utilisateur": "utilisateur",
+            "solution": "laSolution"
+		},
+		"links": {
+			"self": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy"
+		},
+		"relationships": {
+			"tests": {
+				"links": {
+					"self": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy/relationships/tests",
+					"related": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy/tests"
+				}
+			}
+		}
+	}
+}

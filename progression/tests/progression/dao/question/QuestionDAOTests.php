@@ -128,7 +128,7 @@ final class QuestionDAOTests extends TestCase
 			"niveau" => "débutant",
 			"description" => "Exercice simple sur les changements de permissions.",
 			"image" => "http://liendelimage.com:3000",
-			"solution_courte" => "34",
+			"solution" => "34",
 			"utilisateur" => "matt",
 			"énoncé" =>
 				"Appliquez les commandes nécessaires au changement des permissions pour le fichier bonjour.txt. Le fichier doit être public pour tous.",
@@ -154,7 +154,7 @@ final class QuestionDAOTests extends TestCase
 		$résultat_attendu->description = "Exercice simple sur les changements de permissions.";
 		$résultat_attendu->image = "http://liendelimage.com:3000";
 		$résultat_attendu->utilisateur = "matt";
-		$résultat_attendu->solution_courte = 34;
+		$résultat_attendu->solution = 34;
 
 		$résultat_attendu->tests = [
 			0 => new TestSys("toutes permissions", "-rwx rwx rwx"),
