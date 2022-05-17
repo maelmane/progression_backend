@@ -228,6 +228,45 @@ final class TentativeCtlTests extends ContrôleurTestCase
 
 		$mockAvancementDAO->allows("save")->andReturn($avancement);
 
+		//QuestionSys sans solution
+		$questionSys = new QuestionSys();
+		$questionSys->type = Question::TYPE_SYS;
+		$questionSys->nom = "toutes_les_permissions2";
+		$questionSys->uri = "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions3";
+		$questionSys->feedback_pos = "Bon travail!";
+		$questionSys->feedback_neg = "Encore un effort!";
+		$questionSys->tests = [
+			new TestSys(
+				nom: "Toutes permissions 3",
+				sortie_attendue: "-rwxrwxrwx",
+				validation: "laValidation",
+				utilisateur: "momo",
+				feedback_pos: "yes!",
+				feedback_neg: "non!",
+			),
+		];
+
+		$mockQuestionDAO
+			->shouldReceive("get_question")
+			->with("https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions3")
+			->andReturn($questionSys);
+
+		//AvancementSys 2
+		$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_SYS, [
+			new TentativeSys("leConteneur", 1614965817, false, 2, "feedbackTest"),
+		]);
+		$mockAvancementDAO
+			->shouldReceive("get_avancement")
+			->with("jdoe", "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions3")
+			->andReturn($avancement);
+
+		$mockAvancementDAO->allows("save")->andReturn($avancement);
+
+		$mockExécuteur->shouldReceive("exécuter_sys")->andReturn([
+			"temps_exec" => 0.221,
+			"résultats" => [["output" => "-rwxrwxrwx", "time" => 0.03]],
+		]);
+
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_tentative_dao")->andReturn($mockTentativeDAO);
@@ -596,6 +635,87 @@ final class TentativeCtlTests extends ContrôleurTestCase
 
 		$this->assertJsonStringEqualsJsonString(
 			sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_8.json"), $heure_tentative),
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_une_questionSys_sans_solution_le_username_dun_utilisateur_le_chemin_dune_question_le_timestamp_une_tentative_réussie_et_un_avancement_non_réussi_lorsquon_appelle_post_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeSys_avec_ses_résultats_et_ses_relations_sous_forme_json()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMz/tentatives?include=resultats",
+			["conteneur" => "leConteneurDeLaNouvelleTentative3"],
+		);
+
+		$heure_courante = time();
+		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
+		self::$ancienne_tentative_sys->tests_réussis = 1;
+		self::$ancienne_tentative_sys->réussi = true;
+		self::$ancienne_tentative_sys->feedback = "feedbackTest";
+		self::$ancienne_tentative_sys->temps_exécution = 122;
+		$ancien_avancement = new Avancement(
+			etat: Question::ETAT_NONREUSSI,
+			type: Question::TYPE_SYS,
+			tentatives: [self::$ancienne_tentative_sys],
+		);
+
+		$nouvel_avancement = new Avancement(
+			etat: Question::ETAT_REUSSI,
+			type: Question::TYPE_SYS,
+			tentatives: [
+				self::$ancienne_tentative_sys,
+				new TentativeSys(
+					conteneur: "leConteneurDeLaNouvelleTentative3",
+					date_soumission: $heure_tentative,
+					réussi: true,
+					tests_réussis: 1,
+					feedback: "Bon travail!",
+					temps_exécution: 221,
+				),
+			],
+		);
+
+		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
+
+		$mockTentativeDAO
+			->shouldReceive("get_tentative")
+			->with(
+				"jdoe",
+				"https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions2",
+				"1614374490",
+			)
+			->andReturn(self::$ancienne_tentative_sys);
+		$mockTentativeDAO->shouldReceive("save")->andReturnArg(2);
+
+		$mockTentativeDAO
+			->shouldReceive("save")
+			->withArgs(function ($username, $uri, $tentative) {
+				return $username == "jdoe" &&
+					$uri == "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions3" &&
+					$tentative->langage == "java";
+			})
+			->andReturn(
+				new TentativeSys(
+					conteneur: "leConteneurDeLaNouvelleTentative3",
+					date_soumission: $heure_tentative,
+					réussi: true,
+					tests_réussis: 1,
+					feedback: "Bon travail!",
+					temps_exécution: 221,
+				),
+			);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertLessThan(
+			1,
+			$heure_courante - $heure_tentative,
+			"Heure courante: {$heure_courante}, Heure tentative: {$heure_tentative}",
+		);
+
+		print_r($résultat_obtenu);
+
+		$this->assertJsonStringEqualsJsonString(
+			sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_9.json"), $heure_tentative),
 			$résultat_obtenu->getContent(),
 		);
 	}

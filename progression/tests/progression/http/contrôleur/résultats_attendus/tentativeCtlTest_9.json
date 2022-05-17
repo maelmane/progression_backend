@@ -1,0 +1,55 @@
+{
+	"data": {
+		"type": "tentative",
+		"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMz/%1$d",
+		"attributes": {
+			"date_soumission":  %1$d,
+			"feedback": "Bon travail!",
+			"réussi": true,
+			"sous-type": "tentativeSys",
+			"conteneur": "leConteneurDeLaNouvelleTentative3",
+            "réponse": null,
+			"tests_réussis": 1,
+			"temps_exécution": 221
+		},
+		"links": {
+			"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMz/%1$d"
+		},
+		"relationships": {
+			"commentaires":{
+				"links": {
+					"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMz/%1$d/commentaires",
+					"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMz/%1$d/relationships/commentaires"
+				}
+			},
+            "resultats": {
+                "data": [
+                    {
+                        "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMz/%1$d/0",
+                        "type": "resultat"
+                    }
+                ],
+				"links": {
+					"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMz/%1$d/relationships/resultats",
+					"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMz/%1$d/resultats"
+				}
+			}
+		}
+    },
+    "included": [
+        {
+            "attributes": {
+                "feedback": "yes!",
+                "résultat": true,
+                "sortie_observée": "-rwxrwxrwx",
+                "temps_exec": 30
+            },
+            "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMz/%1$d/0",
+            "links": {
+                "related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMz/%1$d",
+                "self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMz/%1$d/0"
+            },
+            "type": "resultat"
+        }
+    ]
+ }
