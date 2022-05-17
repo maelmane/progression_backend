@@ -30,7 +30,7 @@ class TentativeSysDAO extends TentativeDAO
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
 				'SELECT reponse_sys.conteneur,
-				reponse_sys.réponse,
+				reponse_sys.reponse,
 				reponse_sys.date_soumission,
 				reponse_sys.reussi,
 				reponse_sys.tests_reussis
@@ -67,7 +67,7 @@ class TentativeSysDAO extends TentativeDAO
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
 				'SELECT reponse_sys.conteneur,
-				reponse_sys.réponse,
+				reponse_sys.reponse,
 				reponse_sys.date_soumission,
 				reponse_sys.reussi,
 				reponse_sys.tests_reussis,
@@ -111,7 +111,7 @@ class TentativeSysDAO extends TentativeDAO
 	{
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO reponse_sys ( question_uri, username, conteneur, réponse, date_soumission, reussi, tests_reussis, temps_exécution ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )",
+				"INSERT INTO reponse_sys ( question_uri, username, conteneur, reponse, date_soumission, reussi, tests_reussis, temps_exécution ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )",
 			);
 			$query->bind_param(
 				"ssssiiii",
