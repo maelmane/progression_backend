@@ -62,7 +62,7 @@ class Contrôleur extends BaseController
 	public function item($data, $transformer)
 	{
 		if ($data == null) {
-			return [null];
+			return null;
 		}
 
 		$manager = $this->getFractalManager();
@@ -74,8 +74,8 @@ class Contrôleur extends BaseController
 
 	public function collection($data, $transformer)
 	{
-		if ($data == null) {
-			return [null];
+		if ($data === null) {
+			return null;
 		}
 
 		$manager = $this->getFractalManager();
@@ -101,12 +101,12 @@ class Contrôleur extends BaseController
 	protected function préparer_réponse($réponse, $code = 200)
 	{
 		$request = app(Request::class);
-		if ($réponse != null && $réponse != [null]) {
-			Log::info("({$request->ip()}) - {$request->method()} {$request->path()} (" . get_class($this) . ")");
-			return $this->réponse_json($réponse, $code);
-		} else {
+		if ($réponse === null) {
 			Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . get_class($this) . ")");
 			return $this->réponse_json(["erreur" => "Ressource non trouvée."], 404);
+		} else {
+			Log::info("({$request->ip()}) - {$request->method()} {$request->path()} (" . get_class($this) . ")");
+			return $this->réponse_json($réponse, $code);
 		}
 	}
 }

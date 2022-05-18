@@ -17,7 +17,7 @@ services:
     restart: always
 
   progression:
-    image: git.dti.crosemont.quebec:5050/progression/progression_backend:test
+    image: git.dti.crosemont.quebec:5050/progression/progression_backend:$TAG_DEPLOY
     build: progression
     container_name: progression_$CI_ENVIRONMENT_SLUG
     env_file: $ENV_FILE

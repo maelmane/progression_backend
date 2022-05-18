@@ -20,6 +20,7 @@ use progression\ContrôleurTestCase;
 
 use progression\domaine\entité\{Question, QuestionProg, Exécutable, Test, User};
 use progression\dao\DAOFactory;
+use progression\dao\question\ChargeurException;
 use Illuminate\Auth\GenericUser;
 
 final class QuestionProgCtlTests extends ContrôleurTestCase
@@ -60,7 +61,7 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 		$mockQuestionDAO
 			->shouldReceive("get_question")
 			->with(Mockery::any())
-			->andReturn(null);
+			->andThrow(new ChargeurException());
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -92,10 +93,10 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
-			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb25faW5leGlzdGFudGU",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmV",
 		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":"Type de question inconnu."}', $résultat_obtenu->getContent());
+		$this->assertEquals('{"erreur":"Question indisponible"}', $résultat_obtenu->getContent());
 	}
 }
