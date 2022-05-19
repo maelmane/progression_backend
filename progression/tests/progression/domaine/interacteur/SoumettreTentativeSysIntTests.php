@@ -52,6 +52,15 @@ final class SoumettreTentativeSysIntTests extends TestCase
 				"temps_exec" => 0.5,
 				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
 			]);
+		$mockExécuteur
+			->shouldReceive("exécuter_sys")
+			->withArgs(function ($question, $tentative) {
+				return $question == self::$questionReponseCourte && $tentative == self::$tentativeSoumise;
+			})
+			->andReturn([
+				"temps_exec" => 0.5,
+				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
+			]);
 
 		// Mock DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -113,7 +122,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);
 	}
 
-	public function test_étant_donné_une_questionsys_et_une_tentativesys_lorsqu_on_appelle_soumettre_tentative_avec_une_réponse_courte_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
+	public function test_étant_donné_une_questionsys_et_une_tentativesys_lorsqu_on_appelle_soumettre_tentative_avec_une_solution_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
 	{
 		$tentative_attendue = new TentativeSys(
 			conteneur: "Conteneur de test",
@@ -123,6 +132,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			tests_réussis: 1,
 			temps_exécution: 0,
 			feedback: "feedbackGénéralPositif",
+			résultats: [],
 		);
 
 		$interacteur = new SoumettreTentativeSysInt();
