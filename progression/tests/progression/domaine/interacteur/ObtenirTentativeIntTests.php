@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\TentativeProg;
+use progression\domaine\entité\{TentativeProg, TentativeSys};
 use progression\domaine\entité\Commentaire;
 use progression\domaine\entité\RésultatProg;
 use progression\dao\DAOFactory;
@@ -42,6 +42,14 @@ final class ObtenirTentativeIntTests extends TestCase
 			->shouldReceive("get_tentative")
 			->with(Mockery::any(), Mockery::any(), Mockery::any())
 			->andReturn(null);
+
+		$tentativeSysTest = $mockTentativeDAO
+			->shouldReceive("get_toutes")
+			->with("jdoe", "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions")
+			->andReturn([
+				new TentativeSys("conteneurTest", "reponseTest", 3456, true, 2, 100, "Bravo!", [], []),
+				new TentativeSys("conteneurTest2", "reponseTest2", 3456, true, 2, 100, "Bravo!", [], []),
+			]);
 
 		$mockCommentaireDAO
 			->shouldReceive("get_commentaires_par_tentative")
@@ -98,5 +106,16 @@ final class ObtenirTentativeIntTests extends TestCase
 		$résultat_obtenu = $interacteur->get_tentative("patate", "une_question_inexistante", 1614711760);
 
 		$this->assertNull($résultat_obtenu);
+	}
+
+	public function test_étant_donné_un_numéro_de_conteneur_inexistant_on_récupère_lid_du_conteneur_de_la_dernière_tentative()
+	{
+		$interacteur = new ObtenirTentativeInt();
+		$résultat_obtenu = $interacteur->get_id_conteneur_dernière_tentative(
+			"jdoe",
+			"https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
+		);
+
+		$this->assertEquals($résultat_obtenu, "conteneurTest2");
 	}
 }
