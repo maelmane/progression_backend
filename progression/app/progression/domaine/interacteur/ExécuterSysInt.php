@@ -36,7 +36,12 @@ class ExécuterSysInt extends Interacteur
 		foreach ($comp_resp["résultats"] as $résultat) {
 			$résultats[] = new RésultatSys($résultat["output"], false, null, intval($résultat["time"] * 1000));
 		}
-		$réponse["conteneur"] = $comp_resp["conteneur"];
+		foreach ($comp_resp["conteneur"] as $conteneur) {
+			$réponse["id_conteneur"] = $conteneur["id"];
+			$réponse["ip_conteneur"] = $conteneur["ip"];
+			$réponse["port_conteneur"] = $conteneur["port"];
+		}
+
 		$réponse["résultats"] = $résultats;
 		return $réponse;
 	}

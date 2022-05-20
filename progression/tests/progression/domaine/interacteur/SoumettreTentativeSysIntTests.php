@@ -29,6 +29,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	protected static $questionTests;
 	protected static $questionReponseCourte;
 	protected static $tentativeSoumise;
+	protected static $tentativeSoumiseSansConteneur;
 
 	public function setUp(): void
 	{
@@ -51,6 +52,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			->andReturn([
 				"temps_exec" => 0.5,
 				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
+				"conteneur" => [["id" => "Conteneur de test", "ip" => "172.45.2.2", "port" => 45667]],
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
@@ -60,6 +62,18 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			->andReturn([
 				"temps_exec" => 0.5,
 				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
+				"conteneur" => [["id" => "Conteneur de test", "ip" => "172.45.2.2", "port" => 45667]],
+			]);
+
+		$mockExécuteur
+			->shouldReceive("exécuter_sys")
+			->withArgs(function ($question, $tentative) {
+				return $question == self::$questionTests && $tentative == self::$tentativeSoumiseSansConteneur;
+			})
+			->andReturn([
+				"temps_exec" => 0.5,
+				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
+				"conteneur" => [["id" => "Conteneur Compile Box", "ip" => "172.45.2.2", "port" => 45667]],
 			]);
 
 		// Mock DAOFactory
@@ -94,7 +108,11 @@ final class SoumettreTentativeSysIntTests extends TestCase
 		self::$questionReponseCourte->feedback_neg = "feedbackGénéralNégatif";
 		self::$questionReponseCourte->feedback_pos = "feedbackGénéralPositif";
 
+		//Tentative avec conteneur
 		self::$tentativeSoumise = new TentativeSys("Conteneur de test", "~reponse de test~", 1615696286);
+
+		//Tentative sans conteneur
+		self::$tentativeSoumiseSansConteneur = new TentativeSys("", "", 1615696287);
 	}
 
 	public function tearDown(): void
@@ -140,6 +158,29 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			"jdoe",
 			self::$questionReponseCourte,
 			self::$tentativeSoumise,
+		);
+
+		$this->assertEquals($tentative_attendue, $tentative_obtenue);
+	}
+
+	public function test_étant_donné_une_questionsys_et_une_tentativesys_sans_conteneur_lorsqu_on_appelle_soumettre_tentative_avec_des_tests_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats_et_lid_du_conteneur()
+	{
+		$tentative_attendue = new TentativeSys(
+			conteneur: "Conteneur Compile Box",
+			réponse: "",
+			date_soumission: 1615696287,
+			réussi: false,
+			tests_réussis: 0,
+			temps_exécution: 500,
+			feedback: "feedbackGénéralNégatif",
+			résultats: [new RésultatSys("Incorrecte", false, "feedbackNégatif", 100)],
+		);
+
+		$interacteur = new SoumettreTentativeSysInt();
+		$tentative_obtenue = $interacteur->soumettre_tentative(
+			"jdoe",
+			self::$questionTests,
+			self::$tentativeSoumiseSansConteneur,
 		);
 
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);

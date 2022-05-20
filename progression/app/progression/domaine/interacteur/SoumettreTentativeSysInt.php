@@ -71,6 +71,7 @@ class SoumettreTentativeSysInt extends Interacteur
 		if (!$question->solution) {
 			$tentative->temps_exécution = $résultats["temps_exécution"];
 			$tentative->résultats = $résultats["résultats"];
+			$tentative->conteneur = $résultats["id_conteneur"];
 		}
 
 		return $tentative;
