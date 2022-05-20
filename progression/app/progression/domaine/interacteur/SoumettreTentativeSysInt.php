@@ -25,11 +25,11 @@ class SoumettreTentativeSysInt extends Interacteur
 	public function soumettre_tentative($username, $question, $tentative)
 	{
 		$tentativeTraitée = null;
-
+		$tentative = $this->exécuter_validation($question, $tentative);
 		if ($question->solution) {
 			if ($this->vérifier_réponse_courte($question, $tentative)) {
 				$tentative->réussi = true;
-				$tentative = $this->exécuter_validation($question, $tentative);
+
 				$tentative->tests_réussis = 1;
 				$tentative->feedback = $question->feedback_pos;
 			} else {
@@ -42,7 +42,6 @@ class SoumettreTentativeSysInt extends Interacteur
 		}
 
 		if ($question->tests != null && count($question->tests) > 0) {
-			$tentative = $this->exécuter_validation($question, $tentative);
 			$rétroactions["feedback_pos"] = $question->feedback_pos;
 			$rétroactions["feedback_neg"] = $question->feedback_neg;
 			$tentativeTraitée = $this->traiter_tentative_sys($tentative, $rétroactions, $question->tests);
@@ -68,10 +67,11 @@ class SoumettreTentativeSysInt extends Interacteur
 	private function exécuter_validation($question, $tentative)
 	{
 		$résultats = $this->exécuter_sys($question, $tentative);
+
+		$tentative->conteneur = $résultats["id_conteneur"];
 		if (!$question->solution) {
 			$tentative->temps_exécution = $résultats["temps_exécution"];
 			$tentative->résultats = $résultats["résultats"];
-			$tentative->conteneur = $résultats["id_conteneur"];
 		}
 
 		return $tentative;

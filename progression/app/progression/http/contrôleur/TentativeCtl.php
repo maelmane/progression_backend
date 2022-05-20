@@ -106,6 +106,8 @@ class TentativeCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => "Requête intraitable."], 400);
 		}
 
+		Log::debug("TentativeCtl.post. Params : ", [$question]);
+
 		if ($question instanceof QuestionProg) {
 			$validation = $this->valider_paramètres($request);
 			if ($validation->fails()) {
@@ -177,17 +179,22 @@ class TentativeCtl extends Contrôleur
 			$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
 			$réponse = $this->item($tentative, new TentativeProgTransformer());
 		} elseif ($question instanceof QuestionSys) {
-			$validation = $this->valider_paramètres_sys($request);
-			if ($validation->fails()) {
-				Log::notice(
-					"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-						__CLASS__ .
-						") Paramètres invalides",
-				);
-				return $this->réponse_json(["erreur" => $validation->errors()], 400);
-			}
+			if (empty($request->conteneur)) {
+				$obtenirTentativeInt = new ObtenirTentativeInt();
+				$id_conteneur = $obtenirTentativeInt->get_id_conteneur_dernière_tentative($username, $chemin);
 
-			$tentative = new TentativeSys($request->conteneur, $request->réponse, (new \DateTime())->getTimestamp());
+				if (!empty($id_conteneur)) {
+					$tentative = new TentativeSys($id_conteneur, $request->réponse, (new \DateTime())->getTimestamp());
+				} else {
+					$tentative = new TentativeSys("", $request->réponse, (new \DateTime())->getTimestamp());
+				}
+			} else {
+				$tentative = new TentativeSys(
+					$request->conteneur,
+					$request->réponse,
+					(new \DateTime())->getTimestamp(),
+				);
+			}
 
 			try {
 				$tentativeInt = new SoumettreTentativeSysInt();
@@ -238,7 +245,7 @@ class TentativeCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => "Question BD non implémentée."], 501);
 		}
 
-		Log::debug("TentativeCtl.post. Retour : ", $réponse);
+		Log::debug("TentativeCtl.post. Retour : ", [$réponse]);
 
 		return $this->préparer_réponse($réponse);
 	}
@@ -250,19 +257,6 @@ class TentativeCtl extends Contrôleur
 			[
 				"langage" => "required",
 				"code" => "required",
-			],
-			[
-				"required" => "Le champ :attribute est obligatoire.",
-			],
-		);
-	}
-
-	private function valider_paramètres_sys($request)
-	{
-		return Validator::make(
-			$request->all(),
-			[
-				"conteneur" => "required",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",

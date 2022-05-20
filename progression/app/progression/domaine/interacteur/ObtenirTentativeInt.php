@@ -34,9 +34,15 @@ class ObtenirTentativeInt extends Interacteur
 	{
 		$tentatives = $this->source_dao->get_tentative_dao()->get_toutes($username, $question_uri);
 
+		if (empty($tentatives)) {
+			return null;
+		}
+
 		$tentative = $tentatives[count($tentatives) - 1];
 
-		print_r($tentative);
+		if (empty($tentative)) {
+			return null;
+		}
 
 		return $tentative->conteneur;
 	}
