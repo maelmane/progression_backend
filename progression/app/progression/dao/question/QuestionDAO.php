@@ -22,7 +22,7 @@ use DomainException;
 use RuntimeException;
 use Illuminate\Support\Facades\Log;
 use progression\dao\EntitéDAO;
-use progression\domaine\entité\QuestionProg;
+use progression\domaine\entité\{QuestionProg, QuestionSys};
 
 class QuestionDAO extends EntitéDAO
 {
@@ -52,9 +52,9 @@ class QuestionDAO extends EntitéDAO
 		if ($type == "prog") {
 			return DécodeurQuestionProg::load(new QuestionProg(), $infos_question);
 		} elseif ($type == "sys") {
-			throw new RuntimeException("Question de type SYS non implémenté");
+			return DécodeurQuestionSys::load(new QuestionSys(), $infos_question);
 		} elseif ($type == "bd") {
-			throw new RuntimeException("Question de type SYS non implémenté");
+			throw new RuntimeException("Question de type BD non implémenté");
 		} else {
 			throw new DomainException("Le fichier ne peut pas être décodé. Type inconnu");
 		}

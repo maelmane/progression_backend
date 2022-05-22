@@ -8,21 +8,21 @@
 		"titre": "",
 		"état": 0
 	    },
-	    "id": "uri_a",
+	    "id": "jdoe/dXJpX2E",
 	    "links": {
-		"self": "https://example.com/avancement/uri_a"
+		"self": "https://example.com/avancement/jdoe/dXJpX2E"
 	    },
 	    "relationships": {
 		"sauvegardes": {
 		    "links": {
-			"related": "https://example.com/avancement/uri_a/sauvegardes",
-			"self": "https://example.com/avancement/uri_a/relationships/sauvegardes"
+			"related": "https://example.com/avancement/jdoe/dXJpX2E/sauvegardes",
+			"self": "https://example.com/avancement/jdoe/dXJpX2E/relationships/sauvegardes"
 		    }
 		},
 		"tentatives": {
 		    "links": {
-			"related": "https://example.com/avancement/uri_a/tentatives",
-			"self": "https://example.com/avancement/uri_a/relationships/tentatives"
+			"related": "https://example.com/avancement/jdoe/dXJpX2E/tentatives",
+			"self": "https://example.com/avancement/jdoe/dXJpX2E/relationships/tentatives"
 		    }
 		}
 	    },
@@ -36,21 +36,21 @@
 		"titre": "",
 		"état": 0
 	    },
-	    "id": "uri_b",
+	    "id": "jdoe/dXJpX2I",
 	    "links": {
-		"self": "https://example.com/avancement/uri_b"
+		"self": "https://example.com/avancement/jdoe/dXJpX2I"
 	    },
 	    "relationships": {
 		"sauvegardes": {
 		    "links": {
-			"related": "https://example.com/avancement/uri_b/sauvegardes",
-			"self": "https://example.com/avancement/uri_b/relationships/sauvegardes"
+			"related": "https://example.com/avancement/jdoe/dXJpX2I/sauvegardes",
+			"self": "https://example.com/avancement/jdoe/dXJpX2I/relationships/sauvegardes"
 		    }
 		},
 		"tentatives": {
 		    "links": {
-			"related": "https://example.com/avancement/uri_b/tentatives",
-			"self": "https://example.com/avancement/uri_b/relationships/tentatives"
+			"related": "https://example.com/avancement/jdoe/dXJpX2I/tentatives",
+			"self": "https://example.com/avancement/jdoe/dXJpX2I/relationships/tentatives"
 		    }
 		}
 	    },

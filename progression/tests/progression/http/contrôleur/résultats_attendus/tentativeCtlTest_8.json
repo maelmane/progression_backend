@@ -1,0 +1,34 @@
+{
+	"data": {
+		"type": "tentative",
+		"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnM1/%1$d",
+		"attributes": {
+			"date_soumission":  %1$d,
+			"feedback": "Encore un effort!",
+			"réussi": false,
+			"sous-type": "tentativeSys",
+			"conteneur": "leConteneurDeLaNouvelleTentative5",
+			"réponse": "Bonsoir",
+			"tests_réussis": 0,
+			"temps_exécution": 0
+		},
+		"links": {
+			"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnM1/%1$d"
+		},
+		"relationships": {
+			"commentaires":{
+				"links": {
+					"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnM1/%1$d/commentaires",
+					"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnM1/%1$d/relationships/commentaires"
+				}
+			},
+            "resultats": {
+                "data": [],
+				"links": {
+					"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnM1/%1$d/relationships/resultats",
+					"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnM1/%1$d/resultats"
+				}
+			}
+		}
+    }
+ }

@@ -18,16 +18,11 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Question;
-
 class SauvegarderTentativeSysInt extends Interacteur
 {
-	public function sauvegarder($avancement, $username)
+	public function sauvegarder($username, $question_uri, $tentative)
 	{
-		$dao = $this->source_dao->get_avancement_sys_dao();
-		if ($avancement->etat == Question::ETAT_DEBUT) {
-			$avancement->etat = Question::ETAT_NONREUSSI;
-		}
-		$dao->save($avancement, $username);
+		$dao_tentative = $this->source_dao->get_tentative_sys_dao();
+		return $dao_tentative->save($username, $question_uri, $tentative);
 	}
 }

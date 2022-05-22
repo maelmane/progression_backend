@@ -19,38 +19,38 @@
 namespace progression\http\transformer;
 
 use PHPUnit\Framework\TestCase;
-use progression\domaine\entité\{TentativeProg, RésultatProg, Commentaire};
+use progression\domaine\entité\{TentativeSys, RésultatSys, Commentaire};
 
-final class TentativeTransformerTests extends TestCase
+final class TentativeSysTransformerTests extends TestCase
 {
-	public function test_étant_donné_une_TentativeProg_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+	public function test_étant_donné_une_TentativeSys_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$tentative = new TentativeProg(
-			"python",
-			"codeTest",
+		$tentative = new TentativeSys(
+			"conteneurDeLaTentative",
+			"oui",
 			1614711760,
 			false,
 			2,
 			34567,
 			"feedBackTest",
-			[new RésultatProg("output", "error", false, "feedback", 123)],
+			[new RésultatSys("output", false, "feedback", 123)],
 			[new Commentaire("Message", "jdoe", 123456, 12)],
 		);
 		$tentative->id =
 			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760";
-		$tentativeTransformer = new TentativeProgTransformer();
+		$tentativeTransformer = new TentativeSysTransformer();
 		$résultat = [
 			"id" =>
 				"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
 			"date_soumission" => 1614711760,
-			"sous-type" => "tentativeProg",
+			"sous-type" => "tentativeSys",
 			"réussi" => false,
 			"tests_réussis" => 2,
 			"feedback" => "feedBackTest",
-			"langage" => "python",
-			"code" => "codeTest",
+			"conteneur" => "conteneurDeLaTentative",
+			"réponse" => "oui",
 			"temps_exécution" => 34567,
 			"links" => [
 				"self" =>
@@ -61,17 +61,24 @@ final class TentativeTransformerTests extends TestCase
 		$this->assertEquals($résultat, $tentativeTransformer->transform($tentative));
 	}
 
-	public function test_étant_donné_une_TentativeProg_instanciée_avec_des_résultats_lorsquon_inclut_les_résultats_on_obtient_un_tableau_de_résultats()
+	public function test_étant_donné_une_TentativeSys_instanciée_avec_des_résultats_lorsquon_inclut_les_résultats_on_obtient_un_tableau_de_résultats()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$tentative = new TentativeProg("python", "codeTest", 1614711760, false, 2, 34567, "feedBackTest", [
-			new RésultatProg("output", "error", false, "feedback", 123),
-			new RésultatProg("output 2", "error 2", true, "feedback 2", 456),
-		]);
+		$tentative = new TentativeSys(
+			"conteneurDeLaTentative",
+			"oui",
+			1614711760,
+			false,
+			2,
+			34567,
+			"feedBackTest",
+			[new RésultatSys("output", false, "feedback", 123), new RésultatSys("output 2", true, "feedback 2", 456)],
+			[new Commentaire("Message", "jdoe", 123456, 12)],
+		);
 		$tentative->id =
 			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760";
-		$tentativeTransformer = new TentativeProgTransformer();
+		$tentativeTransformer = new TentativeSysTransformer();
 
 		$inclusionsResultats = $tentativeTransformer->includeResultats($tentative);
 
@@ -81,18 +88,18 @@ final class TentativeTransformerTests extends TestCase
 		}
 
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/tentativeTransformerTest_1.json",
+			__DIR__ . "/résultats_attendus/tentativeSysTransformerTest_1.json",
 			json_encode($listeRésultats),
 		);
 	}
 
-	public function test_étant_donné_une_TentativeProg_instanciée_avec_des_commentaires_lorsquon_inclut_les_commentaires_on_obtient_un_tableau_de_commentaires()
+	public function test_étant_donné_une_TentativeSys_instanciée_avec_des_commentaires_lorsquon_inclut_les_commentaires_on_obtient_un_tableau_de_commentaires()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$tentative = new TentativeProg(
-			"python",
-			"codeTest",
+		$tentative = new TentativeSys(
+			"conteneurDeLaTentative",
+			"oui",
 			1614711760,
 			false,
 			2,
@@ -103,7 +110,7 @@ final class TentativeTransformerTests extends TestCase
 		);
 		$tentative->id =
 			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760";
-		$tentativeTransformer = new TentativeProgTransformer();
+		$tentativeTransformer = new TentativeSysTransformer();
 
 		$commentaires = [
 			"message" => "Message",

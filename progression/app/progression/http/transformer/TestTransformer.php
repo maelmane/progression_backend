@@ -18,14 +18,14 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\Test;
+use progression\domaine\entité\TestProg;
 use League\Fractal;
 
 class TestTransformer extends Fractal\TransformerAbstract
 {
 	public $type = "test";
 
-	public function transform(Test $test)
+	public function transform(TestProg $test)
 	{
 		$data = [
 			"id" => $test->id,

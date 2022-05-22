@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Avancement, Question};
+use progression\domaine\entité\{Avancement, Question, QuestionProg, QuestionSys};
 
 class SauvegarderAvancementInt extends Interacteur
 {
@@ -43,7 +43,14 @@ class SauvegarderAvancementInt extends Interacteur
 
 	private function créer_avancement($question)
 	{
-		$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, []);
+		if ($question instanceof QuestionProg) {
+			$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, []);
+		} elseif ($question instanceof QuestionSys) {
+			$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_SYS, []);
+		} else {
+			$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_BD, []);
+		}
+
 		return $avancement;
 	}
 

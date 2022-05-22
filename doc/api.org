@@ -151,11 +151,14 @@ Une question spécifiquement de programmation.
 Une question spécifiquement de type système
 
 *** Relations :
-| Nom     | Cardinalité | Type | Description                  |
-|---------+-------------+------+------------------------------|
-| tests   | 1-n         | Test | liste de Tests de validation |
+| Nom           | Cardinalité | Type | Description                     |
+|---------------+-------------+------+---------------------------------|
+| image         | 1           | str  | image du conteneur              |
+| utilisateur   | 1           | str  | utilisateur du conteneur        |
+| solution      | 1           | str  | solution du test, s'il y a lieu |
+| tests         | 1-n         | Test | liste de Tests de validation    |
 
-** Résultat
+** RésultatProg
 
 Le résultat d'un test pour une solution proposée.
 
@@ -171,6 +174,23 @@ username/question_uri/date_soumission/numéro
 | résultat        | bool |                         |
 | feedback        | str  |                         |
 | temps_exécution | int  | temps d'exécution en ms |
+
+** RésultatSys
+
+Le résultat d'un test pour une solution proposée.
+
+*** Identifiant :
+username/question_uri/date_soumission/numéro
+
+*** Propriétés:
+
+| Nom             | Type | Valeurs                 |
+|-----------------+------+-------------------------|
+| sortie_observée | str  |                         |
+| résultat        | bool |                         |
+| feedback        | str  |                         |
+| temps_exécution | int  | temps d'exécution en ms |
+
 
 ** Sauvegarde automatique
 
@@ -216,7 +236,7 @@ Tentative
 
 ** Tentative (sous-type tentativeProg)
 
-Une tentative de réponse à une question.
+Une tentative de réponse à une QuestionProg.
 
 *** Propriétés:
 
@@ -229,27 +249,28 @@ Une tentative de réponse à une question.
 
 *** Relations :
 
-| Nom       | Cardinalité | Type     | Description           |
-|-----------+-------------+----------+-----------------------|
-| résultats | 1-n         | Résultat | les résultats de test |
+| Nom       | Cardinalité | Type         | Description           |
+|-----------+-------------+--------------+-----------------------|
+| résultats | 1-n         | RésultatProg | les résultats de test |
 
 ** Tentative (sous-type tentativeSys)
 
-Une tentative de réponse à une question.
+Une tentative de réponse à une QuestionSys.
 
 *** Propriétés:
 
 | Nom             | Type | Valeurs                 |
 |-----------------+------+-------------------------|
+| conteneur       | str  |                         |
 | réponse         | str  |                         |
 | tests_réussis   | int  | nb de tests réussis     |
 | temps_exécution | int  | temps d'exécution en ms |
 
 *** Relations :
 
-| Nom       | Cardinalité | Type     | Description           |
-|-----------+-------------+----------+-----------------------|
-| résultats | 1-n         | Résultat | les résultats de test |
+| Nom       | Cardinalité | Type        | Description           |
+|-----------+-------------+-------------+-----------------------|
+| résultats | 1-n         | RésultatSys | les résultats de test |
 
 ** Test
 
@@ -263,8 +284,33 @@ question_uri/numéro
 | Nom             | Type | Valeurs |
 |-----------------+------+---------|
 | nom             | str  |         |
-| entrée          | str  |         |
 | sortie_attendue | str  |         |
+| feedback_pos    | str  |         |
+| feedback_neg    | str  |         |
+
+
+** TestProg (soustype de Test)
+
+Un test de validation d'une QuestionProg auquel sont soumises les solutions proposées.
+
+*** Propriétés :
+
+| Nom          | Type | Valeurs |
+|--------------+------+---------|
+| entrée       | str  |         |
+| params       | str  |         |
+| feedback_err | str  |         |
+
+** TestSys (soustype de Test)
+
+Un test de validation d'une QuestionSys auquel sont soumises les solutions proposées.
+
+*** Propriétés :
+
+| Nom          | Type | Valeurs                  |
+|--------------+------+--------------------------|
+| validation   | str  |                          |
+| utilisateur  | str  |l'utilisateur du conteneur|
 
 ** Token ressource
 

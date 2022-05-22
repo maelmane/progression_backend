@@ -92,6 +92,28 @@ INSERT INTO avancement VALUES (
   1645739959
 );
 
+INSERT INTO avancement VALUES (
+  "jdoe",
+  "https://exemple2.com",
+  1,
+  1,
+  "Question Système",
+  "facile",
+  1645739981,
+  1645739959
+);
+
+INSERT INTO avancement VALUES (
+  "jdoe",
+  "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
+  1,
+  1,
+  "Toutes Permissions",
+  "facile",
+  1645739981,
+  1645739959
+);
+
 INSERT INTO reponse_prog VALUES (
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
@@ -123,6 +145,28 @@ INSERT INTO reponse_prog VALUES (
   1,
   4,
   345633
+);
+
+INSERT INTO reponse_sys VALUES (
+  "jdoe",
+  "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
+  "leConteneur",
+  "laRéponse",
+  1615696300,
+  0,
+  0,
+  0
+);
+
+INSERT INTO reponse_sys VALUES (
+  "jdoe",
+  "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
+  "leConteneur2",
+  "laRéponse2",
+  1615696301,
+  1,
+  1,
+  0
 );
 
 INSERT INTO commentaire VALUES(

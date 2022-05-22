@@ -26,10 +26,16 @@ class Tentative
 	public $temps_exécution;
 	public $commentaires;
 
-	public function __construct($date_soumission = null, $réussi = false, $feedback = null, $commentaires = [])
-	{
+	public function __construct(
+		$date_soumission = null,
+		$réussi = false,
+		$temps_exécution = null,
+		$feedback = null,
+		$commentaires = []
+	) {
 		$this->date_soumission = $date_soumission;
 		$this->réussi = $réussi;
+		$this->temps_exécution = $temps_exécution;
 		$this->feedback = $feedback;
 		$this->commentaires = $commentaires;
 	}

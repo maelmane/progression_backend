@@ -22,7 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\interacteur\ObtenirQuestionInt;
-use progression\http\transformer\QuestionProgTransformer;
+use progression\http\transformer\{QuestionProgTransformer, QuestionSysTransformer};
 use progression\util\Encodage;
 use progression\dao\question\ChargeurException;
 use DomainException, LengthException, RuntimeException;
@@ -92,9 +92,11 @@ class QuestionCtl extends Contrôleur
 		if ($question instanceof QuestionProg) {
 			$réponse_array = $this->item(["question" => $question], new QuestionProgTransformer());
 			$réponse = $this->préparer_réponse($réponse_array);
-		} elseif ($question instanceof QuestionSys || $question instanceof QuestionBD) {
-			Log::notice("Type de question non implémentée : " . get_class($question));
-			$réponse = $this->réponse_json(["erreur" => "Type de question non implémentée."], 501);
+		} elseif ($question instanceof QuestionSys) {
+			$réponse_array = $this->item(["question" => $question], new QuestionSysTransformer());
+			$réponse = $this->préparer_réponse($réponse_array);
+		} elseif ($question instanceof QuestionBD) {
+			$réponse = $this->réponse_json(["erreur" => "QuestionBD pas encore implémentée"], 501);
 		} else {
 			$réponse = $this->réponse_json(["erreur" => "Type de question inconnu."], 400);
 		}

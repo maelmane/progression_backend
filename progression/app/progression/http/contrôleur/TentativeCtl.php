@@ -26,12 +26,14 @@ use progression\domaine\interacteur\{
 	ObtenirTentativeInt,
 	ObtenirQuestionInt,
 	SoumettreTentativeProgInt,
+	SoumettreTentativeSysInt,
 	SauvegarderAvancementInt,
 	SauvegarderTentativeProgInt,
+	SauvegarderTentativeSysInt,
 };
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
-use progression\domaine\entité\Test;
+use progression\domaine\entité\TestProg;
 use progression\dao\exécuteur\ExécutionException;
 use progression\util\Encodage;
 use DomainException, LengthException, RuntimeException;
@@ -104,6 +106,8 @@ class TentativeCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => "Requête intraitable."], 400);
 		}
 
+		Log::debug("TentativeCtl.post. Params : ", [$question]);
+
 		if ($question instanceof QuestionProg) {
 			$validation = $this->valider_paramètres($request);
 			if ($validation->fails()) {
@@ -116,14 +120,16 @@ class TentativeCtl extends Contrôleur
 			}
 
 			if (!empty($request->test)) {
-				$question->tests = [
-					new Test(
-						$request->test["nom"] ?? "",
-						$request->test["sortie_attendue"] ?? "",
-						$request->test["entrée"] ?? "",
-						$request->test["params"] ?? "",
-					),
-				];
+				if (isset($request->test["entrée"]) || isset($request->test["params"])) {
+					$question->tests = [
+						new TestProg(
+							$request->test["nom"] ?? "",
+							$request->test["sortie_attendue"] ?? "",
+							$request->test["entrée"] ?? "",
+							$request->test["params"] ?? "",
+						),
+					];
+				}
 				Log::debug("TentativeCtl.post. Tests question : ", [$question->tests]);
 			}
 			$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
@@ -173,14 +179,73 @@ class TentativeCtl extends Contrôleur
 			$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
 			$réponse = $this->item($tentative, new TentativeProgTransformer());
 		} elseif ($question instanceof QuestionSys) {
-			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			return $this->réponse_json(["erreur" => "Question système non implémentée."], 501);
+			if (empty($request->conteneur)) {
+				$obtenirTentativeInt = new ObtenirTentativeInt();
+				$id_conteneur = $obtenirTentativeInt->get_id_conteneur_dernière_tentative($username, $chemin);
+
+				if (!empty($id_conteneur)) {
+					$tentative = new TentativeSys($id_conteneur, $request->réponse, (new \DateTime())->getTimestamp());
+				} else {
+					$tentative = new TentativeSys("", $request->réponse, (new \DateTime())->getTimestamp());
+				}
+			} else {
+				$tentative = new TentativeSys(
+					$request->conteneur,
+					$request->réponse,
+					(new \DateTime())->getTimestamp(),
+				);
+			}
+
+			try {
+				$tentativeInt = new SoumettreTentativeSysInt();
+				$tentative = $tentativeInt->soumettre_tentative($username, $question, $tentative);
+			} catch (ExécutionException $e) {
+				Log::error($e->getMessage());
+				if ($e->getPrevious()) {
+					Log::error($e->getPrevious()->getMessage());
+				}
+				return $this->réponse_json(["erreur" => "Service non disponible."], 503);
+			}
+			if ($tentative == null) {
+				Log::notice(
+					"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+						__CLASS__ .
+						") Requête intraitable (Tentative == null)",
+				);
+				return $this->réponse_json(["erreur" => "Requête intraitable."], 400);
+			}
+
+			try {
+				if (empty($request->test)) {
+					$avancementInt = new SauvegarderAvancementInt();
+					$sauvegardeTentativeInt = new SauvegarderTentativeSysInt();
+					$avancement = $avancementInt->récupérer_avancement($username, $question, $tentative);
+					$avancement->titre = $question->titre;
+					$avancement->niveau = $question->niveau;
+					$avancementInt->mettre_à_jour_dates_et_état(
+						$avancement,
+						$tentative->date_soumission,
+						$username,
+						$question->uri,
+					);
+					$sauvegardeTentativeInt->sauvegarder($username, $question->uri, $tentative);
+				}
+			} catch (ExécutionException $e) {
+				Log::error($e->getMessage());
+				if ($e->getPrevious()) {
+					Log::error($e->getPrevious()->getMessage());
+				}
+				return $this->réponse_json(["erreur" => "Service non disponible."], 503);
+			}
+
+			$tentative->id = "{$username}/{$question_uri}/{$tentative->date_soumission}";
+			$réponse = $this->item($tentative, new TentativeSysTransformer());
 		} elseif ($question instanceof QuestionBD) {
 			Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 			return $this->réponse_json(["erreur" => "Question BD non implémentée."], 501);
 		}
 
-		Log::debug("TentativeCtl.post. Retour : ", $réponse);
+		Log::debug("TentativeCtl.post. Retour : ", [$réponse]);
 
 		return $this->préparer_réponse($réponse);
 	}
