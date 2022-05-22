@@ -19,7 +19,7 @@ stages:
 variables:
   PROGRESSION_DIR: $CI_PROJECT_DIR
   DOCKER_TLS_CERTDIR: ""
-
+  BRANCHE: $CI_COMMIT_REF_NAME
 
 .preparer_contexte: &preparer_contexte
     - mkdir ~/.ssh && cp $ID_RSA ~/.ssh/id_rsa
@@ -42,7 +42,7 @@ test_unitaires:
       optional: true
   environment: tests
   script:
-    - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml tests 
+    - TAG_DEPLOY=$BRANCHE docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml tests 
   except:
     - master
 
@@ -66,20 +66,15 @@ const_image:
   environment:
     DOCKER_BUILDKIT: 1 
   script:
-    - docker build --cache-from $CI_REGISTRY/progression/progression_backend:test --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/progression/progression_backend:test progression
-    - docker push $CI_REGISTRY/progression/progression_backend:test
-
-  only:
-    - master
-    - dev
-
+    - docker build --cache-from $CI_REGISTRY/progression/progression_backend:$BRANCHE --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/progression/progression_backend:$BRANCHE progression
+    - docker push $CI_REGISTRY/progression/progression_backend:$BRANCHE
 
 # Stage deploy_image
 
 # Déploiement sur /dev
 deploy_dev:
   stage: deploy_image
-  needs: [tag_dev]
+  needs: [test_unitaires]
   environment:
     name: dev
     url: https://progression.dti.crosemont.quebec/dev/
@@ -87,14 +82,14 @@ deploy_dev:
     - *preparer_contexte
     - *login
   script:
-    - TAG_DEPLOY=dev docker-compose -p dev up --force-recreate --no-deps -d progression
+    - TAG_DEPLOY=$BRANCHE docker-compose -p dev up --force-recreate --no-deps -d progression
   only:
     - dev
 
 # Déploiement sur /demo
 deploy_demo:
   stage: deploy_image
-  needs: [tag_latest]
+  needs: [test_unitaires]
   environment:
     name: demo
     url: https://progression.dti.crosemont.quebec/demo/
@@ -102,14 +97,14 @@ deploy_demo:
     - *preparer_contexte
     - *login
   script:
-    - TAG_DEPLOY=latest docker-compose -p demo up --force-recreate --no-deps -d progression
+    - TAG_DEPLOY=$BRANCHE docker-compose -p demo up --force-recreate --no-deps -d progression
   only:
     - master
 
 # Déploiement sur /pilote
 deploy_pilote:
   stage: deploy_image
-  needs: [tag_latest]
+  needs: [test_unitaires]
   environment:
     name: pilote
     url: https://progression.dti.crosemont.quebec/pilote/
@@ -117,7 +112,7 @@ deploy_pilote:
     - *preparer_contexte
     - *login
   script:
-    - TAG_DEPLOY=latest docker-compose -p pilote up --force-recreate --no-deps -d progression
+    - TAG_DEPLOY=$BRANCHE docker-compose -p pilote up --force-recreate --no-deps -d progression
   only:
     - master
 
@@ -127,8 +122,8 @@ tag_dev:
   before_script:
     - *login
   script:
-    - docker pull $CI_REGISTRY/progression/progression_backend:test
-    - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:dev   
+    - docker pull $CI_REGISTRY/progression/progression_backend:$BRANCHE
+    - docker tag $CI_REGISTRY/progression/progression_backend:$BRANCHE $CI_REGISTRY/progression/progression_backend:dev
     - docker push $CI_REGISTRY/progression/progression_backend:dev
   only:
     - dev
@@ -139,8 +134,8 @@ tag_latest:
   before_script:
     - *login
   script:
-    - docker pull $CI_REGISTRY/progression/progression_backend:test
-    - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:latest   
+    - docker pull $CI_REGISTRY/progression/progression_backend:$BRANCHE
+    - docker tag $CI_REGISTRY/progression/progression_backend:$BRANCHE $CI_REGISTRY/progression/progression_backend:latest   
     - docker push $CI_REGISTRY/progression/progression_backend:latest
   only:
     - master
@@ -149,7 +144,7 @@ tag_latest:
 # Déploiement sur /staging
 deploy_staging:
   stage: deploy_image
-  needs: [tag_latest]
+  needs: [test_unitaires]
   environment:
     name: staging
     url: https://progression.dti.crosemont.quebec/staging/
@@ -157,7 +152,7 @@ deploy_staging:
     - *preparer_contexte
     - *login
   script:
-    - TAG_DEPLOY=latest docker-compose -p staging up --force-recreate --no-deps -d progression
+    - TAG_DEPLOY=$BRANCHE docker-compose -p staging up --force-recreate --no-deps -d progression
   only:
     - master
 

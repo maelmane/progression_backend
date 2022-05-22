@@ -32,7 +32,7 @@ services:
       - redis
 
   tests:
-    image: git.dti.crosemont.quebec:5050/progression/progression_backend:test
+    image: git.dti.crosemont.quebec:5050/progression/progression_backend:$TAG_DEPLOY
     container_name: progression_tests_$CI_ENVIRONMENT_SLUG
     #volumes:
     #  - "./progression_backend/progression/app/:/var/www/progression/app/"
