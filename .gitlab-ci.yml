@@ -69,6 +69,34 @@ const_image:
     - docker build --cache-from $CI_REGISTRY/progression/progression_backend:$BRANCHE --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/progression/progression_backend:$BRANCHE progression
     - docker push $CI_REGISTRY/progression/progression_backend:$BRANCHE
 
+
+# Stage tag
+
+tag_dev:
+  stage: tag_image
+  needs: [test_unitaires, linter]
+  before_script:
+    - *login
+  script:
+    - docker pull $CI_REGISTRY/progression/progression_backend:$BRANCHE
+    - docker tag $CI_REGISTRY/progression/progression_backend:$BRANCHE $CI_REGISTRY/progression/progression_backend:dev
+    - docker push $CI_REGISTRY/progression/progression_backend:dev
+  only:
+    - dev
+
+tag_latest:
+  stage: tag_image
+  needs: [const_image]
+  before_script:
+    - *login
+  script:
+    - docker pull $CI_REGISTRY/progression/progression_backend:$BRANCHE
+    - docker tag $CI_REGISTRY/progression/progression_backend:$BRANCHE $CI_REGISTRY/progression/progression_backend:latest   
+    - docker push $CI_REGISTRY/progression/progression_backend:latest
+  only:
+    - master
+
+    
 # Stage deploy_image
 
 # Déploiement sur /dev
@@ -115,31 +143,6 @@ deploy_pilote:
     - TAG_DEPLOY=$BRANCHE docker-compose -p pilote up --force-recreate --no-deps -d progression
   only:
     - master
-
-tag_dev:
-  stage: tag_image
-  needs: [test_unitaires, linter]
-  before_script:
-    - *login
-  script:
-    - docker pull $CI_REGISTRY/progression/progression_backend:$BRANCHE
-    - docker tag $CI_REGISTRY/progression/progression_backend:$BRANCHE $CI_REGISTRY/progression/progression_backend:dev
-    - docker push $CI_REGISTRY/progression/progression_backend:dev
-  only:
-    - dev
-
-tag_latest:
-  stage: tag_image
-  needs: [const_image]
-  before_script:
-    - *login
-  script:
-    - docker pull $CI_REGISTRY/progression/progression_backend:$BRANCHE
-    - docker tag $CI_REGISTRY/progression/progression_backend:$BRANCHE $CI_REGISTRY/progression/progression_backend:latest   
-    - docker push $CI_REGISTRY/progression/progression_backend:latest
-  only:
-    - master
-
 
 # Déploiement sur /staging
 deploy_staging:
