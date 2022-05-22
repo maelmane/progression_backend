@@ -63,7 +63,7 @@ const_image:
   stage: build_image  
   before_script: *login
 
-  environment:
+  variables:
     DOCKER_BUILDKIT: 1 
   script:
     - docker build --cache-from $CI_REGISTRY/progression/progression_backend:$BRANCHE --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/progression/progression_backend:$BRANCHE progression
