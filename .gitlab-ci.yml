@@ -64,7 +64,7 @@ const_image:
   before_script: *login
 
   script:
-    - docker build -t $CI_REGISTRY/progression/progression_backend:test progression
+    - DOCKER_BUILDKIT=1 docker build -t $CI_REGISTRY/progression/progression_backend:test progression
     - docker push $CI_REGISTRY/progression/progression_backend:test
 
   only:
