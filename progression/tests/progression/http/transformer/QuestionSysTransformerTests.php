@@ -66,7 +66,7 @@ final class QuestionSysTransformerTests extends TestCase
 
 		$question->tests = [
 			new TestSys("Toutes Permissions", "-rwxrwxrwx", "laValidation", "utilisateur"),
-			new TestSys("Read Write Permissions", "-rw-rw-rw-", "laValidation2", "utilisateur2"),
+			new TestSys("Read Write Permissions", "-rw-rw-rw-", "laValidation2", "utilisateur2", "positif", "négatif"),
 		];
 
 		$questionSysTransformer = new QuestionSysTransformer();

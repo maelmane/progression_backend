@@ -18,7 +18,7 @@
 
 namespace progression\http\contrôleur;
 
-use progression\http\transformer\{TestTransformer, TestSysTransformer};
+use progression\http\transformer\{TestProgTransformer, TestSysTransformer};
 use progression\domaine\interacteur\ObtenirQuestionInt;
 use progression\domaine\entité\{QuestionProg, QuestionSys};
 use progression\util\Encodage;
@@ -59,7 +59,7 @@ class TestCtl extends Contrôleur
 		if ($question != null) {
 			$test = $this->préparer_test($question, $question_uri, $numero);
 			if ($question instanceof QuestionProg) {
-				$test_array = $this->item($test, new TestTransformer());
+				$test_array = $this->item($test, new TestProgTransformer());
 			}
 
 			if ($question instanceof QuestionSys) {
@@ -86,7 +86,7 @@ class TestCtl extends Contrôleur
 			];
 
 			if ($question instanceof QuestionProg) {
-				$réponse = $this->item($test, new TestTransformer());
+				$réponse = $this->item($test, new TestProgTransformer());
 			}
 
 			if ($question instanceof QuestionSys) {

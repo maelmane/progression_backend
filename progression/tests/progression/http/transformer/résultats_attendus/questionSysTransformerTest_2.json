@@ -2,6 +2,7 @@
 	{
 		"nom": "Toutes Permissions",
 		"sortie_attendue": "-rwxrwxrwx",
+		"feedback_err": null,
 		"feedback_pos": null,
 		"feedback_neg": null,
         "validation" : "laValidation",
@@ -15,8 +16,9 @@
 	{
 		"nom": "Read Write Permissions",
 		"sortie_attendue": "-rw-rw-rw-",
-		"feedback_pos": null,
-		"feedback_neg": null,
+		"feedback_err": null,
+		"feedback_pos": "positif",
+		"feedback_neg": "négatif",
         "validation" : "laValidation2",
         "utilisateur" : "utilisateur2",
 		"num\u00e9ro": 1,

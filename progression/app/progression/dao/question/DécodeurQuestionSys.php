@@ -31,10 +31,6 @@ class DécodeurQuestionSys extends DécodeurQuestion
 
 		$question->tests = self::load_tests($infos_question);
 
-		if (count($question->tests) == 0) {
-			throw new DomainException("Le fichier ne peut pas être décodé. Les tests sont manquants.");
-		}
-
 		return $question;
 	}
 
@@ -42,9 +38,7 @@ class DécodeurQuestionSys extends DécodeurQuestion
 	{
 		$question->utilisateur = $infos_question["utilisateur"];
 		$question->image = $infos_question["image"];
-		if (isset($infos_question["solution"])) {
-			$question->solution = $infos_question["solution"];
-		}
+		$question->solution = $infos_question["solution"] ?? null;
 
 		return $question;
 	}

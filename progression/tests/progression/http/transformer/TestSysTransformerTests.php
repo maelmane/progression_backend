@@ -26,7 +26,7 @@ final class TestSysTransformerTests extends TestCase
 	public function test_étant_donné_un_test_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
 		$testTransformer = new TestSysTransformer();
-		$test = new TestSys("Permissions", "-rwxrwxrwx");
+		$test = new TestSys("Permissions", "-rwxrwxrwx", "ls -l", "root");
 		$test->numéro = 0;
 		$test->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0";
 
@@ -34,6 +34,8 @@ final class TestSysTransformerTests extends TestCase
 			"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 			"nom" => "Permissions",
 			"sortie_attendue" => "-rwxrwxrwx",
+			"validation" => "ls -l",
+			"utilisateur" => "root",
 			"links" => [
 				"self" =>
 					"https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",

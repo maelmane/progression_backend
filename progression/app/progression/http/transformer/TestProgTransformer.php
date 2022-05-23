@@ -21,7 +21,7 @@ namespace progression\http\transformer;
 use progression\domaine\entité\Test;
 use League\Fractal;
 
-class TestSysTransformer extends TestTransformer
+class TestProgTransformer extends TestTransformer
 {
 	public $type = "test";
 
@@ -29,8 +29,8 @@ class TestSysTransformer extends TestTransformer
 	{
 		$data = parent::transform($test);
 		$data = array_merge($data, [
-			"validation" => $test->validation,
-			"utilisateur" => $test->utilisateur,
+			"entrée" => $test->entrée,
+			"params" => $test->params,
 		]);
 
 		return $data;
