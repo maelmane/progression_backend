@@ -51,7 +51,14 @@ class TentativeSysDAO extends TentativeDAO
 			$query->bind_result($conteneur, $réponse, $date_soumission, $réussi, $tests_réussis, $temps_exécution);
 
 			while ($query->fetch()) {
-				$tentatives[] = new TentativeSys($conteneur, $réponse, $date_soumission, $réussi, [], $tests_réussis, $temps_exécution);
+				$tentatives[] = new TentativeSys(
+					conteneur: ["id"=>$conteneur],
+					réponse: $réponse,
+					date_soumission: $date_soumission,
+					réussi: $réussi,
+					résultats: [],
+					tests_réussis: $tests_réussis,
+					temps_exécution: $temps_exécution);
 			}
 
 			$query->close();
@@ -92,14 +99,13 @@ class TentativeSysDAO extends TentativeDAO
 
 			if ($query->fetch()) {
 				$tentative = new TentativeSys(
-					$conteneur,
-					$réponse,
-					$date_soumission,
-					$réussi,
-					[],
-					$tests_réussis,
-					$temps_exécution,
-				);
+					conteneur: ["id"=>$conteneur],
+					réponse: $réponse,
+					date_soumission: $date_soumission,
+					réussi: $réussi,
+					résultats: [],
+					tests_réussis: $tests_réussis,
+					temps_exécution: $temps_exécution);
 			}
 
 			$query->close();
@@ -110,6 +116,53 @@ class TentativeSysDAO extends TentativeDAO
 		return $tentative;
 	}
 
+	public function get_dernière($username, $question_uri)
+	{
+		$tentative = null;
+
+		try {
+			$query = EntitéDAO::get_connexion()->prepare(
+				'SELECT reponse_sys.conteneur,
+				reponse_sys.reponse,
+				reponse_sys.date_soumission,
+				reponse_sys.reussi,
+				reponse_sys.tests_reussis,
+				reponse_sys.temps_exécution
+				FROM reponse_sys
+				WHERE username = ? 
+				AND question_uri = ?
+				AND date_soumission = (SELECT max(date_soumission) FROM reponse_sys WHERE username = ? and question_uri = ?)',
+			);
+			$query->bind_param("ssss", $username, $question_uri, $username, $question_uri);
+			$query->execute();
+
+			$conteneur = null;
+			$réponse = null;
+			$date_soumission = null;
+			$réussi = false;
+			$tests_réussis = 0;
+			$temps_exécution = null;
+			$query->bind_result($conteneur, $réponse, $date_soumission, $réussi, $tests_réussis, $temps_exécution);
+
+			if ($query->fetch()) {
+				$tentative = new TentativeSys(
+					conteneur: ["id"=>$conteneur],
+					réponse: $réponse,
+					date_soumission: $date_soumission,
+					réussi: $réussi,
+					résultats: [],
+					tests_réussis: $tests_réussis,
+					temps_exécution: $temps_exécution);
+			}
+
+			$query->close();
+		} catch (mysqli_sql_exception $e) {
+			throw new DAOException($e);
+		}
+
+		return $tentative;
+	}
+	
 	public function save($username, $question_uri, $objet)
 	{
 		try {
@@ -120,7 +173,7 @@ class TentativeSysDAO extends TentativeDAO
 				"ssssiiii",
 				$question_uri,
 				$username,
-				$objet->conteneur,
+				$objet->conteneur["id"],
 				$objet->réponse,
 				$objet->date_soumission,
 				$objet->réussi,

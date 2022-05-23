@@ -65,6 +65,5 @@ class SauvegarderAvancementInt extends Interacteur
 		}
 
 		$avancement->date_modification = $date;
-		$this->sauvegarder($username, $question_uri, $avancement);
 	}
 }

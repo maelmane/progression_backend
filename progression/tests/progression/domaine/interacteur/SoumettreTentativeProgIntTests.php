@@ -180,6 +180,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		$tentative_obtenue = $interacteur->soumettre_tentative(
 			"jdoe",
 			self::$question,
+			self::$question->tests,
 			self::$tentativeSoumiseIncorrecte,
 		);
 

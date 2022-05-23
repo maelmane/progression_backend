@@ -7,8 +7,12 @@
 			"feedback": "Bon travail!",
 			"réussi": true,
 			"sous-type": "tentativeSys",
-			"conteneur": "leConteneurDeLaNouvelleTentative",
-			"réponse": "~laSolution~",
+            "conteneur": {
+				"id": "leConteneurDeLaNouvelleTentative",
+				"ip": "172.45.2.2",
+				"port": 45667
+			},
+			"réponse": "laSolution",
 			"tests_réussis": 1,
 			"temps_exécution": 0
 		},

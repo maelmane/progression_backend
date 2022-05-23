@@ -58,21 +58,21 @@ class ExécuteurCompilebox extends Exécuteur
 		return $this->envoyer_requête($data_rc);
 	}
 
-	public function exécuter_sys($question, $tentative)
+	public function exécuter_sys($utilisateur, $image, $conteneur, $tests)
 	{
 		$tests_out = [];
-		foreach ($question->tests as $test) {
+		foreach ($tests as $test) {
 			$tests_out[] = ["stdin" => $test->validation];
 		}
 
 		$data_rc = [
 			"language" => self::langages["sshd"],
-			"user" => $question->utilisateur,
-			"parameters" => $tentative->conteneur,
+			"user" => $utilisateur,
+			"parameters" => $conteneur,
 			"params_conteneur" =>
-				"-e SIAB_SERVICE=/:" . $question->utilisateur . ":" . $question->utilisateur . ":HOME:SHELL",
+				"-e SIAB_SERVICE=/:" . $utilisateur . ":" . $utilisateur . ":HOME:SHELL",
 			"tests" => $tests_out,
-			"vm_name" => $question->image,
+			"vm_name" => $image,
 		];
 
 		return $this->envoyer_requête($data_rc);

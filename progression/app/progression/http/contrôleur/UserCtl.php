@@ -30,8 +30,8 @@ class UserCtl extends Contrôleur
 		Log::debug("UserCtl.get. Params : ", [$request->all(), $username]);
 
 		$user = $this->obtenir_user($username ?? $request->user()->username);
-		$réponse = $this->valider_et_préparer_réponse($user);
 
+		$réponse = $this->valider_et_préparer_réponse($user);
 		Log::debug("UserCtl.get. Retour : ", [$réponse]);
 		return $réponse;
 	}

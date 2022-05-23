@@ -22,29 +22,27 @@ use progression\domaine\entité\{Avancement, Question};
 
 class SoumettreTentativeSysInt extends Interacteur
 {
-	public function soumettre_tentative($username, $question, $tentative)
+	public function soumettre_tentative($username, $question, $tests, $tentative)
 	{
-		$tentativeTraitée = null;
-		$tentative = $this->exécuter_validation($question, $tentative);
+		$tentativeTraitée = $this->exécuter_validation($question, $tentative);
 		if ($question->solution) {
-			if ($this->vérifier_réponse_courte($question, $tentative)) {
-				$tentative->réussi = true;
+			if ($this->vérifier_réponse_courte($question, $tentativeTraitée)) {
+				$tentativeTraitée->réussi = true;
 
-				$tentative->tests_réussis = 1;
-				$tentative->feedback = $question->feedback_pos;
+				$tentativeTraitée->tests_réussis = 1;
+				$tentativeTraitée->feedback = $question->feedback_pos;
 			} else {
-				$tentative->réussi = false;
-				$tentative->tests_réussis = 0;
-				$tentative->feedback = $question->feedback_neg;
+				$tentativeTraitée->réussi = false;
+				$tentativeTraitée->tests_réussis = 0;
+				$tentativeTraitée->feedback = $question->feedback_neg;
 			}
-			$tentative->temps_exécution = 0;
-			$tentativeTraitée = $tentative;
+			$tentativeTraitée->temps_exécution = 0;
 		}
 
-		if ($question->tests != null && count($question->tests) > 0) {
+		if ($tests != null && count($tests) > 0) {
 			$rétroactions["feedback_pos"] = $question->feedback_pos;
 			$rétroactions["feedback_neg"] = $question->feedback_neg;
-			$tentativeTraitée = $this->traiter_tentative_sys($tentative, $rétroactions, $question->tests);
+			$tentativeTraitée = $this->traiter_tentative_sys($tentativeTraitée, $rétroactions, $tests);
 		}
 
 		return $tentativeTraitée;
@@ -67,8 +65,7 @@ class SoumettreTentativeSysInt extends Interacteur
 	private function exécuter_validation($question, $tentative)
 	{
 		$résultats = $this->exécuter_sys($question, $tentative);
-
-		$tentative->conteneur = $résultats["id_conteneur"];
+		$tentative->conteneur = $résultats["conteneur"];
 		if (!$question->solution) {
 			$tentative->temps_exécution = $résultats["temps_exécution"];
 			$tentative->résultats = $résultats["résultats"];
