@@ -31,15 +31,15 @@ final class TentativeSysTests extends TestCase
 		$commentaires = ["commentaire1", "commentaire2"];
 
 		$tentativeSysTest = new TentativeSys(
-			"conteneurTest",
-			"reponseTest",
-			3456,
-			true,
-			2,
-			100,
-			"Bravo!",
-			$résultats,
-			$commentaires,
+			conteneur: "conteneurTest",
+			réponse: "reponseTest",
+			date_soumission: 3456,
+			réussi: true,
+			résultats: $résultats,
+			tests_réussis: 2,
+			temps_exécution: 100,
+			feedback: "Bravo!",
+			commentaires: $commentaires,
 		);
 
 		$this->assertEquals("conteneurTest", $tentativeSysTest->conteneur);

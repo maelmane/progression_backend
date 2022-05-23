@@ -19,7 +19,7 @@
 namespace progression\http\transformer;
 
 use PHPUnit\Framework\TestCase;
-use progression\domaine\entité\{TentativeSys, RésultatSys, Commentaire};
+use progression\domaine\entité\{TentativeSys, Résultat, Commentaire};
 
 final class TentativeSysTransformerTests extends TestCase
 {
@@ -32,10 +32,10 @@ final class TentativeSysTransformerTests extends TestCase
 			"oui",
 			1614711760,
 			false,
+			[new Résultat("output", "", false, "feedback", 123)],
 			2,
 			34567,
 			"feedBackTest",
-			[new RésultatSys("output", false, "feedback", 123)],
 			[new Commentaire("Message", "jdoe", 123456, 12)],
 		);
 		$tentative->id =
@@ -70,10 +70,10 @@ final class TentativeSysTransformerTests extends TestCase
 			"oui",
 			1614711760,
 			false,
+			[new Résultat("output", "", false, "feedback", 123), new Résultat("output 2", "", true, "feedback 2", 456)],
 			2,
 			34567,
 			"feedBackTest",
-			[new RésultatSys("output", false, "feedback", 123), new RésultatSys("output 2", true, "feedback 2", 456)],
 			[new Commentaire("Message", "jdoe", 123456, 12)],
 		);
 		$tentative->id =

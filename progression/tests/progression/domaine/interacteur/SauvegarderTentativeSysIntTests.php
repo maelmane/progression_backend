@@ -54,7 +54,17 @@ final class SauvegarderTentativeSysIntTests extends TestCase
 
 	public function test_étant_donné_une_première_tentative_ratée_lorsquon_la_sauvegarde_on_obtient_la_tentative()
 	{
-		$tentative = new TentativeSys("leConteneurDeLaTentative", "laRéponse", 1616534292, false, 0, "feedback", []);
+		$tentative = new TentativeSys(
+			"leConteneurDeLaTentative",
+			"laRéponse",
+			1616534292,
+			false,
+			[],
+			0,
+			100,
+			"feedback",
+			[],
+		);
 		DAOFactory::getInstance()
 			->get_tentative_sys_dao()
 			->shouldReceive("save")
@@ -74,7 +84,17 @@ final class SauvegarderTentativeSysIntTests extends TestCase
 
 	public function test_étant_donné_une_première_tentative_réussie_lorsquon_la_sauvegarde_on_obtient_la_tentative()
 	{
-		$tentative = new TentativeSys("leConteneurDeLaTentative", "laRéponse", 1616534292, true, 1, "feedback", []);
+		$tentative = new TentativeSys(
+			"leConteneurDeLaTentative",
+			"laRéponse",
+			1616534292,
+			true,
+			[],
+			1,
+			100,
+			"feedback",
+			[],
+		);
 
 		DAOFactory::getInstance()
 			->get_tentative_sys_dao()
@@ -95,7 +115,17 @@ final class SauvegarderTentativeSysIntTests extends TestCase
 
 	public function test_étant_donné_une_deuxième_tentative_non_réussie_à_une_question_non_réussie_lorsquon_la_sauvegarde_on_obtient_la_tentative()
 	{
-		$tentative = new TentativeSys("leConteneurDeLaTentative", "laRéponse", 1616534292, false, 0, "feedback", []);
+		$tentative = new TentativeSys(
+			"leConteneurDeLaTentative",
+			"laRéponse",
+			1616534292,
+			false,
+			[],
+			0,
+			100,
+			"feedback",
+			[],
+		);
 
 		DAOFactory::getInstance()
 			->get_tentative_sys_dao()
@@ -116,7 +146,17 @@ final class SauvegarderTentativeSysIntTests extends TestCase
 
 	public function test_étant_donné_une_deuxième_tentative_réussie_à_une_question_non_réussie_lorsquon_la_sauvegarde_on_obtient_la_tentative()
 	{
-		$tentative = new TentativeSys("leConteneurDeLaTentative", "laRéponse", 1616534292, true, 1, "feedback", []);
+		$tentative = new TentativeSys(
+			"leConteneurDeLaTentative",
+			"laRéponse",
+			1616534292,
+			true,
+			[],
+			1,
+			100,
+			"feedback",
+			[],
+		);
 
 		DAOFactory::getInstance()
 			->get_tentative_sys_dao()
@@ -136,7 +176,17 @@ final class SauvegarderTentativeSysIntTests extends TestCase
 
 	public function test_étant_donné_une_deuxième_tentative_nonréussie_à_une_question_réussie_lorsquon_la_sauvegarde_lavancement_nest_pas_sauvegardé_et_on_obtient_la_tentative()
 	{
-		$tentative = new TentativeSys("leConteneurDeLaTentative", "laRéponse", 1616534292, false, 0, "feedback", []);
+		$tentative = new TentativeSys(
+			"leConteneurDeLaTentative",
+			"laRéponse",
+			1616534292,
+			false,
+			[],
+			0,
+			100,
+			"feedback",
+			[],
+		);
 
 		DAOFactory::getInstance()
 			->get_avancement_dao()
@@ -144,7 +194,17 @@ final class SauvegarderTentativeSysIntTests extends TestCase
 			->with("Bob", "https://example.com/question")
 			->andReturn(
 				new Avancement(Question::ETAT_REUSSI, Question::TYPE_SYS, [
-					new TentativeSys("leConteneurDeLaTentative", "laRéponse", 1616531000, true, 1, "feedback", []),
+					new TentativeSys(
+						"leConteneurDeLaTentative",
+						"laRéponse",
+						1616531000,
+						true,
+						[],
+						1,
+						100,
+						"feedback",
+						[],
+					),
 				]),
 			);
 		DAOFactory::getInstance()
@@ -170,7 +230,17 @@ final class SauvegarderTentativeSysIntTests extends TestCase
 
 	public function test_étant_donné_une_deuxième_tentative_réussie_à_une_question_réussie_lorsquon_la_sauvegarde_lavancement_nest_pas_sauvegardé_et_on_obtient_la_tentative()
 	{
-		$tentative = new TentativeSys("leConteneurDeLaTentative", "laRéponse", 1616534292, true, 1, "feedback", []);
+		$tentative = new TentativeSys(
+			"leConteneurDeLaTentative",
+			"laRéponse",
+			1616534292,
+			true,
+			[],
+			1,
+			100,
+			"feedback",
+			[],
+		);
 
 		DAOFactory::getInstance()
 			->get_avancement_dao()
@@ -178,7 +248,17 @@ final class SauvegarderTentativeSysIntTests extends TestCase
 			->with("Bob", "https://example.com/question")
 			->andReturn(
 				new Avancement(Question::ETAT_REUSSI, Question::TYPE_SYS, [
-					new TentativeSys("leConteneurDeLaTentative", "laRéponse", 1616531000, true, 1, "feedback", []),
+					new TentativeSys(
+						"leConteneurDeLaTentative",
+						"laRéponse",
+						1616531000,
+						true,
+						[],
+						1,
+						100,
+						"feedback",
+						[],
+					),
 				]),
 			);
 		DAOFactory::getInstance()

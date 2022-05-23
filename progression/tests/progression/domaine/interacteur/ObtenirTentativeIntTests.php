@@ -20,7 +20,7 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{TentativeProg, TentativeSys};
 use progression\domaine\entité\Commentaire;
-use progression\domaine\entité\RésultatProg;
+use progression\domaine\entité\Résultat;
 use progression\dao\DAOFactory;
 use progression\dao\tentative\TentativeDAO;
 use PHPUnit\Framework\TestCase;
@@ -47,8 +47,8 @@ final class ObtenirTentativeIntTests extends TestCase
 			->shouldReceive("get_toutes")
 			->with("jdoe", "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions")
 			->andReturn([
-				new TentativeSys("conteneurTest", "reponseTest", 3456, true, 2, 100, "Bravo!", [], []),
-				new TentativeSys("conteneurTest2", "reponseTest2", 3456, true, 2, 100, "Bravo!", [], []),
+				new TentativeSys("conteneurTest", "reponseTest", 3456, true, [], 2, 100, "Bravo!", []),
+				new TentativeSys("conteneurTest2", "reponseTest2", 3456, true, [], 2, 100, "Bravo!", []),
 			]);
 
 		$mockCommentaireDAO

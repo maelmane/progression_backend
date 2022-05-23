@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Question, QuestionSys, RésultatSys, TentativeSys, TestSys, User};
+use progression\domaine\entité\{Question, QuestionSys, Résultat, TentativeSys, TestSys, User};
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -131,7 +131,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			tests_réussis: 0,
 			temps_exécution: 500,
 			feedback: "feedbackGénéralNégatif",
-			résultats: [new RésultatSys("Incorrecte", false, "feedbackNégatif", 100)],
+			résultats: [new Résultat("Incorrecte", "", false, "feedbackNégatif", 100)],
 		);
 
 		$interacteur = new SoumettreTentativeSysInt();
@@ -173,7 +173,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			tests_réussis: 0,
 			temps_exécution: 500,
 			feedback: "feedbackGénéralNégatif",
-			résultats: [new RésultatSys("Incorrecte", false, "feedbackNégatif", 100)],
+			résultats: [new Résultat("Incorrecte", "", false, "feedbackNégatif", 100)],
 		);
 
 		$interacteur = new SoumettreTentativeSysInt();

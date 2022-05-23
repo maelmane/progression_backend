@@ -8,6 +8,7 @@
         "numéro": 0,
         "résultat": false,
         "sortie_observée": "output",
+        "sortie_erreur": "",
         "temps_exécution": 123
     },
     {
@@ -19,6 +20,7 @@
         "numéro": 1,
         "résultat": true,
         "sortie_observée": "output 2",
+        "sortie_erreur": "",
         "temps_exécution": 456
     }
 	

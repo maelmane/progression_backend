@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{QuestionSys, TentativeSys, TestSys, RésultatSys};
+use progression\domaine\entité\{QuestionSys, TentativeSys, TestSys, Résultat};
 use PHPUnit\Framework\TestCase;
 
 final class TraiterTentativeSysIntTests extends TestCase
@@ -39,11 +39,11 @@ final class TraiterTentativeSysIntTests extends TestCase
 		$rétroactions["feedback_neg"] = "Essaye encore";
 
 		$tentative = new TentativeSys("conteneurTest", "réponseTest");
-		$tentative->résultats = [new RésultatSys("reponse test"), new RésultatSys("Test fonctionnel")];
-		$résultat_attendu = new TentativeSys("conteneurTest", "réponseTest", null, true, 2, null, "Bon travail!", [
-			new RésultatSys("reponse test", true, "Test 0 passé"),
-			new RésultatSys("Test fonctionnel", true, "Test 1 passé"),
-		]);
+		$tentative->résultats = [new Résultat("reponse test"), new Résultat("Test fonctionnel")];
+		$résultat_attendu = new TentativeSys("conteneurTest", "réponseTest", null, true,  [
+			new Résultat("reponse test", "", true, "Test 0 passé"),
+			new Résultat("Test fonctionnel", "", true, "Test 1 passé"),
+		],2, null, "Bon travail!");
 
 		$résultat_observé = (new TraiterTentativeSysInt(null))->traiter_résultats($tentative, $rétroactions, $tests);
 
@@ -69,16 +69,16 @@ final class TraiterTentativeSysIntTests extends TestCase
 
 		$tentative = new TentativeSys("conteneurTest", "réponseTest");
 		$tentative->résultats = [
-			new RésultatSys("reponse test"),
-			new RésultatSys("Test non fonctionnel"),
-			new RésultatSys("Test validation"),
+			new Résultat("reponse test"),
+			new Résultat("Test non fonctionnel"),
+			new Résultat("Test validation"),
 		];
 
-		$résultat_attendu = new TentativeSys("conteneurTest", "réponseTest", null, false, 1, null, "Essaye encore", [
-			new RésultatSys("reponse test", true, "Test 0 passé"),
-			new RésultatSys("Test non fonctionnel", false, "Test 1 échoué"),
-			new RésultatSys("Test validation", false, "Test 2 échoué"),
-		]);
+		$résultat_attendu = new TentativeSys("conteneurTest", "réponseTest", null, false,  [
+			new Résultat("reponse test", "", true, "Test 0 passé"),
+			new Résultat("Test non fonctionnel", "", false, "Test 1 échoué"),
+			new Résultat("Test validation", "", false, "Test 2 échoué"),
+		], 1, null, "Essaye encore");
 
 		$résultat_observé = (new TraiterTentativeSysInt(null))->traiter_résultats($tentative, $rétroactions, $tests);
 

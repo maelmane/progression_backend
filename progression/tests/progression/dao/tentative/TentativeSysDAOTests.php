@@ -18,7 +18,7 @@
 
 namespace progression\dao\tentative;
 
-use progression\domaine\entité\{TentativeSys, RésultatSys};
+use progression\domaine\entité\{TentativeSys, Résultat};
 use PHPUnit\Framework\TestCase;
 use progression\dao\{DAOException, DAOFactory};
 use progression\dao\EntitéDAO;
@@ -37,7 +37,7 @@ final class TentativeSysDAOTests extends TestCase
 
 	public function test_étant_donné_une_TentativeSys_non_réussie_lorsquon_récupère_la_tentative_on_obtient_une_tentative_de_type_sys()
 	{
-		$résultat_attendu = new TentativeSys("leConteneur", "laRéponse", 1615696300, false, 0, 0);
+		$résultat_attendu = new TentativeSys("leConteneur", "laRéponse", 1615696300, false, [], 0, 0);
 		$résultat_observé = (new TentativeDAO())->get_tentative(
 			"jdoe",
 			"https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
@@ -49,7 +49,7 @@ final class TentativeSysDAOTests extends TestCase
 
 	public function test_étant_donné_une_TentativeSys_réussie_lorsquon_récupère_la_tentative_on_obtient_une_tentative_de_type_sys()
 	{
-		$résultat_attendu = new TentativeSys("leConteneur2", "laRéponse2", 1615696301, true, 1, 0);
+		$résultat_attendu = new TentativeSys("leConteneur2", "laRéponse2", 1615696301, true, [], 1, 0);
 
 		$résultat_observé = (new TentativeDAO())->get_tentative(
 			"jdoe",
@@ -63,8 +63,8 @@ final class TentativeSysDAOTests extends TestCase
 	public function test_étant_donné_une_TentativeSys_lorsquon_récupère_toutes_les_tentatives_on_obtient_un_tableau_de_tentatives()
 	{
 		$résultat_attendue = [
-			new TentativeSys("leConteneur", "laRéponse", 1615696300, false, 0, 0),
-			new TentativeSys("leConteneur2", "laRéponse2", 1615696301, true, 1, 0),
+			new TentativeSys("leConteneur", "laRéponse", 1615696300, false, [], 0, 0),
+			new TentativeSys("leConteneur2", "laRéponse2", 1615696301, true, [], 1, 0),
 		];
 
 		$résultat_observé = (new TentativeDAO())->get_toutes(
@@ -77,11 +77,16 @@ final class TentativeSysDAOTests extends TestCase
 
 	public function test_étant_donné_une_TentativeSys_lorsquon_sauvegarde_la_tentative_on_obtient_une_nouvelle_insertion_dans_la_table_reponse_prog()
 	{
-		$tentative_test = new TentativeSys("leConteneur3", "laRéponse3", 1615696400, false, 0, 0, [
-			new RésultatSys("Incorrecte", false, "feedbackNégatif", 0),
-		]);
+		$tentative_test = new TentativeSys("leConteneur3", "laRéponse3", 1615696400, false,
+										   [
+											   new Résultat("Incorrecte", "", false, "feedbackNégatif", 0)
+										   ],
+										   1, 2, "feedbackNégatif"
+		);
 
-		$résultat_attendu = new TentativeSys("leConteneur3", "laRéponse3", 1615696400, false, 0, 0);
+		$résultat_attendu = new TentativeSys("leConteneur3", "laRéponse3", 1615696400, false,
+											 [],
+											 1, 2);
 
 		$résultat_observé = (new TentativeDAO())->save("jdoe", "https://exemple2.com", $tentative_test);
 		$this->assertEquals($résultat_attendu, $résultat_observé);

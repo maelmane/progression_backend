@@ -49,7 +49,7 @@ class TentativeProgDAO extends TentativeDAO
 			$query->bind_result($langage, $code, $date_soumission, $réussi, $tests_réussis);
 
 			while ($query->fetch()) {
-				$tentatives[] = new TentativeProg($langage, $code, $date_soumission, $réussi, $tests_réussis);
+				$tentatives[] = new TentativeProg($langage, $code, $date_soumission, $réussi, [], $tests_réussis);
 			}
 
 			$query->close();
@@ -94,6 +94,7 @@ class TentativeProgDAO extends TentativeDAO
 					$code,
 					$date_soumission,
 					$réussi,
+					[],
 					$tests_réussis,
 					$temps_exécution,
 				);

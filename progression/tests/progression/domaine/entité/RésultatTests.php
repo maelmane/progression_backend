@@ -18,18 +18,23 @@
 
 namespace progression\domaine\entité;
 
-class RésultatSys
-{
-	public $sortie_observée;
-	public $résultat;
-	public $feedback;
-	public $temps_exécution;
+use PHPUnit\Framework\TestCase;
 
-	public function __construct($sortie_observée, $résultat = false, $feedback = null, $temps_exécution = null)
+final class RésultatTests extends TestCase
+{
+	public function test_étant_donné_un_résultat_instanciée_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
 	{
-		$this->sortie_observée = $sortie_observée;
-		$this->résultat = $résultat;
-		$this->feedback = $feedback;
-		$this->temps_exécution = $temps_exécution;
+		$résultat_obtenu = new Résultat(
+			sortie_observée: "34",
+			sortie_erreur: "",
+			résultat: true,
+			feedback: "Bon travail",
+			temps_exécution: 233,
+		);
+
+		$this->assertEquals("34", $résultat_obtenu->sortie_observée);
+		$this->assertTrue($résultat_obtenu->résultat);
+		$this->assertEquals("Bon travail", $résultat_obtenu->feedback);
+		$this->assertEquals(233, $résultat_obtenu->temps_exécution);
 	}
 }

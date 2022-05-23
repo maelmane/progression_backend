@@ -33,7 +33,8 @@ class TentativeSysDAO extends TentativeDAO
 				reponse_sys.reponse,
 				reponse_sys.date_soumission,
 				reponse_sys.reussi,
-				reponse_sys.tests_reussis
+				reponse_sys.tests_reussis,
+				reponse_sys.temps_exécution
 				FROM reponse_sys
 				WHERE username = ? 
 				AND question_uri = ?',
@@ -46,10 +47,11 @@ class TentativeSysDAO extends TentativeDAO
 			$date_soumission = null;
 			$réussi = false;
 			$tests_réussis = 0;
-			$query->bind_result($conteneur, $réponse, $date_soumission, $réussi, $tests_réussis);
+			$temps_exécution = null;
+			$query->bind_result($conteneur, $réponse, $date_soumission, $réussi, $tests_réussis, $temps_exécution);
 
 			while ($query->fetch()) {
-				$tentatives[] = new TentativeSys($conteneur, $réponse, $date_soumission, $réussi, $tests_réussis);
+				$tentatives[] = new TentativeSys($conteneur, $réponse, $date_soumission, $réussi, [], $tests_réussis, $temps_exécution);
 			}
 
 			$query->close();
@@ -94,6 +96,7 @@ class TentativeSysDAO extends TentativeDAO
 					$réponse,
 					$date_soumission,
 					$réussi,
+					[],
 					$tests_réussis,
 					$temps_exécution,
 				);

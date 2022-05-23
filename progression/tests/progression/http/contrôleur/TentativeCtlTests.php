@@ -155,7 +155,7 @@ final class TentativeCtlTests extends ContrôleurTestCase
 		// Exécuteur
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur
-			->shouldReceive("exécuter")
+			->shouldReceive("exécuter_prog")
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "python";
 			})
@@ -164,14 +164,14 @@ final class TentativeCtlTests extends ContrôleurTestCase
 				"résultats" => [["output" => "Bonjour\nAllo\n", "errors" => "", "time" => 0.03]],
 			]);
 		$mockExécuteur
-			->shouldReceive("exécuter")
+			->shouldReceive("exécuter_prog")
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "java";
 			})
 			->andThrow(new ExécutionException("Erreur test://TentativeCtlTests.php"));
 
 		$mockExécuteur
-			->shouldReceive("exécuter")
+			->shouldReceive("exécuter_prog")
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "tentativeRéussie";
 			})

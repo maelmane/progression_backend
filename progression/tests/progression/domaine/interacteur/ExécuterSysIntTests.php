@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{TestSys, RésultatSys, QuestionSys, TentativeSys};
+use progression\domaine\entité\{TestSys, Résultat, QuestionSys, TentativeSys};
 use progression\dao\exécuteur\Exécuteur;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
@@ -149,7 +149,7 @@ final class ExécuterSysIntTests extends TestCase
 			),
 		];
 
-		$résultat_attendu = new RésultatSys("ok\n", false, null, 200);
+		$résultat_attendu = new Résultat("ok\n", "", false, null, 200);
 
 		$tentative = new TentativeSys("ConteneurEnvoyéParTentative", "", 1615696286);
 

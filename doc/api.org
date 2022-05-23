@@ -1,4 +1,4 @@
-#+SETUPFILE: https://plafrance.pages.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg.setup
+
 #+TITLE: API Progression
 #+PROPERTY: header-args:bash :results output :exports both :noweb yes
 
@@ -158,7 +158,7 @@ Une question spécifiquement de type système
 | solution      | 1           | str  | solution du test, s'il y a lieu |
 | tests         | 1-n         | Test | liste de Tests de validation    |
 
-** RésultatProg
+** Résultat
 
 Le résultat d'un test pour une solution proposée.
 
@@ -174,23 +174,6 @@ username/question_uri/date_soumission/numéro
 | résultat        | bool |                         |
 | feedback        | str  |                         |
 | temps_exécution | int  | temps d'exécution en ms |
-
-** RésultatSys
-
-Le résultat d'un test pour une solution proposée.
-
-*** Identifiant :
-username/question_uri/date_soumission/numéro
-
-*** Propriétés:
-
-| Nom             | Type | Valeurs                 |
-|-----------------+------+-------------------------|
-| sortie_observée | str  |                         |
-| résultat        | bool |                         |
-| feedback        | str  |                         |
-| temps_exécution | int  | temps d'exécution en ms |
-
 
 ** Sauvegarde automatique
 
@@ -229,10 +212,18 @@ Tentative
 |-----------------+------+------------------------------------------------------------|
 | date_soumission | int  | timestamp                                                  |
 | feedback        | str  |                                                            |
+| réussi          | bool | vrai ssi la tentative a correctement répondu à la question |
+| temps_exécution | int  | temps d'exécution en ms                                    |
+| tests_réussis   | int  | nb de tests réussis                                        |
 | sous-type       | str  | tentativeProg                                              |
 |                 |      | tentativeSys                                               |
 |                 |      | tentativeBD                                                |
-| réussi          | bool | vrai ssi la tentative a correctement répondu à la question |
+
+*** Relations :
+
+| Nom       | Cardinalité | Type     | Description           |
+|-----------+-------------+----------+-----------------------|
+| résultats | 1-n         | Résultat | les résultats de test |
 
 ** Tentative (sous-type tentativeProg)
 
@@ -244,14 +235,6 @@ Une tentative de réponse à une QuestionProg.
 |-----------------+------+-------------------------|
 | langage         | str  |                         |
 | code            | str  |                         |
-| tests_réussis   | int  | nb de tests réussis     |
-| temps_exécution | int  | temps d'exécution en ms |
-
-*** Relations :
-
-| Nom       | Cardinalité | Type         | Description           |
-|-----------+-------------+--------------+-----------------------|
-| résultats | 1-n         | RésultatProg | les résultats de test |
 
 ** Tentative (sous-type tentativeSys)
 
@@ -263,14 +246,6 @@ Une tentative de réponse à une QuestionSys.
 |-----------------+------+-------------------------|
 | conteneur       | str  |                         |
 | réponse         | str  |                         |
-| tests_réussis   | int  | nb de tests réussis     |
-| temps_exécution | int  | temps d'exécution en ms |
-
-*** Relations :
-
-| Nom       | Cardinalité | Type        | Description           |
-|-----------+-------------+-------------+-----------------------|
-| résultats | 1-n         | RésultatSys | les résultats de test |
 
 ** Test
 

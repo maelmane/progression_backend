@@ -16,19 +16,29 @@
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\http\transformer;
 
-use PHPUnit\Framework\TestCase;
+use progression\domaine\entité\Résultat;
+use League\Fractal;
 
-final class RésultatSysTests extends TestCase
+class RésultatTransformer extends Fractal\TransformerAbstract
 {
-	public function test_étant_donné_un_résultatSys_instanciée_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
-	{
-		$résultat_obtenu = new RésultatSys("34", true, "Bon travail", 233);
+	public $type = "resultat";
 
-		$this->assertEquals("34", $résultat_obtenu->sortie_observée);
-		$this->assertTrue($résultat_obtenu->résultat);
-		$this->assertEquals("Bon travail", $résultat_obtenu->feedback);
-		$this->assertEquals(233, $résultat_obtenu->temps_exécution);
+	public function transform(Résultat $réponse)
+	{
+		$data = [
+			"id" => $réponse->id,
+			"sortie_observée" => $réponse->sortie_observée,
+			"sortie_erreur" => $réponse->sortie_erreur,
+			"résultat" => $réponse->résultat,
+			"feedback" => $réponse->feedback,
+			"temps_exec" => $réponse->temps_exécution,
+			"links" => (isset($réponse->links) ? $réponse->links : []) + [
+				"self" => "{$_ENV["APP_URL"]}resultat/{$réponse->id}",
+			],
+		];
+
+		return $data;
 	}
 }

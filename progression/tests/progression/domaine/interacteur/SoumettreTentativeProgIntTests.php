@@ -23,7 +23,7 @@ use progression\domaine\entité\{
 	Avancement,
 	Question,
 	QuestionProg,
-	RésultatProg,
+	Résultat,
 	TentativeProg,
 	TestProg,
 	User,
@@ -86,7 +86,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		// Mock exécuteur
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur
-			->shouldReceive("exécuter")
+			->shouldReceive("exécuter_prog")
 			->withArgs(function ($exécutable) {
 				return $exécutable->lang == "python";
 			})
@@ -95,7 +95,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 				"résultats" => [["output" => "sortieTest", "errors" => "", "time" => 0.1]],
 			]);
 		$mockExécuteur
-			->shouldReceive("exécuter")
+			->shouldReceive("exécuter_prog")
 			->withArgs(function ($exécutable) {
 				return $exécutable->lang == "java";
 			})
@@ -173,7 +173,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			tests_réussis: 0,
 			temps_exécution: 122,
 			feedback: "feedbackGénéralNégatif",
-			résultats: [new RésultatProg("Incorrecte", "", false, "feedbackNégatif", 100)],
+			résultats: [new Résultat("Incorrecte", "", false, "feedbackNégatif", 100)],
 		);
 
 		$interacteur = new SoumettreTentativeProgInt();

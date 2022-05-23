@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\RésultatSys;
+use progression\domaine\entité\Résultat;
 
 class ExécuterSysInt extends Interacteur
 {
@@ -34,7 +34,7 @@ class ExécuterSysInt extends Interacteur
 		$réponse["temps_exécution"] = intval($comp_resp["temps_exec"] * 1000);
 
 		foreach ($comp_resp["résultats"] as $résultat) {
-			$résultats[] = new RésultatSys($résultat["output"], false, null, intval($résultat["time"] * 1000));
+			$résultats[] = new Résultat($résultat["output"], "", false, null, intval($résultat["time"] * 1000));
 		}
 		foreach ($comp_resp["conteneur"] as $conteneur) {
 			$réponse["id_conteneur"] = $conteneur["id"];

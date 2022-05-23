@@ -42,6 +42,7 @@
                 "feedback": "yes!",
                 "résultat": true,
                 "sortie_observée": "-rwxrwxrwx",
+				"sortie_erreur": "",
                 "temps_exec": 100
             },
             "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnM4/%1$d/0",

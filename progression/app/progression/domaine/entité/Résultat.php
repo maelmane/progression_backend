@@ -18,7 +18,7 @@
 
 namespace progression\domaine\entité;
 
-class RésultatProg
+class Résultat
 {
 	public $sortie_observée;
 	public $sortie_erreur;
@@ -27,8 +27,8 @@ class RésultatProg
 	public $temps_exécution;
 
 	public function __construct(
-		$sortie_observée,
-		$sortie_erreur,
+		$sortie_observée = "",
+		$sortie_erreur = "",
 		$résultat = false,
 		$feedback = null,
 		$temps_exécution = null
