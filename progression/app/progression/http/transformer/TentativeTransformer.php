@@ -18,15 +18,14 @@
 
 namespace progression\http\transformer;
 
-use League\Fractal;
 use progression\domaine\entité\Tentative;
 
-class TentativeTransformer extends Fractal\TransformerAbstract
+class TentativeTransformer extends BaseTransformer
 {
 	public $type = "tentative";
 	protected array $availableIncludes = ["commentaires"];
 
-	public function transform(Tentative $tentative)
+	public function transform($tentative)
 	{
 		$data_out = [
 			"id" => $tentative->id,

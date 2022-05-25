@@ -19,9 +19,8 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\Test;
-use League\Fractal;
 
-class TestTransformer extends Fractal\TransformerAbstract
+class TestTransformer extends BaseTransformer
 {
 	public $type = "test";
 

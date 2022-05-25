@@ -18,10 +18,9 @@
 
 namespace progression\http\transformer;
 
-use League\Fractal;
 use progression\util\Encodage;
 
-class QuestionTransformer extends Fractal\TransformerAbstract
+class QuestionTransformer extends BaseTransformer
 {
 	public $type = "question";
 

@@ -90,4 +90,9 @@ class TentativeDAO extends EntitéDAO
 
 		return $type;
 	}
+
+	public static function construire($tentative, $includes = [])
+	{
+		return [];
+	}
 }

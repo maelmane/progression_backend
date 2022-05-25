@@ -18,10 +18,9 @@
 
 namespace progression\http\transformer;
 
-use League\Fractal;
 use progression\domaine\entité\Sauvegarde;
 
-class SauvegardeTransformer extends Fractal\TransformerAbstract
+class SauvegardeTransformer extends BaseTransformer
 {
 	public $type = "sauvegarde";
 

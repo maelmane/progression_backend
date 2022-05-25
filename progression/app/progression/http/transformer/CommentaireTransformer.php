@@ -18,10 +18,9 @@
 
 namespace progression\http\transformer;
 
-use League\Fractal;
 use progression\domaine\entité\Commentaire;
 
-class CommentaireTransformer extends Fractal\TransformerAbstract
+class CommentaireTransformer extends BaseTransformer
 {
 	public $type = "commentaire";
 

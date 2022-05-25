@@ -16,27 +16,14 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\http\transformer;
+namespace progression\dao\models;
 
-use progression\domaine\entité\Clé;
+use Illuminate\Database\Eloquent\Model;
 
-class CléTransformer extends BaseTransformer
+class TentativeMdl extends Model
 {
-	public $type = "cle";
-
-	public function transform(Clé $clé)
-	{
-		$data_out = [
-			"id" => $clé->id,
-			"secret" => $clé->secret,
-			"création" => $clé->création,
-			"expiration" => $clé->expiration,
-			"portée" => $clé->portée,
-			"links" => (isset($clé->links) ? $clé->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}cle/{$clé->id}",
-			],
-		];
-
-		return $data_out;
-	}
+	protected $table = "reponse_prog";
+	public $timestamps = false;
 }
+
+?>

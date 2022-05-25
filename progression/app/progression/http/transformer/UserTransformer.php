@@ -19,10 +19,10 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\User;
-use League\Fractal;
+
 use progression\util\Encodage;
 
-class UserTransformer extends Fractal\TransformerAbstract
+class UserTransformer extends BaseTransformer
 {
 	public $type = "user";
 

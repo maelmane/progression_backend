@@ -20,74 +20,70 @@ namespace progression\dao;
 
 use Illuminate\Database\QueryException;
 use progression\domaine\entité\Sauvegarde;
-use progression\models\SauvegardeMdl;
+use progression\dao\models\SauvegardeMdl;
 
 class SauvegardeDAO extends EntitéDAO
 {
-	public function get_toutes($username, $question_uri)
-	{
-		$sauvegardes = [];
-
-		try {
-			$data = SauvegardeMdl::where("username", $username)
-				->where("question_uri", $question_uri)
-				->get();
-
-			foreach ($data as $item) {
-				$sauvegardes[$item->langage] = $this->construire($item);
-			}
-		} catch (QueryException $e) {
-			throw new DAOException($e);
-		}
-
-		return $sauvegardes;
-	}
-
-	public function get_sauvegarde($username, $question_uri, $langage)
+	public function get_toutes($username, $question_uri, $includes = [])
 	{
 		try {
 			return $this->construire(
 				SauvegardeMdl::where("username", $username)
 					->where("question_uri", $question_uri)
-					->where("langage", $langage)
-					->first(),
+					->get(),
+				$includes,
 			);
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}
 
-	private function construire($data)
+	public function get_sauvegarde($username, $question_uri, $langage, $includes = [])
 	{
-		if ($data == null) {
-			return null;
+		try {
+			$sauvegarde = SauvegardeMdl::where("username", $username)
+				->where("question_uri", $question_uri)
+				->where("langage", $langage)
+				->first();
+			if ($sauvegarde) {
+				return $this->construire([$sauvegarde], $includes)[$langage];
+			} else {
+				return null;
+			}
+		} catch (QueryException $e) {
+			throw new DAOException($e);
 		}
-
-		return new Sauvegarde($data->date_sauvegarde, $data->code);
 	}
 
 	public function save($username, $question_uri, $langage, $sauvegarde)
 	{
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO sauvegarde ( username, question_uri, date_sauvegarde, langage, code )
-				VALUES ( ?, ?, ?, ?, ? )
-				ON DUPLICATE KEY UPDATE code = VALUES( code ), date_sauvegarde = VALUES( date_sauvegarde )",
-			);
+			$objet = [];
+			$objet["username"] = $username;
+			$objet["question_uri"] = $question_uri;
+			$objet["date_sauvegarde"] = $sauvegarde->date_sauvegarde;
+			$objet["langage"] = $langage;
+			$objet["code"] = $sauvegarde->code;
 
-			$query->bind_param(
-				"ssiss",
-				$username,
-				$question_uri,
-				$sauvegarde->date_sauvegarde,
-				$langage,
-				$sauvegarde->code,
-			);
-			$estEnregistre = $query->execute();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+			return $this->construire([SauvegardeMdl::updateOrCreate($objet)])[$langage];
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-		return $sauvegarde;
+	}
+
+	private function construire($data, $includes = [])
+	{
+		if ($data === null || count($data) == 0) {
+			return null;
+		}
+
+		$sauvegardes = [];
+		foreach ($data as $sauvegarde) {
+			$sauvegardes += [
+				$sauvegarde["langage"] => new Sauvegarde($sauvegarde["date_sauvegarde"], $sauvegarde["code"]),
+			];
+		}
+
+		return $sauvegardes;
 	}
 }

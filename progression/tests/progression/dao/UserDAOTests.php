@@ -19,17 +19,19 @@
 namespace progression\dao;
 
 use progression\domaine\entité\{Avancement, User, Clé};
-use PHPUnit\Framework\TestCase;
-
+use progression\TestCase;
+use DB;
 final class UserDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
+		parent::setUp();
 		EntitéDAO::get_connexion()->begin_transaction();
 	}
 
 	public function tearDown(): void
 	{
+		parent::tearDown();
 		EntitéDAO::get_connexion()->rollback();
 	}
 
@@ -80,6 +82,7 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_incluant_les_avancements_et_les_clés_on_obtient_son_profil_et_ses_avancements_et_clés()
 	{
+		DB::enableQueryLog();
 		$avancement1 = new Avancement(1, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
 		$avancement2 = new Avancement(0, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
 
@@ -94,6 +97,7 @@ final class UserDAOTests extends TestCase
 		];
 
 		$résponse_observée = (new UserDAO())->get_user("bob", ["avancements", "clés"]);
+		print_r(DB::getQueryLog());
 		$this->assertEquals($réponse_attendue, $résponse_observée);
 	}
 

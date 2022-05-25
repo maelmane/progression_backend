@@ -25,7 +25,7 @@ class TentativeProgTransformer extends TentativeTransformer
 	public $type = "tentative";
 	protected array $availableIncludes = ["resultats", "commentaires"];
 
-	public function transform(Tentative $tentative)
+	public function transform($tentative)
 	{
 		$data_out = parent::transform($tentative);
 		$data_out = array_merge($data_out, [

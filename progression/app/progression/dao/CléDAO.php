@@ -26,15 +26,16 @@ class CléDAO extends EntitéDAO
 	const QUERY_SELECT = "cle.nom, cle.hash, cle.creation, cle.expiration, cle.portee ";
 	const QUERY_FROM = "JOIN cle ON cle.username = cle.username ";
 
-	public static function construire_clé( $data ){
-		return new Clé(
-			null,
-			$data["creation"],
-			$data["expiration"],
-			$data["portee"]);
+	public static function construire($data)
+	{
+		$clés = [];
+		foreach ($data as $clé) {
+			$clés[$clé["nom"]] = new Clé(null, $clé["creation"], $clé["expiration"], $clé["portee"]);
+		}
+		return $clés;
 	}
 
-	public function get_clé($username, $nom)
+	public function get_clé($username, $nom, $includes = [])
 	{
 		$clé = null;
 
@@ -64,7 +65,7 @@ class CléDAO extends EntitéDAO
 		return $clé;
 	}
 
-	public function get_toutes($username)
+	public function get_toutes($username, $includes = [])
 	{
 		$clés = [];
 
