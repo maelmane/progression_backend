@@ -20,49 +20,35 @@ namespace progression\dao;
 
 use mysqli_sql_exception;
 use progression\domaine\entité\User;
+use progression\dao\models\UserMdl;
 
 class UserDAO extends EntitéDAO
 {
-	public function get_user($username)
+	public function get_user($username, $includes = [])
 	{
-		$objet = new User($username);
+		$user = null;
 
 		try {
-			$query = EntitéDAO::get_connexion()->prepare("SELECT username, role FROM user WHERE username = ? ");
-			$query->bind_param("s", $objet->username);
-
-			$query->execute();
-
-			$query->bind_result($objet->username, $objet->rôle);
-
-			$résultat = $query->fetch();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+			$user = UserMdl::where("username", $username)
+				->with("avancements", "clés")
+				->first();
+			return $user ? $this->construire([$user], $includes)[0] : null;
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		if ($résultat != null) {
-			$objet->avancements = $this->source->get_avancement_dao()->get_tous($username);
-			$objet->clés = $this->source->get_clé_dao()->get_toutes($username);
-		}
-
-		return $résultat != null ? $objet : null;
 	}
 
-	public function save($objet)
+	public function save($user)
 	{
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO user( username, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )",
-			);
-			$query->bind_param("si", $objet->username, $objet->rôle);
-			$query->execute();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+			$objet = [];
+			$objet["username"] = $user->username;
+			$objet["role"] = $user->rôle;
+
+			return $this->construire([UserMdl::updateOrCreate($objet)])[0];
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		return $this->get_user($objet->username);
 	}
 
 	public function set_password(User $user, string $password)
@@ -96,5 +82,23 @@ class UserDAO extends EntitéDAO
 		} catch (mysqli_sql_exception $e) {
 			throw new DAOException($e);
 		}
+	}
+
+	public static function construire($data, $includes = [])
+	{
+		if ($data === null || count($data) == 0) {
+			return null;
+		}
+
+		$users = [];
+		foreach ($data as $user) {
+			$users[] = new User(
+				$user["username"],
+				$user["role"],
+				in_array("avancements", $includes) ? AvancementDAO::construire($user["avancements"]) : [],
+				in_array("clés", $includes) ? CléDAO::construire($user["clés"]) : [],
+			);
+		}
+		return $users;
 	}
 }

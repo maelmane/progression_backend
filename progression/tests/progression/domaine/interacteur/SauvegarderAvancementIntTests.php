@@ -53,6 +53,25 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->get_avancement_dao()
 			->andReturn($mockAvancementDAO);
 
+		$question = new QuestionProg();
+		$question->uri = "file:///prog1/les_fonctions/appeler_une_fonction/info.yml";
+
+		$mockQuestionDao = Mockery::mock("progression\\dao\\question\\QuestionDAO");
+		$mockQuestionDao
+			->shouldReceive("get_question")
+			->with("file:///prog1/les_fonctions/appeler_une_fonction/info.yml")
+			->andReturn($question);
+		$mockQuestionDao
+			->shouldReceive("get_question")
+			->with("file:///test/de/chemin/non/valide")
+			->andReturn(null);
+
+		$mockDAOFactory
+			->allows()
+			->get_question_dao()
+			->andReturn($mockQuestionDao);
+		DAOFactory::setInstance($mockDAOFactory);
+
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 	public function tearDown(): void
@@ -66,12 +85,12 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->get_avancement_dao()
 			->shouldReceive("save")
 			->once()
-			->withArgs(["jdoe", "https://example.com/question", Mockery::any()])
+			->withArgs(["jdoe", "file:///prog1/les_fonctions/appeler_une_fonction/info.yml", Mockery::any()])
 			->andReturnArg(2);
 		$interacteur = new SauvegarderAvancementInt();
 		$résultat_observé = $interacteur->sauvegarder(
 			"jdoe",
-			"https://example.com/question",
+			"file:///prog1/les_fonctions/appeler_une_fonction/info.yml",
 			new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG),
 		);
 

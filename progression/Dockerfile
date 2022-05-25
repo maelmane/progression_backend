@@ -13,7 +13,7 @@ RUN apt update && apt install -y default-libmysqlclient-dev default-mysql-client
 RUN pip3 install progression_qc
 
 #Ajout d'extensions PHP
-RUN docker-php-ext-install -j$(nproc) mysqli ldap zip
+RUN docker-php-ext-install -j$(nproc) mysqli ldap zip pdo pdo_mysql
 
 COPY docker-php-ext-get /usr/local/bin/
 

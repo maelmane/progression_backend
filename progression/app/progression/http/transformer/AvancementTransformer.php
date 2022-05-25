@@ -18,14 +18,14 @@
 
 namespace progression\http\transformer;
 
-use League\Fractal;
 use progression\domaine\entité\{Avancement, Question};
 
-class AvancementTransformer extends Fractal\TransformerAbstract
+class AvancementTransformer extends BaseTransformer
 {
 	public $type = "avancement";
 
-	protected $availableIncludes = ["tentatives", "sauvegardes"];
+	protected array $availableIncludes = ["tentatives", "sauvegardes"];
+	protected array $availableParams = ["fields"];
 
 	public function transform(Avancement $avancement)
 	{
@@ -44,8 +44,9 @@ class AvancementTransformer extends Fractal\TransformerAbstract
 		return $data_out;
 	}
 
-	public function includeTentatives($avancement)
+	public function includeTentatives($avancement, $params = null)
 	{
+		$params = $this->validerParams($params);
 		$tentatives = $avancement->tentatives;
 
 		foreach ($tentatives as $tentative) {
@@ -53,6 +54,15 @@ class AvancementTransformer extends Fractal\TransformerAbstract
 			$tentative->links = [
 				"related" => "{$_ENV["APP_URL"]}avancement/{$avancement->id}",
 			];
+
+			if ($params && array_key_exists("fields", $params)) {
+				$tentative = $this->sélectionnerChamps($tentative, $params["fields"]);
+			}
+
+			$tentative->id = $id;
+			$tentative->links = $links;
+
+			$tentatives[$i] = $tentative;
 		}
 
 		if(empty($tentative)){

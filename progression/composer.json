@@ -6,14 +6,15 @@
     "type": "project",
     "require": {
         "php": "^7.3|^8.0",
+        "doctrine/dbal": "^2",
         "firebase/php-jwt": "^5.2",
+        "illuminate/redis": "^8.77.1",
         "laravel/lumen-framework": "^8.0",
-        "league/fractal": "^0.19.2",
+        "league/fractal": "^0.20.1",
+        "predis/predis": "^1.1.9",
         "symfony/config": "^5.2",
         "tymon/jwt-auth": "^1.0.0-beta.3@dev",
-        "vlucas/phpdotenv": "^5",
-		"predis/predis": "^1.1.9",
-		"illuminate/redis": "^8.77.1"
+        "vlucas/phpdotenv": "^5"
     },
 	"require-dev": {
         "mockery/mockery": "@stable",

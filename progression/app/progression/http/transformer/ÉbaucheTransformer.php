@@ -18,10 +18,9 @@
 
 namespace progression\http\transformer;
 
-use League\Fractal;
 use progression\domaine\entité\Exécutable;
 
-class ÉbaucheTransformer extends Fractal\TransformerAbstract
+class ÉbaucheTransformer extends BaseTransformer
 {
 	public $type = "ebauche";
 

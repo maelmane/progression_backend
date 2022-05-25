@@ -186,4 +186,41 @@ final class SoumettreTentativeProgIntTests extends TestCase
 
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);
 	}
+
+	private function bidon_question()
+	{
+		$question = new QuestionProg();
+		$question->uri =
+			"https://progression.pages.dti.crosemont.quebec/progression_contenu_demo/les_fonctions_01/appeler_une_fonction_avec_retour";
+		$question->tests = [
+			new Test(
+				"nomTest",
+				"sortieTest",
+				"entréeTest",
+				"params",
+				"feedbackPositif",
+				"feedbackNégatif",
+				"feedbackErreur",
+			),
+		];
+		$question->exécutables["python"] = new Exécutable(
+			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint()\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
+			"python",
+		);
+		$question->feedback_neg = "feedbackGénéralNégatif";
+
+		return $question;
+	}
+
+	private function bidon_tentative()
+	{
+		$tentative = new TentativeProg(
+			"python",
+			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
+			1615696286,
+			false,
+			0,
+			"feedbackTentativeTest",
+		);
+	}
 }

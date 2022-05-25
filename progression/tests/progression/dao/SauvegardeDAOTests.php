@@ -19,20 +19,20 @@
 namespace progression\dao;
 
 use progression\domaine\entité\Sauvegarde;
-use PHPUnit\Framework\TestCase;
-use Mockery;
+use progression\TestCase;
 
 final class SauvegardeDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
+		parent::setUp();
 		EntitéDAO::get_connexion()->begin_transaction();
 	}
 
 	public function tearDown(): void
 	{
+		parent::tearDown();
 		EntitéDAO::get_connexion()->rollback();
-		Mockery::close();
 	}
 
 	public function test_étant_donné_une_sauvegarde_existante_lorsquon_cherche_par_username_question_uri_et_langage_on_obtient_un_objet_sauvegarde_correspondant()

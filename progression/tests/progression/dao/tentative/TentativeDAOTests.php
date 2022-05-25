@@ -18,19 +18,20 @@
 
 namespace progression\dao\tentative;
 
-use PHPUnit\Framework\TestCase;
-use progression\dao\DAOFactory;
+use progression\TestCase;
 use progression\dao\EntitéDAO;
 
 final class TentativeDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
+		parent::setUp();
 		EntitéDAO::get_connexion()->begin_transaction();
 	}
 
 	public function tearDown(): void
 	{
+		parent::tearDown();
 		EntitéDAO::get_connexion()->rollback();
 	}
 

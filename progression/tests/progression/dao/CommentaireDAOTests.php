@@ -19,17 +19,19 @@
 namespace progression\dao;
 
 use progression\domaine\entité\{Commentaire};
-use PHPUnit\Framework\TestCase;
+use progression\TestCase;
 
 final class CommentaireDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
+		parent::setUp();
 		EntitéDAO::get_connexion()->begin_transaction();
 	}
 
 	public function tearDown(): void
 	{
+		parent::tearDown();
 		EntitéDAO::get_connexion()->rollback();
 	}
 

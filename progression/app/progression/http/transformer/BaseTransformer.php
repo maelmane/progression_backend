@@ -18,25 +18,36 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\Clé;
+use League\Fractal;
 
-class CléTransformer extends BaseTransformer
+class BaseTransformer extends Fractal\TransformerAbstract
 {
-	public $type = "cle";
-
-	public function transform(Clé $clé)
+	protected function sélectionnerChamps($objet, $fields)
 	{
-		$data_out = [
-			"id" => $clé->id,
-			"secret" => $clé->secret,
-			"création" => $clé->création,
-			"expiration" => $clé->expiration,
-			"portée" => $clé->portée,
-			"links" => (isset($clé->links) ? $clé->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}cle/{$clé->id}",
-			],
-		];
+		$arr_t = (array) $objet;
+		foreach ($arr_t as $field => $value) {
+			if (!in_array($field, $fields)) {
+				$arr_t[$field] = null;
+			}
+		}
 
-		return $data_out;
+		$objet = (object) $arr_t;
+
+		return $objet;
+	}
+
+	protected function validerParams($params)
+	{
+		if ($params) {
+			// Optional params validation
+			$usedParams = array_keys(iterator_to_array($params));
+			if ($invalidParams = array_diff($usedParams, $this->availableParams)) {
+				throw new \Exception(sprintf('Paramètres invalides : "%s"', implode(",", $usedParams)));
+			}
+
+			return iterator_to_array($params);
+		} else {
+			return null;
+		}
 	}
 }

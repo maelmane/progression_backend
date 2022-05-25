@@ -23,9 +23,9 @@ use progression\domaine\entité\{Tentative, TentativeProg};
 class TentativeProgTransformer extends TentativeTransformer
 {
 	public $type = "tentative";
-	protected $availableIncludes = ["resultats", "commentaires"];
+	protected array $availableIncludes = ["resultats", "commentaires"];
 
-	public function transform(Tentative $tentative)
+	public function transform($tentative)
 	{
 		$data_out = parent::transform($tentative);
 		$data_out = array_merge($data_out, [

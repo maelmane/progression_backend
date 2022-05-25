@@ -5,35 +5,40 @@ DELETE FROM sauvegarde;
 DELETE FROM cle;
 DELETE FROM user;
 
-INSERT INTO user VALUES (
+INSERT INTO user(id, username, password, actif, role) VALUES (
+  1,
   "jdoe",
   "Crosemont2021!",
   1,
   0
 ), (
+  2,
   "bob",
   "motDePasse",
   1,
   0
 ), (
+  3,
   "admin",
   "mdpAdmin",
   1,
   1
 ), (
+  4,
   "Stefany",
   NULL,
   1,
   0
 );
 
-INSERT INTO cle VALUES (
+INSERT INTO cle(username, nom, hash, creation, expiration, portee, user_id) VALUES (
   "bob",
   "clé de test",
   "1234",
   1624593600,
   1624680000,
-  1
+  1,
+  2
 ),
 (
   "bob",
@@ -41,17 +46,23 @@ INSERT INTO cle VALUES (
   "2345",
   1624593602,
   1624680002,
-  1
+  1,
+  2
 );
 
-INSERT INTO sauvegarde VALUES (
+INSERT INTO sauvegarde(
+  `username`,
+  `question_uri`,
+  `date_sauvegarde`,
+  `langage`,
+  `code`
+  ) VALUES (
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
   1620150294,
   "python",
   "print(\"Hello world!\")"
-);
-INSERT INTO sauvegarde VALUES (
+  ), (
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
   1620150375,
@@ -119,7 +130,7 @@ INSERT INTO avancement VALUES (
   1645739959
 );
 
-INSERT INTO reponse_prog VALUES (
+INSERT INTO reponse_prog( username, question_uri, date_soumission, langage, code, reussi, tests_reussis, avancement_id) VALUES (
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
   1615696276,

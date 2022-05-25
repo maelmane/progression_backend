@@ -18,10 +18,9 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\Résultat;
-use League\Fractal;
+use progression\domaine\entité\RésultatProg;
 
-class RésultatTransformer extends Fractal\TransformerAbstract
+class RésultatProgTransformer extends BaseTransformer
 {
 	public $type = "resultat";
 
