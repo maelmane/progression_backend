@@ -63,7 +63,6 @@ INSERT INTO avancement VALUES (
   "Bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
   0,
-  3,
   "Un titre",
   "facile",
   1645739981,
@@ -74,7 +73,6 @@ INSERT INTO avancement VALUES (
   "Bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction",
   1,
-  3,
   "Un titre",
   "facile",
   1645739981,
@@ -82,10 +80,19 @@ INSERT INTO avancement VALUES (
 );
 
 INSERT INTO avancement VALUES (
+  "Bob",
+  "https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction2",
+  1,
+  "Un titre 2",
+  "facile",
+  1645739991,
+  1645739969
+);
+
+INSERT INTO avancement VALUES (
   "Stefany",
   "https://exemple.com",
   1,
-  3,
   "Bob",
   "facile",
   1645739981,
@@ -96,7 +103,6 @@ INSERT INTO avancement VALUES (
   "jdoe",
   "https://exemple2.com",
   1,
-  1,
   "Question Système",
   "facile",
   1645739981,
@@ -106,7 +112,6 @@ INSERT INTO avancement VALUES (
 INSERT INTO avancement VALUES (
   "jdoe",
   "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
-  1,
   1,
   "Toutes Permissions",
   "facile",

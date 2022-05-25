@@ -30,30 +30,14 @@ class SauvegarderTentativeInt extends Interacteur
 {
 	public function sauvegarder($username, $question, $tentative)
 	{
-		$dao_tentative = $this->source_dao->get_tentative_prog_dao();
+		$dao_tentative = $this->source_dao->get_tentative_dao();
 
-		$avancementInt = new SauvegarderAvancementInt();
 		$avancement = $avancementInt->récupérer_avancement($username, $question, $tentative);
 		$avancement->titre = $question->titre;
 		$avancement->niveau = $question->niveau;
-		$avancementInt->mettre_à_jour_dates_et_état(
-			$avancement,
-			$tentative->date_soumission,
-			$username,
-			$question->uri,
-		);
+		
+		$avancementInt = new SauvegarderAvancementInt();
 		$avancementInt->sauvegarder($username, $question->uri, $avancement);
-
-		if($avancement->type == Question::TYPE_PROG){
-			$sauvegardeTentativeInt = new SauvegarderTentativeProgInt();
-		}
-		elseif($avancement->type == Question::TYPE_SYS){
-			$sauvegardeTentativeInt = new SauvegarderTentativeSysInt();
-		}
-		else{
-			throw new Exception("Non implémenté");
-		}
-		$sauvegardeTentativeInt->sauvegarder($username, $question->uri, $tentative);
 
 		return $dao_tentative->save($username, $question->uri, $tentative);
 	}
