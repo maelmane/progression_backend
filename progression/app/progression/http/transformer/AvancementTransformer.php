@@ -19,6 +19,7 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\{Avancement, Question};
+use progression\util\Encodage;
 
 class AvancementTransformer extends BaseTransformer
 {
@@ -30,14 +31,14 @@ class AvancementTransformer extends BaseTransformer
 	public function transform(Avancement $avancement)
 	{
 		$data_out = [
-			"id" => $avancement->id,
+			"id" => $this->id ."/". Encodage::base64_encode_url($avancement->uri),
 			"état" => $avancement->etat,
 			"titre" => $avancement->titre,
 			"niveau" => $avancement->niveau,
 			"date_modification" => $avancement->date_modification,
 			"date_réussite" => $avancement->date_réussite,
 			"links" => (isset($avancement->links) ? $avancement->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}avancement/{$avancement->id}",
+				"self" => "{$_ENV["APP_URL"]}avancement/{$this->id}",
 			],
 		];
 
@@ -50,30 +51,25 @@ class AvancementTransformer extends BaseTransformer
 		$tentatives = $avancement->tentatives;
 
 		foreach ($tentatives as $tentative) {
-			$tentative->id = "{$avancement->id}/{$tentative->date_soumission}";
 			$tentative->links = [
-				"related" => "{$_ENV["APP_URL"]}avancement/{$avancement->id}",
+				"related" => "{$_ENV["APP_URL"]}avancement/{$this->id}",
 			];
 
 			if ($params && array_key_exists("fields", $params)) {
 				$tentative = $this->sélectionnerChamps($tentative, $params["fields"]);
 			}
-
-			$tentative->id = $id;
-			$tentative->links = $links;
-
-			$tentatives[$i] = $tentative;
 		}
 
+		$id = $this->id . "/" . Encodage::base64_encode_url($avancement->uri);
 		if (empty($tentative)) {
-			return $this->collection($tentatives, new TentativeTransformer(), "tentative");
+			return $this->collection($tentatives, new TentativeTransformer($id), "tentative");
 		} else {
 			if ($tentatives[0] instanceof TentativeProg) {
-				return $this->collection($tentatives, new TentativeProgTransformer(), "tentative");
+				return $this->collection($tentatives, new TentativeProgTransformer($id), "tentative");
 			} elseif ($tentatives[0] instanceof TentativeSys) {
-				return $this->collection($tentatives, new TentativeSysTransformer(), "tentative");
+				return $this->collection($tentatives, new TentativeSysTransformer($id), "tentative");
 			} else {
-				return $this->collection($tentatives, new TentativeTransformer(), "tentative");
+				return $this->collection($tentatives, new TentativeTransformer($id), "tentative");
 			}
 		}
 	}
@@ -81,12 +77,11 @@ class AvancementTransformer extends BaseTransformer
 	public function includeSauvegardes($avancement)
 	{
 		foreach ($avancement->sauvegardes as $langage => $sauvegarde) {
-			$sauvegarde->id = "{$avancement->id}/" . $langage;
 			$sauvegarde->links = [
-				"related" => "{$_ENV["APP_URL"]}avancement/{$avancement->id}",
+				"related" => "{$_ENV["APP_URL"]}avancement/{$this->id}/" . Encodage::base64_encode_url($avancement->uri),
 			];
 		}
 
-		return $this->collection($avancement->sauvegardes, new SauvegardeTransformer(), "sauvegarde");
+		return $this->collection($avancement->sauvegardes, new SauvegardeTransformer($this->id . "/" . Encodage::base64_encode_url($avancement->uri)), "sauvegarde");
 	}
 }

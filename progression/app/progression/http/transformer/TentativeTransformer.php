@@ -1,20 +1,20 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\http\transformer;
 
@@ -25,16 +25,16 @@ class TentativeTransformer extends BaseTransformer
 	public $type = "tentative";
 	protected array $availableIncludes = ["commentaires"];
 
-	public function transform($tentative)
+	public function transform(Tentative $tentative)
 	{
 		$data_out = [
-			"id" => $tentative->id,
+			"id" => "{$id}/{$tentative->date_soumission}",
 			"date_soumission" => $tentative->date_soumission,
 			"feedback" => $tentative->feedback,
 			"réussi" => $tentative->réussi,
 			"temps_exécution" => $tentative->temps_exécution,
 			"links" => (isset($tentative->links) ? $tentative->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}tentative/{$tentative->id}",
+				"self" => "{$_ENV['APP_URL']}tentative/{$this->id}/{$tentative->date_soumission}",
 			],
 		];
 
@@ -45,11 +45,10 @@ class TentativeTransformer extends BaseTransformer
 	{
 		$commentaires = $tentative->commentaires;
 		foreach ($commentaires as $numéro => $commentaire) {
-			$commentaire->id = "{$tentative->id}/{$numéro}";
 			$commentaire->links = [
-				"related" => "{$_ENV["APP_URL"]}tentative/{$tentative->id}",
+				"related" => "{$_ENV['APP_URL']}tentative/{$this->id}/{$tentative->date_soumission}",
 			];
 		}
-		return $this->collection($commentaires, new CommentaireTransformer(), "commentaire");
+		return $this->collection($commentaires, new CommentaireTransformer("{$this->id}/{$tentative->date_soumission}"), "commentaire");
 	}
 }

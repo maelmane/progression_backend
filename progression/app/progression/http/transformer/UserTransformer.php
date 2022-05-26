@@ -31,11 +31,11 @@ class UserTransformer extends BaseTransformer
 	public function transform(User $user)
 	{
 		$data = [
-			"id" => $user->username,
+			"id" => $this->id,
 			"username" => $user->username,
 			"rôle" => $user->rôle,
 			"links" => (isset($user->links) ? $user->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}user/{$user->username}",
+				"self" => "{$_ENV["APP_URL"]}user/{$this->id}",
 			],
 		];
 
@@ -45,24 +45,23 @@ class UserTransformer extends BaseTransformer
 	public function includeAvancements(User $user)
 	{
 		foreach ($user->avancements as $uri => $avancement) {
-			$avancement->id = "{$user->username}/" . Encodage::base64_encode_url($uri);
+			$avancement->uri = $uri;
 			$avancement->links = [
-				"related" => $_ENV["APP_URL"] . "user/{$user->username}",
+				"related" => $_ENV["APP_URL"] . "user/{$this->id}",
 			];
 		}
 
-		return $this->collection($user->avancements, new AvancementTransformer(), "avancement");
+		return $this->collection($user->avancements, new AvancementTransformer($user->username), "avancement");
 	}
 
 	public function includeCles(User $user)
 	{
 		foreach ($user->clés as $nom => $clé) {
-			$clé->id = "{$user->username}/" . $nom;
 			$clé->links = [
 				"related" => $_ENV["APP_URL"] . "user/{$user->username}",
 			];
 		}
 
-		return $this->collection($user->clés, new CléTransformer(), "cle");
+		return $this->collection($user->clés, new CléTransformer($user->username), "cle");
 	}
 }

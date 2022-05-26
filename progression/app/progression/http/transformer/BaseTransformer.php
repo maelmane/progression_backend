@@ -22,6 +22,12 @@ use League\Fractal;
 
 class BaseTransformer extends Fractal\TransformerAbstract
 {
+	public $id;
+
+	public function __construct($id){
+		$this->id = $id;
+	}
+
 	protected function sélectionnerChamps($objet, $fields)
 	{
 		$arr_t = (array) $objet;

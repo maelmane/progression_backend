@@ -32,11 +32,9 @@ final class AvancementTransformerTests extends TestCase
 
 	public function test_étant_donné_un_avancement_instancié_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
 	{
-		$avancement = new Avancement(Question::ETAT_DEBUT, Question::TYPE_PROG);
-		$avancement->id =
-			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$avancement = new Avancement( [], "Ginette Reno", "Un peu plus haut, un peu plus loin");
 
-		$avancementTransformer = new AvancementTransformer();
+		$avancementTransformer = new AvancementTransformer("jdoe");
 		$résultats_obtenus = $avancementTransformer->transform($avancement);
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementTransformerTest_1.json",
@@ -46,19 +44,13 @@ final class AvancementTransformerTests extends TestCase
 
 	public function test_étant_donné_un_avancement_réussi_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
 	{
-		$avancement = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [
+		$avancement = new Avancement([
 			new TentativeProg("python", "codeTestPython", 1614711760, false, [], 2, 324775, "feedbackTest Python"),
 			new TentativeProg("java", "codeTestJava", 1614711761, true, [], 2, 3245, "feedbackTest Java"),
-		]);
-		$avancement->id =
-			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		],
+									 "Ginette Reno", "Un peu plus haut, un peu plus loin");
 
-		$avancement->titre = "Ginette Reno";
-		$avancement->niveau = "Un peu plus haut, un peu plus loin";
-		$avancement->date_modification = 1614711761;
-		$avancement->date_réussite = 1614711761;
-
-		$avancementTransformer = new AvancementTransformer();
+		$avancementTransformer = new AvancementTransformer("jdoe");
 		$avancement_obtenu = $avancementTransformer->transform($avancement);
 
 		$this->assertJsonStringEqualsJsonFile(
@@ -69,18 +61,13 @@ final class AvancementTransformerTests extends TestCase
 
 	public function test_étant_donné_un_avancement_non_réussi_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
 	{
-		$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, [
+		$avancement = new Avancement([
 			new TentativeProg("python", "codeTestPython", 1614711760, false, [], 2, 324775, "feedbackTest Python"),
 			new TentativeProg("java", "codeTestJava", 1614711761, false, [], 2, 3245, "feedbackTest Java"),
-		]);
-		$avancement->id =
-			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		],
+									 "Ginette Reno", "Un peu plus haut, un peu plus loin");
 
-		$avancement->titre = "Ginette Reno";
-		$avancement->niveau = "Un peu plus haut, un peu plus loin";
-		$avancement->date_modification = 1614711761;
-
-		$avancementTransformer = new AvancementTransformer();
+		$avancementTransformer = new AvancementTransformer("jdoe");
 		$avancement_obtenu = $avancementTransformer->transform($avancement);
 
 		$this->assertJsonStringEqualsJsonFile(
@@ -91,18 +78,12 @@ final class AvancementTransformerTests extends TestCase
 
 	public function test_étant_donné_un_avancement_avec_ses_tentatives_lorsquon_inclut_les_tentatives_on_reçoit_un_tableau_de_tentatives()
 	{
-		$avancement = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [
+		$avancement = new Avancement( [
 			new TentativeProg("python", "codeTestPython", 1614711760, false, [], 2, 324775, "feedbackTest Python"),
-			new TentativeProg("java", "codeTestJava", 1614711761, true, [], 2, 3245, "feedbackTest Java"),
-		]);
-		$avancement->id =
-			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+			new TentativeProg("java", "codeTestJava", 1614711761, true, [], 2, 3245, "feedbackTest Java")],
+									  "Ginette Reno", "Un peu plus haut, un peu plus loin");
 
-		$avancement->titre = "Ginette Reno";
-		$avancement->niveau = "Un peu plus haut, un peu plus loin";
-		$avancement->date_modification = 1614711761;
-		$avancement->date_réussite = 1614711761;
-		$avancementTransformer = new AvancementTransformer();
+		$avancementTransformer = new AvancementTransformer("jdoe");
 		$résultats_obtenus = $avancementTransformer->includeTentatives($avancement);
 
 		$tentatives = [];
@@ -119,12 +100,10 @@ final class AvancementTransformerTests extends TestCase
 		$sauvegardes = [];
 		$sauvegardes["python"] = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 		$sauvegardes["java"] = new Sauvegarde(1620150375, "System.out.println(\"Hello world!\");");
-		$avancement = new Avancement(Question::ETAT_DEBUT, Question::TYPE_PROG, []);
-		$avancement->sauvegardes = $sauvegardes;
-		$avancement->id =
-			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$avancement = new Avancement([], "Un titre", "un niveau", $sauvegardes);
+		$avancement->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
-		$avancementTransformer = new AvancementTransformer();
+		$avancementTransformer = new AvancementTransformer("jdoe");
 		$résultats_obtenus = $avancementTransformer->includeSauvegardes($avancement);
 
 		$listeSauvegardes = [];
@@ -139,24 +118,16 @@ final class AvancementTransformerTests extends TestCase
 
 	public function test_étant_donné_un_avancement_sans_tentative_lorsquon_inclut_les_tentatives_on_reçoit_un_tableau_vide()
 	{
-		$avancement = new Avancement("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "jdoe");
-		$avancement->id =
-			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
-		$avancement->tentatives = [];
-		$avancement->type = Question::TYPE_PROG;
+		$avancement = new Avancement([], "Un titre", "un niveau");
 
-		$avancementTransformer = new AvancementTransformer();
+		$avancementTransformer = new AvancementTransformer("jdoe");
 		$this->assertEquals([], $avancementTransformer->includeTentatives($avancement)->getData());
 	}
 	public function test_étant_donné_un_avancement_sans_sauvegarde_lorsquon_inclut_les_sauvegardes_on_reçoit_un_tableau_vide()
 	{
-		$avancement = new Avancement("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "jdoe");
-		$avancement->id =
-			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
-		$avancement->sauvegardes = [];
-		$avancement->type = Question::TYPE_PROG;
+		$avancement = new Avancement([], "Un titre", "un niveau" );
 
-		$avancementTransformer = new AvancementTransformer();
+		$avancementTransformer = new AvancementTransformer("jdoe");
 		$this->assertEquals([], $avancementTransformer->includeSauvegardes($avancement)->getData());
 	}
 }

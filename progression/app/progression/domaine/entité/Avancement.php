@@ -20,6 +20,7 @@ namespace progression\domaine\entité;
 
 class Avancement
 {
+	public $uri;
 	public $etat;
 	public $tentatives;
 	public $titre;

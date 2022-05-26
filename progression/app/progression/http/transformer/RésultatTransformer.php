@@ -18,23 +18,23 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\RésultatProg;
+use progression\domaine\entité\Résultat;
 
-class RésultatProgTransformer extends BaseTransformer
+class RésultatTransformer extends BaseTransformer
 {
 	public $type = "resultat";
 
 	public function transform(Résultat $réponse)
 	{
 		$data = [
-			"id" => $réponse->id,
+			"id" => "$this->id/{$réponse->numéro}",
 			"sortie_observée" => $réponse->sortie_observée,
 			"sortie_erreur" => $réponse->sortie_erreur,
 			"résultat" => $réponse->résultat,
 			"feedback" => $réponse->feedback,
 			"temps_exec" => $réponse->temps_exécution,
 			"links" => (isset($réponse->links) ? $réponse->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}resultat/{$réponse->id}",
+				"self" => "{$_ENV["APP_URL"]}resultat/{$this->id}/{$réponse->numéro}",
 			],
 		];
 

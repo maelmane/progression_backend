@@ -27,11 +27,11 @@ class TestTransformer extends BaseTransformer
 	public function transform(Test $test)
 	{
 		$data = [
-			"id" => $test->id,
+			"id" => "{$this->id}/{$test->numéro}",
 			"nom" => $test->nom,
 			"sortie_attendue" => $test->sortie_attendue,
 			"links" => (isset($test->links) ? $test->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}test/{$test->id}",
+				"self" => "{$_ENV['APP_URL']}test/{$this->id}/{$test->numéro}",
 			],
 		];
 
