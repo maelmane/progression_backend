@@ -133,4 +133,31 @@ class TentativeProgDAO extends TentativeDAO
 
 		return $this->get_tentative($username, $question_uri, $objet->date_soumission);
 	}
+
+	public static function construire($data, $includes = [])
+	{
+		if ($data == null) {
+			return [];
+		}
+
+		$tentatives = [];
+		foreach ($data as $i => $item) {
+			$tentative = new TentativeProg(
+				langage: $item["langage"],
+				code: $item["code"],
+				date_soumission: $item["date_soumission"],
+				réussi: $item["reussi"],
+				résultats: [],
+				tests_réussis: $item["tests_reussis"],
+				temps_exécution: $item["temps_exécution"],
+				feedback: null,
+				commentaires: in_array("commentaires", $includes)
+					? CommentaireDAO::construire($item["commentaires"])
+					: [],
+			);
+			$tentatives[$i] = $tentative;
+		}
+
+		return $tentatives;
+	}
 }

@@ -47,7 +47,17 @@ final class ObtenirTentativeIntTests extends TestCase
 			->shouldReceive("get_dernière")
 			->with("jdoe", "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions")
 			->andReturn(
-				new TentativeSys((object)["id"=>"conteneurTest2","ip"=>"192.168.0.2","port"=>12345], "reponseTest2", 3456, true, [], 2, 100, "Bravo!", []),
+				new TentativeSys(
+					(object) ["id" => "conteneurTest2", "ip" => "192.168.0.2", "port" => 12345],
+					"reponseTest2",
+					3456,
+					true,
+					[],
+					2,
+					100,
+					"Bravo!",
+					[],
+				),
 			);
 
 		$mockCommentaireDAO

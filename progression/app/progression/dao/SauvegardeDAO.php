@@ -71,17 +71,15 @@ class SauvegardeDAO extends EntitéDAO
 		}
 	}
 
-	private function construire($data, $includes = [])
+	public static function construire($data, $includes = [])
 	{
-		if ($data === null || count($data) == 0) {
-			return null;
+		if ($data == null) {
+			return [];
 		}
 
 		$sauvegardes = [];
-		foreach ($data as $sauvegarde) {
-			$sauvegardes += [
-				$sauvegarde["langage"] => new Sauvegarde($sauvegarde["date_sauvegarde"], $sauvegarde["code"]),
-			];
+		foreach ($data as $i => $item) {
+			$sauvegardes[$item["langage"]] = new Sauvegarde($item["date_sauvegarde"], $item["code"]);
 		}
 
 		return $sauvegardes;

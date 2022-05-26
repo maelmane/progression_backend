@@ -68,7 +68,7 @@ final class ExécuterSysIntTests extends TestCase
 			->shouldReceive("exécuter_sys")
 			->withArgs(function ($question, $tentative) {
 				return $question == self::$questionTest &&
-					   $tentative == new TentativeSys("ConteneurEnvoyéParTentative", "", 1615696286);
+					$tentative == new TentativeSys("ConteneurEnvoyéParTentative", "", 1615696286);
 			})
 			->andReturn([
 				"temps_exec" => 0.124,
@@ -92,9 +92,7 @@ final class ExécuterSysIntTests extends TestCase
 
 	public function test_étant_donné_une_question_avec_une_tentative_sans_conteneur_on_recoit_lid_du_conteneur_de_compile_box()
 	{
-		$résultat_attendu=["id"=> "conteneurTestCompileBox",
-						   "ip" => "172.45.2.2",
-						   "port"=> 45667];
+		$résultat_attendu = ["id" => "conteneurTestCompileBox", "ip" => "172.45.2.2", "port" => 45667];
 
 		$exécuter_sys_int = new ExécuterSysInt();
 
@@ -124,9 +122,7 @@ final class ExécuterSysIntTests extends TestCase
 
 	public function test_étant_donné_une_question_avec_une_tentative_avec_conteneur_on_recoit_lid_de_la_tentative_le_bon_temps_dexécution_et_le_bon_résultat()
 	{
-		$conteneur_attendu=["id"=> "ConteneurEnvoyéParTentative",
-							"ip" => "172.45.2.2",
-							"port"=> 45667];
+		$conteneur_attendu = ["id" => "ConteneurEnvoyéParTentative", "ip" => "172.45.2.2", "port" => 45667];
 
 		$exécuter_sys_int = new ExécuterSysInt();
 

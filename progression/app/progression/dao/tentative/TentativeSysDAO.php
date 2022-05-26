@@ -52,13 +52,14 @@ class TentativeSysDAO extends TentativeDAO
 
 			while ($query->fetch()) {
 				$tentatives[] = new TentativeSys(
-					conteneur: ["id"=>$conteneur],
+					conteneur: ["id" => $conteneur],
 					réponse: $réponse,
 					date_soumission: $date_soumission,
 					réussi: $réussi,
 					résultats: [],
 					tests_réussis: $tests_réussis,
-					temps_exécution: $temps_exécution);
+					temps_exécution: $temps_exécution,
+				);
 			}
 
 			$query->close();
@@ -99,13 +100,14 @@ class TentativeSysDAO extends TentativeDAO
 
 			if ($query->fetch()) {
 				$tentative = new TentativeSys(
-					conteneur: ["id"=>$conteneur],
+					conteneur: ["id" => $conteneur],
 					réponse: $réponse,
 					date_soumission: $date_soumission,
 					réussi: $réussi,
 					résultats: [],
 					tests_réussis: $tests_réussis,
-					temps_exécution: $temps_exécution);
+					temps_exécution: $temps_exécution,
+				);
 			}
 
 			$query->close();
@@ -146,13 +148,14 @@ class TentativeSysDAO extends TentativeDAO
 
 			if ($query->fetch()) {
 				$tentative = new TentativeSys(
-					conteneur: ["id"=>$conteneur],
+					conteneur: ["id" => $conteneur],
 					réponse: $réponse,
 					date_soumission: $date_soumission,
 					réussi: $réussi,
 					résultats: [],
 					tests_réussis: $tests_réussis,
-					temps_exécution: $temps_exécution);
+					temps_exécution: $temps_exécution,
+				);
 			}
 
 			$query->close();
@@ -162,7 +165,7 @@ class TentativeSysDAO extends TentativeDAO
 
 		return $tentative;
 	}
-	
+
 	public function save($username, $question_uri, $objet)
 	{
 		try {
@@ -187,5 +190,32 @@ class TentativeSysDAO extends TentativeDAO
 		}
 
 		return $this->get_tentative($username, $question_uri, $objet->date_soumission);
+	}
+
+	public static function construire($data, $includes = [])
+	{
+		if ($data == null) {
+			return [];
+		}
+
+		$tentatives = [];
+		foreach ($data as $i => $item) {
+			$tentative = new TentativeSys(
+				conteneur: $item["conteneur"],
+				réponse: $item["reponse"],
+				date_soumission: $item["date_soumission"],
+				réussi: $item["reussi"],
+				résultats: [],
+				tests_réussis: $item["tests_reussis"],
+				temps_exécution: $item["temps_exécution"],
+				feedback: null,
+				commentaires: in_array("commentaires", $includes)
+					? CommentaireDAO::construire($item["commentaires"])
+					: [],
+			);
+			$tentatives[$i] = $tentative;
+		}
+
+		return $tentatives;
 	}
 }

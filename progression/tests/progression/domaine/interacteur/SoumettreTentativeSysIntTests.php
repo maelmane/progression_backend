@@ -46,8 +46,8 @@ final class SoumettreTentativeSysIntTests extends TestCase
 		self::$tentativeSoumise = new TentativeSys(["id" => "Conteneur de test"], "~reponse de test~", 1615696286);
 
 		//Tentative sans conteneur
-		self::$tentativeSoumiseSansConteneur = new TentativeSys(["id"=>null], "", 1615696287);
-		
+		self::$tentativeSoumiseSansConteneur = new TentativeSys(["id" => null], "", 1615696287);
+
 		// Mock exécuteur
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur
@@ -113,7 +113,6 @@ final class SoumettreTentativeSysIntTests extends TestCase
 		self::$questionReponseCourte->solution = "~reponse de test~";
 		self::$questionReponseCourte->feedback_neg = "feedbackGénéralNégatif";
 		self::$questionReponseCourte->feedback_pos = "feedbackGénéralPositif";
-
 	}
 
 	public function tearDown(): void
@@ -125,9 +124,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	public function test_étant_donné_une_questionsys_et_une_tentativesys_lorsqu_on_appelle_soumettre_tentative_avec_des_tests_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
 	{
 		$tentative_attendue = new TentativeSys(
-			conteneur: [ "id" => "Conteneur de test",
-						 "ip" => "172.45.2.2",
-						 "port" => 45667],
+			conteneur: ["id" => "Conteneur de test", "ip" => "172.45.2.2", "port" => 45667],
 			réponse: "~reponse de test~",
 			date_soumission: 1615696286,
 			réussi: false,
@@ -138,7 +135,12 @@ final class SoumettreTentativeSysIntTests extends TestCase
 		);
 
 		$interacteur = new SoumettreTentativeSysInt();
-		$tentative_obtenue = $interacteur->soumettre_tentative("jdoe", self::$questionTests, self::$questionTests->tests, self::$tentativeSoumise);
+		$tentative_obtenue = $interacteur->soumettre_tentative(
+			"jdoe",
+			self::$questionTests,
+			self::$questionTests->tests,
+			self::$tentativeSoumise,
+		);
 
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);
 	}
@@ -146,9 +148,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	public function test_étant_donné_une_questionsys_et_une_tentativesys_lorsqu_on_appelle_soumettre_tentative_avec_une_solution_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
 	{
 		$tentative_attendue = new TentativeSys(
-			conteneur: [ "id" => "Conteneur de test",
-						 "ip" => "172.45.2.2",
-						 "port" => 45667 ],
+			conteneur: ["id" => "Conteneur de test", "ip" => "172.45.2.2", "port" => 45667],
 
 			réponse: "~reponse de test~",
 			date_soumission: 1615696286,
@@ -173,9 +173,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	public function test_étant_donné_une_questionsys_et_une_tentativesys_sans_conteneur_lorsqu_on_appelle_soumettre_tentative_avec_des_tests_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats_et_lid_du_conteneur()
 	{
 		$tentative_attendue = new TentativeSys(
-			conteneur: [ "id" => "Nouveau Conteneur",
-						 "ip" => "172.45.2.2",
-						 "port" => 45667],
+			conteneur: ["id" => "Nouveau Conteneur", "ip" => "172.45.2.2", "port" => 45667],
 			réponse: "",
 			date_soumission: 1615696287,
 			réussi: false,

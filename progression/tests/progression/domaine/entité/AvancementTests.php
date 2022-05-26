@@ -24,7 +24,9 @@ final class AvancementTests extends TestCase
 {
 	public function test_étant_donné_un_Avancement_instancié_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
 	{
-		$résultat_obtenu = new Avancement([new TentativeProg("python", "test", 654321)], "Titre", "niveau", [new Sauvegarde("python", "test")] );
+		$résultat_obtenu = new Avancement([new TentativeProg("python", "test", 654321)], "Titre", "niveau", [
+			new Sauvegarde("python", "test"),
+		]);
 
 		$this->assertEquals(Question::ETAT_NONREUSSI, $résultat_obtenu->etat);
 		$this->assertEquals("Titre", $résultat_obtenu->titre);
@@ -35,36 +37,49 @@ final class AvancementTests extends TestCase
 		$this->assertEquals([new Sauvegarde("python", "test")], $résultat_obtenu->sauvegardes);
 	}
 
-	public function test_étant_donné_une_avancement_sans_tentatives_lorsquon_récupère_lavancement_on_obtient_les_valeurs_par_défaut(){
-		$résultat_obtenu = new Avancement([], "Titre", "niveau", [] );
+	public function test_étant_donné_une_avancement_sans_tentatives_lorsquon_récupère_lavancement_on_obtient_les_valeurs_par_défaut()
+	{
+		$résultat_obtenu = new Avancement([], "Titre", "niveau", []);
 
 		$this->assertEquals(Question::ETAT_DEBUT, $résultat_obtenu->etat);
 		$this->assertNull($résultat_obtenu->date_modification);
 		$this->assertNull($résultat_obtenu->date_réussite);
 	}
 
-	public function test_étant_donné_une_avancement_avec_plusieurs_tentatives_lorsquon_récupère_la_date_de_modification_on_obtient_la_date_de_la_tentative_la_plus_récente(){
-		$résultat_obtenu = new Avancement([
-			new TentativeProg("python", "test", 654323, true),
-			new TentativeProg("python", "test", 654312, false),
-			new TentativeProg("python", "test", 654321, true)
-		], "Titre", "niveau", [] );
+	public function test_étant_donné_une_avancement_avec_plusieurs_tentatives_lorsquon_récupère_la_date_de_modification_on_obtient_la_date_de_la_tentative_la_plus_récente()
+	{
+		$résultat_obtenu = new Avancement(
+			[
+				new TentativeProg("python", "test", 654323, true),
+				new TentativeProg("python", "test", 654312, false),
+				new TentativeProg("python", "test", 654321, true),
+			],
+			"Titre",
+			"niveau",
+			[],
+		);
 
 		$this->assertEquals(Question::ETAT_REUSSI, $résultat_obtenu->etat);
 		$this->assertEquals(654323, $résultat_obtenu->date_modification);
 	}
 
-	public function test_étant_donné_une_avancement_réussi_avec_plusieurs_tentatives_lorsquon_récupère_la_date_de_modification_on_obtient_la_date_de_la_première_tentative_réussie(){
-		$résultat_obtenu = new Avancement([
-			new TentativeProg("python", "test", 654323, true),
-			new TentativeProg("python", "test", 654312, false),
-			new TentativeProg("python", "test", 654321, true)
-		], "Titre", "niveau", [] );
+	public function test_étant_donné_une_avancement_réussi_avec_plusieurs_tentatives_lorsquon_récupère_la_date_de_modification_on_obtient_la_date_de_la_première_tentative_réussie()
+	{
+		$résultat_obtenu = new Avancement(
+			[
+				new TentativeProg("python", "test", 654323, true),
+				new TentativeProg("python", "test", 654312, false),
+				new TentativeProg("python", "test", 654321, true),
+			],
+			"Titre",
+			"niveau",
+			[],
+		);
 
 		$this->assertEquals(Question::ETAT_REUSSI, $résultat_obtenu->etat);
 		$this->assertEquals(654321, $résultat_obtenu->date_réussite);
 	}
-	
+
 	public function test_étant_donné_un_AvancementProg_instancié_sans_tentatives_lorsquon_récupère_ses_tentatives_on_obtient_un_tableau_vide()
 	{
 		$résultat_attendu = [];

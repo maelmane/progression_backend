@@ -65,15 +65,19 @@ final class TentativeProgTransformerTests extends TestCase
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$tentative = new TentativeProg("python",
-									   "codeTest",
-									   1614711760, 
-									   false,
-									   [
-										   new Résultat("output", "error", false, "feedback", 123),
-										   new Résultat("output 2", "error 2", true, "feedback 2", 456),
-									   ],
-									   2, 34567, "feedBackTest");
+		$tentative = new TentativeProg(
+			"python",
+			"codeTest",
+			1614711760,
+			false,
+			[
+				new Résultat("output", "error", false, "feedback", 123),
+				new Résultat("output 2", "error 2", true, "feedback 2", 456),
+			],
+			2,
+			34567,
+			"feedBackTest",
+		);
 		$tentative->id =
 			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760";
 		$tentativeTransformer = new TentativeProgTransformer();
@@ -95,17 +99,10 @@ final class TentativeProgTransformerTests extends TestCase
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$tentative = new TentativeProg(
-			"python",
-			"codeTest",
-			1614711760,
-			false,
-			[],
-			2,
-			34567,
-			"feedBackTest",
-			[new Commentaire("Message", "jdoe", 123456, 12), new Commentaire("Message 2", "bob", 654321, 13)],
-		);
+		$tentative = new TentativeProg("python", "codeTest", 1614711760, false, [], 2, 34567, "feedBackTest", [
+			new Commentaire("Message", "jdoe", 123456, 12),
+			new Commentaire("Message 2", "bob", 654321, 13),
+		]);
 		$tentative->id =
 			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760";
 		$tentativeTransformer = new TentativeProgTransformer();

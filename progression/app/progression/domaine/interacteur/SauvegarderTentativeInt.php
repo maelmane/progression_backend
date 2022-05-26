@@ -19,10 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Question;
-use progression\domaine\interacteur\{
-	SauvegarderTentativeProgInt,
-	SauvegarderTentativeSysInt,
-};
+use progression\domaine\interacteur\{SauvegarderTentativeProgInt, SauvegarderTentativeSysInt};
 
 use Exception;
 
@@ -35,7 +32,7 @@ class SauvegarderTentativeInt extends Interacteur
 		$avancement = $avancementInt->récupérer_avancement($username, $question, $tentative);
 		$avancement->titre = $question->titre;
 		$avancement->niveau = $question->niveau;
-		
+
 		$avancementInt = new SauvegarderAvancementInt();
 		$avancementInt->sauvegarder($username, $question->uri, $avancement);
 

@@ -39,38 +39,38 @@ final class AvancementDAOTests extends TestCase
 	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_incluant_les_tentatives_on_obtient_un_objet_avancement_correspondant_avec_ses_tentatives()
 	{
 		$résultat_attendu = new Avancement(
-			0,
-			0,
-			[new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276)],
-			[],
+			[new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276, false, [], 2, 3456)],
+			titre: "Un titre",
+			niveau: "facile",
 		);
-		$résultat_attendu->type = Question::TYPE_PROG;
-		$résultat_attendu->titre = "Bob";
-		$résultat_attendu->niveau = "facile";
-		$résultat_attendu->date_modification = 1645739981;
-		$résultat_attendu->date_réussite = 1645739959;
+		$résultat_attendu->date_modification = 1615696276;
 
 		$résponse_observée = (new AvancementDAO())->get_avancement(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			["tentatives"],
+			includes: ["tentatives"],
 		);
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
 
 	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_incluant_les_sauvegardes_on_obtient_un_objet_avancement_correspondant_avec_ses_sauvegardes()
 	{
-		$résultat_attendu = new Avancement(0, 0, [], [new Sauvegarde(1620150294, "print(\"Hello world!\")")]);
-		$résultat_attendu->type = Question::TYPE_PROG;
-		$résultat_attendu->titre = "Bob";
-		$résultat_attendu->niveau = "facile";
-		$résultat_attendu->date_modification = 1645739981;
-		$résultat_attendu->date_réussite = 1645739959;
+		$résultat_attendu = new Avancement(
+			[],
+			titre: "Un titre",
+			niveau: "facile",
+			sauvegardes: [
+				"python" => new Sauvegarde(1620150294, "print(\"Hello world!\")"),
+				"java" => new Sauvegarde(1620150375, "System.out.println(\"Hello world!\");"),
+			],
+		);
+		$résultat_attendu->date_modification = 1615696276;
+		$résultat_attendu->etat = 1;
 
 		$résponse_observée = (new AvancementDAO())->get_avancement(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			["sauvegardes"],
+			includes: ["sauvegardes"],
 		);
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
@@ -78,48 +78,46 @@ final class AvancementDAOTests extends TestCase
 	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_incluant_les_tentatives_et_sauvegardes_on_obtient_un_objet_avancement_correspondant_avec_ses_tentatives_et_sauvegardes()
 	{
 		$résultat_attendu = new Avancement(
-			tentatives: [
-				new TentativeProg("python", 'print("Tourlou le monde!")', 1645739981),
-				new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276, true)],
+			tentatives: [new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276, false, [], 2, 3456)],
 			titre: "Un titre",
 			niveau: "facile",
-			sauvegardes: [new Sauvegarde(1620150294, "print(\"Hello world!\")")],
+			sauvegardes: [
+				"python" => new Sauvegarde(1620150294, "print(\"Hello world!\")"),
+				"java" => new Sauvegarde(1620150375, "System.out.println(\"Hello world!\");"),
+			],
 		);
 
 		$résponse_observée = (new AvancementDAO())->get_avancement(
 			"Bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			["tentatives", "sauvegardes"],
+			includes: ["tentatives", "sauvegardes"],
 		);
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
 
 	public function test_étant_donné_un_utilisateur_ayant_des_avancements_lorsquon_cherche_par_username_on_obtient_un_tableau_d_objets_avancement()
 	{
-		$av1 = new Avancement(
-			tentatives: [],
-			titre: "Un titre",
-			niveau: "facile",
-			sauvegardes: [],
-		);
+		$av0 = new Avancement(tentatives: [], titre: "Un titre", niveau: "facile");
+		$av0->date_modification = 1615696276;
+		$av0->etat = 1;
+
+		$av1 = new Avancement(tentatives: [], titre: "Un titre", niveau: "facile", sauvegardes: []);
 		$av1->date_modification = 1645739981;
 		$av1->date_réussite = 1645739959;
+		$av1->etat = 1;
 
-		$av2 = new Avancement(
-			tentatives: [],
-			titre: "Un titre 2",
-			niveau: "facile",
-			sauvegardes: [],
-		);
+		$av2 = new Avancement(tentatives: [], titre: "Un titre 2", niveau: "facile", sauvegardes: []);
 		$av2->date_modification = 1645739991;
 		$av2->date_réussite = 1645739969;
-		
+		$av2->etat = 2;
+
 		$résultat_attendu = [
-			 "https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => $av1,
-			 "https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction2" => $av2
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $av0,
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => $av1,
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction2" => $av2,
 		];
 
-		$résponse_observée = (new AvancementDAO())->get_tous("Bob");
+		$résponse_observée = (new AvancementDAO())->get_tous("bob");
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
 
@@ -142,17 +140,13 @@ final class AvancementDAOTests extends TestCase
 
 	public function test_étant_donné_un_nouvel_avancement_lorsquon_le_sauvegarde_il_est_sauvegardé_dans_la_BD_et_on_obtient_lavancement()
 	{
-		$nouvel_avancement = new Avancement(
-			tentatives: [],
-			titre: "Un titre",
-			niveau: "facile",
-		);
+		$nouvel_avancement = new Avancement(tentatives: [], titre: "Un titre", niveau: "facile");
 		$nouvel_avancement->date_modification = 1645739981;
 		$nouvel_avancement->date_réussite = 1645739959;
 
 		// L'avancement est retourné
 		$résponse_observée = (new AvancementDAO())->save(
-			"Bob",
+			"bob",
 			"https://depot.com/roger/une_nouvelle_question",
 			$nouvel_avancement,
 		);
@@ -161,7 +155,7 @@ final class AvancementDAOTests extends TestCase
 
 		// L'avancement a été sauvegardé
 		$résponse_observée = (new AvancementDAO())->get_avancement(
-			"Bob",
+			"bob",
 			"https://depot.com/roger/une_nouvelle_question",
 		);
 
@@ -171,17 +165,15 @@ final class AvancementDAOTests extends TestCase
 	public function test_étant_donné_un_avancement_existant_lorsquon_le_modifie_il_est_sauvegardé_dans_la_BD_et_on_obtient_lavancement_modifié()
 	{
 		$résultat_attendu = new Avancement(
-			tentatives: [new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276, true)],
+			tentatives: [],
 			titre: "Nouveau titre",
 			niveau: "Nouveau niveau",
-			sauvegardes: [new Sauvegarde(1620150294, "print(\"Hello world!\")")],
+			sauvegardes: [],
 		);
-		$résultat_attendu->date_modification = 1615696276;
-		$résultat_attendu->date_réussite = 1615696276;
 
 		// L'avancement est retourné
 		$résponse_observée = (new AvancementDAO())->save(
-			"Bob",
+			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 			$résultat_attendu,
 		);
@@ -190,8 +182,9 @@ final class AvancementDAOTests extends TestCase
 
 		// L'avancement a été sauvegardé
 		$résponse_observée = (new AvancementDAO())->get_avancement(
-			"Bob",
+			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+			includes: ["tentatives,sauvegardes"],
 		);
 
 		$this->assertEquals($résultat_attendu, $résponse_observée);

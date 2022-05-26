@@ -16,24 +16,19 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\domaine\entité;
+namespace progression\dao\models;
 
-class TestProg extends Test
+use Illuminate\Database\Eloquent\Model;
+
+class TentativeSysMdl extends Model
 {
-	public $entrée;
-	public $params;
+	protected $table = "reponse_sys";
+	public $timestamps = false;
 
-	public function __construct(
-		$nom,
-		$sortie_attendue,
-		$entrée = "",
-		$params = "",
-		$feedback_pos = null,
-		$feedback_neg = null,
-		$feedback_err = null
-	) {
-		parent::__construct($nom, $sortie_attendue, $feedback_pos, $feedback_neg, $feedback_err);
-		$this->entrée = $entrée;
-		$this->params = $params;
+	public function avancement()
+	{
+		return $this->belongsTo(AvancementMdl::class, "fk_avancement_id");
 	}
 }
+
+?>

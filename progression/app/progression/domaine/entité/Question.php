@@ -51,8 +51,8 @@ class Question
 		$licence = null,
 		$feedback_pos = null,
 		$feedback_neg = null,
-		$feedback_err = null,
-	){
+		$feedback_err = null
+	) {
 		$this->niveau = $niveau;
 		$this->titre = $titre;
 		$this->description = $description;

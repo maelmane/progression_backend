@@ -65,17 +65,17 @@ class AvancementTransformer extends BaseTransformer
 			$tentatives[$i] = $tentative;
 		}
 
-		if(empty($tentative)){
+		if (empty($tentative)) {
 			return $this->collection($tentatives, new TentativeTransformer(), "tentative");
-		}
-		else{
-			if ($tentatives[0] instanceof TentativeProg){
+		} else {
+			if ($tentatives[0] instanceof TentativeProg) {
 				return $this->collection($tentatives, new TentativeProgTransformer(), "tentative");
-			} elseif ($tentatives[0] instanceof TentativeSys){
+			} elseif ($tentatives[0] instanceof TentativeSys) {
 				return $this->collection($tentatives, new TentativeSysTransformer(), "tentative");
 			} else {
 				return $this->collection($tentatives, new TentativeTransformer(), "tentative");
 			}
+		}
 	}
 
 	public function includeSauvegardes($avancement)

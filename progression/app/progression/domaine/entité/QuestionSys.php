@@ -39,7 +39,7 @@ class QuestionSys extends Question
 		$utilisateur = null,
 		$solution = null,
 		$tests = []
-	){
+	) {
 		parent::__construct(
 			$niveau,
 			$titre,
@@ -49,12 +49,12 @@ class QuestionSys extends Question
 			$licence,
 			$feedback_pos,
 			$feedback_neg,
-			$feedback_err
+			$feedback_err,
 		);
-			
-			$this->image = $image;
-			$this->utilisateur = $utilisateur;
-			$this->solution = $solution;
-			$this->tests = $tests;
-		}
+
+		$this->image = $image;
+		$this->utilisateur = $utilisateur;
+		$this->solution = $solution;
+		$this->tests = $tests;
 	}
+}

@@ -69,8 +69,7 @@ class ExécuteurCompilebox extends Exécuteur
 			"language" => self::langages["sshd"],
 			"user" => $utilisateur,
 			"parameters" => $conteneur,
-			"params_conteneur" =>
-				"-e SIAB_SERVICE=/:" . $utilisateur . ":" . $utilisateur . ":HOME:SHELL",
+			"params_conteneur" => "-e SIAB_SERVICE=/:" . $utilisateur . ":" . $utilisateur . ":HOME:SHELL",
 			"tests" => $tests_out,
 			"vm_name" => $image,
 		];

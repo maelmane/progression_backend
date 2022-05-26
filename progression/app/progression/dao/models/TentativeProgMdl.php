@@ -20,10 +20,15 @@ namespace progression\dao\models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TentativeMdl extends Model
+class TentativeProgMdl extends Model
 {
 	protected $table = "reponse_prog";
 	public $timestamps = false;
+
+	public function avancement()
+	{
+		return $this->belongsTo(AvancementMdl::class, "fk_avancement_id");
+	}
 }
 
 ?>

@@ -70,7 +70,7 @@ class TentativeCtl extends Contrôleur
 
 		$chemin = Encodage::base64_decode_url($question_uri);
 
-		try{
+		try {
 			$question = $this->récupérer_question($chemin);
 
 			if ($question instanceof QuestionProg) {
@@ -78,27 +78,27 @@ class TentativeCtl extends Contrôleur
 				if ($validation->fails()) {
 					Log::notice(
 						"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-						__CLASS__ .
-						") Paramètres invalides",
+							__CLASS__ .
+							") Paramètres invalides",
 					);
 					return $this->réponse_json(["erreur" => $validation->errors()], 400);
 				}
 				$réponse = $this->traiter_post_QuestionProg($request, $username, $question_uri, $question);
 			} elseif ($question instanceof QuestionSys) {
 				$réponse = $this->traiter_post_QuestionSys($request, $username, $question_uri, $question);
-			} else{
+			} else {
 				Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 				return $this->réponse_json(["erreur" => "Question de type non implémentée."], 501);
 			}
-		}
-		catch (ContrôleurException $erreur) {
+		} catch (ContrôleurException $erreur) {
 			Log::notice(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")
-				{$erreur->getMessage()}"
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+					__CLASS__ .
+					")
+				{$erreur->getMessage()}",
 			);
 			return $this->réponse_json(["erreur" => $erreur->getMessage()], $erreur->getCode());
-		}
-		catch (ExécutionException $e) {
+		} catch (ExécutionException $e) {
 			Log::error($e->getMessage());
 			if ($e->getPrevious()) {
 				Log::error($e->getPrevious()->getMessage());
@@ -111,34 +111,36 @@ class TentativeCtl extends Contrôleur
 		return $réponse;
 	}
 
-	private function traiter_post_QuestionProg(Request $request, $username, $question_uri, $question){
-		$tests= $request->test ? [$this->construire_test($request->test)] : $question->tests;
+	private function traiter_post_QuestionProg(Request $request, $username, $question_uri, $question)
+	{
+		$tests = $request->test ? [$this->construire_test($request->test)] : $question->tests;
 
 		$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
 		$tentative_résultante = $this->soumettre_tentative_prog($username, $question, $tests, $tentative);
-		
-		if(!$tentative_résultante){
-			return $this->réponse_json(["erreur"=>"Tentative intraitable."], 400);
+
+		if (!$tentative_résultante) {
+			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
-		
+
 		$tentative_résultante->id = "{$username}/{$request->question_uri}/{$tentative->date_soumission}";
 		if (empty($request->test)) {
 			$this->sauvegarder_tentative($username, $question, $tentative_résultante);
 		}
 
-		$réponse = $this->item($tentative_résultante, new TentativeProgTransformer());		
+		$réponse = $this->item($tentative_résultante, new TentativeProgTransformer());
 
 		return $this->préparer_réponse($réponse);
 	}
 
-	private function traiter_post_QuestionSys(Request $request, $username, $question_uri, $question){
+	private function traiter_post_QuestionSys(Request $request, $username, $question_uri, $question)
+	{
 		$conteneur = $request->conteneur ?? $this->récupérer_conteneur($username, $question->uri);
-		
+
 		$tentative = new TentativeSys(["id" => $conteneur], $request->réponse, (new \DateTime())->getTimestamp());
 
 		$tentative_résultante = $this->soumettre_tentative_sys($username, $question, $question->tests, $tentative);
-		if (!$tentative_résultante){
-			return $this->réponse_json(["erreur"=>"Tentative intraitable."], 400);
+		if (!$tentative_résultante) {
+			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
 
 		$tentative_résultante->id = "{$username}/{$request->question_uri}/{$tentative->date_soumission}";
@@ -161,12 +163,13 @@ class TentativeCtl extends Contrôleur
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
-				"code.between" => "Le code soumis " . mb_strlen($request->code) ." > :max caractères.",
+				"code.between" => "Le code soumis " . mb_strlen($request->code) . " > :max caractères.",
 			],
 		);
 	}
 
-	private function récupérer_question($chemin){
+	private function récupérer_question($chemin)
+	{
 		$questionInt = new ObtenirQuestionInt();
 		try {
 			return $questionInt->get_question($chemin);
@@ -179,10 +182,10 @@ class TentativeCtl extends Contrôleur
 		}
 	}
 
-	private function construire_test($test){
+	private function construire_test($test)
+	{
 		if (!empty($test) && (isset($test["entrée"]) || isset($test["params"]))) {
-			return
-			new TestProg(
+			return new TestProg(
 				$test["nom"] ?? "",
 				$test["sortie_attendue"] ?? "",
 				$test["entrée"] ?? "",
@@ -191,15 +194,18 @@ class TentativeCtl extends Contrôleur
 		}
 	}
 
-	private function soumettre_tentative_prog($username, $question, $tests, $tentative){
+	private function soumettre_tentative_prog($username, $question, $tests, $tentative)
+	{
 		return $this->soumettre_tentative($username, $question, $tests, $tentative, new SoumettreTentativeProgInt());
 	}
-	private function soumettre_tentative_sys($username, $question, $tests, $tentative){
+	private function soumettre_tentative_sys($username, $question, $tests, $tentative)
+	{
 		return $this->soumettre_tentative($username, $question, $tests, $tentative, new SoumettreTentativeSysInt());
 	}
 
-	private function soumettre_tentative($username, $question, $tests, $tentative, $intéracteur){
-		try{
+	private function soumettre_tentative($username, $question, $tests, $tentative, $intéracteur)
+	{
+		try {
 			$résultat = $intéracteur->soumettre_tentative($username, $question, $tests, $tentative);
 		} catch (ExécutionException $e) {
 			throw new ContrôleurException("Service non disponible.", 503);
@@ -210,15 +216,16 @@ class TentativeCtl extends Contrôleur
 		return $résultat;
 	}
 
-	private function sauvegarder_tentative($username, $question, $tentative){
+	private function sauvegarder_tentative($username, $question, $tentative)
+	{
 		$sauvegardeTentativeInt = new SauvegarderTentativeInt();
 		$sauvegardeTentativeInt->sauvegarder($username, $question, $tentative);
 	}
 
-	private function récupérer_conteneur($username, $chemin){
+	private function récupérer_conteneur($username, $chemin)
+	{
 		$obtenirTentativeInt = new ObtenirTentativeInt();
 		$tentative_récupérée = $obtenirTentativeInt->get_dernière($username, $chemin);
 		return $tentative_récupérée ? $tentative_récupérée->conteneur : null;
 	}
-
 }

@@ -40,10 +40,19 @@ final class TraiterTentativeSysIntTests extends TestCase
 
 		$tentative = new TentativeSys("conteneurTest", "réponseTest");
 		$tentative->résultats = [new Résultat("reponse test"), new Résultat("Test fonctionnel")];
-		$résultat_attendu = new TentativeSys("conteneurTest", "réponseTest", null, true,  [
-			new Résultat("reponse test", "", true, "Test 0 passé"),
-			new Résultat("Test fonctionnel", "", true, "Test 1 passé"),
-		],2, null, "Bon travail!");
+		$résultat_attendu = new TentativeSys(
+			"conteneurTest",
+			"réponseTest",
+			null,
+			true,
+			[
+				new Résultat("reponse test", "", true, "Test 0 passé"),
+				new Résultat("Test fonctionnel", "", true, "Test 1 passé"),
+			],
+			2,
+			null,
+			"Bon travail!",
+		);
 
 		$résultat_observé = (new TraiterTentativeSysInt(null))->traiter_résultats($tentative, $rétroactions, $tests);
 
@@ -74,11 +83,20 @@ final class TraiterTentativeSysIntTests extends TestCase
 			new Résultat("Test validation"),
 		];
 
-		$résultat_attendu = new TentativeSys("conteneurTest", "réponseTest", null, false,  [
-			new Résultat("reponse test", "", true, "Test 0 passé"),
-			new Résultat("Test non fonctionnel", "", false, "Test 1 échoué"),
-			new Résultat("Test validation", "", false, "Test 2 échoué"),
-		], 1, null, "Essaye encore");
+		$résultat_attendu = new TentativeSys(
+			"conteneurTest",
+			"réponseTest",
+			null,
+			false,
+			[
+				new Résultat("reponse test", "", true, "Test 0 passé"),
+				new Résultat("Test non fonctionnel", "", false, "Test 1 échoué"),
+				new Résultat("Test validation", "", false, "Test 2 échoué"),
+			],
+			1,
+			null,
+			"Essaye encore",
+		);
 
 		$résultat_observé = (new TraiterTentativeSysInt(null))->traiter_résultats($tentative, $rétroactions, $tests);
 

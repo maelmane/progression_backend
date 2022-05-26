@@ -19,9 +19,9 @@
 namespace progression\dao\tentative;
 
 use mysqli_sql_exception;
-use progression\dao\{DAOException, EntitéDAO};
+use progression\dao\{DAOException, EntitéDAO, SauvegardeDAO};
 use progression\domaine\entité\Question;
-use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
+use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, TentativeBD};
 
 class TentativeDAO extends EntitéDAO
 {
@@ -89,8 +89,24 @@ class TentativeDAO extends EntitéDAO
 		return $type;
 	}
 
-	public static function construire($tentative, $includes = [])
+	public static function construire($data, $includes = [])
 	{
-		return [];
+		$tentatives = [];
+		foreach ($data as $i => $item) {
+			$tentative = new Tentative(
+				date_soumission: $item["date_soumission"],
+				réussi: $item["réussi"],
+				résultats: [],
+				tests_réussis: $item["tests_réussis"],
+				temps_exécution: $item["temps_exécution"],
+				feedback: null,
+				commentaires: in_array("commentaires", $includes)
+					? CommentaireDAO::construire($item["commentaires"])
+					: [],
+			);
+			$tentatives[$i] = $tentative;
+		}
+
+		return $tentatives;
 	}
 }

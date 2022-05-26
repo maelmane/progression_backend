@@ -20,15 +20,7 @@ use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
-use progression\domaine\entité\{
-	Avancement,
-	TestSys,
-	Exécutable,
-	Question,
-	QuestionSys,
-	TentativeSys,
-	User,
-};
+use progression\domaine\entité\{Avancement, TestSys, Exécutable, Question, QuestionSys, TentativeSys, User};
 
 use Illuminate\Auth\GenericUser;
 
@@ -39,7 +31,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 	public $avancement_non_réussi;
 	public $tentative_réussie;
 	public $tentative_non_réussie;
-	
+
 	public function setUp(): void
 	{
 		parent::setUp();
@@ -48,25 +40,26 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
-		
 
 		// QuestionSys avec solution courte
-		$question_solution_courte_réussie= new QuestionSys(
+		$question_solution_courte_réussie = new QuestionSys(
 			type: Question::TYPE_SYS,
 			nom: "toutes_les_permissions",
 			solution: "~laSolution~",
 			uri: "https://depot.com/question_solution_courte_réussie",
 			feedback_pos: "Bon travail!",
-			feedback_neg: "Encore un effort!");
+			feedback_neg: "Encore un effort!",
+		);
 
-		$question_solution_courte_non_réussie= new QuestionSys(
+		$question_solution_courte_non_réussie = new QuestionSys(
 			type: Question::TYPE_SYS,
 			nom: "toutes_les_permissions",
 			solution: "~laSolution~",
 			uri: "https://depot.com/question_solution_courte_non_réussie",
 			feedback_pos: "Bon travail!",
-			feedback_neg: "Encore un effort!");
-		
+			feedback_neg: "Encore un effort!",
+		);
+
 		//QuestionSys avec validations
 		$question_validée_réussie = new QuestionSys(
 			type: Question::TYPE_SYS,
@@ -74,7 +67,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			uri: "https://depot.com/roger/question_validée_réussie",
 			feedback_pos: "Bon travail!",
 			feedback_neg: "Encore un effort!",
-			tests:  [
+			tests: [
 				new TestSys(
 					nom: "Toutes permissions 3",
 					sortie_attendue: "-rwxrwxrwx",
@@ -83,7 +76,8 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 					feedback_pos: "yes!",
 					feedback_neg: "non!",
 				),
-		]);
+			],
+		);
 
 		$question_validée_non_réussie = new QuestionSys(
 			type: Question::TYPE_SYS,
@@ -91,7 +85,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			uri: "https://depot.com/roger/question_validée_non_réussie",
 			feedback_pos: "Bon travail!",
 			feedback_neg: "Encore un effort!",
-			tests:  [
+			tests: [
 				new TestSys(
 					nom: "Toutes permissions 3",
 					sortie_attendue: "-rwxrwxrwx",
@@ -100,59 +94,52 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 					feedback_pos: "yes!",
 					feedback_neg: "non!",
 				),
-		]);
+			],
+		);
 
 		$mockQuestionDAO
-		   ->shouldReceive("get_question")
-		   ->with("https://depot.com/question_solution_courte_réussie")
-		   ->andReturn($question_solution_courte_réussie);
+			->shouldReceive("get_question")
+			->with("https://depot.com/question_solution_courte_réussie")
+			->andReturn($question_solution_courte_réussie);
 		$mockQuestionDAO
-		   ->shouldReceive("get_question")
-		   ->with("https://depot.com/question_validée_réussie")
-		   ->andReturn($question_validée_réussie);
+			->shouldReceive("get_question")
+			->with("https://depot.com/question_validée_réussie")
+			->andReturn($question_validée_réussie);
 		$mockQuestionDAO
-		   ->shouldReceive("get_question")
-		   ->with("https://depot.com/question_solution_courte_non_réussie")
-		   ->andReturn($question_solution_courte_non_réussie);
+			->shouldReceive("get_question")
+			->with("https://depot.com/question_solution_courte_non_réussie")
+			->andReturn($question_solution_courte_non_réussie);
 		$mockQuestionDAO
-		   ->shouldReceive("get_question")
-		   ->with("https://depot.com/question_validée_non_réussie")
-		   ->andReturn($question_validée_non_réussie);
+			->shouldReceive("get_question")
+			->with("https://depot.com/question_validée_non_réussie")
+			->andReturn($question_validée_non_réussie);
 
 		// Tentatives
 		$this->tentative_solution_courte_non_réussie = new TentativeSys(
-			conteneur: ["id" => "leConteneurDeLancienneTentative",
-						"ip" => "192.168.0.1",
-						"port" => 12345 ],
+			conteneur: ["id" => "leConteneurDeLancienneTentative", "ip" => "192.168.0.1", "port" => 12345],
 			réponse: "laRéponseDeLancienneTentative",
 			date_soumission: "1614374490",
 			réussi: false,
 		);
 		$this->tentative_solution_courte_réussie = new TentativeSys(
-			conteneur: ["id" => "leConteneurDeLancienneTentative2",
-						"ip" => "192.168.0.1",
-						"port" => 12345 ],
+			conteneur: ["id" => "leConteneurDeLancienneTentative2", "ip" => "192.168.0.1", "port" => 12345],
 			réponse: "laRéponseDeLancienneTentative2",
 			date_soumission: "1614374491",
 			réussi: true,
 		);
 		$this->tentative_validée_non_réussie = new TentativeSys(
-			conteneur: ["id" => "leConteneurDeLancienneTentative",
-						"ip" => "192.168.0.1",
-						"port" => 12345 ],
+			conteneur: ["id" => "leConteneurDeLancienneTentative", "ip" => "192.168.0.1", "port" => 12345],
 			réponse: null,
 			date_soumission: "1614374490",
 			réussi: false,
 		);
 		$this->tentative_validée_réussie = new TentativeSys(
-			conteneur: ["id" => "leConteneurDeLancienneTentative2",
-						"ip" => "192.168.0.1",
-						"port" => 12345 ],
+			conteneur: ["id" => "leConteneurDeLancienneTentative2", "ip" => "192.168.0.1", "port" => 12345],
 			réponse: null,
 			date_soumission: "1614374491",
 			réussi: true,
 		);
-		
+
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
 			->with("jdoe", "https://depot.com/question_solution_courte_non_réussie")
@@ -173,64 +160,61 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$mockTentativeDAO
 			->shouldReceive("get_toutes")
 			->with("jdoe", "https://depot.com/question_validée_réussie")
-			->andReturn([
-				$this->tentative_validée_non_réussie,
-				$this->tentative_validée_réussie
-			]);
+			->andReturn([$this->tentative_validée_non_réussie, $this->tentative_validée_réussie]);
 
 		$mockTentativeDAO
 			->shouldReceive("get_dernière")
 			->with("jdoe", "https://depot.com/question_validée_réussie")
-			->andReturn( $this->tentative_validée_réussie );
+			->andReturn($this->tentative_validée_réussie);
 
 		// Exécuteur
 		$mockExécuteur
-		   ->shouldReceive("exécuter_sys")
-		   ->withArgs(function ($question, $tentative) {
-			   return $question == $question_validée;
-		   })
-		   ->andReturn([
-			   "temps_exec" => 0.5,
-			   "résultats" => [["output" => "Incorrecte", "time" => 0.1]],
-			   "conteneur" => [
-				   "id" => "leConteneurDeLaNouvelleTentative",
-				   "ip" => "172.45.2.2",
-				   "port" => 45667
-			   ],
-		   ]);
+			->shouldReceive("exécuter_sys")
+			->withArgs(function ($question, $tentative) {
+				return $question == $question_validée;
+			})
+			->andReturn([
+				"temps_exec" => 0.5,
+				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
+				"conteneur" => [
+					"id" => "leConteneurDeLaNouvelleTentative",
+					"ip" => "172.45.2.2",
+					"port" => 45667,
+				],
+			]);
 
 		//Avancement
 		$this->avancement_solution_courte_non_réussie = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_SYS, [
-			$this->tentative_solution_courte_non_réussie
+			$this->tentative_solution_courte_non_réussie,
 		]);
 		$this->avancement_solution_courte_réussie = new Avancement(Question::ETAT_REUSSI, Question::TYPE_SYS, [
 			$this->tentative_solution_courte_non_réussie,
-			$this->tentative_solution_courte_réussie
+			$this->tentative_solution_courte_réussie,
 		]);
 		$this->avancement_validée_non_réussie = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_SYS, [
-			$this->tentative_validée_non_réussie
+			$this->tentative_validée_non_réussie,
 		]);
 		$this->avancement_validée_réussie = new Avancement(Question::ETAT_REUSSI, Question::TYPE_SYS, [
 			$this->tentative_validée_non_réussie,
-			$this->tentative_validée_réussie
+			$this->tentative_validée_réussie,
 		]);
 
 		$mockAvancementDAO
-		   ->shouldReceive("get_avancement")
-		   ->with("jdoe", "https://depot.com/question_validée_non_réussie")
-		   ->andReturn($this->avancement_validée_non_réussie);
+			->shouldReceive("get_avancement")
+			->with("jdoe", "https://depot.com/question_validée_non_réussie")
+			->andReturn($this->avancement_validée_non_réussie);
 		$mockAvancementDAO
-		   ->shouldReceive("get_avancement")
-		   ->with("jdoe", "https://depot.com/question_validée_réussie")
-		   ->andReturn($this->avancement_validée_réussie);
+			->shouldReceive("get_avancement")
+			->with("jdoe", "https://depot.com/question_validée_réussie")
+			->andReturn($this->avancement_validée_réussie);
 		$mockAvancementDAO
-		   ->shouldReceive("get_avancement")
-		   ->with("jdoe", "https://depot.com/question_solution_courte_non_réussie")
-		   ->andReturn($this->avancement_solution_courte_non_réussie);
+			->shouldReceive("get_avancement")
+			->with("jdoe", "https://depot.com/question_solution_courte_non_réussie")
+			->andReturn($this->avancement_solution_courte_non_réussie);
 		$mockAvancementDAO
-		   ->shouldReceive("get_avancement")
-		   ->with("jdoe", "https://depot.com/question_solution_courte_réussie")
-		   ->andReturn($this->avancement_solution_courte_réussie);
+			->shouldReceive("get_avancement")
+			->with("jdoe", "https://depot.com/question_solution_courte_réussie")
+			->andReturn($this->avancement_solution_courte_réussie);
 
 		// User
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -248,7 +232,6 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$mockDAOFactory->shouldReceive("get_tentative_sys_dao")->andReturn($mockTentativeDAO);
 		$mockDAOFactory->shouldReceive("get_exécuteur")->andReturn($mockExécuteur);
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
-		
 	}
 
 	public function test_étant_donné_un_avancement_non_réussi_pour_une_QuestionSys_à_solution_courte_lorsquon_soumet_la_bonne_réponse_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeSys_réussie()
@@ -266,7 +249,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			conteneur: [
 				"id" => "leConteneurDeLancienneTentative",
 				"ip" => "192.168.0.1",
-				"port" => 12345
+				"port" => 12345,
 			],
 			réponse: "laSolution",
 			date_soumission: $heure_tentative,
@@ -278,31 +261,30 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$nouvel_avancement = new Avancement(
 			etat: Question::ETAT_REUSSI,
 			type: Question::TYPE_PROG,
-			tentatives: [
-				$this->tentative_réussie,
-				$nouvelle_tentative,
-			],
+			tentatives: [$this->tentative_réussie, $nouvelle_tentative],
 			titre: "appeler_une_fonction_paramétrée",
-			niveau: "Débutant"
+			niveau: "Débutant",
 		);
 
 		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
-		$mockTentativeDAO->shouldReceive("save")
-						  ->withArgs(function ($user, $uri, $t) use ($nouvelle_tentative) {
-							  return $user == "jdoe" &&
-									 $uri == "https://depot.com/questions_solution_courte_non_réussie" &&
-									 $t == $nouvelle_tentative;
-						  })
-						  ->andReturnArg($nouvelle_tentative);
+		$mockTentativeDAO
+			->shouldReceive("save")
+			->withArgs(function ($user, $uri, $t) use ($nouvelle_tentative) {
+				return $user == "jdoe" &&
+					$uri == "https://depot.com/questions_solution_courte_non_réussie" &&
+					$t == $nouvelle_tentative;
+			})
+			->andReturnArg($nouvelle_tentative);
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
-		$mockAvancementDAO->shouldReceive("save")
-						  ->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
-							  return $user == "jdoe" &&
-									 $uri == "https://depot.com/questions_solution_courte_non_réussie" &&
-									 $av == $nouvel_avancement;
-						  })
-						  ->andReturnArg($nouvel_avancement);
+		$mockAvancementDAO
+			->shouldReceive("save")
+			->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
+				return $user == "jdoe" &&
+					$uri == "https://depot.com/questions_solution_courte_non_réussie" &&
+					$av == $nouvel_avancement;
+			})
+			->andReturnArg($nouvel_avancement);
 
 		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
 
@@ -344,6 +326,4 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 	   public function test_étant_donné_une_question_sys_avec_tests_de_validation_lorsquon_soumet_une_tentative_échouée_lavancement_et_la_tentative_sont_sauvegardée_et_on_obtient_une_TentativeSys_échouée(){
 	   }
 	 */
-
-
 }

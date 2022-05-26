@@ -23,18 +23,19 @@ class QuestionProg extends Question
 	public $exécutables = [];
 	public $tests = [];
 
-	public function __construct( 
-						$niveau = null,
-						$titre = null,
-						$description = null,
-						$enonce = null,
-						$auteur = null,
-						$licence = null,
-						$feedback_pos = null,
-						$feedback_neg = null,
-						$feedback_err = null,
-						$exécutables = [],
-						$tests = []){
+	public function __construct(
+		$niveau = null,
+		$titre = null,
+		$description = null,
+		$enonce = null,
+		$auteur = null,
+		$licence = null,
+		$feedback_pos = null,
+		$feedback_neg = null,
+		$feedback_err = null,
+		$exécutables = [],
+		$tests = []
+	) {
 		parent::__construct(
 			$niveau,
 			$titre,
@@ -44,7 +45,7 @@ class QuestionProg extends Question
 			$licence,
 			$feedback_pos,
 			$feedback_neg,
-			$feedback_err
+			$feedback_err,
 		);
 		$this->exécutables = $exécutables;
 		$this->tests = $tests;

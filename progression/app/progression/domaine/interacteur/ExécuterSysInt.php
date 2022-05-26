@@ -38,10 +38,12 @@ class ExécuterSysInt extends Interacteur
 		}
 
 		$réponse["résultats"] = $résultats;
-		$réponse["conteneur"] = ["id" => $comp_resp["conteneur"]["id"],
-								 "ip" => $comp_resp["conteneur"]["ip"],
-								 "port" => $comp_resp["conteneur"]["port"] ];
-		
+		$réponse["conteneur"] = [
+			"id" => $comp_resp["conteneur"]["id"],
+			"ip" => $comp_resp["conteneur"]["ip"],
+			"port" => $comp_resp["conteneur"]["port"],
+		];
+
 		return $réponse;
 	}
 }

@@ -9,10 +9,11 @@ echo Suppression de la BD
 echo "DROP DATABASE IF EXISTS $DB_DBNAME" | mysql -h $DB_SERVERNAME -uroot -p$DB_PASSWORD || exit 2
 
 # Création de la BD de test
-echo Création de la BD de TEST sur $DB_SERVERNAME
+echo Création de la BD de $DB_DBNAME sur $DB_SERVERNAME
 
-> /dev/null $DIR/../db/build_db.sh && \
+$DIR/../db/build_db.sh && \
 
+echo Insertion des données de test
 mysql --default-character-set=utf8 -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < $DIR/données_de_test.sql || exit 2
 
 # Tests unitaires

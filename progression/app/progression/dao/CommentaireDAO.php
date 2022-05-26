@@ -111,4 +111,22 @@ class CommentaireDAO extends EntitéDAO
 		$commentaire = $this->get_commentaire($numéro);
 		return $commentaire;
 	}
+
+	public static function construire($data, $includes = [])
+	{
+		$commentaires = [];
+		foreach ($data as $i => $item) {
+			$numéro = $item["numéro"];
+			$commentaire = new Commentaire(
+				message: $item["message"],
+				créateur: $item["créateur"],
+				date: $item["date"],
+				numéro_ligne: $item["numéro_ligne"],
+			);
+
+			$commentaires[$numéro] = $commentaire;
+		}
+
+		return $commentaires;
+	}
 }

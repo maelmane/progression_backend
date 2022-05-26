@@ -28,12 +28,8 @@ class Avancement
 	public $date_réussite;
 	public $sauvegardes;
 
-	public function __construct(
-		$tentatives = [],
-		$titre = "",
-		$niveau = "",
-		$sauvegardes = []
-	) {
+	public function __construct($tentatives = [], $titre = "", $niveau = "", $sauvegardes = [])
+	{
 		$this->etat = Question::ETAT_DEBUT;
 		$this->tentatives = $tentatives;
 		$this->titre = $titre;
@@ -42,37 +38,39 @@ class Avancement
 		$this->date_réussite = null;
 		$this->sauvegardes = $sauvegardes;
 
-        $this->mettre_à_jour_dates_et_état();
+		$this->mettre_à_jour_dates_et_état();
 	}
 
 	public function __set($name, $value)
 	{
-		if($name == "tentatives"){
+		if ($name == "tentatives") {
 			$this->tentatives = $value;
 
 			$this->mettre_à_jour_dates_et_état();
 		}
-    }
+	}
 
-    public function ajouter_tentative($tentative){
-        if($tentative->date_soumission > $this->date_modification){
-            $this->date_modification = $tentative->date_soumission;
-        }
-        if($tentative->réussi){
-            $this->etat = Question::ETAT_REUSSI;
-            if(!$this->date_réussite || $tentative->date_soumission < $this->date_réussite){
-                $this->date_réussite = $tentative->date_soumission;
-            }
-        }
-        $tentatives[] = $tentative;
-    }
-    
-    private function mettre_à_jour_dates_et_état(){
-        $this->etat = empty($this->tentatives) ? Question::ETAT_DEBUT : Question::ETAT_NONREUSSI;
-        $this->date_modification = null;
-        $this->date_réussite = null;
-        foreach( $this->tentatives as $i => $tentative){
-            $this->ajouter_tentative($tentative);
-        }	
-    }
+	public function ajouter_tentative($tentative)
+	{
+		if ($tentative->date_soumission > $this->date_modification) {
+			$this->date_modification = $tentative->date_soumission;
+		}
+		if ($tentative->réussi) {
+			$this->etat = Question::ETAT_REUSSI;
+			if (!$this->date_réussite || $tentative->date_soumission < $this->date_réussite) {
+				$this->date_réussite = $tentative->date_soumission;
+			}
+		}
+		$tentatives[] = $tentative;
+	}
+
+	private function mettre_à_jour_dates_et_état()
+	{
+		$this->etat = empty($this->tentatives) ? Question::ETAT_DEBUT : Question::ETAT_NONREUSSI;
+		$this->date_modification = null;
+		$this->date_réussite = null;
+		foreach ($this->tentatives as $i => $tentative) {
+			$this->ajouter_tentative($tentative);
+		}
+	}
 }

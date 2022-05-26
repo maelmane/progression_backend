@@ -116,10 +116,7 @@ final class ExécuterProgIntTests extends TestCase
 
 		$résultat_attendu = [
 			"temps_exécution" => 124,
-			"résultats" => [
-				new Résultat("ok\n", "", false, null, 80),
-				new Résultat("ok\nok\n", "", false, null, 40),
-			],
+			"résultats" => [new Résultat("ok\n", "", false, null, 80), new Résultat("ok\nok\n", "", false, null, 40)],
 		];
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}

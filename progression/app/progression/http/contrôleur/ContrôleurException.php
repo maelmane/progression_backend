@@ -20,4 +20,6 @@ namespace progression\http\contrôleur;
 
 use Exception;
 
-class ContrôleurException extends Exception{}
+class ContrôleurException extends Exception
+{
+}

@@ -40,7 +40,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 	public $avancement_non_réussi;
 	public $tentative_réussie;
 	public $tentative_non_réussie;
-	
+
 	public function setUp(): void
 	{
 		parent::setUp();
@@ -66,8 +66,9 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			// TestsProg
 			tests: [
 				new TestProg("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
-		]);
-		
+			],
+		);
+
 		//aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll
 		$question_non_réussie = new QuestionProg(
 			titre: "Question non réussie",
@@ -83,7 +84,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			// TestsProg
 			tests: [
 				new TestProg("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
-		]);
+			],
+		);
 
 		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");
 		$mockQuestionDAO
@@ -94,12 +96,9 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->shouldReceive("get_question")
 			->with("https://depot.com/question_non_réussie")
 			->andReturn($question_non_réussie);
-		$mockQuestionDAO
-			->shouldReceive("get_question")
-			->andReturn(null);
+		$mockQuestionDAO->shouldReceive("get_question")->andReturn(null);
 
-		
-		// Tentative 
+		// Tentative
 		// Tentative réussie
 		$this->tentative_réussie = new TentativeProg(
 			langage: "python",
@@ -109,7 +108,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			résultats: [],
 			tests_réussis: 2,
 			feedback: "feedbackTest",
-			temps_exécution: 5);
+			temps_exécution: 5,
+		);
 
 		// Tentative non réussie
 		$this->tentative_non_réussie = new TentativeProg(
@@ -120,7 +120,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			résultats: [],
 			tests_réussis: 0,
 			feedback: "feedbackTest",
-			temps_exécution: 5);
+			temps_exécution: 5,
+		);
 
 		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
 		$mockTentativeDAO
@@ -131,12 +132,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->shouldReceive("get_tentative")
 			->with("jdoe", "https://depot.com/question_non_réussie", "1614374490")
 			->andReturn($this->tentative_non_réussie);
-		$mockTentativeDAO
-			->shouldReceive("get_tentative")
-			->andReturn(null);
-		
+		$mockTentativeDAO->shouldReceive("get_tentative")->andReturn(null);
+
 		//$mockTentativeDAO->shouldReceive("save")->andReturnArg(2);
-		
+
 		// Commentaire
 		$commentaire = new Commentaire(99, "le 99iem message", "mock", 1615696276, 14);
 		$mockCommentaireDAO = Mockery::mock("progression\\dao\\CommentaireDAO");
@@ -184,7 +183,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$this->avancement_non_réussi = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, [
 			new TentativeProg("python", "codeTest", 1614965817, false, 2, "feedbackTest"),
 		]);
-		
+
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
@@ -216,7 +215,6 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);
-
 	}
 
 	public function tearDown(): void
@@ -382,34 +380,32 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			date_soumission: 1653496098,
 			réussi: false,
 			tests_réussis: 2,
-			feedback: "feedbackTest");
-		
+			feedback: "feedbackTest",
+		);
+
 		$nouvel_avancement = new Avancement(
 			etat: Question::ETAT_NONREUSSI,
 			type: Question::TYPE_PROG,
-			tentatives: [
-				$this->tentative_non_réussie,
-				$nouvelle_tentative],
+			tentatives: [$this->tentative_non_réussie, $nouvelle_tentative],
 		);
 
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
-	   ->shouldReceive("save")
-	   ->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
-		   return $user == "jdoe" &&
-				  $uri == "https://depot.com/question_non_réussie";
-	   })
-	   ->andReturn($nouvel_avancement);
+			->shouldReceive("save")
+			->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
+				return $user == "jdoe" && $uri == "https://depot.com/question_non_réussie";
+			})
+			->andReturn($nouvel_avancement);
 
 		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
-		$mockTentativeDAO->shouldReceive("save")
-						 ->withArgs(function ($user, $uri, $tentative) use ($nouvelle_tentative) {
-							 return $user == "jdoe" &&
-									$uri == "https://depot.com/question_non_réussie" &&
-									$tentative == $nouvelle_tentative;
-						 })
-						 ->andReturn($nouvelle_tentative);
-
+		$mockTentativeDAO
+			->shouldReceive("save")
+			->withArgs(function ($user, $uri, $tentative) use ($nouvelle_tentative) {
+				return $user == "jdoe" &&
+					$uri == "https://depot.com/question_non_réussie" &&
+					$tentative == $nouvelle_tentative;
+			})
+			->andReturn($nouvelle_tentative);
 
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
@@ -526,5 +522,5 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 	   $this->assertEquals(200, $résultat_obtenu->status());
 	   }
-	 */	
+	 */
 }

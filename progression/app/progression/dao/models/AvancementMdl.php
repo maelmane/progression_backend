@@ -25,10 +25,20 @@ class AvancementMdl extends Model
 	protected $table = "avancement";
 	public $timestamps = false;
 
+	protected $guarded = [];
+
 	public function tentatives()
 	{
-		return $this->hasMany(TentativeMdl::class, "avancement_id", "id");
+		if ($this["type"]) {
+			return $this->hasMany(TentativeProgMdl::class, "avancement_id", "id");
+		} else {
+			return $this->hasMany(TentativeSysMdl::class, "avancement_id", "id");
+		}
+	}
+
+	public function sauvegardes()
+	{
+		return $this->hasMany(SauvegardeMdl::class, "avancement_id", "id");
 	}
 }
-
 ?>

@@ -20,7 +20,8 @@ namespace progression\dao;
 
 use mysqli_sql_exception;
 use progression\domaine\entité\{Avancement, Question};
-use progression\dao\models\AvancementMdl;
+use progression\dao\models\{AvancementMdl, UserMdl};
+use progression\dao\tentative\{TentativeDAO, TentativeProgDAO, TentativeSysDAO};
 
 class AvancementDAO extends EntitéDAO
 {
@@ -36,12 +37,14 @@ class AvancementDAO extends EntitéDAO
 	public function get_avancement($username, $question_uri, $includes = [])
 	{
 		try {
-			return $this->construire(
-				AvancementMdl::where("username", $username)
-					->where("question_uri", $question_uri)
-					->first(),
-				$includes,
-			)[0];
+			$data = AvancementMdl::where("username", $username)
+				->where("question_uri", $question_uri)
+				->first();
+			if ($data) {
+				return $this->construire([$data], $includes)[$question_uri];
+			} else {
+				return null;
+			}
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -50,16 +53,20 @@ class AvancementDAO extends EntitéDAO
 	public function save($username, $question_uri, $avancement)
 	{
 		try {
+			$user_id = UserMdl::where("username", $username)->first()["id"];
 			$objet = [];
-			$objet["etat"] = $avancement->état;
+			$objet["etat"] = $avancement->etat;
 			$objet["question_uri"] = $question_uri;
 			$objet["username"] = $username;
 			$objet["titre"] = $avancement->titre;
 			$objet["niveau"] = $avancement->niveau;
 			$objet["date_modification"] = $avancement->date_modification;
 			$objet["date_reussite"] = $avancement->date_réussite;
+			$objet["user_id"] = $user_id;
 
-			return $this->construire([AvancementMdl::updateOrCreate($objet)])[0];
+			return $this->construire([
+				AvancementMdl::updateOrCreate(["username" => $username, "question_uri" => $question_uri], $objet),
+			])[$question_uri];
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -67,18 +74,30 @@ class AvancementDAO extends EntitéDAO
 
 	public static function construire($data, $includes = [])
 	{
+		if ($data == null) {
+			return [];
+		}
+
 		$avancements = [];
-		foreach ($data as $avancement) {
-			$avancements[$avancement["question_uri"]] = new Avancement(
-				$avancement["etat"],
-				$avancement["type"],
-				in_array("tentatives", $includes) ? TentativeDAO::construire($avancement["tentatives"]) : [],
-				in_array("sauvegardes", $includes) ? SauvegardeDAO::construire($avancement["sauvegardes"]) : [],
-				$avancement["titre"],
-				$avancement["niveau"],
-				$avancement["date_modification"],
-				$avancement["date_reussite"],
+		foreach ($data as $i => $item) {
+			$tentatives = [];
+			if (in_array("tentatives", $includes)) {
+				if ($item["type"] == "prog") {
+					$tentatives = TentativeProgDAO::construire($item["tentatives"]);
+				} elseif ($item["type"] == "sys") {
+					$tentatives = TentativeSysDAO::construire($item["tentatives"]);
+				}
+			}
+			$avancement = new Avancement(
+				$tentatives,
+				$item["titre"],
+				$item["niveau"],
+				in_array("sauvegardes", $includes) ? SauvegardeDAO::construire($item["sauvegardes"]) : [],
 			);
+			$avancement->etat = $item["etat"];
+			$avancement->date_modification = $item["date_modification"];
+			$avancement->date_réussite = $item["date_reussite"];
+			$avancements[$item["question_uri"]] = $avancement;
 		}
 
 		return $avancements;

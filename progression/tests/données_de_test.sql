@@ -39,8 +39,7 @@ INSERT INTO cle(username, nom, hash, creation, expiration, portee, user_id) VALU
   1624680000,
   1,
   2
-),
-(
+), (
   "bob",
   "clé de test 2",
   "2345",
@@ -50,87 +49,99 @@ INSERT INTO cle(username, nom, hash, creation, expiration, portee, user_id) VALU
   2
 );
 
-INSERT INTO sauvegarde(
-  `username`,
-  `question_uri`,
-  `date_sauvegarde`,
-  `langage`,
-  `code`
-  ) VALUES (
+INSERT INTO avancement(id, type, username, question_uri, etat, titre, niveau, date_modification, date_reussite, user_id) VALUES (
+  1,
+  "prog",
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-  1620150294,
-  "python",
-  "print(\"Hello world!\")"
-  ), (
-  "bob",
-  "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-  1620150375,
-  "java",
-  "System.out.println(\"Hello world!\");"
-);
-
-INSERT INTO avancement VALUES (
-  "Bob",
-  "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-  0,
+  1,
   "Un titre",
   "facile",
-  1645739981,
-  1645739959 
-);
-
-INSERT INTO avancement VALUES (
-  "Bob",
+  1615696276,
+  null,
+  2
+),(
+  2,
+  "prog",
+  "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction",
   1,
   "Un titre",
   "facile",
   1645739981,
-  1645739959
-);
-
-INSERT INTO avancement VALUES (
-  "Bob",
+  1645739959,
+  2
+),(
+  3,
+  "prog",
+  "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction2",
-  1,
+  2,
   "Un titre 2",
   "facile",
   1645739991,
-  1645739969
-);
-
-INSERT INTO avancement VALUES (
+  1645739969,
+  2
+),(
+  4,
+  "prog",
   "Stefany",
   "https://exemple.com",
   1,
   "Bob",
   "facile",
   1645739981,
-  1645739959
-);
-
-INSERT INTO avancement VALUES (
+  1645739959,
+  4
+),(
+  5,
+  "prog",
   "jdoe",
   "https://exemple2.com",
   1,
   "Question Système",
   "facile",
   1645739981,
-  1645739959
-);
-
-INSERT INTO avancement VALUES (
+  1645739959,
+  1
+),(
+  6,
+  "sys",
   "jdoe",
   "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
   1,
   "Toutes Permissions",
   "facile",
   1645739981,
-  1645739959
+  1645739959,
+  1
 );
 
-INSERT INTO reponse_prog( username, question_uri, date_soumission, langage, code, reussi, tests_reussis, avancement_id) VALUES (
+INSERT INTO sauvegarde(
+  `username`,
+  `question_uri`,
+  `date_sauvegarde`,
+  `langage`,
+  `code`,
+  `avancement_id`
+) VALUES (
+  "bob",
+  "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+  1620150294,
+  "python",
+  "print(\"Hello world!\")",
+  1
+), (
+  "bob",
+  "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+  1620150375,
+  "java",
+  "System.out.println(\"Hello world!\");",
+  1
+);
+
+INSERT INTO reponse_prog(id, username, question_uri, date_soumission, langage, code, reussi, tests_reussis, temps_exécution, avancement_id) VALUES (
+  1,
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
   1615696276,
@@ -138,10 +149,10 @@ INSERT INTO reponse_prog( username, question_uri, date_soumission, langage, code
   "print(\"Tourlou le monde!\")",
   0,
   2,
-  3456
-);
-
-INSERT INTO reponse_prog VALUES (
+  3456,
+  1
+),(
+  2,
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction",
   1615696286,
@@ -149,10 +160,10 @@ INSERT INTO reponse_prog VALUES (
   "print(\"Allo le monde!\")",
   0,
   3,
-  34567
-);
-
-INSERT INTO reponse_prog VALUES (
+  34567,
+  3
+),(
+  3,
   "bob",
   "https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction",
   1615696296,
@@ -160,10 +171,11 @@ INSERT INTO reponse_prog VALUES (
   "print(\"Allo tout le monde!\")",
   1,
   4,
-  345633
+  345633,
+  3
 );
 
-INSERT INTO reponse_sys VALUES (
+INSERT INTO reponse_sys(username, question_uri, conteneur, reponse, date_soumission, reussi, tests_reussis, temps_exécution) VALUES (
   "jdoe",
   "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
   "leConteneur",
@@ -172,9 +184,7 @@ INSERT INTO reponse_sys VALUES (
   0,
   0,
   0
-);
-
-INSERT INTO reponse_sys VALUES (
+),(
   "jdoe",
   "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
   "leConteneur2",

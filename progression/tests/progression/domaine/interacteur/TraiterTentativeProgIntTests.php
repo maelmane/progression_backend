@@ -39,11 +39,18 @@ final class TraiterTentativeProgIntTests extends TestCase
 
 		$tentative = new TentativeProg("python", "testCode", null, false, [], 2, 100);
 		$tentative->résultats = [new Résultat("ok\n", ""), new Résultat("ok\nok\nok\nok\nok\n", "")];
-		$résultat_attendu = new TentativeProg("python", "testCode", null, true, [
-			new Résultat("ok\n", "", true, "Test 0 passé"),
-			new Résultat("ok\nok\nok\nok\nok\n", "", true, "Test 1 passé"),
-		],
-											  2, 100, "Bravo!"
+		$résultat_attendu = new TentativeProg(
+			"python",
+			"testCode",
+			null,
+			true,
+			[
+				new Résultat("ok\n", "", true, "Test 0 passé"),
+				new Résultat("ok\nok\nok\nok\nok\n", "", true, "Test 1 passé"),
+			],
+			2,
+			100,
+			"Bravo!",
 		);
 
 		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($tentative, $rétroactions, $tests);
@@ -151,7 +158,7 @@ final class TraiterTentativeProgIntTests extends TestCase
 			[new Résultat("ok\n", "", true, "Test 0 passé"), new Résultat("", "testErreur", false, "Erreur!")],
 			1,
 			100,
-			"Revise la syntaxe de ton code"
+			"Revise la syntaxe de ton code",
 		);
 
 		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($tentative, $rétroactions, $tests);
@@ -183,7 +190,7 @@ final class TraiterTentativeProgIntTests extends TestCase
 			null,
 			false,
 			[new Résultat("ok\n", "", true, "Test 0 passé"), new Résultat("", "testErreur", false, null)],
-			1
+			1,
 		);
 
 		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($tentative, $rétroactions, $tests);
