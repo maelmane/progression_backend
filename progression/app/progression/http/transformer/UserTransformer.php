@@ -19,7 +19,6 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\User;
-
 use progression\util\Encodage;
 
 class UserTransformer extends BaseTransformer
@@ -44,24 +43,29 @@ class UserTransformer extends BaseTransformer
 
 	public function includeAvancements(User $user)
 	{
+        $id_parent = $user->username;
+        
 		foreach ($user->avancements as $uri => $avancement) {
-			$avancement->uri = $uri;
+			$avancement->id = Encodage::base64_encode_url($uri);
 			$avancement->links = [
-				"related" => $_ENV["APP_URL"] . "user/{$this->id}",
+				"related" => $_ENV["APP_URL"] . "user/{$id_parent}",
 			];
 		}
 
-		return $this->collection($user->avancements, new AvancementTransformer($user->username), "avancement");
+		return $this->collection($user->avancements, new AvancementTransformer($id_parent), "avancement");
 	}
 
 	public function includeCles(User $user)
 	{
+        $id_parent = $user->username;
+        
 		foreach ($user->clés as $nom => $clé) {
+            $clé->id = $nom;
 			$clé->links = [
-				"related" => $_ENV["APP_URL"] . "user/{$user->username}",
+				"related" => $_ENV["APP_URL"] . "user/{$id_parent}",
 			];
 		}
 
-		return $this->collection($user->clés, new CléTransformer($user->username), "cle");
+		return $this->collection($user->clés, new CléTransformer($id_parent), "cle");
 	}
 }

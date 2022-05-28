@@ -25,7 +25,7 @@ class TentativeProgTransformer extends TentativeTransformer
 	public $type = "tentative";
 	protected array $availableIncludes = ["resultats", "commentaires"];
 
-	public function transform(Tentative $tentative)
+	public function transform($tentative)
 	{
 		$data_out = parent::transform($tentative);
 		$data_out = array_merge($data_out, [
@@ -39,10 +39,12 @@ class TentativeProgTransformer extends TentativeTransformer
 
 	public function includeResultats(TentativeProg $tentative)
 	{
+        $id_parent = "{$this->id}/{$tentative->id}";
+
 		foreach ($tentative->résultats as $i => $résultat) {
-			$résultat->numéro = $i;
-			$résultat->links = ["related" => "$_ENV['APP_URL']/tentative/{$this->id}/{$tentative->date_soumission}"];
+            $résultat->id = $i;
+			$résultat->links = ["related" => "{$_ENV['APP_URL']}tentative/{$id_parent}"];
 		}
-		return $this->collection($tentative->résultats, new RésultatTransformer("{$this->id}/{$tentative->date_soumission}"), "resultat");
+		return $this->collection($tentative->résultats, new RésultatTransformer($id_parent), "resultat");
 	}
 }

@@ -42,14 +42,14 @@ class QuestionSysTransformer extends QuestionTransformer
 	{
 		$question = $data_in["question"];
 
+        $id_parent = $this->id . "/" . Encodage::base64_encode_url($question->uri);
 		foreach ($question->tests as $i => $test) {
-			$test->numéro = $i;
-			$test->id = Encodage::base64_encode_url($question->uri) . "/$i";
+			$test->id = $i;
 			$test->links = [
-				"related" => $_ENV["APP_URL"] . "question/" . Encodage::base64_encode_url($question->uri),
+				"related" => $id_parent,
 			];
 		}
 
-		return $this->collection($question->tests, new TestSysTransformer(), "test");
+		return $this->collection($question->tests, new TestSysTransformer($id_parent), "test");
 	}
 }

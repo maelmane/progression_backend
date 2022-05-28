@@ -28,13 +28,13 @@ class TentativeTransformer extends BaseTransformer
 	public function transform(Tentative $tentative)
 	{
 		$data_out = [
-			"id" => "{$id}/{$tentative->date_soumission}",
+			"id" => "{$this->id}/{$tentative->id}",
 			"date_soumission" => $tentative->date_soumission,
 			"feedback" => $tentative->feedback,
 			"réussi" => $tentative->réussi,
 			"temps_exécution" => $tentative->temps_exécution,
 			"links" => (isset($tentative->links) ? $tentative->links : []) + [
-				"self" => "{$_ENV['APP_URL']}tentative/{$this->id}/{$tentative->date_soumission}",
+				"self" => "{$_ENV['APP_URL']}tentative/{$this->id}/{$tentative->id}",
 			],
 		];
 
@@ -44,11 +44,15 @@ class TentativeTransformer extends BaseTransformer
 	public function includeCommentaires(Tentative $tentative)
 	{
 		$commentaires = $tentative->commentaires;
+
+        $id_parent = "{$this->id}/{$tentative->id}";
+        
 		foreach ($commentaires as $numéro => $commentaire) {
+            $commentaire->id = $numéro;
 			$commentaire->links = [
-				"related" => "{$_ENV['APP_URL']}tentative/{$this->id}/{$tentative->date_soumission}",
+				"related" => "{$_ENV['APP_URL']}tentative/{$id_parent}",
 			];
 		}
-		return $this->collection($commentaires, new CommentaireTransformer("{$this->id}/{$tentative->date_soumission}"), "commentaire");
+		return $this->collection($commentaires, new CommentaireTransformer($id_parent), "commentaire");
 	}
 }

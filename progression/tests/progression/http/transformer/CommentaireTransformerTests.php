@@ -28,9 +28,8 @@ final class CommentaireTransformerTests extends TestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$commentaire = new Commentaire("message envoyer poar interacteurMocker", "createur Mock", 122456747, 15);
-		$commentaire->id = "createur Mock/test/122456747/11";
-		$commentaireTransformer = new CommentaireTransformer();
-		$résultat = [
+		$commentaireTransformer = new CommentaireTransformer("createur Mock/test/122456747");
+		$résultat_attendu = [
 			"id" => "createur Mock/test/122456747/11",
 			"message" => "message envoyer poar interacteurMocker",
 			"créateur" => "createur Mock",
@@ -41,6 +40,7 @@ final class CommentaireTransformerTests extends TestCase
 			],
 		];
 
-		$this->assertEquals($résultat, $commentaireTransformer->transform($commentaire));
+        $commentaire->id = 11;
+		$this->assertEquals($résultat_attendu, $commentaireTransformer->transform($commentaire));
 	}
 }

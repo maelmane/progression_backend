@@ -27,11 +27,11 @@ class SauvegardeTransformer extends BaseTransformer
 	public function transform(Sauvegarde $sauvegarde)
 	{
 		$data_out = [
-			"id" => "{$this->id}/{$sauvegarde->langage}",
+			"id" => "{$this->id}/{$sauvegarde->id}",
 			"date_sauvegarde" => $sauvegarde->date_sauvegarde,
 			"code" => $sauvegarde->code,
 			"links" => (isset($sauvegarde->links) ? $sauvegarde->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}sauvegarde/{$this->id}/{$sauvegarde->langage}",
+				"self" => "{$_ENV["APP_URL"]}sauvegarde/{$this->id}/{$sauvegarde->id}",
 			],
 		];
 

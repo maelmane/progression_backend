@@ -19,7 +19,6 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\{Avancement, Question};
-use progression\util\Encodage;
 
 class AvancementTransformer extends BaseTransformer
 {
@@ -31,14 +30,14 @@ class AvancementTransformer extends BaseTransformer
 	public function transform(Avancement $avancement)
 	{
 		$data_out = [
-			"id" => $this->id ."/". Encodage::base64_encode_url($avancement->uri),
+			"id" => "{$this->id}/{$avancement->id}",
 			"état" => $avancement->etat,
 			"titre" => $avancement->titre,
 			"niveau" => $avancement->niveau,
 			"date_modification" => $avancement->date_modification,
 			"date_réussite" => $avancement->date_réussite,
 			"links" => (isset($avancement->links) ? $avancement->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}avancement/{$this->id}",
+				"self" => "{$_ENV["APP_URL"]}avancement/{$this->id}/{$avancement->id}",
 			],
 		];
 
@@ -50,9 +49,12 @@ class AvancementTransformer extends BaseTransformer
 		$params = $this->validerParams($params);
 		$tentatives = $avancement->tentatives;
 
+		$id_parent = "{$this->id}/{$avancement->id}";
+        
 		foreach ($tentatives as $tentative) {
+            $tentative->id = $tentative->date_soumission;
 			$tentative->links = [
-				"related" => "{$_ENV["APP_URL"]}avancement/{$this->id}",
+				"related" => "{$_ENV["APP_URL"]}avancement/{$id_parent}",
 			];
 
 			if ($params && array_key_exists("fields", $params)) {
@@ -60,28 +62,30 @@ class AvancementTransformer extends BaseTransformer
 			}
 		}
 
-		$id = $this->id . "/" . Encodage::base64_encode_url($avancement->uri);
-		if (empty($tentative)) {
-			return $this->collection($tentatives, new TentativeTransformer($id), "tentative");
+		if (empty($tentatives)) {
+			return $this->collection($tentatives, new TentativeTransformer($id_parent), "tentative");
 		} else {
 			if ($tentatives[0] instanceof TentativeProg) {
-				return $this->collection($tentatives, new TentativeProgTransformer($id), "tentative");
+				return $this->collection($tentatives, new TentativeProgTransformer($id_parent), "tentative");
 			} elseif ($tentatives[0] instanceof TentativeSys) {
-				return $this->collection($tentatives, new TentativeSysTransformer($id), "tentative");
+				return $this->collection($tentatives, new TentativeSysTransformer($id_parent), "tentative");
 			} else {
-				return $this->collection($tentatives, new TentativeTransformer($id), "tentative");
+				return $this->collection($tentatives, new TentativeTransformer($id_parent), "tentative");
 			}
 		}
 	}
 
 	public function includeSauvegardes($avancement)
 	{
+		$id_parent = "{$this->id}/{$avancement->id}";
+
 		foreach ($avancement->sauvegardes as $langage => $sauvegarde) {
+            $sauvegarde->id = $langage;
 			$sauvegarde->links = [
-				"related" => "{$_ENV["APP_URL"]}avancement/{$this->id}/" . Encodage::base64_encode_url($avancement->uri),
+				"related" => "{$_ENV["APP_URL"]}avancement/{$id_parent}";
 			];
 		}
 
-		return $this->collection($avancement->sauvegardes, new SauvegardeTransformer($this->id . "/" . Encodage::base64_encode_url($avancement->uri)), "sauvegarde");
+		return $this->collection($avancement->sauvegardes, new SauvegardeTransformer($id_parent), "sauvegarde");
 	}
 }

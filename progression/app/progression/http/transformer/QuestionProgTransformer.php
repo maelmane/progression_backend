@@ -37,26 +37,31 @@ class QuestionProgTransformer extends QuestionTransformer
 	{
 		$question = $data_in["question"];
 
+        $id_parent = Encodage::base64_encode_url($question->uri);
+        
 		foreach ($question->tests as $i => $test) {
-			$test->numéro = $i;
+			$test->id = $i;
 			$test->links = [
-				"related" => $_ENV["APP_URL"] . "question/" . Encodage::base64_encode_url($question->uri),
+				"related" => $_ENV["APP_URL"] . "question/{$id_parent}",
 			];
 		}
 
-		return $this->collection($question->tests, new TestTransformer(Encodage::base64_encode_url($question->uri)), "test");
+		return $this->collection($question->tests, new TestTransformer($id_parent), "test");
 	}
 
 	public function includeEbauches($data_in)
 	{
 		$question = $data_in["question"];
+        
+        $id_parent = Encodage::base64_encode_url($question->uri);
 
 		foreach ($question->exécutables as $ébauche) {
+            $ébauche->id = $ébauche->lang;
 			$ébauche->links = [
-				"related" => $_ENV["APP_URL"] . "question/" . Encodage::base64_encode_url($question->uri),
+				"related" => $_ENV["APP_URL"] . "question/{$id_parent}",
 			];
 		}
 
-		return $this->collection($question->exécutables, new ÉbaucheTransformer(Encodage::base64_encode_url($question->uri)), "ebauche");
+		return $this->collection($question->exécutables, new ÉbaucheTransformer($id_parent), "ebauche");
 	}
 }

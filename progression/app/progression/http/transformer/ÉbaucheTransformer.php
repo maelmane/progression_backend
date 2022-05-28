@@ -27,11 +27,11 @@ class ÉbaucheTransformer extends BaseTransformer
 	public function transform(Exécutable $ébauche)
 	{
 		$data_out = [
-			"id" => "{$this->id}/{$ébauche->lang}",
+			"id" => "{$this->id}/{$ébauche->id}",
 			"langage" => $ébauche->lang,
 			"code" => $ébauche->code,
 			"links" => (isset($ébauche->links) ? $ébauche->links : []) + [
-				"self" => "{$_ENV['APP_URL']}ebauche/{$this->id}/{$ébauche->lang}",
+				"self" => "{$_ENV['APP_URL']}ebauche/{$this->id}/{$ébauche->id}",
 			],
 		];
 

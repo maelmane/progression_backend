@@ -33,11 +33,9 @@ final class SauvegardeTransformerTests extends TestCase
 	public function test_étant_donné_une_sauvegarde_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
 	{
 		$sauvegarde = new Sauvegarde(1620150294, "print(\"Hello world!\")");
-		$sauvegarde->id =
-			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python";
 
-		$sauvegardeTransformer = new SauvegardeTransformer();
-		$résultats_obtenus = $sauvegardeTransformer->transform($sauvegarde);
+		$sauvegardeTransformer = new SauvegardeTransformer("jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
+		$résultats_obtenus = $sauvegardeTransformer->transform("python", $sauvegarde);
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/sauvegardeTransformerTest_1.json",
 			json_encode($résultats_obtenus),
