@@ -48,7 +48,6 @@ class QuestionDAO extends EntitéDAO
 
 		$infos_question["uri"] = $uri;
 		$type = $infos_question["type"] ?? ($type = "prog");
-
 		if ($type == "prog") {
 			return DécodeurQuestionProg::load(new QuestionProg(), $infos_question);
 		} elseif ($type == "sys") {

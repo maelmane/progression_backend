@@ -25,17 +25,10 @@ use Exception;
 
 class SauvegarderTentativeInt extends Interacteur
 {
-	public function sauvegarder($username, $question, $tentative)
+	public function sauvegarder($username, $question_uri, $tentative)
 	{
 		$dao_tentative = $this->source_dao->get_tentative_dao();
 
-		$avancement = $avancementInt->récupérer_avancement($username, $question, $tentative);
-		$avancement->titre = $question->titre;
-		$avancement->niveau = $question->niveau;
-
-		$avancementInt = new SauvegarderAvancementInt();
-		$avancementInt->sauvegarder($username, $question->uri, $avancement);
-
-		return $dao_tentative->save($username, $question->uri, $tentative);
+		return $dao_tentative->save($username, $question_uri, $tentative);
 	}
 }

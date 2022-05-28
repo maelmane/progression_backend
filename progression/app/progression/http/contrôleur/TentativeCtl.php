@@ -23,12 +23,14 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransformer, TentativeBDTransformer};
 use progression\domaine\interacteur\{
+ObtenirAvancementInt,
 	ObtenirTentativeInt,
 	ObtenirQuestionInt,
+    SauvegarderAvancementInt,
+	SauvegarderTentativeInt,
 	SoumettreTentativeProgInt,
 	SoumettreTentativeSysInt,
-	SauvegarderTentativeInt,
-};
+    };
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{Question, QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\entité\TestProg;
@@ -48,17 +50,17 @@ class TentativeCtl extends Contrôleur
 		$tentative = $tentativeInt->get_tentative($username, $chemin, $timestamp);
 
 		if ($tentative != null) {
-			$tentative->id = "{$username}/{$question_uri}/{$timestamp}";
+			$tentative->id = "$timestamp";
 		}
 
 		$réponse = null;
 
 		if ($tentative instanceof TentativeProg) {
-			$réponse = $this->item($tentative, new TentativeProgTransformer());
+			$réponse = $this->item($tentative, new TentativeProgTransformer("$username/$request->question_uri"));
 		} elseif ($tentative instanceof TentativeSys) {
-			$réponse = $this->item($tentative, new TentativeSysTransformer());
+			$réponse = $this->item($tentative, new TentativeSysTransformer("$username/$request->question_uri"));
 		} elseif ($tentative instanceof TentativeBD) {
-			$réponse = $this->item($tentative, new TentativeBDTransformer());
+			$réponse = $this->item($tentative, new TentativeBDTransformer("$username/$request->question_uri"));
 		}
 
 		return $this->préparer_réponse($réponse);
@@ -83,9 +85,9 @@ class TentativeCtl extends Contrôleur
 					);
 					return $this->réponse_json(["erreur" => $validation->errors()], 400);
 				}
-				$réponse = $this->traiter_post_QuestionProg($request, $username, $question_uri, $question);
+				$réponse = $this->traiter_post_QuestionProg($request, $username, $chemin, $question);
 			} elseif ($question instanceof QuestionSys) {
-				$réponse = $this->traiter_post_QuestionSys($request, $username, $question_uri, $question);
+				$réponse = $this->traiter_post_QuestionSys($request, $username, $chemin, $question);
 			} else {
 				Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 				return $this->réponse_json(["erreur" => "Question de type non implémentée."], 501);
@@ -97,6 +99,7 @@ class TentativeCtl extends Contrôleur
 					")
 				{$erreur->getMessage()}",
 			);
+
 			return $this->réponse_json(["erreur" => $erreur->getMessage()], $erreur->getCode());
 		} catch (ExécutionException $e) {
 			Log::error($e->getMessage());
@@ -111,30 +114,31 @@ class TentativeCtl extends Contrôleur
 		return $réponse;
 	}
 
-	private function traiter_post_QuestionProg(Request $request, $username, $question_uri, $question)
+	private function traiter_post_QuestionProg(Request $request, $username, $chemin, $question)
 	{
 		$tests = $request->test ? [$this->construire_test($request->test)] : $question->tests;
 
 		$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
+
 		$tentative_résultante = $this->soumettre_tentative_prog($username, $question, $tests, $tentative);
 
 		if (!$tentative_résultante) {
 			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
 
-		$tentative_résultante->id = "{$username}/{$request->question_uri}/{$tentative->date_soumission}";
 		if (empty($request->test)) {
-			$this->sauvegarder_tentative($username, $question, $tentative_résultante);
+			$this->sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative_résultante);
 		}
 
-		$réponse = $this->item($tentative_résultante, new TentativeProgTransformer());
+		$tentative_résultante->id = $tentative->date_soumission;
+		$réponse = $this->item($tentative_résultante, new TentativeProgTransformer("$username/$request->question_uri"));
 
 		return $this->préparer_réponse($réponse);
 	}
 
-	private function traiter_post_QuestionSys(Request $request, $username, $question_uri, $question)
+	private function traiter_post_QuestionSys(Request $request, $username, $chemin, $question)
 	{
-		$conteneur = $request->conteneur ?? $this->récupérer_conteneur($username, $question->uri);
+		$conteneur = $request->conteneur ?? $this->récupérer_conteneur($username, $chemin);
 
 		$tentative = new TentativeSys(["id" => $conteneur], $request->réponse, (new \DateTime())->getTimestamp());
 
@@ -143,10 +147,10 @@ class TentativeCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
 
-		$tentative_résultante->id = "{$username}/{$request->question_uri}/{$tentative->date_soumission}";
-		$this->sauvegarder_tentative($username, $question, $tentative_résultante);
+		$tentative_résultante->id = $tentative->date_soumission;
+		$this->sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative_résultante);
 
-		$réponse = $this->item($tentative, new TentativeSysTransformer());
+		$réponse = $this->item($tentative, new TentativeSysTransformer("$username/$request->question_uri"));
 
 		return $this->préparer_réponse($réponse);
 	}
@@ -171,14 +175,13 @@ class TentativeCtl extends Contrôleur
 	private function récupérer_question($chemin)
 	{
 		$questionInt = new ObtenirQuestionInt();
+
 		try {
 			return $questionInt->get_question($chemin);
-		} catch (LengthException $erreur) {
-			throw new ContrôleurException("Limite de volume dépassé.", 509);
 		} catch (RuntimeException $erreur) {
-			throw new ContrôleurException("Ressource indisponible sur le serveur distant.", 502);
+			throw new ContrôleurException($erreur->getMessage(), 502);
 		} catch (DomainException $erreur) {
-			throw new ContrôleurException("Requête intraitable.", 400);
+			throw new ContrôleurException($erreur->getMessage(), 400);
 		}
 	}
 
@@ -216,10 +219,21 @@ class TentativeCtl extends Contrôleur
 		return $résultat;
 	}
 
-	private function sauvegarder_tentative($username, $question, $tentative)
+	private function sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative)
 	{
 		$sauvegardeTentativeInt = new SauvegarderTentativeInt();
-		$sauvegardeTentativeInt->sauvegarder($username, $question, $tentative);
+		$sauvegardeTentativeInt->sauvegarder($username, $chemin, $tentative);
+
+        $avancementInt = new ObtenirAvancementInt();
+		$avancement = $avancementInt->get_avancement($username, $chemin);
+
+		$avancement->titre = $question->titre;
+		$avancement->niveau = $question->niveau;
+        $avancement->ajouter_tentative($tentative);
+
+		$avancementInt = new SauvegarderAvancementInt();
+		$avancementInt->sauvegarder($username, $chemin, $avancement);
+
 	}
 
 	private function récupérer_conteneur($username, $chemin)

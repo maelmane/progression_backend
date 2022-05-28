@@ -20,7 +20,6 @@ namespace progression\domaine\entité;
 
 class Avancement
 {
-	public $uri;
 	public $etat;
 	public $tentatives;
 	public $titre;
@@ -45,7 +44,6 @@ class Avancement
 	public function __set($name, $value)
 	{
 		if ($name == "tentatives") {
-			$this->tentatives = $value;
 
 			$this->mettre_à_jour_dates_et_état();
 		}
@@ -62,15 +60,19 @@ class Avancement
 				$this->date_réussite = $tentative->date_soumission;
 			}
 		}
-		$tentatives[] = $tentative;
+		$this->tentatives[] = $tentative;
 	}
 
 	private function mettre_à_jour_dates_et_état()
 	{
+        $tentatives = $this->tentatives;
+
 		$this->etat = empty($this->tentatives) ? Question::ETAT_DEBUT : Question::ETAT_NONREUSSI;
-		$this->date_modification = null;
+        $this->date_modification = null;
 		$this->date_réussite = null;
-		foreach ($this->tentatives as $i => $tentative) {
+        $this->tentatives=[];
+        
+		foreach ($tentatives as $i => $tentative) {
 			$this->ajouter_tentative($tentative);
 		}
 	}
