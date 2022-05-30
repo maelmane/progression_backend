@@ -232,7 +232,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
         $this->assertEquals(200, $résultat_obtenu->status());
         $this->assertJsonStringEqualsJsonFile(
-            __DIR__ . "/résultats_attendus/tentativeCtlTest_réussie.json",
+            __DIR__ . "/résultats_attendus/tentativeCtlTest_prog_réussie.json",
             $résultat_obtenu->getContent(),
         );
     }
@@ -302,7 +302,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
         );
 
         $this->assertEquals(200, $résultat_obtenu->status());
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . "/résultats_attendus/tentativeCtlTest_avancement_réussi_tentative_réussie.json",
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_avancement_réussi_tentative_réussie.json",
             $résultat_obtenu->getContent(),
         );
     }
@@ -357,7 +357,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
         );
 	   
         $this->assertEquals(200, $résultat_obtenu->status());
-        $this->assertJsonStringEqualsJsonFile(__DIR__ . "/résultats_attendus/tentativeCtlTest_avancement_non_réussi_tentative_réussie.json",
+        $this->assertJsonStringEqualsJsonFile(__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_avancement_non_réussi_tentative_réussie.json",
             $résultat_obtenu->getContent(),
         );
     }
@@ -416,7 +416,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
         $this->assertEquals(200, $résultat_obtenu->status());
         $this->assertJsonStringEqualsJsonFile(
-            __DIR__ . "/résultats_attendus/tentativeCtlTest_avancement_non_réussi_tentative_non_réussie.json",
+            __DIR__ . "/résultats_attendus/tentativeCtlTest_prog_avancement_non_réussi_tentative_non_réussie.json",
 			$résultat_obtenu->getContent()
 		);
 	}
@@ -481,7 +481,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
         $this->assertLessThanOrEqual(1, $heure_tentative-time());
 
         $this->assertJsonStringEqualsJsonString(
-            sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_test_unique_réussie.json"), $heure_tentative),
+            sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_test_unique_réussie.json"), $heure_tentative),
             $résultat_obtenu->getContent(),
         );
     }
@@ -510,7 +510,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
         $this->assertLessThanOrEqual(1, $heure_tentative-time());
 
         $this->assertJsonStringEqualsJsonString(
-            sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_test_unique_non_réussie.json"), $heure_tentative),
+            sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_test_unique_non_réussie.json"), $heure_tentative),
             $résultat_obtenu->getContent(),
         );
     }

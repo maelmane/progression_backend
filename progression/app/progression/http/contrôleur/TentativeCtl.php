@@ -147,9 +147,9 @@ class TentativeCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
 
-		$tentative_résultante->id = $tentative->date_soumission;
 		$this->sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative_résultante);
 
+		$tentative_résultante->id = $tentative->date_soumission;
 		$réponse = $this->item($tentative, new TentativeSysTransformer("$username/$request->question_uri"));
 
 		return $this->préparer_réponse($réponse);
