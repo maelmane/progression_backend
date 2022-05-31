@@ -26,8 +26,20 @@ final class QuestionSysTests extends TestCase
 	{
 		$tests_attendu = ["testSys0", "testSys1"];
 
-		$résultat_obtenu = new QuestionSys("imageDocker", "Bob", "solutionTest");
-		$résultat_obtenu->tests = ["testSys0", "testSys1"];
+		$résultat_obtenu = new QuestionSys(
+            niveau: "Facile",
+            titre: "Question système 1",
+            description: "Ceci est une question système.",
+            enonce: "Un énoncé",
+            auteur: "Un auteur",
+            licence: "Licence",
+            feedback_pos: "Feedback positif",
+            feedback_neg: "Feedback négatif",
+            feedback_err: "Feedback erreur",
+            image: "imageDocker",
+            utilisateur: "Bob",
+            solution: "solutionTest",
+            tests: ["testSys0", "testSys1"]);
 
 		$this->assertEquals("imageDocker", $résultat_obtenu->image);
 		$this->assertEquals("Bob", $résultat_obtenu->utilisateur);
