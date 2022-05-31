@@ -50,9 +50,9 @@ class AvancementsCtl extends Contrôleur
 		} else {
 			$réponse = [];
 			foreach ($avancements as $id => $avancement) {
-				$avancement->id = $username . "/" . Encodage::base64_encode_url($id);
+				$avancement->id = Encodage::base64_encode_url($id);
 			}
-			$réponse = $this->collection($avancements, new AvancementTransformer());
+			$réponse = $this->collection($avancements, new AvancementTransformer($username));
 		}
 
 		$réponse = $this->préparer_réponse($réponse);
