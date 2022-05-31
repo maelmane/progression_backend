@@ -41,7 +41,7 @@ class Avancement
 		$this->mettre_à_jour_dates_et_état();
 	}
 
-	public function ajouter_tentative($id, $tentative)
+	public function ajouter_tentative($tentative, $i = null)
 	{
 		if ($tentative->date_soumission > $this->date_modification) {
 			$this->date_modification = $tentative->date_soumission;
@@ -52,7 +52,7 @@ class Avancement
 				$this->date_réussite = $tentative->date_soumission;
 			}
 		}
-		$this->tentatives[$id] = $tentative;
+		$this->tentatives[$i ?? count($this->tentatives)] = $tentative;
 	}
 
 	private function mettre_à_jour_dates_et_état()
@@ -65,7 +65,7 @@ class Avancement
         $this->tentatives=[];
         
 		foreach ($tentatives as $i => $tentative) {
-			$this->ajouter_tentative($i, $tentative);
+			$this->ajouter_tentative($tentative, $i);
 		}
 	}
 }
