@@ -309,29 +309,63 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			$résultat_obtenu->getContent(),
 		);
 	}
-	/*
-	   public function test_étant_donné_une_questionSys_lorsquon_soumet_la_mauvaise_réponse_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeSys_échouée()
+
+	public function test_étant_donné_un_avancement_non_réussi_pour_une_QuestionSys_à_solution_courte_lorsquon_soumet_la_mauvaise_réponse_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeSys_échouée()
 	   {
-	   $résultat_obtenu = $this->actingAs($this->user)->call(
-	   "POST",
-	   "/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnM/tentatives?include=resultats",
-	   ["conteneur" => "leConteneurDeLaNouvelleTentative6", "réponse" => "Bonsoir"],
-	   );
+		$nouvelle_tentative = new TentativeSys(
+			conteneur: [
+				"id" => "leConteneurDeLaNouvelleTentative",
+				"ip" => "172.45.2.2",
+				"port" => 45667,
+			],
+			réponse: "Mauvaise réponse",
+			date_soumission: 1653690241,
+			réussi: false,
+			tests_réussis: 0,
+			feedback: "Encore un effort!",
+            temps_exécution: 0,
+		);
 
-	   $mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
-	   $mockTentativeDAO->shouldReceive("save")->andReturnArg(2);
+		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
+		$mockTentativeDAO
+			->shouldReceive("save")
+			->withArgs(function ($user, $uri, $t) use ($nouvelle_tentative) {
+                if($t->date_soumission-time() > 1) throw "Temps d'exécution >1s {$t->date_soumission}";
+                $t->date_soumission = $nouvelle_tentative->date_soumission;
+				return $user == "jdoe" &&
+					$uri == "https://depot.com/question_solution_courte_non_réussie" &&
+					$t == $nouvelle_tentative;
+			})
+			->andReturn($nouvelle_tentative);
 
-	   $mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
-	   $mockAvancementDAO->shouldReceive("save")->andReturnArg(2);
+		$nouvel_avancement = new Avancement(
+			tentatives: [$this->tentative_solution_courte_non_réussie, $nouvelle_tentative],
+			titre: "Question à solution courte",
+			niveau: "Débutant",
+		);
 
-	   $heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
+		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
+		$mockAvancementDAO
+			->shouldReceive("save")
+			->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
+				return $user == "jdoe" &&
+					$uri == "https://depot.com/question_solution_courte_non_réussie" &&
+					$av == $nouvel_avancement;
+			})
+			->andReturn($nouvel_avancement);
 
-	   $this->assertEquals(200, $résultat_obtenu->status());
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fc29sdXRpb25fY291cnRlX25vbl9yw6l1c3NpZQ/tentatives?include=resultats",
+			["réponse" => "Mauvaise réponse"],
+		);
 
-	   $this->assertJsonStringEqualsJsonString(
-	   sprintf(file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_6.json"), $heure_tentative),
-	   $résultat_obtenu->getContent(),
-	   );
+		$this->assertEquals(200, $résultat_obtenu->status());
+
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/tentativeCtlTest_sys_avancement_non_réussi_tentative_non_réussie.json",
+			$résultat_obtenu->getContent(),
+		);
 	   }
 
 	   public function test_étant_donné_une_question_sys_avec_tests_de_validation_lorsquon_soumet_une_tentative_validée_réussie_lavancement_et_la_tentative_sont_sauvegardée_et_on_obtient_une_TentativeSys_réussie(){
@@ -339,5 +373,5 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 	   
 	   public function test_étant_donné_une_question_sys_avec_tests_de_validation_lorsquon_soumet_une_tentative_échouée_lavancement_et_la_tentative_sont_sauvegardée_et_on_obtient_une_TentativeSys_échouée(){
 	   }
-	 */
+
 }
