@@ -35,7 +35,7 @@ class BaseTransformer extends TransformerAbstract
     
     protected function collection($data, $transformer, ?string $resourceKey = null): Collection{
         foreach ($data as $id => $item) {
-            $item->id = $id;
+            $item->id = "$id";
         }
 
         return parent::collection($data, $transformer, $resourceKey);

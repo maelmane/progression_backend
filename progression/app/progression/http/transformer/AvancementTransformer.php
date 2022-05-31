@@ -51,8 +51,8 @@ class AvancementTransformer extends BaseTransformer
 
 		$id_parent = "{$this->id}/{$avancement->id}";
         
-		foreach ($tentatives as $tentative) {
-            $tentative->id = $tentative->date_soumission;
+		foreach ($tentatives as $date_soumission => $tentative) {
+            $tentative->id = $date_soumission;
 			$tentative->links = [
 				"related" => "{$_ENV["APP_URL"]}avancement/{$id_parent}",
 			];
@@ -65,9 +65,9 @@ class AvancementTransformer extends BaseTransformer
 		if (empty($tentatives)) {
 			return $this->collection($tentatives, new TentativeTransformer($id_parent), "tentative");
 		} else {
-			if ($tentatives[0] instanceof TentativeProg) {
+			if ($tentatives[array_key_first($tentatives)] instanceof TentativeProg) {
 				return $this->collection($tentatives, new TentativeProgTransformer($id_parent), "tentative");
-			} elseif ($tentatives[0] instanceof TentativeSys) {
+			} elseif ($tentatives[array_key_first($tentatives)] instanceof TentativeSys) {
 				return $this->collection($tentatives, new TentativeSysTransformer($id_parent), "tentative");
 			} else {
 				return $this->collection($tentatives, new TentativeTransformer($id_parent), "tentative");
@@ -82,7 +82,7 @@ class AvancementTransformer extends BaseTransformer
 		foreach ($avancement->sauvegardes as $langage => $sauvegarde) {
             $sauvegarde->id = $langage;
 			$sauvegarde->links = [
-				"related" => "{$_ENV["APP_URL"]}avancement/{$id_parent}";
+				"related" => "{$_ENV["APP_URL"]}avancement/{$id_parent}"
 			];
 		}
 
