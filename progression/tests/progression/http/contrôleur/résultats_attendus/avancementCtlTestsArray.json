@@ -2,8 +2,8 @@
     "data": [
 	{
 	    "attributes": {
-		"date_modification": 0,
-		"date_réussite": 0,
+		"date_modification": null,
+		"date_réussite": null,
 		"niveau": "",
 		"titre": "",
 		"état": 0
@@ -30,8 +30,8 @@
 	},
 	{
 	    "attributes": {
-		"date_modification": 0,
-		"date_réussite": 0,
+		"date_modification": null,
+		"date_réussite": null,
 		"niveau": "",
 		"titre": "",
 		"état": 0
