@@ -26,15 +26,9 @@ final class RésultatTransformerTests extends TestCase
 	public function test_étant_donné_un_Résultat_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
-		$résultatProgTransformer = new RésultatTransformer();
 
 		$résultat = new Résultat("Bonjour\nBonjour\n", "", true, "Bon travail!", 15);
-		$résultat->numéro = 0;
-		$résultat->id =
-			"bob" .
-			"/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24" .
-			"/1614374490" .
-			"/0";
+		$résultat->id = "0";
 
 		$réponse_attendue = [
 			"id" =>
@@ -50,6 +44,7 @@ final class RésultatTransformerTests extends TestCase
 			],
 		];
 
+		$résultatProgTransformer = new RésultatTransformer("bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490");
 		$résponse_observée = $résultatProgTransformer->transform($résultat);
 
 		$this->assertEquals($réponse_attendue, $résponse_observée);
