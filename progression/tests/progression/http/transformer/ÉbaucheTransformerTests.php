@@ -32,13 +32,11 @@ final class ÉbaucheTransformerTests extends TestCase
 
 	public function test_étant_donné_une_ébauche_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
-		$ébaucheTransformer = new ÉbaucheTransformer();
+		$ébaucheTransformer = new ÉbaucheTransformer("aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
 
 		$ébauche = new Exécutable("return nb1 + nb2;", "python");
 		$ébauche->lang = "python";
-		$ébauche->id =
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24" .
-			"/python";
+		$ébauche->id = "python";
 
 		$résultat_obtenu = $ébaucheTransformer->transform($ébauche);
 
