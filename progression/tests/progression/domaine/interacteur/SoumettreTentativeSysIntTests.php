@@ -26,171 +26,261 @@ use progression\dao\question\QuestionDAO;
 
 final class SoumettreTentativeSysIntTests extends TestCase
 {
-	protected static $questionTests;
-	protected static $questionReponseCourte;
-	protected static $tentativeSoumise;
-	protected static $tentativeSoumiseSansConteneur;
+    protected static $question_de_test;
+    protected static $question_réponse_courte;
+    protected static $question_réponse_courte_avec_regex;
+    protected static $tentative_correcte;
+    protected static $tentative_incorrecte;
+    protected static $tentative_soumise_sans_conteneur;
 
-	public function setUp(): void
-	{
-		parent::setUp();
+    public function setUp(): void
+    {
+	parent::setUp();
 
-		//Mock User
-		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
-		$mockUserDao
+	//Mock User
+	$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
+	$mockUserDao
 			->allows()
 			->get_user("jdoe")
 			->andReturn(new User("jdoe"));
 
-		//Tentative avec conteneur
-		self::$tentativeSoumise = new TentativeSys(["id" => "Conteneur de test"], "~reponse de test~", 1615696286);
+	//Tentatives avec conteneur
+	self::$tentative_correcte = new TentativeSys(["id" => "Conteneur de test correct"], null, 1615696286);
+	self::$tentative_incorrecte = new TentativeSys(["id" => "Conteneur de test incorrect"], null, 1615696286);
 
-		//Tentative sans conteneur
-		self::$tentativeSoumiseSansConteneur = new TentativeSys(["id" => null], "", 1615696287);
+	//Tentative sans conteneur
+	self::$tentative_soumise_sans_conteneur = new TentativeSys(["id" => null], "", 1615696287);
 
-		// Mock exécuteur
-		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
-		$mockExécuteur
+	// Mock exécuteur
+	$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
+	$mockExécuteur
 			->shouldReceive("exécuter_sys")
 			->withArgs(function ($question, $tentative) {
-				return $question == self::$questionTests && $tentative == self::$tentativeSoumise;
+			    return $question == self::$question_de_test && $tentative == self::$tentative_correcte;
 			})
 			->andReturn([
-				"temps_exec" => 0.5,
-				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
-				"conteneur" => ["id" => "Conteneur de test", "ip" => "172.45.2.2", "port" => 45667],
+			    "temps_exec" => 0.5,
+			    "résultats" => [["output" => "Correcte", "time" => 0.1]],
+			    "conteneur" => ["id" => "Conteneur de test correct", "ip" => "172.45.2.2", "port" => 45667],
 			]);
-		$mockExécuteur
+	$mockExécuteur
 			->shouldReceive("exécuter_sys")
 			->withArgs(function ($question, $tentative) {
-				return $question == self::$questionReponseCourte && $tentative == self::$tentativeSoumise;
+			    return $question == self::$question_de_test && $tentative == self::$tentative_incorrecte;
 			})
 			->andReturn([
-				"temps_exec" => 0.5,
-				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
-				"conteneur" => ["id" => "Conteneur de test", "ip" => "172.45.2.2", "port" => 45667],
+			    "temps_exec" => 0.5,
+			    "résultats" => [["output" => "Incorrecte", "time" => 0.1]],
+			    "conteneur" => ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
 			]);
 
-		$mockExécuteur
+	$mockExécuteur
 			->shouldReceive("exécuter_sys")
 			->withArgs(function ($question, $tentative) {
-				return $question == self::$questionTests && !$tentative->conteneur["id"];
+			    return $question == self::$question_réponse_courte || $question == self::$question_réponse_courte_avec_regex;;
 			})
 			->andReturn([
-				"temps_exec" => 0.5,
-				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
-				"conteneur" => ["id" => "Nouveau Conteneur", "ip" => "172.45.2.2", "port" => 45667],
+			    "temps_exec" => 0.5,
+			    "résultats" => [["output" => "Incorrecte", "time" => 0.1]],
+			    "conteneur" => ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
 			]);
 
-		// Mock DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory->shouldReceive("get_exécuteur")->andReturn($mockExécuteur);
-		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDao);
-		DAOFactory::setInstance($mockDAOFactory);
+	$mockExécuteur
+			->shouldReceive("exécuter_sys")
+			->withArgs(function ($question, $tentative) {
+			    return $question == self::$question_de_test && !$tentative->conteneur["id"];
+			})
+			->andReturn([
+			    "temps_exec" => 0.5,
+			    "résultats" => [["output" => "Incorrecte", "time" => 0.1]],
+			    "conteneur" => ["id" => "Nouveau Conteneur", "ip" => "172.45.2.2", "port" => 45667],
+			]);
 
-		//Mock Question
-		self::$questionTests = new QuestionSys();
-		self::$questionTests->titre = "Bonsoir";
-		self::$questionTests->niveau = "facile";
-		self::$questionTests->uri = "https://example.com/question";
-		self::$questionTests->tests = [
-			new TestSys(
-				nom: "nomTest",
-				sortie_attendue: "sortieTest",
-				validation: "validationTest",
-				utilisateur: "utilisateurTest",
-				feedback_pos: "feedbackPositif",
-				feedback_neg: "feedbackNégatif",
-			),
-		];
-		self::$questionTests->feedback_neg = "feedbackGénéralNégatif";
-		self::$questionTests->feedback_pos = "feedbackGénéralPositif";
+	// Mock DAOFactory
+	$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
+	$mockDAOFactory->shouldReceive("get_exécuteur")->andReturn($mockExécuteur);
+	$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDao);
+	DAOFactory::setInstance($mockDAOFactory);
 
-		self::$questionReponseCourte = new QuestionSys();
-		self::$questionReponseCourte->titre = "Bonsoir";
-		self::$questionReponseCourte->niveau = "facile";
-		self::$questionReponseCourte->uri = "https://example.com/question";
-		self::$questionReponseCourte->solution = "~reponse de test~";
-		self::$questionReponseCourte->feedback_neg = "feedbackGénéralNégatif";
-		self::$questionReponseCourte->feedback_pos = "feedbackGénéralPositif";
-	}
+	//Mock Question
+	self::$question_de_test = new QuestionSys(
+	    titre: "Bonsoir",
+	    niveau: "facile",
+	    tests: [
+		new TestSys(
+		    nom: "nomTest",
+		    sortie_attendue: "Correcte",
+		    validation: "validationTest",
+		    utilisateur: "utilisateurTest",
+		    feedback_pos: "feedbackPositif",
+		    feedback_neg: "feedbackNégatif",
+		),
+	    ],
+	    feedback_neg: "feedbackGénéralNégatif",
+	    feedback_pos: "feedbackGénéralPositif");
 
-	public function tearDown(): void
-	{
-		Mockery::close();
-		DAOFactory::setInstance(null);
-	}
+	self::$question_réponse_courte = new QuestionSys(
+	    titre: "Bonsoir",
+	    niveau: "facile",
+	    solution: "Bonne réponse",
+	    feedback_neg: "feedbackGénéralNégatif",
+	    feedback_pos: "feedbackGénéralPositif");
 
-	public function test_étant_donné_une_questionsys_et_une_tentativesys_lorsqu_on_appelle_soumettre_tentative_avec_des_tests_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
-	{
-		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Conteneur de test", "ip" => "172.45.2.2", "port" => 45667],
-			réponse: "~reponse de test~",
-			date_soumission: 1615696286,
-			réussi: false,
-			tests_réussis: 0,
-			temps_exécution: 500,
-			feedback: "feedbackGénéralNégatif",
-			résultats: [new Résultat("Incorrecte", "", false, "feedbackNégatif", 100)],
-		);
+	self::$question_réponse_courte_avec_regex = new QuestionSys(
+	    titre: "Bonsoir",
+	    niveau: "facile",
+	    solution: "~bonne.réponse~i",
+	    feedback_neg: "feedbackGénéralNégatif",
+	    feedback_pos: "feedbackGénéralPositif");
 
-		$interacteur = new SoumettreTentativeSysInt();
-		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
-			self::$questionTests,
-			self::$questionTests->tests,
-			self::$tentativeSoumise,
-		);
+    }
 
-		$this->assertEquals($tentative_attendue, $tentative_obtenue);
-	}
+    public function tearDown(): void
+    {
+	Mockery::close();
+	DAOFactory::setInstance(null);
+    }
 
-	public function test_étant_donné_une_questionsys_et_une_tentativesys_lorsqu_on_appelle_soumettre_tentative_avec_une_solution_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
-	{
-		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Conteneur de test", "ip" => "172.45.2.2", "port" => 45667],
+    public function test_étant_donné_une_questionsys_avec_des_tests_lorsquon_soumet_une_tentative_correcte_on_obtient_une_tentative_réussie_avec_temps_dexécution_et_ses_résultats()
+    {
+	$tentative_attendue = new TentativeSys(
+	    conteneur: ["id" => "Conteneur de test correct", "ip" => "172.45.2.2", "port" => 45667],
+	    date_soumission: 1615696286,
+	    réussi: true,
+	    tests_réussis: 1,
+	    temps_exécution: 500,
+	    feedback: "feedbackGénéralPositif",
+	    résultats: [new Résultat("Correcte", null, true, "feedbackPositif", 100)],
+	);
 
-			réponse: "~reponse de test~",
-			date_soumission: 1615696286,
-			réussi: true,
-			tests_réussis: 1,
-			temps_exécution: 0,
-			feedback: "feedbackGénéralPositif",
-			résultats: [],
-		);
+	$interacteur = new SoumettreTentativeSysInt();
+	$tentative_obtenue = $interacteur->soumettre_tentative(
+	    "jdoe",
+	    self::$question_de_test,
+	    self::$question_de_test->tests,
+	    new TentativeSys(["id" => "Conteneur de test correct"], null, 1615696286)
+	);
 
-		$interacteur = new SoumettreTentativeSysInt();
-		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
-			self::$questionReponseCourte,
-			null,
-			self::$tentativeSoumise,
-		);
+	$this->assertEquals($tentative_attendue, $tentative_obtenue);
+    }
 
-		$this->assertEquals($tentative_attendue, $tentative_obtenue);
-	}
+    public function test_étant_donné_une_questionsys_avec_des_tests_lorsquon_soumet_une_tentative_on_obtient_une_tentative_non_réussie_avec_temps_dexécution_et_ses_résultats()
+    {
+	$tentative_attendue = new TentativeSys(
+	    conteneur: ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+	    date_soumission: 1615696286,
+	    réussi: false,
+	    tests_réussis: 0,
+	    temps_exécution: 500,
+	    feedback: "feedbackGénéralNégatif",
+	    résultats: [new Résultat("Incorrecte", "", false, "feedbackNégatif", 100)],
+	);
 
-	public function test_étant_donné_une_questionsys_et_une_tentativesys_sans_conteneur_lorsqu_on_appelle_soumettre_tentative_avec_des_tests_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats_et_lid_du_conteneur()
-	{
-		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Nouveau Conteneur", "ip" => "172.45.2.2", "port" => 45667],
-			réponse: "",
-			date_soumission: 1615696287,
-			réussi: false,
-			tests_réussis: 0,
-			temps_exécution: 500,
-			feedback: "feedbackGénéralNégatif",
-			résultats: [new Résultat("Incorrecte", "", false, "feedbackNégatif", 100)],
-		);
+	$interacteur = new SoumettreTentativeSysInt();
+	$tentative_obtenue = $interacteur->soumettre_tentative(
+	    "jdoe",
+	    self::$question_de_test,
+	    self::$question_de_test->tests,
+	    new TentativeSys(["id" => "Conteneur de test incorrect"], null, 1615696286)
+	);
 
-		$interacteur = new SoumettreTentativeSysInt();
-		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
-			self::$questionTests,
-			self::$questionTests->tests,
-			self::$tentativeSoumiseSansConteneur,
-		);
+	$this->assertEquals($tentative_attendue, $tentative_obtenue);
+    }
 
-		$this->assertEquals($tentative_attendue, $tentative_obtenue);
-	}
+    public function test_étant_donné_une_questionsys_avec_solution_courte_lorsquon_soumet_une_réponse_correcte_on_obtient_une_tentative_réussie()
+    {
+	$tentative_attendue = new TentativeSys(
+	    conteneur: ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+	    réponse: "Bonne réponse",
+	    date_soumission: 1615696286,
+	    réussi: true,
+	    tests_réussis: 1,
+	    temps_exécution: 0,
+	    feedback: "feedbackGénéralPositif",
+	    résultats: [],
+	);
+
+	$interacteur = new SoumettreTentativeSysInt();
+	$tentative_obtenue = $interacteur->soumettre_tentative(
+	    "jdoe",
+	    self::$question_réponse_courte,
+	    null,
+	    new TentativeSys(["id" => "Conteneur de test incorrect"], "Bonne réponse", 1615696286)
+	);
+
+	$this->assertEquals($tentative_attendue, $tentative_obtenue);
+    }
+    
+    public function test_étant_donné_une_questionsys_avec_solution_courte_lorsquon_soumet_une_réponse_incorrecte_on_obtient_une_tentative_non_réussie()
+    {
+	$tentative_attendue = new TentativeSys(
+	    conteneur: ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+
+	    réponse: "Mauvaise réponse",
+	    date_soumission: 1615696286,
+	    réussi: false,
+	    tests_réussis: 0,
+	    temps_exécution: 0,
+	    feedback: "feedbackGénéralNégatif",
+	    résultats: [],
+	);
+
+	$interacteur = new SoumettreTentativeSysInt();
+	$tentative_obtenue = $interacteur->soumettre_tentative(
+	    "jdoe",
+	    self::$question_réponse_courte,
+	    null,
+	    new TentativeSys(["id" => "Conteneur de test incorrect"], "Mauvaise réponse", 1615696286)
+	);
+
+	$this->assertEquals($tentative_attendue, $tentative_obtenue);
+    }
+
+    public function test_étant_donné_une_questionsys_avec_une_regex_comme_solution_courte_lorsquon_soumet_une_réponse_correcte_on_obtient_une_tentative_réussie()
+    {
+	$tentative_attendue = new TentativeSys(
+	    conteneur: ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+	    réponse: "Bonne réponse",
+	    date_soumission: 1615696286,
+	    réussi: true,
+	    tests_réussis: 1,
+	    temps_exécution: 0,
+	    feedback: "feedbackGénéralPositif",
+	    résultats: [],
+	);
+
+	$interacteur = new SoumettreTentativeSysInt();
+	$tentative_obtenue = $interacteur->soumettre_tentative(
+	    "jdoe",
+	    self::$question_réponse_courte_avec_regex,
+	    null,
+	    new TentativeSys(["id" => "Conteneur de test incorrect"], "Bonne réponse", 1615696286)
+	);
+
+	$this->assertEquals($tentative_attendue, $tentative_obtenue);
+    }
+
+    public function test_étant_donné_une_questionsys_et_une_tentativesys_sans_conteneur_lorsqu_on_appelle_soumettre_tentative_avec_des_tests_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats_et_lid_du_conteneur()
+    {
+	$tentative_attendue = new TentativeSys(
+	    conteneur: ["id" => "Nouveau Conteneur", "ip" => "172.45.2.2", "port" => 45667],
+	    réponse: "",
+	    date_soumission: 1615696287,
+	    réussi: false,
+	    tests_réussis: 0,
+	    temps_exécution: 500,
+	    feedback: "feedbackGénéralNégatif",
+	    résultats: [new Résultat("Incorrecte", "", false, "feedbackNégatif", 100)],
+	);
+
+	$interacteur = new SoumettreTentativeSysInt();
+	$tentative_obtenue = $interacteur->soumettre_tentative(
+	    "jdoe",
+	    self::$question_de_test,
+	    self::$question_de_test->tests,
+	    self::$tentative_soumise_sans_conteneur,
+	);
+
+	$this->assertEquals($tentative_attendue, $tentative_obtenue);
+    }
 }
