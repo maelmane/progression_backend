@@ -59,11 +59,11 @@ class TestCtl extends Contrôleur
 		if ($question != null) {
 			$test = $this->préparer_test($question, $question_uri, $numero);
 			if ($question instanceof QuestionProg) {
-				$test_array = $this->item($test, new TestProgTransformer());
+				$test_array = $this->item($test, new TestProgTransformer($question_uri));
 			}
 
 			if ($question instanceof QuestionSys) {
-				$test_array = $this->item($test, new TestSysTransformer());
+				$test_array = $this->item($test, new TestSysTransformer($question_uri));
 			}
 		}
 
@@ -80,18 +80,10 @@ class TestCtl extends Contrôleur
 		$test = null;
 		if (array_key_exists($numero, $question->tests)) {
 			$test = $question->tests[$numero];
-			$test->id = "$question_uri/$numero";
+			$test->id = $numero;
 			$test->links = [
 				"related" => $_ENV["APP_URL"] . "question/" . $question_uri,
 			];
-
-			if ($question instanceof QuestionProg) {
-				$réponse = $this->item($test, new TestProgTransformer());
-			}
-
-			if ($question instanceof QuestionSys) {
-				$réponse = $this->item($test, new TestSysTransformer());
-			}
 		}
 
 		Log::debug("TestCtl.préparer_test. Retour : ", [$test]);
