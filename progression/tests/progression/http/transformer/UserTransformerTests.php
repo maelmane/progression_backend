@@ -28,8 +28,8 @@ final class UserTransformerTests extends TestCase
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 		$userTransformer = new UserTransformer();
-		$user = new User(2);
-		$user->username = "bob";
+		$user = new User("bob");
+		$user->id = "bob";
 
 		$résultat = [
 			"id" => "bob",
@@ -60,7 +60,7 @@ final class UserTransformerTests extends TestCase
 			$clés[] = $résultat;
 		}
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/userTransformerTest_1.json",
+			__DIR__ . "/résultats_attendus/userTransformerTest_inclusion_clés.json",
 			json_encode($clés),
 		);
 	}

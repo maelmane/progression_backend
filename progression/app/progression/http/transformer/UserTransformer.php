@@ -30,11 +30,11 @@ class UserTransformer extends BaseTransformer
 	public function transform(User $user)
 	{
 		$data = [
-			"id" => $this->id,
+			"id" => $user->username,
 			"username" => $user->username,
 			"rôle" => $user->rôle,
 			"links" => (isset($user->links) ? $user->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}user/{$this->id}",
+				"self" => "{$_ENV["APP_URL"]}user/{$user->id}",
 			],
 		];
 
