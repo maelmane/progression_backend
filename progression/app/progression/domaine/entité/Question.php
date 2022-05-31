@@ -31,7 +31,6 @@ class Question
 	const TYPE_BD = 2;
 	const TYPE_PROG = 3;
 
-	public $uri = null;
 	public $niveau = null;
 	public $titre = null;
 	public $description = null;

@@ -35,7 +35,7 @@ class QuestionCtl extends Contrôleur
 
 		try {
 			$question = $this->obtenir_question($uri);
-			$réponse = $this->valider_et_préparer_réponse($question);
+			$réponse = $this->valider_et_préparer_réponse($question, $uri);
 		} catch (LengthException $erreur) {
 			Log::warning(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
@@ -85,15 +85,16 @@ class QuestionCtl extends Contrôleur
 		return $question;
 	}
 
-	private function valider_et_préparer_réponse($question)
+	private function valider_et_préparer_réponse($question, $uri)
 	{
 		Log::debug("QuestionCtl.valider_et_préparer_réponse. Params : ", [$question]);
 
+        $question->id = $uri;
 		if ($question instanceof QuestionProg) {
-			$réponse_array = $this->item(["question" => $question], new QuestionProgTransformer());
+			$réponse_array = $this->item($question, new QuestionProgTransformer());
 			$réponse = $this->préparer_réponse($réponse_array);
 		} elseif ($question instanceof QuestionSys) {
-			$réponse_array = $this->item(["question" => $question], new QuestionSysTransformer());
+			$réponse_array = $this->item($question, new QuestionSysTransformer());
 			$réponse = $this->préparer_réponse($réponse_array);
 		} elseif ($question instanceof QuestionBD) {
 			$réponse = $this->réponse_json(["erreur" => "QuestionBD pas encore implémentée"], 501);
