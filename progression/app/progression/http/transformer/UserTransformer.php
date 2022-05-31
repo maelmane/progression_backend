@@ -30,7 +30,7 @@ class UserTransformer extends BaseTransformer
 	public function transform(User $user)
 	{
 		$data = [
-			"id" => $user->username,
+			"id" => $user->id,
 			"username" => $user->username,
 			"rôle" => $user->rôle,
 			"links" => (isset($user->links) ? $user->links : []) + [
