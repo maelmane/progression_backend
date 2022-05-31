@@ -24,23 +24,20 @@ class QuestionProgTransformer extends QuestionTransformer
 {
 	protected array $availableIncludes = ["tests", "ebauches"];
 
-	public function transform($data_in)
+	public function transform($question)
 	{
-		$data_out = array_merge(parent::transform($data_in), [
+		$data_out = array_merge(parent::transform($question), [
 			"sous-type" => "questionProg",
 		]);
 
 		return $data_out;
 	}
 
-	public function includeTests($data_in)
+	public function includeTests($question)
 	{
-		$question = $data_in["question"];
-
-        $id_parent = Encodage::base64_encode_url($question->uri);
+        $id_parent = $question->id;
         
-		foreach ($question->tests as $i => $test) {
-			$test->id = $i;
+		foreach ($question->tests as $test) {
 			$test->links = [
 				"related" => $_ENV["APP_URL"] . "question/{$id_parent}",
 			];
@@ -49,14 +46,11 @@ class QuestionProgTransformer extends QuestionTransformer
 		return $this->collection($question->tests, new TestTransformer($id_parent), "test");
 	}
 
-	public function includeEbauches($data_in)
+	public function includeEbauches($question)
 	{
-		$question = $data_in["question"];
-        
-        $id_parent = Encodage::base64_encode_url($question->uri);
+        $id_parent = $question->id;
 
 		foreach ($question->exécutables as $ébauche) {
-            $ébauche->id = $ébauche->lang;
 			$ébauche->links = [
 				"related" => $_ENV["APP_URL"] . "question/{$id_parent}",
 			];

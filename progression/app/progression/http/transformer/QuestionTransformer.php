@@ -24,14 +24,10 @@ class QuestionTransformer extends BaseTransformer
 {
 	public $type = "question";
 
-	public function transform($data_in)
+	public function transform($question)
 	{
-		$question = $data_in["question"];
-
-		$chemin_encodé = Encodage::base64_encode_url($question->uri);
-
 		$data_out = [
-			"id" => $chemin_encodé,
+			"id" => $question->id,
 			"niveau" => $question->niveau,
 			"titre" => $question->titre,
 			"description" => $question->description,
@@ -39,7 +35,7 @@ class QuestionTransformer extends BaseTransformer
 			"auteur" => $question->auteur,
 			"licence" => $question->licence,
 			"links" => [
-				"self" => $_ENV["APP_URL"] . "question/" . $chemin_encodé,
+				"self" => $_ENV["APP_URL"] . "question/" . $question->id,
 			],
 		];
 

@@ -24,11 +24,9 @@ class QuestionSysTransformer extends QuestionTransformer
 {
 	protected array $availableIncludes = ["tests"];
 
-	public function transform($data_in)
+	public function transform($question)
 	{
-		$question = $data_in["question"];
-
-		$data_out = array_merge(parent::transform($data_in), [
+		$data_out = array_merge(parent::transform($question), [
 			"sous-type" => "questionSys",
 			"image" => $question->image,
 			"utilisateur" => $question->utilisateur,
@@ -38,15 +36,13 @@ class QuestionSysTransformer extends QuestionTransformer
 		return $data_out;
 	}
 
-	public function includeTests($data_in)
+	public function includeTests($question)
 	{
-		$question = $data_in["question"];
-
-        $id_parent = $this->id . "/" . Encodage::base64_encode_url($question->uri);
+        $id_parent = $question->id;
 		foreach ($question->tests as $i => $test) {
 			$test->id = $i;
 			$test->links = [
-				"related" => $id_parent,
+				"related" => $_ENV["APP_URL"] . "question/{$id_parent}",
 			];
 		}
 
