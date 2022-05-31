@@ -38,9 +38,9 @@ final class TentativeSysTransformerTests extends TestCase
 			"feedBackTest",
 			[new Commentaire("Message", "jdoe", 123456, 12)],
 		);
-		$tentative->id =
-			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760";
-		$tentativeTransformer = new TentativeSysTransformer();
+		$tentative->id = "1614711760";
+        
+		$tentativeTransformer = new TentativeSysTransformer("roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
 		$résultat = [
 			"id" =>
 				"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
@@ -77,8 +77,9 @@ final class TentativeSysTransformerTests extends TestCase
 			[new Commentaire("Message", "jdoe", 123456, 12)],
 		);
 		$tentative->id =
-			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760";
-		$tentativeTransformer = new TentativeSysTransformer();
+			"1614711760";
+
+		$tentativeTransformer = new TentativeSysTransformer("roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
 
 		$inclusionsResultats = $tentativeTransformer->includeResultats($tentative);
 
@@ -88,7 +89,7 @@ final class TentativeSysTransformerTests extends TestCase
 		}
 
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/tentativeSysTransformerTest_1.json",
+			__DIR__ . "/résultats_attendus/tentativeSysTransformerTest_inclusion_résultats.json",
 			json_encode($listeRésultats),
 		);
 	}
@@ -109,8 +110,9 @@ final class TentativeSysTransformerTests extends TestCase
 			[new Commentaire("Message", "jdoe", 123456, 12), new Commentaire("Message 2", "bob", 654321, 13)],
 		);
 		$tentative->id =
-			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760";
-		$tentativeTransformer = new TentativeSysTransformer();
+			"1614711760";
+
+        $tentativeTransformer = new TentativeSysTransformer("roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
 
 		$commentaires = [
 			"message" => "Message",
@@ -127,8 +129,9 @@ final class TentativeSysTransformerTests extends TestCase
 		}
 
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/tentativeTransformerTest_2.json",
+			__DIR__ . "/résultats_attendus/tentativeSysTransformerTest_inclusion_commentaires.json",
 			json_encode($listeCommentaires),
 		);
 	}
+
 }
