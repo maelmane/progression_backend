@@ -24,6 +24,8 @@ use League\Fractal\Resource\Collection;
 class BaseTransformer extends TransformerAbstract
 {
 	public $id;
+	protected array $availableIncludes = [];
+	protected array $availableParams = [];
 
 	public function __construct($id = null)
 	{

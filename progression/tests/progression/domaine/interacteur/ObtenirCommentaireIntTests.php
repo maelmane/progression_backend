@@ -31,12 +31,13 @@ final class ObtenirCommentaireIntTests extends TestCase
 
 		$mockCommentaireDAO = Mockery::mock("progression\\dao\\CommentaireDAO");
 
-        $commentaire = new Commentaire("le 3er message", "Stefany", 1615696276, 14);
+		$commentaire = new Commentaire("le 3er message", "Stefany", 1615696276, 14);
 
 		$tableauCommentaires = [
-            new Commentaire("le 1er message", "jdoe", 1615696276, 14),
-            new Commentaire("le 2er message", "admin", 1615696276, 12),
-            new Commentaire("le 3er message", "Stefany", 1615696276, 14) ];
+			new Commentaire("le 1er message", "jdoe", 1615696276, 14),
+			new Commentaire("le 2er message", "admin", 1615696276, 12),
+			new Commentaire("le 3er message", "Stefany", 1615696276, 14),
+		];
 
 		$mockCommentaireDAO
 			->shouldReceive("get_commentaire")
@@ -82,9 +83,10 @@ final class ObtenirCommentaireIntTests extends TestCase
 		$résultat_observé = new ObtenirCommentaireInt();
 
 		$tableauCommentaire = [
-            new Commentaire("le 1er message", "jdoe", 1615696276, 14),
-            new Commentaire("le 2er message", "admin", 1615696276, 12),
-            new Commentaire("le 3er message", "Stefany", 1615696276, 14) ];
+			new Commentaire("le 1er message", "jdoe", 1615696276, 14),
+			new Commentaire("le 2er message", "admin", 1615696276, 12),
+			new Commentaire("le 3er message", "Stefany", 1615696276, 14),
+		];
 		$réponse_attendue = $tableauCommentaire;
 		$this->assertEquals(
 			$réponse_attendue,

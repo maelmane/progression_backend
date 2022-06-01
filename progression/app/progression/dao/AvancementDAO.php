@@ -22,13 +22,19 @@ use mysqli_sql_exception;
 use progression\domaine\entité\{Avancement, Question};
 use progression\dao\models\{AvancementMdl, UserMdl};
 use progression\dao\tentative\{TentativeDAO, TentativeProgDAO, TentativeSysDAO};
+use Illuminate\Database\QueryException;
 
 class AvancementDAO extends EntitéDAO
 {
 	public function get_tous($username, $includes = [])
 	{
 		try {
-			return $this->construire(AvancementMdl::where("username", $username)->get(), $includes);
+			return $this->construire(
+				AvancementMdl::query()
+					->where("username", $username)
+					->get(),
+				$includes,
+			);
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -37,7 +43,8 @@ class AvancementDAO extends EntitéDAO
 	public function get_avancement($username, $question_uri, $includes = [])
 	{
 		try {
-			$data = AvancementMdl::where("username", $username)
+			$data = AvancementMdl::query()
+				->where("username", $username)
 				->where("question_uri", $question_uri)
 				->first();
 			if ($data) {
@@ -53,7 +60,9 @@ class AvancementDAO extends EntitéDAO
 	public function save($username, $question_uri, $avancement)
 	{
 		try {
-			$user_id = UserMdl::where("username", $username)->first()["id"];
+			$user_id = UserMdl::query()
+				->where("username", $username)
+				->first()["id"];
 			$objet = [];
 			$objet["etat"] = $avancement->etat;
 			$objet["question_uri"] = $question_uri;
@@ -65,7 +74,10 @@ class AvancementDAO extends EntitéDAO
 			$objet["user_id"] = $user_id;
 
 			return $this->construire([
-				AvancementMdl::updateOrCreate(["username" => $username, "question_uri" => $question_uri], $objet),
+				AvancementMdl::query()->updateOrCreate(
+					["username" => $username, "question_uri" => $question_uri],
+					$objet,
+				),
 			])[$question_uri];
 		} catch (QueryException $e) {
 			throw new DAOException($e);

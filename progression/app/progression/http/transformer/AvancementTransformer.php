@@ -18,7 +18,7 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\{Avancement, Question};
+use progression\domaine\entité\{Avancement, Question, TentativeProg, TentativeSys};
 
 class AvancementTransformer extends BaseTransformer
 {

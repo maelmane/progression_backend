@@ -19,7 +19,7 @@
 namespace progression\dao\tentative;
 
 use mysqli_sql_exception;
-use progression\dao\{DAOException, EntitéDAO, SauvegardeDAO};
+use progression\dao\{DAOException, EntitéDAO, SauvegardeDAO, CommentaireDAO};
 use progression\domaine\entité\Question;
 use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, TentativeBD};
 

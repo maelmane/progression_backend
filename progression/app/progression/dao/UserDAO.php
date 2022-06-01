@@ -21,6 +21,7 @@ namespace progression\dao;
 use mysqli_sql_exception;
 use progression\domaine\entité\User;
 use progression\dao\models\UserMdl;
+use Illuminate\Database\QueryException;
 
 class UserDAO extends EntitéDAO
 {
@@ -29,7 +30,8 @@ class UserDAO extends EntitéDAO
 		$user = null;
 
 		try {
-			$user = UserMdl::where("username", $username)
+			$user = UserMdl::query()
+				->where("username", $username)
 				->with("avancements", "clés")
 				->first();
 			return $user ? $this->construire([$user], $includes)[0] : null;
@@ -45,7 +47,7 @@ class UserDAO extends EntitéDAO
 			$objet["username"] = $user->username;
 			$objet["role"] = $user->rôle;
 
-			return $this->construire([UserMdl::updateOrCreate(["username" => $user->username], $objet)])[0];
+			return $this->construire([UserMdl::query()->updateOrCreate(["username" => $user->username], $objet)])[0];
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}

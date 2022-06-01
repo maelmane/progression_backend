@@ -26,8 +26,7 @@ final class TentativeDAOTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-        EntitéDAO::get_connexion()->begin_transaction();
-
+		EntitéDAO::get_connexion()->begin_transaction();
 	}
 
 	public function tearDown(): void

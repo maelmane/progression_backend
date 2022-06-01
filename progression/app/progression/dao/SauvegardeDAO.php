@@ -28,7 +28,8 @@ class SauvegardeDAO extends EntitéDAO
 	{
 		try {
 			return $this->construire(
-				SauvegardeMdl::where("username", $username)
+				SauvegardeMdl::query()
+					->where("username", $username)
 					->where("question_uri", $question_uri)
 					->get(),
 				$includes,
@@ -41,7 +42,8 @@ class SauvegardeDAO extends EntitéDAO
 	public function get_sauvegarde($username, $question_uri, $langage, $includes = [])
 	{
 		try {
-			$sauvegarde = SauvegardeMdl::where("username", $username)
+			$sauvegarde = SauvegardeMdl::query()
+				->where("username", $username)
 				->where("question_uri", $question_uri)
 				->where("langage", $langage)
 				->first();
@@ -65,7 +67,7 @@ class SauvegardeDAO extends EntitéDAO
 			$objet["langage"] = $langage;
 			$objet["code"] = $sauvegarde->code;
 
-			return $this->construire([SauvegardeMdl::updateOrCreate($objet)])[$langage];
+			return $this->construire([SauvegardeMdl::query()->updateOrCreate($objet)])[$langage];
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
