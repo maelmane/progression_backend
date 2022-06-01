@@ -23,14 +23,14 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransformer, TentativeBDTransformer};
 use progression\domaine\interacteur\{
-ObtenirAvancementInt,
+	ObtenirAvancementInt,
 	ObtenirTentativeInt,
 	ObtenirQuestionInt,
-    SauvegarderAvancementInt,
+	SauvegarderAvancementInt,
 	SauvegarderTentativeInt,
 	SoumettreTentativeProgInt,
 	SoumettreTentativeSysInt,
-    };
+};
 use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{Question, QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\entité\TestProg;
@@ -224,16 +224,15 @@ class TentativeCtl extends Contrôleur
 		$sauvegardeTentativeInt = new SauvegarderTentativeInt();
 		$sauvegardeTentativeInt->sauvegarder($username, $chemin, $tentative);
 
-        $avancementInt = new ObtenirAvancementInt();
+		$avancementInt = new ObtenirAvancementInt();
 		$avancement = $avancementInt->get_avancement($username, $chemin);
 
 		$avancement->titre = $question->titre;
 		$avancement->niveau = $question->niveau;
-        $avancement->ajouter_tentative($tentative);
+		$avancement->ajouter_tentative($tentative);
 
 		$avancementInt = new SauvegarderAvancementInt();
 		$avancementInt->sauvegarder($username, $chemin, $avancement);
-
 	}
 
 	private function récupérer_conteneur($username, $chemin)

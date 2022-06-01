@@ -95,7 +95,7 @@ INSERT INTO avancement(id, type, username, question_uri, etat, titre, niveau, da
   4
 ),(
   5,
-  "prog",
+  "sys",
   "jdoe",
   "https://exemple2.com",
   1,

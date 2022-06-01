@@ -149,11 +149,7 @@ class AvancementCtl extends Contrôleur
 
 		$chemin = Encodage::base64_decode_url($question_uri);
 		$question = (new ObtenirQuestionInt())->get_question($chemin);
-		$avancement = new Avancement(
-			[],
-			$question->titre,
-			$question->niveau,
-		);
+		$avancement = new Avancement([], $question->titre, $question->niveau);
 
 		Log::debug("AvancementCtl.créer_avancement. Retour : ", [$avancement]);
 		return $avancement;

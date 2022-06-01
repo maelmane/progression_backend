@@ -43,8 +43,8 @@ class UserTransformer extends BaseTransformer
 
 	public function includeAvancements(User $user)
 	{
-        $id_parent = $user->username;
-        
+		$id_parent = $user->username;
+
 		foreach ($user->avancements as $uri => $avancement) {
 			$avancement->id = Encodage::base64_encode_url($uri);
 			$avancement->links = [
@@ -57,10 +57,10 @@ class UserTransformer extends BaseTransformer
 
 	public function includeCles(User $user)
 	{
-        $id_parent = $user->username;
-        
+		$id_parent = $user->username;
+
 		foreach ($user->clés as $nom => $clé) {
-            $clé->id = $nom;
+			$clé->id = $nom;
 			$clé->links = [
 				"related" => $_ENV["APP_URL"] . "user/{$id_parent}",
 			];

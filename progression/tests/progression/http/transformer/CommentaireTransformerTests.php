@@ -40,7 +40,7 @@ final class CommentaireTransformerTests extends TestCase
 			],
 		];
 
-        $commentaire->id = 11;
+		$commentaire->id = 11;
 		$this->assertEquals($résultat_attendu, $commentaireTransformer->transform($commentaire));
 	}
 }

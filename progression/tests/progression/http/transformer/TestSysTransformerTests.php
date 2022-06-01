@@ -27,7 +27,7 @@ final class TestSysTransformerTests extends TestCase
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
-        $test = new TestSys("Permissions", "-rwxrwxrwx", "ls -l", "root");
+		$test = new TestSys("Permissions", "-rwxrwxrwx", "ls -l", "root");
 		$test->numéro = 0;
 		$test->id = "0";
 
@@ -43,7 +43,9 @@ final class TestSysTransformerTests extends TestCase
 			],
 		];
 
-		$testTransformer = new TestSysTransformer("aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
+		$testTransformer = new TestSysTransformer(
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		);
 		$résultat_obtenu = $testTransformer->transform($test);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);

@@ -31,9 +31,9 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-        $_ENV["APP_URL"] = "https://example.com/";
+		$_ENV["APP_URL"] = "https://example.com/";
 
-        $this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
 
 		// Question
 		$question = new QuestionProg();

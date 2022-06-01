@@ -26,13 +26,17 @@ final class CléDAOTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		EntitéDAO::get_connexion()->begin_transaction();
+		app("db")
+			->connection()
+			->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
 		parent::tearDown();
-		EntitéDAO::get_connexion()->rollback();
+		app("db")
+			->connection()
+			->rollBack();
 	}
 
 	public function test_étant_donné_une_clé_existante_lorsquon_la_récupère_on_obtient_ses_attributs()

@@ -25,6 +25,8 @@ class UserMdl extends Model
 	protected $table = "user";
 	public $timestamps = false;
 
+	protected $guarded = [];
+
 	public function avancements()
 	{
 		return $this->hasMany(AvancementMdl::class, "user_id", "id");

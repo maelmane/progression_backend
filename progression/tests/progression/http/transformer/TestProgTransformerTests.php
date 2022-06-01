@@ -27,7 +27,7 @@ final class TestProgTransformerTests extends TestCase
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
-        $test = new TestProg("Somme de deux nombres", "42", "21\n21\n", "-h");
+		$test = new TestProg("Somme de deux nombres", "42", "21\n21\n", "-h");
 		$test->numéro = 0;
 		$test->id = "0";
 
@@ -43,7 +43,9 @@ final class TestProgTransformerTests extends TestCase
 			],
 		];
 
-		$testTransformer = new TestProgTransformer("aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
+		$testTransformer = new TestProgTransformer(
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		);
 		$résultat_obtenu = $testTransformer->transform($test);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);

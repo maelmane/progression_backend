@@ -55,7 +55,7 @@ class UserCtl extends Contrôleur
 	{
 		Log::debug("UserCtl.valider_et_préparer_réponse. Params : ", [$user]);
 
-        $user->id = $user->username;
+		$user->id = $user->username;
 		$réponse_array = $this->item($user, new UserTransformer());
 
 		$réponse = $this->préparer_réponse($réponse_array);

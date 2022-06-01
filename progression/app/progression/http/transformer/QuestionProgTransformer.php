@@ -35,8 +35,8 @@ class QuestionProgTransformer extends QuestionTransformer
 
 	public function includeTests($question)
 	{
-        $id_parent = $question->id;
-        
+		$id_parent = $question->id;
+
 		foreach ($question->tests as $test) {
 			$test->links = [
 				"related" => $_ENV["APP_URL"] . "question/{$id_parent}",
@@ -48,7 +48,7 @@ class QuestionProgTransformer extends QuestionTransformer
 
 	public function includeEbauches($question)
 	{
-        $id_parent = $question->id;
+		$id_parent = $question->id;
 
 		foreach ($question->exécutables as $ébauche) {
 			$ébauche->links = [

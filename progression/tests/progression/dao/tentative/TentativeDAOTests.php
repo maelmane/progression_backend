@@ -26,13 +26,17 @@ final class TentativeDAOTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		EntitéDAO::get_connexion()->begin_transaction();
+		app("db")
+			->connection()
+			->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
 		parent::tearDown();
-		EntitéDAO::get_connexion()->rollback();
+		app("db")
+			->connection()
+			->rollBack();
 	}
 
 	public function test_étant_donné_une_tentative_inexistante_lorsquon_récupère_la_tentative_on_obtient_null()

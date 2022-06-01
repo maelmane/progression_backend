@@ -186,6 +186,7 @@ class TentativeSysDAO extends TentativeDAO
 			$query->execute();
 			$query->close();
 		} catch (mysqli_sql_exception $e) {
+			print_r($e);
 			throw new DAOException($e);
 		}
 

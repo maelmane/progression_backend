@@ -26,13 +26,17 @@ final class CommentaireDAOTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		EntitéDAO::get_connexion()->begin_transaction();
+		app("db")
+			->connection()
+			->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
 		parent::tearDown();
-		EntitéDAO::get_connexion()->rollback();
+		app("db")
+			->connection()
+			->rollBack();
 	}
 
 	public function test_étant_donné_un_commentaire_lorsquon_le_cherche_par_son_numero_on_obtient_le_commentaire()

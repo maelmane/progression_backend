@@ -45,7 +45,7 @@ class UserDAO extends EntitéDAO
 			$objet["username"] = $user->username;
 			$objet["role"] = $user->rôle;
 
-			return $this->construire([UserMdl::updateOrCreate($objet)])[0];
+			return $this->construire([UserMdl::updateOrCreate(["username" => $user->username], $objet)])[0];
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}

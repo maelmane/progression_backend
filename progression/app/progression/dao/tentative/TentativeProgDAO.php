@@ -112,10 +112,10 @@ class TentativeProgDAO extends TentativeDAO
 	{
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO reponse_prog ( question_uri, username, langage, code, date_soumission, reussi, tests_reussis, temps_exécution ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )",
+				"INSERT INTO reponse_prog ( question_uri, username, langage, code, date_soumission, reussi, tests_reussis, temps_exécution, avancement_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, (SELECT id FROM avancement WHERE username = ? AND question_uri = ?) )",
 			);
 			$query->bind_param(
-				"ssssiiii",
+				"ssssiiiiss",
 				$question_uri,
 				$username,
 				$objet->langage,
@@ -124,6 +124,8 @@ class TentativeProgDAO extends TentativeDAO
 				$objet->réussi,
 				$objet->tests_réussis,
 				$objet->temps_exécution,
+				$username,
+				$question_uri,
 			);
 			$query->execute();
 			$query->close();

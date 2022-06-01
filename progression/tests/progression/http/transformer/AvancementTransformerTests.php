@@ -32,9 +32,10 @@ final class AvancementTransformerTests extends TestCase
 
 	public function test_étant_donné_un_avancement_instancié_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
 	{
-		$avancement = new Avancement( [], "Ginette Reno", "Un peu plus haut, un peu plus loin");
+		$avancement = new Avancement([], "Ginette Reno", "Un peu plus haut, un peu plus loin");
 
-        $avancement->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$avancement->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$avancementTransformer = new AvancementTransformer("jdoe");
 		$résultats_obtenus = $avancementTransformer->transform($avancement);
@@ -46,12 +47,16 @@ final class AvancementTransformerTests extends TestCase
 
 	public function test_étant_donné_un_avancement_réussi_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
 	{
-		$avancement = new Avancement([
-			new TentativeProg("python", "codeTestPython", 1614711760, false, [], 2, 324775, "feedbackTest Python"),
-			new TentativeProg("java", "codeTestJava", 1614711761, true, [], 2, 3245, "feedbackTest Java"),
-		],
-									 "Ginette Reno", "Un peu plus haut, un peu plus loin");
-        $avancement->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$avancement = new Avancement(
+			[
+				new TentativeProg("python", "codeTestPython", 1614711760, false, [], 2, 324775, "feedbackTest Python"),
+				new TentativeProg("java", "codeTestJava", 1614711761, true, [], 2, 3245, "feedbackTest Java"),
+			],
+			"Ginette Reno",
+			"Un peu plus haut, un peu plus loin",
+		);
+		$avancement->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$avancementTransformer = new AvancementTransformer("jdoe");
 		$avancement_obtenu = $avancementTransformer->transform($avancement);
@@ -64,15 +69,19 @@ final class AvancementTransformerTests extends TestCase
 
 	public function test_étant_donné_un_avancement_non_réussi_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
 	{
-		$avancement = new Avancement([
-			new TentativeProg("python", "codeTestPython", 1614711760, false, [], 2, 324775, "feedbackTest Python"),
-			new TentativeProg("java", "codeTestJava", 1614711761, false, [], 2, 3245, "feedbackTest Java"),
-		],
-									 "Ginette Reno", "Un peu plus haut, un peu plus loin");
+		$avancement = new Avancement(
+			[
+				new TentativeProg("python", "codeTestPython", 1614711760, false, [], 2, 324775, "feedbackTest Python"),
+				new TentativeProg("java", "codeTestJava", 1614711761, false, [], 2, 3245, "feedbackTest Java"),
+			],
+			"Ginette Reno",
+			"Un peu plus haut, un peu plus loin",
+		);
 
 		$avancementTransformer = new AvancementTransformer("jdoe");
-        $avancement->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
-        
+		$avancement->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+
 		$avancement_obtenu = $avancementTransformer->transform($avancement);
 
 		$this->assertJsonStringEqualsJsonFile(
@@ -83,11 +92,34 @@ final class AvancementTransformerTests extends TestCase
 
 	public function test_étant_donné_un_avancement_avec_ses_tentatives_lorsquon_inclut_les_tentatives_on_reçoit_un_tableau_de_tentatives()
 	{
-		$avancement = new Avancement( [
-			"1614711760" => new TentativeProg("python", "codeTestPython", 1614711760, false, [], 2, 324775, "feedbackTest Python"),
-			"1614711761" => new TentativeProg("java", "codeTestJava", 1614711761, true, [], 2, 3245, "feedbackTest Java")],
-									  "Ginette Reno", "Un peu plus haut, un peu plus loin");
-        $avancement->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$avancement = new Avancement(
+			[
+				"1614711760" => new TentativeProg(
+					"python",
+					"codeTestPython",
+					1614711760,
+					false,
+					[],
+					2,
+					324775,
+					"feedbackTest Python",
+				),
+				"1614711761" => new TentativeProg(
+					"java",
+					"codeTestJava",
+					1614711761,
+					true,
+					[],
+					2,
+					3245,
+					"feedbackTest Java",
+				),
+			],
+			"Ginette Reno",
+			"Un peu plus haut, un peu plus loin",
+		);
+		$avancement->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$avancementTransformer = new AvancementTransformer("jdoe");
 
@@ -108,7 +140,8 @@ final class AvancementTransformerTests extends TestCase
 		$sauvegardes["python"] = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 		$sauvegardes["java"] = new Sauvegarde(1620150375, "System.out.println(\"Hello world!\");");
 		$avancement = new Avancement([], "Un titre", "un niveau", $sauvegardes);
-        $avancement->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$avancement->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$avancementTransformer = new AvancementTransformer("jdoe");
 		$résultats_obtenus = $avancementTransformer->includeSauvegardes($avancement);
@@ -126,7 +159,8 @@ final class AvancementTransformerTests extends TestCase
 	public function test_étant_donné_un_avancement_sans_tentative_lorsquon_inclut_les_tentatives_on_reçoit_un_tableau_vide()
 	{
 		$avancement = new Avancement([], "Un titre", "un niveau");
-		$avancement->id = "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$avancement->id =
+			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$avancementTransformer = new AvancementTransformer("jdoe");
 		$this->assertEquals([], $avancementTransformer->includeTentatives($avancement)->getData());
@@ -134,8 +168,9 @@ final class AvancementTransformerTests extends TestCase
 
 	public function test_étant_donné_un_avancement_sans_sauvegarde_lorsquon_inclut_les_sauvegardes_on_reçoit_un_tableau_vide()
 	{
-		$avancement = new Avancement([], "Un titre", "un niveau" );
-		$avancement->id = "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$avancement = new Avancement([], "Un titre", "un niveau");
+		$avancement->id =
+			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$avancementTransformer = new AvancementTransformer("jdoe");
 		$this->assertEquals([], $avancementTransformer->includeSauvegardes($avancement)->getData());

@@ -43,11 +43,10 @@ final class QuestionProgTransformerTests extends TestCase
 		$question->auteur = "Albert Einstein";
 		$question->licence = "poétique";
 		$question->niveau = "débutant";
-        $question->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$question->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
-		$item = (new QuestionProgTransformer())->transform(
-			$question
-		);
+		$item = (new QuestionProgTransformer())->transform($question);
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/questionProgTransformerTest_1.json",
@@ -58,7 +57,8 @@ final class QuestionProgTransformerTests extends TestCase
 	public function test_étant_donné_une_question_avec_ses_tests_lorsquon_inclut_les_tests_on_reçoit_un_tableau_de_tests_numérotés_dans_le_même_ordre()
 	{
 		$question = new QuestionProg();
-        $question->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$question->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$question->tests = [
 			new TestProg("2 salutations", "Bonjour\nBonjour\n", "2"),
@@ -67,9 +67,7 @@ final class QuestionProgTransformerTests extends TestCase
 
 		$questionProgTransformer = new QuestionProgTransformer();
 
-		$résultats_obtenus = $questionProgTransformer->includeTests(
-			$question
-		);
+		$résultats_obtenus = $questionProgTransformer->includeTests($question);
 
 		$tests = [];
 		foreach ($résultats_obtenus->getData() as $résultat) {
@@ -86,12 +84,11 @@ final class QuestionProgTransformerTests extends TestCase
 	{
 		$question = new QuestionProg();
 		$question->tests = [];
-        $question->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$question->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$questionProgTransformer = new QuestionProgTransformer();
-		$résultat_obtenu = $questionProgTransformer->includeTests(
-			$question
-		);
+		$résultat_obtenu = $questionProgTransformer->includeTests($question);
 
 		$this->assertEquals(0, count($résultat_obtenu->getData()));
 	}
@@ -103,13 +100,12 @@ final class QuestionProgTransformerTests extends TestCase
 			"python" => new Exécutable("print(\"Hello world\")", "python"),
 			"java" => new Exécutable("System.out.println(\"Hello world\")", "java"),
 		];
-        $question->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$question->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$questionProgTransformer = new QuestionProgTransformer();
 
-		$résultats_obtenus = $questionProgTransformer->includeEbauches(
-			$question
-		);
+		$résultats_obtenus = $questionProgTransformer->includeEbauches($question);
 
 		$ébauches = [];
 		foreach ($résultats_obtenus->getData() as $résultat) {
@@ -126,12 +122,11 @@ final class QuestionProgTransformerTests extends TestCase
 	{
 		$question = new QuestionProg();
 		$question->exécutables = [];
-        $question->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$question->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$questionProgTransformer = new QuestionProgTransformer();
-		$résultat_obtenu = $questionProgTransformer->includeEbauches(
-			$question
-		);
+		$résultat_obtenu = $questionProgTransformer->includeEbauches($question);
 
 		$this->assertEquals(0, count($résultat_obtenu->getData()));
 	}

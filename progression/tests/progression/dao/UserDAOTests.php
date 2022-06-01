@@ -18,21 +18,48 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Avancement, User, Clé};
+use progression\domaine\entité\{Avancement, User, Clé, Question};
 use progression\TestCase;
-use DB;
+
 final class UserDAOTests extends TestCase
 {
+	public $bob = null;
+
 	public function setUp(): void
 	{
 		parent::setUp();
-		EntitéDAO::get_connexion()->begin_transaction();
+
+		$avancement1 = new Avancement([], "Un titre", "facile");
+		$avancement1->date_modification = 1615696276;
+		$avancement1->date_réussite = null;
+		$avancement1->etat = Question::ETAT_NONREUSSI;
+		$avancement2 = new Avancement([], "Un titre", "facile");
+		$avancement2->date_modification = 1645739981;
+		$avancement2->date_réussite = 1645739959;
+		$avancement2->etat = Question::ETAT_NONREUSSI;
+		$avancement3 = new Avancement([], "Un titre 2", "facile");
+		$avancement3->date_modification = 1645739991;
+		$avancement3->date_réussite = 1645739969;
+		$avancement3->etat = Question::ETAT_REUSSI;
+
+		$this->bob = new User("bob");
+		$this->bob->avancements = [
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $avancement1,
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => $avancement2,
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction2" => $avancement3,
+		];
+
+		app("db")
+			->connection()
+			->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
 		parent::tearDown();
-		EntitéDAO::get_connexion()->rollback();
+		app("db")
+			->connection()
+			->rollBack();
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_on_obtient_son_profil()
@@ -41,69 +68,50 @@ final class UserDAOTests extends TestCase
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [];
 
-		$résponse_observée = (new UserDAO())->get_user("bob");
-		$this->assertEquals($réponse_attendue, $résponse_observée);
+		$réponse_observée = (new UserDAO())->get_user("bob");
+		$this->assertEquals($réponse_attendue, $réponse_observée);
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_incluant_les_avancements_on_obtient_son_profil_et_ses_avancements()
 	{
-		$avancement1 = new Avancement(1, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
-		$avancement2 = new Avancement(0, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
-
-		$réponse_attendue = new User("bob");
-		$réponse_attendue->avancements = [
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => $avancement1,
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $avancement2,
-		];
+		$réponse_attendue = $this->bob;
 		$réponse_attendue->clés = [];
 
-		$résponse_observée = (new UserDAO())->get_user("bob", ["avancements"]);
-		$this->assertEquals($réponse_attendue, $résponse_observée);
+		$réponse_observée = (new UserDAO())->get_user("bob", ["avancements"]);
+		$this->assertEquals($réponse_attendue, $réponse_observée);
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_incluant_les_clés_on_obtient_son_profil_et_ses_clés()
 	{
-		$avancement1 = new Avancement(1, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
-		$avancement2 = new Avancement(0, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
-
-		$réponse_attendue = new User("bob");
+		$réponse_attendue = $this->bob;
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [
 			"clé de test" => new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
 			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
 		];
 
-		$résponse_observée = (new UserDAO())->get_user("bob", ["clés"]);
-		$this->assertEquals($réponse_attendue, $résponse_observée);
+		$réponse_observée = (new UserDAO())->get_user("bob", ["clés"]);
+		$this->assertEquals($réponse_attendue, $réponse_observée);
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_incluant_les_avancements_et_les_clés_on_obtient_son_profil_et_ses_avancements_et_clés()
 	{
-		DB::enableQueryLog();
-		$avancement1 = new Avancement(1, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
-		$avancement2 = new Avancement(0, 3, [], [], "Bob", "facile", 1645739981, 1645739959);
-
-		$réponse_attendue = new User("bob");
-		$réponse_attendue->avancements = [
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => $avancement1,
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $avancement2,
-		];
+		$réponse_attendue = $this->bob;
 		$réponse_attendue->clés = [
 			"clé de test" => new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
 			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
 		];
 
-		$résponse_observée = (new UserDAO())->get_user("bob", ["avancements", "clés"]);
-		print_r(DB::getQueryLog());
-		$this->assertEquals($réponse_attendue, $résponse_observée);
+		$réponse_observée = (new UserDAO())->get_user("bob", ["avancements", "clés"]);
+		$this->assertEquals($réponse_attendue, $réponse_observée);
 	}
 
 	public function test_étant_donné_un_utilisateur_inexistant_lorsquon_le_cherche_par_son_username_on_obtient_null()
 	{
 		$réponse_attendue = null;
 
-		$résponse_observée = (new UserDAO())->get_user("alice");
-		$this->assertEquals($réponse_attendue, $résponse_observée);
+		$réponse_observée = (new UserDAO())->get_user("alice");
+		$this->assertEquals($réponse_attendue, $réponse_observée);
 	}
 
 	public function test_étant_donné_un_utilisateur_inexistant_lorsquon_le_sauvegarde_il_est_créé_dans_la_BD_et_on_obtient_son_profil()
@@ -111,17 +119,17 @@ final class UserDAOTests extends TestCase
 		$réponse_attendue = new User("gaston");
 		$user_test = new User("gaston");
 
-		$résponse_observée = (new UserDAO())->save($user_test);
-		$this->assertEquals($réponse_attendue, $résponse_observée);
+		$réponse_observée = (new UserDAO())->save($user_test);
+		$this->assertEquals($réponse_attendue, $réponse_observée);
 
-		$résponse_observée = (new UserDAO())->get_user("gaston");
-		$this->assertEquals($réponse_attendue, $résponse_observée);
+		$réponse_observée = (new UserDAO())->get_user("gaston");
+		$this->assertEquals($réponse_attendue, $réponse_observée);
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_le_sauvegarde_il_est_modifié_dans_la_BD_et_on_obtient_son_profil_modifié()
 	{
-		$avancement1 = new Avancement(1, 3, [], [], "Un titre", "facile", 1645739981, 1645739959);
-		$avancement2 = new Avancement(0, 3, [], [], "Un titre 2", "facile", 1645739981, 1645739959);
+		$avancement1 = new Avancement([], "Un titre", "facile", 1645739981, 1645739959);
+		$avancement2 = new Avancement([], "Un titre 2", "facile", 1645739981, 1645739959);
 
 		$réponse_attendue = new User("bob", User::ROLE_ADMIN);
 		$réponse_attendue->avancements = [];
@@ -130,11 +138,11 @@ final class UserDAOTests extends TestCase
 		$user_test = (new UserDAO())->get_user("bob");
 		$user_test->rôle = User::ROLE_ADMIN;
 
-		$résponse_observée = (new UserDAO())->save($user_test);
-		$this->assertEquals($réponse_attendue, $résponse_observée);
+		$réponse_observée = (new UserDAO())->save($user_test);
+		$this->assertEquals($réponse_attendue, $réponse_observée);
 
-		$résponse_observée = (new UserDAO())->get_user("bob");
-		$this->assertEquals($réponse_attendue, $résponse_observée);
+		$réponse_observée = (new UserDAO())->get_user("bob");
+		$this->assertEquals($réponse_attendue, $réponse_observée);
 	}
 
 	public function test_étant_donné_un_utilisateur_lorsquon_vérifie_un_mot_de_passe_correct_on_obtient_vrai()

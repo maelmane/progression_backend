@@ -91,10 +91,10 @@ final class SauvegarderAvancementIntTests extends TestCase
 		$résultat_observé = $interacteur->sauvegarder(
 			"jdoe",
 			"file:///prog1/les_fonctions/appeler_une_fonction/info.yml",
-			new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG),
+			new Avancement(),
 		);
 
-		$résultat_attendu = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG);
+		$résultat_attendu = new Avancement();
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 		$this->assertEquals([], $résultat_observé->tentatives);
@@ -108,13 +108,9 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->withArgs(["jdoe", "https://example.com/question", Mockery::any()])
 			->andReturnArg(2);
 		$interacteur = new SauvegarderAvancementInt();
-		$résultat_observé = $interacteur->sauvegarder(
-			"jdoe",
-			"https://example.com/question",
-			new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_SYS),
-		);
+		$résultat_observé = $interacteur->sauvegarder("jdoe", "https://example.com/question", new Avancement());
 
-		$résultat_attendu = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_SYS);
+		$résultat_attendu = new Avancement();
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 		$this->assertEquals([], $résultat_observé->tentatives);
@@ -122,7 +118,7 @@ final class SauvegarderAvancementIntTests extends TestCase
 	public function test_étant_donné_une_questionProg_un_avancement_avec_tentatives_lorsquon_sauvegarde_ses_tentatives_aussi_sont_enregistrées_et_on_obtient_lavancement_avec_tentatives()
 	{
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
-		$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, [$tentative]);
+		$avancement = new Avancement([$tentative]);
 
 		DAOFactory::getInstance()
 			->get_avancement_dao()
@@ -144,7 +140,7 @@ final class SauvegarderAvancementIntTests extends TestCase
 	public function test_étant_donné_une_questionSys_un_avancement_avec_tentatives_lorsquon_sauvegarde_ses_tentatives_aussi_sont_enregistrées_et_on_obtient_lavancement_avec_tentatives()
 	{
 		$tentative = new TentativeSys("leConteneurDeLaTentative", "laRéponse", 1616534292, false, 0, "feedback", []);
-		$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_SYS, [$tentative]);
+		$avancement = new Question([$tentative]);
 
 		DAOFactory::getInstance()
 			->get_avancement_dao()

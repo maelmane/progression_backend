@@ -25,6 +25,8 @@ use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, Tentati
 
 class TentativeDAO extends EntitéDAO
 {
+	const TYPES = ["eval" => 0, "sys" => 1, "bd" => 2, "prog" => 3];
+
 	public function get_toutes($username, $question_uri)
 	{
 		$type = $this->get_type($username, $question_uri);
@@ -86,7 +88,7 @@ class TentativeDAO extends EntitéDAO
 			throw new DAOException($e);
 		}
 
-		return $type;
+		return array_key_exists($type, self::TYPES) ? self::TYPES[$type] : null;
 	}
 
 	public static function construire($data, $includes = [])

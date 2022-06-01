@@ -57,13 +57,13 @@ class Avancement
 
 	private function mettre_à_jour_dates_et_état()
 	{
-        $tentatives = $this->tentatives;
+		$tentatives = $this->tentatives;
 
 		$this->etat = empty($this->tentatives) ? Question::ETAT_DEBUT : Question::ETAT_NONREUSSI;
-        $this->date_modification = null;
+		$this->date_modification = null;
 		$this->date_réussite = null;
-        $this->tentatives=[];
-        
+		$this->tentatives = [];
+
 		foreach ($tentatives as $i => $tentative) {
 			$this->ajouter_tentative($tentative, $i);
 		}

@@ -23,7 +23,6 @@ use progression\domaine\entité\{TentativeProg, Résultat, Commentaire};
 
 final class TentativeProgTransformerTests extends TestCase
 {
-
 	public function test_étant_donné_une_TentativeProg_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
@@ -39,9 +38,11 @@ final class TentativeProgTransformerTests extends TestCase
 			"feedBackTest",
 			[new Commentaire("Message", "jdoe", 123456, 12)],
 		);
-        $tentative->id = "1614711760";
-        
-		$tentativeTransformer = new TentativeProgTransformer("roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
+		$tentative->id = "1614711760";
+
+		$tentativeTransformer = new TentativeProgTransformer(
+			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		);
 		$résultat = [
 			"id" =>
 				"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
@@ -80,9 +81,11 @@ final class TentativeProgTransformerTests extends TestCase
 			"feedBackTest",
 		);
 
-        $tentative->id = "1614711760";
+		$tentative->id = "1614711760";
 
-		$tentativeTransformer = new TentativeProgTransformer("roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
+		$tentativeTransformer = new TentativeProgTransformer(
+			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		);
 
 		$inclusionsResultats = $tentativeTransformer->includeResultats($tentative);
 
@@ -105,9 +108,11 @@ final class TentativeProgTransformerTests extends TestCase
 			new Commentaire("Message", "jdoe", 123456, 12),
 			new Commentaire("Message 2", "bob", 654321, 13),
 		]);
-        $tentative->id = "1614711760";
+		$tentative->id = "1614711760";
 
-		$tentativeTransformer = new TentativeProgTransformer("roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
+		$tentativeTransformer = new TentativeProgTransformer(
+			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		);
 
 		$commentaires = [
 			"message" => "Message",
@@ -128,5 +133,4 @@ final class TentativeProgTransformerTests extends TestCase
 			json_encode($listeCommentaires),
 		);
 	}
-
 }

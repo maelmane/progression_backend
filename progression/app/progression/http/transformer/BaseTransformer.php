@@ -25,22 +25,24 @@ class BaseTransformer extends TransformerAbstract
 {
 	public $id;
 
-	public function __construct($id = null){
+	public function __construct($id = null)
+	{
 		$this->id = $id;
 	}
 
-    // Ces fonctions sont appelées automatiquement lorsque availableIncludes inclut XXX
-    // Elles retournent un array *non transformé*
-    // public function includeXXX(){}
-    
-    protected function collection($data, $transformer, ?string $resourceKey = null): Collection{
-        foreach ($data as $id => $item) {
-            $item->id = "$id";
-        }
+	// Ces fonctions sont appelées automatiquement lorsque availableIncludes inclut XXX
+	// Elles retournent un array *non transformé*
+	// public function includeXXX(){}
 
-        return parent::collection($data, $transformer, $resourceKey);
-    }
-    
+	protected function collection($data, $transformer, ?string $resourceKey = null): Collection
+	{
+		foreach ($data as $id => $item) {
+			$item->id = "$id";
+		}
+
+		return parent::collection($data, $transformer, $resourceKey);
+	}
+
 	protected function sélectionnerChamps($objet, $fields)
 	{
 		$arr_t = (array) $objet;

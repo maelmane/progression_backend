@@ -29,7 +29,7 @@ final class ObtenirAvancementIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$avancement = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
+		$avancement = new Avancement([], "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
 
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 
@@ -61,7 +61,7 @@ final class ObtenirAvancementIntTests extends TestCase
 			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
 		);
 
-		$résultat_attendu = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
+		$résultat_attendu = new Avancement([], "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}

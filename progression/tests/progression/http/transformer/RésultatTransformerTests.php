@@ -44,7 +44,9 @@ final class RésultatTransformerTests extends TestCase
 			],
 		];
 
-		$résultatProgTransformer = new RésultatTransformer("bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490");
+		$résultatProgTransformer = new RésultatTransformer(
+			"bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
+		);
 		$résponse_observée = $résultatProgTransformer->transform($résultat);
 
 		$this->assertEquals($réponse_attendue, $résponse_observée);

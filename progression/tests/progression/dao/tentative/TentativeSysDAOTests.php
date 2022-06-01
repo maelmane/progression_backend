@@ -27,12 +27,18 @@ final class TentativeSysDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
-		EntitéDAO::get_connexion()->begin_transaction();
+		parent::setUp();
+		app("db")
+			->connection()
+			->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
-		EntitéDAO::get_connexion()->rollback();
+		app("db")
+			->connection()
+			->rollBack();
+		parent::tearDown();
 	}
 
 	public function test_étant_donné_une_TentativeSys_non_réussie_lorsquon_récupère_la_tentative_on_obtient_une_tentative_de_type_sys()
@@ -91,6 +97,7 @@ final class TentativeSysDAOTests extends TestCase
 		$résultat_attendu = new TentativeSys(["id" => "leConteneur"], "laRéponse3", 1615696400, false, [], 1, 2);
 
 		$résultat_observé = (new TentativeDAO())->save("jdoe", "https://exemple2.com", $tentative_test);
+
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 
 		$résultat_observé = (new TentativeDAO())->get_tentative("jdoe", "https://exemple2.com", 1615696400);

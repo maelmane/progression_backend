@@ -35,7 +35,8 @@ final class QuestionSysTransformerTests extends TestCase
 		$username = "jdoe";
 
 		$question = new QuestionSys();
-        $question->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$question->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->titre = "Appeler une fonction paramétrée";
 		$question->description = "Appel d\'une fonction existante recevant un paramètre";
@@ -48,9 +49,7 @@ final class QuestionSysTransformerTests extends TestCase
 		$question->utilisateur = "Ginette";
 		$question->solution = "laSolution";
 
-		$item = (new QuestionSysTransformer())->transform(
-			$question
-		);
+		$item = (new QuestionSysTransformer())->transform($question);
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/questionSysTransformerTest_base.json",
@@ -61,7 +60,8 @@ final class QuestionSysTransformerTests extends TestCase
 	public function test_étant_donné_une_question_avec_ses_tests_lorsquon_inclut_les_tests_on_reçoit_un_tableau_de_tests_numérotés_dans_le_même_ordre()
 	{
 		$question = new QuestionSys();
-        $question->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$question->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$question->tests = [
 			new TestSys("Toutes Permissions", "-rwxrwxrwx", "laValidation", "utilisateur"),
@@ -69,9 +69,7 @@ final class QuestionSysTransformerTests extends TestCase
 		];
 
 		$questionSysTransformer = new QuestionSysTransformer();
-		$résultats_obtenus = $questionSysTransformer->includeTests(
-			$question
-		);
+		$résultats_obtenus = $questionSysTransformer->includeTests($question);
 
 		$tests = [];
 		foreach ($résultats_obtenus->getData() as $résultat) {
@@ -88,12 +86,11 @@ final class QuestionSysTransformerTests extends TestCase
 	{
 		$question = new QuestionSys();
 		$question->tests = [];
-        $question->id = "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$question->id =
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$questionSysTransformer = new QuestionSysTransformer();
-		$résultat_obtenu = $questionSysTransformer->includeTests(
-			$question
-		);
+		$résultat_obtenu = $questionSysTransformer->includeTests($question);
 
 		$this->assertEquals(0, count($résultat_obtenu->getData()));
 	}

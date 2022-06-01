@@ -50,9 +50,9 @@ class AvancementTransformer extends BaseTransformer
 		$tentatives = $avancement->tentatives;
 
 		$id_parent = "{$this->id}/{$avancement->id}";
-        
+
 		foreach ($tentatives as $date_soumission => $tentative) {
-            $tentative->id = $date_soumission;
+			$tentative->id = $date_soumission;
 			$tentative->links = [
 				"related" => "{$_ENV["APP_URL"]}avancement/{$id_parent}",
 			];
@@ -80,9 +80,9 @@ class AvancementTransformer extends BaseTransformer
 		$id_parent = "{$this->id}/{$avancement->id}";
 
 		foreach ($avancement->sauvegardes as $langage => $sauvegarde) {
-            $sauvegarde->id = $langage;
+			$sauvegarde->id = $langage;
 			$sauvegarde->links = [
-				"related" => "{$_ENV["APP_URL"]}avancement/{$id_parent}"
+				"related" => "{$_ENV["APP_URL"]}avancement/{$id_parent}",
 			];
 		}
 

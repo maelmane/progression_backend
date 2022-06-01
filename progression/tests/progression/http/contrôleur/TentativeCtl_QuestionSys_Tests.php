@@ -43,7 +43,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 
 		// QuestionSys avec solution courte
 		$question_solution_courte_réussie = new QuestionSys(
-            niveau: "Débutant",
+			niveau: "Débutant",
 			titre: "Question à solution courte",
 			solution: "Bonne réponse",
 			feedback_pos: "Bon travail!",
@@ -54,7 +54,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 
 		//QuestionSys avec validations
 		$question_validée_réussie = new QuestionSys(
-            niveau: "Débutant",
+			niveau: "Débutant",
 			titre: "Question validée",
 			feedback_pos: "Bon travail!",
 			feedback_neg: "Encore un effort!",
@@ -71,7 +71,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		);
 
 		$question_validée_non_réussie = $question_validée_réussie;
-        
+
 		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");
 		$mockQuestionDAO
 			->shouldReceive("get_question")
@@ -161,7 +161,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
 			->withArgs(function ($question, $tentative) {
-				return $tentative->réponse=="Mauvaise réponse";
+				return $tentative->réponse == "Mauvaise réponse";
 			})
 			->andReturn([
 				"temps_exec" => 0.5,
@@ -175,7 +175,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
 			->withArgs(function ($question, $tentative) {
-				return $tentative->réponse=="Bonne réponse";
+				return $tentative->réponse == "Bonne réponse";
 			})
 			->andReturn([
 				"temps_exec" => 0.65,
@@ -188,32 +188,26 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			]);
 
 		//Avancement
-		$this->avancement_solution_courte_non_réussie = new Avancement([
-			$this->tentative_solution_courte_non_réussie,
-		],
-                                                                       titre: "Question non réussie",
-                                                                       niveau: "Débutant"
-        );
-		$this->avancement_solution_courte_réussie = new Avancement([
-			$this->tentative_solution_courte_non_réussie,
-			$this->tentative_solution_courte_réussie,
-		],
-                                                                       titre: "Question réussie",
-                                                                       niveau: "Débutant"
-        );
-		$this->avancement_validée_non_réussie = new Avancement([
-			$this->tentative_validée_non_réussie,
-		],
-                                                                       titre: "Question non réussie",
-                                                                       niveau: "Débutant"
-        );
-		$this->avancement_validée_réussie = new Avancement([
-			$this->tentative_validée_non_réussie,
-			$this->tentative_validée_réussie,
-		],
-                                                                       titre: "Question réussie",
-                                                                       niveau: "Débutant"
-        );
+		$this->avancement_solution_courte_non_réussie = new Avancement(
+			[$this->tentative_solution_courte_non_réussie],
+			titre: "Question non réussie",
+			niveau: "Débutant",
+		);
+		$this->avancement_solution_courte_réussie = new Avancement(
+			[$this->tentative_solution_courte_non_réussie, $this->tentative_solution_courte_réussie],
+			titre: "Question réussie",
+			niveau: "Débutant",
+		);
+		$this->avancement_validée_non_réussie = new Avancement(
+			[$this->tentative_validée_non_réussie],
+			titre: "Question non réussie",
+			niveau: "Débutant",
+		);
+		$this->avancement_validée_réussie = new Avancement(
+			[$this->tentative_validée_non_réussie, $this->tentative_validée_réussie],
+			titre: "Question réussie",
+			niveau: "Débutant",
+		);
 
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
@@ -251,7 +245,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 
 		DAOFactory::setInstance($mockDAOFactory);
 	}
-    
+
 	public function test_étant_donné_un_avancement_non_réussi_pour_une_QuestionSys_à_solution_courte_lorsquon_soumet_la_bonne_réponse_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeSys_réussie()
 	{
 		$nouvelle_tentative = new TentativeSys(
@@ -265,15 +259,17 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			réussi: true,
 			tests_réussis: 1,
 			feedback: "Bon travail!",
-            temps_exécution: 0,
+			temps_exécution: 0,
 		);
 
 		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
 		$mockTentativeDAO
 			->shouldReceive("save")
 			->withArgs(function ($user, $uri, $t) use ($nouvelle_tentative) {
-                if($t->date_soumission-time() > 1) throw "Temps d'exécution >1s {$t->date_soumission}";
-                $t->date_soumission = $nouvelle_tentative->date_soumission;
+				if ($t->date_soumission - time() > 1) {
+					throw "Temps d'exécution >1s {$t->date_soumission}";
+				}
+				$t->date_soumission = $nouvelle_tentative->date_soumission;
 				return $user == "jdoe" &&
 					$uri == "https://depot.com/question_solution_courte_non_réussie" &&
 					$t == $nouvelle_tentative;
@@ -311,7 +307,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 	}
 
 	public function test_étant_donné_un_avancement_non_réussi_pour_une_QuestionSys_à_solution_courte_lorsquon_soumet_la_mauvaise_réponse_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeSys_échouée()
-	   {
+	{
 		$nouvelle_tentative = new TentativeSys(
 			conteneur: [
 				"id" => "leConteneurDeLaNouvelleTentative",
@@ -323,15 +319,17 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			réussi: false,
 			tests_réussis: 0,
 			feedback: "Encore un effort!",
-            temps_exécution: 0,
+			temps_exécution: 0,
 		);
 
 		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
 		$mockTentativeDAO
 			->shouldReceive("save")
 			->withArgs(function ($user, $uri, $t) use ($nouvelle_tentative) {
-                if($t->date_soumission-time() > 1) throw "Temps d'exécution >1s {$t->date_soumission}";
-                $t->date_soumission = $nouvelle_tentative->date_soumission;
+				if ($t->date_soumission - time() > 1) {
+					throw "Temps d'exécution >1s {$t->date_soumission}";
+				}
+				$t->date_soumission = $nouvelle_tentative->date_soumission;
 				return $user == "jdoe" &&
 					$uri == "https://depot.com/question_solution_courte_non_réussie" &&
 					$t == $nouvelle_tentative;
@@ -366,12 +364,13 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			__DIR__ . "/résultats_attendus/tentativeCtlTest_sys_avancement_non_réussi_tentative_non_réussie.json",
 			$résultat_obtenu->getContent(),
 		);
-	   }
+	}
 
-	   public function test_étant_donné_une_question_sys_avec_tests_de_validation_lorsquon_soumet_une_tentative_validée_réussie_lavancement_et_la_tentative_sont_sauvegardée_et_on_obtient_une_TentativeSys_réussie(){
-	   }
-	   
-	   public function test_étant_donné_une_question_sys_avec_tests_de_validation_lorsquon_soumet_une_tentative_échouée_lavancement_et_la_tentative_sont_sauvegardée_et_on_obtient_une_TentativeSys_échouée(){
-	   }
+	public function test_étant_donné_une_question_sys_avec_tests_de_validation_lorsquon_soumet_une_tentative_validée_réussie_lavancement_et_la_tentative_sont_sauvegardée_et_on_obtient_une_TentativeSys_réussie()
+	{
+	}
 
+	public function test_étant_donné_une_question_sys_avec_tests_de_validation_lorsquon_soumet_une_tentative_échouée_lavancement_et_la_tentative_sont_sauvegardée_et_on_obtient_une_TentativeSys_échouée()
+	{
+	}
 }

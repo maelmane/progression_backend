@@ -18,11 +18,6 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Question;
-use progression\domaine\interacteur\{SauvegarderTentativeProgInt, SauvegarderTentativeSysInt};
-
-use Exception;
-
 class SauvegarderTentativeInt extends Interacteur
 {
 	public function sauvegarder($username, $question_uri, $tentative)

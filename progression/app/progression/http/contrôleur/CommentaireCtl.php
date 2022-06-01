@@ -61,7 +61,10 @@ class CommentaireCtl extends Contrôleur
 		$numéro = array_key_first($commentaire);
 
 		$commentaire[$numéro]->id = $numéro;
-		$réponse = $this->item($commentaire[$numéro], new CommentaireTransformer("{$username}/{$question_uri}/{$timestamp}"));
+		$réponse = $this->item(
+			$commentaire[$numéro],
+			new CommentaireTransformer("{$username}/{$question_uri}/{$timestamp}"),
+		);
 		return $this->préparer_réponse($réponse);
 	}
 

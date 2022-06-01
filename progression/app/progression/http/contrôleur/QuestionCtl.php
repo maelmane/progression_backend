@@ -89,7 +89,7 @@ class QuestionCtl extends Contrôleur
 	{
 		Log::debug("QuestionCtl.valider_et_préparer_réponse. Params : ", [$question]);
 
-        $question->id = $uri;
+		$question->id = $uri;
 		if ($question instanceof QuestionProg) {
 			$réponse_array = $this->item($question, new QuestionProgTransformer());
 			$réponse = $this->préparer_réponse($réponse_array);

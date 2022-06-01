@@ -98,12 +98,21 @@ class CléDAO extends EntitéDAO
 	{
 		try {
 			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO cle ( username, nom, hash, creation, expiration, portee ) VALUES ( ?, ?, ?, ?, ?, ? )",
+				"INSERT INTO cle ( username, nom, hash, creation, expiration, portee, user_id ) VALUES ( ?, ?, ?, ?, ?, ?, (SELECT id FROM user WHERE username = ?) )",
 			);
 
 			$hash = hash("sha256", $objet->secret);
 
-			$query->bind_param("sssiii", $username, $nom, $hash, $objet->création, $objet->expiration, $objet->portée);
+			$query->bind_param(
+				"sssiiis",
+				$username,
+				$nom,
+				$hash,
+				$objet->création,
+				$objet->expiration,
+				$objet->portée,
+				$username,
+			);
 			$query->execute();
 			$query->close();
 		} catch (mysqli_sql_exception $e) {

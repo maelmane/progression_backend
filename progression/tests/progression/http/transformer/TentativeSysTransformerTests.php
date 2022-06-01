@@ -39,8 +39,10 @@ final class TentativeSysTransformerTests extends TestCase
 			[new Commentaire("Message", "jdoe", 123456, 12)],
 		);
 		$tentative->id = "1614711760";
-        
-		$tentativeTransformer = new TentativeSysTransformer("roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
+
+		$tentativeTransformer = new TentativeSysTransformer(
+			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		);
 		$résultat = [
 			"id" =>
 				"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
@@ -76,10 +78,11 @@ final class TentativeSysTransformerTests extends TestCase
 			"feedBackTest",
 			[new Commentaire("Message", "jdoe", 123456, 12)],
 		);
-		$tentative->id =
-			"1614711760";
+		$tentative->id = "1614711760";
 
-		$tentativeTransformer = new TentativeSysTransformer("roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
+		$tentativeTransformer = new TentativeSysTransformer(
+			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		);
 
 		$inclusionsResultats = $tentativeTransformer->includeResultats($tentative);
 
@@ -109,10 +112,11 @@ final class TentativeSysTransformerTests extends TestCase
 			[],
 			[new Commentaire("Message", "jdoe", 123456, 12), new Commentaire("Message 2", "bob", 654321, 13)],
 		);
-		$tentative->id =
-			"1614711760";
+		$tentative->id = "1614711760";
 
-        $tentativeTransformer = new TentativeSysTransformer("roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24");
+		$tentativeTransformer = new TentativeSysTransformer(
+			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		);
 
 		$commentaires = [
 			"message" => "Message",
@@ -133,5 +137,4 @@ final class TentativeSysTransformerTests extends TestCase
 			json_encode($listeCommentaires),
 		);
 	}
-
 }
