@@ -523,13 +523,13 @@ EOF
 #+END_SRC
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
-curl --data "$DATA" <<get_api_url()>>/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/sauvegardes -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+curl --data "$DATA" <<get_api_url()>>/avancement/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9jb250ZW51L3Byb2dfMS85YmRmNWYxYS00ODlhLTQ0MWYtOWU2ZS0yYzg3YmJhNThiZjgvaW5mby55bWw/sauvegardes -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir la dernière sauvegarde de ~jdoe~ pour la question «Les fonctions avec paramètres/Rectangle» effectuée avec le langage ~python~: 
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
-curl "<<get_api_url()>>/sauvegarde/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9wcm9ncmVzc2lvbl9jb250ZW51X2RlbW8vbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbSVDMyVBOXRyJUMzJUE5ZQ/python" -H "Authorization: Bearer $TOKEN"
+curl "<<get_api_url()>>/sauvegarde/jdoe/aHR0cHM6Ly9wcm9ncmVzc2lvbi5wYWdlcy5kdGkuY3Jvc2Vtb250LnF1ZWJlYy9jb250ZW51L3Byb2dfMS85YmRmNWYxYS00ODlhLTQ0MWYtOWU2ZS0yYzg3YmJhNThiZjgvaW5mby55bWw/python" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Créer une clé d’authentification pour ~jdoe~
