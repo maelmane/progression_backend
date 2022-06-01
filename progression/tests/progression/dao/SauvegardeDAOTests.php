@@ -33,10 +33,10 @@ final class SauvegardeDAOTests extends TestCase
 
 	public function tearDown(): void
 	{
-		parent::tearDown();
 		app("db")
 			->connection()
 			->rollBack();
+		parent::tearDown();
 	}
 
 	public function test_étant_donné_une_sauvegarde_existante_lorsquon_cherche_par_username_question_uri_et_langage_on_obtient_un_objet_sauvegarde_correspondant()

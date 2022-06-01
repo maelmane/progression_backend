@@ -20,23 +20,19 @@ namespace progression\dao;
 
 use progression\domaine\entité\Clé;
 use progression\TestCase;
-
+use DB;
 final class CléDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
 		parent::setUp();
-		app("db")
-			->connection()
-			->beginTransaction();
+		EntitéDAO::get_connexion()->begin_transaction();
 	}
 
 	public function tearDown(): void
 	{
 		parent::tearDown();
-		app("db")
-			->connection()
-			->rollBack();
+		EntitéDAO::get_connexion()->rollback();
 	}
 
 	public function test_étant_donné_une_clé_existante_lorsquon_la_récupère_on_obtient_ses_attributs()

@@ -56,10 +56,10 @@ final class UserDAOTests extends TestCase
 
 	public function tearDown(): void
 	{
-		parent::tearDown();
 		app("db")
 			->connection()
 			->rollBack();
+		parent::tearDown();
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_on_obtient_son_profil()

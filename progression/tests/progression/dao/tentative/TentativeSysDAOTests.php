@@ -19,7 +19,7 @@
 namespace progression\dao\tentative;
 
 use progression\domaine\entité\{TentativeSys, Résultat};
-use PHPUnit\Framework\TestCase;
+use progression\TestCase;
 use progression\dao\{DAOException, DAOFactory};
 use progression\dao\EntitéDAO;
 
@@ -27,18 +27,14 @@ final class TentativeSysDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
-		parent::setUp();
-		app("db")
-			->connection()
-			->beginTransaction();
+        parent::setUp();
+		EntitéDAO::get_connexion()->begin_transaction();
 	}
 
 	public function tearDown(): void
 	{
-		app("db")
-			->connection()
-			->rollBack();
-		parent::tearDown();
+		EntitéDAO::get_connexion()->rollback();
+        parent::tearDown();
 	}
 
 	public function test_étant_donné_une_TentativeSys_non_réussie_lorsquon_récupère_la_tentative_on_obtient_une_tentative_de_type_sys()
