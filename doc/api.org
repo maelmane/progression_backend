@@ -406,7 +406,7 @@ curl "<<get_api_url()>>/auth" --data '{"username": "jdoe", "password": "Crosemon
 
 #+NAME: USER
 #+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
-curl "<<get_api_url()>>/user" -H "Authorization: Bearer $TOKEN"
+curl "<<get_api_url()>>/user/jdoe" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Obtenir la question «Les fonctions avec paramètres/Rectangle» et ses tests: 
