@@ -122,7 +122,7 @@ final class SauvegardeDAOTests extends TestCase
 
 		$this->assertEquals($résultat_attendu, $résponse_observée2);
 	}
-    
+
 	public function test_étant_donné_une_liste_de_sauvegardes_existante_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_tableau_de_sauvegardes_correspondant()
 	{
 		$résultat_attendu = [];

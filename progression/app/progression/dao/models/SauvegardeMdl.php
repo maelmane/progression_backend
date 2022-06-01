@@ -24,8 +24,8 @@ class SauvegardeMdl extends Model
 {
 	protected $table = "sauvegarde";
 	public $timestamps = false;
-    
-    protected $guarded = [];
+
+	protected $guarded = [];
 }
 
 ?>

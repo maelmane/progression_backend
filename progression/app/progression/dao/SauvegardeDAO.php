@@ -22,6 +22,8 @@ use Illuminate\Database\QueryException;
 use progression\domaine\entité\Sauvegarde;
 use progression\dao\models\{AvancementMdl, SauvegardeMdl};
 
+use DB;
+
 class SauvegardeDAO extends EntitéDAO
 {
 	public function get_toutes($username, $question_uri, $includes = [])
@@ -60,22 +62,37 @@ class SauvegardeDAO extends EntitéDAO
 	public function save($username, $question_uri, $langage, $sauvegarde)
 	{
 		try {
-			$avancement = AvancementMdl::query()
-				->where("username", $username)
-				->where("question_uri", $question_uri)
-				->first();
-            if(!$avancement) return null;
-            $avancement_id = $avancement["id"];
-            
-			$objet = [];
-			$objet["username"] = $username;
-			$objet["question_uri"] = $question_uri;
-			$objet["date_sauvegarde"] = $sauvegarde->date_sauvegarde;
-			$objet["langage"] = $langage;
-			$objet["code"] = $sauvegarde->code;
-            $objet["avancement_id"] = $avancement_id;
+			DB::update(
+				"
+                INSERT INTO sauvegarde (
+                    username,
+                    question_uri,
+                    date_sauvegarde,
+                    langage,
+                    code,
+                    avancement_id )
+				VALUES (
+                    :username,
+                    :question_uri,
+                    :date_sauvegarde,
+                    :langage,
+                    :code,
+                    (SELECT id FROM avancement WHERE username=:username_i AND question_uri=:question_uri_i) )
+				ON DUPLICATE KEY UPDATE
+                    code = VALUES( code ),
+                    date_sauvegarde = VALUES( date_sauvegarde )",
+				[
+					"username" => $username,
+					"question_uri" => $question_uri,
+					"date_sauvegarde" => $sauvegarde->date_sauvegarde,
+					"langage" => $langage,
+					"code" => $sauvegarde->code,
+					"username_i" => $username,
+					"question_uri_i" => $question_uri,
+				],
+			);
 
-			return $this->construire([SauvegardeMdl::query()->updateOrCreate(["username" => $username, "question_uri" => $question_uri, "langage" => $langage], $objet)])[$langage];
+			return $this->get_sauvegarde($username, $question_uri, $langage);
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
