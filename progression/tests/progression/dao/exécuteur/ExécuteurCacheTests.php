@@ -31,7 +31,7 @@ final class ExécuteurCacheTests extends TestCase
 
 		$this->mock_exécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$this->mock_exécuteur
-			->shouldReceive("exécuter")
+			->shouldReceive("exécuter_prog")
 			->andReturn(["temps_exécution" => 12345, "résultats" => [["output" => "sortie exécutée", "errors" => ""]]]);
 		$this->mock_standardiseur = Mockery::mock("progression\\dao\\exécuteur\\Standardiseur");
 		$this->mock_standardiseur
