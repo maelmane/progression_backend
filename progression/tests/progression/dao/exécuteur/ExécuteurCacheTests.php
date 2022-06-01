@@ -67,7 +67,7 @@ final class ExécuteurCacheTests extends TestCase
 		Cache::shouldReceive("put")
 			->once()
 			->with("e8032dd801819a71571c41b3c87f529a", [["output" => "sortie exécutée", "errors" => ""]]);
-		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
 		);
@@ -93,7 +93,7 @@ final class ExécuteurCacheTests extends TestCase
 			->andReturn(true);
 		Cache::shouldNotReceive("put");
 
-		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
 		);
@@ -119,7 +119,7 @@ final class ExécuteurCacheTests extends TestCase
 			->andReturn(true);
 		Cache::shouldNotReceive("put");
 
-		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
 		);
@@ -141,7 +141,7 @@ final class ExécuteurCacheTests extends TestCase
 			->once()
 			->with("8d7dd086fe94394520c14fe098159378", [["output" => "sortie exécutée", "errors" => ""]]);
 
-		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
 		);
@@ -166,7 +166,7 @@ final class ExécuteurCacheTests extends TestCase
 			->once()
 			->with("879f8745392494c38a966d01eab2a23e", [["output" => "sortie exécutée", "errors" => ""]]);
 
-		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
 		);
@@ -191,7 +191,7 @@ final class ExécuteurCacheTests extends TestCase
 			->once()
 			->with("78e4674804ee6f7955997243441507d8", [["output" => "sortie exécutée", "errors" => ""]]);
 
-		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
 		);
@@ -217,7 +217,7 @@ final class ExécuteurCacheTests extends TestCase
 			->andReturn([["output" => "sortie prise en cache", "errors" => ""]]);
 		Cache::shouldNotReceive("put");
 
-		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
 		);
