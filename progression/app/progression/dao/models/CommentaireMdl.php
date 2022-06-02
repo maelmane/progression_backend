@@ -20,25 +20,16 @@ namespace progression\dao\models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AvancementMdl extends Model
+class CommentaireMdl extends Model
 {
-	protected $table = "avancement";
+	protected $table = "commentaire";
 	public $timestamps = false;
 
 	protected $guarded = [];
 
-	public function tentatives_prog()
-	{
-        return $this->hasMany(TentativeProgMdl::class, "avancement_id", "id");
+    public function créateur(){
+        return $this->hasOne( UserMdl::class, "id", "créateur_id" );
     }
-    
-	public function tentatives_sys(){
-        return $this->hasMany(TentativeSysMdl::class, "avancement_id", "id");
-	}
-
-	public function sauvegardes()
-	{
-		return $this->hasMany(SauvegardeMdl::class, "avancement_id", "id");
-	}
 }
+
 ?>

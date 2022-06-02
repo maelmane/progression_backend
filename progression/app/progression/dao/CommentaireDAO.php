@@ -18,93 +18,81 @@
 
 namespace progression\dao;
 
-use mysqli_sql_exception;
+use Illuminate\Database\QueryException;
 use progression\domaine\entité\Commentaire;
+use progression\dao\models\{TentativeProgMdl, CommentaireMdl, UserMdl};
 
 class CommentaireDAO extends EntitéDAO
 {
-	public function get_commentaire($id)
+	public function get_commentaire($id, $includes = ["créateur"])
 	{
-		$commentaire = null;
-
-		$message = null;
-		$créateur = null;
-		$date = null;
-		$numéro_ligne = null;
-
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT message, créateur, date, numéro_ligne FROM commentaire WHERE numéro = ?  ",
-			);
-			$query->bind_param("i", $id);
+			$commentaire = 
+				CommentaireMdl::select("commentaire.*")
+				->with( $includes )
+                ->where("id", $id)
+                ->first();
 
-			$query->execute();
-			$query->bind_result($message, $créateur, $date, $numéro_ligne);
-
-			$résultat = $query->fetch();
-			$query->close();
-			if ($résultat) {
-				$commentaire[$id] = new Commentaire($message, $créateur, $date, $numéro_ligne);
+            if($commentaire){
+                return $this->construire([$commentaire],
+                                         $includes)[$id];
 			}
-		} catch (mysqli_sql_exception $e) {
+            else{
+                return null;
+            }
+            
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 
-		return $commentaire;
 	}
 
-	public function get_commentaires_par_tentative($username, $question_uri, $date_soumission)
+	public function get_commentaires_par_tentative($username, $question_uri, $date_soumission, $includes=["créateur"])
 	{
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT numéro, message, créateur, date, numéro_ligne FROM commentaire WHERE username = ? AND question_uri = ? AND date_soumission = ?",
-			);
-			$query->bind_param("ssi", $username, $question_uri, $date_soumission);
 
-			$query->execute();
-
-			$commentaires = [];
-			$numéro = null;
-			$message = null;
-			$créateur = null;
-			$date = null;
-			$numéro_ligne = null;
-			$query->bind_result($numéro, $message, $créateur, $date, $numéro_ligne);
-
-			while ($query->fetch()) {
-				$commentaires[$numéro] = new Commentaire($message, $créateur, $date, $numéro_ligne);
-			}
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+            return $this->construire(
+                CommentaireMdl::select("commentaire.*")
+                ->with( $includes )
+                ->join("reponse_prog", "tentative_id", "=", "reponse_prog.id")
+                ->join("avancement",
+                       "reponse_prog.avancement_id", "=", "avancement.id")
+                ->join("user", "avancement.user_id", "=", "user.id")
+                ->where("user.username", $username)
+				->where("avancement.question_uri", $question_uri)
+                ->where("reponse_prog.date_soumission", $date_soumission)
+                ->get(),
+                $includes);
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
 		return $commentaires;
 	}
 
-	public function save($username, $question_uri, $date_soumission, $numéro, $objet)
+	public function save($username, $question_uri, $date_soumission, $numéro, $commentaire)
 	{
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO commentaire (numéro,message, créateur, date, numéro_ligne, username, question_uri, date_soumission ) VALUES (?,?, ?, ?, ?, ?, ?, ? )
-				ON DUPLICATE KEY UPDATE message = VALUES( message ), date = VALUES( date ), numéro_ligne = VALUES( numéro_ligne )",
-			);
-			$query->bind_param(
-				"issiissi",
-				$numéro,
-				$objet->message,
-				$objet->créateur,
-				$objet->date,
-				$objet->numéro_ligne,
-				$username,
-				$question_uri,
-				$date_soumission,
-			);
-
-			$query->execute();
-			$numéro = $query->insert_id;
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+            $tentative_id = TentativeProgMdl::select("reponse_prog.id")
+                          ->from("reponse_prog")
+                          ->join("avancement", "reponse_prog.avancement_id", "=", "avancement.id")
+                          ->join("user", "avancement.user_id", "=", "user.id")
+                          ->where("user.username", $username)
+                          ->where("avancement.question_uri", $question_uri)
+                          ->first()["id"];
+            $créateur_id = UserMdl::select("user.id")
+                         ->from("user")
+                         ->where("user.username", $commentaire->créateur->username)
+                         ->first()["id"];
+            $objet=[
+                "tentative_id" => $tentative_id,
+                "créateur_id" => $créateur_id,
+                "message" => $commentaire->message,
+                "date" => $commentaire->date,
+                "numéro_ligne" => $commentaire->numéro_ligne
+            ];
+            return $this->construire([
+                CommentaireMdl::updateOrCreate(["id" => $numéro], $objet)], ["créateur"])[$numéro];
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 
@@ -116,15 +104,16 @@ class CommentaireDAO extends EntitéDAO
 	{
 		$commentaires = [];
 		foreach ($data as $i => $item) {
-			$numéro = $item["numéro"];
+			$id = $item["id"];
+            $créateur = in_array("créateur", $includes) ? UserDAO::construire([$item["créateur"]])[0] : null;
 			$commentaire = new Commentaire(
 				message: $item["message"],
-				créateur: $item["créateur"],
+				créateur: $créateur,
 				date: $item["date"],
 				numéro_ligne: $item["numéro_ligne"],
 			);
 
-			$commentaires[$numéro] = $commentaire;
+			$commentaires[$id] = $commentaire;
 		}
 
 		return $commentaires;

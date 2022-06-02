@@ -32,7 +32,7 @@ class UserDAO extends EntitéDAO
 		try {
 			$user = UserMdl::query()
 				->where("username", $username)
-				->with("avancements", "clés")
+				->with( $includes )
 				->first();
 			return $user ? $this->construire([$user], $includes)[0] : null;
 		} catch (QueryException $e) {
@@ -43,9 +43,10 @@ class UserDAO extends EntitéDAO
 	public function save($user)
 	{
 		try {
-			$objet = [];
-			$objet["username"] = $user->username;
-			$objet["role"] = $user->rôle;
+			$objet = [
+                "username" => $user->username,
+                "role" => $user->rôle
+            ];
 
 			return $this->construire([UserMdl::query()->updateOrCreate(["username" => $user->username], $objet)])[0];
 		} catch (QueryException $e) {

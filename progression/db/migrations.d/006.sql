@@ -9,8 +9,8 @@ DELIMITER &&
 
 		  START TRANSACTION;
 		
-            DROP TABLE `reponse_sys`;
-		   CREATE TABLE `reponse_sys` (
+          DROP TABLE `reponse_sys`;
+		  CREATE TABLE `reponse_sys` (
 			`username`			varchar(255) NOT NULL,
 			`question_uri` 		varchar(1024) CHARACTER SET latin1,
             `conteneur`		    varchar(64),

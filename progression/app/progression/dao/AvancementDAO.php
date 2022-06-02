@@ -18,7 +18,6 @@
 
 namespace progression\dao;
 
-use mysqli_sql_exception;
 use progression\domaine\entité\{Avancement, Question};
 use progression\dao\models\{AvancementMdl, UserMdl};
 use progression\dao\tentative\{TentativeDAO, TentativeProgDAO, TentativeSysDAO};
@@ -30,9 +29,11 @@ class AvancementDAO extends EntitéDAO
 	{
 		try {
 			return $this->construire(
-				AvancementMdl::query()
-					->where("username", $username)
-					->get(),
+				AvancementMdl::select("avancement.*")
+				->with( $includes )
+                ->join("user", "avancement.user_id", "=", "user.id")
+                ->where("user.username", $username)
+                ->get(),
 				$includes,
 			);
 		} catch (QueryException $e) {
@@ -43,9 +44,11 @@ class AvancementDAO extends EntitéDAO
 	public function get_avancement($username, $question_uri, $includes = [])
 	{
 		try {
-			$data = AvancementMdl::query()
-				->where("username", $username)
-				->where("question_uri", $question_uri)
+        $data = AvancementMdl::select("avancement.*")
+				->with( $includes )
+                ->join("user", "avancement.user_id", "=", "user.id")
+                ->where("user.username", $username)
+				->where("avancement.question_uri", $question_uri)
 				->first();
 			if ($data) {
 				return $this->construire([$data], $includes)[$question_uri];
@@ -66,7 +69,6 @@ class AvancementDAO extends EntitéDAO
 			$objet = [];
 			$objet["etat"] = $avancement->etat;
 			$objet["question_uri"] = $question_uri;
-			$objet["username"] = $username;
 			$objet["titre"] = $avancement->titre;
 			$objet["niveau"] = $avancement->niveau;
 			$objet["date_modification"] = $avancement->date_modification;
@@ -74,10 +76,7 @@ class AvancementDAO extends EntitéDAO
 			$objet["user_id"] = $user_id;
 
 			return $this->construire([
-				AvancementMdl::query()->updateOrCreate(
-					["username" => $username, "question_uri" => $question_uri],
-					$objet,
-				),
+				AvancementMdl::updateOrCreate(["user_id" => $user_id, "question_uri" => $question_uri], $objet)
 			])[$question_uri];
 		} catch (QueryException $e) {
 			throw new DAOException($e);
@@ -89,16 +88,14 @@ class AvancementDAO extends EntitéDAO
 		if ($data == null) {
 			return [];
 		}
-
 		$avancements = [];
 		foreach ($data as $i => $item) {
 			$tentatives = [];
-			if (in_array("tentatives", $includes)) {
-				if ($item["type"] == "prog") {
-					$tentatives = TentativeProgDAO::construire($item["tentatives"]);
-				} elseif ($item["type"] == "sys") {
-					$tentatives = TentativeSysDAO::construire($item["tentatives"]);
-				}
+			if (in_array("tentatives_prog", $includes)) {
+                $tentatives = TentativeProgDAO::construire($item["tentatives_prog"]);
+            }
+			if (in_array("tentatives_sys", $includes)) {
+                $tentatives = TentativeSysDAO::construire($item["tentatives_sys"]);
 			}
 			$avancement = new Avancement(
 				$tentatives,
@@ -111,7 +108,6 @@ class AvancementDAO extends EntitéDAO
 			$avancement->date_réussite = $item["date_reussite"];
 			$avancements[$item["question_uri"]] = $avancement;
 		}
-
 		return $avancements;
 	}
 }

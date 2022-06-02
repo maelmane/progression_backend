@@ -51,7 +51,7 @@ final class AvancementDAOTests extends TestCase
 		$résponse_observée = (new AvancementDAO())->get_avancement(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			includes: ["tentatives"],
+			includes: ["tentatives_prog"],
 		);
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
@@ -91,9 +91,9 @@ final class AvancementDAOTests extends TestCase
 		);
 
 		$résponse_observée = (new AvancementDAO())->get_avancement(
-			"Bob",
+			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			includes: ["tentatives", "sauvegardes"],
+			includes: ["tentatives_prog", "sauvegardes"],
 		);
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
@@ -135,7 +135,7 @@ final class AvancementDAOTests extends TestCase
 	public function test_étant_donné_un_avancement_inexistant_lorsquon_le_cherche_par_username_et_question_uri_on_obtient_null()
 	{
 		$résponse_observée = (new AvancementDAO())->get_avancement(
-			"Bob",
+			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction_inexistante",
 		);
 		$this->assertNull($résponse_observée);
@@ -186,8 +186,7 @@ final class AvancementDAOTests extends TestCase
 		// L'avancement a été sauvegardé
 		$résponse_observée = (new AvancementDAO())->get_avancement(
 			"bob",
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			includes: ["tentatives,sauvegardes"],
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
 		);
 
 		$this->assertEquals($résultat_attendu, $résponse_observée);

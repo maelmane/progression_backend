@@ -27,7 +27,7 @@ class TentativeSysMdl extends Model
 
 	public function avancement()
 	{
-		return $this->belongsTo(AvancementMdl::class, "fk_avancement_id");
+		return $this->belongsTo(AvancementMdl::class, "fk_tentative_sys_avancement");
 	}
 }
 

@@ -24,6 +24,8 @@ class CléMdl extends Model
 {
 	protected $table = "cle";
 	public $timestamps = false;
+
+    protected $guarded=[];
 }
 
 ?>
