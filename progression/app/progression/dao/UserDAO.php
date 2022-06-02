@@ -18,9 +18,10 @@
 
 namespace progression\dao;
 
-use mysqli_sql_exception;
 use progression\domaine\entité\User;
 use progression\dao\models\UserMdl;
+
+use DB;
 use Illuminate\Database\QueryException;
 
 class UserDAO extends EntitéDAO
@@ -57,13 +58,11 @@ class UserDAO extends EntitéDAO
 	public function set_password(User $user, string $password)
 	{
 		try {
-			$query = EntitéDAO::get_connexion()->prepare("UPDATE user SET password=? WHERE username=?");
 
 			$hash = password_hash($password, PASSWORD_DEFAULT);
-			$query->bind_param("ss", $hash, $user->username);
-			$query->execute();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+			return DB::update("UPDATE user SET password=? WHERE username=?", [ $hash, $user->username]);
+            
+		} catch (QuerryException $e) {
 			throw new DAOException($e);
 		}
 	}
@@ -71,18 +70,11 @@ class UserDAO extends EntitéDAO
 	public function vérifier_password(User $user, string $password = null)
 	{
 		try {
-			$query = EntitéDAO::get_connexion()->prepare("SELECT password FROM user WHERE username=?");
 
-			$query->bind_param("s", $user->username);
-			$query->execute();
-
-			$hash = null;
-			$query->bind_result($hash);
-			$query->fetch();
-			$query->close();
-
-			return $hash && $password && password_verify($password, $hash);
-		} catch (mysqli_sql_exception $e) {
+			$hash = DB::select("SELECT password FROM user WHERE username=?", [$user->username] );
+			return count($hash) == 1 && password_verify($password, $hash[0]->password);
+            
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}

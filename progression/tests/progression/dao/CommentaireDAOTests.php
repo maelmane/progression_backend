@@ -35,13 +35,17 @@ final class CommentaireDAOTests extends TestCase
         $this->admin = new User("admin", User::ROLE_ADMIN);
         $this->stefany = new User("Stefany");
         
-		EntitéDAO::get_connexion()->begin_transaction();
+		app("db")
+			->connection()
+			->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
+		app("db")
+			->connection()
+			->rollBack();
 		parent::tearDown();
-		EntitéDAO::get_connexion()->rollback();
 	}
 
 	public function test_étant_donné_un_commentaire_lorsquon_le_cherche_par_son_numero_on_obtient_le_commentaire()

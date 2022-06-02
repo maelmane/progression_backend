@@ -18,6 +18,7 @@
 
 namespace progression\dao;
 
+use DB;
 use Illuminate\Database\QueryException;
 use progression\domaine\entité\Clé;
 use progression\dao\models\{CléMdl, UserMdl};
@@ -90,22 +91,13 @@ class CléDAO extends EntitéDAO
 
 	public function vérifier($username, $nom, $secret)
 	{
-		$hash = null;
-
 		try {
-			$query = EntitéDAO::get_connexion()->prepare("SELECT hash FROM cle WHERE username = ? AND nom = ? ");
-			$query->bind_param("ss", $username, $nom);
+			$hash = DB::select("SELECT hash FROM cle JOIN user ON cle.user_id = user.id WHERE user.username = ? AND cle.nom = ? ", [$username, $nom] );
 
-			$query->execute();
-			$query->bind_result($hash);
-
-			$résultat = $query->fetch();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+            return count($hash) == 1 && hash("sha256", $secret) == $hash[0]->hash;
+		} catch (QuertyException $e) {
 			throw new DAOException($e);
 		}
-
-		return hash("sha256", $secret) == $hash;
 	}
 
 	public static function construire($data)
