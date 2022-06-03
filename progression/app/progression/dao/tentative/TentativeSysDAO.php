@@ -18,179 +18,102 @@
 
 namespace progression\dao\tentative;
 
-use mysqli_sql_exception;
 use progression\dao\{DAOException, EntitéDAO, CommentaireDAO};
 use progression\domaine\entité\TentativeSys;
+use progression\dao\models\{TentativeSysMdl, AvancementMdl};
 
 class TentativeSysDAO extends TentativeDAO
 {
-	public function get_toutes($username, $question_uri)
+	public function get_toutes($username, $question_uri, $includes =[])
 	{
-		$tentatives = [];
-		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				'SELECT reponse_sys.conteneur,
-				reponse_sys.reponse,
-				reponse_sys.date_soumission,
-				reponse_sys.reussi,
-				reponse_sys.tests_reussis,
-				reponse_sys.temps_exécution
-				FROM reponse_sys
-				WHERE username = ? 
-				AND question_uri = ?',
+        try{
+            return $this->construire(
+                TentativeSysMdl::select("reponse_sys.*")
+                ->with($includes)
+                ->join("avancement",
+                       "reponse_sys.avancement_id", "=", "avancement.id")
+                ->join("user",
+                       "avancement.user_id", "=", "user.id")
+                ->where("user.username", $username)
+                ->where("avancement.question_uri", $question_uri)
+                ->get(),
+				$includes,
 			);
-			$query->bind_param("ss", $username, $question_uri);
-			$query->execute();
-
-			$conteneur = null;
-			$réponse = null;
-			$date_soumission = null;
-			$réussi = false;
-			$tests_réussis = 0;
-			$temps_exécution = null;
-			$query->bind_result($conteneur, $réponse, $date_soumission, $réussi, $tests_réussis, $temps_exécution);
-
-			while ($query->fetch()) {
-				$tentatives[] = new TentativeSys(
-					conteneur: ["id" => $conteneur],
-					réponse: $réponse,
-					date_soumission: $date_soumission,
-					réussi: $réussi,
-					résultats: [],
-					tests_réussis: $tests_réussis,
-					temps_exécution: $temps_exécution,
-				);
-			}
-
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		return $tentatives;
 	}
 
-	public function get_tentative($username, $question_uri, $timestamp)
+	public function get_tentative($username, $question_uri, $date_soumission, $includes = [])
 	{
-		$tentative = null;
+        try{
+			$tentative =
+                        TentativeSysMdl::select("reponse_sys.*")
+                       ->with($includes)
+                       ->join("avancement",
+                               "reponse_sys.avancement_id", "=", "avancement.id")
+                        ->join("user",
+                               "avancement.user_id", "=", "user.id")
+                        ->where("user.username", $username)
+                        ->where("avancement.question_uri", $question_uri)
+                        ->where("date_soumission", $date_soumission)
+                        ->first();
 
-		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				'SELECT reponse_sys.conteneur,
-				reponse_sys.reponse,
-				reponse_sys.date_soumission,
-				reponse_sys.reussi,
-				reponse_sys.tests_reussis,
-				reponse_sys.temps_exécution
-				FROM reponse_sys
-				WHERE username = ? 
-				AND question_uri = ?
-				AND date_soumission = ?',
-			);
-			$query->bind_param("ssi", $username, $question_uri, $timestamp);
-			$query->execute();
+			return $tentative ? $this->construire([$tentative], $includes)[$date_soumission] : null;
 
-			$conteneur = null;
-			$réponse = null;
-			$date_soumission = null;
-			$réussi = false;
-			$tests_réussis = 0;
-			$temps_exécution = null;
-			$query->bind_result($conteneur, $réponse, $date_soumission, $réussi, $tests_réussis, $temps_exécution);
-
-			if ($query->fetch()) {
-				$tentative = new TentativeSys(
-					conteneur: ["id" => $conteneur],
-					réponse: $réponse,
-					date_soumission: $date_soumission,
-					réussi: $réussi,
-					résultats: [],
-					tests_réussis: $tests_réussis,
-					temps_exécution: $temps_exécution,
-				);
-			}
-
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		return $tentative;
 	}
 
-	public function get_dernière($username, $question_uri)
-	{
-		$tentative = null;
+	public function get_dernière($username, $question_uri, $includes = []){
+        try{
+			$tentative =
+                       TentativeSysMdl::select("reponse_sys.*")
+                       ->with($includes)
+                       ->join("avancement",
+                              "reponse_sys.avancement_id", "=", "avancement.id")
+                       ->join("user",
+                              "avancement.user_id", "=", "user.id")
+                       ->where("user.username", $username)
+                       ->where("avancement.question_uri", $question_uri)
+                       ->where("date_soumission", $date_soumission)
+                       ->orderBy("date_soumission", "desc")
+                       ->first();
 
-		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				'SELECT reponse_sys.conteneur,
-				reponse_sys.reponse,
-				reponse_sys.date_soumission,
-				reponse_sys.reussi,
-				reponse_sys.tests_reussis,
-				reponse_sys.temps_exécution
-				FROM reponse_sys
-				WHERE username = ? 
-				AND question_uri = ?
-				AND date_soumission = (SELECT max(date_soumission) FROM reponse_sys WHERE username = ? and question_uri = ?)',
-			);
-			$query->bind_param("ssss", $username, $question_uri, $username, $question_uri);
-			$query->execute();
+			return $tentative ? $this->construire([$tentative], $includes)[$date_soumission] : null;
 
-			$conteneur = null;
-			$réponse = null;
-			$date_soumission = null;
-			$réussi = false;
-			$tests_réussis = 0;
-			$temps_exécution = null;
-			$query->bind_result($conteneur, $réponse, $date_soumission, $réussi, $tests_réussis, $temps_exécution);
-
-			if ($query->fetch()) {
-				$tentative = new TentativeSys(
-					conteneur: ["id" => $conteneur],
-					réponse: $réponse,
-					date_soumission: $date_soumission,
-					réussi: $réussi,
-					résultats: [],
-					tests_réussis: $tests_réussis,
-					temps_exécution: $temps_exécution,
-				);
-			}
-
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		return $tentative;
 	}
 
-	public function save($username, $question_uri, $objet)
+	public function save($username, $question_uri, $tentative)
 	{
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO reponse_sys ( question_uri, username, conteneur, reponse, date_soumission, reussi, tests_reussis, temps_exécution ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )",
-			);
-			$query->bind_param(
-				"ssssiiii",
-				$question_uri,
-				$username,
-				$objet->conteneur["id"],
-				$objet->réponse,
-				$objet->date_soumission,
-				$objet->réussi,
-				$objet->tests_réussis,
-				$objet->temps_exécution,
-			);
-			$query->execute();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
-			print_r($e);
+            $avancement_id=AvancementMdl::select("avancement.id")
+                          ->from("avancement")
+                          ->join("user", "avancement.user_id", "=", "user.id")
+                          ->where("user.username", $username)
+                          ->where("question_uri", $question_uri)
+                          ->first()["id"];
+
+				$objet=[
+                    "conteneur" => $tentative->conteneur["id"],
+                    "reponse" => $tentative->réponse,
+                    "date_soumission" => $tentative->date_soumission,
+                    "reussi" => $tentative->réussi,
+                    "tests_reussis" => $tentative->tests_réussis,
+                    "temps_exécution" => $tentative->temps_exécution
+                ];
+                
+			return $this->construire([
+				TentativeSysMdl::updateOrCreate(["avancement_id" => $avancement_id, "date_soumission" => $tentative->date_soumission], $objet)
+			])[$tentative->date_soumission];
+            
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		return $this->get_tentative($username, $question_uri, $objet->date_soumission);
 	}
 
 	public static function construire($data, $includes = [])
@@ -200,9 +123,11 @@ class TentativeSysDAO extends TentativeDAO
 		}
 
 		$tentatives = [];
-		foreach ($data as $i => $item) {
+		foreach ($data as $item) {
 			$tentative = new TentativeSys(
-				conteneur: $item["conteneur"],
+				conteneur: ["id" => $item["conteneur"],
+                            "ip" => null,
+                            "port" => null],
 				réponse: $item["reponse"],
 				date_soumission: $item["date_soumission"],
 				réussi: $item["reussi"],
@@ -214,7 +139,7 @@ class TentativeSysDAO extends TentativeDAO
 					? CommentaireDAO::construire($item["commentaires"])
 					: [],
 			);
-			$tentatives[$i] = $tentative;
+			$tentatives[$item["date_soumission"]] = $tentative;
 		}
 
 		return $tentatives;

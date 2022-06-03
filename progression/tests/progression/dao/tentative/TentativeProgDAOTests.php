@@ -73,8 +73,8 @@ final class TentativeProgDAOTests extends TestCase
 	public function test_étant_donné_une_TentativeProg_lorsquon_récupère_toutes_les_tentatives_on_obtient_un_tableau_de_tentatives()
 	{
 		$résultat_attendue = [
-			new TentativeProg("python", "print(\"Allo le monde!\")", 1615696286, false, [], 3),
-			new TentativeProg("python", "print(\"Allo tout le monde!\")", 1615696296, true, [], 4),
+			1615696286 => new TentativeProg("python", "print(\"Allo le monde!\")", 1615696286, false, [], 3, 34567),
+			1615696296 => new TentativeProg("python", "print(\"Allo tout le monde!\")", 1615696296, true, [], 4, 345633),
 		];
 
 		$résultat_observé = (new TentativeDAO())->get_toutes(

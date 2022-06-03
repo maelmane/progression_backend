@@ -25,6 +25,8 @@ class TentativeSysMdl extends Model
 	protected $table = "reponse_sys";
 	public $timestamps = false;
 
+    protected $guarded = [];
+
 	public function avancement()
 	{
 		return $this->belongsTo(AvancementMdl::class, "fk_tentative_sys_avancement");

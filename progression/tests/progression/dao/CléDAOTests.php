@@ -20,7 +20,7 @@ namespace progression\dao;
 
 use progression\domaine\entité\Clé;
 use progression\TestCase;
-use DB;
+
 final class CléDAOTests extends TestCase
 {
 	public function setUp(): void

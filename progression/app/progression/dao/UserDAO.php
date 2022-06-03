@@ -28,7 +28,6 @@ class UserDAO extends EntitéDAO
 {
 	public function get_user($username, $includes = [])
 	{
-        DB::enableQueryLog();
 		$user = null;
 
 		try {
@@ -36,11 +35,8 @@ class UserDAO extends EntitéDAO
 				->where("username", $username)
 				->with( $includes )
 				->first();
-			$r = $user ? $this->construire([$user], $includes)[0] : null;
+			return $user ? $this->construire([$user], $includes)[0] : null;
             
-            print_r(DB::getQueryLog());
-
-            return $r;
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}

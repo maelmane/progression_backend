@@ -143,7 +143,7 @@ INSERT INTO reponse_prog(id, date_soumission, langage, code, reussi, tests_reuss
   0,
   3,
   34567,
-  3
+  2
 ),(
   3,
   1615696296,
@@ -152,7 +152,7 @@ INSERT INTO reponse_prog(id, date_soumission, langage, code, reussi, tests_reuss
   1,
   4,
   345633,
-  3
+  2
 );
 
 INSERT INTO reponse_sys(conteneur, reponse, date_soumission, reussi, tests_reussis, temps_exécution, avancement_id) VALUES (
@@ -162,7 +162,7 @@ INSERT INTO reponse_sys(conteneur, reponse, date_soumission, reussi, tests_reuss
   0,
   0,
   0,
-  5
+  6
 ),(
   "leConteneur2",
   "laRéponse2",

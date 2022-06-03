@@ -18,7 +18,8 @@
 
 namespace progression\dao\tentative;
 
-use mysqli_sql_exception;
+use DB;
+use Illuminate\Database\QueryException;
 use progression\dao\{DAOException, EntitéDAO, SauvegardeDAO, CommentaireDAO};
 use progression\domaine\entité\Question;
 use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, TentativeBD};
@@ -72,43 +73,15 @@ class TentativeDAO extends EntitéDAO
 
 	private function get_type($username, $question_uri)
 	{
-		$type = null;
-
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT type FROM avancement WHERE question_uri = ? AND username = ?",
-			);
+            
+			$type = DB::select("SELECT type FROM avancement JOIN user ON avancement.user_id = user.id WHERE question_uri = ? AND username = ?", [$question_uri, $username])[0]->type ?? null;
+            
+            return array_key_exists($type, self::TYPES) ? self::TYPES[$type] : null;
 
-			$query->bind_param("ss", $question_uri, $username);
-			$query->execute();
-			$query->bind_result($type);
-			$query->fetch();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 
-		return array_key_exists($type, self::TYPES) ? self::TYPES[$type] : null;
-	}
-
-	public static function construire($data, $includes = [])
-	{
-		$tentatives = [];
-		foreach ($data as $i => $item) {
-			$tentative = new Tentative(
-				date_soumission: $item["date_soumission"],
-				réussi: $item["réussi"],
-				résultats: [],
-				tests_réussis: $item["tests_réussis"],
-				temps_exécution: $item["temps_exécution"],
-				feedback: null,
-				commentaires: in_array("commentaires", $includes)
-					? CommentaireDAO::construire($item["commentaires"])
-					: [],
-			);
-			$tentatives[$i] = $tentative;
-		}
-
-		return $tentatives;
 	}
 }

@@ -25,6 +25,8 @@ class TentativeProgMdl extends Model
 	protected $table = "reponse_prog";
 	public $timestamps = false;
 
+    protected $guarded = [];
+
 	public function avancement()
 	{
 		return $this->belongsTo(AvancementMdl::class, "fk_tentative_prog_avancement");
