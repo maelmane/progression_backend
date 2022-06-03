@@ -30,10 +30,10 @@ class AvancementDAO extends EntitéDAO
 		try {
 			return $this->construire(
 				AvancementMdl::select("avancement.*")
-				->with( $includes )
-                ->join("user", "avancement.user_id", "=", "user.id")
-                ->where("user.username", $username)
-                ->get(),
+					->with($includes)
+					->join("user", "avancement.user_id", "=", "user.id")
+					->where("user.username", $username)
+					->get(),
 				$includes,
 			);
 		} catch (QueryException $e) {
@@ -44,14 +44,13 @@ class AvancementDAO extends EntitéDAO
 	public function get_avancement($username, $question_uri, $includes = [])
 	{
 		try {
-        $data = AvancementMdl::select("avancement.*")
-				->with( $includes )
-                ->join("user", "avancement.user_id", "=", "user.id")
-                ->where("user.username", $username)
+			$data = AvancementMdl::select("avancement.*")
+				->with($includes)
+				->join("user", "avancement.user_id", "=", "user.id")
+				->where("user.username", $username)
 				->where("avancement.question_uri", $question_uri)
 				->first();
-        return $data ? $this->construire([$data], $includes)[$question_uri] : null;
-
+			return $data ? $this->construire([$data], $includes)[$question_uri] : null;
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -73,7 +72,7 @@ class AvancementDAO extends EntitéDAO
 			$objet["user_id"] = $user_id;
 
 			return $this->construire([
-				AvancementMdl::updateOrCreate(["user_id" => $user_id, "question_uri" => $question_uri], $objet)
+				AvancementMdl::updateOrCreate(["user_id" => $user_id, "question_uri" => $question_uri], $objet),
 			])[$question_uri];
 		} catch (QueryException $e) {
 			throw new DAOException($e);
@@ -89,10 +88,10 @@ class AvancementDAO extends EntitéDAO
 		foreach ($data as $i => $item) {
 			$tentatives = [];
 			if (in_array("tentatives_prog", $includes)) {
-                $tentatives = TentativeProgDAO::construire($item["tentatives_prog"]);
-            }
+				$tentatives = TentativeProgDAO::construire($item["tentatives_prog"]);
+			}
 			if (in_array("tentatives_sys", $includes)) {
-                $tentatives = TentativeSysDAO::construire($item["tentatives_sys"]);
+				$tentatives = TentativeSysDAO::construire($item["tentatives_sys"]);
 			}
 			$avancement = new Avancement(
 				$tentatives,

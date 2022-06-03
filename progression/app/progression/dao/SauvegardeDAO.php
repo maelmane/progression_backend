@@ -27,16 +27,14 @@ class SauvegardeDAO extends EntitéDAO
 	public function get_toutes($username, $question_uri, $includes = [])
 	{
 		try {
-            return $this->construire(
+			return $this->construire(
 				SauvegardeMdl::select("sauvegarde.*")
-				->with( $includes )
-                ->join("avancement",
-                       "sauvegarde.avancement_id", "=", "avancement.id")
-                ->join("user",
-                       "avancement.user_id", "=", "user.id")
-                ->where("user.username", $username)
-                ->where("avancement.question_uri", $question_uri)
-                ->get(),
+					->with($includes)
+					->join("avancement", "sauvegarde.avancement_id", "=", "avancement.id")
+					->join("user", "avancement.user_id", "=", "user.id")
+					->where("user.username", $username)
+					->where("avancement.question_uri", $question_uri)
+					->get(),
 				$includes,
 			);
 		} catch (QueryException $e) {
@@ -47,19 +45,15 @@ class SauvegardeDAO extends EntitéDAO
 	public function get_sauvegarde($username, $question_uri, $langage, $includes = [])
 	{
 		try {
-			$sauvegarde =
-                        SauvegardeMdl::select("sauvegarde.*")
-                        ->join("avancement",
-                               "sauvegarde.avancement_id", "=", "avancement.id")
-                        ->join("user",
-                               "avancement.user_id", "=", "user.id")
-                        ->where("user.username", $username)
-                        ->where("avancement.question_uri", $question_uri)
-                        ->where("langage", $langage)
-                        ->first();
+			$sauvegarde = SauvegardeMdl::select("sauvegarde.*")
+				->join("avancement", "sauvegarde.avancement_id", "=", "avancement.id")
+				->join("user", "avancement.user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("avancement.question_uri", $question_uri)
+				->where("langage", $langage)
+				->first();
 
-            return $sauvegarde ? $this->construire([$sauvegarde], $includes)[$langage] : null;
-            
+			return $sauvegarde ? $this->construire([$sauvegarde], $includes)[$langage] : null;
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -68,23 +62,22 @@ class SauvegardeDAO extends EntitéDAO
 	public function save($username, $question_uri, $langage, $sauvegarde)
 	{
 		try {
-            $avancement_id=AvancementMdl::select("avancement.id")
-                          ->from("avancement")
-                          ->join("user", "avancement.user_id", "=", "user.id")
-                          ->where("user.username", $username)
-                          ->where("question_uri", $question_uri)
-                          ->first()["id"];
-            $objet=[
-                "date_sauvegarde" => $sauvegarde->date_sauvegarde,
-                "langage" => $langage,
-                "code" => $sauvegarde->code,
-                "avancement_id" => $avancement_id
-            ];
-            
+			$avancement_id = AvancementMdl::select("avancement.id")
+				->from("avancement")
+				->join("user", "avancement.user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("question_uri", $question_uri)
+				->first()["id"];
+			$objet = [
+				"date_sauvegarde" => $sauvegarde->date_sauvegarde,
+				"langage" => $langage,
+				"code" => $sauvegarde->code,
+				"avancement_id" => $avancement_id,
+			];
+
 			return $this->construire([
-				SauvegardeMdl::updateOrCreate(["avancement_id" => $avancement_id, "langage" => $langage], $objet)
+				SauvegardeMdl::updateOrCreate(["avancement_id" => $avancement_id, "langage" => $langage], $objet),
 			])[$langage];
-            
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}

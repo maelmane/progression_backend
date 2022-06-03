@@ -87,8 +87,8 @@ final class CléDAOTests extends TestCase
 
 		$dao = new CléDAO();
 		$dao->save("bob", "nouvelle clé", $clé);
-        
-		$this->assertTrue( $dao->vérifier("bob", "nouvelle clé", "secret") );
+
+		$this->assertTrue($dao->vérifier("bob", "nouvelle clé", "secret"));
 	}
 
 	public function test_étant_donné_une_clé_existante_lorsquon_la_vérifie_en_donnant_le_mauvais_secret_on_obtient_faux()
@@ -97,8 +97,8 @@ final class CléDAOTests extends TestCase
 
 		$dao = new CléDAO();
 		$dao->save("bob", "nouvelle clé", $clé);
-        
-		$this->assertFalse( $dao->vérifier("bob", "nouvelle clé", "9999") );
+
+		$this->assertFalse($dao->vérifier("bob", "nouvelle clé", "9999"));
 	}
 
 	public function test_étant_donné_une_clé_existante_lorsquon_la_sauvegarde_de_nouveau_on_obtient_une_exception()

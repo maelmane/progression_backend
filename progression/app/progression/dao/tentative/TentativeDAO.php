@@ -74,14 +74,15 @@ class TentativeDAO extends EntitéDAO
 	private function get_type($username, $question_uri)
 	{
 		try {
-            
-			$type = DB::select("SELECT type FROM avancement JOIN user ON avancement.user_id = user.id WHERE question_uri = ? AND username = ?", [$question_uri, $username])[0]->type ?? null;
-            
-            return array_key_exists($type, self::TYPES) ? self::TYPES[$type] : null;
+			$type =
+				DB::select(
+					"SELECT type FROM avancement JOIN user ON avancement.user_id = user.id WHERE question_uri = ? AND username = ?",
+					[$question_uri, $username],
+				)[0]->type ?? null;
 
+			return array_key_exists($type, self::TYPES) ? self::TYPES[$type] : null;
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
 	}
 }

@@ -39,10 +39,15 @@ final class TentativeSysDAOTests extends TestCase
 
 	public function test_étant_donné_une_TentativeSys_non_réussie_lorsquon_récupère_la_tentative_on_obtient_une_tentative_de_type_sys()
 	{
-		$résultat_attendu = new TentativeSys(["id" => "leConteneur",
-                                              "ip" => null,
-                                              "port" => null
-        ], "laRéponse", 1615696300, false, [], 0, 0);
+		$résultat_attendu = new TentativeSys(
+			["id" => "leConteneur", "ip" => null, "port" => null],
+			"laRéponse",
+			1615696300,
+			false,
+			[],
+			0,
+			0,
+		);
 		$résultat_observé = (new TentativeDAO())->get_tentative(
 			"jdoe",
 			"https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
@@ -54,10 +59,15 @@ final class TentativeSysDAOTests extends TestCase
 
 	public function test_étant_donné_une_TentativeSys_réussie_lorsquon_récupère_la_tentative_on_obtient_une_tentative_de_type_sys()
 	{
-		$résultat_attendu = new TentativeSys(["id" => "leConteneur2",
-                                              "ip" => null,
-                                              "port" => null
-        ], "laRéponse2", 1615696301, true, [], 1, 0);
+		$résultat_attendu = new TentativeSys(
+			["id" => "leConteneur2", "ip" => null, "port" => null],
+			"laRéponse2",
+			1615696301,
+			true,
+			[],
+			1,
+			0,
+		);
 
 		$résultat_observé = (new TentativeDAO())->get_tentative(
 			"jdoe",
@@ -71,14 +81,24 @@ final class TentativeSysDAOTests extends TestCase
 	public function test_étant_donné_une_TentativeSys_lorsquon_récupère_toutes_les_tentatives_on_obtient_un_tableau_de_tentatives()
 	{
 		$résultat_attendue = [
-			1615696300 => new TentativeSys(["id" => "leConteneur",
-                              "ip" => null,
-                              "port" => null
-            ], "laRéponse", 1615696300, false, [], 0, 0),
-			1615696301 => new TentativeSys(["id" => "leConteneur2",
-                              "ip" => null,
-                              "port" => null
-            ], "laRéponse2", 1615696301, true, [], 1, 0),
+			1615696300 => new TentativeSys(
+				["id" => "leConteneur", "ip" => null, "port" => null],
+				"laRéponse",
+				1615696300,
+				false,
+				[],
+				0,
+				0,
+			),
+			1615696301 => new TentativeSys(
+				["id" => "leConteneur2", "ip" => null, "port" => null],
+				"laRéponse2",
+				1615696301,
+				true,
+				[],
+				1,
+				0,
+			),
 		];
 
 		$résultat_observé = (new TentativeDAO())->get_toutes(
@@ -93,10 +113,10 @@ final class TentativeSysDAOTests extends TestCase
 	{
 		$tentative_test = new TentativeSys(
 			[
-                "id" => "leConteneur",
-                "ip" => null,
-                "port" => null
-            ],
+				"id" => "leConteneur",
+				"ip" => null,
+				"port" => null,
+			],
 			"laRéponse3",
 			1615696400,
 			false,
@@ -106,10 +126,15 @@ final class TentativeSysDAOTests extends TestCase
 			"feedbackNégatif",
 		);
 
-		$résultat_attendu = new TentativeSys(["id" => "leConteneur",
-                                              "ip" => null,
-                                              "port" => null
-        ], "laRéponse3", 1615696400, false, [], 1, 2);
+		$résultat_attendu = new TentativeSys(
+			["id" => "leConteneur", "ip" => null, "port" => null],
+			"laRéponse3",
+			1615696400,
+			false,
+			[],
+			1,
+			2,
+		);
 
 		$résultat_observé = (new TentativeDAO())->save("jdoe", "https://exemple2.com", $tentative_test);
 

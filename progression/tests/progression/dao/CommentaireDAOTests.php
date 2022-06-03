@@ -23,18 +23,18 @@ use progression\TestCase;
 
 final class CommentaireDAOTests extends TestCase
 {
-    public $jdoe;
-    public $admin;
-    public $stefany;
-    
+	public $jdoe;
+	public $admin;
+	public $stefany;
+
 	public function setUp(): void
 	{
 		parent::setUp();
 
-        $this->jdoe = new User("jdoe");
-        $this->admin = new User("admin", User::ROLE_ADMIN);
-        $this->stefany = new User("Stefany");
-        
+		$this->jdoe = new User("jdoe");
+		$this->admin = new User("admin", User::ROLE_ADMIN);
+		$this->stefany = new User("Stefany");
+
 		app("db")
 			->connection()
 			->beginTransaction();
@@ -98,7 +98,7 @@ final class CommentaireDAOTests extends TestCase
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 			1615696276,
 			4,
-            new Commentaire("le 4ième message", $this->jdoe, 1615696276, 11)
+			new Commentaire("le 4ième message", $this->jdoe, 1615696276, 11),
 		);
 
 		//Vérifie le Commentaire retourné
@@ -119,7 +119,7 @@ final class CommentaireDAOTests extends TestCase
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 			1615696277,
 			1,
-            new Commentaire("le 1er message modifie", $this->jdoe, 1615696255, 17)
+			new Commentaire("le 1er message modifie", $this->jdoe, 1615696255, 17),
 		);
 
 		//Vérifie le Commentaire retourné

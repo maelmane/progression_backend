@@ -24,19 +24,17 @@ use progression\dao\models\{TentativeSysMdl, AvancementMdl};
 
 class TentativeSysDAO extends TentativeDAO
 {
-	public function get_toutes($username, $question_uri, $includes =[])
+	public function get_toutes($username, $question_uri, $includes = [])
 	{
-        try{
-            return $this->construire(
-                TentativeSysMdl::select("reponse_sys.*")
-                ->with($includes)
-                ->join("avancement",
-                       "reponse_sys.avancement_id", "=", "avancement.id")
-                ->join("user",
-                       "avancement.user_id", "=", "user.id")
-                ->where("user.username", $username)
-                ->where("avancement.question_uri", $question_uri)
-                ->get(),
+		try {
+			return $this->construire(
+				TentativeSysMdl::select("reponse_sys.*")
+					->with($includes)
+					->join("avancement", "reponse_sys.avancement_id", "=", "avancement.id")
+					->join("user", "avancement.user_id", "=", "user.id")
+					->where("user.username", $username)
+					->where("avancement.question_uri", $question_uri)
+					->get(),
 				$includes,
 			);
 		} catch (QueryException $e) {
@@ -46,43 +44,36 @@ class TentativeSysDAO extends TentativeDAO
 
 	public function get_tentative($username, $question_uri, $date_soumission, $includes = [])
 	{
-        try{
-			$tentative =
-                        TentativeSysMdl::select("reponse_sys.*")
-                       ->with($includes)
-                       ->join("avancement",
-                               "reponse_sys.avancement_id", "=", "avancement.id")
-                        ->join("user",
-                               "avancement.user_id", "=", "user.id")
-                        ->where("user.username", $username)
-                        ->where("avancement.question_uri", $question_uri)
-                        ->where("date_soumission", $date_soumission)
-                        ->first();
+		try {
+			$tentative = TentativeSysMdl::select("reponse_sys.*")
+				->with($includes)
+				->join("avancement", "reponse_sys.avancement_id", "=", "avancement.id")
+				->join("user", "avancement.user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("avancement.question_uri", $question_uri)
+				->where("date_soumission", $date_soumission)
+				->first();
 
 			return $tentative ? $this->construire([$tentative], $includes)[$date_soumission] : null;
-
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}
 
-	public function get_dernière($username, $question_uri, $includes = []){
-        try{
-			$tentative =
-                       TentativeSysMdl::select("reponse_sys.*")
-                       ->with($includes)
-                       ->join("avancement",
-                              "reponse_sys.avancement_id", "=", "avancement.id")
-                       ->join("user",
-                              "avancement.user_id", "=", "user.id")
-                       ->where("user.username", $username)
-                       ->where("avancement.question_uri", $question_uri)
-                       ->where("date_soumission", $date_soumission)
-                       ->orderBy("date_soumission", "desc")
-                       ->first();
+	public function get_dernière($username, $question_uri, $includes = [])
+	{
+		try {
+			$tentative = TentativeSysMdl::select("reponse_sys.*")
+				->with($includes)
+				->join("avancement", "reponse_sys.avancement_id", "=", "avancement.id")
+				->join("user", "avancement.user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("avancement.question_uri", $question_uri)
+				->where("date_soumission", $date_soumission)
+				->orderBy("date_soumission", "desc")
+				->first();
 
 			return $tentative ? $this->construire([$tentative], $includes)[$date_soumission] : null;
-
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -91,26 +82,28 @@ class TentativeSysDAO extends TentativeDAO
 	public function save($username, $question_uri, $tentative)
 	{
 		try {
-            $avancement_id=AvancementMdl::select("avancement.id")
-                          ->from("avancement")
-                          ->join("user", "avancement.user_id", "=", "user.id")
-                          ->where("user.username", $username)
-                          ->where("question_uri", $question_uri)
-                          ->first()["id"];
+			$avancement_id = AvancementMdl::select("avancement.id")
+				->from("avancement")
+				->join("user", "avancement.user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("question_uri", $question_uri)
+				->first()["id"];
 
-				$objet=[
-                    "conteneur" => $tentative->conteneur["id"],
-                    "reponse" => $tentative->réponse,
-                    "date_soumission" => $tentative->date_soumission,
-                    "reussi" => $tentative->réussi,
-                    "tests_reussis" => $tentative->tests_réussis,
-                    "temps_exécution" => $tentative->temps_exécution
-                ];
-                
+			$objet = [
+				"conteneur" => $tentative->conteneur["id"],
+				"reponse" => $tentative->réponse,
+				"date_soumission" => $tentative->date_soumission,
+				"reussi" => $tentative->réussi,
+				"tests_reussis" => $tentative->tests_réussis,
+				"temps_exécution" => $tentative->temps_exécution,
+			];
+
 			return $this->construire([
-				TentativeSysMdl::updateOrCreate(["avancement_id" => $avancement_id, "date_soumission" => $tentative->date_soumission], $objet)
+				TentativeSysMdl::updateOrCreate(
+					["avancement_id" => $avancement_id, "date_soumission" => $tentative->date_soumission],
+					$objet,
+				),
 			])[$tentative->date_soumission];
-            
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -125,9 +118,7 @@ class TentativeSysDAO extends TentativeDAO
 		$tentatives = [];
 		foreach ($data as $item) {
 			$tentative = new TentativeSys(
-				conteneur: ["id" => $item["conteneur"],
-                            "ip" => null,
-                            "port" => null],
+				conteneur: ["id" => $item["conteneur"], "ip" => null, "port" => null],
 				réponse: $item["reponse"],
 				date_soumission: $item["date_soumission"],
 				réussi: $item["reussi"],

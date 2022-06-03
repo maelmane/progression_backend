@@ -28,16 +28,14 @@ class CléDAO extends EntitéDAO
 	public function get_clé($username, $nom, $includes = [])
 	{
 		try {
-			$clé = 
-				CléMdl::select("cle.*")
-				->with( $includes )
-                ->join("user", "user_id", "=", "user.id")
-                ->where("user.username", $username)
-                ->where("nom", $nom)
-                ->first();
+			$clé = CléMdl::select("cle.*")
+				->with($includes)
+				->join("user", "user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("nom", $nom)
+				->first();
 
-            return $clé ? $this->construire([$clé], $includes)[$nom] : null;
-            
+			return $clé ? $this->construire([$clé], $includes)[$nom] : null;
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -47,38 +45,36 @@ class CléDAO extends EntitéDAO
 
 	public function get_toutes($username, $includes = [])
 	{
-        try{
-            return $this->construire(
-                 CléMdl::select("cle.*")
-                 ->with( $includes )
-                 ->join("user", "user_id", "=", "user.id")
-                 ->where("user.username", $username)
-                 ->get(),
-                 $includes);
-            
-        } catch (QueryException $e) {
-            throw new DAOException($e);
-        }
-
+		try {
+			return $this->construire(
+				CléMdl::select("cle.*")
+					->with($includes)
+					->join("user", "user_id", "=", "user.id")
+					->where("user.username", $username)
+					->get(),
+				$includes,
+			);
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
 	}
 
 	public function save($username, $nom, $clé)
 	{
-        try{
-            $user_id = UserMdl::select("user.id")
-                         ->from("user")
-                         ->where("user.username", $username)
-                         ->first()["id"];
-            $objet=[
-                "user_id" => $user_id,
-                "nom" => $nom,
-                "hash" => hash("sha256", $clé->secret),
-                "creation" => $clé->création,
-                "expiration" => $clé->expiration,
-                "portee" => $clé->portée
-            ];
-            return $this->construire([
-                CléMdl::create($objet)])[$nom];
+		try {
+			$user_id = UserMdl::select("user.id")
+				->from("user")
+				->where("user.username", $username)
+				->first()["id"];
+			$objet = [
+				"user_id" => $user_id,
+				"nom" => $nom,
+				"hash" => hash("sha256", $clé->secret),
+				"creation" => $clé->création,
+				"expiration" => $clé->expiration,
+				"portee" => $clé->portée,
+			];
+			return $this->construire([CléMdl::create($objet)])[$nom];
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -87,9 +83,12 @@ class CléDAO extends EntitéDAO
 	public function vérifier($username, $nom, $secret)
 	{
 		try {
-			$hash = DB::select("SELECT hash FROM cle JOIN user ON cle.user_id = user.id WHERE user.username = ? AND cle.nom = ? ", [$username, $nom] );
+			$hash = DB::select(
+				"SELECT hash FROM cle JOIN user ON cle.user_id = user.id WHERE user.username = ? AND cle.nom = ? ",
+				[$username, $nom],
+			);
 
-            return count($hash) == 1 && hash("sha256", $secret) == $hash[0]->hash;
+			return count($hash) == 1 && hash("sha256", $secret) == $hash[0]->hash;
 		} catch (QuertyException $e) {
 			throw new DAOException($e);
 		}
@@ -99,10 +98,9 @@ class CléDAO extends EntitéDAO
 	{
 		$clés = [];
 		foreach ($data as $item) {
-            $nom = $item["nom"];
+			$nom = $item["nom"];
 			$clés[$nom] = new Clé(null, $item["creation"], $item["expiration"], $item["portee"]);
 		}
 		return $clés;
 	}
-    
 }

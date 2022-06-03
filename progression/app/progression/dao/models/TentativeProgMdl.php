@@ -25,7 +25,7 @@ class TentativeProgMdl extends Model
 	protected $table = "reponse_prog";
 	public $timestamps = false;
 
-    protected $guarded = [];
+	protected $guarded = [];
 
 	public function avancement()
 	{

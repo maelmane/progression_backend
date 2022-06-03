@@ -81,7 +81,9 @@ final class AvancementDAOTests extends TestCase
 	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_incluant_les_tentatives_et_sauvegardes_on_obtient_un_objet_avancement_correspondant_avec_ses_tentatives_et_sauvegardes()
 	{
 		$résultat_attendu = new Avancement(
-			tentatives: [1615696276 => new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276, false, [], 2, 3456)],
+			tentatives: [
+				1615696276 => new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276, false, [], 2, 3456),
+			],
 			titre: "Un titre",
 			niveau: "facile",
 			sauvegardes: [
@@ -186,7 +188,7 @@ final class AvancementDAOTests extends TestCase
 		// L'avancement a été sauvegardé
 		$résponse_observée = (new AvancementDAO())->get_avancement(
 			"bob",
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction"
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 		);
 
 		$this->assertEquals($résultat_attendu, $résponse_observée);

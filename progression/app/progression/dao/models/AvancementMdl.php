@@ -29,11 +29,12 @@ class AvancementMdl extends Model
 
 	public function tentatives_prog()
 	{
-        return $this->hasMany(TentativeProgMdl::class, "avancement_id", "id");
-    }
-    
-	public function tentatives_sys(){
-        return $this->hasMany(TentativeSysMdl::class, "avancement_id", "id");
+		return $this->hasMany(TentativeProgMdl::class, "avancement_id", "id");
+	}
+
+	public function tentatives_sys()
+	{
+		return $this->hasMany(TentativeSysMdl::class, "avancement_id", "id");
 	}
 
 	public function sauvegardes()

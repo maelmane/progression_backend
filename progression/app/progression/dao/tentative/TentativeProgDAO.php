@@ -25,19 +25,17 @@ use progression\dao\models\{TentativeProgMdl, AvancementMdl};
 
 class TentativeProgDAO extends TentativeDAO
 {
-	public function get_toutes($username, $question_uri, $includes =[])
+	public function get_toutes($username, $question_uri, $includes = [])
 	{
-        try{
-            return $this->construire(
-                TentativeProgMdl::select("reponse_prog.*")
-                ->with($includes)
-                ->join("avancement",
-                       "reponse_prog.avancement_id", "=", "avancement.id")
-                ->join("user",
-                       "avancement.user_id", "=", "user.id")
-                ->where("user.username", $username)
-                ->where("avancement.question_uri", $question_uri)
-                ->get(),
+		try {
+			return $this->construire(
+				TentativeProgMdl::select("reponse_prog.*")
+					->with($includes)
+					->join("avancement", "reponse_prog.avancement_id", "=", "avancement.id")
+					->join("user", "avancement.user_id", "=", "user.id")
+					->where("user.username", $username)
+					->where("avancement.question_uri", $question_uri)
+					->get(),
 				$includes,
 			);
 		} catch (QueryException $e) {
@@ -47,21 +45,17 @@ class TentativeProgDAO extends TentativeDAO
 
 	public function get_tentative($username, $question_uri, $date_soumission, $includes = [])
 	{
-        try{
-			$tentative =
-                        TentativeProgMdl::select("reponse_prog.*")
-                       ->with($includes)
-                        ->join("avancement",
-                               "reponse_prog.avancement_id", "=", "avancement.id")
-                        ->join("user",
-                               "avancement.user_id", "=", "user.id")
-                        ->where("user.username", $username)
-                        ->where("avancement.question_uri", $question_uri)
-                        ->where("date_soumission", $date_soumission)
-                        ->first();
+		try {
+			$tentative = TentativeProgMdl::select("reponse_prog.*")
+				->with($includes)
+				->join("avancement", "reponse_prog.avancement_id", "=", "avancement.id")
+				->join("user", "avancement.user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("avancement.question_uri", $question_uri)
+				->where("date_soumission", $date_soumission)
+				->first();
 
 			return $tentative ? $this->construire([$tentative], $includes)[$date_soumission] : null;
-
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -70,13 +64,13 @@ class TentativeProgDAO extends TentativeDAO
 	public function save($username, $question_uri, $tentative)
 	{
 		try {
-            $avancement_id=AvancementMdl::select("avancement.id")
-                          ->from("avancement")
-                          ->join("user", "avancement.user_id", "=", "user.id")
-                          ->where("user.username", $username)
-                          ->where("question_uri", $question_uri)
-                          ->first()["id"];
-            $objet=[
+			$avancement_id = AvancementMdl::select("avancement.id")
+				->from("avancement")
+				->join("user", "avancement.user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("question_uri", $question_uri)
+				->first()["id"];
+			$objet = [
 				"langage" => $tentative->langage,
 				"code" => $tentative->code,
 				"date_soumission" => $tentative->date_soumission,
@@ -86,9 +80,11 @@ class TentativeProgDAO extends TentativeDAO
 			];
 
 			return $this->construire([
-				TentativeProgMdl::updateOrCreate(["avancement_id" => $avancement_id, "date_soumission" => $tentative->date_soumission], $objet)
+				TentativeProgMdl::updateOrCreate(
+					["avancement_id" => $avancement_id, "date_soumission" => $tentative->date_soumission],
+					$objet,
+				),
 			])[$tentative->date_soumission];
-            
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
