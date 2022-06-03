@@ -57,11 +57,9 @@ class SauvegardeDAO extends EntitéDAO
                         ->where("avancement.question_uri", $question_uri)
                         ->where("langage", $langage)
                         ->first();
-			if ($sauvegarde) {
-				return $this->construire([$sauvegarde], $includes)[$langage];
-			} else {
-				return null;
-			}
+
+            return $sauvegarde ? $this->construire([$sauvegarde], $includes)[$langage] : null;
+            
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}

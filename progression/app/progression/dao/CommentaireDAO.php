@@ -33,13 +33,7 @@ class CommentaireDAO extends EntitéDAO
                 ->where("id", $id)
                 ->first();
 
-            if($commentaire){
-                return $this->construire([$commentaire],
-                                         $includes)[$id];
-			}
-            else{
-                return null;
-            }
+            return $commentaire ? $this->construire([$commentaire], $includes)[$id] : null;
             
 		} catch (QueryException $e) {
 			throw new DAOException($e);

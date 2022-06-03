@@ -36,13 +36,8 @@ class CléDAO extends EntitéDAO
                 ->where("nom", $nom)
                 ->first();
 
-            if($clé){
-                return $this->construire([$clé],
-                                         $includes)[$nom];
-			}
-            else{
-                return null;
-            }            
+            return $clé ? $this->construire([$clé], $includes)[$nom] : null;
+            
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}

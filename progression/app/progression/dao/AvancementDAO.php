@@ -50,11 +50,8 @@ class AvancementDAO extends EntitéDAO
                 ->where("user.username", $username)
 				->where("avancement.question_uri", $question_uri)
 				->first();
-			if ($data) {
-				return $this->construire([$data], $includes)[$question_uri];
-			} else {
-				return null;
-			}
+        return $data ? $this->construire([$data], $includes)[$question_uri] : null;
+
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
