@@ -28,5 +28,6 @@ fi
 if [ -z "$test_simple" ]
 then
 	echo Analyse statique
-	php -d memory_limit=1G $DIR/../vendor/bin/phpstan analyse -c $DIR/../phpstan.neon || exit 1
+	# cd dans app pour que larastan puisse trouver bootstrap/app.php
+	cd $DIR/../app/ && php -d memory_limit=1G ../vendor/bin/phpstan analyse -c $DIR/../phpstan.neon progression || exit 1
 fi

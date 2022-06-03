@@ -16,8 +16,9 @@
         "tymon/jwt-auth": "^1.0.0-beta.3@dev",
         "vlucas/phpdotenv": "^5"
     },
-	"require-dev": {
+    "require-dev": {
         "mockery/mockery": "@stable",
+        "nunomaduro/larastan": "^1.0",
         "phpstan/phpstan": "^1.5.4",
         "phpunit/phpunit": "^9.5"
     },
