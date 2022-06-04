@@ -102,7 +102,7 @@ tag_latest:
 # Déploiement sur /dev
 deploy_dev:
   stage: deploy_image
-  needs: [test_unitaires]
+  needs: [tag_dev]
   environment:
     name: dev
     url: https://progression.dti.crosemont.quebec/dev/
@@ -110,14 +110,14 @@ deploy_dev:
     - *preparer_contexte
     - *login
   script:
-    - TAG_DEPLOY=$BRANCHE docker-compose -p dev up --force-recreate --no-deps -d progression
+    - TAG_DEPLOY=dev docker-compose -p dev up --force-recreate --no-deps -d progression
   only:
     - dev
 
 # Déploiement sur /demo
 deploy_demo:
   stage: deploy_image
-  needs: [test_unitaires]
+  needs: [tag_latest]
   environment:
     name: demo
     url: https://progression.dti.crosemont.quebec/demo/
@@ -125,14 +125,14 @@ deploy_demo:
     - *preparer_contexte
     - *login
   script:
-    - TAG_DEPLOY=$BRANCHE docker-compose -p demo up --force-recreate --no-deps -d progression
+    - TAG_DEPLOY=latest docker-compose -p demo up --force-recreate --no-deps -d progression
   only:
     - master
 
 # Déploiement sur /pilote
 deploy_pilote:
   stage: deploy_image
-  needs: [test_unitaires]
+  needs: [tag_latest]
   environment:
     name: pilote
     url: https://progression.dti.crosemont.quebec/pilote/
@@ -140,14 +140,39 @@ deploy_pilote:
     - *preparer_contexte
     - *login
   script:
-    - TAG_DEPLOY=$BRANCHE docker-compose -p pilote up --force-recreate --no-deps -d progression
+    - TAG_DEPLOY=latest docker-compose -p pilote up --force-recreate --no-deps -d progression
   only:
     - master
+
+tag_dev:
+  stage: tag_image
+  needs: [test_unitaires, linter]
+  before_script:
+    - *login
+  script:
+    - docker pull $CI_REGISTRY/progression/progression_backend:test
+    - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:dev   
+    - docker push $CI_REGISTRY/progression/progression_backend:dev
+  only:
+    - dev
+
+tag_latest:
+  stage: tag_image
+  needs: [const_image]
+  before_script:
+    - *login
+  script:
+    - docker pull $CI_REGISTRY/progression/progression_backend:test
+    - docker tag $CI_REGISTRY/progression/progression_backend:test $CI_REGISTRY/progression/progression_backend:latest   
+    - docker push $CI_REGISTRY/progression/progression_backend:latest
+  only:
+    - master
+
 
 # Déploiement sur /staging
 deploy_staging:
   stage: deploy_image
-  needs: [test_unitaires]
+  needs: [tag_latest]
   environment:
     name: staging
     url: https://progression.dti.crosemont.quebec/staging/
@@ -155,7 +180,7 @@ deploy_staging:
     - *preparer_contexte
     - *login
   script:
-    - TAG_DEPLOY=$BRANCHE docker-compose -p staging up --force-recreate --no-deps -d progression
+    - TAG_DEPLOY=latest docker-compose -p staging up --force-recreate --no-deps -d progression
   only:
     - master
 
