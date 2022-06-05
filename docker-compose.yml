@@ -42,7 +42,8 @@ services:
     env_file: $ENV_FILE    
     command: bash /var/www/progression/tests/exec_tests.sh
     depends_on:
-      - db
+      db:
+        condition: service_completed_successfully
 
   lint:
     # On utilise l'image progression/dev parce que prettier est un package npm que l'on ne veut pas inclure dans progression_backend
