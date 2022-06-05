@@ -9,7 +9,7 @@ services:
     #  - "./progression_backend/progression/db/:/docker-entrypoint-initdb.d/"
     restart: always
     healthcheck:
-      test: mysql '$$DB_DBNAME --user=$$DB_USERNAME --password=$$DB_PASSWORD --silent --execute "SELECT 1;"'
+      test: 'mysql -u $$DB_USERNAME -p$$DB_PASSWORD --silent --execute "SELECT 1;"'
       interval: 30s
       timeout: 10s
       retries: 5 
