@@ -10,8 +10,8 @@ services:
     restart: always
     healthcheck:
       test: 'mysql -u $$DB_USERNAME -p$$DB_PASSWORD --silent --execute "SELECT 1;"'
-      interval: 3s
-      timeout: 10s
+      interval: 10s
+      timeout: 20s
       retries: 10
 
   redis:
