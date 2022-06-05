@@ -43,7 +43,7 @@ services:
     command: bash /var/www/progression/tests/exec_tests.sh
     depends_on:
       db:
-        condition: service_completed_successfully
+        condition: service_healthy
 
   lint:
     # On utilise l'image progression/dev parce que prettier est un package npm que l'on ne veut pas inclure dans progression_backend
