@@ -28,7 +28,7 @@ variables:
     - DOCKER_HOST= 
 
 .login: &login
-    - apk add ca-certificates
+    - apk add ca-certificates openssh
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     
 
