@@ -1,7 +1,7 @@
-image: docker/compose:latest
+image: docker/compose:1.29.2
 
 services:
-  - docker:19.03.1-dind
+  - docker:20.10.16-dind
 
 # Select what we should cache
 cache:
