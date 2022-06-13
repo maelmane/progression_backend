@@ -60,12 +60,12 @@ class UserDAO extends EntitéDAO
 		try {
 			$hash = password_hash($password, PASSWORD_DEFAULT);
 			return DB::update("UPDATE user SET password=? WHERE username=?", [$hash, $user->username]);
-		} catch (QuerryException $e) {
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}
 
-	public function vérifier_password(User $user, string $password = null)
+	public function vérifier_password(User $user, string $password)
 	{
 		try {
 			$hash = DB::select("SELECT password FROM user WHERE username=?", [$user->username]);

@@ -81,6 +81,11 @@ parameters:
 			path: app/progression/dao/CléDAO.php
 
 		-
+			message: "#^Method progression\\\\dao\\\\CléDAO\\:\\:construire\\(\\) has parameter \\$includes with no type specified\\.$#"
+			count: 1
+			path: app/progression/dao/CléDAO.php
+
+		-
 			message: "#^Method progression\\\\dao\\\\CléDAO\\:\\:get_clé\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/dao/CléDAO.php
@@ -312,36 +317,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\dao\\\\EntitéDAO\\:\\:__construct\\(\\) has parameter \\$source with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/EntitéDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\EntitéDAO\\:\\:create_connection\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/EntitéDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\EntitéDAO\\:\\:get_connexion\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/EntitéDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\EntitéDAO\\:\\:stmt_bind_assoc\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/EntitéDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\EntitéDAO\\:\\:stmt_bind_assoc\\(\\) has parameter \\$out with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/EntitéDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\EntitéDAO\\:\\:stmt_bind_assoc\\(\\) has parameter \\$stmt with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/EntitéDAO.php
-
-		-
-			message: "#^Property progression\\\\dao\\\\EntitéDAO\\:\\:\\$conn has no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/EntitéDAO.php
 
@@ -3006,11 +2981,6 @@ parameters:
 			path: app/progression/domaine/interacteur/TraiterTentativeSysInt.php
 
 		-
-			message: "#^Property progression\\\\exceptions\\\\Handler\\:\\:\\$dontReport type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: app/progression/exceptions/Handler.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\AvancementCtl\\:\\:créer_avancement\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/AvancementCtl.php
@@ -3302,16 +3272,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\Contrôleur\\:\\:item\\(\\) has parameter \\$transformer with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/Contrôleur.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\Contrôleur\\:\\:paginate\\(\\) has parameter \\$transformer with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/Contrôleur.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\Contrôleur\\:\\:paginate\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/Contrôleur.php
 
@@ -4271,21 +4231,6 @@ parameters:
 			path: app/progression/http/transformer/SauvegardeTransformer.php
 
 		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\TentativeProgTransformer\\:\\:includeResultats\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/TentativeProgTransformer.php
-
-		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\TentativeProgTransformer\\:\\:transform\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/TentativeProgTransformer.php
-
-		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\TentativeProgTransformer\\:\\:transform\\(\\) has parameter \\$tentative with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/TentativeProgTransformer.php
-
-		-
 			message: "#^Property progression\\\\http\\\\transformer\\\\TentativeProgTransformer\\:\\:\\$availableIncludes type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: app/progression/http/transformer/TentativeProgTransformer.php
@@ -4296,16 +4241,6 @@ parameters:
 			path: app/progression/http/transformer/TentativeProgTransformer.php
 
 		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\TentativeSysTransformer\\:\\:includeResultats\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/TentativeSysTransformer.php
-
-		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\TentativeSysTransformer\\:\\:transform\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/TentativeSysTransformer.php
-
-		-
 			message: "#^Property progression\\\\http\\\\transformer\\\\TentativeSysTransformer\\:\\:\\$availableIncludes type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: app/progression/http/transformer/TentativeSysTransformer.php
@@ -4314,16 +4249,6 @@ parameters:
 			message: "#^Property progression\\\\http\\\\transformer\\\\TentativeSysTransformer\\:\\:\\$type has no type specified\\.$#"
 			count: 1
 			path: app/progression/http/transformer/TentativeSysTransformer.php
-
-		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\TentativeTransformer\\:\\:includeCommentaires\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/TentativeTransformer.php
-
-		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\TentativeTransformer\\:\\:transform\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/TentativeTransformer.php
 
 		-
 			message: "#^Property progression\\\\http\\\\transformer\\\\TentativeTransformer\\:\\:\\$availableIncludes type has no value type specified in iterable type array\\.$#"

@@ -21,6 +21,7 @@ namespace progression\dao\tentative;
 use progression\dao\{DAOException, EntitéDAO, CommentaireDAO};
 use progression\domaine\entité\TentativeSys;
 use progression\dao\models\{TentativeSysMdl, AvancementMdl};
+use Illuminate\Database\QueryException;
 
 class TentativeSysDAO extends TentativeDAO
 {
@@ -69,11 +70,10 @@ class TentativeSysDAO extends TentativeDAO
 				->join("user", "avancement.user_id", "=", "user.id")
 				->where("user.username", $username)
 				->where("avancement.question_uri", $question_uri)
-				->where("date_soumission", $date_soumission)
 				->orderBy("date_soumission", "desc")
 				->first();
 
-			return $tentative ? $this->construire([$tentative], $includes)[$date_soumission] : null;
+			return $tentative ? $this->construire([$tentative], $includes)[0] : null;
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -82,13 +82,15 @@ class TentativeSysDAO extends TentativeDAO
 	public function save($username, $question_uri, $tentative)
 	{
 		try {
-			$avancement_id = AvancementMdl::select("avancement.id")
+			$avancement = AvancementMdl::select("avancement.id")
 				->from("avancement")
 				->join("user", "avancement.user_id", "=", "user.id")
 				->where("user.username", $username)
 				->where("question_uri", $question_uri)
-				->first()["id"];
-
+				->first();
+            
+            if (!$avancement) return null;
+            
 			$objet = [
 				"conteneur" => $tentative->conteneur["id"],
 				"reponse" => $tentative->réponse,
@@ -100,7 +102,7 @@ class TentativeSysDAO extends TentativeDAO
 
 			return $this->construire([
 				TentativeSysMdl::updateOrCreate(
-					["avancement_id" => $avancement_id, "date_soumission" => $tentative->date_soumission],
+					["avancement_id" => $avancement["id"], "date_soumission" => $tentative->date_soumission],
 					$objet,
 				),
 			])[$tentative->date_soumission];

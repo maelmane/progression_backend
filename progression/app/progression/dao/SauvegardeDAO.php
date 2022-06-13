@@ -62,21 +62,23 @@ class SauvegardeDAO extends EntitéDAO
 	public function save($username, $question_uri, $langage, $sauvegarde)
 	{
 		try {
-			$avancement_id = AvancementMdl::select("avancement.id")
+			$avancement = AvancementMdl::select("avancement.id")
 				->from("avancement")
 				->join("user", "avancement.user_id", "=", "user.id")
 				->where("user.username", $username)
 				->where("question_uri", $question_uri)
-				->first()["id"];
+				->first();
+            
+            if (!$avancement) return null;
+            
 			$objet = [
 				"date_sauvegarde" => $sauvegarde->date_sauvegarde,
 				"langage" => $langage,
 				"code" => $sauvegarde->code,
-				"avancement_id" => $avancement_id,
 			];
 
 			return $this->construire([
-				SauvegardeMdl::updateOrCreate(["avancement_id" => $avancement_id, "langage" => $langage], $objet),
+				SauvegardeMdl::updateOrCreate(["avancement_id" => $avancement["id"], "langage" => $langage], $objet),
 			])[$langage];
 		} catch (QueryException $e) {
 			throw new DAOException($e);

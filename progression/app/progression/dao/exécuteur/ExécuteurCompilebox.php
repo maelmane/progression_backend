@@ -90,10 +90,9 @@ class ExécuteurCompilebox extends Exécuteur
 
 		try {
 			$comp_resp = file_get_contents($_ENV["COMPILEBOX_URL"], false, $context);
+            return $comp_resp ? json_decode(str_replace("\r", "", $comp_resp), true) : false;
 		} catch (\ErrorException $e) {
 			throw new ExécutionException("Compilebox non disponible", 503, $e);
 		}
-
-		return json_decode(str_replace("\r", "", $comp_resp), true);
 	}
 }

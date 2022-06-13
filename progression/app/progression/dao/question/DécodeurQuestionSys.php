@@ -48,7 +48,7 @@ class DécodeurQuestionSys extends DécodeurQuestion
 		$tests = [];
 		foreach ($infos_question["tests"] as $i => $test) {
 			$tests[] = new TestSys(
-				$test["nom"] ?? "#" . $i + 1,
+				$test["nom"] ?? "#" . ($i + 1),
 				$test["sortie"],
 				$test["validation"],
 				$test["utilisateur"] ?? null,

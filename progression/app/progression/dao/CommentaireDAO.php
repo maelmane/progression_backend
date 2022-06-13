@@ -56,26 +56,31 @@ class CommentaireDAO extends EntitéDAO
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-		return $commentaires;
 	}
 
 	public function save($username, $question_uri, $date_soumission, $numéro, $commentaire)
 	{
 		try {
-			$tentative_id = TentativeProgMdl::select("reponse_prog.id")
+			$tentative = TentativeProgMdl::select("reponse_prog.id")
 				->from("reponse_prog")
 				->join("avancement", "reponse_prog.avancement_id", "=", "avancement.id")
 				->join("user", "avancement.user_id", "=", "user.id")
 				->where("user.username", $username)
 				->where("avancement.question_uri", $question_uri)
-				->first()["id"];
-			$créateur_id = UserMdl::select("user.id")
+				->first();
+
+            if(!$tentative) return null;
+            
+			$créateur = UserMdl::select("user.id")
 				->from("user")
 				->where("user.username", $commentaire->créateur->username)
-				->first()["id"];
+				->first();
+            
+            if(!$créateur) return null;
+            
 			$objet = [
-				"tentative_id" => $tentative_id,
-				"créateur_id" => $créateur_id,
+				"tentative_id" => $tentative["id"],
+				"créateur_id" => $créateur["id"],
 				"message" => $commentaire->message,
 				"date" => $commentaire->date,
 				"numéro_ligne" => $commentaire->numéro_ligne,
@@ -87,9 +92,6 @@ class CommentaireDAO extends EntitéDAO
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		$commentaire = $this->get_commentaire($numéro);
-		return $commentaire;
 	}
 
 	public static function construire($data, $includes = [])

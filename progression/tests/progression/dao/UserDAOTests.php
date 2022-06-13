@@ -165,16 +165,6 @@ final class UserDAOTests extends TestCase
 		$this->assertFalse($dao->vérifier_password($user, "Mauvais mot de passe"));
 	}
 
-	public function test_étant_donné_un_utilisateur_lorsquon_vérifie_un_mot_de_passe_null_on_obtient_faux()
-	{
-		$user = new User("bob");
-
-		$dao = new UserDAO();
-		$dao->set_password($user, "test de mot de passe");
-
-		$this->assertFalse($dao->vérifier_password($user, null));
-	}
-
 	public function test_étant_donné_un_utilisateur_lorsquon_change_son_mot_de_passe_et_vérifie_l_ancien_on_obtient_faux()
 	{
 		$user = new User("bob");

@@ -18,16 +18,20 @@
 
 namespace progression\http\transformer;
 
+use League\Fractal\Resource\Collection;
 use progression\domaine\entité\{Tentative, TentativeSys};
 
-class TentativeSysTransformer extends TentativeTransformer
+class TentativeSysTransformer extends BaseTransformer
 {
 	public $type = "tentative";
 	protected array $availableIncludes = ["resultats", "commentaires"];
 
-	public function transform(Tentative $tentative)
+    /**
+     * @return array<mixed>
+     */
+	public function transform(TentativeSys $tentative):array
 	{
-		$data_out = parent::transform($tentative);
+		$data_out = (new TentativeTransformer($this->id))->transform($tentative);
 		$data_out = array_merge($data_out, [
 			"sous-type" => "tentativeSys",
 			"conteneur" => $tentative->conteneur,
@@ -37,14 +41,13 @@ class TentativeSysTransformer extends TentativeTransformer
 		return $data_out;
 	}
 
-	public function includeResultats(TentativeSys $tentative)
+	public function includeResultats(TentativeSys $tentative):Collection
 	{
-		$id_parent = "{$this->id}/{$tentative->id}";
+        return (new TentativeTransformer($this->id))->includeResultats($tentative);
+	}
 
-		foreach ($tentative->résultats as $i => $résultat) {
-			$résultat->id = $i;
-			$résultat->links = ["related" => "{$_ENV["APP_URL"]}tentative/{$id_parent}"];
-		}
-		return $this->collection($tentative->résultats, new RésultatTransformer($id_parent), "resultat");
+	public function includeCommentaires(TentativeSys $tentative):Collection
+	{
+        return (new TentativeTransformer($this->id))->includeCommentaires($tentative);
 	}
 }

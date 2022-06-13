@@ -18,16 +18,16 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\Test;
+use progression\domaine\entité\{Test, TestProg};
 use League\Fractal;
 
-class TestProgTransformer extends TestTransformer
+class TestProgTransformer extends BaseTransformer
 {
 	public $type = "test";
 
-	public function transform(Test $test)
+	public function transform(TestProg $test)
 	{
-		$data = parent::transform($test);
+		$data = (new TestTransformer($this->id))->transform($test);
 		$data = array_merge($data, [
 			"entrée" => $test->entrée,
 			"params" => $test->params,

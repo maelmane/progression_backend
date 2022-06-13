@@ -24,7 +24,6 @@ class ConnexionException extends \Exception
 
 class EntitéDAO
 {
-	private static $conn = null;
 	protected $source = null;
 
 	public function __construct($source = null)
@@ -36,44 +35,4 @@ class EntitéDAO
 		}
 	}
 
-	public static function get_connexion()
-	{
-		if (EntitéDAO::$conn == null) {
-			EntitéDAO::create_connection();
-			if (mysqli_connect_errno() != 0) {
-				throw new ConnexionException(mysqli_connect_error() . "(" . mysqli_connect_errno() . ")");
-			}
-		}
-
-		return EntitéDAO::$conn;
-	}
-
-	private static function create_connection()
-	{
-		// Limite les exceptions lancées aux erreurs rapportées par MySQL
-		mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-		EntitéDAO::$conn = new \mysqli(
-			$_ENV["DB_SERVERNAME"],
-			$_ENV["DB_USERNAME"],
-			$_ENV["DB_PASSWORD"],
-			$_ENV["DB_DBNAME"],
-		);
-		EntitéDAO::$conn->set_charset("utf8mb4");
-	}
-
-	protected static function stmt_bind_assoc(&$stmt, &$out)
-	{
-		$data = mysqli_stmt_result_metadata($stmt);
-		$fields = [];
-		$out = [];
-
-		$fields[0] = $stmt;
-		$count = 1;
-
-		while ($field = mysqli_fetch_field($data)) {
-			$fields[$count] = &$out[$field->name];
-			$count++;
-		}
-		call_user_func_array("mysqli_stmt_bind_result", $fields);
-	}
 }

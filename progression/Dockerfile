@@ -3,6 +3,7 @@ FROM composer:latest AS composer
 COPY composer.json /var/www/
 
 RUN composer install -d /var/www/
+RUN composer require -d /var/www/ nunomaduro/larastan:^1.0 --dev
 
 FROM php:apache
 

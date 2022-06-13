@@ -28,12 +28,16 @@ final class TentativeSysDAOTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		EntitéDAO::get_connexion()->begin_transaction();
+		app("db")
+			->connection()
+			->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
-		EntitéDAO::get_connexion()->rollback();
+		app("db")
+			->connection()
+			->rollBack();
 		parent::tearDown();
 	}
 

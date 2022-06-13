@@ -64,12 +64,15 @@ class TentativeProgDAO extends TentativeDAO
 	public function save($username, $question_uri, $tentative)
 	{
 		try {
-			$avancement_id = AvancementMdl::select("avancement.id")
+			$avancement = AvancementMdl::select("avancement.id")
 				->from("avancement")
 				->join("user", "avancement.user_id", "=", "user.id")
 				->where("user.username", $username)
 				->where("question_uri", $question_uri)
-				->first()["id"];
+				->first();
+
+            if (!$avancement) return null;
+            
 			$objet = [
 				"langage" => $tentative->langage,
 				"code" => $tentative->code,
@@ -81,15 +84,13 @@ class TentativeProgDAO extends TentativeDAO
 
 			return $this->construire([
 				TentativeProgMdl::updateOrCreate(
-					["avancement_id" => $avancement_id, "date_soumission" => $tentative->date_soumission],
+					["avancement_id" => $avancement["id"], "date_soumission" => $tentative->date_soumission],
 					$objet,
 				),
 			])[$tentative->date_soumission];
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		return $this->get_tentative($username, $question_uri, $tentative->date_soumission);
 	}
 
 	public static function construire($data, $includes = [])

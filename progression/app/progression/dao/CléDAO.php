@@ -39,8 +39,6 @@ class CléDAO extends EntitéDAO
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		return $clé;
 	}
 
 	public function get_toutes($username, $includes = [])
@@ -62,12 +60,15 @@ class CléDAO extends EntitéDAO
 	public function save($username, $nom, $clé)
 	{
 		try {
-			$user_id = UserMdl::select("user.id")
+			$user = UserMdl::select("user.id")
 				->from("user")
 				->where("user.username", $username)
-				->first()["id"];
+				->first();
+
+            if(!$user) return null;
+            
 			$objet = [
-				"user_id" => $user_id,
+				"user_id" => $user["id"],
 				"nom" => $nom,
 				"hash" => hash("sha256", $clé->secret),
 				"creation" => $clé->création,
@@ -89,12 +90,12 @@ class CléDAO extends EntitéDAO
 			);
 
 			return count($hash) == 1 && hash("sha256", $secret) == $hash[0]->hash;
-		} catch (QuertyException $e) {
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}
 
-	public static function construire($data)
+	public static function construire($data, $includes=[])
 	{
 		$clés = [];
 		foreach ($data as $item) {

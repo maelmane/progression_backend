@@ -18,6 +18,7 @@
 
 namespace progression\http\transformer;
 
+use League\Fractal\Resource\Collection;
 use progression\domaine\entité\Tentative;
 
 class TentativeTransformer extends BaseTransformer
@@ -25,7 +26,10 @@ class TentativeTransformer extends BaseTransformer
 	public $type = "tentative";
 	protected array $availableIncludes = ["commentaires"];
 
-	public function transform(Tentative $tentative)
+    /**
+     * @return array<mixed>
+     */
+	public function transform(Tentative $tentative):array
 	{
 		$data_out = [
 			"id" => "{$this->id}/{$tentative->id}",
@@ -41,7 +45,7 @@ class TentativeTransformer extends BaseTransformer
 		return $data_out;
 	}
 
-	public function includeCommentaires(Tentative $tentative)
+	public function includeCommentaires(Tentative $tentative):Collection
 	{
 		$commentaires = $tentative->commentaires;
 
@@ -55,4 +59,15 @@ class TentativeTransformer extends BaseTransformer
 		}
 		return $this->collection($commentaires, new CommentaireTransformer($id_parent), "commentaire");
 	}
+
+    public function includeResultats(Tentative $tentative) : Collection {
+		$id_parent = "{$this->id}/{$tentative->id}";
+
+		foreach ($tentative->résultats as $i => $résultat) {
+			$résultat->id = $i;
+			$résultat->links = ["related" => "{$_ENV["APP_URL"]}tentative/{$id_parent}"];
+		}
+        
+        return $this->collection($tentative->résultats, new RésultatTransformer($id_parent), "resultat");
+    } 
 }

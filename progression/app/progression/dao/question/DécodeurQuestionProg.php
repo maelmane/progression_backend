@@ -47,7 +47,7 @@ class DécodeurQuestionProg extends DécodeurQuestion
 		$tests = [];
 		foreach ($infos_question["tests"] as $i => $test) {
 			$tests[] = new TestProg(
-				$test["nom"] ?? "#" . $i + 1,
+				$test["nom"] ?? "#" . ($i + 1),
 				$test["sortie"],
 				$test["entrée"] ?? null,
 				$test["params"] ?? null,
