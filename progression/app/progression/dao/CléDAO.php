@@ -69,15 +69,22 @@ class CléDAO extends EntitéDAO
 				return null;
 			}
 
+			$secret_hashé = hash("sha256", $clé->secret);
 			$objet = [
 				"user_id" => $user["id"],
 				"nom" => $nom,
-				"hash" => hash("sha256", $clé->secret),
+				"hash" => $secret_hashé,
 				"creation" => $clé->création,
 				"expiration" => $clé->expiration,
 				"portee" => $clé->portée,
 			];
-			return $this->construire([CléMdl::create($objet)])[$nom];
+			$clé_créée = $this->construire([CléMdl::create($objet)])[$nom];
+
+			// Le secret n'est pas stoqué directement dans la BD
+			// On retourne la clé avec son secret en clair UNIQUEMENT ici.
+			$clé_créée->secret = $clé->secret;
+
+			return $clé_créée;
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
