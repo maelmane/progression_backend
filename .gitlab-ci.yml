@@ -52,7 +52,7 @@ test_unitaires:
 linter:
   stage: test
   needs: []
-  environment: dev
+  environment: tests
   script:
     - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests lint
   except:

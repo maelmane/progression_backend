@@ -50,4 +50,5 @@ RUN npm --global install standard typescript ts-standard
 RUN touch /tmp/tsconfig.eslint.json
 
 COPY phpstan.neon /var/www/progression/
+COPY phpstan-baseline.neon /var/www/progression/
 COPY phpunit.xml /var/www/progression/
