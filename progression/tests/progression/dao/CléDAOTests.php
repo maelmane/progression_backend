@@ -69,16 +69,27 @@ final class CléDAOTests extends TestCase
 		$this->assertEquals($résultat_attendu, $clés);
 	}
 
-	public function test_étant_donné_une_clé_inexistante_lorsquon_la_sauvegarde_on_la_retrouve_dans_la_bd()
+	public function test_étant_donné_une_clé_inexistante_lorsquon_la_sauvegarde_on_obtient_une_clé_avec_son_secret()
 	{
-		$clé = new Clé("secret", 1624593600, 1624680000, Clé::PORTEE_AUTH);
+		$clé = new Clé("secret", 1624593600, 1624680000);
+		$résultat_attendu = $clé;
+
+		$dao = new CléDAO();
+		$résultat_obtenu = $dao->save("bob", "nouvelle clé", $clé);
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
+	public function test_étant_donné_une_clé_inexistante_lorsquon_la_sauvegarde_on_la_retrouve_dans_la_bd_sans_son_secret()
+	{
+		$clé = new Clé("secret", 1624593600, 1624680000);
 
 		$dao = new CléDAO();
 		$dao->save("bob", "nouvelle clé", $clé);
-		$clé = $dao->get_clé("bob", "nouvelle clé");
 
-		$résultat_attendu = $clé;
-		$this->assertEquals($résultat_attendu, $clé);
+		$résultat_attendu = new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH);
+		$résultat_obtenu = $dao->get_clé("bob", "nouvelle clé");
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
 	public function test_étant_donné_une_clé_existante_lorsquon_la_vérifie_en_donnant_le_bon_secret_on_obtient_vrai()
