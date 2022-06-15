@@ -29,4 +29,11 @@ class ObtenirTentativeInt extends Interacteur
 		}
 		return $tentative;
 	}
+
+	function get_dernière($username, $question_uri)
+	{
+		$tentative = $this->source_dao->get_tentative_dao()->get_dernière($username, $question_uri);
+
+		return $tentative;
+	}
 }

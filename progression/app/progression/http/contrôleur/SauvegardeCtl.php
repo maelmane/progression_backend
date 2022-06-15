@@ -83,8 +83,8 @@ class SauvegardeCtl extends Contrôleur
 		$sauvegarde_array = null;
 
 		if ($sauvegarde != null) {
-			$sauvegarde->id = "$username/$question_uri/$langage";
-			$sauvegarde_array = $this->item($sauvegarde, new SauvegardeTransformer());
+			$sauvegarde->id = $langage;
+			$sauvegarde_array = $this->item($sauvegarde, new SauvegardeTransformer("$username/$question_uri"));
 		}
 
 		$réponse = $this->préparer_réponse($sauvegarde_array);

@@ -40,11 +40,8 @@ class ExécuteurCompilebox extends Exécuteur
 		"typescript" => 16,
 	];
 
-	public function exécuter($exécutable, $tests)
+	public function exécuter_prog($exécutable, $tests)
 	{
-		//post le code à remotecompiler
-		$url_rc = $_ENV["COMPILEBOX_URL"];
-
 		$tests_out = [];
 		foreach ($tests as $test) {
 			$tests_out[] = ["stdin" => $test->entrée ?? "", "params" => $test->params ?? ""];
@@ -58,6 +55,30 @@ class ExécuteurCompilebox extends Exécuteur
 			"vm_name" => "remotecompiler",
 		];
 
+		return $this->envoyer_requête($data_rc);
+	}
+
+	public function exécuter_sys($utilisateur, $image, $conteneur, $tests)
+	{
+		$tests_out = [];
+		foreach ($tests as $test) {
+			$tests_out[] = ["stdin" => $test->validation];
+		}
+
+		$data_rc = [
+			"language" => self::langages["sshd"],
+			"user" => $utilisateur,
+			"parameters" => $conteneur,
+			"params_conteneur" => "-e SIAB_SERVICE=/:" . $utilisateur . ":" . $utilisateur . ":HOME:SHELL",
+			"tests" => $tests_out,
+			"vm_name" => $image,
+		];
+
+		return $this->envoyer_requête($data_rc);
+	}
+
+	private function envoyer_requête($data_rc)
+	{
 		$options_rc = [
 			"http" => [
 				"header" => "Content-type: application/x-www-form-urlencoded\r\n",
@@ -68,11 +89,10 @@ class ExécuteurCompilebox extends Exécuteur
 		$context = stream_context_create($options_rc);
 
 		try {
-			$comp_resp = file_get_contents($url_rc, false, $context);
+			$comp_resp = file_get_contents($_ENV["COMPILEBOX_URL"], false, $context);
+			return $comp_resp ? json_decode(str_replace("\r", "", $comp_resp), true) : false;
 		} catch (\ErrorException $e) {
 			throw new ExécutionException("Compilebox non disponible", 503, $e);
 		}
-
-		return json_decode(str_replace("\r", "", $comp_resp), true);
 	}
 }

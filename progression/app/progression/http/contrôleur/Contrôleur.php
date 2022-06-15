@@ -18,6 +18,7 @@
 
 namespace progression\http\contrôleur;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -26,6 +27,7 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\JsonApiSerializer;
+use League\Fractal\TransformerAbstract;
 
 class Contrôleur extends BaseController
 {
@@ -83,19 +85,6 @@ class Contrôleur extends BaseController
 		$item = $manager->createData($resource)->toArray();
 
 		return $item;
-	}
-
-	/**
-	 * @param LengthAwarePaginator $data
-	 * @param $transformer
-	 * @return array
-	 */
-	public function paginate($data, $transformer)
-	{
-		$manager = $this->getFractalManager();
-		$resource = new Collection($data, $transformer, $transformer->type);
-		$resource->setPaginator(new IlluminatePaginatorAdapter($data));
-		return $manager->createData($resource)->toArray();
 	}
 
 	protected function préparer_réponse($réponse, $code = 200)

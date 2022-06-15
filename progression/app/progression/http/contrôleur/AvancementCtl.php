@@ -72,8 +72,8 @@ class AvancementCtl extends Contrôleur
 		Log::debug("AvancementCtl.valider_et_préparer_réponse. Params : ", [$avancement, $username, $question_uri]);
 
 		if ($avancement) {
-			$avancement->id = "{$username}/$question_uri";
-			$réponse = $this->item($avancement, new AvancementTransformer());
+			$avancement->id = $question_uri;
+			$réponse = $this->item($avancement, new AvancementTransformer($username));
 		} else {
 			$réponse = null;
 		}
@@ -149,13 +149,7 @@ class AvancementCtl extends Contrôleur
 
 		$chemin = Encodage::base64_decode_url($question_uri);
 		$question = (new ObtenirQuestionInt())->get_question($chemin);
-		$avancement = new Avancement(
-			QUESTION::ETAT_DEBUT,
-			QUESTION::TYPE_PROG,
-			[],
-			$question->titre,
-			$question->niveau,
-		);
+		$avancement = new Avancement([], $question->titre, $question->niveau);
 
 		Log::debug("AvancementCtl.créer_avancement. Retour : ", [$avancement]);
 		return $avancement;

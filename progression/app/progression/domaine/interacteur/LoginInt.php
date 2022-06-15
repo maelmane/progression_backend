@@ -18,6 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
+use LDAP\Result;
 use progression\domaine\entité\Clé;
 use progression\dao\{DAOFactory, UserDAO};
 
@@ -60,10 +61,13 @@ class LoginInt extends Interacteur
 		$auth_ldap = getenv("AUTH_LDAP") === "true";
 
 		if ($auth_ldap && $domaine) {
+			// LDAP
 			$user = $this->login_ldap($username, $password, $domaine);
 		} elseif ($auth_local) {
+			// Local
 			$user = $this->login_local($username, $password);
-		} elseif (!$auth_ldap && !$auth_local) {
+		} elseif (!$auth_ldap) {
+			// Sans authentification
 			$user = $this->login_sans_authentification($username);
 		}
 
@@ -76,8 +80,11 @@ class LoginInt extends Interacteur
 
 	function login_local($username, $password)
 	{
-		$user = (new ObtenirUserInt())->get_user($username);
+		if ($password === null) {
+			return null;
+		}
 
+		$user = (new ObtenirUserInt())->get_user($username);
 		if ($user && $this->source_dao->get_user_dao()->vérifier_password($user, $password)) {
 			return $user;
 		} else {
@@ -87,6 +94,10 @@ class LoginInt extends Interacteur
 
 	function login_ldap($username, $password, $domaine)
 	{
+		if ($password === null) {
+			return null;
+		}
+
 		$user = null;
 		if ($this->get_username_ldap($username, $password, $domaine)) {
 			$user = $this->login_sans_authentification($username);
@@ -132,12 +143,17 @@ class LoginInt extends Interacteur
 
 		//Recherche de l'utilisateur à authentifier
 		$result = ldap_search($ldap, $_ENV["LDAP_BASE"], "({$_ENV["LDAP_UID"]}=$username)", ["dn", "cn", 1]);
-		$user = ldap_get_entries($ldap, $result);
-		if ($user["count"] != 1 || !@ldap_bind($ldap, $user[0]["dn"], $password)) {
-			return null;
-		} else {
-			return true;
+		if ($result instanceof Result) {
+			$user = ldap_get_entries($ldap, $result);
+			return $user &&
+				isset($user["count"]) &&
+				$user["count"] == 1 &&
+				isset($user[0]) &&
+				is_array($user[0]) &&
+				isset($user[0]["dn"]) &&
+				!@ldap_bind($ldap, $user[0]["dn"], $password);
 		}
+		return null;
 	}
 
 	function login_sans_authentification($username)
