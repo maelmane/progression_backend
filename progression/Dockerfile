@@ -3,7 +3,6 @@ FROM composer:latest AS composer
 COPY composer.json /var/www/
 
 RUN composer install -d /var/www/
-RUN composer require -d /var/www/ nunomaduro/larastan:^1.0 --dev
 
 FROM php:apache
 
@@ -26,7 +25,6 @@ RUN docker-php-source extract &&\
 RUN mkdir -p /var/www/progression/
 COPY app /var/www/progression/app/
 COPY tests /var/www/progression/tests/
-COPY autoload.php /var/www/progression/
 COPY db /var/www/progression/db/
 
 RUN mkdir -p /var/www/progression/vendor
