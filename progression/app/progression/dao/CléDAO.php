@@ -69,7 +69,7 @@ class CléDAO extends EntitéDAO
 				return null;
 			}
 
-            $secret_hashé = hash("sha256", $clé->secret);
+			$secret_hashé = hash("sha256", $clé->secret);
 			$objet = [
 				"user_id" => $user["id"],
 				"nom" => $nom,
@@ -80,7 +80,7 @@ class CléDAO extends EntitéDAO
 			];
 			$clé_créée = $this->construire([CléMdl::create($objet)])[$nom];
 
-            // Le secret n'est pas stoqué directement dans la BD
+			// Le secret n'est pas stoqué directement dans la BD
 			// On retourne la clé avec son secret en clair UNIQUEMENT ici.
 			$clé_créée->secret = $clé->secret;
 
