@@ -28,7 +28,6 @@ final class TentativeSysDAOTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-        print_r($_ENV);
 		app("db")
 			->connection()
 			->beginTransaction();
