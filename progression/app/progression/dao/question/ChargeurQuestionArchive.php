@@ -72,11 +72,8 @@ class ChargeurQuestionArchive extends Chargeur
 	{
 		if (PHP_OS === "Windows") {
 			exec(sprintf("rd /s /q %s", escapeshellarg($cheminCible)));
-			return true;
 		} else {
 			exec(sprintf("rm -rf %s", escapeshellarg($cheminCible)));
-			return true;
 		}
-		return false;
 	}
 }

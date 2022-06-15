@@ -1,0 +1,18 @@
+[
+	{
+		"secret": null,
+		"cr\u00e9ation": 1624593600,
+		"expiration": 1624680000,
+		"port\u00e9e": 1,
+		"id": "0",
+		"links": { "related": "https://example.com/user/bob" }
+	},
+	{
+		"secret": null,
+		"cr\u00e9ation": 1624593602,
+		"expiration": 1624680002,
+		"port\u00e9e": 1,
+		"id": "1",
+		"links": { "related": "https://example.com/user/bob" }
+	}
+]

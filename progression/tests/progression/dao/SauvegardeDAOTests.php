@@ -19,20 +19,24 @@
 namespace progression\dao;
 
 use progression\domaine\entité\Sauvegarde;
-use PHPUnit\Framework\TestCase;
-use Mockery;
+use progression\TestCase;
 
 final class SauvegardeDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
-		EntitéDAO::get_connexion()->begin_transaction();
+		parent::setUp();
+		app("db")
+			->connection()
+			->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
-		EntitéDAO::get_connexion()->rollback();
-		Mockery::close();
+		app("db")
+			->connection()
+			->rollBack();
+		parent::tearDown();
 	}
 
 	public function test_étant_donné_une_sauvegarde_existante_lorsquon_cherche_par_username_question_uri_et_langage_on_obtient_un_objet_sauvegarde_correspondant()
@@ -84,9 +88,31 @@ final class SauvegardeDAOTests extends TestCase
 		$résponse_observée1 = (new SauvegardeDAO())->save(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			"python",
+			"nouveau_langage",
 			new Sauvegarde(1620150294, "print(\"Hello world!\")"),
 		);
+		$this->assertEquals($résultat_attendu, $résponse_observée1);
+
+		$résponse_observée2 = (new SauvegardeDAO())->get_sauvegarde(
+			"bob",
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+			"nouveau_langage",
+		);
+
+		$this->assertEquals($résultat_attendu, $résponse_observée2);
+	}
+
+	public function test_étant_donné_une_sauvegarde_existante_lorsquon_la_met_à_jour_elle_est_sauvegardée_et_on_obtient_un_objet_sauvegarde_correspondant()
+	{
+		$résultat_attendu = new Sauvegarde(1620150294, "print(\"Nouveau code!\")");
+
+		$résponse_observée1 = (new SauvegardeDAO())->save(
+			"bob",
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+			"python",
+			new Sauvegarde(1620150294, "print(\"Nouveau code!\")"),
+		);
+		$this->assertEquals($résultat_attendu, $résponse_observée1);
 
 		$résponse_observée2 = (new SauvegardeDAO())->get_sauvegarde(
 			"bob",
@@ -94,7 +120,6 @@ final class SauvegardeDAOTests extends TestCase
 			"python",
 		);
 
-		$this->assertEquals($résultat_attendu, $résponse_observée1);
 		$this->assertEquals($résultat_attendu, $résponse_observée2);
 	}
 

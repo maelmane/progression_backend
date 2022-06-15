@@ -8,12 +8,12 @@ FROM php:apache
 
 # Mise a jour de la liste de package
 RUN apt update && apt upgrade -y && apt autoclean
-RUN apt update && apt install -y default-libmysqlclient-dev default-mysql-client python3-yaml libldap2-dev libyaml-dev libzip-dev python3 python3-pip && apt autoclean
+RUN apt update && apt install -y default-libmysqlclient-dev default-mysql-client python3-yaml libldap2-dev libyaml-dev libzip-dev python3 python3-pip && apt autoclean php7.4-dom
 
 RUN pip3 install progression_qc
 
 #Ajout d'extensions PHP
-RUN docker-php-ext-install -j$(nproc) mysqli ldap zip
+RUN docker-php-ext-install -j$(nproc) mysqli ldap zip pdo pdo_mysql
 
 COPY docker-php-ext-get /usr/local/bin/
 
@@ -25,7 +25,7 @@ RUN docker-php-source extract &&\
 RUN mkdir -p /var/www/progression/
 COPY app /var/www/progression/app/
 COPY tests /var/www/progression/tests/
-COPY autoload.php /var/www/progression/
+COPY autoload_tests.php /var/www/progression/autoload_tests.php
 COPY db /var/www/progression/db/
 
 RUN mkdir -p /var/www/progression/vendor
@@ -50,4 +50,5 @@ RUN npm --global install standard typescript ts-standard
 RUN touch /tmp/tsconfig.eslint.json
 
 COPY phpstan.neon /var/www/progression/
+COPY phpstan-baseline.neon /var/www/progression/
 COPY phpunit.xml /var/www/progression/

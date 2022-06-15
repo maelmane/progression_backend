@@ -74,8 +74,8 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		// Avancement
 		$avancement_nouveau = new Avancement();
 
-		$avancement_réussi = new Avancement(Question::ETAT_REUSSI, Question::TYPE_PROG, [
-			new TentativeProg("python", "codeTest", [], 1614965817, false, 2, "feedbackTest"),
+		$avancement_réussi = new Avancement([
+			new TentativeProg("python", "codeTest", 1614965817, true, [], 2, "feedbackTest"),
 		]);
 
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
@@ -116,7 +116,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 
 		$this->assertResponseStatus(200);
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/avancementCtlTests_1.json",
+			__DIR__ . "/résultats_attendus/avancementCtlTests_avancement_réussi.json",
 			$résultat_observé->getContent(),
 		);
 	}

@@ -29,7 +29,7 @@ final class ObtenirAvancementIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$avancement = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
+		$avancement = new Avancement([], "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
 
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 
@@ -37,10 +37,7 @@ final class ObtenirAvancementIntTests extends TestCase
 			->shouldReceive("get_avancement")
 			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée")
 			->andReturn($avancement);
-		$mockAvancementDAO
-			->shouldReceive("get_avancement")
-			->with("jdoe", "une_question_inexistante")
-			->andReturn(null);
+		$mockAvancementDAO->shouldReceive("get_avancement")->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
@@ -64,7 +61,7 @@ final class ObtenirAvancementIntTests extends TestCase
 			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
 		);
 
-		$résultat_attendu = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
+		$résultat_attendu = new Avancement([], "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}

@@ -29,9 +29,9 @@ class UserCtl extends Contrôleur
 	{
 		Log::debug("UserCtl.get. Params : ", [$request->all(), $username]);
 
-		$user = $this->obtenir_user($username ?? $request->user()->username);
-		$réponse = $this->valider_et_préparer_réponse($user);
+		$user = $this->obtenir_user($username);
 
+		$réponse = $this->valider_et_préparer_réponse($user);
 		Log::debug("UserCtl.get. Retour : ", [$réponse]);
 		return $réponse;
 	}
@@ -55,6 +55,7 @@ class UserCtl extends Contrôleur
 	{
 		Log::debug("UserCtl.valider_et_préparer_réponse. Params : ", [$user]);
 
+		$user->id = $user->username;
 		$réponse_array = $this->item($user, new UserTransformer());
 
 		$réponse = $this->préparer_réponse($réponse_array);

@@ -35,13 +35,13 @@ class AvancementsCtl extends Contrôleur
 
 		$avancements = $this->obtenir_avancements($username);
 
-		$réponse = $this->valider_et_préparer_réponse($avancements);
+		$réponse = $this->valider_et_préparer_réponse($avancements, $username);
 
 		Log::debug("AvancementsCtl.get. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
-	private function valider_et_préparer_réponse($avancements)
+	private function valider_et_préparer_réponse($avancements, $username)
 	{
 		Log::debug("AvancementsCtl.valider_et_préparer_réponse. Params : ", [$avancements]);
 
@@ -50,9 +50,9 @@ class AvancementsCtl extends Contrôleur
 		} else {
 			$réponse = [];
 			foreach ($avancements as $id => $avancement) {
-				$avancement->id = $id;
+				$avancement->id = Encodage::base64_encode_url($id);
 			}
-			$réponse = $this->collection($avancements, new AvancementTransformer());
+			$réponse = $this->collection($avancements, new AvancementTransformer($username));
 		}
 
 		$réponse = $this->préparer_réponse($réponse);

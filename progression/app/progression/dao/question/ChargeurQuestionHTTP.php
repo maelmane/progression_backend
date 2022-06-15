@@ -117,13 +117,10 @@ class ChargeurQuestionHTTP extends Chargeur
 				case "7z":
 				case "tar":
 					return $résultats[2];
-					break;
 				case "gzip":
 					return "gz";
-					break;
 				case "vnd.rar":
 					return "rar";
-					break;
 			}
 		}
 		return false;

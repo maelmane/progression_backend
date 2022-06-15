@@ -18,109 +18,92 @@
 
 namespace progression\dao;
 
-use mysqli_sql_exception;
+use DB;
+use Illuminate\Database\QueryException;
 use progression\domaine\entité\Clé;
+use progression\dao\models\{CléMdl, UserMdl};
 
 class CléDAO extends EntitéDAO
 {
-	public function get_clé($username, $nom)
+	public function get_clé($username, $nom, $includes = [])
 	{
-		$clé = null;
-
-		$secret = null;
-		$création = null;
-		$expiration = null;
-		$portée = null;
-
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT hash, creation, expiration, portee FROM cle WHERE username = ? AND nom = ? ",
-			);
-			$query->bind_param("ss", $username, $nom);
+			$clé = CléMdl::select("cle.*")
+				->with($includes)
+				->join("user", "user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("nom", $nom)
+				->first();
 
-			$query->execute();
-			$query->bind_result($secret, $création, $expiration, $portée);
-
-			$résultat = $query->fetch();
-			$query->close();
-			if ($résultat) {
-				$clé = new Clé($secret, $création, $expiration, $portée);
-			}
-		} catch (mysqli_sql_exception $e) {
+			return $clé ? $this->construire([$clé], $includes)[$nom] : null;
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		return $clé;
 	}
 
-	public function get_toutes($username)
+	public function get_toutes($username, $includes = [])
 	{
-		$clés = [];
-
-		$nom = null;
-		$création = null;
-		$expiration = null;
-		$portée = null;
-
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT nom, creation, expiration, portee FROM cle WHERE username = ? ",
+			return $this->construire(
+				CléMdl::select("cle.*")
+					->with($includes)
+					->join("user", "user_id", "=", "user.id")
+					->where("user.username", $username)
+					->get(),
+				$includes,
 			);
-			$query->bind_param("s", $username);
-
-			$query->execute();
-			$query->bind_result($nom, $création, $expiration, $portée);
-
-			while ($query->fetch()) {
-				$clés[$nom] = new Clé(null, $création, $expiration, $portée);
-			}
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		return $clés;
 	}
 
-	public function save($username, $nom, $objet)
+	public function save($username, $nom, $clé)
 	{
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO cle ( username, nom, hash, creation, expiration, portee ) VALUES ( ?, ?, ?, ?, ?, ? )",
-			);
+			$user = UserMdl::select("user.id")
+				->from("user")
+				->where("user.username", $username)
+				->first();
 
-			$hash = hash("sha256", $objet->secret);
+			if (!$user) {
+				return null;
+			}
 
-			$query->bind_param("sssiii", $username, $nom, $hash, $objet->création, $objet->expiration, $objet->portée);
-			$query->execute();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+			$objet = [
+				"user_id" => $user["id"],
+				"nom" => $nom,
+				"hash" => hash("sha256", $clé->secret),
+				"creation" => $clé->création,
+				"expiration" => $clé->expiration,
+				"portee" => $clé->portée,
+			];
+			return $this->construire([CléMdl::create($objet)])[$nom];
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		$clé = $this->get_clé($username, $nom);
-		$clé->secret = $objet->secret;
-
-		return $clé;
 	}
 
 	public function vérifier($username, $nom, $secret)
 	{
-		$hash = null;
-
 		try {
-			$query = EntitéDAO::get_connexion()->prepare("SELECT hash FROM cle WHERE username = ? AND nom = ? ");
-			$query->bind_param("ss", $username, $nom);
+			$hash = DB::select(
+				"SELECT hash FROM cle JOIN user ON cle.user_id = user.id WHERE user.username = ? AND cle.nom = ? ",
+				[$username, $nom],
+			);
 
-			$query->execute();
-			$query->bind_result($hash);
-
-			$résultat = $query->fetch();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+			return count($hash) == 1 && hash("sha256", $secret) == $hash[0]->hash;
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
+	}
 
-		return hash("sha256", $secret) == $hash;
+	public static function construire($data, $includes = [])
+	{
+		$clés = [];
+		foreach ($data as $item) {
+			$nom = $item["nom"];
+			$clés[$nom] = new Clé(null, $item["creation"], $item["expiration"], $item["portee"]);
+		}
+		return $clés;
 	}
 }

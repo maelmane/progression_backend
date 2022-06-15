@@ -79,7 +79,7 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/sauvegardeCtlTests_1.json",
+			__DIR__ . "/résultats_attendus/sauvegardeCtlTests_sauvegarde.json",
 			$résultat_observé->getContent(),
 		);
 	}
@@ -139,7 +139,7 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/sauvegardeCtlTests_1.json",
+			__DIR__ . "/résultats_attendus/sauvegardeCtlTests_sauvegarde.json",
 			$résultat_observé->getContent(),
 		);
 	}

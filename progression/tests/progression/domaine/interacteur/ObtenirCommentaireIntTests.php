@@ -25,12 +25,51 @@ use Mockery;
 
 final class ObtenirCommentaireIntTests extends TestCase
 {
+	public function setUp(): void
+	{
+		parent::setUp();
+
+		$mockCommentaireDAO = Mockery::mock("progression\\dao\\CommentaireDAO");
+
+		$commentaire = new Commentaire("le 3er message", "Stefany", 1615696276, 14);
+
+		$tableauCommentaires = [
+			new Commentaire("le 1er message", "jdoe", 1615696276, 14),
+			new Commentaire("le 2er message", "admin", 1615696276, 12),
+			new Commentaire("le 3er message", "Stefany", 1615696276, 14),
+		];
+
+		$mockCommentaireDAO
+			->shouldReceive("get_commentaire")
+			->with(3)
+			->andReturn($commentaire);
+		$mockCommentaireDAO
+			->shouldReceive("get_commentaires_par_tentative")
+			->with("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", 1615696276)
+			->andReturn($tableauCommentaires);
+		$mockCommentaireDAO->shouldReceive("get_commentaire")->andReturn(null);
+
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
+		$mockDAOFactory
+			->allows()
+			->get_commentaire_dao()
+			->andReturn($mockCommentaireDAO);
+		DAOFactory::setInstance($mockDAOFactory);
+	}
+
+	public function tearDown(): void
+	{
+		Mockery::close();
+		DAOFactory::setInstance(null);
+	}
+
 	public function test_étant_donné_un_commentaire_existant_lorsquon_le_recherche_par_id_on_obtient_un_objet_commentaire_correspondant()
 	{
-		$commentaireAttendu = new ObtenirCommentaireInt();
-		$commentaire[3] = new Commentaire("le 3er message", "Stefany", 1615696276, 14);
-		$réponse_attendue = $commentaire;
-		$this->assertEquals($commentaire, $commentaireAttendu->get_commentaire_par_id(3));
+		$résultat_observé = new ObtenirCommentaireInt();
+
+		$résultat_attendu = new Commentaire("le 3er message", "Stefany", 1615696276, 14);
+
+		$this->assertEquals($résultat_attendu, $résultat_observé->get_commentaire_par_id(3));
 	}
 
 	public function test_étant_donné_un_id_inexistant_lorsquon_cherche_son_commentaire_on_obtient_null()
@@ -41,15 +80,17 @@ final class ObtenirCommentaireIntTests extends TestCase
 	}
 	public function test_étant_donné_des_commentaires_existants_lorsquon_les_recherche_par_tentative_on_obtient_une_liste_de_commentaires_correspondante()
 	{
-		$commentaireObtenu = new ObtenirCommentaireInt();
+		$résultat_observé = new ObtenirCommentaireInt();
 
-		$tableauCommentaire[1] = new Commentaire("le 1er message", "jdoe", 1615696276, 14);
-		$tableauCommentaire[2] = new Commentaire("le 2er message", "admin", 1615696276, 12);
-		$tableauCommentaire[3] = new Commentaire("le 3er message", "Stefany", 1615696276, 14);
+		$tableauCommentaire = [
+			new Commentaire("le 1er message", "jdoe", 1615696276, 14),
+			new Commentaire("le 2er message", "admin", 1615696276, 12),
+			new Commentaire("le 3er message", "Stefany", 1615696276, 14),
+		];
 		$réponse_attendue = $tableauCommentaire;
 		$this->assertEquals(
 			$réponse_attendue,
-			$commentaireObtenu->get_commentaires_par_tentative(
+			$résultat_observé->get_commentaires_par_tentative(
 				"bob",
 				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 				1615696276,

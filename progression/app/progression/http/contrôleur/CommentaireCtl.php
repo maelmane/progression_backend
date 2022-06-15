@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\Validator;
 use progression\domaine\entité\Commentaire;
 use progression\domaine\interacteur\SauvegarderCommentaireInt;
 use progression\http\transformer\CommentaireTransformer;
-use progression\dao\exécuteur\ExécutionException;
 use progression\util\Encodage;
 
 class CommentaireCtl extends Contrôleur
@@ -61,8 +60,11 @@ class CommentaireCtl extends Contrôleur
 
 		$numéro = array_key_first($commentaire);
 
-		$commentaire[$numéro]->id = "{$username}/{$question_uri}/{$timestamp}/{$numéro}";
-		$réponse = $this->item($commentaire[$numéro], new CommentaireTransformer());
+		$commentaire[$numéro]->id = $numéro;
+		$réponse = $this->item(
+			$commentaire[$numéro],
+			new CommentaireTransformer("{$username}/{$question_uri}/{$timestamp}"),
+		);
 		return $this->préparer_réponse($réponse);
 	}
 

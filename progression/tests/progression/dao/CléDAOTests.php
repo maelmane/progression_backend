@@ -19,18 +19,24 @@
 namespace progression\dao;
 
 use progression\domaine\entité\Clé;
-use PHPUnit\Framework\TestCase;
+use progression\TestCase;
 
 final class CléDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
-		EntitéDAO::get_connexion()->begin_transaction();
+		parent::setUp();
+		app("db")
+			->connection()
+			->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
-		EntitéDAO::get_connexion()->rollback();
+		app("db")
+			->connection()
+			->rollBack();
+		parent::tearDown();
 	}
 
 	public function test_étant_donné_une_clé_existante_lorsquon_la_récupère_on_obtient_ses_attributs()
@@ -38,7 +44,7 @@ final class CléDAOTests extends TestCase
 		$dao = new CléDAO();
 		$clé = $dao->get_clé("bob", "clé de test");
 
-		$résultat_attendu = new Clé(1234, 1624593600, 1624680000, Clé::PORTEE_AUTH);
+		$résultat_attendu = new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH);
 		$this->assertEquals($résultat_attendu, $clé);
 	}
 
@@ -65,7 +71,7 @@ final class CléDAOTests extends TestCase
 
 	public function test_étant_donné_une_clé_inexistante_lorsquon_la_sauvegarde_on_la_retrouve_dans_la_bd()
 	{
-		$clé = new Clé(9999, 1624593600, 1624680000, Clé::PORTEE_AUTH);
+		$clé = new Clé("secret", 1624593600, 1624680000, Clé::PORTEE_AUTH);
 
 		$dao = new CléDAO();
 		$dao->save("bob", "nouvelle clé", $clé);
@@ -73,6 +79,26 @@ final class CléDAOTests extends TestCase
 
 		$résultat_attendu = $clé;
 		$this->assertEquals($résultat_attendu, $clé);
+	}
+
+	public function test_étant_donné_une_clé_existante_lorsquon_la_vérifie_en_donnant_le_bon_secret_on_obtient_vrai()
+	{
+		$clé = new Clé("secret", 1624593600, 1624680000, Clé::PORTEE_AUTH);
+
+		$dao = new CléDAO();
+		$dao->save("bob", "nouvelle clé", $clé);
+
+		$this->assertTrue($dao->vérifier("bob", "nouvelle clé", "secret"));
+	}
+
+	public function test_étant_donné_une_clé_existante_lorsquon_la_vérifie_en_donnant_le_mauvais_secret_on_obtient_faux()
+	{
+		$clé = new Clé("secret", 1624593600, 1624680000, Clé::PORTEE_AUTH);
+
+		$dao = new CléDAO();
+		$dao->save("bob", "nouvelle clé", $clé);
+
+		$this->assertFalse($dao->vérifier("bob", "nouvelle clé", "9999"));
 	}
 
 	public function test_étant_donné_une_clé_existante_lorsquon_la_sauvegarde_de_nouveau_on_obtient_une_exception()
