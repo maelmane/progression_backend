@@ -25,11 +25,6 @@ final class TraiterTentativeProgIntTests extends TestCase
 {
 	public function test_étant_donné_une_TentativeProg_correcte_lorsquon_la_traite_on_obtient_une_TentativeProg_traitée_et_réussie_avec_un_feedback_positif()
 	{
-		$question = new QuestionProg();
-		$question->tests = [
-			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
-			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
-		];
 		$tests = [
 			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
 			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
@@ -60,19 +55,6 @@ final class TraiterTentativeProgIntTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_incorrecte_lorsquon_la_traite_on_obtient_une_TentativeProg_traitée_et_nonréussie_avec_feedback_négatif()
 	{
-		$question = new QuestionProg();
-		$question->tests = [
-			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
-			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
-			new TestProg(
-				"troisième test",
-				"ok\nok\nok\nok\nok\nok\nok\nok\nok\nok\n",
-				"10",
-				null,
-				"Test 2 passé",
-				"Test 2 échoué",
-			),
-		];
 		$tests = [
 			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
 			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
@@ -117,31 +99,14 @@ final class TraiterTentativeProgIntTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_avec_une_erreur_et_un_feedback_d_erreur_prévu_lorsquon_la_traite_on_obtient_une_TentativeProg_traitée_et_nonréussie_avec_feedback_d_erreur()
 	{
-		$question = new QuestionProg();
-		$question->tests = [
-			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué", "Erreur!"),
-			new TestProg(
-				"deuxième test",
-				"ok\nok\nok\nok\nok\n",
-				"5",
-				null,
-				"Test 1 passé",
-				"Test 1 échoué",
-				"Erreur!",
-			),
-		];
 		$tests = [
 			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué", "Erreur!"),
-			new TestProg(
-				"deuxième test",
-				"ok\nok\nok\nok\nok\n",
-				"5",
-				null,
-				"Test 1 passé",
-				"Test 1 échoué",
-				"Erreur!",
-			),
+			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué", "Erreur!"),
 		];
+
+		$rétroactions["feedback_pos"] = "Bravo!";
+		$rétroactions["feedback_neg"] = "As-tu essayé de ne pas faire ça?";
+		$rétroactions["feedback_err"] = "Revise la syntaxe de ton code";
 
 		$rétroactions["feedback_pos"] = "Bravo!";
 		$rétroactions["feedback_neg"] = "As-tu essayé de ne pas faire ça?";
@@ -168,11 +133,6 @@ final class TraiterTentativeProgIntTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_avec_une_erreur_sans_feedback_d_erreur_prévu_lorsquon_la_traite_on_obtient_une_TentativeProg_traitée_et_nonréussie_sans_feedback_d_erreur()
 	{
-		$question = new QuestionProg();
-		$question->tests = [
-			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
-			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),
-		];
 		$tests = [
 			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué"),
 			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué"),

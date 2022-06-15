@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.9"
 services:
   db:
     image: mariadb
@@ -8,6 +8,11 @@ services:
       - /var/lib/mysql
     #  - "./progression_backend/progression/db/:/docker-entrypoint-initdb.d/"
     restart: always
+    healthcheck:
+      test: 'mysql -u root -p$$DB_PASSWORD --silent --execute "SELECT 1;" > /tmp/test 2>&1'
+      interval: 10s
+      timeout: 20s
+      retries: 10
 
   redis:
     image: redis:latest
@@ -42,7 +47,8 @@ services:
     env_file: $ENV_FILE    
     command: bash /var/www/progression/tests/exec_tests.sh
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   lint:
     # On utilise l'image progression/dev parce que prettier est un package npm que l'on ne veut pas inclure dans progression_backend

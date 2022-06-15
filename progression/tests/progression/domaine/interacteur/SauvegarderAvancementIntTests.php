@@ -140,7 +140,7 @@ final class SauvegarderAvancementIntTests extends TestCase
 	public function test_étant_donné_une_questionSys_un_avancement_avec_tentatives_lorsquon_sauvegarde_ses_tentatives_aussi_sont_enregistrées_et_on_obtient_lavancement_avec_tentatives()
 	{
 		$tentative = new TentativeSys("leConteneurDeLaTentative", "laRéponse", 1616534292, false, 0, "feedback", []);
-		$avancement = new Question([$tentative]);
+		$avancement = new Avancement([$tentative]);
 
 		DAOFactory::getInstance()
 			->get_avancement_dao()

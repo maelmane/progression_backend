@@ -83,7 +83,7 @@ final class TestCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(200, $résultat_obtenu->status());
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/testCtlTest_1.json",
+			__DIR__ . "/résultats_attendus/testCtlTest_question_prog.json",
 			$résultat_obtenu->getContent(),
 		);
 	}
@@ -97,7 +97,7 @@ final class TestCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(200, $résultat_obtenu->status());
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/testCtlTests_2.json",
+			__DIR__ . "/résultats_attendus/testCtlTest_question_sys.json",
 			$résultat_obtenu->getContent(),
 		);
 	}

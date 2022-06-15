@@ -36,7 +36,7 @@ class SoumettreTentativeProgInt extends Interacteur
 			$rétroactions["feedback_pos"] = $question->feedback_pos;
 			$rétroactions["feedback_neg"] = $question->feedback_neg;
 			$rétroactions["feedback_err"] = $question->feedback_err;
-			$tentativeTraitée = $this->traiterTentativeProg($tentative, $rétroactions, $tests);
+			$tentativeTraitée = $this->traiterTentativeProg($tentative, $rétroactions, $question->tests);
 
 			return $tentativeTraitée;
 		}

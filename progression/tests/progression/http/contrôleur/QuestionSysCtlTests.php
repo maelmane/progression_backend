@@ -79,7 +79,7 @@ final class QuestionSysCtlTests extends ContrôleurTestCase
 
 		//$this->assertEquals(200, $résultat_obtenu->status());
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/questionCtlTests_2.json",
+			__DIR__ . "/résultats_attendus/questionCtlTests_question_sys.json",
 			$résultat_obtenu->getContent(),
 		);
 	}

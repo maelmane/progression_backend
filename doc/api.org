@@ -247,6 +247,24 @@ Une tentative de réponse à une QuestionSys.
 | conteneur       | str  |                         |
 | réponse         | str  |                         |
 
+** Tentative (sous-type tentativeSys)
+
+Une tentative de réponse à une question.
+
+*** Propriétés:
+
+| Nom             | Type | Valeurs                 |
+|-----------------+------+-------------------------|
+| réponse         | str  |                         |
+| tests_réussis   | int  | nb de tests réussis     |
+| temps_exécution | int  | temps d'exécution en ms |
+
+*** Relations :
+
+| Nom       | Cardinalité | Type     | Description           |
+|-----------+-------------+----------+-----------------------|
+| résultats | 1-n         | Résultat | les résultats de test |
+
 ** Test
 
 Un test de validation d’une question auquel sont soumises les solutions proposées.
@@ -310,7 +328,7 @@ Un utilisateur du système.
 *** Identifiant :
 username
 
-*** Propriétés:
+*** Relations :
 
 | Nom      | Type | Valeurs          |
 |----------+------+------------------|

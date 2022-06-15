@@ -130,7 +130,7 @@ final class AvancementDAOTests extends TestCase
 	{
 		$résultat_attendu = [];
 
-		$résponse_observée = (new AvancementDAO())->get_tous("Bobinette");
+		$résponse_observée = (new AvancementDAO())->get_tous("admin");
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
 

@@ -2691,26 +2691,6 @@ parameters:
 			path: app/progression/domaine/interacteur/RéinitialiserConteneurInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderAvancementInt\\:\\:sauvegarder\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SauvegarderAvancementInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderAvancementInt\\:\\:sauvegarder\\(\\) has parameter \\$nouvelAvancement with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SauvegarderAvancementInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderAvancementInt\\:\\:sauvegarder\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SauvegarderAvancementInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderAvancementInt\\:\\:sauvegarder\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SauvegarderAvancementInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderCommentaireInt\\:\\:sauvegarder_commentaire\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/SauvegarderCommentaireInt.php
