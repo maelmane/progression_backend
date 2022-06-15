@@ -71,8 +71,10 @@ class TentativeProgDAO extends TentativeDAO
 				->where("question_uri", $question_uri)
 				->first();
 
-            if (!$avancement) return null;
-            
+			if (!$avancement) {
+				return null;
+			}
+
 			$objet = [
 				"langage" => $tentative->langage,
 				"code" => $tentative->code,

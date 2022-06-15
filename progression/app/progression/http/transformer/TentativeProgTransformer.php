@@ -26,9 +26,9 @@ class TentativeProgTransformer extends BaseTransformer
 	public $type = "tentative";
 	protected array $availableIncludes = ["resultats", "commentaires"];
 
-    /**
-     * @return array<mixed>
-     */
+	/**
+	 * @return array<mixed>
+	 */
 	public function transform(TentativeProg $tentative): array
 	{
 		$data_out = (new TentativeTransformer($this->id))->transform($tentative);
@@ -43,11 +43,11 @@ class TentativeProgTransformer extends BaseTransformer
 
 	public function includeResultats(TentativeProg $tentative): Collection
 	{
-        return (new TentativeTransformer($this->id))->includeResultats($tentative);
+		return (new TentativeTransformer($this->id))->includeResultats($tentative);
 	}
 
 	public function includeCommentaires(TentativeProg $tentative): Collection
 	{
-        return (new TentativeTransformer($this->id))->includeCommentaires($tentative);
+		return (new TentativeTransformer($this->id))->includeCommentaires($tentative);
 	}
 }

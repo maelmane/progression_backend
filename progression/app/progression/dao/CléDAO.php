@@ -65,8 +65,10 @@ class CléDAO extends EntitéDAO
 				->where("user.username", $username)
 				->first();
 
-            if(!$user) return null;
-            
+			if (!$user) {
+				return null;
+			}
+
 			$objet = [
 				"user_id" => $user["id"],
 				"nom" => $nom,
@@ -95,7 +97,7 @@ class CléDAO extends EntitéDAO
 		}
 	}
 
-	public static function construire($data, $includes=[])
+	public static function construire($data, $includes = [])
 	{
 		$clés = [];
 		foreach ($data as $item) {

@@ -48,10 +48,10 @@ class AuthServiceProvider extends ServiceProvider
 			}
 		});
 
-        // À corriger?
-        // Cause : "Cannot access offset 'auth' on Illuminate\Contracts\Foundation\Application."
-        // auth est définit dans bootstrap/app.php
-        // @phpstan-ignore-next-line
+		// À corriger?
+		// Cause : "Cannot access offset 'auth' on Illuminate\Contracts\Foundation\Application."
+		// auth est définit dans bootstrap/app.php
+		// @phpstan-ignore-next-line
 		$this->app["auth"]->viaRequest("api", function ($request) {
 			$tokenEncodé = trim(str_ireplace("bearer", "", $request->header("Authorization")));
 			$tokenDécodé = $this->décoderToken($tokenEncodé, $request);
@@ -98,10 +98,10 @@ class AuthServiceProvider extends ServiceProvider
 	private function décoderToken($tokenEncodé, $request)
 	{
 		try {
-            //JWT::decode fournit une stdClass, le moyen le plus simple de transformer en array
-            //est de réencoder/décoder en json.
-            // @phpstan-ignore-next-line
-            return json_decode(json_encode(JWT::decode($tokenEncodé, $_ENV["JWT_SECRET"], ["HS256"])), true);
+			//JWT::decode fournit une stdClass, le moyen le plus simple de transformer en array
+			//est de réencoder/décoder en json.
+			// @phpstan-ignore-next-line
+			return json_decode(json_encode(JWT::decode($tokenEncodé, $_ENV["JWT_SECRET"], ["HS256"])), true);
 		} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
 			Log::notice(
 				"(" .

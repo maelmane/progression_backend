@@ -69,15 +69,19 @@ class CommentaireDAO extends EntitéDAO
 				->where("avancement.question_uri", $question_uri)
 				->first();
 
-            if(!$tentative) return null;
-            
+			if (!$tentative) {
+				return null;
+			}
+
 			$créateur = UserMdl::select("user.id")
 				->from("user")
 				->where("user.username", $commentaire->créateur->username)
 				->first();
-            
-            if(!$créateur) return null;
-            
+
+			if (!$créateur) {
+				return null;
+			}
+
 			$objet = [
 				"tentative_id" => $tentative["id"],
 				"créateur_id" => $créateur["id"],

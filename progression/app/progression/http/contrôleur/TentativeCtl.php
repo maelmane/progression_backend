@@ -56,7 +56,10 @@ class TentativeCtl extends Contrôleur
 		$réponse = null;
 
 		if ($tentative instanceof TentativeProg) {
-			$réponse = $this->item($tentative, new TentativeProgTransformer("$username/" . (string)($request->question_uri)));
+			$réponse = $this->item(
+				$tentative,
+				new TentativeProgTransformer("$username/" . (string) $request->question_uri),
+			);
 		} elseif ($tentative instanceof TentativeSys) {
 			$réponse = $this->item($tentative, new TentativeSysTransformer("$username/{$request->question_uri}"));
 		} elseif ($tentative instanceof TentativeBD) {

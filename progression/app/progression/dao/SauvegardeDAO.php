@@ -68,9 +68,11 @@ class SauvegardeDAO extends EntitéDAO
 				->where("user.username", $username)
 				->where("question_uri", $question_uri)
 				->first();
-            
-            if (!$avancement) return null;
-            
+
+			if (!$avancement) {
+				return null;
+			}
+
 			$objet = [
 				"date_sauvegarde" => $sauvegarde->date_sauvegarde,
 				"langage" => $langage,

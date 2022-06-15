@@ -26,10 +26,10 @@ class TentativeTransformer extends BaseTransformer
 	public $type = "tentative";
 	protected array $availableIncludes = ["commentaires"];
 
-    /**
-     * @return array<mixed>
-     */
-	public function transform(Tentative $tentative):array
+	/**
+	 * @return array<mixed>
+	 */
+	public function transform(Tentative $tentative): array
 	{
 		$data_out = [
 			"id" => "{$this->id}/{$tentative->id}",
@@ -45,7 +45,7 @@ class TentativeTransformer extends BaseTransformer
 		return $data_out;
 	}
 
-	public function includeCommentaires(Tentative $tentative):Collection
+	public function includeCommentaires(Tentative $tentative): Collection
 	{
 		$commentaires = $tentative->commentaires;
 
@@ -60,14 +60,15 @@ class TentativeTransformer extends BaseTransformer
 		return $this->collection($commentaires, new CommentaireTransformer($id_parent), "commentaire");
 	}
 
-    public function includeResultats(Tentative $tentative) : Collection {
+	public function includeResultats(Tentative $tentative): Collection
+	{
 		$id_parent = "{$this->id}/{$tentative->id}";
 
 		foreach ($tentative->résultats as $i => $résultat) {
 			$résultat->id = $i;
 			$résultat->links = ["related" => "{$_ENV["APP_URL"]}tentative/{$id_parent}"];
 		}
-        
-        return $this->collection($tentative->résultats, new RésultatTransformer($id_parent), "resultat");
-    } 
+
+		return $this->collection($tentative->résultats, new RésultatTransformer($id_parent), "resultat");
+	}
 }

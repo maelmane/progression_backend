@@ -63,8 +63,10 @@ class AvancementDAO extends EntitéDAO
 				->where("username", $username)
 				->first();
 
-            if(!$user) return null;
-            
+			if (!$user) {
+				return null;
+			}
+
 			$objet = [];
 			$objet["etat"] = $avancement->etat;
 			$objet["question_uri"] = $question_uri;

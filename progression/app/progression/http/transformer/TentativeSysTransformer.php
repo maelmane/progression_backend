@@ -26,10 +26,10 @@ class TentativeSysTransformer extends BaseTransformer
 	public $type = "tentative";
 	protected array $availableIncludes = ["resultats", "commentaires"];
 
-    /**
-     * @return array<mixed>
-     */
-	public function transform(TentativeSys $tentative):array
+	/**
+	 * @return array<mixed>
+	 */
+	public function transform(TentativeSys $tentative): array
 	{
 		$data_out = (new TentativeTransformer($this->id))->transform($tentative);
 		$data_out = array_merge($data_out, [
@@ -41,13 +41,13 @@ class TentativeSysTransformer extends BaseTransformer
 		return $data_out;
 	}
 
-	public function includeResultats(TentativeSys $tentative):Collection
+	public function includeResultats(TentativeSys $tentative): Collection
 	{
-        return (new TentativeTransformer($this->id))->includeResultats($tentative);
+		return (new TentativeTransformer($this->id))->includeResultats($tentative);
 	}
 
-	public function includeCommentaires(TentativeSys $tentative):Collection
+	public function includeCommentaires(TentativeSys $tentative): Collection
 	{
-        return (new TentativeTransformer($this->id))->includeCommentaires($tentative);
+		return (new TentativeTransformer($this->id))->includeCommentaires($tentative);
 	}
 }

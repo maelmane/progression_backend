@@ -34,5 +34,4 @@ class EntitéDAO
 			$this->source = $source;
 		}
 	}
-
 }

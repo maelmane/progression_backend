@@ -88,9 +88,11 @@ class TentativeSysDAO extends TentativeDAO
 				->where("user.username", $username)
 				->where("question_uri", $question_uri)
 				->first();
-            
-            if (!$avancement) return null;
-            
+
+			if (!$avancement) {
+				return null;
+			}
+
 			$objet = [
 				"conteneur" => $tentative->conteneur["id"],
 				"reponse" => $tentative->réponse,

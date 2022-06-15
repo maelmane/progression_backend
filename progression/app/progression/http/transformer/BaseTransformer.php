@@ -32,14 +32,14 @@ class BaseTransformer extends TransformerAbstract
 		$this->id = $id;
 	}
 
-    /**
-     *
+	/**
+	 *
 	 * Ces fonctions sont appelées automatiquement lorsque availableIncludes inclut XXX
 	 * Elles retournent un array *non transformé*
 	 * public function includeXXX(){}
-     *
-     * @param array<mixed> $data
-     */
+	 *
+	 * @param array<mixed> $data
+	 */
 	protected function collection($data, $transformer, ?string $resourceKey = null): Collection
 	{
 		foreach ($data as $id => $item) {
