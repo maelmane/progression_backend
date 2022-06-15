@@ -22,14 +22,14 @@ use progression\domaine\entité\{Avancement, Question, QuestionProg, QuestionSys
 
 class SauvegarderAvancementInt extends Interacteur
 {
-	public function sauvegarder(string $username, string $question_uri, Avancement $nouvelAvancement) : Avancement
+	public function sauvegarder(string $username, string $question_uri, Avancement $nouvelAvancement): Avancement
 	{
 		$dao_avancement = $this->source_dao->get_avancement_dao();
 		$avancement = $dao_avancement->save($username, $question_uri, $nouvelAvancement);
 		return $avancement;
 	}
 
-	public function récupérer_avancement(string $username, string $question_uri, Tentative $tentative) : Avancement
+	public function récupérer_avancement(string $username, string $question_uri, Tentative $tentative): Avancement
 	{
 		$dao_avancement = $this->source_dao->get_avancement_dao();
 		$avancement = $dao_avancement->get_avancement($username, $question_uri);
@@ -41,8 +41,12 @@ class SauvegarderAvancementInt extends Interacteur
 		return $avancement;
 	}
 
-	public function mettre_à_jour_dates_et_état(Avancement $avancement, int $date, string $username, string $question_uri) : void
-	{
+	public function mettre_à_jour_dates_et_état(
+		Avancement $avancement,
+		int $date,
+		string $username,
+		string $question_uri
+	): void {
 		if (
 			$avancement->etat != Question::ETAT_REUSSI &&
 			$avancement->tentatives[array_key_last($avancement->tentatives)]->réussi

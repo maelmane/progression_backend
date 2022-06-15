@@ -101,7 +101,15 @@ final class TraiterTentativeProgIntTests extends TestCase
 	{
 		$tests = [
 			new TestProg("premier test", "ok\n", "1", null, "Test 0 passé", "Test 0 échoué", "Erreur!"),
-			new TestProg("deuxième test", "ok\nok\nok\nok\nok\n", "5", null, "Test 1 passé", "Test 1 échoué", "Erreur!"),
+			new TestProg(
+				"deuxième test",
+				"ok\nok\nok\nok\nok\n",
+				"5",
+				null,
+				"Test 1 passé",
+				"Test 1 échoué",
+				"Erreur!",
+			),
 		];
 
 		$rétroactions["feedback_pos"] = "Bravo!";
