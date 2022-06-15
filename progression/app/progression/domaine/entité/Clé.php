@@ -28,7 +28,7 @@ class Clé
 	public $expiration;
 	public $portée;
 
-	public function __construct($secret, $création, $expiration, $portée)
+	public function __construct($secret, $création, $expiration, $portée = self::PORTEE_AUTH)
 	{
 		$this->secret = $secret;
 		$this->création = $création;

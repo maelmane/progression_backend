@@ -1,4 +1,4 @@
-#+SETUPFILE: https://plafrance.pages.dti.crosemont.quebec/org-html-themes/org/theme-readtheorg.setup
+
 #+TITLE: API Progression
 #+PROPERTY: header-args:bash :results output :exports both :noweb yes
 
