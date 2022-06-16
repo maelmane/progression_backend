@@ -43,7 +43,7 @@ class QuestionProgTransformer extends QuestionTransformer
 			];
 		}
 
-		return $this->collection($question->tests, new TestTransformer($id_parent), "test");
+		return $this->collection($question->tests, new TestProgTransformer($id_parent), "test");
 	}
 
 	public function includeEbauches($question)
