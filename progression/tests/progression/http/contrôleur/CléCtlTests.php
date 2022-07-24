@@ -30,6 +30,8 @@ final class CléCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
+		$_ENV["APP_URL"] = "https://example.com/";
+
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
 		$this->admin = new GenericUser(["username" => "admin", "rôle" => User::ROLE_ADMIN]);
 
@@ -108,7 +110,7 @@ final class CléCtlTests extends ContrôleurTestCase
 	}
 
 	// POST
-	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_on_obtient_une_clé_générée_aléatoirement_sans_expiration()
+	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_on_obtient_une_clé_avec_un_secret_généré_aléatoirement_sans_expiration()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", ["nom" => "nouvelle cle"]);
 
@@ -120,7 +122,7 @@ final class CléCtlTests extends ContrôleurTestCase
 		$this->assertEquals(Clé::PORTEE_AUTH, $clé_sauvegardée->portée);
 	}
 
-	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_0_on_obtient_une_clé_générée_aléatoirement_sans_expiration()
+	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_0_on_obtient_une_clé_avec_un_secret_généré_aléatoirement_sans_expiration()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", [
 			"nom" => "nouvelle cle",
@@ -135,7 +137,7 @@ final class CléCtlTests extends ContrôleurTestCase
 		$this->assertEquals(Clé::PORTEE_AUTH, $clé_sauvegardée->portée);
 	}
 
-	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_on_obtient_une_clé_générée_aléatoirement_avec_expiration()
+	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_on_obtient_une_clé_avec_un_secret_généré_aléatoirement_avec_expiration()
 	{
 		$expiration = time() + 100;
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", [

@@ -24,7 +24,6 @@ class ConnexionException extends \Exception
 
 class EntitéDAO
 {
-	private static $conn = null;
 	protected $source = null;
 
 	public function __construct($source = null)
@@ -34,30 +33,5 @@ class EntitéDAO
 		} else {
 			$this->source = $source;
 		}
-	}
-
-	public static function get_connexion()
-	{
-		if (EntitéDAO::$conn == null) {
-			EntitéDAO::create_connection();
-			if (mysqli_connect_errno() != 0) {
-				throw new ConnexionException(mysqli_connect_error() . "(" . mysqli_connect_errno() . ")");
-			}
-		}
-
-		return EntitéDAO::$conn;
-	}
-
-	private static function create_connection()
-	{
-		// Limite les exceptions lancées aux erreurs rapportées par MySQL
-		mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-		EntitéDAO::$conn = new \mysqli(
-			$_ENV["DB_SERVERNAME"],
-			$_ENV["DB_USERNAME"],
-			$_ENV["DB_PASSWORD"],
-			$_ENV["DB_DBNAME"],
-		);
-		EntitéDAO::$conn->set_charset("utf8mb4");
 	}
 }

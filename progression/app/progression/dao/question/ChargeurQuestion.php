@@ -24,7 +24,7 @@ class ChargeurQuestion extends Chargeur
 {
 	public function récupérer_question($uri)
 	{
-		$scheme = strtolower(parse_url($uri, PHP_URL_SCHEME));
+		$scheme = parse_url(strtolower($uri), PHP_URL_SCHEME);
 
 		if ($scheme == "file") {
 			$sortie = $this->source->get_chargeur_question_fichier()->récupérer_question($uri);

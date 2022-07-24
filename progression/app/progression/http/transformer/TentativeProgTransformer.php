@@ -1,33 +1,37 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\http\transformer;
 
+use League\Fractal\Resource\Collection;
 use progression\domaine\entité\{Tentative, TentativeProg};
 
-class TentativeProgTransformer extends TentativeTransformer
+class TentativeProgTransformer extends BaseTransformer
 {
 	public $type = "tentative";
-	protected $availableIncludes = ["resultats", "commentaires"];
+	protected array $availableIncludes = ["resultats", "commentaires"];
 
-	public function transform(Tentative $tentative)
+	/**
+	 * @return array<mixed>
+	 */
+	public function transform(TentativeProg $tentative): array
 	{
-		$data_out = parent::transform($tentative);
+		$data_out = (new TentativeTransformer($this->id))->transform($tentative);
 		$data_out = array_merge($data_out, [
 			"sous-type" => "tentativeProg",
 			"langage" => $tentative->langage,
@@ -37,13 +41,13 @@ class TentativeProgTransformer extends TentativeTransformer
 		return $data_out;
 	}
 
-	public function includeResultats(TentativeProg $tentative)
+	public function includeResultats(TentativeProg $tentative): Collection
 	{
-		foreach ($tentative->résultats as $i => $résultat) {
-			$résultat->numéro = $i;
-			$résultat->id = $tentative->id . "/" . $i;
-			$résultat->links = ["related" => $_ENV["APP_URL"] . "tentative/" . $tentative->id];
-		}
-		return $this->collection($tentative->résultats, new RésultatProgTransformer(), "resultat");
+		return (new TentativeTransformer($this->id))->includeResultats($tentative);
+	}
+
+	public function includeCommentaires(TentativeProg $tentative): Collection
+	{
+		return (new TentativeTransformer($this->id))->includeCommentaires($tentative);
 	}
 }

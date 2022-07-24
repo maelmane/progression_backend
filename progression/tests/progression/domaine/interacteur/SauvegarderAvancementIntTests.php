@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{TentativeProg, Avancement, Question, QuestionProg, User};
+use progression\domaine\entité\{TentativeProg, Avancement, Question, QuestionProg, User, TentativeSys};
 use progression\domaine\interacteur\SauvegarderAvancementInt;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
@@ -53,6 +53,25 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->get_avancement_dao()
 			->andReturn($mockAvancementDAO);
 
+		$question = new QuestionProg();
+		$question->uri = "file:///prog1/les_fonctions/appeler_une_fonction/info.yml";
+
+		$mockQuestionDao = Mockery::mock("progression\\dao\\question\\QuestionDAO");
+		$mockQuestionDao
+			->shouldReceive("get_question")
+			->with("file:///prog1/les_fonctions/appeler_une_fonction/info.yml")
+			->andReturn($question);
+		$mockQuestionDao
+			->shouldReceive("get_question")
+			->with("file:///test/de/chemin/non/valide")
+			->andReturn(null);
+
+		$mockDAOFactory
+			->allows()
+			->get_question_dao()
+			->andReturn($mockQuestionDao);
+		DAOFactory::setInstance($mockDAOFactory);
+
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 	public function tearDown(): void
@@ -60,7 +79,27 @@ final class SauvegarderAvancementIntTests extends TestCase
 		Mockery::close();
 	}
 
-	public function test_étant_donné_un_avancement_sans_tentatives_lorsquon_sauvegarde_seul_lavancement_est_enregistré_et_on_obtient_lavancement_sans_tentatives()
+	public function test_étant_donné_une_questionProg_un_avancement_sans_tentatives_lorsquon_sauvegarde_seul_lavancement_est_enregistré_et_on_obtient_lavancement_sans_tentatives()
+	{
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldReceive("save")
+			->once()
+			->withArgs(["jdoe", "file:///prog1/les_fonctions/appeler_une_fonction/info.yml", Mockery::any()])
+			->andReturnArg(2);
+		$interacteur = new SauvegarderAvancementInt();
+		$résultat_observé = $interacteur->sauvegarder(
+			"jdoe",
+			"file:///prog1/les_fonctions/appeler_une_fonction/info.yml",
+			new Avancement(),
+		);
+
+		$résultat_attendu = new Avancement();
+
+		$this->assertEquals($résultat_attendu, $résultat_observé);
+		$this->assertEquals([], $résultat_observé->tentatives);
+	}
+	public function test_étant_donné_une_questionSys_un_avancement_sans_tentatives_lorsquon_sauvegarde_seul_lavancement_est_enregistré_et_on_obtient_lavancement_sans_tentatives()
 	{
 		DAOFactory::getInstance()
 			->get_avancement_dao()
@@ -69,21 +108,39 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->withArgs(["jdoe", "https://example.com/question", Mockery::any()])
 			->andReturnArg(2);
 		$interacteur = new SauvegarderAvancementInt();
-		$résultat_observé = $interacteur->sauvegarder(
-			"jdoe",
-			"https://example.com/question",
-			new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG),
-		);
+		$résultat_observé = $interacteur->sauvegarder("jdoe", "https://example.com/question", new Avancement());
 
-		$résultat_attendu = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG);
+		$résultat_attendu = new Avancement();
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 		$this->assertEquals([], $résultat_observé->tentatives);
 	}
-	public function test_étant_donné_un_avancement_avec_tentatives_lorsquon_sauvegarde_ses_tentatives_aussi_sont_enregistrées_et_on_obtient_lavancement_avec_tentatives()
+	public function test_étant_donné_une_questionProg_un_avancement_avec_tentatives_lorsquon_sauvegarde_ses_tentatives_aussi_sont_enregistrées_et_on_obtient_lavancement_avec_tentatives()
 	{
 		$tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
-		$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, [$tentative]);
+		$avancement = new Avancement([$tentative]);
+
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldReceive("save")
+			->once()
+			->withArgs(["jdoe", "file:///prog1/les_fonctions/appeler_une_fonction/info.yml", $avancement])
+			->andReturnArg(2);
+
+		$interacteur = new SauvegarderAvancementInt();
+		$résultat_observé = $interacteur->sauvegarder(
+			"jdoe",
+			"file:///prog1/les_fonctions/appeler_une_fonction/info.yml",
+			$avancement,
+		);
+
+		$this->assertEquals($avancement, $résultat_observé);
+	}
+
+	public function test_étant_donné_une_questionSys_un_avancement_avec_tentatives_lorsquon_sauvegarde_ses_tentatives_aussi_sont_enregistrées_et_on_obtient_lavancement_avec_tentatives()
+	{
+		$tentative = new TentativeSys("leConteneurDeLaTentative", "laRéponse", 1616534292, false, 0, "feedback", []);
+		$avancement = new Avancement([$tentative]);
 
 		DAOFactory::getInstance()
 			->get_avancement_dao()

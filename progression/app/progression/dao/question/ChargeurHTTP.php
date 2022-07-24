@@ -36,7 +36,7 @@ class ChargeurHTTP extends Chargeur
 		];
 		$context = stream_context_create($opts);
 		try {
-			$entêtes = get_headers($url, 1, $context);
+			$entêtes = get_headers($url, true, $context);
 		} catch (ErrorException $erreur) {
 			throw new ChargeurException("Impossible de récupérer la question");
 		}

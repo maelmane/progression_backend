@@ -1,0 +1,56 @@
+{
+	"data": {
+		"type": "tentative",
+		"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241",
+		"attributes": {
+			"date_soumission": 1653690241,
+			"feedback": "Bon travail!",
+			"réussi": true,
+			"sous-type": "tentativeProg",
+			"langage": "réussi",
+			"code": "#+TODO\nprint(\"Hello world!\")",
+			"tests_réussis": 1,
+			"temps_exécution": 551
+		},
+		"links": {
+			"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241"
+		},
+		"relationships": {
+			"commentaires":{
+				"links": {
+					"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241/commentaires",
+					"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241/relationships/commentaires"
+				}
+			},
+            "resultats": {
+                "data": [
+                    {
+                        "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241/0",
+                        "type": "resultat"
+                    }
+                ],
+				"links": {
+					"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241/relationships/resultats",
+					"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241/resultats"
+				}
+			}
+		}
+    },
+    "included": [
+        {
+            "attributes": {
+                "feedback": "C'est ça!",
+                "résultat": true,
+                "sortie_erreur": "",
+                "sortie_observée": "Bonjour\nBonjour\n",
+                "temps_exec": 30
+            },
+            "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241/0",
+            "links": {
+                "related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241",
+                "self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241/0"
+            },
+            "type": "resultat"
+        }
+    ]
+ }

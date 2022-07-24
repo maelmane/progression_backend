@@ -76,7 +76,7 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 		$this->assertNotNull($résultat_obtenu);
 	}
 
-	public function test_étant_donné_un_utilisateur_jdoe_lorsquon_génère_deux_clés_d_authentification_elles_ont_des_numéros_différents()
+	public function test_étant_donné_un_utilisateur_jdoe_lorsquon_génère_deux_clés_d_authentification_elles_ont_des_secrets_différents()
 	{
 		$mockCléDAO = DAOFactory::getInstance()->get_clé_dao();
 

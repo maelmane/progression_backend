@@ -75,8 +75,8 @@ class CléCtl extends Contrôleur
 		Log::debug("CléCtl.obtenir_clé. Params : ", [$clé, $username, $nom]);
 
 		if ($clé) {
-			$clé->id = "$username/$nom";
-			$réponse_array = $this->item($clé, new CléTransformer());
+			$clé->id = $nom;
+			$réponse_array = $this->item($clé, new CléTransformer($username));
 		} else {
 			$réponse_array = null;
 		}

@@ -41,7 +41,6 @@ test_unitaires:
   needs: 
     - job: const_image
       optional: true
-  environment: dev
   script:
     - TAG_DEPLOY=$BRANCHE docker-compose pull tests
     - TAG_DEPLOY=$BRANCHE docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml tests 
@@ -52,7 +51,6 @@ test_unitaires:
 linter:
   stage: test
   needs: []
-  environment: dev
   script:
     - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests lint
   except:
