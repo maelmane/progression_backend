@@ -38,6 +38,7 @@ class ExécuteurCompilebox extends Exécuteur
 		"mysql" => 14,
 		"powershell" => 15,
 		"typescript" => 16,
+		"kotlin" => 17,
 	];
 
 	public function exécuter_prog($exécutable, $tests)
