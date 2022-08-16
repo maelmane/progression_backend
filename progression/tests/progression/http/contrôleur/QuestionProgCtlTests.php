@@ -18,7 +18,7 @@
 
 use progression\ContrôleurTestCase;
 
-use progression\domaine\entité\{Question, QuestionProg, Exécutable, Test, User};
+use progression\domaine\entité\{Question, QuestionProg, Exécutable, TestProg, User};
 use progression\dao\DAOFactory;
 use progression\dao\question\ChargeurException;
 use Illuminate\Auth\GenericUser;
@@ -52,8 +52,8 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 
 		// Tests
 		$question->tests = [
-			new Test("2 salutations", "Bonjour\nBonjour\n", "2"),
-			new Test("Aucune salutation", "", "0"),
+			new TestProg("2 salutations", "Bonjour\nBonjour\n", "2", "params 1 2 3"),
+			new TestProg("Aucune salutation", "", "0", "params 0 1 2"),
 		];
 
 		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");
@@ -82,7 +82,7 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
-			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24?include=tests,ebauches",
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
