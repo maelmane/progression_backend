@@ -119,7 +119,7 @@ class TentativeCtl extends Contrôleur
 
 	private function traiter_post_QuestionProg(Request $request, $username, $chemin, $question)
 	{
-		$tests = $request->test ? [$this->construire_test($request->test)] : $question->tests;
+		$tests = !empty($request->test) ? [$this->construire_test($request->test)] : $question->tests;
 
 		$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
 
@@ -190,14 +190,12 @@ class TentativeCtl extends Contrôleur
 
 	private function construire_test($test)
 	{
-		if (!empty($test) && (isset($test["entrée"]) || isset($test["params"]))) {
-			return new TestProg(
-				$test["nom"] ?? "",
-				$test["sortie_attendue"] ?? "",
-				$test["entrée"] ?? "",
-				$test["params"] ?? "",
-			);
-		}
+		return new TestProg(
+			$test["nom"] ?? "",
+			$test["sortie_attendue"] ?? "",
+			$test["entrée"] ?? "",
+			$test["params"] ?? "",
+		);
 	}
 
 	private function soumettre_tentative_prog($username, $question, $tests, $tentative)
