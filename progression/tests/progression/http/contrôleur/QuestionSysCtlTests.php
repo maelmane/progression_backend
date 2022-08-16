@@ -51,7 +51,10 @@ final class QuestionSysCtlTests extends ContrôleurTestCase
 		$questionSys->image = "l'image";
 		$questionSys->utilisateur = "utilisateur";
 
-        $questionSys->tests = [ new TestSys("test 1", "vrai", "[ -z vrai ]", "bob"), new TestSys("test 2", "faux", "[ -z faux ]", "roger") ];
+		$questionSys->tests = [
+			new TestSys("test 1", "vrai", "[ -z vrai ]", "bob"),
+			new TestSys("test 2", "faux", "[ -z faux ]", "roger"),
+		];
 
 		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");
 		$mockQuestionDAO
