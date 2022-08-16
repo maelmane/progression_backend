@@ -27,7 +27,7 @@ final class TestProgTests extends TestCase
 		$nom_attendu = "testNom";
 		$sortie_attendu = "testSortie";
 		$entrée_attendu = "testEntrée";
-		$params_attendu = ["testParam0", "testParam1"];
+		$params_attendu = "testParam0 testParam1";
 		$feedback_pos_attendu = "testFbp";
 		$feedback_neg_attendu = "testFbn";
 		$feedback_err_attendu = "testFbe";
@@ -36,7 +36,7 @@ final class TestProgTests extends TestCase
 			"testNom",
 			"testSortie",
 			"testEntrée",
-			["testParam0", "testParam1"],
+			"testParam0 testParam1",
 			"testFbp",
 			"testFbn",
 			"testFbe",
