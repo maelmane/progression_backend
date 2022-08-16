@@ -18,7 +18,7 @@
 
 use progression\ContrôleurTestCase;
 
-use progression\domaine\entité\{Question, QuestionSys, User};
+use progression\domaine\entité\{Question, QuestionSys, User, TestSys};
 use progression\dao\DAOFactory;
 use progression\dao\question\ChargeurException;
 use Illuminate\Auth\GenericUser;
@@ -51,6 +51,11 @@ final class QuestionSysCtlTests extends ContrôleurTestCase
 		$questionSys->image = "l'image";
 		$questionSys->utilisateur = "utilisateur";
 
+		$questionSys->tests = [
+			new TestSys("test 1", "vrai", "[ -z vrai ]", "bob"),
+			new TestSys("test 2", "faux", "[ -z faux ]", "roger"),
+		];
+
 		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");
 		$mockQuestionDAO
 			->shouldReceive("get_question")
@@ -74,7 +79,7 @@ final class QuestionSysCtlTests extends ContrôleurTestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
-			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy?include=tests",
 		);
 
 		//$this->assertEquals(200, $résultat_obtenu->status());
