@@ -29,6 +29,8 @@ class Standardiseur
 			$beautifier_cmd = ["clang-format", "-"];
 		} elseif ($lang == "java") {
 			$beautifier_cmd = ["clang-format", "-"];
+		} elseif ($lang == "kotlin") {
+			$beautifier_cmd = ["ktlint", "-F", "--stdin"];
 		} elseif ($lang == "bash") {
 			$beautifier_cmd = ["beautysh", "-"];
 		} elseif ($lang == "javascript") {
