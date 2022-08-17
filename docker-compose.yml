@@ -27,7 +27,7 @@ services:
     container_name: progression_$CI_ENVIRONMENT_SLUG
     env_file: $ENV_FILE
     environment:
-      - APP_VERSION=$CI_COMMIT_SHORT_SHA
+      - APP_COMMIT_SHA=$CI_COMMIT_SHORT_SHA
     ports:
       - 127.0.0.1:$INSTANCE_PORT:80
     #En développement, monte les source dans le conteneur
