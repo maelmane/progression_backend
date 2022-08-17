@@ -21,7 +21,7 @@ $router->options("{all:.*}", [
 ]);
 
 $router->get("/", function () use ($router) {
-	return $router->app->version();
+	return config("app.name") . " " . config("version.numéro") . "(" . config("version.commit_sha") . ")";
 });
 
 // Configuration serveur
