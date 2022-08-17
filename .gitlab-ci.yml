@@ -99,7 +99,7 @@ deploy_dev:
     - *login
   script:
     - TAG_DEPLOY=dev docker-compose pull progression
-    - TAG_DEPLOY=dev APP_VERSION=$CI_COMMIT_SHORT_SHA docker-compose -p dev up --force-recreate --no-deps -d progression
+    - TAG_DEPLOY=dev docker-compose -p dev up --force-recreate --no-deps -d progression
   only:
     - dev
 
@@ -115,7 +115,7 @@ deploy_demo:
     - *login
   script:
     - TAG_DEPLOY=latest docker-compose pull progression
-    - TAG_DEPLOY=latest APP_VERSION=$CI_COMMIT_SHORT_SHA docker-compose -p demo up --force-recreate --no-deps -d progression
+    - TAG_DEPLOY=latest docker-compose -p demo up --force-recreate --no-deps -d progression
   only:
     - master
 
@@ -131,7 +131,7 @@ deploy_pilote:
     - *login
   script:
     - TAG_DEPLOY=latest docker-compose pull progression
-    - TAG_DEPLOY=latest APP_VERSION=$CI_COMMIT_SHORT_SHA docker-compose -p pilote up --force-recreate --no-deps -d progression
+    - TAG_DEPLOY=latest docker-compose -p pilote up --force-recreate --no-deps -d progression
   only:
     - master
 
@@ -147,7 +147,7 @@ deploy_staging:
     - *login
   script:
     - TAG_DEPLOY=latest docker-compose pull progression
-    - TAG_DEPLOY=latest APP_VERSION=$CI_COMMIT_SHORT_SHA docker-compose -p staging up --force-recreate --no-deps -d progression
+    - TAG_DEPLOY=latest docker-compose -p staging up --force-recreate --no-deps -d progression
   only:
     - master
 
