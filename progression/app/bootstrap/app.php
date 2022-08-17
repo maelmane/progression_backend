@@ -48,6 +48,7 @@ $app->singleton(Illuminate\Contracts\Console\Kernel::class, progression\console\
  */
 
 $app->configure("app");
+$app->configure("version");
 
 /*
    |--------------------------------------------------------------------------
