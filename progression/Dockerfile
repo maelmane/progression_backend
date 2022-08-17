@@ -45,9 +45,15 @@ CMD [ "bash", "progression/app/entrypoint.sh" ]
 RUN apt install -y black
 RUN apt install -y clang-format
 RUN pip3 install beautysh
+
+# beautifier JS et TS
 RUN apt install -y npm
 RUN npm --global install standard typescript ts-standard
 RUN touch /tmp/tsconfig.eslint.json
+
+# ktlint beautifier kotlin
+RUN apt install -y openjdk-11-jre
+RUN curl -sSL --output /usr/local/bin/ktlint https://github.com/pinterest/ktlint/releases/download/0.46.1/ktlint && chmod a+x /usr/local/bin/ktlint
 
 COPY phpstan.neon /var/www/progression/
 COPY phpstan-baseline.neon /var/www/progression/
