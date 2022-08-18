@@ -65,6 +65,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			],
 			// TestsProg
 			tests: [
+				new TestProg("1 salutations", "Bonjour\n", "1", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
 				new TestProg("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
 			],
 		);
@@ -84,6 +85,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			],
 			// TestsProg
 			tests: [
+				new TestProg("1 salutation", "Bonjour\n", "1", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
 				new TestProg("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
 			],
 		);
@@ -149,7 +151,19 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$mockExécuteur
 			->shouldReceive("exécuter_prog")
 			->withArgs(function ($exec, $test) {
-				return $exec->lang == "réussi";
+				return $exec->lang == "réussi" && count($test) == 2;
+			})
+			->andReturn([
+				"temps_exec" => 0.551,
+				"résultats" => [
+					["output" => "Bonjour\n", "errors" => "", "time" => 0.03],
+					["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03],
+				],
+			]);
+		$mockExécuteur
+			->shouldReceive("exécuter_prog")
+			->withArgs(function ($exec, $test) {
+				return $exec->lang == "réussi" && count($test) == 1;
 			})
 			->andReturn([
 				"temps_exec" => 0.551,
@@ -158,7 +172,19 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$mockExécuteur
 			->shouldReceive("exécuter_prog")
 			->withArgs(function ($exec, $test) {
-				return $exec->lang == "non_réussi";
+				return $exec->lang == "non_réussi" && count($test) == 2;
+			})
+			->andReturn([
+				"temps_exec" => 0.44,
+				"résultats" => [
+					["output" => "Allo\n", "errors" => "", "time" => 0.03],
+					["output" => "Allo\nAllo\n", "errors" => "", "time" => 0.03],
+				],
+			]);
+		$mockExécuteur
+			->shouldReceive("exécuter_prog")
+			->withArgs(function ($exec, $test) {
+				return $exec->lang == "non_réussi" && count($test) == 1;
 			})
 			->andReturn([
 				"temps_exec" => 0.44,
@@ -251,9 +277,12 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			code: "#+TODO\nprint(\"Hello world!\")",
 			date_soumission: 1653690241,
 			réussi: true,
-			tests_réussis: 1,
+			tests_réussis: 2,
 			temps_exécution: 551,
-			résultats: [new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30)],
+			résultats: [
+				new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
+				new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
+			],
 			feedback: "Bon travail!",
 		);
 
@@ -305,9 +334,12 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			code: "#+TODO\nprint(\"Hello world!\")",
 			date_soumission: 1653690241,
 			réussi: true,
-			tests_réussis: 1,
+			tests_réussis: 2,
 			temps_exécution: 551,
-			résultats: [new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30)],
+			résultats: [
+				new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
+				new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
+			],
 			feedback: "Bon travail!",
 		);
 
@@ -359,7 +391,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			réussi: false,
 			tests_réussis: 0,
 			temps_exécution: 440,
-			résultats: [new Résultat("Allo\nAllo\n", "", false, "C'est pas ça :(", 30)],
+			résultats: [
+				new Résultat("Allo\n", "", false, "C'est pas ça :(", 30),
+				new Résultat("Allo\nAllo\n", "", false, "C'est pas ça :(", 30),
+			],
 			feedback: "Encore un effort!",
 		);
 
