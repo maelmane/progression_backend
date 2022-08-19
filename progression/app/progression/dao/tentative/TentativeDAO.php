@@ -28,31 +28,37 @@ class TentativeDAO extends EntitéDAO
 {
 	const TYPES = ["eval" => 0, "sys" => 1, "bd" => 2, "prog" => 3];
 
-	public function get_toutes($username, $question_uri)
+	/**
+	 * @param mixed $includes
+	 */
+	public function get_toutes($username, $question_uri, mixed $includes = [])
 	{
 		$type = $this->get_type($username, $question_uri);
 
 		if ($type == Question::TYPE_PROG) {
-			return $this->source->get_tentative_prog_dao()->get_toutes($username, $question_uri);
+			return $this->source->get_tentative_prog_dao()->get_toutes($username, $question_uri, $includes);
 		} elseif ($type == Question::TYPE_SYS) {
-			return $this->source->get_tentative_sys_dao()->get_toutes($username, $question_uri);
+			return $this->source->get_tentative_sys_dao()->get_toutes($username, $question_uri, $includes);
 		} elseif ($type == Question::TYPE_BD) {
-			return $this->source->get_tentative_bd_dao()->get_toutes($username, $question_uri);
+			return $this->source->get_tentative_bd_dao()->get_toutes($username, $question_uri, $includes);
 		} else {
 			return [];
 		}
 	}
 
-	public function get_tentative($username, $question_uri, $date)
+	/**
+	 * @param mixed $includes
+	 */
+	public function get_tentative($username, $question_uri, $date, mixed $includes = [])
 	{
 		$type = $this->get_type($username, $question_uri);
 
 		if ($type == Question::TYPE_PROG) {
-			return $this->source->get_tentative_prog_dao()->get_tentative($username, $question_uri, $date);
+			return $this->source->get_tentative_prog_dao()->get_tentative($username, $question_uri, $date, $includes);
 		} elseif ($type == Question::TYPE_SYS) {
-			return $this->source->get_tentative_sys_dao()->get_tentative($username, $question_uri, $date);
+			return $this->source->get_tentative_sys_dao()->get_tentative($username, $question_uri, $date, $includes);
 		} elseif ($type == Question::TYPE_BD) {
-			return $this->source->get_tentative_bd_dao()->get_tentative($username, $question_uri, $date);
+			return $this->source->get_tentative_bd_dao()->get_tentative($username, $question_uri, $date, $includes);
 		} else {
 			return null;
 		}

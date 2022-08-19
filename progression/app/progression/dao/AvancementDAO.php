@@ -30,7 +30,8 @@ class AvancementDAO extends EntitéDAO
 		try {
 			return $this->construire(
 				AvancementMdl::select("avancement.*")
-					->with($includes)
+					->with(in_array("tentatives", $includes) ? ["tentatives_prog", "tentatives_sys"] : [])
+					->with(in_array("sauvegardes", $includes) ? ["sauvegardes"] : [])
 					->join("user", "avancement.user_id", "=", "user.id")
 					->where("user.username", $username)
 					->get(),
@@ -45,7 +46,8 @@ class AvancementDAO extends EntitéDAO
 	{
 		try {
 			$data = AvancementMdl::select("avancement.*")
-				->with($includes)
+				->with(in_array("tentatives", $includes) ? ["tentatives_prog", "tentatives_sys"] : [])
+				->with(in_array("sauvegardes", $includes) ? ["sauvegardes"] : [])
 				->join("user", "avancement.user_id", "=", "user.id")
 				->where("user.username", $username)
 				->where("avancement.question_uri", $question_uri)
@@ -91,17 +93,30 @@ class AvancementDAO extends EntitéDAO
 		$avancements = [];
 		foreach ($data as $i => $item) {
 			$tentatives = [];
-			if (in_array("tentatives_prog", $includes)) {
-				$tentatives = TentativeProgDAO::construire($item["tentatives_prog"]);
-			}
-			if (in_array("tentatives_sys", $includes)) {
-				$tentatives = TentativeSysDAO::construire($item["tentatives_sys"]);
+			if ($includes) {
+				if ($item["type"] == "prog") {
+					$tentatives = in_array("tentatives", $includes)
+						? TentativeProgDAO::construire(
+							$item["tentatives_prog"],
+							parent::filtrer_niveaux($includes, "tentatives"),
+						)
+						: [];
+				} elseif ($item["type"] == "sys") {
+					$tentatives = in_array("tentatives", $includes)
+						? TentativeSysDAO::construire(
+							$item["tentatives_sys"],
+							parent::filtrer_niveaux($includes, "tentatives"),
+						)
+						: [];
+				}
 			}
 			$avancement = new Avancement(
-				$tentatives,
-				$item["titre"],
-				$item["niveau"],
-				in_array("sauvegardes", $includes) ? SauvegardeDAO::construire($item["sauvegardes"]) : [],
+				tentatives: $tentatives,
+				titre: $item["titre"],
+				niveau: $item["niveau"],
+				sauvegardes: in_array("sauvegardes", $includes)
+					? SauvegardeDAO::construire($item["sauvegardes"], parent::filtrer_niveaux($includes, "sauvegardes"))
+					: [],
 			);
 			$avancement->etat = $item["etat"];
 			$avancement->date_modification = $item["date_modification"];

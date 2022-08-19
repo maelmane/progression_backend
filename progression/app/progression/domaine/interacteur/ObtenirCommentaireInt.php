@@ -23,16 +23,25 @@ use progression\dao\DAOFactory;
 
 class ObtenirCommentaireInt extends Interacteur
 {
-	public function get_commentaire_par_id($id)
+	/**
+	 * @param mixed $includes
+	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
+	 */
+	public function get_commentaire_par_id($id, mixed $includes = [])
 	{
-		$commentaire = $this->source_dao->get_commentaire_dao()->get_commentaire($id);
+		$commentaire = $this->source_dao->get_commentaire_dao()->get_commentaire($id, $includes);
 		return $commentaire;
 	}
-	public function get_commentaires_par_tentative($username, $question_uri, $date)
+
+	/**
+	 * @param mixed $includes
+	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
+	 */
+	public function get_tous_par_tentative($username, $question_uri, $date, mixed $includes = [])
 	{
 		$commentaires = $this->source_dao
 			->get_commentaire_dao()
-			->get_commentaires_par_tentative($username, $question_uri, $date);
+			->get_tous_par_tentative($username, $question_uri, $date, $includes);
 		return $commentaires;
 	}
 }

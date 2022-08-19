@@ -41,8 +41,9 @@ final class LoginCtlTests extends ContrôleurTestCase
 			->andReturn(new User("bob"));
 		$mockUserDAO
 			->shouldReceive("get_user")
-			->with("Marcel")
-			->andReturn(null);
+			->with("bob", [])
+			->andReturn(new User("bob"));
+		$mockUserDAO->shouldReceive("get_user")->andReturn(null);
 
 		// CléDAO
 		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
@@ -54,10 +55,7 @@ final class LoginCtlTests extends ContrôleurTestCase
 			->shouldReceive("vérifier")
 			->with("bob", "clé valide", "secret")
 			->andReturn(true);
-		$mockCléDAO
-			->shouldReceive("get_clé")
-			->with("bob", "clé invalide")
-			->andReturn(null);
+		$mockCléDAO->shouldReceive("get_clé")->andReturn(null);
 		$mockCléDAO->shouldReceive("vérifier")->andReturn(false);
 
 		// DAOFactory

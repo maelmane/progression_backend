@@ -18,7 +18,7 @@
 
 namespace progression\http\contrôleur;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\http\transformer\{TentativeProgTransformer, TentativeSysTransformer, TentativeBDTransformer};
@@ -31,7 +31,7 @@ use progression\domaine\interacteur\{
 	SoumettreTentativeProgInt,
 	SoumettreTentativeSysInt,
 };
-use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
+use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{Question, QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\entité\TestProg;
 use progression\dao\exécuteur\ExécutionException;
@@ -40,14 +40,9 @@ use DomainException, LengthException, RuntimeException;
 
 class TentativeCtl extends Contrôleur
 {
-	public function get(Request $request, $username, $question_uri, $timestamp)
+	public function get(Request $request, string $username, string $question_uri, int $timestamp): JsonResponse
 	{
-		$tentative = null;
-
-		$chemin = Encodage::base64_decode_url($question_uri);
-
-		$tentativeInt = new ObtenirTentativeInt();
-		$tentative = $tentativeInt->get_tentative($username, $chemin, $timestamp);
+		$tentative = $this->obtenir_tentative($username, $question_uri, $timestamp);
 
 		if ($tentative != null) {
 			$tentative->id = "$timestamp";
@@ -115,6 +110,19 @@ class TentativeCtl extends Contrôleur
 		Log::debug("TentativeCtl.post. Retour : ", [$réponse]);
 
 		return $réponse;
+	}
+
+	private function obtenir_tentative(string $username, string $question_uri, int $timestamp): Tentative|null
+	{
+		Log::debug("TentativeCtl.obtenir_tentative. Params : ", [$username, $question_uri, $timestamp]);
+
+		$chemin = Encodage::base64_decode_url($question_uri);
+
+		$tentativeInt = new ObtenirTentativeInt();
+		$tentative = $tentativeInt->get_tentative($username, $chemin, $timestamp, $this->get_includes());
+
+		Log::debug("TentativeCtl.obtenir_tentative. Retour : ", [$tentative]);
+		return $tentative;
 	}
 
 	private function traiter_post_QuestionProg(Request $request, $username, $chemin, $question)

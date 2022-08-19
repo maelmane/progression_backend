@@ -51,7 +51,7 @@ final class AvancementDAOTests extends TestCase
 		$résponse_observée = (new AvancementDAO())->get_avancement(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			includes: ["tentatives_prog"],
+			includes: ["tentatives"],
 		);
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}
@@ -95,7 +95,7 @@ final class AvancementDAOTests extends TestCase
 		$résponse_observée = (new AvancementDAO())->get_avancement(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			includes: ["tentatives_prog", "sauvegardes"],
+			includes: ["tentatives", "sauvegardes"],
 		);
 		$this->assertEquals($résultat_attendu, $résponse_observée);
 	}

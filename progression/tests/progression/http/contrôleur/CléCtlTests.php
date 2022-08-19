@@ -50,11 +50,11 @@ final class CléCtlTests extends ContrôleurTestCase
 		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
 		$mockCléDAO
 			->shouldReceive("get_clé")
-			->with("jdoe", "cle de test")
+			->with("jdoe", "cle de test", [])
 			->andReturn(new Clé(1234, 1625709495, 1625713000, Clé::PORTEE_AUTH));
 		$mockCléDAO
 			->shouldReceive("get_clé")
-			->with("jdoe", "cle inexistante")
+			->with("jdoe", "cle inexistante", [])
 			->andReturn(null);
 		$mockCléDAO
 			->shouldReceive("get_clé")

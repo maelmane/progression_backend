@@ -41,11 +41,11 @@ final class ValidationPermissionsTests extends TestCase
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->allows()
-			->get_user("bob")
+			->get_user("bob", [])
 			->andReturn(new User("bob"));
 		$mockUserDAO
 			->allows()
-			->get_user("jdoe")
+			->get_user("jdoe", [])
 			->andReturn(new User("jdoe"));
 
 		// DAOFactory

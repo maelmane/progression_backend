@@ -18,7 +18,7 @@
 
 namespace progression\dao\tentative;
 
-use progression\domaine\entité\{TentativeProg, Résultat};
+use progression\domaine\entité\{TentativeProg, Résultat, Commentaire, User};
 use progression\TestCase;
 use progression\dao\{DAOException, DAOFactory};
 use progression\dao\EntitéDAO;
@@ -41,13 +41,45 @@ final class TentativeProgDAOTests extends TestCase
 		parent::tearDown();
 	}
 
-	public function test_étant_donné_une_TentativeProg_non_réussie_lorsquon_récupère_la_tentative_on_obtient_une_tentative_de_type_prog()
+	public function test_étant_donné_une_TentativeProg_non_réussie_lorsquon_récupère_la_tentative_sans_inclusion_on_obtient_une_tentative_de_type_prog()
 	{
 		$résultat_attendu = new TentativeProg("python", "print(\"Tourlou le monde!\")", 1615696276, false, [], 2, 3456);
 		$résultat_observé = (new TentativeDAO())->get_tentative(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 			1615696276,
+		);
+
+		$this->assertEquals($résultat_attendu, $résultat_observé);
+	}
+
+	public function test_étant_donné_une_TentativeProg_non_réussie_lorsquon_récupère_la_tentative_en_incluant_les_commentaires_et_leur_créateur_on_obtient_une_tentative_de_type_prog_avec_ses_commentaires_et_leur_créateur()
+	{
+		$this->jdoe = new User("jdoe");
+		$this->admin = new User("admin", User::ROLE_ADMIN);
+		$this->stefany = new User("Stefany");
+
+		$commentaires = [];
+		$commentaires[1] = new Commentaire("le 1er message", $this->jdoe, 1615696277, 14);
+		$commentaires[2] = new Commentaire("le 2er message", $this->admin, 1615696278, 12);
+		$commentaires[3] = new Commentaire("le 3er message", $this->stefany, 1615696279, 14);
+
+		$résultat_attendu = new TentativeProg(
+			"python",
+			"print(\"Tourlou le monde!\")",
+			1615696276,
+			false,
+			[],
+			2,
+			3456,
+			null,
+			$commentaires,
+		);
+		$résultat_observé = (new TentativeDAO())->get_tentative(
+			"bob",
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+			1615696276,
+			["commentaires", "commentaires.créateur"],
 		);
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);

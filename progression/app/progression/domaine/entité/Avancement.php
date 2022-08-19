@@ -28,7 +28,11 @@ class Avancement
 	public $date_réussite;
 	public $sauvegardes;
 
-	public function __construct($tentatives = [], $titre = "", $niveau = "", $sauvegardes = [])
+	/**
+	 * @param array<Tentative> $tentatives
+	 * @param array<Sauvegarde> $sauvegardes
+	 **/
+	public function __construct(array $tentatives = [], $titre = "", $niveau = "", array $sauvegardes = [])
 	{
 		$this->etat = Question::ETAT_DEBUT;
 		$this->tentatives = $tentatives;

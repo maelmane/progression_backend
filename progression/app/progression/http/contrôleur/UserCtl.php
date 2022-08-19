@@ -44,7 +44,7 @@ class UserCtl extends Contrôleur
 		$user = null;
 
 		if ($username != null && $username != "") {
-			$user = $userInt->get_user($username);
+			$user = $userInt->get_user($username, $this->get_includes());
 		}
 
 		Log::debug("UserCtl.obtenir_user. Retour : ", [$user]);

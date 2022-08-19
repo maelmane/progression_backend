@@ -119,41 +119,41 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
-			->with("jdoe", "https://depot.com/question_solution_courte_non_réussie")
+			->with("jdoe", "https://depot.com/question_solution_courte_non_réussie", [])
 			->andReturn($this->tentative_solution_courte_non_réussie);
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
-			->with("jdoe", "https://depot.com/question_solution_courte_réussie")
+			->with("jdoe", "https://depot.com/question_solution_courte_réussie", [])
 			->andReturn($this->tentative_solution_courte_réussie);
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
-			->with("jdoe", "https://depot.com/question_validée_non_réussie")
+			->with("jdoe", "https://depot.com/question_validée_non_réussie", [])
 			->andReturn($this->tentative_validée_non_réussie);
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
-			->with("jdoe", "https://depot.com/question_validée_réussie")
+			->with("jdoe", "https://depot.com/question_validée_réussie", [])
 			->andReturn($this->tentative_validée_réussie);
 
 		$mockTentativeDAO
 			->shouldReceive("get_toutes")
-			->with("jdoe", "https://depot.com/question_validée_réussie")
+			->with("jdoe", "https://depot.com/question_validée_réussie", [])
 			->andReturn([$this->tentative_validée_non_réussie, $this->tentative_validée_réussie]);
 
 		$mockTentativeDAO
 			->shouldReceive("get_dernière")
-			->with("jdoe", "https://depot.com/question_solution_courte_non_réussie")
+			->with("jdoe", "https://depot.com/question_solution_courte_non_réussie", [])
 			->andReturn($this->tentative_solution_courte_non_réussie);
 		$mockTentativeDAO
 			->shouldReceive("get_dernière")
-			->with("jdoe", "https://depot.com/question_solution_courte_réussie")
+			->with("jdoe", "https://depot.com/question_solution_courte_réussie", [])
 			->andReturn($this->tentative_solution_courte_réussie);
 		$mockTentativeDAO
 			->shouldReceive("get_dernière")
-			->with("jdoe", "https://depot.com/question_validée_non_réussie")
+			->with("jdoe", "https://depot.com/question_validée_non_réussie", [])
 			->andReturn($this->tentative_validée_non_réussie);
 		$mockTentativeDAO
 			->shouldReceive("get_dernière")
-			->with("jdoe", "https://depot.com/question_validée_réussie")
+			->with("jdoe", "https://depot.com/question_validée_réussie", [])
 			->andReturn($this->tentative_validée_réussie);
 
 		// Exécuteur
@@ -212,19 +212,19 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("jdoe", "https://depot.com/question_validée_non_réussie")
+			->with("jdoe", "https://depot.com/question_validée_non_réussie", [])
 			->andReturn($this->avancement_validée_non_réussie);
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("jdoe", "https://depot.com/question_validée_réussie")
+			->with("jdoe", "https://depot.com/question_validée_réussie", [])
 			->andReturn($this->avancement_validée_réussie);
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("jdoe", "https://depot.com/question_solution_courte_non_réussie")
+			->with("jdoe", "https://depot.com/question_solution_courte_non_réussie", [])
 			->andReturn($this->avancement_solution_courte_non_réussie);
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("jdoe", "https://depot.com/question_solution_courte_réussie")
+			->with("jdoe", "https://depot.com/question_solution_courte_réussie", [])
 			->andReturn($this->avancement_solution_courte_réussie);
 
 		// User

@@ -31,6 +31,8 @@ use League\Fractal\TransformerAbstract;
 
 class Contrôleur extends BaseController
 {
+	protected Manager $manager;
+
 	protected function réponse_json($réponse, $code)
 	{
 		return response()->json(
@@ -46,19 +48,31 @@ class Contrôleur extends BaseController
 
 	protected function getFractalManager()
 	{
+		return $this->manager;
+	}
+
+	public function __construct()
+	{
 		$request = app(Request::class);
-		$manager = new Manager();
+		$this->manager = new Manager();
 
 		// On redéfinit le Serializer pour avoir des liens «relationship» personnalisés
 
 		//JsonApiSerializer ajoute un slash à l'URL de base, on s'assure d'enlèver le slash ultime
 		$urlBase = preg_replace("/\/+$/", "", $_ENV["APP_URL"]);
 		//$manager->setSerializer(new JsonApiSerializer($urlBase));
-		$manager->setSerializer(new JsonApiSerializer($urlBase));
+		$this->manager->setSerializer(new JsonApiSerializer($urlBase));
 		if (!empty($request->query("include"))) {
-			$manager->parseIncludes($request->query("include"));
+			$this->manager->parseIncludes($request->query("include"));
 		}
-		return $manager;
+	}
+
+	/**
+	 * @return array<string>
+	 */
+	protected function get_includes(): array
+	{
+		return $this->manager->getRequestedIncludes();
 	}
 
 	public function item($data, $transformer)
@@ -67,9 +81,8 @@ class Contrôleur extends BaseController
 			return null;
 		}
 
-		$manager = $this->getFractalManager();
 		$resource = new Item($data, $transformer, $transformer->type);
-		$item = $manager->createData($resource)->toArray();
+		$item = $this->manager->createData($resource)->toArray();
 
 		return $item;
 	}
@@ -80,9 +93,8 @@ class Contrôleur extends BaseController
 			return null;
 		}
 
-		$manager = $this->getFractalManager();
 		$resource = new Collection($data, $transformer, $transformer->type);
-		$item = $manager->createData($resource)->toArray();
+		$item = $this->manager->createData($resource)->toArray();
 
 		return $item;
 	}

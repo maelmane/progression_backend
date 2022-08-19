@@ -24,11 +24,11 @@ use progression\dao\models\{TentativeProgMdl, CommentaireMdl, UserMdl};
 
 class CommentaireDAO extends EntitéDAO
 {
-	public function get_commentaire($id, $includes = ["créateur"])
+	public function get_commentaire($id, $includes = [])
 	{
 		try {
 			$commentaire = CommentaireMdl::select("commentaire.*")
-				->with($includes)
+				->with(in_array("créateur", $includes) ? "créateur" : [])
 				->where("id", $id)
 				->first();
 
@@ -38,12 +38,12 @@ class CommentaireDAO extends EntitéDAO
 		}
 	}
 
-	public function get_commentaires_par_tentative($username, $question_uri, $date_soumission, $includes = ["créateur"])
+	public function get_tous_par_tentative($username, $question_uri, $date_soumission, $includes = [])
 	{
 		try {
 			return $this->construire(
 				CommentaireMdl::select("commentaire.*")
-					->with($includes)
+					->with($includes ? ["créateur"] : [])
 					->join("reponse_prog", "tentative_id", "=", "reponse_prog.id")
 					->join("avancement", "reponse_prog.avancement_id", "=", "avancement.id")
 					->join("user", "avancement.user_id", "=", "user.id")
@@ -89,10 +89,7 @@ class CommentaireDAO extends EntitéDAO
 				"date" => $commentaire->date,
 				"numéro_ligne" => $commentaire->numéro_ligne,
 			];
-			return $this->construire(
-				[CommentaireMdl::updateOrCreate(["id" => $numéro], $objet)],
-				["créateur"],
-			)[$numéro];
+			return $this->construire([CommentaireMdl::updateOrCreate(["id" => $numéro], $objet)])[$numéro];
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -103,7 +100,9 @@ class CommentaireDAO extends EntitéDAO
 		$commentaires = [];
 		foreach ($data as $i => $item) {
 			$id = $item["id"];
-			$créateur = in_array("créateur", $includes) ? UserDAO::construire([$item["créateur"]])[0] : null;
+			$créateur = in_array("créateur", $includes)
+				? UserDAO::construire([$item["créateur"]], parent::filtrer_niveaux($includes, "commentaires"))[0]
+				: null;
 			$commentaire = new Commentaire(
 				message: $item["message"],
 				créateur: $créateur,

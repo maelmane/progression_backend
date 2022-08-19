@@ -25,12 +25,11 @@ use Illuminate\Database\QueryException;
 
 class TentativeSysDAO extends TentativeDAO
 {
-	public function get_toutes($username, $question_uri, $includes = [])
+	public function get_toutes($username, $question_uri, mixed $includes = [])
 	{
 		try {
 			return $this->construire(
 				TentativeSysMdl::select("reponse_sys.*")
-					->with($includes)
 					->join("avancement", "reponse_sys.avancement_id", "=", "avancement.id")
 					->join("user", "avancement.user_id", "=", "user.id")
 					->where("user.username", $username)
@@ -43,11 +42,10 @@ class TentativeSysDAO extends TentativeDAO
 		}
 	}
 
-	public function get_tentative($username, $question_uri, $date_soumission, $includes = [])
+	public function get_tentative($username, $question_uri, $date_soumission, mixed $includes = [])
 	{
 		try {
 			$tentative = TentativeSysMdl::select("reponse_sys.*")
-				->with($includes)
 				->join("avancement", "reponse_sys.avancement_id", "=", "avancement.id")
 				->join("user", "avancement.user_id", "=", "user.id")
 				->where("user.username", $username)
@@ -61,11 +59,10 @@ class TentativeSysDAO extends TentativeDAO
 		}
 	}
 
-	public function get_dernière($username, $question_uri, $includes = [])
+	public function get_dernière($username, $question_uri, mixed $includes = [])
 	{
 		try {
 			$tentative = TentativeSysMdl::select("reponse_sys.*")
-				->with($includes)
 				->join("avancement", "reponse_sys.avancement_id", "=", "avancement.id")
 				->join("user", "avancement.user_id", "=", "user.id")
 				->where("user.username", $username)
@@ -130,9 +127,6 @@ class TentativeSysDAO extends TentativeDAO
 				tests_réussis: $item["tests_reussis"],
 				temps_exécution: $item["temps_exécution"],
 				feedback: null,
-				commentaires: in_array("commentaires", $includes)
-					? CommentaireDAO::construire($item["commentaires"])
-					: [],
 			);
 			$tentatives[$item["date_soumission"]] = $tentative;
 		}

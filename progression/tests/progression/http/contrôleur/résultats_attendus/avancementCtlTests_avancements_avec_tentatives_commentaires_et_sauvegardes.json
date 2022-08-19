@@ -1,0 +1,214 @@
+{
+  "data": [
+    {
+      "attributes": {
+        "date_modification": 1614965818,
+        "date_réussite": 1614965818,
+        "niveau": "",
+        "titre": "",
+        "état": 2
+      },
+      "id": "jdoe/dXJpX2E",
+      "links": {
+        "self": "https://example.com/avancement/jdoe/dXJpX2E"
+      },
+      "relationships": {
+        "sauvegardes": {
+          "links": {
+            "related": "https://example.com/avancement/jdoe/dXJpX2E/sauvegardes",
+            "self": "https://example.com/avancement/jdoe/dXJpX2E/relationships/sauvegardes"
+          },
+          "data": [
+            {
+              "id": "jdoe/dXJpX2E/0",
+              "type": "sauvegarde"
+            }
+          ]
+        },
+        "tentatives": {
+          "links": {
+            "related": "https://example.com/avancement/jdoe/dXJpX2E/tentatives",
+            "self": "https://example.com/avancement/jdoe/dXJpX2E/relationships/tentatives"
+          },
+          "data": [
+            {
+              "id": "jdoe/dXJpX2E/1614965817",
+              "type": "tentative"
+            },
+            {
+              "id": "jdoe/dXJpX2E/1614965818",
+              "type": "tentative"
+            }
+          ]
+        }
+      },
+      "type": "avancement"
+    },
+    {
+      "attributes": {
+        "date_modification": null,
+        "date_réussite": null,
+        "niveau": "",
+        "titre": "",
+        "état": 0
+      },
+      "id": "jdoe/dXJpX2I",
+      "links": {
+        "self": "https://example.com/avancement/jdoe/dXJpX2I"
+      },
+      "relationships": {
+        "sauvegardes": {
+          "links": {
+            "related": "https://example.com/avancement/jdoe/dXJpX2I/sauvegardes",
+            "self": "https://example.com/avancement/jdoe/dXJpX2I/relationships/sauvegardes"
+          },
+          "data": []
+        },
+        "tentatives": {
+          "links": {
+            "related": "https://example.com/avancement/jdoe/dXJpX2I/tentatives",
+            "self": "https://example.com/avancement/jdoe/dXJpX2I/relationships/tentatives"
+          },
+          "data": []
+        }
+      },
+      "type": "avancement"
+    }
+  ],
+  "included": [
+    {
+      "attributes": {
+        "créateur": "O. Teur",
+        "date": 1614974921,
+        "message": "Ceci est un commentaire",
+        "numéro_ligne": 42
+      },
+      "id": "jdoe/dXJpX2E/1614965817/0",
+      "links": {
+        "related": "https://example.com/tentative/jdoe/dXJpX2E/1614965817",
+        "self": "https://example.com/commentaire/jdoe/dXJpX2E/1614965817/0"
+      },
+      "type": "commentaire"
+    },
+    {
+      "attributes": {
+        "créateur": "O. Teur",
+        "date": 1614974922,
+        "message": "Ceci est un autre commentaire",
+        "numéro_ligne": 43
+      },
+      "id": "jdoe/dXJpX2E/1614965817/1",
+      "links": {
+        "related": "https://example.com/tentative/jdoe/dXJpX2E/1614965817",
+        "self": "https://example.com/commentaire/jdoe/dXJpX2E/1614965817/1"
+      },
+      "type": "commentaire"
+    },
+    {
+      "attributes": {
+        "créateur": "O. Teur",
+        "date": 1614984921,
+        "message": "Ceci est encore un autre commentaire",
+        "numéro_ligne": 24
+      },
+      "id": "jdoe/dXJpX2E/1614965818/0",
+      "links": {
+        "related": "https://example.com/tentative/jdoe/dXJpX2E/1614965818",
+        "self": "https://example.com/commentaire/jdoe/dXJpX2E/1614965818/0"
+      },
+      "type": "commentaire"
+    },
+    {
+      "attributes": {
+        "code": "codeTest 1",
+        "date_soumission": 1614965817,
+        "feedback": "feedbackTest",
+        "langage": "python",
+        "réussi": false,
+        "sous-type": "tentativeProg",
+        "temps_exécution": null,
+        "tests_réussis": 0
+      },
+      "id": "jdoe/dXJpX2E/1614965817",
+      "links": {
+        "related": "https://example.com/avancement/jdoe/dXJpX2E",
+        "self": "https://example.com/tentative/jdoe/dXJpX2E/1614965817"
+      },
+      "relationships": {
+        "commentaires": {
+          "links": {
+            "related": "https://example.com/tentative/jdoe/dXJpX2E/1614965817/commentaires",
+            "self": "https://example.com/tentative/jdoe/dXJpX2E/1614965817/relationships/commentaires"
+          },
+          "data": [
+            {
+              "id": "jdoe/dXJpX2E/1614965817/0",
+              "type": "commentaire"
+            },
+            {
+              "id": "jdoe/dXJpX2E/1614965817/1",
+              "type": "commentaire"
+            }
+          ]
+        },
+        "resultats": {
+          "links": {
+            "related": "https://example.com/tentative/jdoe/dXJpX2E/1614965817/resultats",
+            "self": "https://example.com/tentative/jdoe/dXJpX2E/1614965817/relationships/resultats"
+          }
+        }
+      },
+      "type": "tentative"
+    },
+    {
+      "attributes": {
+        "code": "codeTest 2",
+        "date_soumission": 1614965818,
+        "feedback": "feedbackTest",
+        "langage": "python",
+        "réussi": true,
+        "sous-type": "tentativeProg",
+        "temps_exécution": null,
+        "tests_réussis": 2
+      },
+      "id": "jdoe/dXJpX2E/1614965818",
+      "links": {
+        "related": "https://example.com/avancement/jdoe/dXJpX2E",
+        "self": "https://example.com/tentative/jdoe/dXJpX2E/1614965818"
+      },
+      "relationships": {
+        "commentaires": {
+          "links": {
+            "related": "https://example.com/tentative/jdoe/dXJpX2E/1614965818/commentaires",
+            "self": "https://example.com/tentative/jdoe/dXJpX2E/1614965818/relationships/commentaires"
+          },
+            "data": [
+                {
+                    "id": "jdoe/dXJpX2E/1614965818/0",
+                    "type": "commentaire"
+                }
+            ]
+        },
+        "resultats": {
+          "links": {
+            "related": "https://example.com/tentative/jdoe/dXJpX2E/1614965818/resultats",
+            "self": "https://example.com/tentative/jdoe/dXJpX2E/1614965818/relationships/resultats"
+          }
+        }
+      },
+      "type": "tentative"
+    },
+    {
+      "attributes": {
+        "code": "code sauvegardé",
+        "date_sauvegarde": 1614965814
+      },
+      "id": "jdoe/dXJpX2E/0",
+      "links": {
+        "related": "https://example.com/avancement/jdoe/dXJpX2E",
+        "self": "https://example.com/sauvegarde/jdoe/dXJpX2E/0"
+      },
+      "type": "sauvegarde"
+    }
+  ]
+}

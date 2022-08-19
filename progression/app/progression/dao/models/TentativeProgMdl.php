@@ -19,6 +19,7 @@
 namespace progression\dao\models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 
 class TentativeProgMdl extends Model
 {
@@ -27,9 +28,14 @@ class TentativeProgMdl extends Model
 
 	protected $guarded = [];
 
-	public function avancement()
+	public function avancement(): BelongsTo
 	{
 		return $this->belongsTo(AvancementMdl::class, "fk_tentative_prog_avancement");
+	}
+
+	public function commentaires(): HasMany
+	{
+		return $this->hasMany(CommentaireMdl::class, "tentative_id", "id");
 	}
 }
 

@@ -29,7 +29,6 @@ class CléDAO extends EntitéDAO
 	{
 		try {
 			$clé = CléMdl::select("cle.*")
-				->with($includes)
 				->join("user", "user_id", "=", "user.id")
 				->where("user.username", $username)
 				->where("nom", $nom)
@@ -46,7 +45,6 @@ class CléDAO extends EntitéDAO
 		try {
 			return $this->construire(
 				CléMdl::select("cle.*")
-					->with($includes)
 					->join("user", "user_id", "=", "user.id")
 					->where("user.username", $username)
 					->get(),

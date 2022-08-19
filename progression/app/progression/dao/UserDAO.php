@@ -33,7 +33,8 @@ class UserDAO extends EntitéDAO
 		try {
 			$user = UserMdl::query()
 				->where("username", $username)
-				->with($includes)
+				->with(in_array("avancements", $includes) ? "avancements" : [])
+				->with(in_array("clés", $includes) ? "clés" : [])
 				->first();
 			return $user ? $this->construire([$user], $includes)[0] : null;
 		} catch (QueryException $e) {
@@ -86,8 +87,12 @@ class UserDAO extends EntitéDAO
 			$users[] = new User(
 				$user["username"],
 				$user["role"],
-				in_array("avancements", $includes) ? AvancementDAO::construire($user["avancements"]) : [],
-				in_array("clés", $includes) ? CléDAO::construire($user["clés"]) : [],
+				in_array("avancements", $includes)
+					? AvancementDAO::construire($user["avancements"], parent::filtrer_niveaux($includes, "avancements"))
+					: [],
+				in_array("clés", $includes)
+					? CléDAO::construire($user["clés"], parent::filtrer_niveaux($includes, "clés"))
+					: [],
 			);
 		}
 		return $users;

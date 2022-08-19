@@ -191,27 +191,27 @@ parameters:
 			path: app/progression/dao/CommentaireDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:get_commentaires_par_tentative\\(\\) has no return type specified\\.$#"
+			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:get_tous_par_tentative\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/dao/CommentaireDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:get_commentaires_par_tentative\\(\\) has parameter \\$date_soumission with no type specified\\.$#"
+			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:get_tous_par_tentative\\(\\) has parameter \\$date_soumission with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/CommentaireDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:get_commentaires_par_tentative\\(\\) has parameter \\$includes with no type specified\\.$#"
+			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:get_tous_par_tentative\\(\\) has parameter \\$includes with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/CommentaireDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:get_commentaires_par_tentative\\(\\) has parameter \\$question_uri with no type specified\\.$#"
+			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:get_tous_par_tentative\\(\\) has parameter \\$question_uri with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/CommentaireDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:get_commentaires_par_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
+			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:get_tous_par_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/CommentaireDAO.php
 
@@ -651,46 +651,6 @@ parameters:
 			path: app/progression/dao/exécuteur/Standardiseur.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\models\\\\AvancementMdl\\:\\:sauvegardes\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/models/AvancementMdl.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\models\\\\AvancementMdl\\:\\:tentatives_prog\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/models/AvancementMdl.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\models\\\\AvancementMdl\\:\\:tentatives_sys\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/models/AvancementMdl.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\models\\\\CommentaireMdl\\:\\:créateur\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/models/CommentaireMdl.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\models\\\\TentativeProgMdl\\:\\:avancement\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/models/TentativeProgMdl.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\models\\\\TentativeSysMdl\\:\\:avancement\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/models/TentativeSysMdl.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\models\\\\UserMdl\\:\\:avancements\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/models/UserMdl.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\models\\\\UserMdl\\:\\:clés\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/models/UserMdl.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\question\\\\Chargeur\\:\\:__construct\\(\\) has parameter \\$source with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/question/Chargeur.php
@@ -1121,11 +1081,6 @@ parameters:
 			path: app/progression/dao/tentative/TentativeProgDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_tentative\\(\\) has parameter \\$includes with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_tentative\\(\\) has parameter \\$question_uri with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/tentative/TentativeProgDAO.php
@@ -1137,11 +1092,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_toutes\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_toutes\\(\\) has parameter \\$includes with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/tentative/TentativeProgDAO.php
 
@@ -1196,11 +1146,6 @@ parameters:
 			path: app/progression/dao/tentative/TentativeSysDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_dernière\\(\\) has parameter \\$includes with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_dernière\\(\\) has parameter \\$question_uri with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/tentative/TentativeSysDAO.php
@@ -1221,11 +1166,6 @@ parameters:
 			path: app/progression/dao/tentative/TentativeSysDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_tentative\\(\\) has parameter \\$includes with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_tentative\\(\\) has parameter \\$question_uri with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/tentative/TentativeSysDAO.php
@@ -1237,11 +1177,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_toutes\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_toutes\\(\\) has parameter \\$includes with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/tentative/TentativeSysDAO.php
 
@@ -1277,16 +1212,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\Avancement\\:\\:__construct\\(\\) has parameter \\$niveau with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Avancement.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Avancement\\:\\:__construct\\(\\) has parameter \\$sauvegardes with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Avancement.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Avancement\\:\\:__construct\\(\\) has parameter \\$tentatives with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/Avancement.php
 
@@ -2541,22 +2466,22 @@ parameters:
 			path: app/progression/domaine/interacteur/ObtenirCommentaireInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirCommentaireInt\\:\\:get_commentaires_par_tentative\\(\\) has no return type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirCommentaireInt\\:\\:get_tous_par_tentative\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/ObtenirCommentaireInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirCommentaireInt\\:\\:get_commentaires_par_tentative\\(\\) has parameter \\$date with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirCommentaireInt\\:\\:get_tous_par_tentative\\(\\) has parameter \\$date with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/ObtenirCommentaireInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirCommentaireInt\\:\\:get_commentaires_par_tentative\\(\\) has parameter \\$question_uri with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirCommentaireInt\\:\\:get_tous_par_tentative\\(\\) has parameter \\$question_uri with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/ObtenirCommentaireInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirCommentaireInt\\:\\:get_commentaires_par_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirCommentaireInt\\:\\:get_tous_par_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/ObtenirCommentaireInt.php
 
@@ -3567,26 +3492,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:construire_test\\(\\) has parameter \\$test with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:get\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:get\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:get\\(\\) has parameter \\$timestamp with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:get\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/TentativeCtl.php
 
