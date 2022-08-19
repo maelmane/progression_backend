@@ -21,7 +21,9 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use progression\http\transformer\UserTransformer;
+use progression\domaine\entité\Avancement;
 use progression\domaine\interacteur\ObtenirUserInt;
+use progression\util\Encodage;
 
 class UserCtl extends Contrôleur
 {
@@ -45,6 +47,7 @@ class UserCtl extends Contrôleur
 
 		if ($username != null && $username != "") {
 			$user = $userInt->get_user($username, $this->get_includes());
+			$user->avancements = $this->réencoder_uris($user->avancements);
 		}
 
 		Log::debug("UserCtl.obtenir_user. Retour : ", [$user]);
@@ -63,5 +66,20 @@ class UserCtl extends Contrôleur
 		Log::debug("UserCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
 
 		return $réponse;
+	}
+
+	/**
+	 * @param array<Avancement> $avancements
+	 * @return array<Avancement>
+	 */
+	private function réencoder_uris(array $avancements): array
+	{
+		$avancements_réencodés = [];
+
+		foreach ($avancements as $uri => $avancement) {
+			$avancements_réencodés[Encodage::base64_encode_url($uri)] = $avancement;
+		}
+
+		return $avancements_réencodés;
 	}
 }
