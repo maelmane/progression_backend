@@ -52,7 +52,6 @@ class TentativeTransformer extends BaseTransformer
 		$id_parent = "{$this->id}/{$tentative->id}";
 
 		foreach ($commentaires as $numéro => $commentaire) {
-			$commentaire->id = $numéro;
 			$commentaire->links = [
 				"related" => "{$_ENV["APP_URL"]}tentative/{$id_parent}",
 			];
@@ -65,7 +64,6 @@ class TentativeTransformer extends BaseTransformer
 		$id_parent = "{$this->id}/{$tentative->id}";
 
 		foreach ($tentative->résultats as $i => $résultat) {
-			$résultat->id = $i;
 			$résultat->links = ["related" => "{$_ENV["APP_URL"]}tentative/{$id_parent}"];
 		}
 

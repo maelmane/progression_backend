@@ -19,7 +19,7 @@
 namespace progression\dao\models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Relations\HasOne;
 class CommentaireMdl extends Model
 {
 	protected $table = "commentaire";
@@ -27,7 +27,7 @@ class CommentaireMdl extends Model
 
 	protected $guarded = [];
 
-	public function créateur()
+	public function créateur(): HasOne
 	{
 		return $this->hasOne(UserMdl::class, "id", "créateur_id");
 	}

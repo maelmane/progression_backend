@@ -36,16 +36,30 @@ final class ObtenirTentativeIntTests extends TestCase
 		$mockCommentaireDAO = Mockery::mock("progression\\dao\\CommentaireDAO");
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
-			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", 1614711760)
-			->andReturn(new TentativeProg("java", "System.out.println();", 1614711760));
+			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", 1614711760, [])
+			->andReturn(new TentativeProg(langage: "java", code: "System.out.println();", date_soumission: 1614711760));
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
-			->with(Mockery::any(), Mockery::any(), Mockery::any())
+			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", 1614711760, 1)
+			->andReturn(
+				new TentativeProg(
+					langage: "java",
+					code: "System.out.println();",
+					date_soumission: 1614711760,
+					commentaires: [
+						new Commentaire(99, "le 99iem message", "mock", 1615696276, 14),
+						new Commentaire(100, "le 100ieme message", "mock", 1615696888, 17),
+					],
+				),
+			);
+		$mockTentativeDAO
+			->shouldReceive("get_tentative")
+			->with(Mockery::any(), Mockery::any(), Mockery::any(), [])
 			->andReturn(null);
 
 		$tentativeSysTest = $mockTentativeDAO
 			->shouldReceive("get_dernière")
-			->with("jdoe", "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions")
+			->with("jdoe", "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions", [])
 			->andReturn(
 				new TentativeSys(
 					(object) ["id" => "conteneurTest2", "ip" => "192.168.0.2", "port" => 12345],
@@ -59,18 +73,6 @@ final class ObtenirTentativeIntTests extends TestCase
 					[],
 				),
 			);
-
-		$mockCommentaireDAO
-			->shouldReceive("get_commentaires_par_tentative")
-			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", 1614711760)
-			->andReturn([
-				new Commentaire(99, "le 99iem message", "mock", 1615696276, 14),
-				new Commentaire(100, "le 100ieme message", "mock", 1615696888, 17),
-			]);
-		$mockCommentaireDAO
-			->shouldReceive("get_commentaires_par_tentative")
-			->with(Mockery::any(), Mockery::any(), Mockery::any())
-			->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
@@ -98,6 +100,7 @@ final class ObtenirTentativeIntTests extends TestCase
 			"jdoe",
 			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
 			1614711760,
+			1,
 		);
 
 		$résultat_attendu = new TentativeProg("java", "System.out.println();", 1614711760);

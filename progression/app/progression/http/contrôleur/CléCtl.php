@@ -64,7 +64,7 @@ class CléCtl extends Contrôleur
 		Log::debug("CléCtl.obtenir_clé. Params : ", [$username, $nom]);
 
 		$cléInt = new ObtenirCléInt();
-		$réponse = $cléInt->get_clé($username, $nom);
+		$réponse = $cléInt->get_clé($username, $nom, $this->get_includes());
 
 		Log::debug("CléCtl.obtenir_clé. Retour : ", [$réponse]);
 		return $réponse;

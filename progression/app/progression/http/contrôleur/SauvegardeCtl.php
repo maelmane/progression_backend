@@ -70,7 +70,7 @@ class SauvegardeCtl extends Contrôleur
 		$chemin = Encodage::base64_decode_url($question_uri);
 
 		$sauvegardeInt = new ObtenirSauvegardeInt();
-		$sauvegarde = $sauvegardeInt->get_sauvegarde($username, $chemin, $langage);
+		$sauvegarde = $sauvegardeInt->get_sauvegarde($username, $chemin, $langage, $this->get_includes());
 
 		Log::debug("SauvegardeCtl.obtenir_sauvegarde. Retour : ", [$sauvegarde]);
 		return $sauvegarde;

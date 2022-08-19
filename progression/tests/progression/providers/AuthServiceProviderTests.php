@@ -40,19 +40,19 @@ final class AuthServiceProviderTests extends TestCase
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
-			->with("utilisateur_lambda")
+			->with("utilisateur_lambda", [])
 			->andReturn(new User("utilisateur_lambda"));
 		$mockUserDAO
 			->shouldReceive("get_user")
-			->with("autre_utilisateur")
+			->with("autre_utilisateur", [])
 			->andReturn(new User("autre_utilisateur"));
 		$mockUserDAO
 			->shouldReceive("get_user")
-			->with("utilisateur_innocent")
+			->with("utilisateur_innocent", [])
 			->andReturn(new User("utilisateur_innocent"));
 		$mockUserDAO
 			->shouldReceive("get_user")
-			->with("utilisateur_malveillant")
+			->with("utilisateur_malveillant", [])
 			->andReturn(new User("utilisateur_malveillant"));
 		$mockUserDAO->shouldReceive("get_user")->andReturn(null);
 

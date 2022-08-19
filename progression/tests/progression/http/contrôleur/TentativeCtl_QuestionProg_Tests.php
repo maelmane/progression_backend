@@ -102,6 +102,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 		// Tentative
 		// Tentative réussie
+
 		$this->tentative_réussie = new TentativeProg(
 			langage: "réussi",
 			code: "codeTest",
@@ -111,6 +112,19 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			tests_réussis: 2,
 			feedback: "feedbackTest",
 			temps_exécution: 5,
+			commentaires: [],
+		);
+
+		$this->tentative_réussie_avec_résultats_et_commentaires = new TentativeProg(
+			langage: "réussi",
+			code: "codeTest",
+			date_soumission: "1614374490",
+			réussi: true,
+			résultats: [new Résultat("ok", "", true)],
+			tests_réussis: 2,
+			feedback: "feedbackTest",
+			temps_exécution: 5,
+			commentaires: [new Commentaire("message", "créateur", 1614374490, 42)],
 		);
 
 		// Tentative non réussie
@@ -128,11 +142,15 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
-			->with("jdoe", "https://depot.com/question_réussie", "1614374490")
+			->with("jdoe", "https://depot.com/question_réussie", "1614374490", [])
 			->andReturn($this->tentative_réussie);
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
-			->with("jdoe", "https://depot.com/question_non_réussie", "1614374490")
+			->with("jdoe", "https://depot.com/question_réussie", "1614374490", ["resultats", "commentaires"])
+			->andReturn($this->tentative_réussie_avec_résultats_et_commentaires);
+		$mockTentativeDAO
+			->shouldReceive("get_tentative")
+			->with("jdoe", "https://depot.com/question_non_réussie", "1614374490", [])
 			->andReturn($this->tentative_non_réussie);
 		$mockTentativeDAO->shouldReceive("get_tentative")->andReturn(null);
 
@@ -212,12 +230,12 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("jdoe", "https://depot.com/question_réussie")
+			->with("jdoe", "https://depot.com/question_réussie", [])
 			->andReturn($this->avancement_réussi);
 
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("jdoe", "https://depot.com/question_non_réussie")
+			->with("jdoe", "https://depot.com/question_non_réussie", [])
 			->andReturn($this->avancement_non_réussi);
 
 		// User
@@ -255,6 +273,20 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$this->assertEquals(200, $résultat_obtenu->status());
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_réussie.json",
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_une_tentative_existante_lorsquon_appelle_get_en_incluant_les_résultats_et_commentaires_on_obtient_la_TentativeProg_et_ses_résultats_et_commentaires_sous_forme_json()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"GET",
+			"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490?include=resultats,commentaires",
+		);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_réussie_avec_résultats_et_commentaires.json",
 			$résultat_obtenu->getContent(),
 		);
 	}

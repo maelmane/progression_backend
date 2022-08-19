@@ -34,18 +34,6 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		// UserDAO
-		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("jdoe")
-			->andReturn(new User("jdoe"));
-
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("Jean")
-			->andReturn(null);
-
 		// Commentaire
 		$commentaire = new Commentaire("Bon travail", "Jonh Doe", 1615696276, 5);
 
@@ -59,7 +47,6 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 		$mockCommentaireDAO->shouldReceive("save")->andReturn([$commentaire]);
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		$mockDAOFactory->shouldReceive("get_commentaire_dao")->andReturn($mockCommentaireDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);

@@ -19,6 +19,7 @@
 namespace progression\dao\models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AvancementMdl extends Model
 {
@@ -27,17 +28,17 @@ class AvancementMdl extends Model
 
 	protected $guarded = [];
 
-	public function tentatives_prog()
+	public function tentatives_prog(): HasMany
 	{
 		return $this->hasMany(TentativeProgMdl::class, "avancement_id", "id");
 	}
 
-	public function tentatives_sys()
+	public function tentatives_sys(): HasMany
 	{
 		return $this->hasMany(TentativeSysMdl::class, "avancement_id", "id");
 	}
 
-	public function sauvegardes()
+	public function sauvegardes(): HasMany
 	{
 		return $this->hasMany(SauvegardeMdl::class, "avancement_id", "id");
 	}

@@ -19,6 +19,7 @@
 namespace progression\dao\models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TentativeSysMdl extends Model
 {
@@ -27,7 +28,7 @@ class TentativeSysMdl extends Model
 
 	protected $guarded = [];
 
-	public function avancement()
+	public function avancement(): BelongsTo
 	{
 		return $this->belongsTo(AvancementMdl::class, "fk_tentative_sys_avancement");
 	}

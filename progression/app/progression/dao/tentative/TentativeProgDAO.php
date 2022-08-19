@@ -25,12 +25,15 @@ use progression\dao\models\{TentativeProgMdl, AvancementMdl};
 
 class TentativeProgDAO extends TentativeDAO
 {
-	public function get_toutes($username, $question_uri, $includes = [])
+	/**
+	 * @param mixed $includes
+	 */
+	public function get_toutes($username, $question_uri, mixed $includes = [])
 	{
 		try {
 			return $this->construire(
 				TentativeProgMdl::select("reponse_prog.*")
-					->with($includes)
+					->with(in_array("commentaires", $includes) ? ["commentaires"] : [])
 					->join("avancement", "reponse_prog.avancement_id", "=", "avancement.id")
 					->join("user", "avancement.user_id", "=", "user.id")
 					->where("user.username", $username)
@@ -43,11 +46,14 @@ class TentativeProgDAO extends TentativeDAO
 		}
 	}
 
-	public function get_tentative($username, $question_uri, $date_soumission, $includes = [])
+	/**
+	 * @param mixed $includes
+	 */
+	public function get_tentative($username, $question_uri, $date_soumission, mixed $includes = [])
 	{
 		try {
 			$tentative = TentativeProgMdl::select("reponse_prog.*")
-				->with($includes)
+				->with(in_array("commentaires", $includes) ? ["commentaires"] : [])
 				->join("avancement", "reponse_prog.avancement_id", "=", "avancement.id")
 				->join("user", "avancement.user_id", "=", "user.id")
 				->where("user.username", $username)
@@ -113,7 +119,10 @@ class TentativeProgDAO extends TentativeDAO
 				temps_exécution: $item["temps_exécution"],
 				feedback: null,
 				commentaires: in_array("commentaires", $includes)
-					? CommentaireDAO::construire($item["commentaires"])
+					? CommentaireDAO::construire(
+						$item["commentaires"],
+						parent::filtrer_niveaux($includes, "commentaires"),
+					)
 					: [],
 			);
 			$tentatives[$item["date_soumission"]] = $tentative;

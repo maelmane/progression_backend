@@ -29,7 +29,6 @@ class SauvegardeDAO extends EntitéDAO
 		try {
 			return $this->construire(
 				SauvegardeMdl::select("sauvegarde.*")
-					->with($includes)
 					->join("avancement", "sauvegarde.avancement_id", "=", "avancement.id")
 					->join("user", "avancement.user_id", "=", "user.id")
 					->where("user.username", $username)

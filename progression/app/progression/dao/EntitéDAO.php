@@ -34,4 +34,19 @@ class EntitéDAO
 			$this->source = $source;
 		}
 	}
+
+	public static function filtrer_niveaux(mixed $includes, string $niveau): mixed
+	{
+		$sous_includes = [];
+
+		foreach ($includes as $include) {
+			if ($include != $niveau) {
+				$sous_includes[] = str_starts_with($include, $niveau . ".")
+					? substr($include, strlen($niveau) + 1)
+					: $include;
+			}
+		}
+
+		return $sous_includes;
+	}
 }

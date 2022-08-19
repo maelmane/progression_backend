@@ -20,8 +20,12 @@ namespace progression\domaine\interacteur;
 
 class ObtenirUserInt extends Interacteur
 {
-	function get_user($username)
+	/**
+	 * @param mixed $includes
+	 * lliste de niveaux de sous-objets à inclure; true pour inclure tous les niveaux.
+	 */
+	function get_user($username, mixed $includes = [])
 	{
-		return $this->source_dao->get_user_dao()->get_user($username);
+		return $this->source_dao->get_user_dao()->get_user($username, $includes);
 	}
 }

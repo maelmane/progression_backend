@@ -60,7 +60,6 @@ class UserTransformer extends BaseTransformer
 		$id_parent = $user->username;
 
 		foreach ($user->clés as $nom => $clé) {
-			$clé->id = $nom;
 			$clé->links = [
 				"related" => $_ENV["APP_URL"] . "user/{$id_parent}",
 			];

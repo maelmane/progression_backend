@@ -1,0 +1,97 @@
+{
+  "data": {
+    "type": "user",
+    "id": "jdoe",
+    "attributes": {
+      "username": "jdoe",
+      "rôle": 0
+    },
+    "links": {
+      "self": "https://example.com/user/jdoe"
+    },
+    "relationships": {
+      "avancements": {
+        "links": {
+          "self": "https://example.com/user/jdoe/relationships/avancements",
+          "related": "https://example.com/user/jdoe/avancements"
+        },
+        "data": [
+          {
+            "id": "jdoe/https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+            "type": "avancement"
+          },
+          {
+            "id": "jdoe/https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction",
+            "type": "avancement"
+          }
+        ]
+      },
+      "cles": {
+        "links": {
+          "self": "https://example.com/user/jdoe/relationships/cles",
+          "related": "https://example.com/user/jdoe/cles"
+        }
+      }
+    }
+  },
+  "included": [
+    {
+      "type": "avancement",
+      "id": "jdoe/https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+      "attributes": {
+        "état": 0,
+        "titre": "",
+        "niveau": "",
+        "date_modification": null,
+        "date_réussite": null
+      },
+      "links": {
+        "self": "https://example.com/avancement/jdoe/https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+        "related": "https://example.com/user/jdoe"
+      },
+      "relationships": {
+        "tentatives": {
+          "links": {
+            "self": "https://example.com/avancement/jdoe/https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction/relationships/tentatives",
+            "related": "https://example.com/avancement/jdoe/https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction/tentatives"
+          }
+        },
+        "sauvegardes": {
+          "links": {
+            "self": "https://example.com/avancement/jdoe/https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction/relationships/sauvegardes",
+            "related": "https://example.com/avancement/jdoe/https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction/sauvegardes"
+          }
+        }
+      }
+    },
+    {
+      "type": "avancement",
+      "attributes": {
+        "date_modification": null,
+        "date_réussite": null,
+        "niveau": "",
+        "titre": "",
+        "état": 0
+      },
+      "id": "jdoe/https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction",
+      "links": {
+        "related": "https://example.com/user/jdoe",
+        "self": "https://example.com/avancement/jdoe/https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction"
+      },
+      "relationships": {
+        "sauvegardes": {
+          "links": {
+            "related": "https://example.com/avancement/jdoe/https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction/sauvegardes",
+            "self": "https://example.com/avancement/jdoe/https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction/relationships/sauvegardes"
+          }
+        },
+        "tentatives": {
+          "links": {
+            "related": "https://example.com/avancement/jdoe/https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction/tentatives",
+            "self": "https://example.com/avancement/jdoe/https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction/relationships/tentatives"
+          }
+        }
+      }
+    }
+  ]
+}

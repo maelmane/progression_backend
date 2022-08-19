@@ -35,7 +35,7 @@ final class ObtenirAvancementIntTests extends TestCase
 
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée")
+			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", [])
 			->andReturn($avancement);
 		$mockAvancementDAO->shouldReceive("get_avancement")->andReturn(null);
 

@@ -36,11 +36,11 @@ final class ObtenirAvancementsIntTests extends TestCase
 
 		$mockAvancementDAO
 			->shouldReceive("get_tous")
-			->with("jdoe")
+			->with("jdoe", [])
 			->andReturn([$avancement1, $avancement2]);
 		$mockAvancementDAO
 			->shouldReceive("get_tous")
-			->with("bob")
+			->with("bob", [])
 			->andReturn([]);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");

@@ -67,7 +67,7 @@ class AvancementsCtl extends Contrôleur
 
 		$avancementsInt = new ObtenirAvancementsInt();
 
-		$avancements = $avancementsInt->get_avancements($username);
+		$avancements = $avancementsInt->get_avancements($username, $this->get_includes());
 
 		Log::debug("AvancementsCtl.obtenir_avancements. Retour : ", [$avancements]);
 		return $avancements;

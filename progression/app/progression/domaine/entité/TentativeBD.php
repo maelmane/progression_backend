@@ -18,7 +18,7 @@
 
 namespace progression\domaine\entité;
 
-class TentativeBD
+class TentativeBD extends Tentative
 {
 	public $conteneur;
 	public $réponse;

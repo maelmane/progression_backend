@@ -48,10 +48,18 @@ final class CommentaireDAOTests extends TestCase
 		parent::tearDown();
 	}
 
-	public function test_étant_donné_un_commentaire_lorsquon_le_cherche_par_son_numero_on_obtient_le_commentaire()
+	public function test_étant_donné_un_commentaire_lorsquon_le_cherche_par_son_numero_sans_inclusion_on_obtient_le_commentaire()
+	{
+		$réponse_attendue = new Commentaire("le 1er message", null, 1615696277, 14);
+		$réponse_observée = (new CommentaireDAO())->get_commentaire(id: 1);
+
+		$this->assertEquals($réponse_attendue, $réponse_observée);
+	}
+
+	public function test_étant_donné_un_commentaire_lorsquon_le_cherche_par_son_numero_en_incluant_le_créateur_on_obtient_le_commentaire_et_son_créateur()
 	{
 		$réponse_attendue = new Commentaire("le 1er message", $this->jdoe, 1615696277, 14);
-		$réponse_observée = (new CommentaireDAO())->get_commentaire(1);
+		$réponse_observée = (new CommentaireDAO())->get_commentaire(id: 1, includes: ["créateur"]);
 
 		$this->assertEquals($réponse_attendue, $réponse_observée);
 	}
@@ -62,17 +70,19 @@ final class CommentaireDAOTests extends TestCase
 		$this->assertNull($réponse_observée);
 	}
 
-	public function test_étant_donné_tous_les_commentaire_dune_tentative_lorsquon_les_cherchent_par_tentative_existante_on_obitent_tous_les_commentaires_de_la_tentative()
+	public function test_étant_donné_tous_les_commentaire_dune_tentative_lorsquon_les_cherchent_par_tentative_existante_en_incluant_le_créateur_on_obitent_tous_les_commentaires_de_la_tentative_et_leur_créateur()
 	{
-		$tableauCommentaire[1] = new Commentaire("le 1er message", $this->jdoe, 1615696277, 14);
-		$tableauCommentaire[2] = new Commentaire("le 2er message", $this->admin, 1615696278, 12);
-		$tableauCommentaire[3] = new Commentaire("le 3er message", $this->stefany, 1615696279, 14);
-		$réponse_attendue = $tableauCommentaire;
+		$commentaires = [];
+		$commentaires[1] = new Commentaire("le 1er message", $this->jdoe, 1615696277, 14);
+		$commentaires[2] = new Commentaire("le 2er message", $this->admin, 1615696278, 12);
+		$commentaires[3] = new Commentaire("le 3er message", $this->stefany, 1615696279, 14);
+		$réponse_attendue = $commentaires;
 
-		$réponse_observée = (new CommentaireDAO())->get_commentaires_par_tentative(
-			"bob",
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			1615696276,
+		$réponse_observée = (new CommentaireDAO())->get_tous_par_tentative(
+			username: "bob",
+			question_uri: "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+			date_soumission: 1615696276,
+			includes: ["créateur"],
 		);
 		$this->assertEquals($réponse_attendue, $réponse_observée);
 	}
@@ -80,7 +90,7 @@ final class CommentaireDAOTests extends TestCase
 	public function test_étant_donné_tous_les_commentaire_dune_tentative_lorsquon_les_cherchent_par_tentative_non_existante_on_obtient_tableau_vide()
 	{
 		$réponse_attendue = [];
-		$réponse_observée = (new CommentaireDAO())->get_commentaires_par_tentative(
+		$réponse_observée = (new CommentaireDAO())->get_tous_par_tentative(
 			"bobby",
 			"https://depot.com/roger/questions_prog/fonctions05/appeler_une_fonction",
 			1615696276,
@@ -90,7 +100,7 @@ final class CommentaireDAOTests extends TestCase
 
 	public function test_étant_donné_un_commentaire_inexistant_lorsquon_le_sauvegarde_il_est_créé_dans_la_bd_et_on_obtient_le_commentaire()
 	{
-		$réponse_attendue = new Commentaire("le 4ième message", $this->jdoe, 1615696276, 11);
+		$réponse_attendue = new Commentaire("le 4ième message", null, 1615696276, 11);
 
 		$dao = new CommentaireDAO();
 		$réponse_observée = $dao->save(
@@ -111,7 +121,7 @@ final class CommentaireDAOTests extends TestCase
 
 	public function test_étant_donné_un_commentaire_existant_lorsquon_le_sauvegarde_on_modifie_le_commentaire_dans_la_bd()
 	{
-		$réponse_attendue = new Commentaire("le 1er message modifie", $this->jdoe, 1615696255, 17);
+		$réponse_attendue = new Commentaire("le 1er message modifie", null, 1615696255, 17);
 
 		$dao = new CommentaireDAO();
 		$réponse_observée = $dao->save(
