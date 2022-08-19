@@ -151,7 +151,7 @@ class LoginInt extends Interacteur
 				isset($user[0]) &&
 				is_array($user[0]) &&
 				isset($user[0]["dn"]) &&
-				!@ldap_bind($ldap, $user[0]["dn"], $password);
+				@ldap_bind($ldap, $user[0]["dn"], $password);
 		}
 		return null;
 	}
