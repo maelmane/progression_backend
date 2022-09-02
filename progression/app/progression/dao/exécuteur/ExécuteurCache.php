@@ -32,7 +32,7 @@ class ExécuteurCache extends Exécuteur
 		$this->_standardiseur = $standardiseur;
 	}
 
-	public function exécuter($exécutable, $tests)
+	public function exécuter_prog($exécutable, $tests)
 	{
 		$code_standardisé = $this->standardiser_code($exécutable->code, $exécutable->lang) ?? $exécutable->code;
 		$entrées = "";
@@ -54,7 +54,7 @@ class ExécuteurCache extends Exécuteur
 		}
 
 		if (!$résultats) {
-			$réponse = $this->_exécuteur->exécuter($exécutable, $tests);
+			$réponse = $this->_exécuteur->exécuter_prog($exécutable, $tests);
 
 			$résultats = $réponse["résultats"];
 			if (!$this->contient_des_erreurs($résultats)) {

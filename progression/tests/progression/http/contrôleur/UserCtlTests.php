@@ -34,7 +34,8 @@ final class UserCtlTests extends ContrôleurTestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		$user = new User("jdoe");
-		$user->avancements = [
+		$user_et_avancements = new User("jdoe");
+		$user_et_avancements->avancements = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement(),
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement(),
 		];
@@ -43,7 +44,11 @@ final class UserCtlTests extends ContrôleurTestCase
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
-			->with("jdoe")
+			->with("jdoe", ["avancements"])
+			->andReturn($user_et_avancements);
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("jdoe", [])
 			->andReturn($user);
 
 		// DAOFactory
@@ -60,12 +65,23 @@ final class UserCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_le_nom_dun_utilisateur_lorsquon_appelle_get_on_obtient_lutilisateur_et_ses_relations_sous_forme_json()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe");
+		$résultatObtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe");
 
-		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertResponseStatus(200);
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/userCtlTest_1.json",
-			$résultat_obtenu->getContent(),
+			__DIR__ . "/résultats_attendus/userCtlTest_user.json",
+			$résultatObtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_le_nom_dun_utilisateur_lorsquon_appelle_get_en_incluant_les_avancements_on_obtient_lutilisateur_et_ses_avancements_sous_forme_json()
+	{
+		$résultatObtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe?include=avancements");
+
+		$this->assertResponseStatus(200);
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/userCtlTest_user_avec_avancements.json",
+			$résultatObtenu->getContent(),
 		);
 	}
 }

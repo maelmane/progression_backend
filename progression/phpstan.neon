@@ -1,7 +1,18 @@
+includes:
+  - ./vendor/nunomaduro/larastan/extension.neon
+  - ./phpstan-baseline.neon
+
 parameters:
   paths: 
     - app
 
-  level: 1
-  excludePaths:
-    - app/bootstrap/*
+  level: 8
+
+  ignoreErrors:
+    # Les propriété id doivent être ajoutées pour la transformation en JSON-API via Fractal
+    -
+      message: '#^Access to an undefined property progression\\domaine\\entité\\[^\\]+::\$id.$#'
+      path: app/progression/http/transformer/*Transformer.php
+    -
+      message: '#^Access to an undefined property progression\\domaine\\entité\\[^\\]+::\$id.$#'
+      path: app/progression/http/contrôleur/*Ctl.php

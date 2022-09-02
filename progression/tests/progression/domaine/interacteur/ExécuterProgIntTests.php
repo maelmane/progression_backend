@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Exécutable, Test, RésultatProg};
+use progression\domaine\entité\{Exécutable, Test, Résultat};
 use progression\dao\exécuteur\Exécuteur;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
@@ -36,7 +36,7 @@ final class ExécuterProgIntTests extends TestCase
 
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur
-			->shouldReceive("exécuter")
+			->shouldReceive("exécuter_prog")
 			->with(
 				Mockery::on(function ($param) {
 					return $param == new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
@@ -47,7 +47,7 @@ final class ExécuterProgIntTests extends TestCase
 			)
 			->andReturn(["temps_exec" => 0.234, "résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.6]]]);
 		$mockExécuteur
-			->shouldReceive("exécuter")
+			->shouldReceive("exécuter_prog")
 			->with(
 				Mockery::on(function ($param) {
 					return $param == new Exécutable("a=int(input())\nfor i in range(a):print('ok')", "python");
@@ -68,7 +68,7 @@ final class ExécuterProgIntTests extends TestCase
 			]);
 
 		$mockExécuteur
-			->shouldReceive("exécuter")
+			->shouldReceive("exécuter_prog")
 			->with(
 				Mockery::on(function ($param) {
 					return $param == new Exécutable("a=a", "python");
@@ -103,7 +103,7 @@ final class ExécuterProgIntTests extends TestCase
 
 		$résultat_observé = (new ExécuterProgInt())->exécuter($exécutable_valide, $test);
 
-		$résultat_attendu = ["temps_exécution" => 234, "résultats" => [new RésultatProg("ok\n", "", false, null, 600)]];
+		$résultat_attendu = ["temps_exécution" => 234, "résultats" => [new Résultat("ok\n", "", false, null, 600)]];
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 
@@ -116,10 +116,7 @@ final class ExécuterProgIntTests extends TestCase
 
 		$résultat_attendu = [
 			"temps_exécution" => 124,
-			"résultats" => [
-				new RésultatProg("ok\n", "", false, null, 80),
-				new RésultatProg("ok\nok\n", "", false, null, 40),
-			],
+			"résultats" => [new Résultat("ok\n", "", false, null, 80), new Résultat("ok\nok\n", "", false, null, 40)],
 		];
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
@@ -133,7 +130,7 @@ final class ExécuterProgIntTests extends TestCase
 
 		$résultat_attendu = [
 			"temps_exécution" => 567,
-			"résultats" => [new RésultatProg("", "erreur", false, null, 40)],
+			"résultats" => [new Résultat("", "erreur", false, null, 40)],
 		];
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}

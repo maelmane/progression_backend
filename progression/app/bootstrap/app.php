@@ -1,6 +1,5 @@
 <?php
 
-require_once __DIR__ . "/../../autoload.php";
 require_once __DIR__ . "/../../vendor/autoload.php";
 
 date_default_timezone_set(env("APP_TIMEZONE", "UTC"));
@@ -20,7 +19,7 @@ $app = new Laravel\Lumen\Application(dirname(__DIR__));
 
 $app->withFacades();
 
-// $app->withEloquent();
+$app->withEloquent();
 
 /*
    |--------------------------------------------------------------------------
@@ -49,6 +48,7 @@ $app->singleton(Illuminate\Contracts\Console\Kernel::class, progression\console\
  */
 
 $app->configure("app");
+$app->configure("version");
 
 /*
    |--------------------------------------------------------------------------

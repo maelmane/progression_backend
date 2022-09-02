@@ -23,9 +23,9 @@ use progression\domaine\entité\{
 	Avancement,
 	Question,
 	QuestionProg,
-	RésultatProg,
+	Résultat,
 	TentativeProg,
-	Test,
+	TestProg,
 	User,
 };
 use progression\dao\DAOFactory;
@@ -38,11 +38,6 @@ final class SoumettreTentativeProgIntTests extends TestCase
 {
 	protected static $question;
 	protected static $tentativeSoumiseIncorrecte;
-	protected static $tentativeSoumiseCorrecte;
-	protected static $ancienneTentativeRéussie;
-	protected static $ancienneTentativeÉchouée;
-	protected static $ancienAvancementRéussi;
-	protected static $ancienAvancementÉchoué;
 
 	public function setUp(): void
 	{
@@ -91,7 +86,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		// Mock exécuteur
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur
-			->shouldReceive("exécuter")
+			->shouldReceive("exécuter_prog")
 			->withArgs(function ($exécutable) {
 				return $exécutable->lang == "python";
 			})
@@ -100,7 +95,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 				"résultats" => [["output" => "sortieTest", "errors" => "", "time" => 0.1]],
 			]);
 		$mockExécuteur
-			->shouldReceive("exécuter")
+			->shouldReceive("exécuter_prog")
 			->withArgs(function ($exécutable) {
 				return $exécutable->lang == "java";
 			})
@@ -122,7 +117,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		self::$question->niveau = "facile";
 		self::$question->uri = "https://example.com/question";
 		self::$question->tests = [
-			new Test(
+			new TestProg(
 				nom: "nomTest",
 				sortie_attendue: "sortieTest",
 				entrée: "entréeTest",
@@ -149,57 +144,6 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			"java",
 			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
 			1615696286,
-		);
-		self::$tentativeSoumiseCorrecte = new TentativeProg(
-			"python",
-			"#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
-			1615696286,
-		);
-
-		// Tentative réussie
-		self::$ancienneTentativeRéussie = new TentativeProg(
-			langage: "python",
-			code: "#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
-			date_soumission: 1615696285,
-			réussi: true,
-			tests_réussis: 0,
-			temps_exécution: 122,
-			feedback: "feedbackGénéralPositif",
-			résultats: [new RésultatProg("sortieTest", "", true, "feedbackPositif", 100)],
-		);
-
-		// Avancement réussi
-		self::$ancienAvancementRéussi = new Avancement(
-			etat: Question::ETAT_REUSSI,
-			type: Question::TYPE_PROG,
-			tentatives: [self::$ancienneTentativeRéussie],
-			titre: "Bonsoir",
-			niveau: "facile",
-			date_modification: 1615696285,
-			date_réussite: 1615696285,
-		);
-
-		// Tentative échouée
-		self::$ancienneTentativeÉchouée = new TentativeProg(
-			langage: "java",
-			code: "#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
-			date_soumission: 1615696285,
-			réussi: false,
-			tests_réussis: 0,
-			temps_exécution: 122,
-			feedback: "feedbackGénéralNégatif",
-			résultats: [new RésultatProg("Incorrecte", "", false, "feedbackNégatif", 100)],
-		);
-
-		// Avancement échoué
-		self::$ancienAvancementÉchoué = new Avancement(
-			etat: Question::ETAT_NONREUSSI,
-			type: Question::TYPE_PROG,
-			tentatives: [self::$ancienneTentativeÉchouée],
-			titre: "Bonsoir",
-			niveau: "facile",
-			date_modification: 1615696285,
-			date_réussite: 0,
 		);
 	}
 
@@ -229,206 +173,15 @@ final class SoumettreTentativeProgIntTests extends TestCase
 			tests_réussis: 0,
 			temps_exécution: 122,
 			feedback: "feedbackGénéralNégatif",
-			résultats: [new RésultatProg("Incorrecte", "", false, "feedbackNégatif", 100)],
+			résultats: [new Résultat("Incorrecte", "", false, "feedbackNégatif", 100)],
 		);
 
 		$interacteur = new SoumettreTentativeProgInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
 			"jdoe",
 			self::$question,
+			self::$question->tests,
 			self::$tentativeSoumiseIncorrecte,
-		);
-
-		$this->assertEquals($tentative_attendue, $tentative_obtenue);
-	}
-
-	public function test_étant_donné_une_questionprog_une_tentativeprog_non_réussie_et_un_avancement_avec_état_non_réussi_lorsqu_on_appelle_soumettre_tentative_lavancement_est_sauvegardé_et_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
-	{
-		$tentative_attendue = new TentativeProg(
-			langage: "java",
-			code: "#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
-			date_soumission: 1615696286,
-			réussi: false,
-			tests_réussis: 0,
-			temps_exécution: 122,
-			feedback: "feedbackGénéralNégatif",
-			résultats: [new RésultatProg("Incorrecte", "", false, "feedbackNégatif", 100)],
-		);
-
-		$nouvelAvancement = new Avancement(
-			etat: Question::ETAT_NONREUSSI,
-			type: Question::TYPE_PROG,
-			tentatives: [self::$ancienneTentativeÉchouée, $tentative_attendue],
-			titre: "Bonsoir",
-			niveau: "facile",
-			date_modification: 1615696286,
-			date_réussite: 0,
-		);
-
-		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
-		$mockAvancementDAO
-			->shouldReceive("get_avancement")
-			->with("jdoe", "https://example.com/question")
-			->andReturn(self::$ancienAvancementÉchoué);
-
-		$mockAvancementDAO
-			->shouldReceive("save")
-			->withArgs(function ($user, $uri, $av) use ($nouvelAvancement) {
-				return $user == "jdoe" && $uri == "https://example.com/question" && $av == $nouvelAvancement;
-			})
-			->andReturn($nouvelAvancement);
-
-		$mockDAOFactory = DAOFactory::getInstance();
-		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
-
-		$interacteur = new SoumettreTentativeProgInt();
-		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
-			self::$question,
-			self::$tentativeSoumiseIncorrecte,
-		);
-
-		$this->assertNotNull($tentative_obtenue);
-	}
-
-	public function test_étant_donné_une_questionprog_une_tentative_non_réussie_et_un_avancement_réussi_lorsqu_on_appelle_soumettre_tentative_lavancement_est_créé_et_sauvegardé_et_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
-	{
-		$tentative_attendue = new TentativeProg(
-			langage: "java",
-			code: "#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
-			date_soumission: 1615696286,
-			réussi: false,
-			tests_réussis: 0,
-			temps_exécution: 122,
-			feedback: "feedbackGénéralNégatif",
-			résultats: [new RésultatProg("Incorrecte", "", false, "feedbackNégatif", 100)],
-		);
-
-		$nouvelAvancement = new Avancement(
-			etat: Question::ETAT_REUSSI,
-			type: Question::TYPE_PROG,
-			tentatives: [self::$ancienneTentativeRéussie, $tentative_attendue],
-			titre: "Bonsoir",
-			niveau: "facile",
-			date_modification: 1615696286,
-			date_réussite: 1615696285,
-		);
-
-		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
-		$mockAvancementDAO
-			->shouldReceive("get_avancement")
-			->with("jdoe", "https://example.com/question")
-			->andReturn(self::$ancienAvancementRéussi);
-
-		$mockAvancementDAO
-			->shouldReceive("save")
-			->withArgs(function ($user, $uri, $av) use ($nouvelAvancement) {
-				return $user == "jdoe" && $uri == "https://example.com/question" && $av == $nouvelAvancement;
-			})
-			->andReturn($nouvelAvancement);
-		$mockDAOFactory = DAOFactory::getInstance();
-		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
-
-		$interacteur = new SoumettreTentativeProgInt();
-		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
-			self::$question,
-			self::$tentativeSoumiseIncorrecte,
-		);
-		$this->assertEquals($tentative_attendue, $tentative_obtenue);
-	}
-
-	public function test_étant_donné_une_questionprog_une_tentative_réussie_et_un_avancement_réussi_lorsqu_on_appelle_soumettre_tentative_lavancement_est_créé_et_sauvegardé_et_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
-	{
-		$tentative_attendue = new TentativeProg(
-			langage: "python",
-			code: "#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
-			date_soumission: 1615696286,
-			réussi: true,
-			tests_réussis: 1,
-			temps_exécution: 122,
-			feedback: "feedbackGénéralPositif",
-			résultats: [new RésultatProg("sortieTest", "", true, "feedbackPositif", 100)],
-		);
-
-		$nouvelAvancement = new Avancement(
-			etat: Question::ETAT_REUSSI,
-			type: Question::TYPE_PROG,
-			tentatives: [self::$ancienneTentativeRéussie, $tentative_attendue],
-			titre: "Bonsoir",
-			niveau: "facile",
-			date_modification: 1615696286,
-			date_réussite: 1615696285,
-		);
-
-		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
-		$mockAvancementDAO
-			->shouldReceive("get_avancement")
-			->with("jdoe", "https://example.com/question")
-			->andReturn(self::$ancienAvancementRéussi);
-
-		$mockAvancementDAO
-			->shouldReceive("save")
-			->withArgs(function ($user, $uri, $av) use ($nouvelAvancement) {
-				return $user == "jdoe" && $uri == "https://example.com/question" && $av == $nouvelAvancement;
-			})
-			->andReturn($nouvelAvancement);
-		$mockDAOFactory = DAOFactory::getInstance();
-		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
-
-		$interacteur = new SoumettreTentativeProgInt();
-		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
-			self::$question,
-			self::$tentativeSoumiseCorrecte,
-		);
-
-		$this->assertEquals($tentative_attendue, $tentative_obtenue);
-	}
-
-	public function test_étant_donné_une_questionprog_une_tentative_réussie_et_un_avancement_non_réussi_lorsqu_on_appelle_soumettre_tentative_lavancement_est_créé_et_sauvegardé_et_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats()
-	{
-		$tentative_attendue = new TentativeProg(
-			langage: "python",
-			code: "#Commentaire invisible\n#+VISIBLE\n#+TODO\nprint(\"je fais mon possible!\")\n#-TODO\n# Rien à faire ici\n#+TODO\n# À faire\n\n",
-			date_soumission: 1615696286,
-			réussi: true,
-			tests_réussis: 1,
-			temps_exécution: 122,
-			feedback: "feedbackGénéralPositif",
-			résultats: [new RésultatProg("sortieTest", "", true, "feedbackPositif", 100)],
-		);
-
-		$nouvelAvancement = new Avancement(
-			etat: Question::ETAT_REUSSI,
-			type: Question::TYPE_PROG,
-			tentatives: [self::$ancienneTentativeÉchouée, $tentative_attendue],
-			titre: "Bonsoir",
-			niveau: "facile",
-			date_modification: 1615696286,
-			date_réussite: 1615696286,
-		);
-
-		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
-		$mockAvancementDAO
-			->shouldReceive("get_avancement")
-			->with("jdoe", "https://example.com/question")
-			->andReturn(self::$ancienAvancementÉchoué);
-
-		$mockAvancementDAO
-			->shouldReceive("save")
-			->withArgs(function ($user, $uri, $av) use ($nouvelAvancement) {
-				return $user == "jdoe" && $uri == "https://example.com/question" && $av == $nouvelAvancement;
-			})
-			->andReturn($nouvelAvancement);
-		$mockDAOFactory = DAOFactory::getInstance();
-		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
-
-		$interacteur = new SoumettreTentativeProgInt();
-		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
-			self::$question,
-			self::$tentativeSoumiseCorrecte,
 		);
 
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);

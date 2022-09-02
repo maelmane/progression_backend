@@ -1,0 +1,28 @@
+[
+	{
+		"nom": "Toutes Permissions",
+		"sortie_attendue": "-rwxrwxrwx",
+		"feedback_err": null,
+		"feedback_pos": null,
+		"feedback_neg": null,
+        "validation" : "laValidation",
+        "utilisateur" : "utilisateur",
+		"id": "0",
+		"links": {
+			"related": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+		}
+	},
+	{
+		"nom": "Read Write Permissions",
+		"sortie_attendue": "-rw-rw-rw-",
+		"feedback_err": null,
+		"feedback_pos": "positif",
+		"feedback_neg": "négatif",
+        "validation" : "laValidation2",
+        "utilisateur" : "utilisateur2",
+		"id": "1",
+		"links": {
+			"related": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+		}
+	}
+]

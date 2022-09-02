@@ -18,19 +18,71 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Commentaire;
+use progression\domaine\entité\{Commentaire, User};
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
 final class ObtenirCommentaireIntTests extends TestCase
 {
-	public function test_étant_donné_un_commentaire_existant_lorsquon_le_recherche_par_id_on_obtient_un_objet_commentaire_correspondant()
+	public function setUp(): void
 	{
-		$commentaireAttendu = new ObtenirCommentaireInt();
-		$commentaire[3] = new Commentaire("le 3er message", "Stefany", 1615696276, 14);
-		$réponse_attendue = $commentaire;
-		$this->assertEquals($commentaire, $commentaireAttendu->get_commentaire_par_id(3));
+		parent::setUp();
+
+		$mockCommentaireDAO = Mockery::mock("progression\\dao\\CommentaireDAO");
+
+		$tableauCommentaires = [
+			new Commentaire("le 1er message", new User("jdoe"), 1615696276, 14),
+			new Commentaire("le 2er message", new User("admin"), 1615696276, 12),
+			new Commentaire("le 3er message", new User("Stefany"), 1615696276, 14),
+		];
+
+		$mockCommentaireDAO
+			->shouldReceive("get_commentaire")
+			->with(3, [])
+			->andReturn(new Commentaire("le 3er message", null, 1615696276, 14));
+		$mockCommentaireDAO
+			->shouldReceive("get_commentaire")
+			->with(3, ["créateur"])
+			->andReturn(new Commentaire("le 3er message", new User("Stefany"), 1615696276, 14));
+		$mockCommentaireDAO
+			->shouldReceive("get_tous_par_tentative")
+			->with("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", 1615696276, [
+				"créateur",
+			])
+			->andReturn($tableauCommentaires);
+		$mockCommentaireDAO->shouldReceive("get_commentaire")->andReturn(null);
+
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
+		$mockDAOFactory
+			->allows()
+			->get_commentaire_dao()
+			->andReturn($mockCommentaireDAO);
+		DAOFactory::setInstance($mockDAOFactory);
+	}
+
+	public function tearDown(): void
+	{
+		Mockery::close();
+		DAOFactory::setInstance(null);
+	}
+
+	public function test_étant_donné_un_commentaire_existant_lorsquon_le_recherche_par_id_sans_inclusion_on_obtient_un_objet_commentaire()
+	{
+		$résultat_observé = new ObtenirCommentaireInt();
+
+		$résultat_attendu = new Commentaire("le 3er message", null, 1615696276, 14);
+
+		$this->assertEquals($résultat_attendu, $résultat_observé->get_commentaire_par_id(3));
+	}
+
+	public function test_étant_donné_un_commentaire_existant_lorsquon_le_recherche_par_id_en_incluant_le_créateur_on_obtient_un_objet_commentaire_et_son_créateur()
+	{
+		$résultat_observé = new ObtenirCommentaireInt();
+
+		$résultat_attendu = new Commentaire("le 3er message", new User("Stefany"), 1615696276, 14);
+
+		$this->assertEquals($résultat_attendu, $résultat_observé->get_commentaire_par_id(3, ["créateur"]));
 	}
 
 	public function test_étant_donné_un_id_inexistant_lorsquon_cherche_son_commentaire_on_obtient_null()
@@ -39,20 +91,23 @@ final class ObtenirCommentaireIntTests extends TestCase
 
 		$this->assertNull($commentaireAttendu->get_commentaire_par_id(9999999));
 	}
-	public function test_étant_donné_des_commentaires_existants_lorsquon_les_recherche_par_tentative_on_obtient_une_liste_de_commentaires_correspondante()
+	public function test_étant_donné_des_commentaires_existants_lorsquon_les_recherche_par_tentative_en_incluant_les_créateurs_on_obtient_une_liste_de_commentaires_correspondante()
 	{
-		$commentaireObtenu = new ObtenirCommentaireInt();
+		$résultat_observé = new ObtenirCommentaireInt();
 
-		$tableauCommentaire[1] = new Commentaire("le 1er message", "jdoe", 1615696276, 14);
-		$tableauCommentaire[2] = new Commentaire("le 2er message", "admin", 1615696276, 12);
-		$tableauCommentaire[3] = new Commentaire("le 3er message", "Stefany", 1615696276, 14);
+		$tableauCommentaire = [
+			new Commentaire("le 1er message", new User("jdoe"), 1615696276, 14),
+			new Commentaire("le 2er message", new User("admin"), 1615696276, 12),
+			new Commentaire("le 3er message", new User("Stefany"), 1615696276, 14),
+		];
 		$réponse_attendue = $tableauCommentaire;
 		$this->assertEquals(
 			$réponse_attendue,
-			$commentaireObtenu->get_commentaires_par_tentative(
+			$résultat_observé->get_tous_par_tentative(
 				"bob",
 				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
 				1615696276,
+				["créateur"],
 			),
 		);
 	}

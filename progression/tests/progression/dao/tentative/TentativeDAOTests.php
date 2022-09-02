@@ -18,20 +18,25 @@
 
 namespace progression\dao\tentative;
 
-use PHPUnit\Framework\TestCase;
-use progression\dao\DAOFactory;
+use progression\TestCase;
 use progression\dao\EntitéDAO;
 
 final class TentativeDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
-		EntitéDAO::get_connexion()->begin_transaction();
+		parent::setUp();
+		app("db")
+			->connection()
+			->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
-		EntitéDAO::get_connexion()->rollback();
+		app("db")
+			->connection()
+			->rollBack();
+		parent::tearDown();
 	}
 
 	public function test_étant_donné_une_tentative_inexistante_lorsquon_récupère_la_tentative_on_obtient_null()
@@ -43,8 +48,8 @@ final class TentativeDAOTests extends TestCase
 
 	public function test_étant_donné_une_question_inexistante_lorsquon_récupère_toutes_les_tentatives_on_obtient_un_tableau_vide()
 	{
-		$résultat_observé = (new TentativeDAO())->get_toutes("exemple", "exemple", 0);
+		$résultat_observé = (new TentativeDAO())->get_toutes("exemple", "exemple");
 
-		$this->assertNull($résultat_observé);
+		$this->assertEquals([], $résultat_observé);
 	}
 }

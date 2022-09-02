@@ -29,6 +29,8 @@ class Standardiseur
 			$beautifier_cmd = ["clang-format", "-"];
 		} elseif ($lang == "java") {
 			$beautifier_cmd = ["clang-format", "-"];
+		} elseif ($lang == "kotlin") {
+			$beautifier_cmd = ["ktlint", "-F", "--stdin"];
 		} elseif ($lang == "bash") {
 			$beautifier_cmd = ["beautysh", "-"];
 		} elseif ($lang == "javascript") {
@@ -46,23 +48,26 @@ class Standardiseur
 		];
 
 		$proc = proc_open($beautifier_cmd, $descriptorspec, $pipes);
+		if ($proc) {
+			$stdout = "";
+			if (is_resource($proc)) {
+				fwrite($pipes[0], $code);
+				fclose($pipes[0]);
 
-		$stdout = "";
-		if (is_resource($proc)) {
-			fwrite($pipes[0], $code);
-			fclose($pipes[0]);
+				$stdout = stream_get_contents($pipes[1]);
+				fclose($pipes[1]);
+			}
 
-			$stdout = stream_get_contents($pipes[1]);
-			fclose($pipes[1]);
-		}
+			$retour = proc_close($proc);
+			if ($retour != 0) {
+				Log::error("Beautifier erreur code $retour");
+			} else {
+				Log::debug("Code formaté : $stdout");
+			}
 
-		$retour = proc_close($proc);
-		if ($retour != 0) {
-			Log::error("Beautifier erreur code $retour");
+			return $retour == 0 ? $stdout : $code;
 		} else {
-			Log::debug("Code formaté : $stdout");
+			return false;
 		}
-
-		return $retour == 0 ? $stdout : $code;
 	}
 }
