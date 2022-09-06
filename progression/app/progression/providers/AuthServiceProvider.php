@@ -70,7 +70,7 @@ class AuthServiceProvider extends ServiceProvider
 			if (
 				$tokenDécodé &&
 				$this->vérifierRessourceAutorisée($tokenDécodé["ressources"], $request) &&
-				$user->username == $request->username
+				mb_strtolower($user->username) == mb_strtolower($request->username)
 			) {
 				return true;
 			}
@@ -84,7 +84,7 @@ class AuthServiceProvider extends ServiceProvider
 
 			if (
 				$tokenRessourceDécodé &&
-				$request->username == $tokenRessourceDécodé["username"] &&
+				mb_strtolower($request->username) == mb_strtolower($tokenRessourceDécodé["username"]) &&
 				$this->vérifierExpirationToken($tokenRessourceDécodé) &&
 				$this->vérifierRessourceAutorisée($tokenRessourceDécodé["ressources"], $request)
 			) {

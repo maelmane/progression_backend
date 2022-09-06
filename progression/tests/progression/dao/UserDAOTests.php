@@ -72,6 +72,16 @@ final class UserDAOTests extends TestCase
 		$this->assertEquals($réponse_attendue, $réponse_observée);
 	}
 
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_EN_MAJUSCULES_sans_inclusion_on_obtient_son_profil()
+	{
+		$réponse_attendue = new User("bob");
+		$réponse_attendue->avancements = [];
+		$réponse_attendue->clés = [];
+
+		$réponse_observée = (new UserDAO())->get_user("BOB");
+		$this->assertEquals($réponse_attendue, $réponse_observée);
+	}
+
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_incluant_les_avancements_on_obtient_son_profil_et_ses_avancements()
 	{
 		$réponse_attendue = $this->bob;
