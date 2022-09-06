@@ -45,6 +45,10 @@ final class ValidationPermissionsTests extends TestCase
 			->andReturn(new User("bob"));
 		$mockUserDAO
 			->allows()
+			->get_user("Bob", [])
+			->andReturn(new User("bob"));
+		$mockUserDAO
+			->allows()
 			->get_user("jdoe", [])
 			->andReturn(new User("jdoe"));
 
@@ -63,6 +67,16 @@ final class ValidationPermissionsTests extends TestCase
 	public function test_étant_donné_un_utilisateur_normal_bob_connecté_lorsquon_demande_une_ressource_pour_ce_même_utilisateur_on_obtient_OK()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/bob", [], [], [], $this->headers);
+
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/profil_bob.json",
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_utilisateur_normal_bob_connecté_lorsquon_demande_une_ressource_pour_ce_même_utilisateur_avec_une_casse_différente_on_obtient_OK()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("GET", "/user/Bob", [], [], [], $this->headers);
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/profil_bob.json",
