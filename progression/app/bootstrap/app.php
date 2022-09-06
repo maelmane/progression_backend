@@ -49,6 +49,8 @@ $app->singleton(Illuminate\Contracts\Console\Kernel::class, progression\console\
 
 $app->configure("app");
 $app->configure("version");
+$app->configure("database");
+$app->configure("logging");
 
 /*
    |--------------------------------------------------------------------------
@@ -121,7 +123,5 @@ $app->router->group(
 		require __DIR__ . "/../routes/web.php";
 	},
 );
-
-$app->configure("database");
 
 return $app;
