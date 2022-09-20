@@ -223,6 +223,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
 	}
 
+    // POST
 	public function test_étant_donné_le_chemin_dune_question_non_fourni_dans_la_requete_lorsquon_appelle_post_avec_un_avancement_on_obtient_une_erreur_400()
 	{
 		$avancementTest = ["état" => Question::ETAT_REUSSI];
@@ -243,6 +244,32 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
 		]);
+
+		$this->assertResponseStatus(200);
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/avancementCtlTests_nouvelAvancement_défaut.json",
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_le_username_dun_utilisateur_et_le_chemin_dune_question_lorsquon_appelle_post_avec_un_avancement_on_obtient_le_nouvel_avancement_sauvegardé()
+	{
+        $nouvel_avancement = new Avancement(
+                titre: "Nouvel Avancement de test",
+                niveau: "test",
+                extra: "Infos extra"
+        );
+        
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
+			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
+            "avancement" => ["titre" => "Nouvel Avancement de test", "niveau" => "test", "extra" => "Infos extra"]
+		]);
+
+        $mockAvancementDAO = $mockDAOFactory->getAvancementDAO();
+        $mockAvancementDAO
+			->shouldReceive("save")
+			->with("jdoe", "https://depot.com/roger/questions_prog/nouvelle_question", $nouvel_avancement)
+			->andReturn($nouvel_avancement);
 
 		$this->assertResponseStatus(200);
 		$this->assertJsonStringEqualsJsonFile(

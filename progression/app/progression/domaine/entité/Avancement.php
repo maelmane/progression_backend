@@ -27,12 +27,13 @@ class Avancement
 	public $date_modification;
 	public $date_réussite;
 	public $sauvegardes;
+    public $extra;
 
 	/**
 	 * @param array<Tentative> $tentatives
 	 * @param array<Sauvegarde> $sauvegardes
 	 **/
-	public function __construct(array $tentatives = [], $titre = "", $niveau = "", array $sauvegardes = [])
+    public function __construct(array $tentatives = [], $titre = "", $niveau = "", array $sauvegardes = [], $extra = "")
 	{
 		$this->etat = Question::ETAT_DEBUT;
 		$this->tentatives = $tentatives;
@@ -41,6 +42,7 @@ class Avancement
 		$this->date_modification = null;
 		$this->date_réussite = null;
 		$this->sauvegardes = $sauvegardes;
+        $this->extra = $extra;
 
 		$this->mettre_à_jour_dates_et_état();
 	}

@@ -51,7 +51,7 @@ class AvancementCtl extends Contrôleur
 		if ($validateur->fails()) {
 			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} else {
-			$avancement = $request->avancement;
+			$avancement = $this->construire_avancement($request->avancement);
 
 			$avancement_sauvegardé = $this->créer_ou_sauvegarder_avancement(
 				$avancement,
@@ -106,7 +106,6 @@ class AvancementCtl extends Contrôleur
 			$request->all(),
 			[
 				"question_uri" => "required",
-				"avancement.état" => "required_with:avancement|integer|between:0,2",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
@@ -149,9 +148,19 @@ class AvancementCtl extends Contrôleur
 
 		$chemin = Encodage::base64_decode_url($question_uri);
 		$question = (new ObtenirQuestionInt())->get_question($chemin);
-		$avancement = new Avancement([], $question->titre, $question->niveau);
+		$avancement = new Avancement(
+            titre: $question->titre ?? "",
+            niveau: $question->niveau ?? "");
 
 		Log::debug("AvancementCtl.créer_avancement. Retour : ", [$avancement]);
 		return $avancement;
 	}
+
+    private function construire_avancement($avancement){
+        return new Avancement(
+            titre: $avancement["titre"] ?? "",
+            niveau: $avancement["niveau"] ?? "",
+            extra: $avancement["extra"] ?? null
+        );
+    }
 }

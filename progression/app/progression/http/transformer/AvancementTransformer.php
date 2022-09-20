@@ -36,6 +36,7 @@ class AvancementTransformer extends BaseTransformer
 			"niveau" => $avancement->niveau,
 			"date_modification" => $avancement->date_modification,
 			"date_réussite" => $avancement->date_réussite,
+			"extra" => $avancement->extra,
 			"links" => (isset($avancement->links) ? $avancement->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}avancement/{$this->id}/{$avancement->id}",
 			],
