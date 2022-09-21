@@ -43,7 +43,8 @@
         "titre": "",
         "niveau": "",
         "date_modification": null,
-        "date_réussite": null
+        "date_réussite": null,
+		"extra": ""
       },
       "links": {
         "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
@@ -71,6 +72,7 @@
         "date_réussite": null,
         "niveau": "",
         "titre": "",
+		"extra": "",
         "état": 0
       },
       "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",

@@ -6,7 +6,8 @@
 		"date_réussite": null,
 		"niveau": "",
 		"titre": "",
-		"état": 0
+		"état": 0,
+        "extra": ""
 	    },
 	    "id": "jdoe/dXJpX2E",
 	    "links": {
@@ -34,7 +35,8 @@
 		"date_réussite": null,
 		"niveau": "",
 		"titre": "",
-		"état": 0
+		"état": 0,
+        "extra": ""
 	    },
 	    "id": "jdoe/dXJpX2I",
 	    "links": {

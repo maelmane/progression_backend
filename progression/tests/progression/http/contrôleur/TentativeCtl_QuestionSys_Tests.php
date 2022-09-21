@@ -366,11 +366,16 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_une_question_sys_avec_tests_de_validation_lorsquon_soumet_une_tentative_validée_réussie_lavancement_et_la_tentative_sont_sauvegardée_et_on_obtient_une_TentativeSys_réussie()
-	{
-	}
+	/*
 
-	public function test_étant_donné_une_question_sys_avec_tests_de_validation_lorsquon_soumet_une_tentative_échouée_lavancement_et_la_tentative_sont_sauvegardée_et_on_obtient_une_TentativeSys_échouée()
-	{
-	}
+      À faire : https://git.dti.crosemont.quebec/progression/progression_backend/-/issues/119
+
+      public function test_étant_donné_une_question_sys_avec_tests_de_validation_lorsquon_soumet_une_tentative_validée_réussie_lavancement_et_la_tentative_sont_sauvegardée_et_on_obtient_une_TentativeSys_réussie()
+      {
+      }
+
+      public function test_étant_donné_une_question_sys_avec_tests_de_validation_lorsquon_soumet_une_tentative_échouée_lavancement_et_la_tentative_sont_sauvegardée_et_on_obtient_une_TentativeSys_échouée()
+      {
+      }
+    */
 }
