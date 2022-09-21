@@ -22,11 +22,23 @@ use progression\domaine\entité\{Avancement, Question, QuestionProg, QuestionSys
 
 class SauvegarderAvancementInt extends Interacteur
 {
-	public function sauvegarder(string $username, string $question_uri, Avancement $nouvelAvancement): Avancement
-	{
+	public function sauvegarder(
+		string $username,
+		string $question_uri,
+		Avancement $nouvel_avancement,
+		Question $question = null
+	): Avancement|null {
+		$question = $question ?? $this->source_dao->get_question_dao()->get_question($question_uri);
+
+		if (!$question) {
+			return null;
+		}
+
+		$nouvel_avancement->titre = $question->titre ?? "";
+		$nouvel_avancement->niveau = $question->niveau ?? "";
+
 		$dao_avancement = $this->source_dao->get_avancement_dao();
-		$avancement = $dao_avancement->save($username, $question_uri, $nouvelAvancement);
-		return $avancement;
+		return $dao_avancement->save($username, $question_uri, $nouvel_avancement);
 	}
 
 	public function récupérer_avancement(string $username, string $question_uri, Tentative $tentative): Avancement

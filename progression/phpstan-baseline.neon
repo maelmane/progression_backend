@@ -2886,36 +2886,6 @@ parameters:
 			path: app/progression/domaine/interacteur/TraiterTentativeSysInt.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\AvancementCtl\\:\\:créer_avancement\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/AvancementCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\AvancementCtl\\:\\:créer_avancement\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/AvancementCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\AvancementCtl\\:\\:créer_ou_sauvegarder_avancement\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/AvancementCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\AvancementCtl\\:\\:créer_ou_sauvegarder_avancement\\(\\) has parameter \\$avancement with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/AvancementCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\AvancementCtl\\:\\:créer_ou_sauvegarder_avancement\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/AvancementCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\AvancementCtl\\:\\:créer_ou_sauvegarder_avancement\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/AvancementCtl.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\AvancementCtl\\:\\:get\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/AvancementCtl.php

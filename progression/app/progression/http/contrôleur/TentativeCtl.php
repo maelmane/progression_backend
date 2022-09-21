@@ -236,12 +236,10 @@ class TentativeCtl extends Contrôleur
 		$avancementInt = new ObtenirAvancementInt();
 		$avancement = $avancementInt->get_avancement($username, $chemin);
 
-		$avancement->titre = $question->titre;
-		$avancement->niveau = $question->niveau;
 		$avancement->ajouter_tentative($tentative);
 
 		$avancementInt = new SauvegarderAvancementInt();
-		$avancementInt->sauvegarder($username, $chemin, $avancement);
+		$avancementInt->sauvegarder($username, $chemin, $avancement, $question);
 	}
 
 	private function récupérer_conteneur($username, $chemin)
