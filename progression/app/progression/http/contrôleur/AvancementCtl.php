@@ -133,12 +133,4 @@ class AvancementCtl extends Contrôleur
 			extra: $avancement["extra"] ?? null,
 		);
 	}
-
-    private function construire_avancement($avancement){
-        return new Avancement(
-            titre: $avancement["titre"] ?? "",
-            niveau: $avancement["niveau"] ?? "",
-            extra: $avancement["extra"] ?? null
-        );
-    }
 }
