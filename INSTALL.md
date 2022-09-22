@@ -34,7 +34,8 @@ Modifier le type d'authentification et l'hôte pour le compilebox du fichier `.e
 Désactiver **l'authentification** et effectuer les compilations avec l'exécuteur **compilebox** localement.
 
 ```
-AUTH_TYPE=no
+AUTH_LOCAL=no
+AUTH_LDAP=no
 COMPILEBOX_HOTE=172.20.0.1
 ```
 
@@ -47,22 +48,6 @@ Compilation des images docker
 ```
 docker-compose build progression
 ```
-
-### Initialiser la base de données
-
-Création (ou réinitialisation) de la base de données
-
-```
-docker-compose up -d db
-```
-
-(laissez quelques secondes de démarrage au SGBD)
-
-```
-docker exec -it progression_db /docker-entrypoint-initdb.d/build_db.sh
-```
-
-Fermer le terminal avec Ctrl-D ou `exit`
 
 ## 2. Démarrer l'application
 
@@ -85,28 +70,5 @@ L'application est accessible via: http://172.20.0.3/
 Lancer les tests
 
 ```
-docker-compose up tests
-```
-
-## 4. FAQ
-
-Q: Pourquoi `docker-compose build` me donne des erreurs ?
-
-- Assurez-vous que votre utilisateur fait partie du groupe docker. Le résultat de la commande `groups` devrait inclure le groupe `docker`.
-
-- Assurez-vous que Docker est en marche!
-
-```
-systemctl enable docker
-systemctl start docker
-```
-
-Q: Comment supprimer les images et les conteneurs inutiles ?
-
-- Utiliser ce script :
-
-```
-docker images --no-trunc | grep '<none>' | awk '{ print $3 }' | xargs -r docker rmi
-docker ps --filter status=dead --filter status=exited -aq | xargs -r docker rm
-docker volume ls -qf dangling=true | xargs -r docker volume rm
+docker-compose run tests
 ```
