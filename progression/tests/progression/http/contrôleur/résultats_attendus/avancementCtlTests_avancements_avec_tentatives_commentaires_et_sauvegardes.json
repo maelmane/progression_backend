@@ -6,7 +6,8 @@
         "date_réussite": 1614965818,
         "niveau": "",
         "titre": "",
-        "état": 2
+        "état": 2,
+        "extra": ""
       },
       "id": "jdoe/dXJpX2E",
       "links": {
@@ -50,7 +51,8 @@
         "date_réussite": null,
         "niveau": "",
         "titre": "",
-        "état": 0
+        "état": 0,
+        "extra": ""
       },
       "id": "jdoe/dXJpX2I",
       "links": {
