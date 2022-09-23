@@ -62,7 +62,7 @@ linter:
 version_check:
   stage: version_check
   script:
-    - docker run -v $PWD:/progression_backend bitnami/git bash -c "git config --global --add safe.directory /progression_backend && cd /progression_backend && [ $(echo \"(\" $(git show HEAD^:VERSION|tr '.' '+') \")-(\" $(git show HEAD^:VERSION|tr '.' '+') \") > 0" |bc) -gt 0 ] || echo ERREUR le numéro de version n'a pas avancé"
+    - docker run -v $PWD:/progression_backend bitnami/git bash -c "git config --global --add safe.directory /progression_backend && cd /progression_backend && [ $(echo \"(\" $(git show HEAD^:VERSION|tr '.' '+') \")-(\" $(git show HEAD^:VERSION|tr '.' '+') \") > 0\" |bc) -gt 0 ] || echo ERREUR le numéro de version n'a pas avancé"
   only:
   - master
 
