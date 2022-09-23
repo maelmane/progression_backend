@@ -63,7 +63,7 @@ version_check:
   stage: version_check
   script:
     - ls
-    - docker run -v $PWD/progression_backend:/progression_backend bitnami/git bash -c "git config --global --add safe.directory /progression_backend && git diff --name-only HEAD..HEAD^ | grep -q VERSION"
+    - docker run -v $PWD/progression_backend:/progression_backend bitnami/git bash -c "git config --global --add safe.directory /progression_backend && git --git-dir /progression_backend diff --name-only HEAD..HEAD^ | grep -q VERSION"
   only:
   - master
 
