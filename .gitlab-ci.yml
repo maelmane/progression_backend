@@ -9,6 +9,7 @@ cache:
   - progression/vendor
 
 stages:
+  - version_check
   - build_image
   - test
   - tag_image
@@ -58,11 +59,19 @@ linter:
 
 # Stage build_image
 
+version_check:
+  stage: version_check
+  script:
+    - git diff --name-only HEAD..HEAD^ | grep -q VERSION
+  only:
+  - master
+
 # Construction de l'image
 const_image:
   stage: build_image  
   before_script: *login
 
+  needs: [version_check]
   variables:
     DOCKER_BUILDKIT: 1 
   script:
