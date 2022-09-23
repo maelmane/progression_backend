@@ -25,7 +25,9 @@ services:
     image: git.dti.crosemont.quebec:5050/progression/progression_backend:$TAG_DEPLOY
     build: progression
     container_name: progression_$CI_ENVIRONMENT_SLUG
-    env_file: $ENV_FILE
+    env_file: 
+      - $ENV_FILE
+      - VERSION
     environment:
       - APP_COMMIT_SHA=$CI_COMMIT_SHORT_SHA
     ports:
