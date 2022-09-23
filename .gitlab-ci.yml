@@ -62,7 +62,7 @@ linter:
 version_check:
   stage: version_check
   script:
-    - git diff --name-only HEAD..HEAD^ | grep -q VERSION
+    - docker run bitnami/git git diff --name-only HEAD..HEAD^ | grep -q VERSION
   only:
   - master
 
