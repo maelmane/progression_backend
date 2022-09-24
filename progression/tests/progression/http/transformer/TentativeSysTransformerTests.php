@@ -23,6 +23,32 @@ use progression\domaine\entité\{TentativeSys, Résultat, Commentaire};
 
 final class TentativeSysTransformerTests extends TestCase
 {
+	public function test_étant_donné_une_TentativeSys_instanciée_avec_des_valeurs_minimales_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
+
+		$tentative = new TentativeSys("conteneurDeLaTentative", "oui");
+		$tentative->id = "id";
+
+		$tentativeTransformer = new TentativeSysTransformer("roger/uri");
+		$résultat = [
+			"id" => "roger/uri/id",
+			"date_soumission" => null,
+			"sous-type" => "tentativeSys",
+			"réussi" => false,
+			"tests_réussis" => 0,
+			"feedback" => "",
+			"conteneur" => "conteneurDeLaTentative",
+			"réponse" => "oui",
+			"temps_exécution" => null,
+			"links" => [
+				"self" => "https://example.com/tentative/roger/uri/id",
+			],
+		];
+
+		$this->assertEquals($résultat, $tentativeTransformer->transform($tentative));
+	}
+
 	public function test_étant_donné_une_TentativeSys_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";

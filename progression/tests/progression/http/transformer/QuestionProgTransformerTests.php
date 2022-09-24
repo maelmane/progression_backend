@@ -29,6 +29,18 @@ final class QuestionProgTransformerTests extends TestCase
 
 		$_ENV["APP_URL"] = "https://example.com/";
 	}
+	public function test_étant_donné_une_questionprog_instanciée_avec_des_valeurs_minimales_lorsquon_le_transforme_on_obtient_un_tableau_d_objets_identique()
+	{
+		$question = new QuestionProg();
+		$question->id = "id";
+
+		$item = (new QuestionProgTransformer())->transform($question);
+
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/questionProgTransformerTest_minimal.json",
+			json_encode($item),
+		);
+	}
 
 	public function test_étant_donné_une_questionprog_instanciée_avec_des_valeurs_lorsquon_le_transforme_on_obtient_un_tableau_d_objets_identique()
 	{
@@ -37,7 +49,8 @@ final class QuestionProgTransformerTests extends TestCase
 		$question = new QuestionProg();
 		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->titre = "Appeler une fonction paramétrée";
-		$question->description = "Appel d\'une fonction existante recevant un paramètre";
+		$question->objectif = "Appeler une fonction existante recevant un paramètre";
+		$question->description = "Ceci est une fonction prog complète";
 		$question->enonce =
 			"La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
 		$question->auteur = "Albert Einstein";

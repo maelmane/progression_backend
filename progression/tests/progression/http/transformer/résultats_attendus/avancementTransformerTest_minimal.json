@@ -1,0 +1,12 @@
+{
+	"date_modification": null,
+	"date_réussite": null,
+	"id": "jdoe/id",
+	"\u00e9tat": 0,
+	"links": {
+		"self": "https://example.com/avancement/jdoe/id"
+	},
+	"niveau": "",
+	"titre": "",
+	"extra": ""
+}

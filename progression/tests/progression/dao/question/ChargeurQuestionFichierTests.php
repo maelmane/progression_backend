@@ -27,7 +27,7 @@ final class ChargeurQuestionFichierTests extends TestCase
 	{
 		$résultat_attendu["type"] = "prog";
 		$résultat_attendu["titre"] = "Affichage répété";
-		$résultat_attendu["description"] = "Exercice simple sur les itérations à nombre d'itérations fixe";
+		$résultat_attendu["objectif"] = "Exercice simple sur les itérations à nombre d'itérations fixe";
 		$résultat_attendu["énoncé"] =
 			"Saisissez un nombre sur l'entrée standard puis faites afficher la phrase «Bonjour le monde!» autant de fois.";
 		$résultat_attendu["auteur"] = "Albert Einstein";

@@ -40,7 +40,8 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 		$question->type = Question::TYPE_PROG;
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		$question->titre = "Appeler une fonction paramétrée";
-		$question->description = "Appel d'une fonction existante recevant un paramètre";
+		$question->objectif = "Appel d'une fonction existante recevant un paramètre";
+		$question->description = "Ceci est une question prog complète";
 		$question->enonce =
 			"La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
 		$question->auteur = "Albert Einstein";

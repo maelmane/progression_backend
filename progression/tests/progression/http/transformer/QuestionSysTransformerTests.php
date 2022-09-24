@@ -30,6 +30,19 @@ final class QuestionSysTransformerTests extends TestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 	}
 
+	public function test_étant_donné_une_questionsys_instanciée_avec_des_valeurs_minimales_lorsquon_le_transforme_on_obtient_un_tableau_d_objets_identique()
+	{
+		$question = new QuestionSys();
+		$question->id = "id";
+
+		$item = (new QuestionSysTransformer())->transform($question);
+
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/questionSysTransformerTest_minimal.json",
+			json_encode($item),
+		);
+	}
+
 	public function test_étant_donné_une_questionsys_instanciée_avec_des_valeurs_lorsquon_le_transforme_on_obtient_un_tableau_d_objets_identique()
 	{
 		$username = "jdoe";
@@ -39,7 +52,8 @@ final class QuestionSysTransformerTests extends TestCase
 			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->titre = "Appeler une fonction paramétrée";
-		$question->description = "Appel d\'une fonction existante recevant un paramètre";
+		$question->objectif = "Appeler une fonction existante recevant un paramètre";
+		$question->description = "Ceci est une question système complète";
 		$question->enonce =
 			"La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
 		$question->auteur = "Albert Einstein";
