@@ -70,8 +70,6 @@ version_check:
 const_image:
   stage: build_image  
   before_script: *login
-
-  needs: [version_check]
   variables:
     DOCKER_BUILDKIT: 1 
   script:

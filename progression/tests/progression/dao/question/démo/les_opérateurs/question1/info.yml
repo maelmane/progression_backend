@@ -1,6 +1,6 @@
 titre: Exemple de question
 
-description: Ceci est un exemple de question portant sur l'arithmétique
+objectif: Ceci est un exemple de question portant sur l'arithmétique
 
 énoncé: >
     Faites afficher la somme des deux nombres donnés

@@ -33,7 +33,8 @@ class Question
 
 	public $niveau = null;
 	public $titre = null;
-	public $description = null;
+	public string|null $description = null;
+	public string|null $objectif = null;
 	public $enonce = null;
 	public $auteur = null;
 	public $licence = null;
@@ -44,22 +45,24 @@ class Question
 	public function __construct(
 		$niveau = null,
 		$titre = null,
-		$description = null,
+		string|null $objectif = null,
 		$enonce = null,
 		$auteur = null,
 		$licence = null,
 		$feedback_pos = null,
 		$feedback_neg = null,
-		$feedback_err = null
+		$feedback_err = null,
+		string|null $description = null
 	) {
 		$this->niveau = $niveau;
 		$this->titre = $titre;
-		$this->description = $description;
+		$this->objectif = $objectif;
 		$this->enonce = $enonce;
 		$this->auteur = $auteur;
 		$this->licence = $licence;
 		$this->feedback_pos = $feedback_pos;
 		$this->feedback_neg = $feedback_neg;
 		$this->feedback_err = $feedback_err;
+		$this->description = $description;
 	}
 }

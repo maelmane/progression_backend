@@ -77,7 +77,7 @@ final class QuestionDAOTests extends TestCase
 			"type" => "sys",
 			"titre" => "Toutes les permissions",
 			"niveau" => "débutant",
-			"description" => "Exercice simple sur les changements de permissions.",
+			"objectif" => "Exercice simple sur les changements de permissions.",
 			"image" => "http://liendelimage.com:3000",
 			"utilisateur" => "matt",
 			"énoncé" =>
@@ -101,7 +101,7 @@ final class QuestionDAOTests extends TestCase
 		$résultat_attendu->niveau = "débutant";
 		$résultat_attendu->enonce =
 			"Appliquez les commandes nécessaires au changement des permissions pour le fichier bonjour.txt. Le fichier doit être public pour tous.";
-		$résultat_attendu->description = "Exercice simple sur les changements de permissions.";
+		$résultat_attendu->objectif = "Exercice simple sur les changements de permissions.";
 		$résultat_attendu->image = "http://liendelimage.com:3000";
 		$résultat_attendu->utilisateur = "matt";
 
@@ -126,7 +126,7 @@ final class QuestionDAOTests extends TestCase
 			"type" => "sys",
 			"titre" => "Toutes les permissions",
 			"niveau" => "débutant",
-			"description" => "Exercice simple sur les changements de permissions.",
+			"objectif" => "Exercice simple sur les changements de permissions.",
 			"image" => "http://liendelimage.com:3000",
 			"solution" => "34",
 			"utilisateur" => "matt",
@@ -151,7 +151,7 @@ final class QuestionDAOTests extends TestCase
 		$résultat_attendu->niveau = "débutant";
 		$résultat_attendu->enonce =
 			"Appliquez les commandes nécessaires au changement des permissions pour le fichier bonjour.txt. Le fichier doit être public pour tous.";
-		$résultat_attendu->description = "Exercice simple sur les changements de permissions.";
+		$résultat_attendu->objectif = "Exercice simple sur les changements de permissions.";
 		$résultat_attendu->image = "http://liendelimage.com:3000";
 		$résultat_attendu->utilisateur = "matt";
 		$résultat_attendu->solution = 34;

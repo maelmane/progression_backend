@@ -30,6 +30,19 @@ final class AvancementTransformerTests extends TestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 	}
 
+	public function test_étant_donné_un_avancement_instancié_avec_des_valeurs_minimales_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
+	{
+		$avancement = new Avancement();
+		$avancement->id = "id";
+
+		$avancementTransformer = new AvancementTransformer("jdoe");
+		$résultats_obtenus = $avancementTransformer->transform($avancement);
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/avancementTransformerTest_minimal.json",
+			json_encode($résultats_obtenus),
+		);
+	}
+
 	public function test_étant_donné_un_avancement_instancié_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
 	{
 		$avancement = new Avancement([], "Ginette Reno", "Un peu plus haut, un peu plus loin");

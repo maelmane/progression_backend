@@ -28,9 +28,9 @@ class QuestionSysTransformer extends QuestionTransformer
 	{
 		$data_out = array_merge(parent::transform($question), [
 			"sous-type" => "questionSys",
-			"image" => $question->image,
-			"utilisateur" => $question->utilisateur,
-			"solution" => $question->solution,
+			"image" => $question->image ?? "",
+			"utilisateur" => $question->utilisateur ?? "",
+			"solution" => $question->solution ?? "",
 		]);
 
 		return $data_out;
