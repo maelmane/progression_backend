@@ -9,7 +9,7 @@ cache:
   - progression/vendor
 
 stages:
-  - version_check
+  - verifications
   - build_image
   - test
   - tag_image
@@ -60,7 +60,7 @@ linter:
 # Stage build_image
 
 version_check:
-  stage: version_check
+  stage: verifications
   script:
     - docker run -v $PWD:/progression_backend bitnami/git bash -c 'git config --global --add safe.directory /progression_backend && cd /progression_backend && dpkg --compare-versions "$(git show HEAD:VERSION|cut -d "=" -f 2)" "gt" "$(git show HEAD^:VERSION|cut -d "=" -f 2)" || ( echo ERREUR la version n’a pas avancé && exit 1 )'
   only:
