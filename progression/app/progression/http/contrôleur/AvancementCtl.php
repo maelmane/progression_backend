@@ -87,6 +87,7 @@ class AvancementCtl extends Contrôleur
 			$request->all(),
 			[
 				"question_uri" => "required",
+				"avancement.extra" => "string",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
