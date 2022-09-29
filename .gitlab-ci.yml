@@ -9,6 +9,7 @@ cache:
   - progression/vendor
 
 stages:
+  - verifications
   - build_image
   - test
   - tag_image
@@ -58,11 +59,17 @@ linter:
 
 # Stage build_image
 
+version_check:
+  stage: verifications
+  script:
+    - docker run -v $PWD:/progression_backend bitnami/git bash -c 'git config --global --add safe.directory /progression_backend && cd /progression_backend && dpkg --compare-versions "$(git show HEAD:VERSION|cut -d "=" -f 2)" "gt" "$(git show HEAD^:VERSION|cut -d "=" -f 2)" || ( echo ERREUR la version n’a pas avancé && exit 1 )'
+  only:
+  - master
+
 # Construction de l'image
 const_image:
   stage: build_image  
   before_script: *login
-
   variables:
     DOCKER_BUILDKIT: 1 
   script:

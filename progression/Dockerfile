@@ -22,24 +22,25 @@ RUN docker-php-source extract &&\
     docker-php-ext-install yaml &&\
     docker-php-source delete
 
-RUN mkdir -p /var/www/progression/
-COPY app /var/www/progression/app/
-COPY tests /var/www/progression/tests/
-COPY autoload_tests.php /var/www/progression/autoload_tests.php
-COPY db /var/www/progression/db/
 
-RUN mkdir -p /var/www/progression/vendor
-COPY --from=composer  /var/www/vendor/ /var/www/progression/vendor/
+RUN mkdir -p /var/www/progression/
+RUN chown www-data:www-data /var/www/progression/
+COPY --chown=www-data:www-data app /var/www/progression/app
+COPY --chown=www-data:www-data tests /var/www/progression/tests
+COPY --chown=www-data:www-data autoload_tests.php /var/www/progression/autoload_tests.php
+COPY --chown=www-data:www-data db /var/www/progression/db
+
+COPY --from=composer --chown=www-data:www-data /var/www/vendor/ /var/www/progression/vendor/
 RUN mkdir -p /var/www/progression/app/storage
 RUN chown www-data:www-data /var/www/progression/app/storage
-
-RUN echo AddDefaultCharset utf-8 >> /etc/apache2/apache2.conf
-RUN sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/progression\/app\/html/' /etc/apache2/sites-available/000-default.conf
-RUN a2enmod rewrite
 
 WORKDIR /var/www/
 RUN chmod +x progression/app/entrypoint.sh
 CMD [ "bash", "progression/app/entrypoint.sh" ]
+
+RUN echo AddDefaultCharset utf-8 >> /etc/apache2/apache2.conf
+RUN sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/progression\/app\/html/' /etc/apache2/sites-available/000-default.conf
+RUN a2enmod rewrite
 
 # Installation des beautifiers pour la standardisation du code soumis
 RUN apt install -y black

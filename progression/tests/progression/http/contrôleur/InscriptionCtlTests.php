@@ -43,6 +43,10 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 			->andReturn(new User("bob"));
 		$mockUserDAO
 			->shouldReceive("get_user")
+			->with("BOB")
+			->andReturn(new User("bob"));
+		$mockUserDAO
+			->shouldReceive("get_user")
 			->with("Marcel")
 			->andReturn(null);
 
@@ -108,6 +112,16 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 		putenv("AUTH_LOCAL=true");
 
 		$résultat_observé = $this->call("POST", "/inscription", ["username" => "bob", "password" => "test"]);
+
+		$this->assertEquals(403, $résultat_observé->status());
+		$this->assertEquals('{"erreur":"Échec de l\'inscription."}', $résultat_observé->getContent());
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_avec_authentification_lorsquon_linscrit_de_nouveau_avec_une_casse_différente_on_obtient_une_erreur_403()
+	{
+		putenv("AUTH_LOCAL=true");
+
+		$résultat_observé = $this->call("POST", "/inscription", ["username" => "BOB", "password" => "test"]);
 
 		$this->assertEquals(403, $résultat_observé->status());
 		$this->assertEquals('{"erreur":"Échec de l\'inscription."}', $résultat_observé->getContent());

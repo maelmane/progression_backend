@@ -28,12 +28,13 @@ class QuestionTransformer extends BaseTransformer
 	{
 		$data_out = [
 			"id" => $question->id,
-			"niveau" => $question->niveau,
-			"titre" => $question->titre,
-			"description" => $question->description,
-			"énoncé" => $question->enonce,
-			"auteur" => $question->auteur,
-			"licence" => $question->licence,
+			"niveau" => $question->niveau ?? "",
+			"titre" => $question->titre ?? "",
+			"objectif" => $question->objectif ?? "",
+			"description" => $question->description ?? "",
+			"énoncé" => $question->enonce ?? "",
+			"auteur" => $question->auteur ?? "",
+			"licence" => $question->licence ?? "",
 			"links" => [
 				"self" => $_ENV["APP_URL"] . "question/" . $question->id,
 			],

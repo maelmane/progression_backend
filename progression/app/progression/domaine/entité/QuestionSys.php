@@ -28,7 +28,7 @@ class QuestionSys extends Question
 	public function __construct(
 		$niveau = null,
 		$titre = null,
-		$description = null,
+		string|null $objectif = null,
 		$enonce = null,
 		$auteur = null,
 		$licence = null,
@@ -38,18 +38,20 @@ class QuestionSys extends Question
 		$image = null,
 		$utilisateur = null,
 		$solution = null,
-		$tests = []
+		$tests = [],
+		string|null $description = null
 	) {
 		parent::__construct(
 			$niveau,
 			$titre,
-			$description,
+			$objectif,
 			$enonce,
 			$auteur,
 			$licence,
 			$feedback_pos,
 			$feedback_neg,
 			$feedback_err,
+			$description,
 		);
 
 		$this->image = $image;

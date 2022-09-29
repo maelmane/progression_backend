@@ -5,7 +5,8 @@
 		"attributes": {
 			"niveau": "débutant",
 			"titre": "Octroyer toutes le permissions",
-			"description": "Octroiement de toutes les permissions.",
+			"objectif": "Octroiement de toutes les permissions.",
+			"description" : "Ceci est une question système complète",
 			"énoncé": "Il faut que l'étudiant trouve les commandes justes pour octroyer toutes les permissions à l'utilisateur krusty.",
 			"auteur": "Albert Einstein",
 			"licence": "poétique",

@@ -25,6 +25,7 @@ class DécodeurQuestion
 		$question->uri = $infos_question["uri"];
 		$question->niveau = $infos_question["niveau"] ?? null;
 		$question->titre = $infos_question["titre"] ?? null;
+		$question->objectif = $infos_question["objectif"] ?? null;
 		$question->description = $infos_question["description"] ?? null;
 		$question->enonce = $infos_question["énoncé"] ?? null;
 		$question->auteur = $infos_question["auteur"] ?? null;

@@ -29,7 +29,7 @@ final class QuestionSysTests extends TestCase
 		$résultat_obtenu = new QuestionSys(
 			niveau: "Facile",
 			titre: "Question système 1",
-			description: "Ceci est une question système.",
+			objectif: "Ceci est une question système.",
 			enonce: "Un énoncé",
 			auteur: "Un auteur",
 			licence: "Licence",

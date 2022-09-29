@@ -30,7 +30,7 @@ final class QuestionProgTests extends TestCase
 		$résultat_obtenu = new QuestionProg(
 			niveau: "Facile",
 			titre: "Question système 1",
-			description: "Ceci est une question système.",
+			objectif: "Tester une question de programmation.",
 			enonce: "Un énoncé",
 			auteur: "Un auteur",
 			licence: "Licence",

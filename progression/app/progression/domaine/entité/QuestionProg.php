@@ -26,7 +26,7 @@ class QuestionProg extends Question
 	public function __construct(
 		$niveau = null,
 		$titre = null,
-		$description = null,
+		string|null $objectif = null,
 		$enonce = null,
 		$auteur = null,
 		$licence = null,
@@ -34,18 +34,20 @@ class QuestionProg extends Question
 		$feedback_neg = null,
 		$feedback_err = null,
 		$exécutables = [],
-		$tests = []
+		$tests = [],
+		string|null $description = null
 	) {
 		parent::__construct(
 			$niveau,
 			$titre,
-			$description,
+			$objectif,
 			$enonce,
 			$auteur,
 			$licence,
 			$feedback_pos,
 			$feedback_neg,
 			$feedback_err,
+			$description,
 		);
 		$this->exécutables = $exécutables;
 		$this->tests = $tests;

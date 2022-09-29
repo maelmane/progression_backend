@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{TentativeProg, Avancement, Question, QuestionProg, User, TentativeSys};
+use progression\domaine\entité\{TentativeProg, Avancement, Question, QuestionProg, QuestionSys, User, TentativeSys};
 use progression\domaine\interacteur\SauvegarderAvancementInt;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
@@ -40,7 +40,7 @@ final class SauvegarderAvancementIntTests extends TestCase
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("jdoe", "https://example.com/question")
+			->with("jdoe", "https://example.com/question_sys")
 			->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -53,14 +53,18 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->get_avancement_dao()
 			->andReturn($mockAvancementDAO);
 
-		$question = new QuestionProg();
-		$question->uri = "file:///prog1/les_fonctions/appeler_une_fonction/info.yml";
+		$question_prog = new QuestionProg();
+		$question_sys = new QuestionSys();
 
 		$mockQuestionDao = Mockery::mock("progression\\dao\\question\\QuestionDAO");
 		$mockQuestionDao
 			->shouldReceive("get_question")
 			->with("file:///prog1/les_fonctions/appeler_une_fonction/info.yml")
-			->andReturn($question);
+			->andReturn($question_prog);
+		$mockQuestionDao
+			->shouldReceive("get_question")
+			->with("https://example.com/question_sys")
+			->andReturn($question_sys);
 		$mockQuestionDao
 			->shouldReceive("get_question")
 			->with("file:///test/de/chemin/non/valide")
@@ -105,10 +109,10 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->get_avancement_dao()
 			->shouldReceive("save")
 			->once()
-			->withArgs(["jdoe", "https://example.com/question", Mockery::any()])
+			->withArgs(["jdoe", "https://example.com/question_sys", Mockery::any()])
 			->andReturnArg(2);
 		$interacteur = new SauvegarderAvancementInt();
-		$résultat_observé = $interacteur->sauvegarder("jdoe", "https://example.com/question", new Avancement());
+		$résultat_observé = $interacteur->sauvegarder("jdoe", "https://example.com/question_sys", new Avancement());
 
 		$résultat_attendu = new Avancement();
 

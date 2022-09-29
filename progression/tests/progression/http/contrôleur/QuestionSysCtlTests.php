@@ -42,7 +42,8 @@ final class QuestionSysCtlTests extends ContrôleurTestCase
 		$questionSys->feedback_neg = "Encore un effort!";
 
 		$questionSys->titre = "Octroyer toutes le permissions";
-		$questionSys->description = "Octroiement de toutes les permissions.";
+		$questionSys->objectif = "Octroiement de toutes les permissions.";
+		$questionSys->description = "Ceci est une question système complète";
 		$questionSys->enonce =
 			"Il faut que l'étudiant trouve les commandes justes pour octroyer toutes les permissions à l'utilisateur krusty.";
 		$questionSys->auteur = "Albert Einstein";

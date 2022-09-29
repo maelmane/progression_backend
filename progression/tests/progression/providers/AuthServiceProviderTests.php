@@ -44,6 +44,10 @@ final class AuthServiceProviderTests extends TestCase
 			->andReturn(new User("utilisateur_lambda"));
 		$mockUserDAO
 			->shouldReceive("get_user")
+			->with("UTILISATEUR_LAMBDA", [])
+			->andReturn(new User("utilisateur_lambda"));
+		$mockUserDAO
+			->shouldReceive("get_user")
 			->with("autre_utilisateur", [])
 			->andReturn(new User("autre_utilisateur"));
 		$mockUserDAO
@@ -64,6 +68,22 @@ final class AuthServiceProviderTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+	}
+
+	public function test_étant_donné_un_token_pour_un_utilisateur_existant_lorsquon_utilise_un_token_avec_un_nom_dutilisateur_avec_une_casse_différente_on_obtient_un_code_200()
+	{
+		$expiration = time() + 1;
+		$tokenUtilisateurLambda = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", $expiration);
+		$this->call(
+			"GET",
+			"/user/UTILISATEUR_LAMBDA",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "Bearer " . $tokenUtilisateurLambda],
+		);
+
+		$this->assertResponseStatus(200);
 	}
 
 	public function test_étant_donné_un_token_pour_un_utilisateur_existant_lorsque_le_token_expire_dans_1_seconde_on_obtient_un_code_200()

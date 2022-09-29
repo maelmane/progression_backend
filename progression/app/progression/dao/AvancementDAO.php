@@ -76,6 +76,7 @@ class AvancementDAO extends EntitéDAO
 			$objet["niveau"] = $avancement->niveau;
 			$objet["date_modification"] = $avancement->date_modification;
 			$objet["date_reussite"] = $avancement->date_réussite;
+			$objet["extra"] = $avancement->extra;
 
 			return $this->construire([
 				AvancementMdl::updateOrCreate(["user_id" => $user["id"], "question_uri" => $question_uri], $objet),
@@ -121,6 +122,7 @@ class AvancementDAO extends EntitéDAO
 			$avancement->etat = $item["etat"];
 			$avancement->date_modification = $item["date_modification"];
 			$avancement->date_réussite = $item["date_reussite"];
+			$avancement->extra = $item["extra"];
 			$avancements[$item["question_uri"]] = $avancement;
 		}
 		return $avancements;
