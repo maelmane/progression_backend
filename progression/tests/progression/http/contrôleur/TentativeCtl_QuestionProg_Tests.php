@@ -230,8 +230,11 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("jdoe", "https://depot.com/question_réussie", [])
-			->andReturn($this->avancement_réussi);
+			->withArgs(["jdoe", "https://depot.com/question_réussie", []])
+			->andReturnValues([
+				new Avancement([$this->tentative_réussie], "Question réussie", "Débutant"),
+				new Avancement([$this->tentative_réussie], "Question réussie", "Débutant"),
+			]);
 
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
@@ -317,12 +320,14 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			],
 			feedback: "Bon travail!",
 		);
-
 		$nouvel_avancement = new Avancement(
 			tentatives: [$this->tentative_réussie, $nouvelle_tentative],
 			titre: "Question réussie",
 			niveau: "Débutant",
 		);
+		$nouvel_avancement->etat = 2;
+		$nouvel_avancement->date_modification = 1653690241;
+		$nouvel_avancement->date_réussite = 1614374490;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
@@ -380,6 +385,9 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			titre: "Question non réussie",
 			niveau: "Débutant",
 		);
+		$nouvel_avancement->etat = 2;
+		$nouvel_avancement->date_modification = 1653690241;
+		$nouvel_avancement->date_réussite = 1653690241;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
@@ -435,6 +443,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			titre: "Question non réussie",
 			niveau: "Débutant",
 		);
+		$nouvel_avancement->etat = 1;
+		$nouvel_avancement->date_modification = 1653690241;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
