@@ -30,14 +30,6 @@ class ObtenirAvancementInt extends Interacteur
 	{
 		$avancement = $this->source_dao->get_avancement_dao()->get_avancement($username, $question_uri, $includes);
 
-		return $avancement ?? $this->créer_avancement($question_uri);
-	}
-
-	private function créer_avancement(string $question_uri): Avancement|null
-	{
-		$question = (new ObtenirQuestionInt())->get_question($question_uri);
-		return $question == null
-			? null
-			: new Avancement(titre: $question->titre ?? "", niveau: $question->niveau ?? "");
+		return $avancement;
 	}
 }
