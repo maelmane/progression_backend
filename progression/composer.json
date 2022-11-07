@@ -18,8 +18,8 @@
     },
     "require-dev": {
         "mockery/mockery": "@stable",
-        "nunomaduro/larastan": "^1.0",
-        "phpstan/phpstan": "^1.5.4",
+        "nunomaduro/larastan": "1.0.3",
+        "phpstan/phpstan": "1.8.11",
         "phpunit/phpunit": "9.5"
     },
     "autoload": {

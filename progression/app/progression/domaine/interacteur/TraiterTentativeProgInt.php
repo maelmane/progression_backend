@@ -62,6 +62,6 @@ class TraiterTentativeProgInt extends Interacteur
 
 	private function vérifier_solution($résultat, $solution)
 	{
-		return $résultat->sortie_observée == $solution && !$résultat->sortie_erreur;
+		return $résultat->sortie_observée === $solution && !$résultat->sortie_erreur;
 	}
 }
