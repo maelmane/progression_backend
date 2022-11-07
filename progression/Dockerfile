@@ -42,6 +42,10 @@ RUN echo AddDefaultCharset utf-8 >> /etc/apache2/apache2.conf
 RUN sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/progression\/app\/html/' /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
 
+RUN echo expose_php = off >> /usr/local/etc/php/conf.d/local.ini
+RUN echo ServerTokens Prod >> /etc/apache2/conf-enabled/security.conf
+RUN echo ServerSignature Off >> /etc/apache2/conf-enabled/security.conf
+
 # Installation des beautifiers pour la standardisation du code soumis
 RUN apt install -y black
 RUN apt install -y clang-format
