@@ -22,13 +22,12 @@ use progression\domaine\entité\Exécutable;
 
 // Matche le contenu de toutes les zones TODO
 
-define("REGEX_MATCH_TODOS", "/(?s:.*?\+TODO.*?\n(.*?))(?:\n?.*-TODO|\Z)/m");
-//                            ^               ^ ^     ^             ^
-//                            |               | |     |             └  ou la fin du document
-//                            |               | |     └ jusqu'à une nouvelle ligne commençant par -TODO
-//                            |               | └ matche le contenu
-//                            |               └ à partir de la ligne suivant +TODO
-//                            └sans égard aux sauts de ligne, matche tout ce qui suit un TODO
+define("REGEX_MATCH_TODOS", "/(?s:(?<=\+TODO)(.*?))(?=-TODO|\Z)/");
+//                            ^              ^     ^        ^
+//                            |              |     |        └  ou la fin du document
+//                            |              |     └ jusqu'à une balise -TODO
+//                            |              └ matche le contenu
+//                            └sans égard aux sauts de ligne, matche tout ce qui suit un +TODO
 class PréparerProgInt
 {
 	public function préparer_exécutable($question, $tentative)
@@ -71,22 +70,34 @@ class PréparerProgInt
 
 		preg_match_all(REGEX_MATCH_TODOS, $code_utilisateur, $todos_utilisateur);
 		foreach ($codeÉbauche as $ligne) {
-			if ($todoStatut && strpos($ligne, "-TODO")) {
+			$posMoinsTodo = strpos($ligne, "-TODO");
+			$posPlusTodo = strpos($ligne, "+TODO");
+
+			if ($todoStatut && $posMoinsTodo) {
 				$todoStatut = false;
 			}
 
-			if (!$todoStatut) {
+			if (!$todoStatut && !$posPlusTodo && !$posMoinsTodo) {
 				$codeExécutable[] = $ligne;
 			}
 
-			if (!$todoStatut && strpos($ligne, "+TODO")) {
-				$codeExécutable[] = $todos_utilisateur[1][$todoIndex++];
+			if (!$todoStatut && $posPlusTodo && !$posMoinsTodo) {
+				$codeExécutable[] = substr($ligne, 0, $posPlusTodo) . $todos_utilisateur[1][$todoIndex++];
 				$todoStatut = true;
+			}
+
+			if (!$todoStatut && $posPlusTodo && $posMoinsTodo) {
+				$codeExécutable[] =
+					substr($ligne, 0, $posPlusTodo) .
+					$todos_utilisateur[1][$todoIndex++] .
+					substr($ligne, $posMoinsTodo + 5);
 			}
 		}
 
-		//On enlève le première ligne et recompose le code
-		$codeExécutable = implode("\n", array_slice($codeExécutable, 1));
+		//On recompose le code
+		$codeExécutable = implode("\n", $codeExécutable);
+		//et on enlève la première ligne
+		$codeExécutable = substr($codeExécutable, strpos($codeExécutable, "\n") + 1);
 
 		return $codeExécutable;
 	}
