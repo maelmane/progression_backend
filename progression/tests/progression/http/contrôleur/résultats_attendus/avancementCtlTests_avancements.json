@@ -1,0 +1,62 @@
+{
+    "data": [
+	{
+	    "attributes": {
+		"date_modification": null,
+		"date_réussite": null,
+		"niveau": "",
+		"titre": "",
+		"état": 0,
+        "extra": ""
+	    },
+	    "id": "jdoe/dXJpX2E",
+	    "links": {
+		"self": "https://example.com/avancement/jdoe/dXJpX2E"
+	    },
+	    "relationships": {
+		"sauvegardes": {
+		    "links": {
+			"related": "https://example.com/avancement/jdoe/dXJpX2E/sauvegardes",
+			"self": "https://example.com/avancement/jdoe/dXJpX2E/relationships/sauvegardes"
+		    }
+		},
+		"tentatives": {
+		    "links": {
+			"related": "https://example.com/avancement/jdoe/dXJpX2E/tentatives",
+			"self": "https://example.com/avancement/jdoe/dXJpX2E/relationships/tentatives"
+		    }
+		}
+	    },
+	    "type": "avancement"
+	},
+	{
+	    "attributes": {
+		"date_modification": null,
+		"date_réussite": null,
+		"niveau": "",
+		"titre": "",
+		"état": 0,
+        "extra": ""
+	    },
+	    "id": "jdoe/dXJpX2I",
+	    "links": {
+		"self": "https://example.com/avancement/jdoe/dXJpX2I"
+	    },
+	    "relationships": {
+		"sauvegardes": {
+		    "links": {
+			"related": "https://example.com/avancement/jdoe/dXJpX2I/sauvegardes",
+			"self": "https://example.com/avancement/jdoe/dXJpX2I/relationships/sauvegardes"
+		    }
+		},
+		"tentatives": {
+		    "links": {
+			"related": "https://example.com/avancement/jdoe/dXJpX2I/tentatives",
+			"self": "https://example.com/avancement/jdoe/dXJpX2I/relationships/tentatives"
+		    }
+		}
+	    },
+	    "type": "avancement"
+	}
+    ]
+}

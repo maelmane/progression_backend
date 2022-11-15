@@ -18,38 +18,47 @@
 
 namespace progression\dao\tentative;
 
-use mysqli_sql_exception;
-use progression\dao\{DAOException, EntitéDAO};
+use DB;
+use Illuminate\Database\QueryException;
+use progression\dao\{DAOException, EntitéDAO, SauvegardeDAO, CommentaireDAO};
 use progression\domaine\entité\Question;
-use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
+use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, TentativeBD};
 
 class TentativeDAO extends EntitéDAO
 {
-	public function get_toutes($username, $question_uri)
+	const TYPES = ["eval" => 0, "sys" => 1, "bd" => 2, "prog" => 3];
+
+	/**
+	 * @param mixed $includes
+	 */
+	public function get_toutes($username, $question_uri, mixed $includes = [])
 	{
 		$type = $this->get_type($username, $question_uri);
 
 		if ($type == Question::TYPE_PROG) {
-			return $this->source->get_tentative_prog_dao()->get_toutes($username, $question_uri);
+			return $this->source->get_tentative_prog_dao()->get_toutes($username, $question_uri, $includes);
 		} elseif ($type == Question::TYPE_SYS) {
-			return $this->source->get_tentative_sys_dao()->get_toutes($username, $question_uri);
+			return $this->source->get_tentative_sys_dao()->get_toutes($username, $question_uri, $includes);
 		} elseif ($type == Question::TYPE_BD) {
-			return $this->source->get_tentative_bd_dao()->get_toutes($username, $question_uri);
+			return $this->source->get_tentative_bd_dao()->get_toutes($username, $question_uri, $includes);
 		} else {
 			return [];
 		}
 	}
 
-	public function get_tentative($username, $question_uri, $date)
+	/**
+	 * @param mixed $includes
+	 */
+	public function get_tentative($username, $question_uri, $date, mixed $includes = [])
 	{
 		$type = $this->get_type($username, $question_uri);
 
 		if ($type == Question::TYPE_PROG) {
-			return $this->source->get_tentative_prog_dao()->get_tentative($username, $question_uri, $date);
+			return $this->source->get_tentative_prog_dao()->get_tentative($username, $question_uri, $date, $includes);
 		} elseif ($type == Question::TYPE_SYS) {
-			return $this->source->get_tentative_sys_dao()->get_tentative($username, $question_uri, $date);
+			return $this->source->get_tentative_sys_dao()->get_tentative($username, $question_uri, $date, $includes);
 		} elseif ($type == Question::TYPE_BD) {
-			return $this->source->get_tentative_bd_dao()->get_tentative($username, $question_uri, $date);
+			return $this->source->get_tentative_bd_dao()->get_tentative($username, $question_uri, $date, $includes);
 		} else {
 			return null;
 		}
@@ -70,22 +79,16 @@ class TentativeDAO extends EntitéDAO
 
 	private function get_type($username, $question_uri)
 	{
-		$type = null;
-
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT type FROM avancement WHERE question_uri = ? AND username = ?",
-			);
+			$type =
+				DB::select(
+					"SELECT type FROM avancement JOIN user ON avancement.user_id = user.id WHERE question_uri = ? AND username = ?",
+					[$question_uri, $username],
+				)[0]->type ?? null;
 
-			$query->bind_param("ss", $question_uri, $username);
-			$query->execute();
-			$query->bind_result($type);
-			$query->fetch();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+			return array_key_exists($type, self::TYPES) ? self::TYPES[$type] : null;
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		return $type;
 	}
 }

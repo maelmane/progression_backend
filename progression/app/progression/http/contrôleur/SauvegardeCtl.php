@@ -70,7 +70,7 @@ class SauvegardeCtl extends Contrôleur
 		$chemin = Encodage::base64_decode_url($question_uri);
 
 		$sauvegardeInt = new ObtenirSauvegardeInt();
-		$sauvegarde = $sauvegardeInt->get_sauvegarde($username, $chemin, $langage);
+		$sauvegarde = $sauvegardeInt->get_sauvegarde($username, $chemin, $langage, $this->get_includes());
 
 		Log::debug("SauvegardeCtl.obtenir_sauvegarde. Retour : ", [$sauvegarde]);
 		return $sauvegarde;
@@ -83,8 +83,8 @@ class SauvegardeCtl extends Contrôleur
 		$sauvegarde_array = null;
 
 		if ($sauvegarde != null) {
-			$sauvegarde->id = "$username/$question_uri/$langage";
-			$sauvegarde_array = $this->item($sauvegarde, new SauvegardeTransformer());
+			$sauvegarde->id = $langage;
+			$sauvegarde_array = $this->item($sauvegarde, new SauvegardeTransformer("$username/$question_uri"));
 		}
 
 		$réponse = $this->préparer_réponse($sauvegarde_array);

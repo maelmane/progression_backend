@@ -27,10 +27,19 @@ final class QuestionProgTests extends TestCase
 		$exécutables_attendu = ["execTest0", "execTest1"];
 		$tests_attendu = ["testTest0", "testTest1"];
 
-		$résultat_obtenu = new QuestionProg();
-		$résultat_obtenu->exécutables = ["execTest0", "execTest1"];
-		$résultat_obtenu->tests = ["testTest0", "testTest1"];
-		$résultat_obtenu->avancement = "avancementTest0";
+		$résultat_obtenu = new QuestionProg(
+			niveau: "Facile",
+			titre: "Question système 1",
+			objectif: "Tester une question de programmation.",
+			enonce: "Un énoncé",
+			auteur: "Un auteur",
+			licence: "Licence",
+			feedback_pos: "Feedback positif",
+			feedback_neg: "Feedback négatif",
+			feedback_err: "Feedback erreur",
+			exécutables: ["execTest0", "execTest1"],
+			tests: ["testTest0", "testTest1"],
+		);
 
 		$this->assertEquals($exécutables_attendu, $résultat_obtenu->exécutables);
 		$this->assertEquals($tests_attendu, $résultat_obtenu->tests);

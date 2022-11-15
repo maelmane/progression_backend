@@ -9,6 +9,7 @@ cache:
   - progression/vendor
 
 stages:
+  - verifications
   - build_image
   - test
   - tag_image
@@ -41,8 +42,8 @@ test_unitaires:
   needs: 
     - job: const_image
       optional: true
-  environment: dev
   script:
+    - TAG_DEPLOY=$BRANCHE docker-compose pull tests
     - TAG_DEPLOY=$BRANCHE docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml tests 
   except:
     - master
@@ -51,7 +52,6 @@ test_unitaires:
 linter:
   stage: test
   needs: []
-  environment: dev
   script:
     - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests lint
   except:
@@ -59,11 +59,17 @@ linter:
 
 # Stage build_image
 
+version_check:
+  stage: verifications
+  script:
+    - docker run -v $PWD:/progression_backend bitnami/git bash -c 'git config --global --add safe.directory /progression_backend && cd /progression_backend && dpkg --compare-versions "$(git show HEAD:VERSION|cut -d "=" -f 2)" "gt" "$(git show HEAD^:VERSION|cut -d "=" -f 2)" || ( echo ERREUR la version n’a pas avancé && exit 1 )'
+  only:
+  - master
+
 # Construction de l'image
 const_image:
   stage: build_image  
   before_script: *login
-
   variables:
     DOCKER_BUILDKIT: 1 
   script:
@@ -99,6 +105,7 @@ deploy_dev:
     - *preparer_contexte
     - *login
   script:
+    - TAG_DEPLOY=dev docker-compose pull progression
     - TAG_DEPLOY=dev docker-compose -p dev up --force-recreate --no-deps -d progression
   only:
     - dev
@@ -114,6 +121,7 @@ deploy_demo:
     - *preparer_contexte
     - *login
   script:
+    - TAG_DEPLOY=latest docker-compose pull progression
     - TAG_DEPLOY=latest docker-compose -p demo up --force-recreate --no-deps -d progression
   only:
     - master
@@ -129,6 +137,7 @@ deploy_pilote:
     - *preparer_contexte
     - *login
   script:
+    - TAG_DEPLOY=latest docker-compose pull progression
     - TAG_DEPLOY=latest docker-compose -p pilote up --force-recreate --no-deps -d progression
   only:
     - master
@@ -144,6 +153,7 @@ deploy_staging:
     - *preparer_contexte
     - *login
   script:
+    - TAG_DEPLOY=latest docker-compose pull progression
     - TAG_DEPLOY=latest docker-compose -p staging up --force-recreate --no-deps -d progression
   only:
     - master

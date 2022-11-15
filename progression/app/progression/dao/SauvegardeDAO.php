@@ -1,109 +1,102 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\dao;
 
-use mysqli_sql_exception;
+use Illuminate\Database\QueryException;
 use progression\domaine\entité\Sauvegarde;
+use progression\dao\models\{AvancementMdl, SauvegardeMdl};
 
 class SauvegardeDAO extends EntitéDAO
 {
-	public function get_toutes($username, $question_uri)
+	public function get_toutes($username, $question_uri, $includes = [])
 	{
-		$sauvegardes = [];
-
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT date_sauvegarde, langage, code type FROM sauvegarde WHERE username = ? AND question_uri = ?",
+			return $this->construire(
+				SauvegardeMdl::select("sauvegarde.*")
+					->join("avancement", "sauvegarde.avancement_id", "=", "avancement.id")
+					->join("user", "avancement.user_id", "=", "user.id")
+					->where("user.username", $username)
+					->where("avancement.question_uri", $question_uri)
+					->get(),
+				$includes,
 			);
-			$query->bind_param("ss", $username, $question_uri);
-			$query->execute();
-
-			$date_sauvegarde = null;
-			$langage = null;
-			$code = null;
-			$query->bind_result($date_sauvegarde, $langage, $code);
-			while ($query->fetch()) {
-				$sauvegardes[$langage] = new Sauvegarde($date_sauvegarde, $code);
-			}
-
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		return $sauvegardes;
 	}
 
-	public function get_sauvegarde($username, $question_uri, $langage)
+	public function get_sauvegarde($username, $question_uri, $langage, $includes = [])
 	{
-		$sauvegarde = null;
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				'SELECT
-					sauvegarde.date_sauvegarde,
-					sauvegarde.code
-				FROM sauvegarde
-				WHERE username = ? 
-				AND question_uri = ?
-				AND langage = ?',
-			);
-			$query->bind_param("sss", $username, $question_uri, $langage);
-			$query->execute();
+			$sauvegarde = SauvegardeMdl::select("sauvegarde.*")
+				->join("avancement", "sauvegarde.avancement_id", "=", "avancement.id")
+				->join("user", "avancement.user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("avancement.question_uri", $question_uri)
+				->where("langage", $langage)
+				->first();
 
-			$code = null;
-			$date_sauvegarde = null;
-			$query->bind_result($date_sauvegarde, $code);
-
-			if ($query->fetch()) {
-				$sauvegarde = new Sauvegarde($date_sauvegarde, $code);
-			}
-
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+			return $sauvegarde ? $this->construire([$sauvegarde], $includes)[$langage] : null;
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		return $sauvegarde;
 	}
 
 	public function save($username, $question_uri, $langage, $sauvegarde)
 	{
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO sauvegarde ( username, question_uri, date_sauvegarde, langage, code )
-				VALUES ( ?, ?, ?, ?, ? )
-				ON DUPLICATE KEY UPDATE code = VALUES( code ), date_sauvegarde = VALUES( date_sauvegarde )",
-			);
+			$avancement = AvancementMdl::select("avancement.id")
+				->from("avancement")
+				->join("user", "avancement.user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("question_uri", $question_uri)
+				->first();
 
-			$query->bind_param(
-				"ssiss",
-				$username,
-				$question_uri,
-				$sauvegarde->date_sauvegarde,
-				$langage,
-				$sauvegarde->code,
-			);
-			$estEnregistre = $query->execute();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+			if (!$avancement) {
+				return null;
+			}
+
+			$objet = [
+				"date_sauvegarde" => $sauvegarde->date_sauvegarde,
+				"langage" => $langage,
+				"code" => $sauvegarde->code,
+			];
+
+			return $this->construire([
+				SauvegardeMdl::updateOrCreate(["avancement_id" => $avancement["id"], "langage" => $langage], $objet),
+			])[$langage];
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-		return $sauvegarde;
+	}
+
+	public static function construire($data, $includes = [])
+	{
+		if ($data == null) {
+			return [];
+		}
+
+		$sauvegardes = [];
+		foreach ($data as $i => $item) {
+			$sauvegardes[$item["langage"]] = new Sauvegarde($item["date_sauvegarde"], $item["code"]);
+		}
+
+		return $sauvegardes;
 	}
 }

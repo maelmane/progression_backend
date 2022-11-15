@@ -19,7 +19,7 @@
 namespace progression\dao;
 
 use progression\dao\question\QuestionDAO;
-use progression\dao\tentative\{TentativeDAO, TentativeProgDAO};
+use progression\dao\tentative\{TentativeDAO, TentativeProgDAO, TentativeSysDAO};
 use progression\dao\exécuteur\{ExécuteurCache, ExécuteurCompilebox, ExécutionException, Standardiseur};
 
 class DAOFactory
@@ -61,6 +61,11 @@ class DAOFactory
 	function get_tentative_prog_dao()
 	{
 		return new TentativeProgDAO($this);
+	}
+
+	function get_tentative_sys_dao()
+	{
+		return new TentativeSysDAO($this);
 	}
 
 	function get_user_dao()

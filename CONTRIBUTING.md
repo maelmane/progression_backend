@@ -5,5 +5,8 @@ Contributeurs :
 - Hugo Barou
 - Radu Dumitru
 - Hamed Tijane Mkpoumie Monfouayi
+- Jade Traverse-L'Heureux
+- Christian Méthot
+- Yuhan Roger-Try
+- les étudiants du Collège de Rosemont comme testeurs et développeurs
 - Pancho et Lucky (pour le support moral et en tant que _rubber ducky_)
-- et d'autres étudiants du Collège de Rosemont

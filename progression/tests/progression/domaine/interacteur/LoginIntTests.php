@@ -36,8 +36,9 @@ final class LoginIntTests extends TestCase
 			->andReturn(new User("bob"));
 		$mockUserDAO
 			->allows()
-			->get_user("Banane")
-			->andReturn(null);
+			->get_user("bob", Mockery::Any())
+			->andReturn(new User("bob"));
+		$mockUserDAO->shouldReceive("get_user")->andReturn(null);
 		$mockUserDAO
 			->allows()
 			->vérifier_password(Mockery::Any(), "password")

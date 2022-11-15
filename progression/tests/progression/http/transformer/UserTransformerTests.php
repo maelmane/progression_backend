@@ -27,9 +27,8 @@ final class UserTransformerTests extends TestCase
 	public function test_étant_donné_un_user_instancié_avec_id_2_et_nom_bob_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
-		$userTransformer = new UserTransformer();
-		$user = new User(2);
-		$user->username = "bob";
+		$user = new User("bob");
+		$user->id = "bob";
 
 		$résultat = [
 			"id" => "bob",
@@ -40,6 +39,7 @@ final class UserTransformerTests extends TestCase
 			],
 		];
 
+		$userTransformer = new UserTransformer();
 		$this->assertEquals($résultat, $userTransformer->transform($user));
 	}
 
@@ -50,7 +50,6 @@ final class UserTransformerTests extends TestCase
 			new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
 			new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
 		];
-		$user->id = "bob";
 
 		$userTransformer = new UserTransformer();
 		$résultats_obtenus = $userTransformer->includeCles($user);
@@ -60,7 +59,7 @@ final class UserTransformerTests extends TestCase
 			$clés[] = $résultat;
 		}
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/userTransformerTest_1.json",
+			__DIR__ . "/résultats_attendus/userTransformerTest_inclusion_clés.json",
 			json_encode($clés),
 		);
 	}

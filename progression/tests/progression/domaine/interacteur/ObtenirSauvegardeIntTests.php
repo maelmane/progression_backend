@@ -37,19 +37,19 @@ final class ObtenirSauvegardeIntTests extends TestCase
 		$mockSauvegardeDAO = Mockery::mock("progression\\dao\\SauvegardeDAO");
 		$mockSauvegardeDAO
 			->shouldReceive("get_sauvegarde")
-			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python")
+			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python", [])
 			->andReturn($sauvegarde);
 		$mockSauvegardeDAO
 			->shouldReceive("get_toutes")
-			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
+			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", [])
 			->andReturn($sauvegardes);
 		$mockSauvegardeDAO
 			->shouldReceive("get_sauvegarde")
-			->with("Marcel", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python")
+			->with("Marcel", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python", [])
 			->andReturn(null);
 		$mockSauvegardeDAO
 			->shouldReceive("get_toutes")
-			->with("jdoe", "https://depot.com/roger/questions_prog/question_inexistante")
+			->with("jdoe", "https://depot.com/roger/questions_prog/question_inexistante", [])
 			->andReturn([]);
 
 		// DAOFactory

@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{TentativeProg, Avancement, Question, QuestionProg, User};
+use progression\domaine\entité\{TentativeProg, Avancement, Question, QuestionProg, QuestionSys, User, TentativeSys};
 use progression\domaine\interacteur\SauvegarderAvancementInt;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
@@ -40,10 +40,44 @@ final class SauvegarderAvancementIntTests extends TestCase
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("jdoe", "https://example.com/question")
+			->with("jdoe", "file:///prog1/les_fonctions/appeler_une_fonction/info.yml", [])
+			->andReturn(
+				new Avancement(tentatives: [], titre: "Appeler une fonction", niveau: "facile", extra: "Infos extras"),
+			);
+		$mockAvancementDAO
+			->shouldReceive("get_avancement")
+			->with("jdoe", "file:///une_question_modifiée/info.yml", [])
+			->andReturn(
+				new Avancement(tentatives: [], titre: "Ancien titre", niveau: "ancien niveau", extra: "Infos extras"),
+			);
+		$mockAvancementDAO
+			->shouldReceive("get_avancement")
+			->with("jdoe", Mockery::Any(), Mockery::Any())
+			->andReturn(null);
+
+		$question_existante = new QuestionProg(titre: "Appeler une fonction", niveau: "facile");
+		$nouvelle_question = new QuestionProg(titre: "Nouvelle question", niveau: "facile");
+		$question_modifiée = new QuestionProg(titre: "Nouveau titre", niveau: "Nouveau niveau");
+
+		$mockQuestionDao = Mockery::mock("progression\\dao\\question\\QuestionDAO");
+		$mockQuestionDao
+			->shouldReceive("get_question")
+			->with("file:///prog1/les_fonctions/appeler_une_fonction/info.yml")
+			->andReturn($question_existante);
+		$mockQuestionDao
+			->shouldReceive("get_question")
+			->with("file:///une_question_modifiée/info.yml")
+			->andReturn($question_modifiée);
+		$mockQuestionDao
+			->shouldReceive("get_question")
+			->with(Mockery::Any())
 			->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
+		$mockDAOFactory
+			->allows()
+			->get_question_dao()
+			->andReturn($mockQuestionDao);
 		$mockDAOFactory
 			->allows()
 			->get_user_dao()
@@ -52,7 +86,6 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->allows()
 			->get_avancement_dao()
 			->andReturn($mockAvancementDAO);
-
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 	public function tearDown(): void
@@ -60,45 +93,111 @@ final class SauvegarderAvancementIntTests extends TestCase
 		Mockery::close();
 	}
 
-	public function test_étant_donné_un_avancement_sans_tentatives_lorsquon_sauvegarde_seul_lavancement_est_enregistré_et_on_obtient_lavancement_sans_tentatives()
+	public function test_étant_donné_un_avancement_existant_lorsquon_sauvegarde_l_avancement_non_modifié_il_est_sauvegardé_et_retourné_tel_quel()
 	{
-		DAOFactory::getInstance()
-			->get_avancement_dao()
-			->shouldReceive("save")
-			->once()
-			->withArgs(["jdoe", "https://example.com/question", Mockery::any()])
-			->andReturnArg(2);
-		$interacteur = new SauvegarderAvancementInt();
-		$résultat_observé = $interacteur->sauvegarder(
-			"jdoe",
-			"https://example.com/question",
-			new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG),
-		);
-
-		$résultat_attendu = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG);
-
-		$this->assertEquals($résultat_attendu, $résultat_observé);
-		$this->assertEquals([], $résultat_observé->tentatives);
-	}
-	public function test_étant_donné_un_avancement_avec_tentatives_lorsquon_sauvegarde_ses_tentatives_aussi_sont_enregistrées_et_on_obtient_lavancement_avec_tentatives()
-	{
-		$tentative = new TentativeProg(1, "print('code')", 1616534292, false, 0, "feedback", []);
-		$avancement = new Avancement(Question::ETAT_NONREUSSI, Question::TYPE_PROG, [$tentative]);
+		$avancement_sauvegardé = new Avancement(titre: "Appeler une fonction", niveau: "facile", extra: "Infos extras");
 
 		DAOFactory::getInstance()
 			->get_avancement_dao()
 			->shouldReceive("save")
 			->once()
-			->withArgs(["jdoe", "file:///prog1/les_fonctions/appeler_une_fonction/info.yml", $avancement])
+			->withArgs(function ($username, $question_uri, $avancement) use ($avancement_sauvegardé) {
+				return $username == "jdoe" &&
+					$question_uri == "file:///prog1/les_fonctions/appeler_une_fonction/info.yml" &&
+					$avancement == $avancement_sauvegardé;
+			})
 			->andReturnArg(2);
 
 		$interacteur = new SauvegarderAvancementInt();
 		$résultat_observé = $interacteur->sauvegarder(
 			"jdoe",
 			"file:///prog1/les_fonctions/appeler_une_fonction/info.yml",
-			$avancement,
+			new Avancement(titre: "Appeler une fonction", niveau: "facile", extra: "Infos extras"),
 		);
 
-		$this->assertEquals($avancement, $résultat_observé);
+		$résultat_attendu = new Avancement(titre: "Appeler une fonction", niveau: "facile", extra: "Infos extras");
+
+		$this->assertEquals($résultat_attendu, $résultat_observé);
+		$this->assertEquals([], $résultat_observé->tentatives);
+	}
+
+	public function test_étant_donné_une_question_inexistante_lorsquon_sauvegarde_un_avancement_on_obtient_null()
+	{
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldNotReceive("save");
+
+		$interacteur = new SauvegarderAvancementInt();
+		$résultat_observé = $interacteur->sauvegarder(
+			"jdoe",
+			"file:///question_inexistante/info.yml",
+			new Avancement(titre: "Appeler une fonction", niveau: "facile", extra: "Infos extras"),
+		);
+
+		$this->assertNull($résultat_observé);
+	}
+	public function test_étant_donné_un_avancement_existant_lorsquon_sauvegarde_l_avancement_modifié_il_est_sauvegardé_et_retourné_mutatis_mutandis()
+	{
+		$avancement_modifié = new Avancement(titre: "Titre modifié", niveau: "Niveau modifié", extra: "Extra modifié");
+		$avancement_sauvegardé = new Avancement(
+			titre: "Appeler une fonction",
+			niveau: "facile",
+			extra: "Extra modifié",
+		);
+
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($username, $question_uri, $avancement) use ($avancement_sauvegardé) {
+				return $username == "jdoe" &&
+					$question_uri == "file:///prog1/les_fonctions/appeler_une_fonction/info.yml" &&
+					$avancement == $avancement_sauvegardé;
+			})
+			->andReturnArg(2);
+
+		$interacteur = new SauvegarderAvancementInt();
+		$résultat_observé = $interacteur->sauvegarder(
+			"jdoe",
+			"file:///prog1/les_fonctions/appeler_une_fonction/info.yml",
+			$avancement_modifié,
+		);
+
+		$résultat_attendu = $avancement_sauvegardé;
+
+		$this->assertEquals($résultat_attendu, $résultat_observé);
+		$this->assertEquals([], $résultat_observé->tentatives);
+	}
+	public function test_étant_donné_un_avancement_existant_et_une_question_modifiée_lorsquon_sauvegarde_l_avancement_modifié_il_est_sauvegardé_et_retourné_mutatis_mutandis()
+	{
+		$avancement_modifié = new Avancement(extra: "Extra modifié");
+		$avancement_sauvegardé = new Avancement(
+			titre: "Nouveau titre",
+			niveau: "Nouveau niveau",
+			extra: "Extra modifié",
+		);
+
+		DAOFactory::getInstance()
+			->get_avancement_dao()
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($username, $question_uri, $avancement) use ($avancement_sauvegardé) {
+				return $username == "jdoe" &&
+					$question_uri == "file:///une_question_modifiée/info.yml" &&
+					$avancement == $avancement_sauvegardé;
+			})
+			->andReturnArg(2);
+
+		$interacteur = new SauvegarderAvancementInt();
+		$résultat_observé = $interacteur->sauvegarder(
+			"jdoe",
+			"file:///une_question_modifiée/info.yml",
+			$avancement_modifié,
+		);
+
+		$résultat_attendu = $avancement_sauvegardé;
+
+		$this->assertEquals($résultat_attendu, $résultat_observé);
+		$this->assertEquals([], $résultat_observé->tentatives);
 	}
 }

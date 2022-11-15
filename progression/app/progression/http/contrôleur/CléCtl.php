@@ -64,7 +64,7 @@ class CléCtl extends Contrôleur
 		Log::debug("CléCtl.obtenir_clé. Params : ", [$username, $nom]);
 
 		$cléInt = new ObtenirCléInt();
-		$réponse = $cléInt->get_clé($username, $nom);
+		$réponse = $cléInt->get_clé($username, $nom, $this->get_includes());
 
 		Log::debug("CléCtl.obtenir_clé. Retour : ", [$réponse]);
 		return $réponse;
@@ -75,8 +75,8 @@ class CléCtl extends Contrôleur
 		Log::debug("CléCtl.obtenir_clé. Params : ", [$clé, $username, $nom]);
 
 		if ($clé) {
-			$clé->id = "$username/$nom";
-			$réponse_array = $this->item($clé, new CléTransformer());
+			$clé->id = $nom;
+			$réponse_array = $this->item($clé, new CléTransformer($username));
 		} else {
 			$réponse_array = null;
 		}

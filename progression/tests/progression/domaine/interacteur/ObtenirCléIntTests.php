@@ -34,11 +34,11 @@ final class ObtenirCléIntTests extends TestCase
 		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
 		$mockCléDAO
 			->shouldReceive("get_clé")
-			->with("jdoe", 1234)
+			->with("jdoe", 1234, [])
 			->andReturn($clé);
 		$mockCléDAO
 			->shouldReceive("get_clé")
-			->with("jdoe", 9999)
+			->with("jdoe", 9999, [])
 			->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");

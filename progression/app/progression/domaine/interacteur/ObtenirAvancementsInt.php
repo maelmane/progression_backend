@@ -20,8 +20,12 @@ namespace progression\domaine\interacteur;
 
 class ObtenirAvancementsInt extends Interacteur
 {
-	function get_avancements($username)
+	/**
+	 * @param mixed $includes
+	 * liste de sous-objets à inclure; true pour inclure tous les niveaux.
+	 */
+	function get_avancements($username, mixed $includes = [])
 	{
-		return $this->source_dao->get_avancement_dao()->get_tous($username);
+		return $this->source_dao->get_avancement_dao()->get_tous($username, $includes);
 	}
 }

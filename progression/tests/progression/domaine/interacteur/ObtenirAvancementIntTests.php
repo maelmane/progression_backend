@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Avancement;
+use progression\domaine\entité\{Avancement, QuestionProg};
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -29,24 +29,34 @@ final class ObtenirAvancementIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$avancement = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
+		$question = new QuestionProg(niveau: "difficile", titre: "Une question difficile");
+
+		$mockQuestionDao = Mockery::mock("progression\\dao\\question\\QuestionDAO");
+		$mockQuestionDao
+			->shouldReceive("get_question")
+			->with("prog1/les_fonctions_01/appeler_une_fonction_paramétrée_difficile")
+			->andReturn($question);
+
+		$avancement = new Avancement(titre: "Une question facile", niveau: "facile");
+		$avancement->etat = 1;
 
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 
 		$mockAvancementDAO
 			->shouldReceive("get_avancement")
-			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée")
+			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", [])
 			->andReturn($avancement);
-		$mockAvancementDAO
-			->shouldReceive("get_avancement")
-			->with("jdoe", "une_question_inexistante")
-			->andReturn(null);
+		$mockAvancementDAO->shouldReceive("get_avancement")->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_avancement_dao()
 			->andReturn($mockAvancementDAO);
+		$mockDAOFactory
+			->allows()
+			->get_question_dao()
+			->andReturn($mockQuestionDao);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 
@@ -64,7 +74,8 @@ final class ObtenirAvancementIntTests extends TestCase
 			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
 		);
 
-		$résultat_attendu = new Avancement("prog1/les_fonctions_01/appeler_une_fonction_paramétrée", "jdoe");
+		$résultat_attendu = new Avancement(titre: "Une question facile", niveau: "facile");
+		$résultat_attendu->etat = 1;
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
@@ -72,7 +83,10 @@ final class ObtenirAvancementIntTests extends TestCase
 	public function test_étant_donné_un_user_existant_et_une_question_uri_inexistante_lorsquon_cherche_par_username_et_question_uri_on_obtient_null()
 	{
 		$interacteur = new ObtenirAvancementInt();
-		$résultat_obtenu = $interacteur->get_avancement("jdoe", "une_question_inexistante");
+		$résultat_obtenu = $interacteur->get_avancement(
+			"jdoe",
+			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée_difficile",
+		);
 
 		$this->assertNull($résultat_obtenu);
 	}

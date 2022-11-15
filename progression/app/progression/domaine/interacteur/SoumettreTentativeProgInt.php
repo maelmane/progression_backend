@@ -22,7 +22,7 @@ use progression\domaine\entité\{Avancement, Question};
 
 class SoumettreTentativeProgInt extends Interacteur
 {
-	public function soumettre_tentative($username, $question, $tentative)
+	public function soumettre_tentative($username, $question, $tests, $tentative)
 	{
 		$exécutable = null;
 
@@ -30,13 +30,13 @@ class SoumettreTentativeProgInt extends Interacteur
 		$exécutable = $préparerProgInt->préparer_exécutable($question, $tentative);
 
 		if ($exécutable) {
-			$résultats = $this->exécuter_prog($exécutable, $question->tests);
+			$résultats = $this->exécuter_prog($exécutable, $tests);
 			$tentative->temps_exécution = $résultats["temps_exécution"];
 			$tentative->résultats = $résultats["résultats"];
 			$rétroactions["feedback_pos"] = $question->feedback_pos;
 			$rétroactions["feedback_neg"] = $question->feedback_neg;
 			$rétroactions["feedback_err"] = $question->feedback_err;
-			$tentativeTraitée = $this->traiterTentativeProg($tentative, $rétroactions, $question->tests);
+			$tentativeTraitée = $this->traiterTentativeProg($tentative, $rétroactions, $tests);
 
 			return $tentativeTraitée;
 		}

@@ -19,7 +19,7 @@ namespace progression\dao\exécuteur;
 
 use progression\TestCase;
 
-use progression\domaine\entité\{Exécutable, Test};
+use progression\domaine\entité\{Exécutable, TestProg};
 use Illuminate\Support\Facades\Cache;
 use Mockery;
 
@@ -31,7 +31,7 @@ final class ExécuteurCacheTests extends TestCase
 
 		$this->mock_exécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$this->mock_exécuteur
-			->shouldReceive("exécuter")
+			->shouldReceive("exécuter_prog")
 			->andReturn(["temps_exécution" => 12345, "résultats" => [["output" => "sortie exécutée", "errors" => ""]]]);
 		$this->mock_standardiseur = Mockery::mock("progression\\dao\\exécuteur\\Standardiseur");
 		$this->mock_standardiseur
@@ -57,7 +57,7 @@ final class ExécuteurCacheTests extends TestCase
 	public function test_étant_donné_une_cache_vide_lorsquon_exécute_un_nouveau_code_on_obtient_le_code_exécuté()
 	{
 		$exécutable = new Exécutable("nouveau code", "python");
-		$test = [new Test("test", "sortie", "entrée", "param")];
+		$test = [new TestProg("test", "sortie", "entrée", "param")];
 
 		Cache::shouldReceive("has")
 			->once()
@@ -67,7 +67,7 @@ final class ExécuteurCacheTests extends TestCase
 		Cache::shouldReceive("put")
 			->once()
 			->with("e8032dd801819a71571c41b3c87f529a", [["output" => "sortie exécutée", "errors" => ""]]);
-		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
 		);
@@ -81,7 +81,7 @@ final class ExécuteurCacheTests extends TestCase
 	public function test_étant_donné_une_cache_contenant_le_code_à_exécuter_lorsquon_exécute_le_même_code_avec_le_même_langage_les_mêmes_entrées_et_paramètres_on_obtient_le_code_en_cache()
 	{
 		$exécutable = new Exécutable("nouveau code", "python");
-		$test = [new Test("test", "sortie", "entrée", "param")];
+		$test = [new TestProg("test", "sortie", "entrée", "param")];
 
 		Cache::shouldReceive("get")
 			->once()
@@ -93,7 +93,7 @@ final class ExécuteurCacheTests extends TestCase
 			->andReturn(true);
 		Cache::shouldNotReceive("put");
 
-		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
 		);
@@ -107,7 +107,7 @@ final class ExécuteurCacheTests extends TestCase
 	public function test_étant_donné_une_cache_contenant_le_code_à_exécuter_vide_lorsquon_exécute_le_même_code_avec_le_même_langage_les_mêmes_entrées_et_paramètres_on_obtient_une_chaîne_vide()
 	{
 		$exécutable = new Exécutable("nouveau code", "python");
-		$test = [new Test("test", "sortie", "entrée", "param")];
+		$test = [new TestProg("test", "sortie", "entrée", "param")];
 
 		Cache::shouldReceive("get")
 			->once()
@@ -119,7 +119,7 @@ final class ExécuteurCacheTests extends TestCase
 			->andReturn(true);
 		Cache::shouldNotReceive("put");
 
-		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
 		);
@@ -130,7 +130,7 @@ final class ExécuteurCacheTests extends TestCase
 	public function test_étant_donné_une_cache_contenant_le_code_à_exécuter_lorsquon_exécute_le_même_code_avec_un_autre_langage_les_mêmes_entrées_et_paramètres_on_obtient_le_code_exécuté()
 	{
 		$exécutable = new Exécutable("nouveau code", "java");
-		$test = [new Test("test", "sortie", "entrée", "param")];
+		$test = [new TestProg("test", "sortie", "entrée", "param")];
 
 		Cache::shouldReceive("has")
 			->once()
@@ -141,7 +141,7 @@ final class ExécuteurCacheTests extends TestCase
 			->once()
 			->with("8d7dd086fe94394520c14fe098159378", [["output" => "sortie exécutée", "errors" => ""]]);
 
-		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
 		);
@@ -155,7 +155,7 @@ final class ExécuteurCacheTests extends TestCase
 	public function test_étant_donné_une_cache_contenant_le_code_à_exécuter_lorsquon_exécute_le_même_code_avec_le_même_langage_dautres_entrées_et_les_mêmes_paramètres_on_obtient_le_code_exécuté()
 	{
 		$exécutable = new Exécutable("nouveau code", "python");
-		$test = [new Test("test", "sortie", "entrée différente", "param")];
+		$test = [new TestProg("test", "sortie", "entrée différente", "param")];
 
 		Cache::shouldReceive("has")
 			->once()
@@ -166,7 +166,7 @@ final class ExécuteurCacheTests extends TestCase
 			->once()
 			->with("879f8745392494c38a966d01eab2a23e", [["output" => "sortie exécutée", "errors" => ""]]);
 
-		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
 		);
@@ -180,7 +180,7 @@ final class ExécuteurCacheTests extends TestCase
 	public function test_étant_donné_une_cache_contenant_le_code_à_exécuter_lorsquon_exécute_le_même_code_avec_le_même_langage_les_mêmes_entrées_et_dautres_paramètres_on_obtient_le_code_exécuté()
 	{
 		$exécutable = new Exécutable("nouveau code", "python");
-		$test = [new Test("test", "sortie", "entrée", "autre param")];
+		$test = [new TestProg("test", "sortie", "entrée", "autre param")];
 
 		Cache::shouldReceive("has")
 			->once()
@@ -191,7 +191,7 @@ final class ExécuteurCacheTests extends TestCase
 			->once()
 			->with("78e4674804ee6f7955997243441507d8", [["output" => "sortie exécutée", "errors" => ""]]);
 
-		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
 		);
@@ -205,7 +205,7 @@ final class ExécuteurCacheTests extends TestCase
 	public function test_étant_donné_une_cache_contenant_le_code_à_exécuter_lorsquon_exécute_un_code_équivalent_après_standardisation_avec_le_même_langage_les_mêmes_entrées_et_paramètres_on_obtient_le_code_en_cache()
 	{
 		$exécutable = new Exécutable("nouveau   code", "python");
-		$test = [new Test("test", "sortie", "entrée", "param")];
+		$test = [new TestProg("test", "sortie", "entrée", "param")];
 
 		Cache::shouldReceive("has")
 			->once()
@@ -217,7 +217,7 @@ final class ExécuteurCacheTests extends TestCase
 			->andReturn([["output" => "sortie prise en cache", "errors" => ""]]);
 		Cache::shouldNotReceive("put");
 
-		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter(
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
 		);

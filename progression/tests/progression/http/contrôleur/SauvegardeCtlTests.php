@@ -42,11 +42,11 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 		$mockSauvegardeDAO = Mockery::mock("progression\\dao\\SauvegardeDAO");
 		$mockSauvegardeDAO
 			->shouldReceive("get_sauvegarde")
-			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python")
+			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "python", [])
 			->andReturn($sauvegarde);
 		$mockSauvegardeDAO
 			->shouldReceive("get_sauvegarde")
-			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "java")
+			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "java", [])
 			->andReturn(null);
 		$mockSauvegardeDAO->shouldReceive("save")->andReturn($sauvegarde);
 
@@ -54,7 +54,7 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->allows("get_user")
-			->with("jdoe")
+			->with("jdoe", [])
 			->andReturn(new User("jdoe"));
 
 		// DAOFactory
@@ -79,7 +79,7 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/sauvegardeCtlTests_1.json",
+			__DIR__ . "/résultats_attendus/sauvegardeCtlTests_sauvegarde.json",
 			$résultat_observé->getContent(),
 		);
 	}
@@ -139,7 +139,7 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/sauvegardeCtlTests_1.json",
+			__DIR__ . "/résultats_attendus/sauvegardeCtlTests_sauvegarde.json",
 			$résultat_observé->getContent(),
 		);
 	}

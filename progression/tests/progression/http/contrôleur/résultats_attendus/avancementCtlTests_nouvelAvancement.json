@@ -4,10 +4,11 @@
 		"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
 		"attributes": {
 			"état": 0,
-			"date_modification": 0,
-			"date_réussite": 0,
-			"niveau": "",
-			"titre": ""
+			"date_modification": null,
+			"date_réussite": null,
+			"niveau": "test",
+			"titre": "Nouvel Avancement de test",
+			"extra": "Infos extra"
 		},
 		"links": {
 			"self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24"

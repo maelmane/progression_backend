@@ -19,23 +19,22 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\User;
-use League\Fractal;
 use progression\util\Encodage;
 
-class UserTransformer extends Fractal\TransformerAbstract
+class UserTransformer extends BaseTransformer
 {
 	public $type = "user";
 
-	protected $availableIncludes = ["avancements", "cles"];
+	protected array $availableIncludes = ["avancements", "cles"];
 
 	public function transform(User $user)
 	{
 		$data = [
-			"id" => $user->username,
+			"id" => $user->id,
 			"username" => $user->username,
 			"rôle" => $user->rôle,
 			"links" => (isset($user->links) ? $user->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}user/{$user->username}",
+				"self" => "{$_ENV["APP_URL"]}user/{$user->id}",
 			],
 		];
 
@@ -44,25 +43,28 @@ class UserTransformer extends Fractal\TransformerAbstract
 
 	public function includeAvancements(User $user)
 	{
+		$id_parent = $user->username;
+
 		foreach ($user->avancements as $uri => $avancement) {
-			$avancement->id = "{$user->username}/" . Encodage::base64_encode_url($uri);
+			$avancement->id = Encodage::base64_encode_url($uri);
 			$avancement->links = [
-				"related" => $_ENV["APP_URL"] . "user/{$user->username}",
+				"related" => $_ENV["APP_URL"] . "user/{$id_parent}",
 			];
 		}
 
-		return $this->collection($user->avancements, new AvancementTransformer(), "avancement");
+		return $this->collection($user->avancements, new AvancementTransformer($id_parent), "avancement");
 	}
 
 	public function includeCles(User $user)
 	{
+		$id_parent = $user->username;
+
 		foreach ($user->clés as $nom => $clé) {
-			$clé->id = "{$user->username}/" . $nom;
 			$clé->links = [
-				"related" => $_ENV["APP_URL"] . "user/{$user->username}",
+				"related" => $_ENV["APP_URL"] . "user/{$id_parent}",
 			];
 		}
 
-		return $this->collection($user->clés, new CléTransformer(), "cle");
+		return $this->collection($user->clés, new CléTransformer($id_parent), "cle");
 	}
 }

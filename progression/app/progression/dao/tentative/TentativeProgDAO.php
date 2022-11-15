@@ -18,118 +18,116 @@
 
 namespace progression\dao\tentative;
 
-use mysqli_sql_exception;
-use progression\dao\{DAOException, EntitéDAO};
+use Illuminate\Database\QueryException;
+use progression\dao\{DAOException, CommentaireDAO};
 use progression\domaine\entité\TentativeProg;
+use progression\dao\models\{TentativeProgMdl, AvancementMdl};
 
 class TentativeProgDAO extends TentativeDAO
 {
-	public function get_toutes($username, $question_uri)
+	/**
+	 * @param mixed $includes
+	 */
+	public function get_toutes($username, $question_uri, mixed $includes = [])
 	{
-		$tentatives = [];
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				'SELECT reponse_prog.langage,
-				reponse_prog.code,
-				reponse_prog.date_soumission,
-				reponse_prog.reussi,
-				reponse_prog.tests_reussis
-				FROM reponse_prog
-				WHERE username = ? 
-				AND question_uri = ?',
+			return $this->construire(
+				TentativeProgMdl::select("reponse_prog.*")
+					->with(in_array("commentaires", $includes) ? ["commentaires"] : [])
+					->join("avancement", "reponse_prog.avancement_id", "=", "avancement.id")
+					->join("user", "avancement.user_id", "=", "user.id")
+					->where("user.username", $username)
+					->where("avancement.question_uri", $question_uri)
+					->get(),
+				$includes,
 			);
-			$query->bind_param("ss", $username, $question_uri);
-			$query->execute();
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
 
-			$langage = null;
-			$code = null;
-			$date_soumission = null;
-			$réussi = false;
-			$tests_réussis = 0;
-			$query->bind_result($langage, $code, $date_soumission, $réussi, $tests_réussis);
+	/**
+	 * @param mixed $includes
+	 */
+	public function get_tentative($username, $question_uri, $date_soumission, mixed $includes = [])
+	{
+		try {
+			$tentative = TentativeProgMdl::select("reponse_prog.*")
+				->with(in_array("commentaires", $includes) ? ["commentaires"] : [])
+				->join("avancement", "reponse_prog.avancement_id", "=", "avancement.id")
+				->join("user", "avancement.user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("avancement.question_uri", $question_uri)
+				->where("date_soumission", $date_soumission)
+				->first();
 
-			while ($query->fetch()) {
-				$tentatives[] = new TentativeProg($langage, $code, $date_soumission, $réussi, $tests_réussis);
+			return $tentative ? $this->construire([$tentative], $includes)[$date_soumission] : null;
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+
+	public function save($username, $question_uri, $tentative)
+	{
+		try {
+			$avancement = AvancementMdl::select("avancement.id")
+				->from("avancement")
+				->join("user", "avancement.user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("question_uri", $question_uri)
+				->first();
+
+			if (!$avancement) {
+				return null;
 			}
 
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+			$objet = [
+				"langage" => $tentative->langage,
+				"code" => $tentative->code,
+				"date_soumission" => $tentative->date_soumission,
+				"reussi" => $tentative->réussi,
+				"tests_reussis" => $tentative->tests_réussis,
+				"temps_exécution" => $tentative->temps_exécution,
+			];
+
+			return $this->construire([
+				TentativeProgMdl::updateOrCreate(
+					["avancement_id" => $avancement["id"], "date_soumission" => $tentative->date_soumission],
+					$objet,
+				),
+			])[$tentative->date_soumission];
+		} catch (QueryException $e) {
 			throw new DAOException($e);
+		}
+	}
+
+	public static function construire($data, $includes = [])
+	{
+		if ($data == null) {
+			return [];
+		}
+
+		$tentatives = [];
+		foreach ($data as $item) {
+			$tentative = new TentativeProg(
+				langage: $item["langage"],
+				code: $item["code"],
+				date_soumission: $item["date_soumission"],
+				réussi: $item["reussi"],
+				résultats: [],
+				tests_réussis: $item["tests_reussis"],
+				temps_exécution: $item["temps_exécution"],
+				feedback: null,
+				commentaires: in_array("commentaires", $includes)
+					? CommentaireDAO::construire(
+						$item["commentaires"],
+						parent::filtrer_niveaux($includes, "commentaires"),
+					)
+					: [],
+			);
+			$tentatives[$item["date_soumission"]] = $tentative;
 		}
 
 		return $tentatives;
-	}
-
-	public function get_tentative($username, $question_uri, $timestamp)
-	{
-		$tentative = null;
-
-		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				'SELECT reponse_prog.langage,
-				reponse_prog.code,
-				reponse_prog.date_soumission,
-				reponse_prog.reussi,
-				reponse_prog.tests_reussis,
-				reponse_prog.temps_exécution
-				FROM reponse_prog
-				WHERE username = ? 
-				AND question_uri = ?
-				AND date_soumission = ?',
-			);
-			$query->bind_param("ssi", $username, $question_uri, $timestamp);
-			$query->execute();
-
-			$langage = null;
-			$code = null;
-			$date_soumission = null;
-			$réussi = false;
-			$tests_réussis = 0;
-			$temps_exécution = null;
-			$query->bind_result($langage, $code, $date_soumission, $réussi, $tests_réussis, $temps_exécution);
-
-			if ($query->fetch()) {
-				$tentative = new TentativeProg(
-					$langage,
-					$code,
-					$date_soumission,
-					$réussi,
-					$tests_réussis,
-					$temps_exécution,
-				);
-			}
-
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
-			throw new DAOException($e);
-		}
-
-		return $tentative;
-	}
-
-	public function save($username, $question_uri, $objet)
-	{
-		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO reponse_prog ( question_uri, username, langage, code, date_soumission, reussi, tests_reussis, temps_exécution ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )",
-			);
-			$query->bind_param(
-				"ssssiiii",
-				$question_uri,
-				$username,
-				$objet->langage,
-				$objet->code,
-				$objet->date_soumission,
-				$objet->réussi,
-				$objet->tests_réussis,
-				$objet->temps_exécution,
-			);
-			$query->execute();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
-			throw new DAOException($e);
-		}
-
-		return $this->get_tentative($username, $question_uri, $objet->date_soumission);
 	}
 }

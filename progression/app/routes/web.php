@@ -21,7 +21,7 @@ $router->options("{all:.*}", [
 ]);
 
 $router->get("/", function () use ($router) {
-	return $router->app->version();
+	return config("app.name") . " " . config("version.numéro") . "(" . config("version.commit_sha") . ")";
 });
 
 // Configuration serveur
@@ -65,7 +65,10 @@ $router->group(["middleware" => ["auth", "validationPermissions"]], function () 
 		"/tentative/{username}/{question_uri}/{timestamp:[[:digit:]]{10}}/commentaires",
 		"CommentaireCtl@post",
 	);
-	$router->get("/commentaire/{username}/{question_uri}/{timestamp:[[:digit:]]{10}}/{numéro}", "CommentaireCtl@get");
+	$router->get(
+		"/commentaire/{username}/{question_uri}/{timestamp:[[:digit:]]{10}}/{numero}",
+		"NotImplementedCtl@get",
+	);
 
 	// Résultat
 	$router->post("/test/{username}/{question_uri}/{numero:[[:digit:]]+}", "NotImplementedCtl@get");

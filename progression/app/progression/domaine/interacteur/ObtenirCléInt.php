@@ -23,11 +23,15 @@ use progression\dao\DAOFactory;
 
 class ObtenirCléInt extends Interacteur
 {
-	public function get_clé($username, $numéro)
+	/**
+	 * @param mixed $includes
+	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
+	 */
+	public function get_clé($username, $numéro, mixed $includes = [])
 	{
 		$dao = DAOFactory::getInstance()->get_clé_dao();
 
-		$clé = $dao->get_clé($username, $numéro);
+		$clé = $dao->get_clé($username, $numéro, $includes);
 
 		if ($clé) {
 			//Caviarde le secret
