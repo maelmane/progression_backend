@@ -63,7 +63,7 @@ class AvancementTransformer extends BaseTransformer
 		}
 
 		if (empty($tentatives)) {
-			return $this->collection($tentatives, new TentativeTransformer($id_parent), "tentative");
+			return $this->collection([], new TentativeTransformer($id_parent), "tentative");
 		} else {
 			if ($tentatives[array_key_first($tentatives)] instanceof TentativeProg) {
 				return $this->collection($tentatives, new TentativeProgTransformer($id_parent), "tentative");
