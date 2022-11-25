@@ -50,18 +50,31 @@ class PréparerProgInt
 			return null;
 		}
 
+		$ébauche = $this->ajouter_todos_implicites($ébauche);
+		$code_utilisateur = $this->ajouter_todos_implicites($code_utilisateur);
+
+		$codeExécutable = $this->remplacer_todos_ébauche_par_todos_utilisateur($ébauche, $code_utilisateur);
+
+		$codeExécutable = $this->enlever_todos_implicites($codeExécutable);
+
+		return $codeExécutable;
+	}
+
+	private function ajouter_todos_implicites(string $code): string
+	{
 		//S'il n'y a pas de +TODO, ou que le premier est placé après le premiers -TODO,
 		//on considère que l'ébauche commence avec une zone éditable
-		$premier_plus_todo = strpos($ébauche, "+TODO");
-		$premier_moins_todo = strpos($ébauche, "-TODO");
+		$premier_plus_todo = strpos($code, "+TODO");
+		$premier_moins_todo = strpos($code, "-TODO");
 		if (!$premier_plus_todo || ($premier_moins_todo && $premier_plus_todo > $premier_moins_todo)) {
-			$ébauche = "#+TODO\n" . $ébauche;
-			$code_utilisateur = "#+TODO\n" . $code_utilisateur;
+			return "#+TODO\n" . $code;
 		} else {
-			$ébauche = "#\n" . $ébauche;
-			$code_utilisateur = "#\n" . $code_utilisateur;
+			return "#\n" . $code;
 		}
+	}
 
+	private function remplacer_todos_ébauche_par_todos_utilisateur(string $ébauche, string $code_utilisateur): string
+	{
 		$codeÉbauche = explode("\n", $ébauche);
 		$codeExécutable = [];
 
@@ -95,11 +108,12 @@ class PréparerProgInt
 		}
 
 		//On recompose le code
-		$codeExécutable = implode("\n", $codeExécutable);
-		//et on enlève la première ligne
-		$codeExécutable = substr($codeExécutable, strpos($codeExécutable, "\n") + 1);
+		return implode("\n", $codeExécutable);
+	}
 
-		return $codeExécutable;
+	private function enlever_todos_implicites(string $codeExécutable): string
+	{
+		return substr($codeExécutable, strpos($codeExécutable, "\n") + 1);
 	}
 
 	private function vérifierNombreTodos($ébauche, $code_utilisateur)
