@@ -575,7 +575,8 @@ curl --data "$DATA" "<<get_api_url()>>/user/jdoe/cles" -H "Content-Type: applica
 DATA=$(cat <<EOF
 {
   "nom":"cléAuth$(head -c 9 /dev/urandom|base64|tr '/+' '_-')",
-  "portée":1
+  "portée":1,
+  "expiration": $(( $(date +%s) + 60 ))
 }
 EOF
 )
