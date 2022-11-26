@@ -92,5 +92,6 @@ $router->group(["middleware" => ["auth", "validationPermissions"]], function () 
 
 	// User
 	$router->get("/user/{username}", "UserCtl@get");
+	$router->post("/user/{username}", "UserCtl@post");
 	$router->get("/user/{username}/relationships/avancements", "NotImplementedCtl@get");
 });

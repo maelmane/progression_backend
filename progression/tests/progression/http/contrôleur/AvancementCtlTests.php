@@ -129,7 +129,9 @@ final class AvancementCtlTests extends ContrôleurTestCase
 					résultats: [],
 					tests_réussis: 2,
 					feedback: "feedbackTest",
-					commentaires: [new Commentaire("Ceci est encore un autre commentaire", new User("oteur"), 1614984921, 24)],
+					commentaires: [
+						new Commentaire("Ceci est encore un autre commentaire", new User("oteur"), 1614984921, 24),
+					],
 				),
 			],
 			titre: "Titre",

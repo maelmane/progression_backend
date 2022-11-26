@@ -39,8 +39,8 @@ class AvancementTransformer extends BaseTransformer
 			"extra" => $avancement->extra,
 			"links" => (isset($avancement->links) ? $avancement->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}avancement/{$this->id}/{$avancement->id}",
-                "user" => "{$_ENV["APP_URL"]}user/{$this->id}",
-                "question" => "{$_ENV["APP_URL"]}question/{$avancement->id}"
+				"user" => "{$_ENV["APP_URL"]}user/{$this->id}",
+				"question" => "{$_ENV["APP_URL"]}question/{$avancement->id}",
 			],
 		];
 

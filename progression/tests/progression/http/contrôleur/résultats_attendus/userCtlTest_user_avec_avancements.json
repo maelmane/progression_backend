@@ -4,7 +4,8 @@
     "id": "jdoe",
     "attributes": {
       "username": "jdoe",
-      "rôle": 0
+      "rôle": 0,
+      "préférences": "{\"app\": {\"pref1\": 1, \"pref2\": 2}}"
     },
     "links": {
       "self": "https://example.com/user/jdoe"
@@ -44,7 +45,7 @@
         "niveau": "",
         "date_modification": null,
         "date_réussite": null,
-		"extra": ""
+        "extra": ""
       },
       "links": {
         "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
@@ -73,14 +74,14 @@
         "date_réussite": null,
         "niveau": "",
         "titre": "",
-		"extra": "",
+        "extra": "",
         "état": 0
       },
       "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
       "links": {
-          "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
-          "question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
-          "user": "https://example.com/user/jdoe"
+        "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
+        "question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
+        "user": "https://example.com/user/jdoe"
       },
       "relationships": {
         "sauvegardes": {

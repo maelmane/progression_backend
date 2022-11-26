@@ -18,11 +18,13 @@
 
 namespace progression\http\contrôleur;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use progression\http\transformer\UserTransformer;
 use progression\domaine\entité\Avancement;
 use progression\domaine\interacteur\ObtenirUserInt;
+use progression\domaine\interacteur\SauvegarderPréférencesUtilisateurInt;
 use progression\util\Encodage;
 
 class UserCtl extends Contrôleur
@@ -35,6 +37,26 @@ class UserCtl extends Contrôleur
 
 		$réponse = $this->valider_et_préparer_réponse($user);
 		Log::debug("UserCtl.get. Retour : ", [$réponse]);
+		return $réponse;
+	}
+
+	public function post(Request $request, string $username): JsonResponse
+	{
+		Log::debug("UserCtl.post. Params : ", [$request->all(), $username]);
+		$validation = $this->valider_paramètres($request);
+		if ($validation->fails()) {
+			Log::notice(
+				"({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Paramètres invalides",
+			);
+			return $this->réponse_json(["erreur" => $validation->errors()], 400);
+		}
+
+		$userInt = new SauvegarderPréférencesUtilisateurInt();
+		$user = $userInt->sauvegarder_préférences($username, $request->préférences);
+
+		$réponse = $this->valider_et_préparer_réponse($user);
+
+		Log::debug("UserCtl.post. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
@@ -52,6 +74,23 @@ class UserCtl extends Contrôleur
 
 		Log::debug("UserCtl.obtenir_user. Retour : ", [$user]);
 		return $user;
+	}
+
+	private function valider_paramètres(Request $request)
+	{
+		$validateur = Validator::make(
+			$request->all(),
+			[
+				"paramètres" => "string|json|between:0,65535",
+			],
+			[
+				"json" => "Le champ :attribute doit être en format json.",
+				"paramètres.between" =>
+					"Le champ :attribute " . mb_strlen($request->paramètres) . " > :max caractères.",
+			],
+		);
+
+		return $validateur;
 	}
 
 	private function valider_et_préparer_réponse($user)
