@@ -13,6 +13,7 @@
 			"tests_réussis": 1
 		},
 		"links": {
+			"avancement": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
 			"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d"
 		},
 		"relationships": {
@@ -49,7 +50,7 @@
 			},
 			"links": {
 				"self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d/0",
-				"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d"
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d"
 			}
 		}
 	]

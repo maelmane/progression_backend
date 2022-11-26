@@ -48,7 +48,8 @@
       },
       "links": {
         "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-        "related": "https://example.com/user/jdoe"
+        "question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+        "user": "https://example.com/user/jdoe"
       },
       "relationships": {
         "tentatives": {
@@ -77,8 +78,9 @@
       },
       "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
       "links": {
-        "related": "https://example.com/user/jdoe",
-        "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24"
+          "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
+          "question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
+          "user": "https://example.com/user/jdoe"
       },
       "relationships": {
         "sauvegardes": {

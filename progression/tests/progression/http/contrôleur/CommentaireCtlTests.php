@@ -35,7 +35,7 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 
 		// Commentaire
-		$commentaire = new Commentaire("Bon travail", "Jonh Doe", 1615696276, 5);
+		$commentaire = new Commentaire("Bon travail", $this->user, 1615696276, 5);
 
 		$mockCommentaireDAO = Mockery::mock("progression\\dao\\CommentaireDAO");
 
@@ -63,7 +63,7 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/commentaires",
-			["message" => "Bon travail", "créateur" => "Jonh Doe", "numéro_ligne" => 5],
+			["message" => "Bon travail", "créateur" => "oteur", "numéro_ligne" => 5],
 		);
 		$this->assertEquals(200, $résultat_obtenu->status());
 
@@ -78,7 +78,7 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/commentaires",
-			["créateur" => "Jonh Doe", "numéro_ligne" => 5],
+			["créateur" => "oteur", "numéro_ligne" => 5],
 		);
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
@@ -92,7 +92,7 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/commentaires",
-			["message" => "Bon travail", "créateur" => "Jonh Doe", "numéro_ligne" => "numero non entier"],
+			["message" => "Bon travail", "créateur" => "oteur", "numéro_ligne" => "numero non entier"],
 		);
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(

@@ -37,6 +37,7 @@ final class TestSysTransformerTests extends TestCase
 			"validation" => "",
 			"utilisateur" => "",
 			"links" => [
+				"question" => "https://example.com/question/uri",
 				"self" => "https://example.com/test/uri/0",
 			],
 		];
@@ -62,6 +63,8 @@ final class TestSysTransformerTests extends TestCase
 			"validation" => "ls -l",
 			"utilisateur" => "root",
 			"links" => [
+				"question" =>
+					"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				"self" =>
 					"https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 			],

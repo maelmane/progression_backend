@@ -34,6 +34,7 @@ class RésultatTransformer extends BaseTransformer
 			"feedback" => $réponse->feedback,
 			"temps_exec" => $réponse->temps_exécution,
 			"links" => (isset($réponse->links) ? $réponse->links : []) + [
+				"tentative" => "{$_ENV["APP_URL"]}tentative/{$this->id}",
 				"self" => "{$_ENV["APP_URL"]}resultat/{$this->id}/{$réponse->id}",
 			],
 		];

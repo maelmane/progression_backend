@@ -124,7 +124,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			tests_réussis: 2,
 			feedback: "feedbackTest",
 			temps_exécution: 5,
-			commentaires: [new Commentaire("message", "créateur", 1614374490, 42)],
+			commentaires: [new Commentaire("message", new User("créateur"), 1614374490, 42)],
 		);
 
 		// Tentative non réussie

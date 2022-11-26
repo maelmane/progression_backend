@@ -11,7 +11,9 @@
       },
       "id": "jdoe/dXJpX2E",
       "links": {
-        "self": "https://example.com/avancement/jdoe/dXJpX2E"
+          "question": "https://example.com/question/dXJpX2E",
+          "user": "https://example.com/user/jdoe",
+          "self": "https://example.com/avancement/jdoe/dXJpX2E"
       },
       "relationships": {
         "sauvegardes": {
@@ -56,7 +58,9 @@
       },
       "id": "jdoe/dXJpX2I",
       "links": {
-        "self": "https://example.com/avancement/jdoe/dXJpX2I"
+          "question": "https://example.com/question/dXJpX2I",
+          "user": "https://example.com/user/jdoe",
+          "self": "https://example.com/avancement/jdoe/dXJpX2I"
       },
       "relationships": {
         "sauvegardes": {
@@ -80,42 +84,45 @@
   "included": [
     {
       "attributes": {
-        "créateur": "O. Teur",
+        "créateur": "oteur",
         "date": 1614974921,
         "message": "Ceci est un commentaire",
         "numéro_ligne": 42
       },
       "id": "jdoe/dXJpX2E/1614965817/0",
-      "links": {
-        "related": "https://example.com/tentative/jdoe/dXJpX2E/1614965817",
+		"links": {
+        "auteur": "https://example.com/user/oteur",			
+        "tentative": "https://example.com/tentative/jdoe/dXJpX2E/1614965817",
         "self": "https://example.com/commentaire/jdoe/dXJpX2E/1614965817/0"
       },
       "type": "commentaire"
     },
     {
       "attributes": {
-        "créateur": "O. Teur",
+        "créateur": "oteur",
         "date": 1614974922,
         "message": "Ceci est un autre commentaire",
         "numéro_ligne": 43
       },
       "id": "jdoe/dXJpX2E/1614965817/1",
-      "links": {
-        "related": "https://example.com/tentative/jdoe/dXJpX2E/1614965817",
+		"links": {
+        "auteur": "https://example.com/user/oteur",			
+        "tentative": "https://example.com/tentative/jdoe/dXJpX2E/1614965817",
         "self": "https://example.com/commentaire/jdoe/dXJpX2E/1614965817/1"
       },
       "type": "commentaire"
     },
     {
       "attributes": {
-        "créateur": "O. Teur",
+        "créateur": "oteur",
         "date": 1614984921,
         "message": "Ceci est encore un autre commentaire",
         "numéro_ligne": 24
       },
       "id": "jdoe/dXJpX2E/1614965818/0",
       "links": {
-        "related": "https://example.com/tentative/jdoe/dXJpX2E/1614965818",
+        "auteur": "https://example.com/user/oteur",
+        "tentative": "https://example.com/tentative/jdoe/dXJpX2E/1614965818",
         "self": "https://example.com/commentaire/jdoe/dXJpX2E/1614965818/0"
       },
       "type": "commentaire"
@@ -133,7 +140,7 @@
       },
       "id": "jdoe/dXJpX2E/1614965817",
       "links": {
-        "related": "https://example.com/avancement/jdoe/dXJpX2E",
+        "avancement": "https://example.com/avancement/jdoe/dXJpX2E",
         "self": "https://example.com/tentative/jdoe/dXJpX2E/1614965817"
       },
       "relationships": {
@@ -175,7 +182,7 @@
       },
       "id": "jdoe/dXJpX2E/1614965818",
       "links": {
-        "related": "https://example.com/avancement/jdoe/dXJpX2E",
+        "avancement": "https://example.com/avancement/jdoe/dXJpX2E",
         "self": "https://example.com/tentative/jdoe/dXJpX2E/1614965818"
       },
       "relationships": {
@@ -207,7 +214,7 @@
       },
       "id": "jdoe/dXJpX2E/0",
       "links": {
-        "related": "https://example.com/avancement/jdoe/dXJpX2E",
+        "avancement": "https://example.com/avancement/jdoe/dXJpX2E",
         "self": "https://example.com/sauvegarde/jdoe/dXJpX2E/0"
       },
       "type": "sauvegarde"
