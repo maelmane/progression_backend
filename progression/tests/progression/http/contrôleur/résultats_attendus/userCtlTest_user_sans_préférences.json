@@ -1,0 +1,28 @@
+{
+  "data": {
+    "type": "user",
+    "id": "roger",
+    "attributes": {
+      "username": "roger",
+		"rôle": 0,
+		"préférences": ""
+    },
+    "links": {
+      "self": "https://example.com/user/roger"
+    },
+    "relationships": {
+      "avancements": {
+        "links": {
+          "self": "https://example.com/user/roger/relationships/avancements",
+          "related": "https://example.com/user/roger/avancements"
+        }
+      },
+      "cles": {
+        "links": {
+          "self": "https://example.com/user/roger/relationships/cles",
+          "related": "https://example.com/user/roger/cles"
+        }
+      }
+    }
+  }
+}

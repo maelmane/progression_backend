@@ -81,7 +81,7 @@ class UserCtl extends Contrôleur
 		$validateur = Validator::make(
 			$request->all(),
 			[
-				"paramètres" => "string|json|between:0,65535",
+				"préférences" => "string|json|between:0,65535",
 			],
 			[
 				"json" => "Le champ :attribute doit être en format json.",

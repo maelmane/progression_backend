@@ -74,6 +74,23 @@ final class UserCtlTests extends ContrôleurTestCase
 		);
 	}
 
+	public function test_étant_donné_le_nom_dun_utilisateur_sans_préférences_lorsquon_appelle_get_on_obtient_lutilisateur_avec_préférences_vides()
+	{
+		DAOFactory::getInstance()
+			->get_user_dao()
+			->shouldReceive("get_user")
+			->with("roger", [])
+			->andReturn(new User("roger"));
+
+		$résultatObtenu = $this->actingAs($this->user)->call("GET", "/user/roger");
+
+		$this->assertResponseStatus(200);
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/userCtlTest_user_sans_préférences.json",
+			$résultatObtenu->getContent(),
+		);
+	}
+
 	public function test_étant_donné_le_nom_dun_utilisateur_lorsquon_appelle_get_en_incluant_les_avancements_on_obtient_lutilisateur_et_ses_avancements_sous_forme_json()
 	{
 		$résultatObtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe?include=avancements");
