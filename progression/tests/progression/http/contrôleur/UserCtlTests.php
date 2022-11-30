@@ -50,6 +50,10 @@ final class UserCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_user")
 			->with("jdoe", [])
 			->andReturn($user);
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("roger", [])
+			->andReturn(null);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -74,15 +78,22 @@ final class UserCtlTests extends ContrôleurTestCase
 		);
 	}
 
+	public function test_étant_donné_le_nom_dun_utilisateur_inexistant_lorsquon_appelle_get_on_obtient_une_erreur_404()
+	{
+		$résultatObtenu = $this->actingAs($this->user)->call("GET", "/user/roger");
+
+		$this->assertResponseStatus(404);
+	}
+
 	public function test_étant_donné_le_nom_dun_utilisateur_sans_préférences_lorsquon_appelle_get_on_obtient_lutilisateur_avec_préférences_vides()
 	{
 		DAOFactory::getInstance()
 			->get_user_dao()
 			->shouldReceive("get_user")
-			->with("roger", [])
-			->andReturn(new User("roger"));
+			->with("monique", [])
+			->andReturn(new User("monique"));
 
-		$résultatObtenu = $this->actingAs($this->user)->call("GET", "/user/roger");
+		$résultatObtenu = $this->actingAs($this->user)->call("GET", "/user/monique");
 
 		$this->assertResponseStatus(200);
 		$this->assertJsonStringEqualsJsonFile(
@@ -135,5 +146,29 @@ final class UserCtlTests extends ContrôleurTestCase
 			__DIR__ . "/résultats_attendus/userCtlTest_user_préférences_modifiées.json",
 			$résultatObtenu->getContent(),
 		);
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_post_des_préférences_invalides_elles_ne_sont_pas_sauvegardées_et_on_obtient_une_erreur_400()
+	{
+		DAOFactory::getInstance()
+			->get_user_dao()
+			->shouldNotReceive("save");
+
+		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/jdoe", ["préférences" => "test"]);
+
+		$this->assertResponseStatus(400);
+	}
+
+	public function test_étant_donné_un_utilisateur_inexistant_lorsquon_post_des_préférences_elles_ne_sont_pas_sauvegardées_et_on_obtient_une_erreur_404()
+	{
+		DAOFactory::getInstance()
+			->get_user_dao()
+			->shouldNotReceive("save");
+
+		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/roger", [
+			"préférences" => "{\"test\": 42}",
+		]);
+
+		$this->assertResponseStatus(404);
 	}
 }

@@ -1,26 +1,26 @@
 {
   "data": {
     "type": "user",
-    "id": "roger",
+    "id": "monique",
     "attributes": {
-      "username": "roger",
+      "username": "monique",
 		"rôle": 0,
 		"préférences": ""
     },
     "links": {
-      "self": "https://example.com/user/roger"
+      "self": "https://example.com/user/monique"
     },
     "relationships": {
       "avancements": {
         "links": {
-          "self": "https://example.com/user/roger/relationships/avancements",
-          "related": "https://example.com/user/roger/avancements"
+          "self": "https://example.com/user/monique/relationships/avancements",
+          "related": "https://example.com/user/monique/avancements"
         }
       },
       "cles": {
         "links": {
-          "self": "https://example.com/user/roger/relationships/cles",
-          "related": "https://example.com/user/roger/cles"
+          "self": "https://example.com/user/monique/relationships/cles",
+          "related": "https://example.com/user/monique/cles"
         }
       }
     }

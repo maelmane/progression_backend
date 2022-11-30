@@ -44,6 +44,7 @@ class UserCtl extends Contrôleur
 	{
 		Log::debug("UserCtl.post. Params : ", [$request->all(), $username]);
 		$validation = $this->valider_paramètres($request);
+
 		if ($validation->fails()) {
 			Log::notice(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Paramètres invalides",
@@ -52,7 +53,7 @@ class UserCtl extends Contrôleur
 		}
 
 		$userInt = new SauvegarderPréférencesUtilisateurInt();
-		$user = $userInt->sauvegarder_préférences($username, $request->préférences);
+		$user = $userInt->sauvegarder_préférences($username, $request->préférences ?? "");
 
 		$réponse = $this->valider_et_préparer_réponse($user);
 
@@ -69,7 +70,9 @@ class UserCtl extends Contrôleur
 
 		if ($username != null && $username != "") {
 			$user = $userInt->get_user($username, $this->get_includes());
-			$user->avancements = $this->réencoder_uris($user->avancements);
+			if ($user) {
+				$user->avancements = $this->réencoder_uris($user->avancements);
+			}
 		}
 
 		Log::debug("UserCtl.obtenir_user. Retour : ", [$user]);
@@ -97,10 +100,14 @@ class UserCtl extends Contrôleur
 	{
 		Log::debug("UserCtl.valider_et_préparer_réponse. Params : ", [$user]);
 
-		$user->id = $user->username;
-		$réponse_array = $this->item($user, new UserTransformer());
+		if ($user) {
+			$user->id = $user->username;
+			$réponse = $this->item($user, new UserTransformer());
+		} else {
+			$réponse = null;
+		}
 
-		$réponse = $this->préparer_réponse($réponse_array);
+		$réponse = $this->préparer_réponse($réponse);
 
 		Log::debug("UserCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
 
