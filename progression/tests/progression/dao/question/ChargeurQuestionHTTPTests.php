@@ -59,6 +59,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 			->shouldReceive("get_entêtes")
 			->with("http://exemple.com/question1/info.yml")
 			->andReturn([
+				0 => "HTTP/1.1 200 OK",
 				"Content-Type" => "text/yaml",
 				"Content-Length" => "999",
 				"Content-Disposition" => 'filename="info.yml"',
@@ -90,6 +91,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 			->shouldReceive("get_entêtes")
 			->with("http://exemple.com/question1/question.zip")
 			->andReturn([
+				0 => "HTTP/1.1 200 OK",
 				"Content-Type" => "application/zip",
 				"Content-Length" => "999",
 				"Content-Disposition" => 'filename="question.zip"',
@@ -127,6 +129,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 			->shouldReceive("get_entêtes")
 			->with("http://exemple.com/question1/question.zip")
 			->andReturn([
+				0 => "HTTP/1.1 200 OK",
 				"Content-Type" => "application/octet-stream",
 				"Content-Length" => "999",
 				"Content-Disposition" => 'filename="question.zip"',
@@ -161,6 +164,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 			->shouldReceive("get_entêtes")
 			->with("http://exemple.com/question1/question.inc")
 			->andReturn([
+				0 => "HTTP/1.1 200 OK",
 				"Content-Type" => "mime/inconnu",
 				"Content-Length" => "999",
 				"Content-Disposition" => 'filename="question.inc"',
@@ -186,6 +190,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 			->shouldReceive("get_entêtes")
 			->with("http://exemple.com/question1/info.yml")
 			->andReturn([
+				0 => "HTTP/1.1 200 OK",
 				"Content-Type" => "text/yaml",
 				"Content-Disposition" => 'filename="info.yml"',
 			]);
@@ -210,6 +215,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 			->shouldReceive("get_entêtes")
 			->with("http://exemple.com/question1/info.yml")
 			->andReturn([
+				0 => "HTTP/1.1 200 OK",
 				"Content-Type" => "text/yaml",
 				"Content-Length" => "9999999",
 				"Content-Disposition" => 'filename="info.yml"',
@@ -235,6 +241,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 			->shouldReceive("get_entêtes")
 			->with("http://exemple.com/question1/question.zip")
 			->andReturn([
+				0 => "HTTP/1.1 200 OK",
 				"Content-Type" => "application/zip",
 				"Content-Length" => "9999999",
 				"Content-Disposition" => 'filename="question.zip"',
