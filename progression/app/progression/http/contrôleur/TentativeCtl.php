@@ -123,10 +123,17 @@ class TentativeCtl extends Contrôleur
 	private function traiter_post_QuestionProg(Request $request, $username, $chemin, $question)
 	{
 		$tests = !empty($request->test)
-			? ($tests = [
-				$this->construire_test($request->test, $question->tests[$request->index]->sortie_attendue ?? null),
-			])
-			: ($tests = $question->tests);
+			? [
+				$this->construire_test(
+					isset($request->index)
+						? $question->tests[$request->index]
+						: new TestProg($request->test["nom"] ?? "", ""),
+					$request->test["entrée"] ?? null,
+					$request->test["params"] ?? null,
+					$request->test["sortie_attendue"] ?? null,
+				),
+			]
+			: $question->tests;
 
 		$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
 
@@ -196,14 +203,19 @@ class TentativeCtl extends Contrôleur
 		}
 	}
 
-	private function construire_test($test, string|null $sortie_attendue)
+	private function construire_test($test, string|null $entrée, string|null $params, string|null $sortie_attendue)
 	{
-		return new TestProg(
-			nom: $test["nom"] ?? "",
-			sortie_attendue: array_key_exists("sortie_attendue", $test) ? $test["sortie_attendue"] : $sortie_attendue,
-			entrée: $test["entrée"] ?? "",
-			params: $test["params"] ?? "",
-		);
+		if ($entrée !== null) {
+			$test->entrée = $entrée;
+		}
+		if ($params !== null) {
+			$test->params = $params;
+		}
+		if ($sortie_attendue !== null) {
+			$test->sortie_attendue = $sortie_attendue;
+		}
+
+		return $test;
 	}
 
 	private function soumettre_tentative_prog($username, $question, $tests, $tentative)

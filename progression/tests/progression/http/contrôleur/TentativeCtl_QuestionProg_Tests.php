@@ -538,7 +538,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 		$this->assertJsonStringEqualsJsonString(
 			sprintf(
-				file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_test_unique_réussie.json"),
+				file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_test_unique.json"),
 				$heure_tentative,
 			),
 			$résultat_obtenu->getContent(),
