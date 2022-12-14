@@ -35,6 +35,7 @@ use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, Tentati
 use progression\domaine\entité\{Question, QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\entité\TestProg;
 use progression\dao\exécuteur\ExécutionException;
+use progression\dao\question\ChargeurException;
 use progression\util\Encodage;
 use DomainException, LengthException, RuntimeException;
 
@@ -87,7 +88,7 @@ class TentativeCtl extends Contrôleur
 			} elseif ($question instanceof QuestionSys) {
 				$réponse = $this->traiter_post_QuestionSys($request, $username, $chemin, $question);
 			} else {
-				Log::error("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+				Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
 				return $this->réponse_json(["erreur" => "Question de type non implémentée."], 501);
 			}
 		} catch (ContrôleurException $erreur) {
@@ -99,12 +100,6 @@ class TentativeCtl extends Contrôleur
 			);
 
 			return $this->réponse_json(["erreur" => $erreur->getMessage()], $erreur->getCode());
-		} catch (ExécutionException $e) {
-			Log::error($e->getMessage());
-			if ($e->getPrevious()) {
-				Log::error($e->getPrevious()->getMessage());
-			}
-			return $this->réponse_json(["erreur" => "Service non disponible."], 503);
 		}
 
 		Log::debug("TentativeCtl.post. Retour : ", [$réponse]);
@@ -127,12 +122,15 @@ class TentativeCtl extends Contrôleur
 
 	private function traiter_post_QuestionProg(Request $request, $username, $chemin, $question)
 	{
-		$tests = !empty($request->test) ? [$this->construire_test($request->test)] : $question->tests;
+		$tests = !empty($request->test)
+			? ($tests = [
+				$this->construire_test($request->test, $question->tests[$request->index]->sortie_attendue ?? null),
+			])
+			: ($tests = $question->tests);
 
 		$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
 
 		$tentative_résultante = $this->soumettre_tentative_prog($username, $question, $tests, $tentative);
-
 		if (!$tentative_résultante) {
 			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
@@ -193,16 +191,18 @@ class TentativeCtl extends Contrôleur
 			throw new ContrôleurException($erreur->getMessage(), 502);
 		} catch (DomainException $erreur) {
 			throw new ContrôleurException($erreur->getMessage(), 400);
+		} catch (ChargeurException $erreur) {
+			throw new ContrôleurException($erreur->getMessage(), 400);
 		}
 	}
 
-	private function construire_test($test)
+	private function construire_test($test, string|null $sortie_attendue)
 	{
 		return new TestProg(
-			$test["nom"] ?? "",
-			$test["sortie_attendue"] ?? "",
-			$test["entrée"] ?? "",
-			$test["params"] ?? "",
+			nom: $test["nom"] ?? "",
+			sortie_attendue: array_key_exists("sortie_attendue", $test) ? $test["sortie_attendue"] : $sortie_attendue,
+			entrée: $test["entrée"] ?? "",
+			params: $test["params"] ?? "",
 		);
 	}
 
@@ -220,8 +220,17 @@ class TentativeCtl extends Contrôleur
 		try {
 			$résultat = $intéracteur->soumettre_tentative($username, $question, $tests, $tentative);
 		} catch (ExécutionException $e) {
-			throw new ContrôleurException("Service non disponible.", 503);
+			if ($e->getCode() >= 500) {
+				Log::error($e->getMessage());
+				if ($e->getPrevious()) {
+					Log::error($e->getPrevious()->getMessage());
+				}
+				throw new ContrôleurException("Service non disponible.", 503);
+			} else {
+				throw new ContrôleurException($e->getMessage(), $e->getCode());
+			}
 		}
+
 		if ($tentative == null) {
 			throw new ContrôleurException("Requête intraitable.", 400);
 		}

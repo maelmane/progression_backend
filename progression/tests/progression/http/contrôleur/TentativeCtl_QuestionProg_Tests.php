@@ -31,6 +31,7 @@ use progression\domaine\entité\{
 	Résultat,
 	User,
 };
+use progression\dao\question\ChargeurException;
 use Illuminate\Auth\GenericUser;
 
 final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
@@ -99,6 +100,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->shouldReceive("get_question")
 			->with("https://depot.com/question_non_réussie")
 			->andReturn($question_non_réussie);
+		$mockQuestionDAO
+			->shouldReceive("get_question")
+			->with(Mockery::Any())
+			->andThrow(new ChargeurException("Impossible de récupérer la question"));
 
 		// Tentative
 		// Tentative réussie
@@ -213,7 +218,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "erreur";
 			})
-			->andThrow(new ExécutionException("Erreur test://TentativeCtlTests.php"));
+			->andThrow(new ExécutionException("Erreur test://TentativeCtlTests.php", 503));
 
 		//Avancement
 
@@ -515,6 +520,31 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$this->assertEquals('{"erreur":"Tentative intraitable."}', $résultat_obtenu->getContent());
 	}
 
+	public function test_étant_donné_une_tentative_avec_un_test_unique_comportant_une_sortie_attendue_lorsquelle_est_soumise_lavancement_et_la_tentative_on_obtient_la_TentativeProg_réussie()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives?include=resultats",
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+				"test" => ["nom" => "Bonjour", "entrée" => "bonjour", "sortie_attendue" => "Bonjour\nBonjour\n"],
+			],
+		);
+
+		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertLessThanOrEqual(1, $heure_tentative - time());
+
+		$this->assertJsonStringEqualsJsonString(
+			sprintf(
+				file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_test_unique_réussie.json"),
+				$heure_tentative,
+			),
+			$résultat_obtenu->getContent(),
+		);
+	}
+
 	public function test_étant_donné_un_avancement_non_réussi_et_une_tentative_avec_un_test_unique_lorsquelle_est_soumise_lavancement_et_la_tentative_ne_sont_pas_sauvegardés_et_obtient_la_TentativeProg_réussie()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
@@ -523,7 +553,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			[
 				"langage" => "réussi",
 				"code" => "#+TODO\nprint(\"Hello world!\")",
-				"test" => ["nom" => "Bonjour", "sortie_attendue" => "Bonjour\nBonjour\n", "entrée" => "bonjour"],
+				"test" => ["nom" => "Bonjour", "entrée" => "bonjour"],
+				"index" => 1,
 			],
 		);
 
@@ -555,7 +586,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			[
 				"langage" => "non_réussi",
 				"code" => "#+TODO\nprint(\"Hello world!\")",
-				"test" => ["nom" => "Bonjour", "sortie_attendue" => "Bonjour\nBonjour\n", "entrée" => "bonjour"],
+				"test" => ["nom" => "Bonjour", "entrée" => "bonjour"],
+				"index" => 1,
 			],
 		);
 
@@ -577,6 +609,29 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			),
 			$résultat_obtenu->getContent(),
 		);
+	}
+
+	public function test_étant_donné_une_tentative_avec_une_question_inexistante_lorsquelle_est_soumise_on_obtient_Tentative_intraitable()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/avancement/jdoe/aW5leGlzdGFudGU/tentatives", [
+			"langage" => "réussi",
+			"code" => "print(\"Hello world!\")",
+		]);
+
+		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals('{"erreur":"Impossible de récupérer la question"}', $résultat_obtenu->getContent());
+	}
+
+	public function test_étant_donné_une_tentative_avec_un_langage_inconnu_lorsquelle_est_soumise_on_obtient_Tentative_intraitable()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives",
+			["langage" => "inconnu", "code" => "print(\"Hello world!\")"],
+		);
+
+		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals('{"erreur":"Tentative intraitable."}', $résultat_obtenu->getContent());
 	}
 
 	public function test_étant_donné_une_tentative_ayant_du_code_dépassant_la_taille_maximale_de_caractères_on_obtient_une_erreur_400()

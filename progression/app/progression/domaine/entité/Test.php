@@ -22,6 +22,7 @@ class Test
 {
 	public $nom;
 	public $sortie_attendue;
+	public bool $sortie_cachée;
 	public $feedback_pos;
 	public $feedback_neg;
 	public $feedback_err;
@@ -31,10 +32,12 @@ class Test
 		$sortie_attendue,
 		$feedback_pos = null,
 		$feedback_neg = null,
-		$feedback_err = null
+		$feedback_err = null,
+		bool $sortie_cachée = false
 	) {
 		$this->nom = $nom;
 		$this->sortie_attendue = $sortie_attendue;
+		$this->sortie_cachée = $sortie_cachée;
 		$this->feedback_pos = $feedback_pos;
 		$this->feedback_neg = $feedback_neg;
 		$this->feedback_err = $feedback_err;
