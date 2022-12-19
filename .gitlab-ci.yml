@@ -101,6 +101,7 @@ deploy_dev:
   environment:
     name: dev
     url: https://progression.dti.crosemont.quebec/dev/
+    on_stop: stop_dev
   before_script:
     - *preparer_contexte
     - *login
@@ -110,6 +111,18 @@ deploy_dev:
   only:
     - dev
 
+stop_dev:
+  stage: deploy_image
+  environment:
+    name: dev    
+    action: stop
+  script:
+    - TAG_DEPLOY=dev docker-compose down progression
+  only:
+    - dev
+  when:
+    manual
+    
 # Déploiement sur /demo
 deploy_demo:
   stage: deploy_image
