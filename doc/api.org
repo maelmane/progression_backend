@@ -436,7 +436,7 @@ curl "<<get_api_url()>>/user/jdoe" -H "Authorization: Bearer $TOKEN"
 #+begin_src bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
 DATA='{"préférences": "{\"thème\": \"sombre\"}"}'
 
-curl "<<get_api_url>>/user/jdoe" --data $DATA -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+curl "<<get_api_url()>>/user/jdoe" --data $DATA -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
 #+end_src
 
 ** Obtenir la question «Les fonctions avec paramètres/Rectangle» et ses tests: 
