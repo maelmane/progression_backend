@@ -117,7 +117,7 @@ stop_dev:
     name: dev    
     action: stop
   script:
-    - TAG_DEPLOY=dev docker-compose down progression
+    - TAG_DEPLOY=dev docker-compose stop progression
   only:
     - dev
   when:
