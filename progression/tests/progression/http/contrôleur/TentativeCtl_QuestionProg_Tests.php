@@ -102,6 +102,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->andReturn($question_non_réussie);
 		$mockQuestionDAO
 			->shouldReceive("get_question")
+			->with("https://depot.com/nouvelle_question")
+			->andReturn($question_réussie);
+		$mockQuestionDAO
+			->shouldReceive("get_question")
 			->with(Mockery::Any())
 			->andThrow(new ChargeurException("Impossible de récupérer la question"));
 
@@ -245,6 +249,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->shouldReceive("get_avancement")
 			->with("jdoe", "https://depot.com/question_non_réussie", [])
 			->andReturn($this->avancement_non_réussi);
+		$mockAvancementDAO
+			->shouldReceive("get_avancement")
+			->with("jdoe", "https://depot.com/nouvelle_question", [])
+			->andReturn(null);
 
 		// User
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -308,6 +316,65 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 		$this->assertEquals(404, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_obtenu->getContent());
+	}
+
+	public function test_étant_donné_un_avancement_inexistant_et_une_tentative_réussie_lorsquon_appelle_post_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeProg_réussie()
+	{
+		$nouvelle_tentative = new TentativeProg(
+			langage: "réussi",
+			code: "#+TODO\nprint(\"Hello world!\")",
+			date_soumission: 1653690241,
+			réussi: true,
+			tests_réussis: 2,
+			temps_exécution: 551,
+			résultats: [
+				new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
+				new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
+			],
+			feedback: "Bon travail!",
+		);
+		$nouvel_avancement = new Avancement(
+			tentatives: [$nouvelle_tentative],
+			titre: "Question réussie",
+			niveau: "Débutant",
+		);
+		$nouvel_avancement->etat = 2;
+		$nouvel_avancement->date_modification = 1653690241;
+		$nouvel_avancement->date_réussite = 1653690241;
+
+		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
+		$mockAvancementDAO
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
+				return $user == "jdoe" && $uri == "https://depot.com/nouvelle_question" && $av == $nouvel_avancement;
+			})
+			->andReturn($nouvel_avancement);
+
+		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
+		$mockTentativeDAO
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($user, $uri, $t) use ($nouvelle_tentative) {
+				if ($t->date_soumission - time() > 1) {
+					throw "Temps d'exécution >1s {$t->date_soumission}";
+				}
+				$t->date_soumission = $nouvelle_tentative->date_soumission;
+				return $user == "jdoe" && $uri == "https://depot.com/nouvelle_question" && $t == $nouvelle_tentative;
+			})
+			->andReturn($nouvelle_tentative);
+
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/tentatives?include=resultats",
+			["langage" => "réussi", "code" => "#+TODO\nprint(\"Hello world!\")"],
+		);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_nouvel_avancement_tentative_réussie.json",
+			$résultat_obtenu->getContent(),
+		);
 	}
 
 	public function test_étant_donné_un_avancement_réussi_et_une_tentative_réussie_lorsquon_appelle_post_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeProg_réussie()

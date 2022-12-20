@@ -31,7 +31,7 @@ use progression\domaine\interacteur\{
 	SoumettreTentativeProgInt,
 	SoumettreTentativeSysInt,
 };
-use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, TentativeBD};
+use progression\domaine\entité\{Avancement, Tentative, TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{Question, QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\entité\TestProg;
 use progression\dao\exécuteur\ExécutionException;
@@ -255,7 +255,9 @@ class TentativeCtl extends Contrôleur
 		$sauvegardeTentativeInt->sauvegarder($username, $chemin, $tentative);
 
 		$avancementInt = new ObtenirAvancementInt();
-		$avancement = $avancementInt->get_avancement($username, $chemin);
+		$avancement =
+			$avancementInt->get_avancement($username, $chemin) ??
+			new Avancement(tentatives: [], titre: $question->titre, niveau: $question->niveau);
 
 		$avancement->ajouter_tentative($tentative);
 
