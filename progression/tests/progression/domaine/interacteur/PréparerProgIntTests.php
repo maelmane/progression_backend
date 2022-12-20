@@ -79,7 +79,7 @@ final class PréparerProgIntTests extends TestCase
              #+VISIBLE
 
              print(\"Allo le monde\")
-             #-TODO
+             #
              # Rien à faire ici
 
             ",
@@ -125,7 +125,7 @@ final class PréparerProgIntTests extends TestCase
 
              # Rien à faire ici
 
-             #+TODO
+             #
              print(\"Allo le monde\")
 
             ",
@@ -165,16 +165,61 @@ final class PréparerProgIntTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
+	public function test_étant_donné_une_questionprog_à_un_todo_en_ligne_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_code_utilisateur_dans_le_todo()
+	{
+		$résultat_attendu = new Exécutable(
+			"#Commentaire invisible
+             #+VISIBLE
+
+             # Rien à faire ici
+
+             print(\"Allo le monde\")
+
+            ",
+			"python",
+		);
+
+		$question = new QuestionProg();
+		$question->exécutables["python"] = new Exécutable(
+			"#Commentaire invisible
+             #+VISIBLE
+
+             # Rien à faire ici
+
+             print(+TODO -TODO)
+
+            ",
+			"python",
+		);
+
+		$tentative = new TentativeProg(
+			"python",
+			"#Commentaire invisible
+             #+VISIBLE
+
+             # Ne devrait pas être ici
+
+             print(+TODO\"Allo le monde\"-TODO)
+
+            ",
+		);
+
+		$interacteur = new PréparerProgInt();
+		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
 	public function test_étant_donné_une_questionprog_à_deux_todos_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_seulement_code_utilisateur_entre_todos()
 	{
 		$résultat_attendu = new Exécutable(
 			"#Commentaire invisible
              #+VISIBLE
-             #+TODO
+             #
              print(\"Allo le monde\")
-             #-TODO
+             #
              # Rien à faire ici
-             #+TODO
+             #
              
              print(\"Test 123\")",
 
@@ -221,11 +266,11 @@ final class PréparerProgIntTests extends TestCase
 			"#Commentaire invisible
              #+VISIBLE
              print(\"Allo le monde\")
-             #-TODO
+             #
 
              # Rien à faire ici
 
-             #+TODO
+             #
              print(\"Test 123\")",
 
 			"python",
@@ -263,10 +308,77 @@ final class PréparerProgIntTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
+	public function test_étant_donné_une_questionprog_complexe_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_seulement_code_utilisateur_entre_todos()
+	{
+		$résultat_attendu = new Exécutable(
+			"Code utilisateur 1
+             #
+
+             # Rien à faire ici
+
+             #
+             Code utilisateur 2
+             #
+
+             test : Code utilisateur 3
+             test : Code utilisateur 4
+
+             #
+             Code utilisateur 5
+            ",
+
+			"python",
+		);
+
+		$question = new QuestionProg();
+		$question->exécutables["python"] = new Exécutable(
+			"À remplir ici
+             #-TODO
+
+             # Rien à faire ici
+
+             #+TODO
+             À remplir ici
+             #-TODO
+
+             test : +TODOÀ remplir ici-TODO
+             test : +TODOÀ remplir ici-TODO
+
+             #+TODO
+             À remplir ici
+            ",
+			"python",
+		);
+
+		$tentative = new TentativeProg(
+			"python",
+			"Code utilisateur 1
+             #-TODO
+
+             # Rien à faire ici
+
+             #+TODO
+             Code utilisateur 2
+             #-TODO
+
+             test : +TODOCode utilisateur 3-TODO
+             test : +TODOCode utilisateur 4-TODO
+
+             #+TODO
+             Code utilisateur 5
+            ",
+		);
+
+		$interacteur = new PréparerProgInt();
+		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
 	public function test_étant_donné_une_questionprog_avec_un_todo_et_une_tentative_très_longue_lorsque_prépare_on_obtient_objet_exécutable_comportant_le_code_utilisateur_entre_todos()
 	{
 		$longue_réponse = str_repeat("#", 20000);
-		$long_résultat = "#+TODO\n" . $longue_réponse . "\n#-TODO\n";
+		$long_résultat = "#\n" . $longue_réponse . "\n#\n";
 
 		$résultat_attendu = new Exécutable($long_résultat, "python");
 
@@ -291,7 +403,7 @@ final class PréparerProgIntTests extends TestCase
 	{
 		$long_préambule = str_repeat("#", 20000);
 		$longue_question = $long_préambule . "#+TODO\n#-TODO\n";
-		$long_résultat = $long_préambule . "#+TODO\n             print(\"Allo le monde\")\n#-TODO\n";
+		$long_résultat = $long_préambule . "#\n             print(\"Allo le monde\")\n             #\n";
 
 		$résultat_attendu = new Exécutable($long_résultat, "python");
 

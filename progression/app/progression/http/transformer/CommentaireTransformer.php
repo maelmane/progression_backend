@@ -29,10 +29,12 @@ class CommentaireTransformer extends BaseTransformer
 		$data_out = [
 			"id" => "{$this->id}/{$commentaire->id}",
 			"message" => $commentaire->message,
-			"créateur" => $commentaire->créateur,
+			"créateur" => $commentaire->créateur->username,
 			"date" => $commentaire->date,
 			"numéro_ligne" => $commentaire->numéro_ligne,
 			"links" => (isset($commentaire->links) ? $commentaire->links : []) + [
+				"tentative" => "{$_ENV["APP_URL"]}tentative/{$this->id}",
+				"auteur" => "{$_ENV["APP_URL"]}user/{$commentaire->créateur->username}",
 				"self" => "{$_ENV["APP_URL"]}commentaire/{$this->id}/{$commentaire->id}",
 			],
 		];

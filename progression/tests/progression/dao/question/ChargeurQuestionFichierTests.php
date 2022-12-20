@@ -94,7 +94,7 @@ final class ChargeurQuestionFichierTests extends TestCase
 			$résultat_obtenu = (new ChargeurQuestionFichier())->récupérer_question($uri);
 			$this->fail();
 		} catch (ChargeurException $résultat_obtenu) {
-			$this->assertEquals("Le fichier ${uri} est invalide. (err: 1)", $résultat_obtenu->getMessage());
+			$this->assertEquals("Le fichier {$uri} est invalide. (err: 1)", $résultat_obtenu->getMessage());
 		}
 	}
 
@@ -118,7 +118,7 @@ final class ChargeurQuestionFichierTests extends TestCase
 			$résultat_obtenu = (new ChargeurQuestionFichier())->récupérer_question($uri);
 			$this->fail();
 		} catch (ChargeurException $résultat_obtenu) {
-			$this->assertEquals("Le fichier ${uri} ne peut pas être chargé.", $résultat_obtenu->getMessage());
+			$this->assertEquals("Le fichier {$uri} ne peut pas être chargé.", $résultat_obtenu->getMessage());
 		}
 	}
 }

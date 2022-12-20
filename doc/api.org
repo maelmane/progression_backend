@@ -333,11 +333,12 @@ username
 
 *** Relations :
 
-| Nom      | Type | Valeurs          |
-|----------+------+------------------|
-| username | str  |                  |
-| rôle     | int  | 0=normal,1=admin |
-|----------+------+------------------|
+| Nom         | Type | Valeurs                                  |
+|-------------+------+------------------------------------------|
+| username    | str  |                                          |
+| rôle        | int  | 0=normal,1=admin                         |
+| préférences | str  | chaîne JSON décrivant les préférences UI |
+|-------------+------+------------------------------------------|
 
 *** Relations :
 
@@ -429,6 +430,14 @@ curl "<<get_api_url()>>/auth" --data '{"username": "jdoe", "password": "Crosemon
 #+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
 curl "<<get_api_url()>>/user/jdoe" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
+
+** Mettre à jour les préférences de ~jdoe~
+
+#+begin_src bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+DATA='{"préférences": "{\"thème\": \"sombre\"}"}'
+
+curl "<<get_api_url()>>/user/jdoe" --data $DATA -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+#+end_src
 
 ** Obtenir la question «Les fonctions avec paramètres/Rectangle» et ses tests: 
 
@@ -575,7 +584,8 @@ curl --data "$DATA" "<<get_api_url()>>/user/jdoe/cles" -H "Content-Type: applica
 DATA=$(cat <<EOF
 {
   "nom":"cléAuth$(head -c 9 /dev/urandom|base64|tr '/+' '_-')",
-  "portée":1
+  "portée":1,
+  "expiration": $(( $(date +%s) + 60 ))
 }
 EOF
 )

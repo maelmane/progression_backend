@@ -30,9 +30,10 @@ class TestProg extends Test
 		$params = "",
 		$feedback_pos = null,
 		$feedback_neg = null,
-		$feedback_err = null
+		$feedback_err = null,
+		bool $sortie_cachée = false
 	) {
-		parent::__construct($nom, $sortie_attendue, $feedback_pos, $feedback_neg, $feedback_err);
+		parent::__construct($nom, $sortie_attendue, $feedback_pos, $feedback_neg, $feedback_err, $sortie_cachée);
 		$this->entrée = $entrée;
 		$this->params = $params;
 	}

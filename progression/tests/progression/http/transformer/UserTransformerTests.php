@@ -34,6 +34,7 @@ final class UserTransformerTests extends TestCase
 			"id" => "bob",
 			"username" => "bob",
 			"rôle" => 0,
+			"préférences" => "",
 			"links" => [
 				"self" => "https://example.com/user/bob",
 			],

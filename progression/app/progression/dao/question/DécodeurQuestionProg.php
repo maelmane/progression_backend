@@ -54,6 +54,7 @@ class DécodeurQuestionProg extends DécodeurQuestion
 				$test["rétroactions"]["positive"] ?? null,
 				$test["rétroactions"]["négative"] ?? null,
 				$test["rétroactions"]["erreur"] ?? null,
+				($test["caché"] ?? false) == "true",
 			);
 		}
 

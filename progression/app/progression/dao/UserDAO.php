@@ -48,6 +48,7 @@ class UserDAO extends EntitéDAO
 			$objet = [
 				"username" => $user->username,
 				"role" => $user->rôle,
+				"preferences" => $user->préférences,
 			];
 
 			return $this->construire([UserMdl::query()->updateOrCreate(["username" => $user->username], $objet)])[0];
@@ -93,6 +94,7 @@ class UserDAO extends EntitéDAO
 				in_array("clés", $includes)
 					? CléDAO::construire($user["clés"], parent::filtrer_niveaux($includes, "clés"))
 					: [],
+				$user["preferences"] ?? "",
 			);
 		}
 		return $users;

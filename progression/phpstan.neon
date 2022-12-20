@@ -9,10 +9,13 @@ parameters:
   level: 8
 
   ignoreErrors:
-    # Les propriété id doivent être ajoutées pour la transformation en JSON-API via Fractal
+    # Les propriété id et links doivent être ajoutées pour la transformation en JSON-API via Fractal
     -
       message: '#^Access to an undefined property progression\\domaine\\entité\\[^\\]+::\$id.$#'
       path: app/progression/http/transformer/*Transformer.php
     -
       message: '#^Access to an undefined property progression\\domaine\\entité\\[^\\]+::\$id.$#'
       path: app/progression/http/contrôleur/*Ctl.php
+    -
+      message: '#^Access to an undefined property progression\\domaine\\entité\\[^\\]+::\$links.$#'
+      path: app/progression/http/transformer/*Transformer.php
