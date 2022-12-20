@@ -84,8 +84,23 @@ final class CléCtlTests extends ContrôleurTestCase
 		$résultat_observé = $this->actingAs($this->user)->call("GET", "/cle/jdoe/cle%20de%20test/");
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals(
-			'{"data":{"type":"cle","id":"jdoe\/cle de test","attributes":{"secret":null,"création":1625709495,"expiration":1625713000,"portée":1},"links":{"self":"https:\/\/example.com\/cle\/jdoe\/cle de test"}}}',
+		$this->assertJsonStringEqualsJsonString(
+			'{
+               "data": {
+                 "type": "cle",
+                 "id": "jdoe/cle de test",
+                 "attributes": {
+                   "secret": null,
+                   "création": 1625709495,
+                   "expiration": 1625713000,
+                   "portée": 1
+                 },
+                 "links": {
+                   "self": "https://example.com/cle/jdoe/cle de test",
+                   "user": "https://example.com/user/jdoe"
+                 }
+               }
+             }',
 			$résultat_observé->getContent(),
 		);
 	}
@@ -103,8 +118,23 @@ final class CléCtlTests extends ContrôleurTestCase
 		$résultat_observé = $this->actingAs($this->admin)->call("GET", "/cle/jdoe/cle%20de%20test/");
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals(
-			'{"data":{"type":"cle","id":"jdoe\/cle de test","attributes":{"secret":null,"création":1625709495,"expiration":1625713000,"portée":1},"links":{"self":"https:\/\/example.com\/cle\/jdoe\/cle de test"}}}',
+		$this->assertJsonStringEqualsJsonString(
+			'{
+               "data": {
+                 "type": "cle",
+                 "id": "jdoe/cle de test",
+                 "attributes": {
+                   "secret": null,
+                   "création": 1625709495,
+                   "expiration": 1625713000,
+                   "portée": 1
+                 },
+                 "links": {
+                   "self": "https://example.com/cle/jdoe/cle de test",
+                   "user": "https://example.com/user/jdoe"
+                 }
+               }
+             }',
 			$résultat_observé->getContent(),
 		);
 	}

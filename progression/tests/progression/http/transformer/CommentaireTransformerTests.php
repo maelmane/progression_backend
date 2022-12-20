@@ -19,7 +19,7 @@
 namespace progression\http\transformer;
 
 use PHPUnit\Framework\TestCase;
-use progression\domaine\entité\Commentaire;
+use progression\domaine\entité\{Commentaire, User};
 
 final class CommentaireTransformerTests extends TestCase
 {
@@ -27,16 +27,23 @@ final class CommentaireTransformerTests extends TestCase
 	{
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$commentaire = new Commentaire("message envoyer poar interacteurMocker", "createur Mock", 122456747, 15);
-		$commentaireTransformer = new CommentaireTransformer("createur Mock/test/122456747");
+		$commentaire = new Commentaire(
+			"message envoyer par interacteurMocker",
+			new User("createur_test"),
+			122456747,
+			15,
+		);
+		$commentaireTransformer = new CommentaireTransformer("createur_test/test/122456747");
 		$résultat_attendu = [
-			"id" => "createur Mock/test/122456747/11",
-			"message" => "message envoyer poar interacteurMocker",
-			"créateur" => "createur Mock",
+			"id" => "createur_test/test/122456747/11",
+			"message" => "message envoyer par interacteurMocker",
+			"créateur" => "createur_test",
 			"date" => 122456747,
 			"numéro_ligne" => 15,
 			"links" => [
-				"self" => "https://example.com/commentaire/createur Mock/test/122456747/11",
+				"auteur" => "https://example.com/user/createur_test",
+				"self" => "https://example.com/commentaire/createur_test/test/122456747/11",
+				"tentative" => "https://example.com/tentative/createur_test/test/122456747",
 			],
 		];
 

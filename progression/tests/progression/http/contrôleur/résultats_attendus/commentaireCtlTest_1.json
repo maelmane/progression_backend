@@ -4,11 +4,13 @@
 		"id":"jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/0",
 		"attributes":{
 			"message":"Bon travail",
-			"créateur":"Jonh Doe",
+			"créateur":"jdoe",
 			"date":1615696276,
 			"numéro_ligne":5
 		},
 		"links":{
+			"auteur":"https://example.com/user/jdoe",
+			"tentative":"https://example.com/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490",
 			"self":"https://example.com/commentaire/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/0"
 		}
 	}

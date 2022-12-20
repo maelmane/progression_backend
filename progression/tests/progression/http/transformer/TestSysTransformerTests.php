@@ -34,9 +34,11 @@ final class TestSysTransformerTests extends TestCase
 			"id" => "uri/0",
 			"nom" => "Permissions",
 			"sortie_attendue" => "-rwxrwxrwx",
+			"sortie_cachée" => false,
 			"validation" => "",
 			"utilisateur" => "",
 			"links" => [
+				"question" => "https://example.com/question/uri",
 				"self" => "https://example.com/test/uri/0",
 			],
 		];
@@ -59,9 +61,12 @@ final class TestSysTransformerTests extends TestCase
 			"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 			"nom" => "Permissions",
 			"sortie_attendue" => "-rwxrwxrwx",
+			"sortie_cachée" => false,
 			"validation" => "ls -l",
 			"utilisateur" => "root",
 			"links" => [
+				"question" =>
+					"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				"self" =>
 					"https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 			],

@@ -11,7 +11,9 @@
       },
       "id": "jdoe/dXJpX2E",
       "links": {
-        "self": "https://example.com/avancement/jdoe/dXJpX2E"
+          "question": "https://example.com/question/dXJpX2E",
+          "user": "https://example.com/user/jdoe",
+          "self": "https://example.com/avancement/jdoe/dXJpX2E"
       },
       "relationships": {
         "sauvegardes": {
@@ -50,7 +52,9 @@
       },
       "id": "jdoe/dXJpX2I",
       "links": {
-        "self": "https://example.com/avancement/jdoe/dXJpX2I"
+          "question": "https://example.com/question/dXJpX2I",
+          "user": "https://example.com/user/jdoe",
+          "self": "https://example.com/avancement/jdoe/dXJpX2I"
       },
       "relationships": {
         "sauvegardes": {
@@ -84,7 +88,7 @@
       },
       "id": "jdoe/dXJpX2E/1614965817",
       "links": {
-        "related": "https://example.com/avancement/jdoe/dXJpX2E",
+        "avancement": "https://example.com/avancement/jdoe/dXJpX2E",
         "self": "https://example.com/tentative/jdoe/dXJpX2E/1614965817"
       },
       "relationships": {
@@ -116,7 +120,7 @@
       },
       "id": "jdoe/dXJpX2E/1614965818",
       "links": {
-        "related": "https://example.com/avancement/jdoe/dXJpX2E",
+        "avancement": "https://example.com/avancement/jdoe/dXJpX2E",
         "self": "https://example.com/tentative/jdoe/dXJpX2E/1614965818"
       },
       "relationships": {

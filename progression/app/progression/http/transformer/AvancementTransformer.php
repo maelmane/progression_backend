@@ -39,6 +39,8 @@ class AvancementTransformer extends BaseTransformer
 			"extra" => $avancement->extra,
 			"links" => (isset($avancement->links) ? $avancement->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}avancement/{$this->id}/{$avancement->id}",
+				"user" => "{$_ENV["APP_URL"]}user/{$this->id}",
+				"question" => "{$_ENV["APP_URL"]}question/{$avancement->id}",
 			],
 		];
 
@@ -54,7 +56,8 @@ class AvancementTransformer extends BaseTransformer
 
 		foreach ($tentatives as $date_soumission => $tentative) {
 			$tentative->links = [
-				"related" => "{$_ENV["APP_URL"]}avancement/{$id_parent}",
+				"self" => "{$_ENV["APP_URL"]}tentative/{$id_parent}/{$date_soumission}",
+				"avancement" => "{$_ENV["APP_URL"]}avancement/{$id_parent}",
 			];
 
 			if ($params && array_key_exists("fields", $params)) {
@@ -81,7 +84,8 @@ class AvancementTransformer extends BaseTransformer
 
 		foreach ($avancement->sauvegardes as $langage => $sauvegarde) {
 			$sauvegarde->links = [
-				"related" => "{$_ENV["APP_URL"]}avancement/{$id_parent}",
+				"self" => "{$_ENV["APP_URL"]}sauvegarde/{$id_parent}/{$langage}",
+				"avancement" => "{$_ENV["APP_URL"]}avancement/{$id_parent}",
 			];
 		}
 
