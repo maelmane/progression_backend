@@ -277,12 +277,13 @@ question_uri/numéro
 
 *** Propriétés :
 
-| Nom             | Type | Valeurs |
-|-----------------+------+---------|
-| nom             | str  |         |
-| sortie_attendue | str  |         |
-| feedback_pos    | str  |         |
-| feedback_neg    | str  |         |
+| Nom             | Type | Valeurs                                                      |
+|-----------------+------+--------------------------------------------------------------|
+| nom             | str  |                                                              |
+| sortie_attendue | str  | La sortie attendue, ou chaîne vide si sortie_cachée est vrai |
+| feedback_pos    | str  |                                                              |
+| feedback_neg    | str  |                                                              |
+| sortie_cachée   | bool | vrai si la sortie attendue a été remplacée par ""            |
 
 
 ** TestProg (soustype de Test)
