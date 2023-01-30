@@ -27,12 +27,19 @@ class User
 	public $rôle = User::ROLE_NORMAL;
 	public $avancements;
 	public $clés;
+	public string $préférences;
 
-	public function __construct($username, $rôle = User::ROLE_NORMAL, $avancements = [], $clés = [])
-	{
+	public function __construct(
+		$username,
+		$rôle = User::ROLE_NORMAL,
+		$avancements = [],
+		$clés = [],
+		string $préférences = ""
+	) {
 		$this->username = $username;
 		$this->rôle = $rôle;
 		$this->avancements = $avancements;
 		$this->clés = $clés;
+		$this->préférences = $préférences;
 	}
 }

@@ -42,6 +42,7 @@ final class TentativeProgTransformerTests extends TestCase
 			"code" => "codeTest",
 			"temps_exécution" => null,
 			"links" => [
+				"avancement" => "https://example.com/avancement/roger/uri",
 				"self" => "https://example.com/tentative/roger/uri/id",
 			],
 		];
@@ -81,6 +82,8 @@ final class TentativeProgTransformerTests extends TestCase
 			"code" => "codeTest",
 			"temps_exécution" => 34567,
 			"links" => [
+				"avancement" =>
+					"https://example.com/avancement/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 				"self" =>
 					"https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
 			],

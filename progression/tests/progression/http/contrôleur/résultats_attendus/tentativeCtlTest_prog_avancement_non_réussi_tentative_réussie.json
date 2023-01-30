@@ -13,6 +13,7 @@
 			"temps_exécution": 551
 		},
 		"links": {
+			"avancement": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll",
 			"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
 		},
 		"relationships": {
@@ -53,7 +54,7 @@
 			},
 			"links": {
 				"self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/0",
-				"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
 			}
 		},
 		{
@@ -68,7 +69,7 @@
 			},
 			"links": {
 				"self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/1",
-				"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
 			}
 		}
 	]

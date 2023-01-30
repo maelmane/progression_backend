@@ -39,6 +39,8 @@ final class RésultatTransformerTests extends TestCase
 			"feedback" => "Bon travail!",
 			"temps_exec" => 15,
 			"links" => [
+				"tentative" =>
+					"https://example.com/tentative/bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
 				"self" =>
 					"https://example.com/resultat/bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
 			],

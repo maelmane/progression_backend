@@ -45,7 +45,7 @@
 				"sortie_observée": "Bonjour\nBonjour\n",
 				"sortie_erreur": "",
 				"résultat": true,
-				"feedback": "C'est ça!",
+				"feedback": null,
 				"temps_exec": 30
 			},
 			"links": {
