@@ -217,7 +217,6 @@ Tentative
 | feedback        | str  |                                                            |
 | réussi          | bool | vrai ssi la tentative a correctement répondu à la question |
 | temps_exécution | int  | temps d'exécution en ms                                    |
-| tests_réussis   | int  | nb de tests réussis                                        |
 | sous-type       | str  | tentativeProg                                              |
 |                 |      | tentativeSys                                               |
 |                 |      | tentativeBD                                                |
@@ -238,6 +237,7 @@ Une tentative de réponse à une QuestionProg.
 |-----------------+------+-------------------------|
 | langage         | str  |                         |
 | code            | str  |                         |
+| tests_réussis   | int  | nb de tests réussis     |
 
 ** Tentative (sous-type tentativeSys)
 
@@ -249,18 +249,7 @@ Une tentative de réponse à une QuestionSys.
 |-----------------+------+-------------------------|
 | conteneur       | str  |                         |
 | réponse         | str  |                         |
-
-** Tentative (sous-type tentativeSys)
-
-Une tentative de réponse à une question.
-
-*** Propriétés:
-
-| Nom             | Type | Valeurs                 |
-|-----------------+------+-------------------------|
-| réponse         | str  |                         |
 | tests_réussis   | int  | nb de tests réussis     |
-| temps_exécution | int  | temps d'exécution en ms |
 
 *** Relations :
 
