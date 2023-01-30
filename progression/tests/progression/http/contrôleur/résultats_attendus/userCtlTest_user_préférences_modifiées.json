@@ -5,7 +5,7 @@
     "attributes": {
       "username": "jdoe",
 		"rôle": 0,
-		"préférences": "{\"app\": {\"pref1\": 1, \"pref2\": 2}}"
+		"préférences": "{\"app\": {\"pref1\": 3, \"pref2\": 4}}"
     },
     "links": {
       "self": "https://example.com/user/jdoe"

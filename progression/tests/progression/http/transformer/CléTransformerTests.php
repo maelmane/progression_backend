@@ -46,6 +46,7 @@ final class CléTransformerTests extends TestCase
 			"portée" => 1,
 			"links" => [
 				"self" => "https://example.com/cle/jdoe/clé%20de%20test",
+				"user" => "https://example.com/user/jdoe",
 			],
 		];
 

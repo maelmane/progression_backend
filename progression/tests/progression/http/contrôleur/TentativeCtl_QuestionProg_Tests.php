@@ -31,6 +31,7 @@ use progression\domaine\entité\{
 	Résultat,
 	User,
 };
+use progression\dao\question\ChargeurException;
 use Illuminate\Auth\GenericUser;
 
 final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
@@ -99,6 +100,14 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->shouldReceive("get_question")
 			->with("https://depot.com/question_non_réussie")
 			->andReturn($question_non_réussie);
+		$mockQuestionDAO
+			->shouldReceive("get_question")
+			->with("https://depot.com/nouvelle_question")
+			->andReturn($question_réussie);
+		$mockQuestionDAO
+			->shouldReceive("get_question")
+			->with(Mockery::Any())
+			->andThrow(new ChargeurException("Impossible de récupérer la question"));
 
 		// Tentative
 		// Tentative réussie
@@ -124,7 +133,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			tests_réussis: 2,
 			feedback: "feedbackTest",
 			temps_exécution: 5,
-			commentaires: [new Commentaire("message", "créateur", 1614374490, 42)],
+			commentaires: [new Commentaire("message", new User("créateur"), 1614374490, 42)],
 		);
 
 		// Tentative non réussie
@@ -213,7 +222,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "erreur";
 			})
-			->andThrow(new ExécutionException("Erreur test://TentativeCtlTests.php"));
+			->andThrow(new ExécutionException("Erreur test://TentativeCtlTests.php", 503));
 
 		//Avancement
 
@@ -240,6 +249,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->shouldReceive("get_avancement")
 			->with("jdoe", "https://depot.com/question_non_réussie", [])
 			->andReturn($this->avancement_non_réussi);
+		$mockAvancementDAO
+			->shouldReceive("get_avancement")
+			->with("jdoe", "https://depot.com/nouvelle_question", [])
+			->andReturn(null);
 
 		// User
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -303,6 +316,65 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 		$this->assertEquals(404, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_obtenu->getContent());
+	}
+
+	public function test_étant_donné_un_avancement_inexistant_et_une_tentative_réussie_lorsquon_appelle_post_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeProg_réussie()
+	{
+		$nouvelle_tentative = new TentativeProg(
+			langage: "réussi",
+			code: "#+TODO\nprint(\"Hello world!\")",
+			date_soumission: 1653690241,
+			réussi: true,
+			tests_réussis: 2,
+			temps_exécution: 551,
+			résultats: [
+				new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
+				new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
+			],
+			feedback: "Bon travail!",
+		);
+		$nouvel_avancement = new Avancement(
+			tentatives: [$nouvelle_tentative],
+			titre: "Question réussie",
+			niveau: "Débutant",
+		);
+		$nouvel_avancement->etat = 2;
+		$nouvel_avancement->date_modification = 1653690241;
+		$nouvel_avancement->date_réussite = 1653690241;
+
+		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
+		$mockAvancementDAO
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
+				return $user == "jdoe" && $uri == "https://depot.com/nouvelle_question" && $av == $nouvel_avancement;
+			})
+			->andReturn($nouvel_avancement);
+
+		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
+		$mockTentativeDAO
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($user, $uri, $t) use ($nouvelle_tentative) {
+				if ($t->date_soumission - time() > 1) {
+					throw "Temps d'exécution >1s {$t->date_soumission}";
+				}
+				$t->date_soumission = $nouvelle_tentative->date_soumission;
+				return $user == "jdoe" && $uri == "https://depot.com/nouvelle_question" && $t == $nouvelle_tentative;
+			})
+			->andReturn($nouvelle_tentative);
+
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/tentatives?include=resultats",
+			["langage" => "réussi", "code" => "#+TODO\nprint(\"Hello world!\")"],
+		);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_nouvel_avancement_tentative_réussie.json",
+			$résultat_obtenu->getContent(),
+		);
 	}
 
 	public function test_étant_donné_un_avancement_réussi_et_une_tentative_réussie_lorsquon_appelle_post_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeProg_réussie()
@@ -515,6 +587,31 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$this->assertEquals('{"erreur":"Tentative intraitable."}', $résultat_obtenu->getContent());
 	}
 
+	public function test_étant_donné_une_tentative_avec_un_test_unique_comportant_une_sortie_attendue_lorsquelle_est_soumise_lavancement_et_la_tentative_on_obtient_la_TentativeProg_réussie()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives?include=resultats",
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+				"test" => ["nom" => "Bonjour", "entrée" => "bonjour", "sortie_attendue" => "Bonjour\nBonjour\n"],
+			],
+		);
+
+		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertLessThanOrEqual(1, $heure_tentative - time());
+
+		$this->assertJsonStringEqualsJsonString(
+			sprintf(
+				file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_test_unique.json"),
+				$heure_tentative,
+			),
+			$résultat_obtenu->getContent(),
+		);
+	}
+
 	public function test_étant_donné_un_avancement_non_réussi_et_une_tentative_avec_un_test_unique_lorsquelle_est_soumise_lavancement_et_la_tentative_ne_sont_pas_sauvegardés_et_obtient_la_TentativeProg_réussie()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
@@ -523,7 +620,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			[
 				"langage" => "réussi",
 				"code" => "#+TODO\nprint(\"Hello world!\")",
-				"test" => ["nom" => "Bonjour", "sortie_attendue" => "Bonjour\nBonjour\n", "entrée" => "bonjour"],
+				"test" => ["nom" => "Bonjour", "entrée" => "bonjour"],
+				"index" => 1,
 			],
 		);
 
@@ -555,7 +653,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			[
 				"langage" => "non_réussi",
 				"code" => "#+TODO\nprint(\"Hello world!\")",
-				"test" => ["nom" => "Bonjour", "sortie_attendue" => "Bonjour\nBonjour\n", "entrée" => "bonjour"],
+				"test" => ["nom" => "Bonjour", "entrée" => "bonjour"],
+				"index" => 1,
 			],
 		);
 
@@ -577,6 +676,29 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			),
 			$résultat_obtenu->getContent(),
 		);
+	}
+
+	public function test_étant_donné_une_tentative_avec_une_question_inexistante_lorsquelle_est_soumise_on_obtient_Tentative_intraitable()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/avancement/jdoe/aW5leGlzdGFudGU/tentatives", [
+			"langage" => "réussi",
+			"code" => "print(\"Hello world!\")",
+		]);
+
+		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals('{"erreur":"Impossible de récupérer la question"}', $résultat_obtenu->getContent());
+	}
+
+	public function test_étant_donné_une_tentative_avec_un_langage_inconnu_lorsquelle_est_soumise_on_obtient_Tentative_intraitable()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives",
+			["langage" => "inconnu", "code" => "print(\"Hello world!\")"],
+		);
+
+		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals('{"erreur":"Tentative intraitable."}', $résultat_obtenu->getContent());
 	}
 
 	public function test_étant_donné_une_tentative_ayant_du_code_dépassant_la_taille_maximale_de_caractères_on_obtient_une_erreur_400()

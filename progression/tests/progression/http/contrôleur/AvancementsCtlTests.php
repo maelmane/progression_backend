@@ -109,8 +109,8 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 						tests_réussis: 0,
 						feedback: "feedbackTest",
 						commentaires: [
-							new Commentaire("Ceci est un commentaire", "O. Teur", 1614974921, 42),
-							new Commentaire("Ceci est un autre commentaire", "O. Teur", 1614974922, 43),
+							new Commentaire("Ceci est un commentaire", new User("oteur"), 1614974921, 42),
+							new Commentaire("Ceci est un autre commentaire", new User("oteur"), 1614974922, 43),
 						],
 					),
 					1614965818 => new TentativeProg(
@@ -122,7 +122,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 						tests_réussis: 2,
 						feedback: "feedbackTest",
 						commentaires: [
-							new Commentaire("Ceci est encore un autre commentaire", "O. Teur", 1614984921, 24),
+							new Commentaire("Ceci est encore un autre commentaire", new User("oteur"), 1614984921, 24),
 						],
 					),
 				],

@@ -75,7 +75,7 @@ class ÉbaucheCtl extends Contrôleur
 			$ébauche = $question->exécutables[$langage];
 			$ébauche->id = $ébauche->lang;
 			$ébauche->links = [
-				"related" => $_ENV["APP_URL"] . "question/" . $question_uri,
+				"question" => $_ENV["APP_URL"] . "question/" . $question_uri,
 			];
 		}
 

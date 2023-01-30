@@ -13,6 +13,7 @@
 			"temps_exécution": 551
 		},
 		"links": {
+			"avancement": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
 			"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241"
 		},
 		"relationships": {
@@ -51,7 +52,7 @@
             },
             "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241/0",
             "links": {
-                "related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241",
+                "tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241",
                 "self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241/0"
             },
             "type": "resultat"
@@ -66,7 +67,7 @@
             },
             "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241/1",
             "links": {
-                "related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241",
+                "tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241",
                 "self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241/1"
             },
             "type": "resultat"
