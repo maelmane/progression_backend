@@ -250,6 +250,34 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		);
 	}
 
+	public function test_étant_donné_un_avancement_existant_lorsquon_appelle_post_avec_un_question_uri_non_encodé_on_obtient_une_erreur_400()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
+			"avancement" => ["titre" => "Question test", "niveau" => "niveau test"],
+			"question_uri" => "http://test.exemple.com/info.yml",
+		]);
+
+		$this->assertResponseStatus(400);
+		$this->assertEquals(
+			'{"erreur":{"question_uri":["Le champ question_uri doit être un URL encodé en base64."]}}',
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_avancement_existant_lorsquon_appelle_post_avec_un_question_uri_non_valide_on_obtient_une_erreur_400()
+	{
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
+			"avancement" => ["titre" => "Question test", "niveau" => "niveau test"],
+			"question_uri" => "Q2VjaSBuJ2VzdCBwdXMgdW4gVVJJ",
+		]);
+
+		$this->assertResponseStatus(400);
+		$this->assertEquals(
+			'{"erreur":{"question_uri":["Le champ question_uri doit être un URL encodé en base64."]}}',
+			$résultat_observé->getContent(),
+		);
+	}
+
 	public function test_étant_donné_un_avancement_inexistant_lorsquon_appelle_post_sans_avancement_on_obtient_un_avancement_avec_ses_valeurs_par_défaut()
 	{
 		$nouvel_avancement = new Avancement(titre: "Nouvel Avancement de test", niveau: "test");

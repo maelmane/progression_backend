@@ -88,7 +88,15 @@ class AvancementCtl extends Contrôleur
 		$validateur = Validator::make(
 			$request->all(),
 			[
-				"question_uri" => "required",
+				"question_uri" => [
+					"required",
+					function ($attribute, $value, $fail) {
+						$url = Encodage::base64_decode_url($value);
+						if (!$url || Validator::make(["question_uri" => $url], ["question_uri" => "url"])->fails()) {
+							$fail("Le champ question_uri doit être un URL encodé en base64.");
+						}
+					},
+				],
 				"avancement.extra" => "string",
 			],
 			[
