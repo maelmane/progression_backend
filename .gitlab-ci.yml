@@ -1,5 +1,8 @@
 image: docker/compose:1.29.2
 
+default:
+  tags: [docker]
+
 services:
   - docker:20.10.16-dind
 
