@@ -26,6 +26,7 @@ variables:
   BRANCHE: $CI_COMMIT_REF_NAME
 
 .preparer_contexte: &preparer_contexte
+    - apk add ca-certificates openssh
     - mkdir ~/.ssh && cp $ID_RSA ~/.ssh/id_rsa && chmod 400 ~/.ssh/id_rsa
     - echo -e "Host *\n  StrictHostKeyChecking no" > ~/.ssh/config
     - docker context create --docker host=ssh://$CD_USER@$CD_HOST:$CD_PORT --description="Production" prod
@@ -33,9 +34,7 @@ variables:
     - DOCKER_HOST= 
 
 .login: &login
-    - apk add ca-certificates openssh
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    
 
 # Stage test
 
@@ -103,7 +102,7 @@ deploy_dev:
   needs: [test_unitaires, linter]
   environment:
     name: dev
-    url: https://progression.dti.crosemont.quebec/dev/
+    url: https://progression.dti.crosemont.quebec/dev/api/v1/
     on_stop: stop_dev
   before_script:
     - *preparer_contexte
@@ -114,7 +113,7 @@ deploy_dev:
   only:
     - dev
 
-stop_dev:
+stop_env:
   stage: deploy_image
   environment:
     name: dev
@@ -132,9 +131,8 @@ deploy_demo:
   needs: [tag_latest]
   environment:
     name: demo
-    url: https://progression.dti.crosemont.quebec/demo/
+    url: https://progression.dti.crosemont.quebec/demo/api/v1/
     on_stop: stop_demo
-
   before_script:
     - *preparer_contexte
     - *login
@@ -162,7 +160,7 @@ deploy_pilote:
   needs: [tag_latest]
   environment:
     name: pilote
-    url: https://progression.dti.crosemont.quebec/pilote/
+    url: https://progression.dti.crosemont.quebec/pilote/api/v1/
     on_stop: stop_pilote
   before_script:
     - *preparer_contexte
@@ -191,7 +189,7 @@ deploy_staging:
   needs: [tag_latest]
   environment:
     name: staging
-    url: https://progression.dti.crosemont.quebec/staging/
+    url: https://progression.dti.crosemont.quebec/staging/api/v1/
     on_stop: stop_staging
   before_script:
     - *preparer_contexte
@@ -222,7 +220,7 @@ pages_dev:
   stage: build_doc
   needs: [deploy_dev]
   variables:
-    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/dev/api/v1
+    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/dev/api/v1api/v1/
   script:
   - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
   - mkdir -p public/dev && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/dev/
@@ -240,7 +238,7 @@ pages_master:
     - job: deploy_staging
       optional: true
   variables:
-    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/staging/api/v1
+    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/staging/api/v1api/v1/
   script:
   - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
   - mkdir public && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/
