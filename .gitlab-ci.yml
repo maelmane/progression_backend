@@ -113,7 +113,7 @@ deploy_dev:
   only:
     - dev
 
-stop_env:
+stop_dev:
   stage: deploy_image
   environment:
     name: dev
