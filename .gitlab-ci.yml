@@ -117,12 +117,12 @@ deploy_dev:
 stop_dev:
   stage: deploy_image
   environment:
-    name: dev    
+    name: dev
     action: stop
+  before_script:
+    - *preparer_contexte
   script:
-    - TAG_DEPLOY=dev docker-compose stop progression
-  only:
-    - dev
+    - docker-compose -p dev stop progression
   when:
     manual
     
@@ -133,6 +133,8 @@ deploy_demo:
   environment:
     name: demo
     url: https://progression.dti.crosemont.quebec/demo/
+    on_stop: stop_demo
+
   before_script:
     - *preparer_contexte
     - *login
@@ -142,6 +144,18 @@ deploy_demo:
   only:
     - master
 
+stop_demo:
+  stage: deploy_image
+  environment:
+    name: demo
+    action: stop
+  before_script:
+    - *preparer_contexte
+  script:
+    - docker-compose -p demo stop progression
+  when:
+    manual
+
 # Déploiement sur /pilote
 deploy_pilote:
   stage: deploy_image
@@ -149,6 +163,7 @@ deploy_pilote:
   environment:
     name: pilote
     url: https://progression.dti.crosemont.quebec/pilote/
+    on_stop: stop_pilote
   before_script:
     - *preparer_contexte
     - *login
@@ -158,6 +173,18 @@ deploy_pilote:
   only:
     - master
 
+stop_pilote:
+  stage: deploy_image
+  environment:
+    name: pilote
+    action: stop
+  before_script:
+    - *preparer_contexte
+  script:
+    - docker-compose -p pilote stop progression
+  when:
+    manual
+
 # Déploiement sur /staging
 deploy_staging:
   stage: deploy_image
@@ -165,6 +192,7 @@ deploy_staging:
   environment:
     name: staging
     url: https://progression.dti.crosemont.quebec/staging/
+    on_stop: stop_staging
   before_script:
     - *preparer_contexte
     - *login
@@ -173,6 +201,19 @@ deploy_staging:
     - TAG_DEPLOY=latest docker-compose -p staging up --force-recreate --no-deps -d progression
   only:
     - master
+
+stop_staging:
+  stage: deploy_image
+  environment:
+    name: staging
+    action: stop
+  before_script:
+    - *preparer_contexte
+  script:
+    - docker-compose -p staging stop progression
+  when:
+    manual
+
 
 # Stage build_doc
 
