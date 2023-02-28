@@ -211,6 +211,37 @@ stop_staging:
     - docker-compose -p staging stop progression
   when:
     manual
+
+# Déploiement sur progression.dti.crosemont.quebec
+deploy_dti:
+  stage: deploy_image
+  needs: [tag_latest]
+  environment:
+    name: dti_prod
+    url: https://progression.dti.crosemont.quebec/api/v1/
+    on_stop: stop_dti
+  before_script:
+    - *preparer_contexte
+    - *login
+  script:
+    - TAG_DEPLOY=latest docker-compose pull progression
+    - TAG_DEPLOY=latest docker-compose -p prod up --force-recreate -d progression
+  when:
+    manual
+  only:
+    - master
+
+stop_dti:
+  stage: deploy_image
+  environment:
+    name: dti_prod
+    action: stop
+  before_script:
+    - *preparer_contexte
+  script:
+    - docker-compose -p prod stop progression
+  when:
+    manual
     
 # Déploiement sur progression.crosemont.qc.ca/staging
 deploy_crosemont_staging:
