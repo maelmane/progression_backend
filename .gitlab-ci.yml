@@ -218,9 +218,9 @@ deploy_crosemont_staging:
   needs: [tag_latest]
   tags:
     - docker
-    - crosemont.qc.ca
+    - crosemont
   environment:
-    name: crosemont.qc.ca_staging
+    name: crosemont_staging
     url: https://progression.crosemont.qc.ca/staging/api/v1/
     on_stop: stop_crosemont_staging
   before_script:
@@ -237,9 +237,9 @@ stop_crosemont_staging:
   stage: deploy_image
   tags:
     - docker
-    - crosemont.qc.ca
+    - crosemont
   environment:
-    name: crosemont.qc.ca_staging
+    name: crosemont_staging
     action: stop
   before_script:
     - export CD_HOST=progression.crosemont.qc.ca CD_PORT=22 CD_USER=updater
@@ -255,9 +255,9 @@ deploy_crosemont:
   needs: [tag_latest]
   tags:
     - docker
-    - crosemont.qc.ca
+    - crosemont
   environment:
-    name: crosemont.qc.ca
+    name: crosemont
     url: https://progression.crosemont.qc.ca/api/v1/
     on_stop: stop_crosemont
   before_script:
@@ -276,9 +276,9 @@ stop_crosemont:
   stage: deploy_image
   tags:
     - docker
-    - crosemont.qc.ca
+    - crosemont
   environment:
-    name: crosemont.qc.ca
+    name: crosemont
     action: stop
   before_script:
     - export CD_HOST=progression.crosemont.qc.ca CD_PORT=22 CD_USER=updater
