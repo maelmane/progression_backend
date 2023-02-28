@@ -267,6 +267,8 @@ deploy_crosemont:
   script:
     - TAG_DEPLOY=latest docker-compose pull progression
     - TAG_DEPLOY=latest docker-compose -p prod up --force-recreate -d progression
+  when:
+    manual
   only:
     - master
 
@@ -282,7 +284,7 @@ stop_crosemont:
     - export CD_HOST=progression.crosemont.qc.ca CD_PORT=22 CD_USER=updater
     - *preparer_contexte
   script:
-    - docker-compose stop progression db redis
+    - docker-compose -p prod stop progression db redis
   when:
     manual
     
