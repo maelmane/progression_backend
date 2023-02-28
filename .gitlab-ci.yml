@@ -211,11 +211,14 @@ stop_staging:
     - docker-compose -p staging stop progression
   when:
     manual
-
+    
 # Déploiement sur progression.crosemont.qc.ca/staging
 deploy_staging_2:
   stage: deploy_image
   needs: [tag_latest]
+  tags:
+    - docker
+    - crosemont.qc.ca
   environment:
     name: staging
     url: https://progression.crosemont.qc.ca/staging/api/v1/
@@ -232,6 +235,9 @@ deploy_staging_2:
 
 stop_staging_2:
   stage: deploy_image
+  tags:
+    - docker
+    - crosemont.qc.ca
   environment:
     name: staging
     action: stop
@@ -243,6 +249,43 @@ stop_staging_2:
   when:
     manual
 
+# Déploiement sur progression.crosemont.qc.ca/
+deploy_crosemont:
+  stage: deploy_image
+  needs: [tag_latest]
+  tags:
+    - docker
+    - crosemont.qc.ca
+  environment:
+    name: crosemont.qc.ca
+    url: https://progression.crosemont.qc.ca/api/v1/
+    on_stop: stop_crosemont
+  before_script:
+    - export CD_HOST=progression.crosemont.qc.ca CD_PORT=22 CD_USER=updater
+    - *preparer_contexte
+    - *login
+  script:
+    - TAG_DEPLOY=latest docker-compose pull progression
+    - TAG_DEPLOY=latest docker-compose up --force-recreate --no-deps -d progression
+  only:
+    - master
+
+stop_crosemont:
+  stage: deploy_image
+  tags:
+    - docker
+    - crosemont.qc.ca
+  environment:
+    name: crosemont.qc.ca
+    action: stop
+  before_script:
+    - export CD_HOST=progression.crosemont.qc.ca CD_PORT=22 CD_USER=updater
+    - *preparer_contexte
+  script:
+    - docker-compose stop progression
+  when:
+    manual
+    
 
 # Stage build_doc
 
