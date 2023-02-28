@@ -220,7 +220,7 @@ deploy_crosemont_staging:
     - docker
     - crosemont.qc.ca
   environment:
-    name: staging
+    name: crosemont.qc.ca_staging
     url: https://progression.crosemont.qc.ca/staging/api/v1/
     on_stop: stop_crosemont_staging
   before_script:
@@ -239,7 +239,7 @@ stop_crosemont_staging:
     - docker
     - crosemont.qc.ca
   environment:
-    name: staging
+    name: crosemont.qc.ca_staging
     action: stop
   before_script:
     - export CD_HOST=progression.crosemont.qc.ca CD_PORT=22 CD_USER=updater
