@@ -24,7 +24,7 @@ services:
   progression:
     image: $CI_REGISTRY/$CI_PROJECT_PATH:$TAG_DEPLOY
     build: progression
-    container_name: progression_$CI_ENVIRONMENT_SLUG
+    container_name: progression_api_$CI_ENVIRONMENT_SLUG
     env_file: 
       - $ENV_FILE
       - VERSION
@@ -42,7 +42,6 @@ services:
 
   tests:
     image: $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
-    container_name: progression_tests_$CI_ENVIRONMENT_SLUG
     #volumes:
     #  - "./progression_backend/progression/app/:/var/www/progression/app/"
     #  - "./progression_backend/progression/tests/:/var/www/progression/tests/"
@@ -57,7 +56,6 @@ services:
   lint:
     # On utilise l'image progression/dev parce que prettier est un package npm que l'on ne veut pas inclure dans progression_backend
     image: $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
-    container_name: progression_lint_$CI_ENVIRONMENT_SLUG
     volumes:
       - "./progression/app/:/tmp/progression/app/"
       - "./progression/tests/:/tmp/progression/tests/"
