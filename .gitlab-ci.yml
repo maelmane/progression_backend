@@ -45,8 +45,8 @@ test_unitaires:
     - job: const_image
       optional: true
   script:
-    - TAG_DEPLOY=$BRANCHE docker-compose pull tests
-    - TAG_DEPLOY=$BRANCHE docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml tests 
+    - docker-compose pull tests
+    - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml tests 
   except:
     - master
 
@@ -64,7 +64,7 @@ linter:
 version_check:
   stage: verifications
   script:
-    - docker run -v $PWD:/progression_backend bitnami/git bash -c 'git config --global --add safe.directory /progression_backend && cd /progression_backend && dpkg --compare-versions "$(git show HEAD:VERSION|cut -d "=" -f 2)" "gt" "$(git show HEAD^:VERSION|cut -d "=" -f 2)" || ( echo ERREUR la version n’a pas avancé && exit 1 )'
+    - docker run -v $PWD:/progression_backend bitnami/git bash -c 'git config --global --add safe.directory /progression_backend && cd /progression_backend && VERSION_PREV=$(git show HEAD^:VERSION|cut -d "=" -f 2); VERSION_ACT=$(git show HEAD:VERSION|cut -d "=" -f 2); echo Version: $VERSION_PREV  → $VERSION_ACT; dpkg --compare-versions "$VERSION_ACT" "gt" "$VERSION_PREV" || ( echo ERREUR la version n’a pas avancé && exit 1 )'
   only:
   - master
 
@@ -151,35 +151,6 @@ stop_demo:
     - *preparer_contexte
   script:
     - docker-compose -p demo stop progression
-  when:
-    manual
-
-# Déploiement sur /pilote
-deploy_pilote:
-  stage: deploy_image
-  needs: [tag_latest]
-  environment:
-    name: pilote
-    url: https://progression.dti.crosemont.quebec/pilote/api/v1/
-    on_stop: stop_pilote
-  before_script:
-    - *preparer_contexte
-    - *login
-  script:
-    - TAG_DEPLOY=latest docker-compose pull progression
-    - TAG_DEPLOY=latest docker-compose -p pilote up --force-recreate -d progression
-  only:
-    - master
-
-stop_pilote:
-  stage: deploy_image
-  environment:
-    name: pilote
-    action: stop
-  before_script:
-    - *preparer_contexte
-  script:
-    - docker-compose -p pilote stop progression
   when:
     manual
 

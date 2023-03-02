@@ -41,7 +41,7 @@ services:
       - redis
 
   tests:
-    image: $CI_REGISTRY/$CI_PROJECT_PATH:$TAG_DEPLOY
+    image: $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
     container_name: progression_tests_$CI_ENVIRONMENT_SLUG
     #volumes:
     #  - "./progression_backend/progression/app/:/var/www/progression/app/"
@@ -56,7 +56,7 @@ services:
 
   lint:
     # On utilise l'image progression/dev parce que prettier est un package npm que l'on ne veut pas inclure dans progression_backend
-    image: git.dti.crosemont.quebec:5050/progression/dev:latest
+    image: $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
     container_name: progression_lint_$CI_ENVIRONMENT_SLUG
     volumes:
       - "./progression/app/:/tmp/progression/app/"
@@ -65,7 +65,7 @@ services:
     command: prettier --use-tabs --print-width 120 --php-version "7.4" -c /tmp/progression/**/*.php
 
   doc:
-    image: git.dti.crosemont.quebec:5050/progression/dev:latest
+    image: $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
     #volumes:
     #  - "./progression_backend/progression/:/progression/"
     #  - "./progression_backend/doc/:/tmp/doc/"
