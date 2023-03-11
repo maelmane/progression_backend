@@ -55,7 +55,7 @@ services:
 
   lint:
     # On utilise l'image progression/dev parce que prettier est un package npm que l'on ne veut pas inclure dans progression_backend
-    image: https://git.dti.crosemont.quebec:5050/progression/dev:latest
+    image: git.dti.crosemont.quebec:5050/progression/dev:latest
     volumes:
       - "./progression/app/:/tmp/progression/app/"
       - "./progression/tests/:/tmp/progression/tests/"
