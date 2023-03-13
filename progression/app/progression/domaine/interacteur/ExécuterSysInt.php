@@ -19,12 +19,15 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Résultat;
+use Illuminate\Support\Facades\Log;
 
 class ExécuterSysInt extends Interacteur
 {
-	public function exécuter($question, $tentative)
+	public function exécuter($utilisateur, $image, $conteneur, $tests)
 	{
-		$comp_resp = $this->source_dao->get_exécuteur()->exécuter_sys($question, $tentative);
+		$comp_resp = $this->source_dao
+			->get_exécuteur()
+			->exécuter_sys($utilisateur, $image, $conteneur ? $conteneur["id"] : "", $tests);
 		if (!$comp_resp) {
 			return null;
 		}
@@ -34,7 +37,7 @@ class ExécuterSysInt extends Interacteur
 		$réponse["temps_exécution"] = intval($comp_resp["temps_exec"] * 1000);
 
 		foreach ($comp_resp["résultats"] as $résultat) {
-			$résultats[] = new Résultat($résultat["output"], null, false, null, intval($résultat["time"] * 1000));
+			$résultats[] = new Résultat($résultat["output"], "", false, null, intval($résultat["time"] * 1000));
 		}
 
 		$réponse["résultats"] = $résultats;

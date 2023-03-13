@@ -73,6 +73,11 @@ class ExécuteurCache extends Exécuteur
 		return $réponse;
 	}
 
+	public function exécuter_sys($utilisateur, $image, $conteneur, $tests)
+	{
+		return $this->_exécuteur->exécuter_sys($utilisateur, $image, $conteneur, $tests);
+	}
+
 	private function calculer_hash($code, $lang, $entrée, $params)
 	{
 		return md5($code . $lang . $entrée . $params);

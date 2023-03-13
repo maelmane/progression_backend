@@ -55,8 +55,9 @@ final class SoumettreTentativeSysIntTests extends TestCase
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->withArgs(function ($question, $tentative) {
-				return $question == self::$question_de_test && $tentative == self::$tentative_correcte;
+			->withArgs(function ($utilisateur, $image, $conteneur, $tests) {
+				return $utilisateur == self::$question_de_test->utilisateur &&
+					($image = self::$question_de_test->image && $conteneur["id"] == "Conteneur de test correct");
 			})
 			->andReturn([
 				"temps_exec" => 0.5,
@@ -65,8 +66,9 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->withArgs(function ($question, $tentative) {
-				return $question == self::$question_de_test && $tentative == self::$tentative_incorrecte;
+			->withArgs(function ($utilisateur, $image, $conteneur, $tests) {
+				return $utilisateur == self::$question_de_test->utilisateur &&
+					($image = self::$question_de_test->image && $conteneur["id"] == "Conteneur de test incorrect");
 			})
 			->andReturn([
 				"temps_exec" => 0.5,
@@ -76,20 +78,9 @@ final class SoumettreTentativeSysIntTests extends TestCase
 
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->withArgs(function ($question, $tentative) {
-				return $question == self::$question_réponse_courte ||
-					$question == self::$question_réponse_courte_avec_regex;
-			})
-			->andReturn([
-				"temps_exec" => 0.5,
-				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
-				"conteneur" => ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
-			]);
-
-		$mockExécuteur
-			->shouldReceive("exécuter_sys")
-			->withArgs(function ($question, $tentative) {
-				return $question == self::$question_de_test && !$tentative->conteneur["id"];
+			->withArgs(function ($utilisateur, $image, $conteneur, $tests) {
+				return $utilisateur == self::$question_de_test->utilisateur &&
+					($image = self::$question_de_test->image && $conteneur["id"] == null);
 			})
 			->andReturn([
 				"temps_exec" => 0.5,
@@ -107,6 +98,8 @@ final class SoumettreTentativeSysIntTests extends TestCase
 		self::$question_de_test = new QuestionSys(
 			titre: "Bonsoir",
 			niveau: "facile",
+			utilisateur: "utilisateurTest",
+			image: "imageTest",
 			tests: [
 				new TestSys(
 					nom: "nomTest",
@@ -124,6 +117,8 @@ final class SoumettreTentativeSysIntTests extends TestCase
 		self::$question_réponse_courte = new QuestionSys(
 			titre: "Bonsoir",
 			niveau: "facile",
+			utilisateur: "utilisateurTest",
+			image: "imageTest",
 			solution: "Bonne réponse",
 			feedback_neg: "feedbackGénéralNégatif",
 			feedback_pos: "feedbackGénéralPositif",
@@ -132,6 +127,8 @@ final class SoumettreTentativeSysIntTests extends TestCase
 		self::$question_réponse_courte_avec_regex = new QuestionSys(
 			titre: "Bonsoir",
 			niveau: "facile",
+			utilisateur: "utilisateurTest",
+			image: "imageTest",
 			solution: "~bonne.réponse~i",
 			feedback_neg: "feedbackGénéralNégatif",
 			feedback_pos: "feedbackGénéralPositif",

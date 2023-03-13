@@ -86,6 +86,17 @@ class TentativeCtl extends Contrôleur
 				}
 				$réponse = $this->traiter_post_QuestionProg($request, $username, $chemin, $question);
 			} elseif ($question instanceof QuestionSys) {
+				if ($question->solution) {
+					$validation = $this->valider_paramètres_sys($request);
+					if ($validation->fails()) {
+						Log::notice(
+							"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+								__CLASS__ .
+								") Paramètres invalides",
+						);
+						return $this->réponse_json(["erreur" => $validation->errors()], 400);
+					}
+				}
 				$réponse = $this->traiter_post_QuestionSys($request, $username, $chemin, $question);
 			} else {
 				Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
@@ -156,7 +167,7 @@ class TentativeCtl extends Contrôleur
 	{
 		$conteneur = $request->conteneur ?? $this->récupérer_conteneur($username, $chemin);
 
-		$tentative = new TentativeSys(["id" => $conteneur], $request->réponse, (new \DateTime())->getTimestamp());
+		$tentative = new TentativeSys($conteneur, $request->réponse, (new \DateTime())->getTimestamp());
 
 		$tentative_résultante = $this->soumettre_tentative_sys($username, $question, $question->tests, $tentative);
 		if (!$tentative_résultante) {
@@ -184,6 +195,19 @@ class TentativeCtl extends Contrôleur
 			[
 				"required" => "Le champ :attribute est obligatoire.",
 				"code.between" => "Le code soumis " . mb_strlen($request->code) . " > :max caractères.",
+			],
+		);
+	}
+
+	private function valider_paramètres_sys($request)
+	{
+		return Validator::make(
+			$request->all(),
+			[
+				"réponse" => "required|string",
+			],
+			[
+				"required" => "Le champ :attribute est obligatoire.",
 			],
 		);
 	}

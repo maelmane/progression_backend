@@ -63,7 +63,12 @@ class SoumettreTentativeSysInt extends Interacteur
 
 	private function exécuter_validation($question, $tentative)
 	{
-		$résultats = $this->exécuter_sys($question, $tentative);
+		$résultats = $this->exécuter_sys(
+			$question->utilisateur,
+			$question->image,
+			$tentative->conteneur,
+			$question->tests,
+		);
 		$tentative->conteneur = $résultats["conteneur"];
 		if (!$question->solution) {
 			$tentative->temps_exécution = $résultats["temps_exécution"];
@@ -73,9 +78,9 @@ class SoumettreTentativeSysInt extends Interacteur
 		return $tentative;
 	}
 
-	private function exécuter_sys($question, $tentative)
+	private function exécuter_sys($utilisateur, $image, $conteneur, $tests)
 	{
-		return (new ExécuterSysInt())->exécuter($question, $tentative);
+		return (new ExécuterSysInt())->exécuter($utilisateur, $image, $conteneur, $tests);
 	}
 
 	private function traiter_tentative_sys($tentative, $rétroactions, $tests)

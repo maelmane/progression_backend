@@ -27,6 +27,7 @@ use Mockery;
 final class ExécuterSysIntTests extends TestCase
 {
 	protected static $questionTest;
+
 	public function setUp(): void
 	{
 		parent::setUp();
@@ -35,13 +36,7 @@ final class ExécuterSysIntTests extends TestCase
 		$_SERVER["REMOTE_ADDR"] = "";
 		$_SERVER["PHP_SELF"] = "";
 
-		self::$questionTest = new QuestionSys();
-		self::$questionTest->titre = "Bonsoir";
-		self::$questionTest->niveau = "facile";
-		self::$questionTest->uri = "https://example.com/question";
-		self::$questionTest->feedback_neg = "feedbackGénéralNégatif";
-		self::$questionTest->feedback_pos = "feedbackGénéralPositif";
-		self::$questionTest->tests = [
+		self::$questionTest = [
 			new TestSys(
 				nom: "nomTest",
 				sortie_attendue: "sortieTest",
@@ -55,25 +50,30 @@ final class ExécuterSysIntTests extends TestCase
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->withArgs(function ($question, $tentative) {
-				return $question == self::$questionTest && $tentative == new TentativeSys("", "", 1615696286);
+			->withArgs(function ($utilisateur, $image, $conteneur, $tests) {
+				return $utilisateur == "utilisateurTest" &&
+					$image == "imageTest" &&
+					$conteneur == null &&
+					$tests == self::$questionTest;
 			})
 			->andReturn([
 				"temps_exec" => 0.124,
 				"résultats" => [["output" => "", "errors" => "", "time" => 0.2]],
-				"conteneur" => ["id" => "conteneurTestCompileBox", "ip" => "172.45.2.2", "port" => 45667],
+				"conteneur" => ["id" => "nouveauConteneur", "ip" => "172.45.2.2", "port" => 45667],
 			]);
 
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->withArgs(function ($question, $tentative) {
-				return $question == self::$questionTest &&
-					$tentative == new TentativeSys("ConteneurEnvoyéParTentative", "", 1615696286);
+			->withArgs(function ($utilisateur, $image, $conteneur, $tests) {
+				return $utilisateur == "utilisateurTest" &&
+					$image == "imageTest" &&
+					$conteneur == "idConteneur" &&
+					$tests == self::$questionTest;
 			})
 			->andReturn([
 				"temps_exec" => 0.124,
 				"résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.2]],
-				"conteneur" => ["id" => "ConteneurEnvoyéParTentative", "ip" => "172.45.2.2", "port" => 45667],
+				"conteneur" => ["id" => "idConteneur", "ip" => "172.45.2.2", "port" => 45667],
 			]);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -90,64 +90,30 @@ final class ExécuterSysIntTests extends TestCase
 		DAOFactory::setInstance(null);
 	}
 
-	public function test_étant_donné_une_question_avec_une_tentative_sans_conteneur_on_recoit_lid_du_conteneur_de_compile_box()
+	public function test_étant_donné_une_question_avec_une_tentative_sans_conteneur_on_recoit_lid_dun_nouveau_conteneur()
 	{
-		$résultat_attendu = ["id" => "conteneurTestCompileBox", "ip" => "172.45.2.2", "port" => 45667];
+		$conteneur_attendu = ["id" => "nouveauConteneur", "ip" => "172.45.2.2", "port" => 45667];
 
 		$exécuter_sys_int = new ExécuterSysInt();
 
-		$question = new QuestionSys();
-		$question->titre = "Bonsoir";
-		$question->niveau = "facile";
-		$question->uri = "https://example.com/question";
-		$question->feedback_neg = "feedbackGénéralNégatif";
-		$question->feedback_pos = "feedbackGénéralPositif";
-		$question->tests = [
-			new TestSys(
-				nom: "nomTest",
-				sortie_attendue: "sortieTest",
-				validation: "validationTest",
-				utilisateur: "utilisateurTest",
-				feedback_pos: "feedbackPositif",
-				feedback_neg: "feedbackNégatif",
-			),
-		];
+		$résultat_observé = $exécuter_sys_int->exécuter("utilisateurTest", "imageTest", null, self::$questionTest);
 
-		$tentative = new TentativeSys("", "", 1615696286);
-
-		$résultat_observé = $exécuter_sys_int->exécuter($question, $tentative);
-
-		$this->assertEquals($résultat_attendu, $résultat_observé["conteneur"]);
+		$this->assertEquals($conteneur_attendu, $résultat_observé["conteneur"]);
 	}
 
-	public function test_étant_donné_une_question_avec_une_tentative_avec_conteneur_on_recoit_lid_de_la_tentative_le_bon_temps_dexécution_et_le_bon_résultat()
+	public function test_étant_donné_une_question_avec_une_tentative_avec_conteneur_on_recoit_lid_du_conteneur_et_le_résultat_dexécution()
 	{
-		$conteneur_attendu = ["id" => "ConteneurEnvoyéParTentative", "ip" => "172.45.2.2", "port" => 45667];
+		$conteneur_attendu = ["id" => "idConteneur", "ip" => "172.45.2.2", "port" => 45667];
+		$résultat_attendu = new Résultat("ok\n", "", false, null, 200);
 
 		$exécuter_sys_int = new ExécuterSysInt();
 
-		$question = new QuestionSys();
-		$question->titre = "Bonsoir";
-		$question->niveau = "facile";
-		$question->uri = "https://example.com/question";
-		$question->feedback_neg = "feedbackGénéralNégatif";
-		$question->feedback_pos = "feedbackGénéralPositif";
-		$question->tests = [
-			new TestSys(
-				nom: "nomTest",
-				sortie_attendue: "sortieTest",
-				validation: "validationTest",
-				utilisateur: "utilisateurTest",
-				feedback_pos: "feedbackPositif",
-				feedback_neg: "feedbackNégatif",
-			),
-		];
-
-		$résultat_attendu = new Résultat("ok\n", "", false, null, 200);
-
-		$tentative = new TentativeSys("ConteneurEnvoyéParTentative", "", 1615696286);
-
-		$résultat_observé = $exécuter_sys_int->exécuter($question, $tentative);
+		$résultat_observé = $exécuter_sys_int->exécuter(
+			"utilisateurTest",
+			"imageTest",
+			"idConteneur",
+			self::$questionTest,
+		);
 
 		$this->assertEquals($conteneur_attendu, $résultat_observé["conteneur"]);
 		$this->assertEquals(124, $résultat_observé["temps_exécution"]);

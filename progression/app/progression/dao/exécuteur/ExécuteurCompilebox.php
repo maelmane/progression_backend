@@ -63,7 +63,7 @@ class ExécuteurCompilebox extends Exécuteur
 		return $this->envoyer_requête($data_rc);
 	}
 
-	public function exécuter_sys($utilisateur, $image, $conteneur, $tests)
+	public function exécuter_sys($utilisateur, $image, $conteneur_id, $tests)
 	{
 		$tests_out = [];
 		foreach ($tests as $test) {
@@ -72,8 +72,9 @@ class ExécuteurCompilebox extends Exécuteur
 
 		$data_rc = [
 			"language" => self::langages["sshd"],
+			"code" => $tests[0]->validation,
 			"user" => $utilisateur,
-			"parameters" => $conteneur,
+			"parameters" => $conteneur_id,
 			"params_conteneur" => "-e SIAB_SERVICE=/:" . $utilisateur . ":" . $utilisateur . ":HOME:SHELL",
 			"tests" => $tests_out,
 			"vm_name" => $image,

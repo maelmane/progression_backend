@@ -165,6 +165,45 @@ final class PréparerProgIntTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
+	public function test_étant_donné_une_questionprog_à_un_todo_vide_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_seulement_code_utilisateur_après_le_todo()
+	{
+		$résultat_attendu = new Exécutable(
+			"#Commentaire invisible
+             #+VISIBLE
+
+             # Rien à faire ici
+
+             #",
+			"python",
+		);
+
+		$question = new QuestionProg();
+		$question->exécutables["python"] = new Exécutable(
+			"#Commentaire invisible
+#+VISIBLE
+
+# Rien à faire ici
+
+#+TODO",
+			"python",
+		);
+
+		$tentative = new TentativeProg(
+			"python",
+			"#Commentaire invisible
+#+VISIBLE
+
+# Ne devrait pas être ici
+
+#+TODO",
+		);
+
+		$interacteur = new PréparerProgInt();
+		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
 	public function test_étant_donné_une_questionprog_à_un_todo_en_ligne_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_code_utilisateur_dans_le_todo()
 	{
 		$résultat_attendu = new Exécutable(
