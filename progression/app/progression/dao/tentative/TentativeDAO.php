@@ -64,6 +64,24 @@ class TentativeDAO extends EntitéDAO
 		}
 	}
 
+	/**
+	 * @param mixed $includes
+	 */
+	public function get_dernière($username, $question_uri, mixed $includes = [])
+	{
+		$type = $this->get_type($username, $question_uri);
+        Log::debug("Type " . $type);
+		if ($type == Question::TYPE_PROG) {
+			return $this->source->get_tentative_prog_dao()->get_dernière($username, $question_uri, $includes);
+		} elseif ($type == Question::TYPE_SYS) {
+			return $this->source->get_tentative_sys_dao()->get_dernière($username, $question_uri, $includes);
+		} elseif ($type == Question::TYPE_BD) {
+			return $this->source->get_tentative_bd_dao()->get_dernière($username, $question_uri, $includes);
+		} else {
+			return null;
+		}
+	}
+    
 	public function save($username, $question_uri, $objet)
 	{
 		if ($objet instanceof TentativeProg) {

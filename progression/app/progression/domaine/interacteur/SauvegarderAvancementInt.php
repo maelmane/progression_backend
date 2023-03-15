@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Avancement, Question, Tentative, User};
+use progression\domaine\entité\{Avancement, Question, QuestionProg, QuestionSys, QuestionBD, Tentative, User};
 
 class SauvegarderAvancementInt extends Interacteur
 {
@@ -33,7 +33,15 @@ class SauvegarderAvancementInt extends Interacteur
 		if (!$question) {
 			return null;
 		}
-
+        if($question instanceof QuestionProg){
+            $avancement->type = "prog";
+        }
+        if($question instanceof QuestionSys){
+            $avancement->type = "sys";
+        }
+        if($question instanceof QuestionBD){
+            $avancement->type = "bd";
+        }
 		$avancement->titre = $question->titre;
 		$avancement->niveau = $question->niveau;
 

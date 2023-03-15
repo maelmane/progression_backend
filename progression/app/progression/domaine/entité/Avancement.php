@@ -20,6 +20,7 @@ namespace progression\domaine\entité;
 
 class Avancement
 {
+    public $type="prog";
 	public $etat;
 	public $tentatives;
 	public $titre;

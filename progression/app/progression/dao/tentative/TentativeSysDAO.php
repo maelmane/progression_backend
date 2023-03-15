@@ -70,7 +70,13 @@ class TentativeSysDAO extends TentativeDAO
 				->orderBy("date_soumission", "desc")
 				->first();
 
-			return $tentative ? $this->construire([$tentative], $includes)[0] : null;
+            if($tentative){
+                $résultats = $this->construire([$tentative], $includes);
+                return array_pop($résultats);
+            }
+            else{
+                return null;
+            }
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
