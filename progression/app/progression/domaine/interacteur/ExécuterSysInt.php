@@ -18,12 +18,17 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Résultat;
+use progression\domaine\entité\{Résultat, TestSys};
 use Illuminate\Support\Facades\Log;
 
 class ExécuterSysInt extends Interacteur
 {
-	public function exécuter($utilisateur, $image, $conteneur, $tests)
+	/**
+	 * @param array<String> $conteneur
+	 * @param array<TestSys> $tests
+	 * @return mixed
+	 */
+	public function exécuter(string $utilisateur, string $image, array|Null $conteneur, array $tests): mixed
 	{
 		$comp_resp = $this->source_dao
 			->get_exécuteur()
@@ -34,10 +39,16 @@ class ExécuterSysInt extends Interacteur
 		$réponse = [];
 		$résultats = null;
 
-		$réponse["temps_exécution"] = 0;
+		$réponse["temps_exécution"] = intval(($comp_resp["temps_exec"] ?? 0) * 1000);
 
-		$résultat = $comp_resp["résultats"];
-        $résultats[] = new Résultat($résultat, "", false, null, 0);
+		foreach ($comp_resp["résultats"] as $résultat) {
+			$résultats[] = new Résultat(
+				sortie_observée: $résultat["output"],
+				sortie_erreur: $résultat["errors"],
+				résultat: $résultat["code"] == 0,
+				temps_exécution: intval($résultat["time"] * 1000),
+			);
+		}
 
 		$réponse["résultats"] = $résultats;
 		$réponse["conteneur"] = [

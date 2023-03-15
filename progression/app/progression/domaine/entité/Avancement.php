@@ -20,7 +20,7 @@ namespace progression\domaine\entité;
 
 class Avancement
 {
-    public $type="prog";
+	public string $type = "prog";
 	public $etat;
 	public $tentatives;
 	public $titre;
@@ -39,8 +39,10 @@ class Avancement
 		$titre = "",
 		$niveau = "",
 		array $sauvegardes = [],
-		string|null $extra = ""
+		string|null $extra = "",
+		string $type = "prog"
 	) {
+		$this->type = $type;
 		$this->etat = Question::ETAT_DEBUT;
 		$this->tentatives = $tentatives;
 		$this->titre = $titre;
@@ -63,6 +65,9 @@ class Avancement
 			if (!$this->date_réussite || $tentative->date_soumission < $this->date_réussite) {
 				$this->date_réussite = $tentative->date_soumission;
 			}
+		}
+		if ($this->etat == Question::ETAT_DEBUT) {
+			$this->etat = Question::ETAT_NONREUSSI;
 		}
 		$this->tentatives[$i ?? count($this->tentatives)] = $tentative;
 	}

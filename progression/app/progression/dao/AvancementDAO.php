@@ -70,7 +70,7 @@ class AvancementDAO extends EntitéDAO
 			}
 
 			$objet = [];
-            $objet["type"] = $avancement->type;
+			$objet["type"] = $avancement->type;
 			$objet["etat"] = $avancement->etat;
 			$objet["question_uri"] = $question_uri;
 			$objet["titre"] = $avancement->titre;

@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Avancement, Question};
+use progression\domaine\entité\{Avancement, Question, TestSys};
 
 class SoumettreTentativeSysInt extends Interacteur
 {
@@ -78,7 +78,12 @@ class SoumettreTentativeSysInt extends Interacteur
 		return $tentative;
 	}
 
-	private function exécuter_sys($utilisateur, $image, $conteneur, $tests)
+	/**
+	 * @param array<String> $conteneur
+	 * @param array<TestSys> $tests
+	 * @return mixed
+	 */
+	private function exécuter_sys(string $utilisateur, string $image, array|Null $conteneur, array $tests): mixed
 	{
 		return (new ExécuterSysInt())->exécuter($utilisateur, $image, $conteneur, $tests);
 	}

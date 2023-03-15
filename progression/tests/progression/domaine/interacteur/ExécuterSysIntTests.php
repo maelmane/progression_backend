@@ -58,7 +58,7 @@ final class ExécuterSysIntTests extends TestCase
 			})
 			->andReturn([
 				"temps_exec" => 0.124,
-				"résultats" => [["output" => "", "errors" => "", "time" => 0.2]],
+				"résultats" => [["output" => "", "errors" => "", "time" => 0.2, "code" => 0]],
 				"conteneur" => ["id" => "nouveauConteneur", "ip" => "172.45.2.2", "port" => 45667],
 			]);
 
@@ -72,7 +72,7 @@ final class ExécuterSysIntTests extends TestCase
 			})
 			->andReturn([
 				"temps_exec" => 0.124,
-				"résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.2]],
+				"résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.2, "code" => 0]],
 				"conteneur" => ["id" => "idConteneur", "ip" => "172.45.2.2", "port" => 45667],
 			]);
 
@@ -104,19 +104,23 @@ final class ExécuterSysIntTests extends TestCase
 	public function test_étant_donné_une_question_avec_une_tentative_avec_conteneur_on_recoit_lid_du_conteneur_et_le_résultat_dexécution()
 	{
 		$conteneur_attendu = ["id" => "idConteneur", "ip" => "172.45.2.2", "port" => 45667];
-		$résultat_attendu = new Résultat("ok\n", "", false, null, 200);
+		$résultat_attendu = [
+			"conteneur" => $conteneur_attendu,
+			"temps_exécution" => 124,
+			"résultats" => [
+				new Résultat(sortie_observée: "ok\n", sortie_erreur: "", résultat: true, temps_exécution: 200),
+			],
+		];
 
 		$exécuter_sys_int = new ExécuterSysInt();
 
 		$résultat_observé = $exécuter_sys_int->exécuter(
 			"utilisateurTest",
 			"imageTest",
-			"idConteneur",
+			["id" => "idConteneur"],
 			self::$questionTest,
 		);
 
-		$this->assertEquals($conteneur_attendu, $résultat_observé["conteneur"]);
-		$this->assertEquals(124, $résultat_observé["temps_exécution"]);
-		$this->assertEquals([$résultat_attendu], $résultat_observé["résultats"]);
+		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 }

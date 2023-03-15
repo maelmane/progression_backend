@@ -57,22 +57,22 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			->shouldReceive("exécuter_sys")
 			->withArgs(function ($utilisateur, $image, $conteneur, $tests) {
 				return $utilisateur == self::$question_de_test->utilisateur &&
-					($image = self::$question_de_test->image && $conteneur["id"] == "Conteneur de test correct");
+					($image = self::$question_de_test->image && $conteneur == "Conteneur de test correct");
 			})
 			->andReturn([
 				"temps_exec" => 0.5,
-				"résultats" => [["output" => "Correcte", "time" => 0.1]],
+				"résultats" => [["output" => "Correcte", "errors" => "", "time" => 0.1, "code" => 0]],
 				"conteneur" => ["id" => "Conteneur de test correct", "ip" => "172.45.2.2", "port" => 45667],
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
 			->withArgs(function ($utilisateur, $image, $conteneur, $tests) {
 				return $utilisateur == self::$question_de_test->utilisateur &&
-					($image = self::$question_de_test->image && $conteneur["id"] == "Conteneur de test incorrect");
+					($image = self::$question_de_test->image && $conteneur == "Conteneur de test incorrect");
 			})
 			->andReturn([
 				"temps_exec" => 0.5,
-				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
+				"résultats" => [["output" => "Incorrecte", "errors" => "", "time" => 0.1, "code" => 1]],
 				"conteneur" => ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
 			]);
 
@@ -80,11 +80,11 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			->shouldReceive("exécuter_sys")
 			->withArgs(function ($utilisateur, $image, $conteneur, $tests) {
 				return $utilisateur == self::$question_de_test->utilisateur &&
-					($image = self::$question_de_test->image && $conteneur["id"] == null);
+					($image = self::$question_de_test->image && $conteneur == null);
 			})
 			->andReturn([
 				"temps_exec" => 0.5,
-				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
+				"résultats" => [["output" => "Incorrecte", "errors" => "", "time" => 0.1, "code" => 1]],
 				"conteneur" => ["id" => "Nouveau Conteneur", "ip" => "172.45.2.2", "port" => 45667],
 			]);
 

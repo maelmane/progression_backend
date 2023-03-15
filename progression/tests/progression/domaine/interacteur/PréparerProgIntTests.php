@@ -180,22 +180,22 @@ final class PréparerProgIntTests extends TestCase
 		$question = new QuestionProg();
 		$question->exécutables["python"] = new Exécutable(
 			"#Commentaire invisible
-#+VISIBLE
+             #+VISIBLE
 
-# Rien à faire ici
+             # Rien à faire ici
 
-#+TODO",
+             #+TODO",
 			"python",
 		);
 
 		$tentative = new TentativeProg(
 			"python",
 			"#Commentaire invisible
-#+VISIBLE
+             #+VISIBLE
 
-# Ne devrait pas être ici
+             # Ne devrait pas être ici
 
-#+TODO",
+             #+TODO",
 		);
 
 		$interacteur = new PréparerProgInt();

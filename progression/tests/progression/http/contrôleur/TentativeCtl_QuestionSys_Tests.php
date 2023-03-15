@@ -20,7 +20,7 @@ use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
-use progression\domaine\entité\{Avancement, TestSys, Exécutable, Question, QuestionSys, TentativeSys, User};
+use progression\domaine\entité\{Avancement, TestSys, Exécutable, Question, QuestionSys, Résultat, TentativeSys, User};
 
 use Illuminate\Auth\GenericUser;
 
@@ -107,6 +107,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			feedback: "Encore un effort!",
 			tests_réussis: 0,
 			temps_exécution: 0,
+			résultats: [],
 		);
 		$this->tentative_solution_courte_réussie = new TentativeSys(
 			conteneur: ["id" => "Conteneur de test correct", "ip" => null, "port" => null],
@@ -116,6 +117,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			feedback: "Bon travail!",
 			tests_réussis: 1,
 			temps_exécution: 0,
+			résultats: [],
 		);
 		$this->tentative_validée_non_réussie = new TentativeSys(
 			conteneur: ["id" => "Conteneur de test incorrect", "ip" => null, "port" => null],
@@ -125,6 +127,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			feedback: "Encore un effort!",
 			tests_réussis: 0,
 			temps_exécution: 0,
+			résultats: [new Résultat(sortie_observée: "valide", sortie_erreur: "", résultat: true, temps_exécution: 0)],
 		);
 		$this->tentative_validée_réussie = new TentativeSys(
 			conteneur: ["id" => "Conteneur de test correct", "ip" => null, "port" => null],
@@ -134,6 +137,9 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			feedback: "Bon travail!",
 			tests_réussis: 1,
 			temps_exécution: 0,
+			résultats: [
+				new Résultat(sortie_observée: "invalide", sortie_erreur: "", résultat: false, temps_exécution: 0),
+			],
 		);
 
 		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
@@ -189,7 +195,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			})
 			->andReturn([
 				"temps_exec" => 0.5,
-				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
+				"résultats" => [["output" => "Incorrecte", "errors" => "", "code" => 1, "time" => 0.1]],
 				"conteneur" => [
 					"id" => "leConteneurDeLaNouvelleTentative",
 					"ip" => "172.45.2.2",
@@ -203,7 +209,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			})
 			->andReturn([
 				"temps_exec" => 0.65,
-				"résultats" => [["output" => "Correcte", "time" => 0.2]],
+				"résultats" => [["output" => "Correcte", "errors" => "", "code" => 0, "time" => 0.2]],
 				"conteneur" => [
 					"id" => "leConteneurDeLaNouvelleTentative",
 					"ip" => "172.45.2.2",
@@ -217,7 +223,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			})
 			->andReturn([
 				"temps_exec" => 0.65,
-				"résultats" => [["output" => "Incorrecte", "time" => 0.2]],
+				"résultats" => [["output" => "Incorrecte", "errors" => "", "code" => 1, "time" => 0.2]],
 				"conteneur" => [
 					"id" => "leConteneurDeLaNouvelleTentative",
 					"ip" => "172.45.2.2",
@@ -227,22 +233,26 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 
 		//Avancement
 		$this->avancement_solution_courte_non_réussie = new Avancement(
-			[$this->tentative_solution_courte_non_réussie],
+			type: "sys",
+			tentatives: [$this->tentative_solution_courte_non_réussie],
 			titre: "Question non réussie",
 			niveau: "Débutant",
 		);
 		$this->avancement_solution_courte_réussie = new Avancement(
-			[$this->tentative_solution_courte_non_réussie, $this->tentative_solution_courte_réussie],
+			type: "sys",
+			tentatives: [$this->tentative_solution_courte_non_réussie, $this->tentative_solution_courte_réussie],
 			titre: "Question réussie",
 			niveau: "Débutant",
 		);
 		$this->avancement_validée_non_réussie = new Avancement(
-			[$this->tentative_validée_non_réussie],
+			type: "sys",
+			tentatives: [$this->tentative_validée_non_réussie],
 			titre: "Question non réussie",
 			niveau: "Débutant",
 		);
 		$this->avancement_validée_réussie = new Avancement(
-			[$this->tentative_validée_non_réussie, $this->tentative_validée_réussie],
+			type: "sys",
+			tentatives: [$this->tentative_validée_non_réussie, $this->tentative_validée_réussie],
 			titre: "Question réussie",
 			niveau: "Débutant",
 		);
@@ -332,14 +342,8 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			})
 			->andReturn($nouvelle_tentative);
 
-		$nouvel_avancement = new Avancement(
-			tentatives: [$nouvelle_tentative],
-			titre: "Question à solution courte",
-			niveau: "Débutant",
-		);
-		$nouvel_avancement->etat = 2;
-		$nouvel_avancement->date_modification = 1653690241;
-		$nouvel_avancement->date_réussite = 1653690241;
+		$nouvel_avancement = new Avancement(type: "sys", titre: "Question à solution courte", niveau: "Débutant");
+		$nouvel_avancement->ajouter_tentative($nouvelle_tentative);
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
@@ -393,11 +397,9 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			})
 			->andReturn($nouvelle_tentative);
 
-		$nouvel_avancement = new Avancement(
-			tentatives: [$this->tentative_solution_courte_non_réussie, $nouvelle_tentative],
-			titre: "Question à solution courte",
-			niveau: "Débutant",
-		);
+		$nouvel_avancement = new Avancement(type: "sys", titre: "Question à solution courte", niveau: "Débutant");
+		$nouvel_avancement->ajouter_tentative($this->tentative_solution_courte_non_réussie);
+		$nouvel_avancement->ajouter_tentative($nouvelle_tentative);
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
@@ -437,6 +439,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			tests_réussis: 0,
 			feedback: "Encore un effort!",
 			temps_exécution: 0,
+			résultats: [],
 		);
 
 		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
@@ -453,11 +456,9 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			})
 			->andReturn($nouvelle_tentative);
 
-		$nouvel_avancement = new Avancement(
-			tentatives: [$this->tentative_solution_courte_non_réussie, $nouvelle_tentative],
-			titre: "Question à solution courte",
-			niveau: "Débutant",
-		);
+		$nouvel_avancement = new Avancement(type: "sys", titre: "Question à solution courte", niveau: "Débutant");
+		$nouvel_avancement->ajouter_tentative($this->tentative_solution_courte_non_réussie);
+		$nouvel_avancement->ajouter_tentative($nouvelle_tentative);
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO

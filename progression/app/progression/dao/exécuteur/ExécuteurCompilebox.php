@@ -18,6 +18,8 @@
 
 namespace progression\dao\exécuteur;
 
+use progression\domaine\entité\TestSys;
+
 class ExécuteurCompilebox extends Exécuteur
 {
 	const langages = [
@@ -63,7 +65,11 @@ class ExécuteurCompilebox extends Exécuteur
 		return $this->envoyer_requête($data_rc);
 	}
 
-	public function exécuter_sys($utilisateur, $image, $conteneur_id, $tests)
+	/**
+	 * @param Array<TestSys> $tests
+	 * @return Array<String>
+	 */
+	public function exécuter_sys(string $utilisateur, string $image, string $conteneur_id, array $tests): array
 	{
 		$tests_out = [];
 		foreach ($tests as $test) {

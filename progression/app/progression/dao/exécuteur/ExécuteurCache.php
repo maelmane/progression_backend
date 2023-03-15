@@ -20,6 +20,7 @@ namespace progression\dao\exécuteur;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use progression\domaine\entité\TestSys;
 
 class ExécuteurCache extends Exécuteur
 {
@@ -73,9 +74,13 @@ class ExécuteurCache extends Exécuteur
 		return $réponse;
 	}
 
-	public function exécuter_sys($utilisateur, $image, $conteneur, $tests)
+	/**
+	 * @param Array<TestSys> $tests
+	 * @return Array<String>
+	 */
+	public function exécuter_sys(string $utilisateur, string $image, string $conteneur_id, array $tests): array
 	{
-		return $this->_exécuteur->exécuter_sys($utilisateur, $image, $conteneur, $tests);
+		return $this->_exécuteur->exécuter_sys($utilisateur, $image, $conteneur_id, $tests);
 	}
 
 	private function calculer_hash($code, $lang, $entrée, $params)

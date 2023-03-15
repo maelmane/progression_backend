@@ -19,7 +19,7 @@
 namespace progression\dao\tentative;
 
 use progression\dao\{DAOException, EntitéDAO, CommentaireDAO};
-use progression\domaine\entité\TentativeSys;
+use progression\domaine\entité\{Tentative, TentativeSys};
 use progression\dao\models\{TentativeSysMdl, AvancementMdl};
 use Illuminate\Database\QueryException;
 
@@ -59,7 +59,7 @@ class TentativeSysDAO extends TentativeDAO
 		}
 	}
 
-	public function get_dernière($username, $question_uri, mixed $includes = [])
+	public function get_dernière(string $username, string $question_uri, mixed $includes = []): Tentative|Null
 	{
 		try {
 			$tentative = TentativeSysMdl::select("reponse_sys.*")
@@ -70,13 +70,12 @@ class TentativeSysDAO extends TentativeDAO
 				->orderBy("date_soumission", "desc")
 				->first();
 
-            if($tentative){
-                $résultats = $this->construire([$tentative], $includes);
-                return array_pop($résultats);
-            }
-            else{
-                return null;
-            }
+			if ($tentative) {
+				$résultats = $this->construire([$tentative], $includes);
+				return array_pop($résultats);
+			} else {
+				return null;
+			}
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}

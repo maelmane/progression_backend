@@ -611,31 +611,6 @@ parameters:
 			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has parameter \\$conteneur with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has parameter \\$image with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has parameter \\$utilisateur with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\exécuteur\\\\Standardiseur\\:\\:standardiser\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/dao/exécuteur/Standardiseur.php
@@ -1137,21 +1112,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:construire\\(\\) has parameter \\$includes with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_dernière\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_dernière\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_dernière\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/tentative/TentativeSysDAO.php
 
@@ -2181,21 +2141,6 @@ parameters:
 			path: app/progression/domaine/interacteur/ExécuterProgInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ExécuterSysInt\\:\\:exécuter\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ExécuterSysInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ExécuterSysInt\\:\\:exécuter\\(\\) has parameter \\$question with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ExécuterSysInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ExécuterSysInt\\:\\:exécuter\\(\\) has parameter \\$tentative with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ExécuterSysInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\GénérerCléAuthentificationInt\\:\\:générer_clé\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/GénérerCléAuthentificationInt.php
@@ -2704,21 +2649,6 @@ parameters:
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeProgInt\\:\\:traiterTentativeProg\\(\\) has parameter \\$tests with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeSysInt\\:\\:exécuter_sys\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SoumettreTentativeSysInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeSysInt\\:\\:exécuter_sys\\(\\) has parameter \\$question with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SoumettreTentativeSysInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeSysInt\\:\\:exécuter_sys\\(\\) has parameter \\$tentative with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SoumettreTentativeSysInt.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeSysInt\\:\\:exécuter_validation\\(\\) has no return type specified\\.$#"

@@ -199,7 +199,7 @@ class TentativeCtl extends Contrôleur
 		);
 	}
 
-	private function valider_paramètres_sys($request)
+	private function valider_paramètres_sys(Request $request): \Illuminate\Validation\Validator
 	{
 		return Validator::make(
 			$request->all(),
