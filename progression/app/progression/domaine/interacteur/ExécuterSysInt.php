@@ -40,17 +40,24 @@ class ExécuterSysInt extends Interacteur
 		$résultats = null;
 
 		$réponse["temps_exécution"] = intval(($comp_resp["temps_exec"] ?? 0) * 1000);
+        $réponse["résultats"]=[];
+        for($i=0; $i < count($tests); $i++) {
+            if( $i < count($comp_resp["résultats"]) ){
+                $résultat = $comp_resp["résultats"][$i];
+                $réponse["résultats"][] = new Résultat(
+                    sortie_observée: $résultat["output"] ?? "",
+                    sortie_erreur: $résultat["errors"] ?? "",
+                    résultat: false,
+                    feedback: null,
+                    temps_exécution: intval($résultat["time"] * 1000),
+                    code_erreur: $résultat["code"] ?? 0
+                );
+            }
+            else {
+                $réponse["résultats"][] = new Résultat();
+            }
+        }
 
-		foreach ($comp_resp["résultats"] as $résultat) {
-			$résultats[] = new Résultat(
-				sortie_observée: $résultat["output"],
-				sortie_erreur: $résultat["errors"],
-				résultat: $résultat["code"] == 0,
-				temps_exécution: intval($résultat["time"] * 1000),
-			);
-		}
-
-		$réponse["résultats"] = $résultats;
 		$réponse["conteneur"] = [
 			"id" => $comp_resp["conteneur"]["id"],
 			"ip" => $comp_resp["conteneur"]["ip"],

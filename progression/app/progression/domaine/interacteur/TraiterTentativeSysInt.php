@@ -26,14 +26,14 @@ class TraiterTentativeSysInt extends Interacteur
 	{
 		$nb_tests_réussis = 0;
 
-		foreach ($tests as $i => $test) {
-			if ($this->vérifier_solution($tentative->résultats[$i], $test->sortie_attendue)) {
-				$tentative->résultats[$i]->feedback = $test->feedback_pos;
+        for($i = 0; $i < count($tests); $i++ ) {
+			if ($this->vérifier_solution($tentative->résultats[$i], $tests[$i]->sortie_attendue)) {
+				$tentative->résultats[$i]->feedback = $tests[$i]->feedback_pos;
 				$tentative->résultats[$i]->résultat = true;
 				$nb_tests_réussis++;
 			} else {
 				$tentative->résultats[$i]->résultat = false;
-				$tentative->résultats[$i]->feedback = $test->feedback_neg;
+				$tentative->résultats[$i]->feedback = $tests[$i]->feedback_neg;
 			}
 		}
 		$tentative->tests_réussis = $nb_tests_réussis;
@@ -49,6 +49,6 @@ class TraiterTentativeSysInt extends Interacteur
 
 	private function vérifier_solution($résultat, $solution)
 	{
-		return $résultat->sortie_observée == $solution;
+		return $résultat->code_erreur === 0 && $résultat?->sortie_observée === $solution;
 	}
 }

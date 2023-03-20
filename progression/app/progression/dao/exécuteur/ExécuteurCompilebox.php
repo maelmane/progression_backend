@@ -78,7 +78,7 @@ class ExécuteurCompilebox extends Exécuteur
 
 		$data_rc = [
 			"language" => self::langages["sshd"],
-			"code" => $tests[0]->validation,
+			"code" => "bash",
 			"user" => $utilisateur,
 			"parameters" => $conteneur_id,
 			"params_conteneur" => "-e SIAB_SERVICE=/:" . $utilisateur . ":" . $utilisateur . ":HOME:SHELL",
