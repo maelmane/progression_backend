@@ -48,7 +48,8 @@
                 "résultat": true,
                 "sortie_erreur": "",
                 "sortie_observée": "Bonjour\n",
-                "temps_exec": 30
+                "temps_exec": 30,
+				"code_erreur": 0				
             },
             "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241/0",
             "links": {
@@ -63,7 +64,8 @@
                 "résultat": true,
                 "sortie_erreur": "",
                 "sortie_observée": "Bonjour\nBonjour\n",
-                "temps_exec": 30
+                "temps_exec": 30,
+				"code_erreur": 0				
             },
             "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241/1",
             "links": {

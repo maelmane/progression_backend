@@ -173,7 +173,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			tests_réussis: 0,
 			temps_exécution: 500,
 			feedback: "feedbackGénéralNégatif",
-			résultats: [new Résultat("Incorrecte", "", false, "feedbackNégatif", 100)],
+			résultats: [new Résultat("Incorrecte", "", false, "feedbackNégatif", 100, 1)],
 		);
 
 		$interacteur = new SoumettreTentativeSysInt();
@@ -270,7 +270,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			tests_réussis: 0,
 			temps_exécution: 500,
 			feedback: "feedbackGénéralNégatif",
-			résultats: [new Résultat("Incorrecte", "", false, "feedbackNégatif", 100)],
+			résultats: [new Résultat("Incorrecte", "", false, "feedbackNégatif", 100, 1)],
 		);
 
 		$interacteur = new SoumettreTentativeSysInt();

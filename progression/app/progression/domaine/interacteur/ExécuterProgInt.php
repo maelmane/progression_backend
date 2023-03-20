@@ -35,11 +35,12 @@ class ExécuterProgInt extends Interacteur
 
 		foreach ($comp_resp["résultats"] as $résultat) {
 			$résultats[] = new Résultat(
-				$résultat["output"],
-				$résultat["errors"],
-				false,
-				null,
-				intval($résultat["time"] * 1000),
+				sortie_observée: $résultat["output"],
+				sortie_erreur: $résultat["errors"],
+				résultat: false,
+				feedback: null,
+				temps_exécution: intval($résultat["time"] * 1000),
+                code_erreur: $résultat["code_erreur"] ?? 0
 			);
 		}
 		$réponse["résultats"] = $résultats;

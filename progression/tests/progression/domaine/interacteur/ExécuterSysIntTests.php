@@ -72,7 +72,7 @@ final class ExécuterSysIntTests extends TestCase
 			})
 			->andReturn([
 				"temps_exec" => 0.124,
-				"résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.2, "code" => 0]],
+				"résultats" => [["output" => "sortieTest", "errors" => "", "time" => 0.2, "code" => 0]],
 				"conteneur" => ["id" => "idConteneur", "ip" => "172.45.2.2", "port" => 45667],
 			]);
 
@@ -108,7 +108,10 @@ final class ExécuterSysIntTests extends TestCase
 			"conteneur" => $conteneur_attendu,
 			"temps_exécution" => 124,
 			"résultats" => [
-				new Résultat(sortie_observée: "ok\n", sortie_erreur: "", résultat: true, temps_exécution: 200),
+				new Résultat(sortie_observée: "sortieTest",
+                             sortie_erreur: "",
+                             temps_exécution: 200,
+                             code_erreur: 0),
 			],
 		];
 

@@ -102,8 +102,8 @@ final class TentativeProgTransformerTests extends TestCase
 			1614711760,
 			false,
 			[
-				new Résultat("output", "error", false, "feedback", 123),
-				new Résultat("output 2", "error 2", true, "feedback 2", 456),
+				new Résultat("output", "error", false, "feedback", 123, 1),
+				new Résultat("output 2", "error 2", true, "feedback 2", 456, 2),
 			],
 			2,
 			34567,

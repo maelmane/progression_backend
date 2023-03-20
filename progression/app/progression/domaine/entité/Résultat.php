@@ -25,18 +25,21 @@ class Résultat
 	public $résultat;
 	public $feedback;
 	public $temps_exécution;
+    public int $code_erreur;
 
 	public function __construct(
 		$sortie_observée = "",
 		$sortie_erreur = "",
 		$résultat = false,
 		$feedback = null,
-		$temps_exécution = null
+		$temps_exécution = null,
+        int $code_erreur = 0
 	) {
 		$this->résultat = $résultat;
 		$this->feedback = $feedback;
 		$this->sortie_observée = $sortie_observée;
 		$this->sortie_erreur = $sortie_erreur;
 		$this->temps_exécution = $temps_exécution;
+        $this->code_erreur = $code_erreur;
 	}
 }

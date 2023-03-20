@@ -38,6 +38,7 @@ final class RésultatTransformerTests extends TestCase
 			"résultat" => true,
 			"feedback" => "Bon travail!",
 			"temps_exec" => 15,
+            "code_erreur" => 0,
 			"links" => [
 				"tentative" =>
 					"https://example.com/tentative/bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",

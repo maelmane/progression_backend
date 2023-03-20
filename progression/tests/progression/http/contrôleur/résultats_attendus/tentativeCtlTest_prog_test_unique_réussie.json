@@ -46,7 +46,8 @@
 				"sortie_erreur": "",
 				"résultat": true,
 				"feedback": "C'est ça!",
-				"temps_exec": 30
+				"temps_exec": 30,
+				"code_erreur": 0
 			},
 			"links": {
 				"self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d/0",

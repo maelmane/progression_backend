@@ -170,13 +170,14 @@ username/question_uri/date_soumission/numéro
 
 *** Propriétés:
 
-| Nom             | Type | Valeurs                 |
-|-----------------+------+-------------------------|
-| sortie_observée | str  |                         |
-| sortie_erreur   | str  |                         |
-| résultat        | bool |                         |
-| feedback        | str  |                         |
-| temps_exécution | int  | temps d'exécution en ms |
+| Nom             | Type | Valeurs                      |
+|-----------------+------+------------------------------|
+| sortie_observée | str  |                              |
+| sortie_erreur   | str  |                              |
+| résultat        | bool |                              |
+| feedback        | str  |                              |
+| temps_exécution | int  | temps d'exécution en ms      |
+| code_erreur     | int  | code d'erreur de l'exécution |
 
 ** Sauvegarde automatique
 

@@ -8,7 +8,8 @@
         "résultat": false,
         "sortie_erreur": "error",
         "sortie_observée": "output",
-        "temps_exécution": 123
+        "temps_exécution": 123,
+		"code_erreur": 1
     },
     {
         "feedback": "feedback 2",
@@ -19,7 +20,8 @@
         "résultat": true,
         "sortie_erreur": "error 2",
         "sortie_observée": "output 2",
-        "temps_exécution": 456
+        "temps_exécution": 456,
+		"code_erreur": 2
     }
 	
 ]
