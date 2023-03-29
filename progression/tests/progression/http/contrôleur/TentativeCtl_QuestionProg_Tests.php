@@ -560,7 +560,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":{"code":["Le champ code est obligatoire."]}}', $résultat_obtenu->getContent());
+		$this->assertEquals(
+			'{"erreur":{"code":["Err: 1004. Le champ code est obligatoire."]}}',
+			$résultat_obtenu->getContent(),
+		);
 	}
 
 	public function test_étant_donné_un_url_de_compilebox_inaccessible_lorsquon_appelle_post_on_obtient_Service_non_disponible()
@@ -720,7 +723,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
-			'{"erreur":{"code":["Le code soumis 24 > 23 caractères."]}}',
+			'{"erreur":{"code":["Err: 1002. Le code soumis 24 > 23 caractères."]}}',
 			$résultat_obtenu->getContent(),
 		);
 	}

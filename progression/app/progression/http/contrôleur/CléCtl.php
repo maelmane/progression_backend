@@ -94,19 +94,20 @@ class CléCtl extends Contrôleur
 			[
 				"nom" => "required",
 				"expiration" => [
+					"bail",
 					"numeric",
 					"integer",
 					function ($attribute, $value, $fail) {
 						if ($value > 0 && $value < time()) {
-							$fail("Expiration invalide");
+							$fail("Err: 1003. Expiration ne peut être dans le passé.");
 						}
 					},
 				],
 			],
 			[
-				"required" => "Le champ :attribute est obligatoire.",
-				"expiration.numeric" => "Expiration invalide",
-				"expiration.integer" => "Expiration invalide",
+				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
+				"expiration.numeric" => "Err: 1003. Expiration doit être un nombre.",
+				"expiration.integer" => "Err: 1003. Expiration doit être un entier.",
 			],
 		);
 

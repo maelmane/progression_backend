@@ -49,6 +49,10 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_user")
 			->with("Marcel")
 			->andReturn(null);
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("Marcel2")
+			->andReturn(null);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -113,41 +117,46 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 
 		$résultat_observé = $this->call("POST", "/inscription", ["username" => "bob", "password" => "test"]);
 
-		$this->assertEquals(403, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Échec de l\'inscription."}', $résultat_observé->getContent());
+		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertEquals(
+			'{"erreur":{"username":["Err: 1001. Le nom d\'utilisateur existe déjà."]}}',
+			$résultat_observé->getContent(),
+		);
 	}
 
-	public function test_étant_donné_un_utilisateur_existant_avec_authentification_lorsquon_linscrit_de_nouveau_avec_une_casse_différente_on_obtient_une_erreur_403()
+	public function test_étant_donné_un_utilisateur_existant_avec_authentification_lorsquon_linscrit_de_nouveau_avec_une_casse_différente_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
 
 		$résultat_observé = $this->call("POST", "/inscription", ["username" => "BOB", "password" => "test"]);
-
-		$this->assertEquals(403, $résultat_observé->status());
-		$this->assertEquals('{"erreur":"Échec de l\'inscription."}', $résultat_observé->getContent());
+		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertEquals(
+			'{"erreur":{"username":["Err: 1001. Le nom d\'utilisateur existe déjà."]}}',
+			$résultat_observé->getContent(),
+		);
 	}
 
 	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_linscrit_il_est_sauvegardé_et_on_obtient_un_token()
 	{
 		putenv("AUTH_LOCAL=true");
 
-		$marcel = new User("Marcel");
+		$marcel = new User("Marcel2");
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDAO
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "Marcel" && $user->rôle == User::ROLE_NORMAL;
+				return $user->username == "Marcel2" && $user->rôle == User::ROLE_NORMAL;
 			})
 			->andReturn($marcel)
 			->shouldReceive("set_password")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "Marcel";
+				return $user->username == "Marcel2";
 			}, "password");
 
-		$résultat_observé = $this->call("POST", "/inscription", ["username" => "Marcel", "password" => "test"]);
+		$résultat_observé = $this->call("POST", "/inscription", ["username" => "Marcel2", "password" => "test"]);
 
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
@@ -159,6 +168,14 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=true");
 		$résultat_observé = $this->call("POST", "/inscription", ["username" => "", "password" => "test"]);
+
+		$this->assertEquals(400, $résultat_observé->status());
+	}
+
+	public function test_étant_donné_une_authentificaton_locale_lorsquon_inscrit_un_nom_dutilisateur_invalide_on_obtient_une_erreur_400()
+	{
+		putenv("AUTH_LOCAL=true");
+		$résultat_observé = $this->call("POST", "/inscription", ["username" => "bo bo", "password" => "test"]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}
