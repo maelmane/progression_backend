@@ -49,11 +49,11 @@ final class LoginCtlTests extends ContrôleurTestCase
 		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
 		$mockCléDAO
 			->shouldReceive("get_clé")
-			->with("bob", "clé valide")
+			->with("bob", "cleValide01")
 			->andReturn(new Clé(null, (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_AUTH));
 		$mockCléDAO
 			->shouldReceive("vérifier")
-			->with("bob", "clé valide", "secret")
+			->with("bob", "cleValide01", "secret")
 			->andReturn(true);
 		$mockCléDAO->shouldReceive("get_clé")->andReturn(null);
 		$mockCléDAO->shouldReceive("vérifier")->andReturn(false);
@@ -152,7 +152,6 @@ final class LoginCtlTests extends ContrôleurTestCase
 			->andReturn(true);
 
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob", "password" => "test"]);
-
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
 	}
@@ -199,6 +198,16 @@ final class LoginCtlTests extends ContrôleurTestCase
 		$this->assertEquals(400, $résultat_observé->status());
 	}
 
+	public function test_étant_donné_une_authentificaton_locale_lorsquon_appelle_login_avec_un_nom_dutilisateur_invalide_on_obtient_une_erreur_401()
+	{
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
+
+		$résultat_observé = $this->call("POST", "/auth", ["username" => "bo bo", "password" => "test"]);
+
+		$this->assertEquals(400, $résultat_observé->status());
+	}
+
 	public function test_étant_donné_une_authentificaton_locale_lorsquon_appelle_login_sans_nom_dutlisateur_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
@@ -234,7 +243,7 @@ final class LoginCtlTests extends ContrôleurTestCase
 	{
 		$résultat_observé = $this->call("POST", "/auth", [
 			"username" => "bob",
-			"key_name" => "clé valide",
+			"key_name" => "cleValide01",
 			"key_secret" => "secret",
 		]);
 
@@ -246,7 +255,7 @@ final class LoginCtlTests extends ContrôleurTestCase
 	{
 		$résultat_observé = $this->call("POST", "/auth", [
 			"username" => "bob",
-			"key_name" => "clé invalide",
+			"key_name" => "cleInvalide00",
 			"key_secret" => "secret",
 		]);
 
@@ -264,7 +273,7 @@ final class LoginCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
-			'{"erreur":{"password":["The password field is required when key name is not present."]}}',
+			'{"erreur":{"password":["Err: 1004. Le champ password est obligatoire lorsque key_name n\'est pas présent."]}}',
 			$résultat_observé->content(),
 		);
 	}
@@ -278,7 +287,7 @@ final class LoginCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
-			'{"erreur":{"password":["The password field is required when key name is not present."]}}',
+			'{"erreur":{"password":["Err: 1004. Le champ password est obligatoire lorsque key_name n\'est pas présent."]}}',
 			$résultat_observé->content(),
 		);
 	}
@@ -287,13 +296,13 @@ final class LoginCtlTests extends ContrôleurTestCase
 	{
 		$résultat_observé = $this->call("POST", "/auth", [
 			"username" => "bob",
-			"key_name" => "clé valide",
+			"key_name" => "cleValide01",
 			"key_secret" => "",
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
-			'{"erreur":{"key_secret":["The key secret field is required when key name is present."]}}',
+			'{"erreur":{"key_secret":["Err: 1004. Le champ key_secret est obligatoire lorsque key_name est présent."]}}',
 			$résultat_observé->content(),
 		);
 	}
@@ -301,12 +310,12 @@ final class LoginCtlTests extends ContrôleurTestCase
 	{
 		$résultat_observé = $this->call("POST", "/auth", [
 			"username" => "bob",
-			"key_name" => "clé valide",
+			"key_name" => "cleValide01",
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
-			'{"erreur":{"key_secret":["The key secret field is required when key name is present."]}}',
+			'{"erreur":{"key_secret":["Err: 1004. Le champ key_secret est obligatoire lorsque key_name est présent."]}}',
 			$résultat_observé->content(),
 		);
 	}

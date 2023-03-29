@@ -192,7 +192,10 @@ final class CléCtlTests extends ContrôleurTestCase
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
-		$this->assertEquals('{"erreur":{"expiration":["Expiration invalide"]}}', $résultat_observé->getContent());
+		$this->assertEquals(
+			'{"erreur":{"expiration":["Err: 1003. Expiration ne peut être dans le passé."]}}',
+			$résultat_observé->getContent(),
+		);
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_non_entière_on_obtient_une_erreur_400()
@@ -204,7 +207,10 @@ final class CléCtlTests extends ContrôleurTestCase
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
-		$this->assertEquals('{"erreur":{"expiration":["Expiration invalide"]}}', $résultat_observé->getContent());
+		$this->assertEquals(
+			'{"erreur":{"expiration":["Err: 1003. Expiration doit être un entier."]}}',
+			$résultat_observé->getContent(),
+		);
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_non_numérique_on_obtient_une_erreur_400()
@@ -216,6 +222,9 @@ final class CléCtlTests extends ContrôleurTestCase
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
-		$this->assertEquals('{"erreur":{"expiration":["Expiration invalide"]}}', $résultat_observé->getContent());
+		$this->assertEquals(
+			'{"erreur":{"expiration":["Err: 1003. Expiration doit être un nombre."]}}',
+			$résultat_observé->getContent(),
+		);
 	}
 }

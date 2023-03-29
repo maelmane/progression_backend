@@ -93,14 +93,14 @@ class AvancementCtl extends Contrôleur
 					function ($attribute, $value, $fail) {
 						$url = Encodage::base64_decode_url($value);
 						if (!$url || Validator::make(["question_uri" => $url], ["question_uri" => "url"])->fails()) {
-							$fail("Le champ question_uri doit être un URL encodé en base64.");
+							$fail("Err: 1003. Le champ question_uri doit être un URL encodé en base64.");
 						}
 					},
 				],
 				"avancement.extra" => "string",
 			],
 			[
-				"required" => "Le champ :attribute est obligatoire.",
+				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
 			],
 		);
 

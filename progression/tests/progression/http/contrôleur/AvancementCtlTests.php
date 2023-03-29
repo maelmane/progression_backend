@@ -245,7 +245,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 
 		$this->assertResponseStatus(400);
 		$this->assertEquals(
-			'{"erreur":{"question_uri":["Le champ question uri est obligatoire."]}}',
+			'{"erreur":{"question_uri":["Err: 1004. Le champ question uri est obligatoire."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
@@ -259,7 +259,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 
 		$this->assertResponseStatus(400);
 		$this->assertEquals(
-			'{"erreur":{"question_uri":["Le champ question_uri doit être un URL encodé en base64."]}}',
+			'{"erreur":{"question_uri":["Err: 1003. Le champ question_uri doit être un URL encodé en base64."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
@@ -273,7 +273,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 
 		$this->assertResponseStatus(400);
 		$this->assertEquals(
-			'{"erreur":{"question_uri":["Le champ question_uri doit être un URL encodé en base64."]}}',
+			'{"erreur":{"question_uri":["Err: 1003. Le champ question_uri doit être un URL encodé en base64."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
