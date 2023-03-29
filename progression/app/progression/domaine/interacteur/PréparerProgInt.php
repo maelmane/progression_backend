@@ -87,19 +87,25 @@ class PréparerProgInt
 			$posPlusTodo = strpos($ligne, "+TODO");
 
 			if ($todoStatut && $posMoinsTodo) {
+				// Concatène la fin de la ligne suivant le -TODO
+				$codeExécutable[array_key_last($codeExécutable)] .= substr($ligne, $posMoinsTodo + 5);
 				$todoStatut = false;
 			}
 
 			if (!$todoStatut && !$posPlusTodo && !$posMoinsTodo) {
+				// Hors zone TODO, on ajoute la ligne telle quelle
 				$codeExécutable[] = $ligne;
 			}
 
 			if (!$todoStatut && $posPlusTodo && !$posMoinsTodo) {
+				// Début d'un TODO, on ne garde que le début de la ligne avant le +TODO
+				// et on ajoute le code utilisateur
 				$codeExécutable[] = substr($ligne, 0, $posPlusTodo) . $todos_utilisateur[1][$todoIndex++];
 				$todoStatut = true;
 			}
 
 			if (!$todoStatut && $posPlusTodo && $posMoinsTodo) {
+				// TODOS en ligne, on enlève les balises et on ajoute le code utilisateur
 				$codeExécutable[] =
 					substr($ligne, 0, $posPlusTodo) .
 					$todos_utilisateur[1][$todoIndex++] .
