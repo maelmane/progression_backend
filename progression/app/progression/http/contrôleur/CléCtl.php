@@ -92,7 +92,7 @@ class CléCtl extends Contrôleur
 		$validateur = Validator::make(
 			$request->all(),
 			[
-				"nom" => "required",
+				"nom" => "required|alpha_dash:ascii",
 				"expiration" => [
 					"bail",
 					"numeric",
@@ -106,6 +106,7 @@ class CléCtl extends Contrôleur
 			],
 			[
 				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
+				"nom.alpha_dash" => "Err: 1003. Le champ key_name doit être alphanumérique \'a-Z0-9-_\'",
 				"expiration.numeric" => "Err: 1003. Expiration doit être un nombre.",
 				"expiration.integer" => "Err: 1003. Expiration doit être un entier.",
 			],

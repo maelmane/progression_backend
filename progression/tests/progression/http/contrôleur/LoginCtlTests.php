@@ -278,6 +278,21 @@ final class LoginCtlTests extends ContrôleurTestCase
 		);
 	}
 
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_login_avec_une_clé_au_nom_invalide_on_obtient_une_erreur_400()
+	{
+		$résultat_observé = $this->call("POST", "/auth", [
+			"username" => "bob",
+			"key_name" => "tata toto",
+			"key_secret" => "secret",
+		]);
+
+		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertEquals(
+			'{"erreur":{"key_name":["Err: 1003. Le champ key_name doit être alphanumérique \'a-Z0-9-_\'"]}}',
+			$résultat_observé->content(),
+		);
+	}
+
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_login_sans_clé_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->call("POST", "/auth", [
@@ -306,6 +321,7 @@ final class LoginCtlTests extends ContrôleurTestCase
 			$résultat_observé->content(),
 		);
 	}
+
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_login_sans_secret_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->call("POST", "/auth", [
