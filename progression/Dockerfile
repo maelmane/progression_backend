@@ -63,3 +63,7 @@ RUN curl -sSL --output /usr/local/bin/ktlint https://github.com/pinterest/ktlint
 COPY phpstan.neon /var/www/progression/
 COPY phpstan-baseline.neon /var/www/progression/
 COPY phpunit.xml /var/www/progression/
+
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
