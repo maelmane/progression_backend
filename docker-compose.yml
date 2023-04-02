@@ -23,7 +23,10 @@ services:
 
   progression:
     image: $CI_REGISTRY/$CI_PROJECT_PATH:$TAG_DEPLOY
-    build: progression
+    build:
+      dockerfile: docker/Dockerfile
+      target: production
+      context: .
     container_name: progression_api_$CI_ENVIRONMENT_SLUG
     env_file: 
       - $ENV_FILE
@@ -42,6 +45,10 @@ services:
 
   tests:
     image: $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
+    build:
+      dockerfile: docker/Dockerfile
+      target: production
+      context: .
     #volumes:
     #  - "./progression_backend/progression/app/:/var/www/progression/app/"
     #  - "./progression_backend/progression/tests/:/var/www/progression/tests/"

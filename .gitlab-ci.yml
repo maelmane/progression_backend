@@ -81,8 +81,10 @@ const_image:
   variables:
     DOCKER_BUILDKIT: 1 
   script:
-    - docker build --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE progression
-    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
+    - docker build --target composer --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer -f docker/Dockerfile .
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer
+    - docker build --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE -f docker/Dockerfile .
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE    
 
 
 # Stage tag
