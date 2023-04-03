@@ -101,14 +101,19 @@ class InscriptionCtl extends Contrôleur
 		$validateur = Validator::make(
 			$request->all(),
 			[
-				"username" => "required|alpha_dash",
+				"username" => "required|regex:/^\w{1,64}$/u",
 			],
 			[
-				"required" => "Le champ :attribute est obligatoire.",
+				"username.unique" => "Err: 1001. Le nom d'utilisateur existe déjà.",
+				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
 			],
-		)->sometimes("password", "required", function ($input) {
-			return getenv("AUTH_LOCAL") === "true";
-		});
+		)
+			->sometimes("password", "required", function ($input) {
+				return getenv("AUTH_LOCAL") === "true";
+			})
+			->sometimes("username", "unique:progression\dao\models\UserMdl,username", function ($input) {
+				return getenv("AUTH_LOCAL") === "true";
+			});
 
 		if ($validateur->fails()) {
 			$réponse = $validateur->errors();

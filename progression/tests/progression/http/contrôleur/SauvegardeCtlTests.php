@@ -107,7 +107,7 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
-			'{"erreur":{"langage":["Le champ langage est obligatoire."]}}',
+			'{"erreur":{"langage":["Err: 1004. Le champ langage est obligatoire."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
@@ -123,7 +123,10 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 		);
 
 		$this->assertEquals(400, $résultat_observé->status());
-		$this->assertEquals('{"erreur":{"code":["Le champ code est obligatoire."]}}', $résultat_observé->getContent());
+		$this->assertEquals(
+			'{"erreur":{"code":["Err: 1004. Le champ code est obligatoire."]}}',
+			$résultat_observé->getContent(),
+		);
 	}
 
 	public function test_étant_donné_un_username_luri_dune_question_un_code_et_un_langage_lorsquon_appelle_post_on_obtient_une_sauvegarde()

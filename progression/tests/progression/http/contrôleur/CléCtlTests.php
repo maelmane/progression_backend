@@ -58,11 +58,11 @@ final class CléCtlTests extends ContrôleurTestCase
 			->andReturn(null);
 		$mockCléDAO
 			->shouldReceive("get_clé")
-			->with("jdoe", "nouvelle cle")
+			->with("jdoe", "nouvelle_cle")
 			->andReturn(null);
 		$mockCléDAO
 			->shouldReceive("save")
-			->withArgs(["jdoe", "nouvelle cle", Mockery::Any()])
+			->withArgs(["jdoe", "nouvelle_cle", Mockery::Any()])
 			->andReturnArg(2);
 
 		// DAOFactory
@@ -142,7 +142,7 @@ final class CléCtlTests extends ContrôleurTestCase
 	// POST
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_on_obtient_une_clé_avec_un_secret_généré_aléatoirement_sans_expiration()
 	{
-		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", ["nom" => "nouvelle cle"]);
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", ["nom" => "nouvelle_cle"]);
 
 		$this->assertEquals(200, $résultat_observé->status());
 		$clé_sauvegardée = json_decode($résultat_observé->getContent())->data->attributes;
@@ -155,7 +155,7 @@ final class CléCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_0_on_obtient_une_clé_avec_un_secret_généré_aléatoirement_sans_expiration()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", [
-			"nom" => "nouvelle cle",
+			"nom" => "nouvelle_cle",
 			"expiration" => 0,
 		]);
 
@@ -171,7 +171,7 @@ final class CléCtlTests extends ContrôleurTestCase
 	{
 		$expiration = time() + 100;
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", [
-			"nom" => "nouvelle cle",
+			"nom" => "nouvelle_cle",
 			"expiration" => $expiration,
 		]);
 
@@ -187,35 +187,44 @@ final class CléCtlTests extends ContrôleurTestCase
 	{
 		$expiration = time() - 100;
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", [
-			"nom" => "nouvelle cle",
+			"nom" => "nouvelle_cle",
 			"expiration" => $expiration,
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
-		$this->assertEquals('{"erreur":{"expiration":["Expiration invalide"]}}', $résultat_observé->getContent());
+		$this->assertEquals(
+			'{"erreur":{"expiration":["Err: 1003. Expiration ne peut être dans le passé."]}}',
+			$résultat_observé->getContent(),
+		);
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_non_entière_on_obtient_une_erreur_400()
 	{
 		$expiration = time() + 100.5;
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", [
-			"nom" => "nouvelle cle",
+			"nom" => "nouvelle_cle",
 			"expiration" => $expiration,
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
-		$this->assertEquals('{"erreur":{"expiration":["Expiration invalide"]}}', $résultat_observé->getContent());
+		$this->assertEquals(
+			'{"erreur":{"expiration":["Err: 1003. Expiration doit être un entier."]}}',
+			$résultat_observé->getContent(),
+		);
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_non_numérique_on_obtient_une_erreur_400()
 	{
 		$expiration = "patate";
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", [
-			"nom" => "nouvelle cle",
+			"nom" => "nouvelle_cle",
 			"expiration" => $expiration,
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
-		$this->assertEquals('{"erreur":{"expiration":["Expiration invalide"]}}', $résultat_observé->getContent());
+		$this->assertEquals(
+			'{"erreur":{"expiration":["Err: 1003. Expiration doit être un nombre."]}}',
+			$résultat_observé->getContent(),
+		);
 	}
 }

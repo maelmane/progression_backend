@@ -87,9 +87,9 @@ class UserCtl extends Contrôleur
 				"préférences" => "string|json|between:0,65535",
 			],
 			[
-				"json" => "Le champ :attribute doit être en format json.",
+				"json" => "Err: 1003. Le champ :attribute doit être en format json.",
 				"paramètres.between" =>
-					"Le champ :attribute " . mb_strlen($request->paramètres) . " > :max caractères.",
+					"Err: 1002. Le champ :attribute " . mb_strlen($request->paramètres) . " > :max caractères.",
 			],
 		);
 

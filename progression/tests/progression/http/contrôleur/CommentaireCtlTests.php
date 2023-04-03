@@ -82,7 +82,7 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 		);
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
-			'{"erreur":{"message":["Le champ message est obligatoire."]}}',
+			'{"erreur":{"message":["Err: 1004. Le champ message est obligatoire."]}}',
 			$résultat_obtenu->getContent(),
 		);
 	}
@@ -96,7 +96,7 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 		);
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
-			'{"erreur":{"numéro_ligne":["Le champ numéro ligne doit être un entier."]}}',
+			'{"erreur":{"numéro_ligne":["Err: 1003. Le champ numéro ligne doit être un entier."]}}',
 			$résultat_obtenu->getContent(),
 		);
 	}

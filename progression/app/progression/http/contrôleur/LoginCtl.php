@@ -113,11 +113,19 @@ class LoginCtl extends Contrôleur
 		$validateur = Validator::make(
 			$request->all(),
 			[
-				"username" => "required|alpha_dash",
+				"username" => "bail|required|regex:/^\w{1,64}$/u",
 				"key_secret" => "required_with:key_name",
+				"key_name" => "alpha_dash:ascii",
 			],
 			[
-				"required" => "Le champ :attribute est obligatoire.",
+				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
+				"password.required_without" =>
+					"Err: 1004. Le champ password est obligatoire lorsque key_name n'est pas présent.",
+				"key_secret.required_with" =>
+					"Err: 1004. Le champ key_secret est obligatoire lorsque key_name est présent.",
+				"username.regex" => "Err: 1003. Le nom d'utilisateur doit être de la forme '\w{1,64}'.",
+				"key_secret.required" => "Err: 1004. Le champ key_secret est obligatoire lorsque key_name est présent",
+				"key_name.alpha_dash" => "Err: 1003. Le champ key_name doit être alphanumérique 'a-Z0-9-_'",
 			],
 		)->sometimes("password", "required_without:key_name", function ($input) {
 			$auth_local = getenv("AUTH_LOCAL") !== "false";
