@@ -50,7 +50,7 @@ class CléCtl extends Contrôleur
 			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} else {
 			$cléInt = new GénérerCléAuthentificationInt();
-			$clé = $cléInt->générer_clé($username, $request->nom);
+			$clé = $cléInt->générer_clé($username, $request->nom, $request->expiration ?? 0);
 
 			$réponse = $this->valider_et_préparer_réponse($clé, $username, $request->nom);
 		}
@@ -64,7 +64,7 @@ class CléCtl extends Contrôleur
 		Log::debug("CléCtl.obtenir_clé. Params : ", [$username, $nom]);
 
 		$cléInt = new ObtenirCléInt();
-		$réponse = $cléInt->get_clé($username, $nom);
+		$réponse = $cléInt->get_clé($username, $nom, $this->get_includes());
 
 		Log::debug("CléCtl.obtenir_clé. Retour : ", [$réponse]);
 		return $réponse;
@@ -75,8 +75,8 @@ class CléCtl extends Contrôleur
 		Log::debug("CléCtl.obtenir_clé. Params : ", [$clé, $username, $nom]);
 
 		if ($clé) {
-			$clé->id = "$username/$nom";
-			$réponse_array = $this->item($clé, new CléTransformer());
+			$clé->id = $nom;
+			$réponse_array = $this->item($clé, new CléTransformer($username));
 		} else {
 			$réponse_array = null;
 		}
@@ -93,9 +93,20 @@ class CléCtl extends Contrôleur
 			$request->all(),
 			[
 				"nom" => "required",
+				"expiration" => [
+					"numeric",
+					"integer",
+					function ($attribute, $value, $fail) {
+						if ($value > 0 && $value < time()) {
+							$fail("Expiration invalide");
+						}
+					},
+				],
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
+				"expiration.numeric" => "Expiration invalide",
+				"expiration.integer" => "Expiration invalide",
 			],
 		);
 

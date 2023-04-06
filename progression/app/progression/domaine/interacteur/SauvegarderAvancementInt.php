@@ -18,17 +18,26 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Avancement, Question};
+use progression\domaine\entité\{Avancement, Question, Tentative, User};
 
 class SauvegarderAvancementInt extends Interacteur
 {
-	public function sauvegarder($username, $question_uri, $nouvelAvancement)
-	{
-		if ($this->source_dao->get_user_dao()->get_user($username) == null) {
+	public function sauvegarder(
+		string $username,
+		string $question_uri,
+		Avancement $avancement,
+		Question $question = null
+	): Avancement|null {
+		$question = $question ?? $this->source_dao->get_question_dao()->get_question($question_uri);
+
+		if (!$question) {
 			return null;
 		}
+
+		$avancement->titre = $question->titre;
+		$avancement->niveau = $question->niveau;
+
 		$dao_avancement = $this->source_dao->get_avancement_dao();
-		$avancement = $dao_avancement->save($username, $question_uri, $nouvelAvancement);
-		return $avancement;
+		return $dao_avancement->save($username, $question_uri, $avancement);
 	}
 }

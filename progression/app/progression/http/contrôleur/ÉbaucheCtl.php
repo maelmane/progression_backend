@@ -57,7 +57,7 @@ class ÉbaucheCtl extends Contrôleur
 
 		if ($question != null) {
 			$ébauche = $this->préparer_ébauche($question, $question_uri, $langage);
-			$ébauche_array = $this->item($ébauche, new ÉbaucheTransformer());
+			$ébauche_array = $this->item($ébauche, new ÉbaucheTransformer($question_uri));
 		}
 
 		$réponse = $this->préparer_réponse($ébauche_array);
@@ -73,9 +73,9 @@ class ÉbaucheCtl extends Contrôleur
 		$ébauche = null;
 		if (array_key_exists($langage, $question->exécutables)) {
 			$ébauche = $question->exécutables[$langage];
-			$ébauche->id = "$question_uri/{$ébauche->lang}";
+			$ébauche->id = $ébauche->lang;
 			$ébauche->links = [
-				"related" => $_ENV["APP_URL"] . "question/" . $question_uri,
+				"question" => $_ENV["APP_URL"] . "question/" . $question_uri,
 			];
 		}
 

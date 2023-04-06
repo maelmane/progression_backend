@@ -32,11 +32,10 @@ final class CléTransformerTests extends TestCase
 
 	public function test_étant_donné_une_clé_d_authentification_lorsquon_la_transforme_on_obtient_un_array_identifque()
 	{
-		$transformer = new CléTransformer();
-
 		$clé = new Clé("1234", "2021-06-25 00:00:00", "2021-06-26 00:00:00", 1);
-		$clé->id = "jdoe/clé%20de%20test";
+		$clé->id = "clé%20de%20test";
 
+		$transformer = new CléTransformer("jdoe");
 		$résultat_obtenu = $transformer->transform($clé);
 
 		$résultat_attendu = [
@@ -47,6 +46,7 @@ final class CléTransformerTests extends TestCase
 			"portée" => 1,
 			"links" => [
 				"self" => "https://example.com/cle/jdoe/clé%20de%20test",
+				"user" => "https://example.com/user/jdoe",
 			],
 		];
 

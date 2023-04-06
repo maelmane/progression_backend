@@ -1,0 +1,102 @@
+{
+  "data": {
+    "type": "user",
+    "id": "jdoe",
+    "attributes": {
+      "username": "jdoe",
+      "rôle": 0,
+      "préférences": "{\"app\": {\"pref1\": 1, \"pref2\": 2}}"
+    },
+    "links": {
+      "self": "https://example.com/user/jdoe"
+    },
+    "relationships": {
+      "avancements": {
+        "links": {
+          "self": "https://example.com/user/jdoe/relationships/avancements",
+          "related": "https://example.com/user/jdoe/avancements"
+        },
+        "data": [
+          {
+            "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+            "type": "avancement"
+          },
+          {
+            "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
+            "type": "avancement"
+          }
+        ]
+      },
+      "cles": {
+        "links": {
+          "self": "https://example.com/user/jdoe/relationships/cles",
+          "related": "https://example.com/user/jdoe/cles"
+        }
+      }
+    }
+  },
+  "included": [
+    {
+      "type": "avancement",
+      "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+      "attributes": {
+        "état": 0,
+        "titre": "",
+        "niveau": "",
+        "date_modification": null,
+        "date_réussite": null,
+        "extra": ""
+      },
+      "links": {
+        "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+        "question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+        "user": "https://example.com/user/jdoe"
+      },
+      "relationships": {
+        "tentatives": {
+          "links": {
+            "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/relationships/tentatives",
+            "related": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives"
+          }
+        },
+        "sauvegardes": {
+          "links": {
+            "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/relationships/sauvegardes",
+            "related": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/sauvegardes"
+          }
+        }
+      }
+    },
+    {
+      "type": "avancement",
+      "attributes": {
+        "date_modification": null,
+        "date_réussite": null,
+        "niveau": "",
+        "titre": "",
+        "extra": "",
+        "état": 0
+      },
+      "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
+      "links": {
+        "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
+        "question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
+        "user": "https://example.com/user/jdoe"
+      },
+      "relationships": {
+        "sauvegardes": {
+          "links": {
+            "related": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24/sauvegardes",
+            "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24/relationships/sauvegardes"
+          }
+        },
+        "tentatives": {
+          "links": {
+            "related": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24/tentatives",
+            "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24/relationships/tentatives"
+          }
+        }
+      }
+    }
+  ]
+}

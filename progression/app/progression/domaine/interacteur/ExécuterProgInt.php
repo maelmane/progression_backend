@@ -18,46 +18,31 @@
 
 namespace progression\domaine\interacteur;
 
-use Exception;
-use progression\dao\ExécutionException;
-use progression\domaine\entité\RésultatProg;
+use progression\domaine\entité\Résultat;
 
 class ExécuterProgInt extends Interacteur
 {
-	public function exécuter($exécutable, $test)
+	public function exécuter($exécutable, $tests)
 	{
-		$this->loguer_code($exécutable);
-
-		$comp_resp = $this->source_dao->get_exécuteur()->exécuter($exécutable, $test);
-
-		if ($comp_resp === false) {
-			$erreur = error_get_last();
-			throw new ExécutionException($erreur, $_ENV["COMPILEBOX_URL"]);
+		$comp_resp = $this->source_dao->get_exécuteur()->exécuter_prog($exécutable, $tests);
+		if (!$comp_resp) {
+			return null;
 		}
+		$réponse = [];
+		$résultats = null;
 
-		return new RésultatProg($this->extraire_sortie_standard($comp_resp), $this->extraire_sortie_erreur($comp_resp));
-	}
+		$réponse["temps_exécution"] = intval($comp_resp["temps_exec"] * 1000);
 
-	protected function loguer_code($exécutable)
-	{
-		$com_log =
-			$_SERVER["REMOTE_ADDR"] .
-			" - " .
-			$_SERVER["PHP_SELF"] .
-			" : lang : " .
-			$exécutable->lang .
-			" Code : " .
-			$exécutable->code;
-		syslog(LOG_INFO, $com_log);
-	}
-
-	protected function extraire_sortie_standard($sorties)
-	{
-		return str_replace("\r", "", json_decode($sorties, true)["output"]);
-	}
-
-	protected function extraire_sortie_erreur($sorties)
-	{
-		return json_decode($sorties, true)["errors"];
+		foreach ($comp_resp["résultats"] as $résultat) {
+			$résultats[] = new Résultat(
+				$résultat["output"],
+				$résultat["errors"],
+				false,
+				null,
+				intval($résultat["time"] * 1000),
+			);
+		}
+		$réponse["résultats"] = $résultats;
+		return $réponse;
 	}
 }

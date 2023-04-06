@@ -31,9 +31,6 @@ class LoginCtl extends Contrôleur
 		Log::debug("LoginCtl.login. Params : ", $request->all());
 		Log::info("{$request->ip()} - Tentative de login : {$request->input("username")}");
 
-		$user = null;
-		$token = null;
-
 		$erreurs = $this->valider_paramètres($request);
 		if ($erreurs) {
 			$réponse = $this->réponse_json(["erreur" => $erreurs], 400);
@@ -53,13 +50,14 @@ class LoginCtl extends Contrôleur
 		$key_name = $request->input("key_name");
 		$key_secret = $request->input("key_secret");
 		$password = $request->input("password");
+		$domaine = $request->input("domaine");
 
 		$loginInt = new LoginInt();
 
 		if ($key_name && $key_secret) {
 			$user = $loginInt->effectuer_login_par_clé($username, $key_name, $key_secret);
 		} else {
-			$user = $loginInt->effectuer_login_par_identifiant($username, $password);
+			$user = $loginInt->effectuer_login_par_identifiant($username, $password, $domaine);
 		}
 
 		$réponse = $this->valider_et_préparer_réponse($user, $request);
@@ -101,7 +99,8 @@ class LoginCtl extends Contrôleur
 	{
 		Log::debug("LoginCtl.générer_token. Params : ", [$user]);
 
-		$token = GénérateurDeToken::get_instance()->générer_token($user);
+		$expirationToken = time() + $_ENV["JWT_TTL"];
+		$token = GénérateurDeToken::get_instance()->générer_token($user->username, $expirationToken);
 
 		Log::debug("LoginCtl.générer_token. Retour : ", [$token]);
 		return $token;
@@ -114,15 +113,18 @@ class LoginCtl extends Contrôleur
 		$validateur = Validator::make(
 			$request->all(),
 			[
-				"key_name" => "required_without:password",
-				"key_secret" => "required_with:key_name",
 				"username" => "required|alpha_dash",
-				"password" => "required_without:key_name",
+				"key_secret" => "required_with:key_name",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
 			],
-		);
+		)->sometimes("password", "required_without:key_name", function ($input) {
+			$auth_local = getenv("AUTH_LOCAL") !== "false";
+			$auth_ldap = getenv("AUTH_LDAP") === "true";
+
+			return $auth_local || $auth_ldap;
+		});
 
 		if ($validateur->fails()) {
 			$réponse = $validateur->errors();

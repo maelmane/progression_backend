@@ -1,4 +1,0 @@
-FROM installation
-
-RUN apt-get install -y man-db manpages-fr
-

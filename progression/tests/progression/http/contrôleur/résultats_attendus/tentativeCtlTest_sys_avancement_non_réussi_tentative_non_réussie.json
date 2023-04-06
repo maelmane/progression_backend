@@ -1,0 +1,39 @@
+{
+	"data": {
+		"type": "tentative",
+		"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fc29sdXRpb25fY291cnRlX25vbl9yw6l1c3NpZQ/1653690241",
+		"attributes": {
+			"date_soumission": 1653690241,
+			"feedback": "Encore un effort!",
+			"réussi": false,
+			"sous-type": "tentativeSys",
+            "conteneur": {
+				"id": "leConteneurDeLaNouvelleTentative",
+				"ip": "172.45.2.2",
+				"port": 45667
+			},
+			"réponse": "Mauvaise réponse",
+			"tests_réussis": 0,
+			"temps_exécution": 0
+		},
+		"links": {
+			"avancement": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fc29sdXRpb25fY291cnRlX25vbl9yw6l1c3NpZQ",
+			"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fc29sdXRpb25fY291cnRlX25vbl9yw6l1c3NpZQ/1653690241"
+		},
+		"relationships": {
+			"commentaires":{
+				"links": {
+					"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fc29sdXRpb25fY291cnRlX25vbl9yw6l1c3NpZQ/1653690241/commentaires",
+					"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fc29sdXRpb25fY291cnRlX25vbl9yw6l1c3NpZQ/1653690241/relationships/commentaires"
+				}
+			},
+            "resultats": {
+                "data": [],
+				"links": {
+					"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fc29sdXRpb25fY291cnRlX25vbl9yw6l1c3NpZQ/1653690241/relationships/resultats",
+					"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fc29sdXRpb25fY291cnRlX25vbl9yw6l1c3NpZQ/1653690241/resultats"
+				}
+			}
+		}
+    }
+ }

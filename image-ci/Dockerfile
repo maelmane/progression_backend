@@ -11,7 +11,7 @@ RUN docker-php-ext-install -j$(nproc) mysqli zip
 COPY docker-php-ext-get /usr/local/bin/
 
 RUN docker-php-source extract &&\
-    docker-php-ext-get yaml 2.2.1 &&\
+    docker-php-ext-get yaml 2.2.2 &&\
     docker-php-ext-install yaml &&\
     docker-php-source delete
 
@@ -24,3 +24,11 @@ RUN curl -sS https://getcomposer.org/installer | php
 
 # Install prettier
 RUN npm install --global prettier @prettier/plugin-php
+
+RUN apt update && apt install -y locales
+RUN echo fr_CA.UTF-8 UTF-8 >> /etc/locale.gen
+RUN locale-gen
+
+ENV LANG fr_CA.UTF-8
+ENV LANGUAGE fr_CA:en
+ENV LC_ALL fr_CA.UTF-8

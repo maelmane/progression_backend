@@ -1,0 +1,28 @@
+{
+  "data": {
+    "type": "user",
+    "id": "jdoe",
+    "attributes": {
+      "username": "jdoe",
+		"rôle": 0,
+		"préférences": "{\"app\": {\"pref1\": 1, \"pref2\": 2}}"
+    },
+    "links": {
+      "self": "https://example.com/user/jdoe"
+    },
+    "relationships": {
+      "avancements": {
+        "links": {
+          "self": "https://example.com/user/jdoe/relationships/avancements",
+          "related": "https://example.com/user/jdoe/avancements"
+        }
+      },
+      "cles": {
+        "links": {
+          "self": "https://example.com/user/jdoe/relationships/cles",
+          "related": "https://example.com/user/jdoe/cles"
+        }
+      }
+    }
+  }
+}

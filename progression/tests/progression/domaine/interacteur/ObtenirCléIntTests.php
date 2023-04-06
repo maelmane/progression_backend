@@ -31,17 +31,17 @@ final class ObtenirCléIntTests extends TestCase
 
 		$clé = new Clé(1234, "2021-06-25 00:00:00", "2021-06-26 00:00:00", Clé::PORTEE_AUTH);
 
-		$mockCléDAO = Mockery::mock("progression\dao\CléDAO");
+		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
 		$mockCléDAO
 			->shouldReceive("get_clé")
-			->with("jdoe", 1234)
+			->with("jdoe", 1234, [])
 			->andReturn($clé);
 		$mockCléDAO
 			->shouldReceive("get_clé")
-			->with("jdoe", 9999)
+			->with("jdoe", 9999, [])
 			->andReturn(null);
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_clé_dao()
@@ -52,6 +52,7 @@ final class ObtenirCléIntTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	public function test_étant_donné_une_clé_existante_lorsquon_la_recherche_par_username_et_numéro_on_obtient_un_objet_Clé_correspondant()

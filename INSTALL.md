@@ -101,14 +101,6 @@ Compilation l'image docker
 docker-compose build progression
 ```
 
-### Initialiser la base de données
-
-Création (ou réinitialisation) de la base de données
-
-```
-docker-compose up -d db
-```
-
 ## 2. Démarrer l'application
 
 Démarrage des conteneurs `progression` et `progression_db`
@@ -130,5 +122,5 @@ Progression 2.3.5(caef26)
 Lancer les tests
 
 ```
-docker-compose up tests
+docker-compose run tests
 ```

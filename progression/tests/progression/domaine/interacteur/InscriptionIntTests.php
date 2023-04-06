@@ -29,9 +29,10 @@ final class InscriptionIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$mockUserDao = Mockery::mock("progression\dao\UserDAO");
+		putenv("AUTH_LOCAL=true");
+		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_user_dao()
@@ -42,10 +43,14 @@ final class InscriptionIntTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
-	public function test_étant_donné_un_nouvel_utilisateur_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User()
+	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_local_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User()
 	{
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=true");
+
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
 			->allows()
@@ -67,11 +72,74 @@ final class InscriptionIntTests extends TestCase
 
 		$user = (new InscriptionInt())->effectuer_inscription("roger", "password");
 
-		$this->assertEquals($user, new User("roger"));
+		$this->assertEquals(new User("roger"), $user);
+	}
+
+	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_no_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User()
+	{
+		putenv("AUTH_LOCAL=false");
+		putenv("AUTH_LDAP=false");
+
+		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
+		$mockUserDao
+			->allows()
+			->get_user("roger")
+			->andReturn(null, new User("roger"));
+		$mockUserDao
+			->shouldReceive("save")
+			->withArgs(function ($user) {
+				return $user->username == "roger" && $user->rôle == User::ROLE_NORMAL;
+			})
+			->once()
+			->andReturn(new User("roger"));
+		$mockUserDao->shouldNotReceive("set_password");
+
+		$user = (new InscriptionInt())->effectuer_inscription("roger");
+
+		$this->assertEquals(new User("roger"), $user);
+	}
+
+	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_local_lorsquon_effectue_linscription_sans_mdp_on_obtient_null()
+	{
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=true");
+
+		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
+		$mockUserDao
+			->allows()
+			->get_user("roger")
+			->andReturn(null, new User("roger"));
+		$mockUserDao->shouldNotReceive("save");
+		$mockUserDao->shouldNotReceive("set_password");
+
+		$user = (new InscriptionInt())->effectuer_inscription("roger");
+
+		$this->assertNull($user);
+	}
+
+	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_ldap_lorsquon_effectue_linscription_on_obtient_null()
+	{
+		putenv("AUTH_LOCAL=false");
+		putenv("AUTH_LDAP=true");
+
+		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
+		$mockUserDao
+			->allows()
+			->get_user("roger")
+			->andReturn(null, new User("roger"));
+		$mockUserDao->shouldNotReceive("save");
+		$mockUserDao->shouldNotReceive("set_password");
+
+		$user = (new InscriptionInt())->effectuer_inscription("roger");
+
+		$this->assertNull($user);
 	}
 
 	public function test_étant_donné_un_nouvel_admin_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User()
 	{
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
+
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
 			->allows()
@@ -93,7 +161,7 @@ final class InscriptionIntTests extends TestCase
 
 		$user = (new InscriptionInt())->effectuer_inscription("admin", "password", User::ROLE_ADMIN);
 
-		$this->assertEquals($user, new User("admin", User::ROLE_ADMIN));
+		$this->assertEquals(new User("admin", User::ROLE_ADMIN), $user);
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_effectue_à_nouveau_linscription_on_obtient_null()

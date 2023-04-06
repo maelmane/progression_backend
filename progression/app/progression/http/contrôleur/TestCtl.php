@@ -18,8 +18,9 @@
 
 namespace progression\http\contrôleur;
 
-use progression\http\transformer\TestTransformer;
+use progression\http\transformer\{TestProgTransformer, TestSysTransformer};
 use progression\domaine\interacteur\ObtenirQuestionInt;
+use progression\domaine\entité\{QuestionProg, QuestionSys};
 use progression\util\Encodage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -57,7 +58,13 @@ class TestCtl extends Contrôleur
 
 		if ($question != null) {
 			$test = $this->préparer_test($question, $question_uri, $numero);
-			$test_array = $this->item($test, new TestTransformer());
+			if ($question instanceof QuestionProg) {
+				$test_array = $this->item($test, new TestProgTransformer($question_uri));
+			}
+
+			if ($question instanceof QuestionSys) {
+				$test_array = $this->item($test, new TestSysTransformer($question_uri));
+			}
 		}
 
 		$réponse = $this->préparer_réponse($test_array);
@@ -73,12 +80,10 @@ class TestCtl extends Contrôleur
 		$test = null;
 		if (array_key_exists($numero, $question->tests)) {
 			$test = $question->tests[$numero];
-			$test->id = "$question_uri/$numero";
+			$test->id = $numero;
 			$test->links = [
-				"related" => $_ENV["APP_URL"] . "question/" . $question_uri,
+				"question" => $_ENV["APP_URL"] . "question/" . $question_uri,
 			];
-
-			$réponse = $this->item($test, new TestTransformer());
 		}
 
 		Log::debug("TestCtl.préparer_test. Retour : ", [$test]);

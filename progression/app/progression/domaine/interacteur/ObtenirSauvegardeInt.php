@@ -20,9 +20,15 @@ namespace progression\domaine\interacteur;
 
 class ObtenirSauvegardeInt extends Interacteur
 {
-	function get_sauvegarde($username, $question_uri, $langage)
+	/**
+	 * @param mixed $includes
+	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
+	 */
+	function get_sauvegarde($username, $question_uri, $langage, mixed $includes = [])
 	{
-		$sauvegarde = $this->source_dao->get_sauvegarde_dao()->get_sauvegarde($username, $question_uri, $langage);
+		$sauvegarde = $this->source_dao
+			->get_sauvegarde_dao()
+			->get_sauvegarde($username, $question_uri, $langage, $includes);
 
 		return $sauvegarde;
 	}

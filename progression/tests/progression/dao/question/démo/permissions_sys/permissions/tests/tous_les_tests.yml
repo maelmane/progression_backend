@@ -1,0 +1,8 @@
+-
+  nom: toutes permissions
+  sortie: -rwx rwx rwx
+  validation: ls –l test.txt
+  utilisateur: matt
+  rétroactions:
+   positive: Bien joué!
+   négative: Encore un effort! Toutes les permissions ne sont pas octroyées

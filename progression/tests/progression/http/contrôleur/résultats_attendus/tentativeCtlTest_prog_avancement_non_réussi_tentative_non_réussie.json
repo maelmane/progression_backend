@@ -1,0 +1,76 @@
+{
+	"data": {
+		"type": "tentative",
+		"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241",
+		"attributes": {
+			"date_soumission": 1653690241,
+			"feedback": "Encore un effort!",
+			"réussi": false,
+			"sous-type": "tentativeProg",
+			"langage": "non_réussi",
+			"code": "#+TODO\nprint(\"Hello world!\")",
+			"tests_réussis": 0,
+			"temps_exécution": 440
+		},
+		"links": {
+			"avancement": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll",
+			"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
+		},
+		"relationships": {
+			"commentaires":{
+				"links": {
+					"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/commentaires",
+					"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/relationships/commentaires"
+				}
+			},
+			"resultats": {
+				"links": {
+					"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/relationships/resultats",
+					"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/resultats"
+				},
+				"data": [
+					{
+						"type": "resultat",
+						"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/0"
+					},
+					{
+						"type": "resultat",
+						"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/1"
+					}
+				]
+			}
+		}
+	},
+	"included": [
+		{
+			"type": "resultat",
+			"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/0",
+			"attributes": {
+				"sortie_observée": "Allo\n",
+				"sortie_erreur": "",
+				"résultat": false,
+				"feedback": "C'est pas ça :(",
+				"temps_exec": 30
+			},
+			"links": {
+				"self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/0",
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
+			}
+		},
+		{
+			"type": "resultat",
+			"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/1",
+			"attributes": {
+				"sortie_observée": "Allo\nAllo\n",
+				"sortie_erreur": "",
+				"résultat": false,
+				"feedback": "C'est pas ça :(",
+				"temps_exec": 30
+			},
+			"links": {
+				"self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/1",
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
+			}
+		}
+	]
+}

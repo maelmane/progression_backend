@@ -18,6 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
+use LDAP\Result;
 use progression\domaine\entité\Clé;
 use progression\dao\{DAOFactory, UserDAO};
 
@@ -46,7 +47,7 @@ class LoginInt extends Interacteur
 		}
 	}
 
-	function effectuer_login_par_identifiant($username, $password = null)
+	function effectuer_login_par_identifiant($username, $password = null, $domaine = null)
 	{
 		syslog(LOG_INFO, "Tentative de connexion : $username");
 
@@ -56,12 +57,18 @@ class LoginInt extends Interacteur
 
 		$user = null;
 
-		if ($_ENV["AUTH_TYPE"] == "no") {
-			$user = $this->login_sans_authentification($username);
-		} elseif ($_ENV["AUTH_TYPE"] == "local") {
+		$auth_local = getenv("AUTH_LOCAL") === "true";
+		$auth_ldap = getenv("AUTH_LDAP") === "true";
+
+		if ($auth_ldap && $domaine) {
+			// LDAP
+			$user = $this->login_ldap($username, $password, $domaine);
+		} elseif ($auth_local) {
+			// Local
 			$user = $this->login_local($username, $password);
-		} elseif ($_ENV["AUTH_TYPE"] == "ldap") {
-			$user = $this->login_ldap($username, $password);
+		} elseif (!$auth_ldap) {
+			// Sans authentification
+			$user = $this->login_sans_authentification($username);
 		}
 
 		if ($user != null) {
@@ -73,8 +80,11 @@ class LoginInt extends Interacteur
 
 	function login_local($username, $password)
 	{
-		$user = (new ObtenirUserInt())->get_user($username);
+		if ($password === null) {
+			return null;
+		}
 
+		$user = (new ObtenirUserInt())->get_user($username);
 		if ($user && $this->source_dao->get_user_dao()->vérifier_password($user, $password)) {
 			return $user;
 		} else {
@@ -82,17 +92,15 @@ class LoginInt extends Interacteur
 		}
 	}
 
-	function login_ldap($username, $password)
+	function login_ldap($username, $password, $domaine)
 	{
-		$user_ldap = $this->get_username_ldap($username, $password);
+		if ($password === null) {
+			return null;
+		}
 
-		if ($user_ldap != null) {
-			$user = (new ObtenirUserInt())->get_user($username);
-			if (!$user) {
-				$user = (new CréerUserInt())->créer_user($username);
-			}
-		} else {
-			$user = null;
+		$user = null;
+		if ($this->get_username_ldap($username, $password, $domaine)) {
+			$user = $this->login_sans_authentification($username);
 		}
 
 		return $user;
@@ -100,32 +108,52 @@ class LoginInt extends Interacteur
 
 	function vérifier_champ_valide($champ)
 	{
-		return !empty(trim($champ));
+		return $champ && !empty(trim($champ));
 	}
 
-	function get_username_ldap($username, $password)
+	function get_username_ldap($username, $password, $domaine)
 	{
-		#Tentative de connexion à AD
-		define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
+		if ($domaine != $_ENV["LDAP_DOMAINE"]) {
+			throw new \Exception("Domaine multiple non implémenté");
+		}
 
-		($ldap = ldap_connect("ldap://" . $_ENV["HOTE_AD"], $_ENV["PORT_AD"])) or
-			die("Configuration de serveur LDAP invalide.");
+		// Connexion au serveur LDAP
+		$ldap = ldap_connect("ldap://" . $_ENV["LDAP_HOTE"], $_ENV["LDAP_PORT"]);
+		if (!$ldap) {
+			syslog(LOG_ERR, "Erreur de configuration LDAP");
+			throw new \Exception("Erreur de configuration LDAP");
+		}
 		ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-		$bind = @ldap_bind($ldap, $_ENV["DN_BIND"], $_ENV["PW_BIND"]);
+
+		// Bind l'utilisateur LDAP
+		if ($_ENV["LDAP_DN_BIND"] && $_ENV["LDAP_PW_BIND"]) {
+			$bind = ldap_bind($ldap, $_ENV["LDAP_DN_BIND"], $_ENV["LDAP_PW_BIND"]);
+		} else {
+			$bind = ldap_bind($ldap, $username, $password);
+		}
 
 		if (!$bind) {
 			ldap_get_option($ldap, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
+			syslog(LOG_ERR, "Erreur de connexion à LDAP : $extended_error");
 			throw new AuthException(
 				"Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extended_error",
 			);
 		}
-		$result = ldap_search($ldap, $_ENV["LDAP_BASE"], "(sAMAccountName=$username)", ["dn", "cn", 1]);
-		$user = ldap_get_entries($ldap, $result);
-		if ($user["count"] != 1 || !@ldap_bind($ldap, $user[0]["dn"], $password)) {
-			return null;
+
+		//Recherche de l'utilisateur à authentifier
+		$result = ldap_search($ldap, $_ENV["LDAP_BASE"], "({$_ENV["LDAP_UID"]}=$username)", ["dn", "cn", 1]);
+		if ($result instanceof Result) {
+			$user = ldap_get_entries($ldap, $result);
+			return $user &&
+				isset($user["count"]) &&
+				$user["count"] == 1 &&
+				isset($user[0]) &&
+				is_array($user[0]) &&
+				isset($user[0]["dn"]) &&
+				@ldap_bind($ldap, $user[0]["dn"], $password);
 		}
-		return $user[0];
+		return null;
 	}
 
 	function login_sans_authentification($username)

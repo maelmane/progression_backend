@@ -17,11 +17,27 @@
 */
 
 namespace progression\domaine\interacteur;
-
 class ObtenirTentativeInt extends Interacteur
 {
-	function get_tentative($username, $question_uri, $date)
+	/**
+	 * @param mixed $includes
+	 * liste de sous-objets à inclure; true pour inclure tous les niveaux.
+	 */
+	function get_tentative($username, $question_uri, $date, mixed $includes = [])
 	{
-		return $this->source_dao->get_tentative_dao()->get_tentative($username, $question_uri, $date);
+		$tentative = $this->source_dao->get_tentative_dao()->get_tentative($username, $question_uri, $date, $includes);
+
+		return $tentative;
+	}
+
+	/**
+	 * @param mixed $includes
+	 * liste de sous-objets à inclure; true pour inclure tous les niveaux.
+	 */
+	function get_dernière($username, $question_uri, mixed $includes = [])
+	{
+		$tentative = $this->source_dao->get_tentative_dao()->get_dernière($username, $question_uri, $includes);
+
+		return $tentative;
 	}
 }

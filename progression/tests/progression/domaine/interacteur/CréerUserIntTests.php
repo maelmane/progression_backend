@@ -29,7 +29,7 @@ final class CréerUserIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$mockUserDao = Mockery::mock("progression\dao\UserDAO");
+		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDao
 			->allows()
 			->get_user("jdoe")
@@ -39,7 +39,7 @@ final class CréerUserIntTests extends TestCase
 			->get_user("bob")
 			->andReturn(null);
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_user_dao()
@@ -51,6 +51,7 @@ final class CréerUserIntTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	public function test_étant_donné_un_nom_dutilisateur_valide_lorsquon_crée_lutilisateur_il_est_sauvegardé()

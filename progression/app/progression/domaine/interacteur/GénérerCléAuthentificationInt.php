@@ -23,7 +23,7 @@ use progression\dao\DAOFactory;
 
 class GénérerCléAuthentificationInt extends Interacteur
 {
-	public function générer_clé($username, $nom)
+	public function générer_clé($username, $nom, $expiration = 0)
 	{
 		if (!$nom || !$username) {
 			return null;
@@ -36,7 +36,7 @@ class GénérerCléAuthentificationInt extends Interacteur
 		}
 
 		$secret = bin2hex(random_bytes(20));
-		$clé = new Clé($secret, (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_AUTH);
+		$clé = new Clé($secret, time(), $expiration, Clé::PORTEE_AUTH);
 
 		return $dao->save($username, $nom, $clé);
 	}

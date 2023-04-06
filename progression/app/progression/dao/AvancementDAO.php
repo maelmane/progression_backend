@@ -18,93 +18,113 @@
 
 namespace progression\dao;
 
-use mysqli_sql_exception;
 use progression\domaine\entité\{Avancement, Question};
+use progression\dao\models\{AvancementMdl, UserMdl};
+use progression\dao\tentative\{TentativeDAO, TentativeProgDAO, TentativeSysDAO};
+use Illuminate\Database\QueryException;
 
 class AvancementDAO extends EntitéDAO
 {
-	public function get_tous($username)
+	public function get_tous($username, $includes = [])
 	{
+		try {
+			return $this->construire(
+				AvancementMdl::select("avancement.*")
+					->with(in_array("tentatives", $includes) ? ["tentatives_prog", "tentatives_sys"] : [])
+					->with(in_array("sauvegardes", $includes) ? ["sauvegardes"] : [])
+					->join("user", "avancement.user_id", "=", "user.id")
+					->where("user.username", $username)
+					->get(),
+				$includes,
+			);
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+
+	public function get_avancement($username, $question_uri, $includes = [])
+	{
+		try {
+			$data = AvancementMdl::select("avancement.*")
+				->with(in_array("tentatives", $includes) ? ["tentatives_prog", "tentatives_sys"] : [])
+				->with(in_array("sauvegardes", $includes) ? ["sauvegardes"] : [])
+				->join("user", "avancement.user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("avancement.question_uri", $question_uri)
+				->first();
+			return $data ? $this->construire([$data], $includes)[$question_uri] : null;
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+
+	public function save($username, $question_uri, $avancement)
+	{
+		try {
+			$user = UserMdl::query()
+				->where("username", $username)
+				->first();
+
+			if (!$user) {
+				return null;
+			}
+
+			$objet = [];
+			$objet["etat"] = $avancement->etat;
+			$objet["question_uri"] = $question_uri;
+			$objet["titre"] = $avancement->titre;
+			$objet["niveau"] = $avancement->niveau;
+			$objet["date_modification"] = $avancement->date_modification;
+			$objet["date_reussite"] = $avancement->date_réussite;
+			$objet["extra"] = $avancement->extra;
+
+			return $this->construire([
+				AvancementMdl::updateOrCreate(["user_id" => $user["id"], "question_uri" => $question_uri], $objet),
+			])[$question_uri];
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+
+	public static function construire($data, $includes = [])
+	{
+		if ($data == null) {
+			return [];
+		}
 		$avancements = [];
-
-		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT question_uri, etat, type FROM avancement WHERE username = ?",
-			);
-			$query->bind_param("s", $username);
-			$query->execute();
-
-			$uri = null;
-			$etat = 0;
-			$type = 0;
-			$query->bind_result($uri, $etat, $type);
-			while ($query->fetch()) {
-				$avancements[$uri] = new Avancement($etat, $type);
+		foreach ($data as $i => $item) {
+			$tentatives = [];
+			if ($includes) {
+				if ($item["type"] == "prog") {
+					$tentatives = in_array("tentatives", $includes)
+						? TentativeProgDAO::construire(
+							$item["tentatives_prog"],
+							parent::filtrer_niveaux($includes, "tentatives"),
+						)
+						: [];
+				} elseif ($item["type"] == "sys") {
+					$tentatives = in_array("tentatives", $includes)
+						? TentativeSysDAO::construire(
+							$item["tentatives_sys"],
+							parent::filtrer_niveaux($includes, "tentatives"),
+						)
+						: [];
+				}
 			}
-
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
-			throw new DAOException($e);
+			$avancement = new Avancement(
+				tentatives: $tentatives,
+				titre: $item["titre"],
+				niveau: $item["niveau"],
+				sauvegardes: in_array("sauvegardes", $includes)
+					? SauvegardeDAO::construire($item["sauvegardes"], parent::filtrer_niveaux($includes, "sauvegardes"))
+					: [],
+			);
+			$avancement->etat = $item["etat"];
+			$avancement->date_modification = $item["date_modification"];
+			$avancement->date_réussite = $item["date_reussite"];
+			$avancement->extra = $item["extra"];
+			$avancements[$item["question_uri"]] = $avancement;
 		}
-
 		return $avancements;
-	}
-
-	public function get_avancement($username, $question_uri)
-	{
-		$avancement = $this->load($username, $question_uri);
-
-		if ($avancement) {
-			$avancement->tentatives = $this->source->get_tentative_dao()->get_toutes($username, $question_uri);
-			$avancement->sauvegardes = $this->source->get_sauvegarde_dao()->get_toutes($username, $question_uri);
-		}
-
-		return $avancement;
-	}
-
-	protected function load($username, $question_uri)
-	{
-		$état = null;
-		$type = null;
-		$avancement = null;
-
-		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"SELECT etat, type FROM avancement WHERE question_uri = ? AND username = ?",
-			);
-			$query->bind_param("ss", $question_uri, $username);
-			$query->execute();
-			$query->bind_result($état, $type);
-
-			if ($query->fetch()) {
-				$avancement = new Avancement($état, $type);
-			}
-
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
-			throw new DAOException($e);
-		}
-
-		return $avancement;
-	}
-
-	public function save($username, $question_uri, $objet)
-	{
-		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO avancement ( etat, question_uri, username, type ) VALUES ( ?, ?, ?, " .
-					Question::TYPE_PROG .
-					')
-                                              ON DUPLICATE KEY UPDATE etat = VALUES( etat ) ',
-			);
-
-			$query->bind_param("iss", $objet->etat, $question_uri, $username);
-			$query->execute();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
-			throw new DAOException($e);
-		}
-
-		return $this->get_avancement($username, $question_uri);
 	}
 }

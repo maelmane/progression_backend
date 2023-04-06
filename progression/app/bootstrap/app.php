@@ -1,6 +1,5 @@
 <?php
 
-require_once __DIR__ . "/../autoload.php";
 require_once __DIR__ . "/../../vendor/autoload.php";
 
 date_default_timezone_set(env("APP_TIMEZONE", "UTC"));
@@ -20,7 +19,7 @@ $app = new Laravel\Lumen\Application(dirname(__DIR__));
 
 $app->withFacades();
 
-// $app->withEloquent();
+$app->withEloquent();
 
 /*
    |--------------------------------------------------------------------------
@@ -49,6 +48,9 @@ $app->singleton(Illuminate\Contracts\Console\Kernel::class, progression\console\
  */
 
 $app->configure("app");
+$app->configure("version");
+$app->configure("database");
+$app->configure("logging");
 
 /*
    |--------------------------------------------------------------------------
@@ -97,6 +99,8 @@ $app->middleware([progression\http\middleware\Cors::class]);
 
 // $app->register(App\Providers\AppServiceProvider::class);
 $app->register(progression\providers\AuthServiceProvider::class);
+$app->register(Illuminate\Redis\RedisServiceProvider::class);
+
 // $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 

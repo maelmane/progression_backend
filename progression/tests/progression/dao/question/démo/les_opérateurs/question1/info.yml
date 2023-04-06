@@ -1,0 +1,23 @@
+titre: Exemple de question
+
+objectif: Ceci est un exemple de question portant sur l'arithmétique
+
+énoncé: >
+    Faites afficher la somme des deux nombres donnés
+
+    Par exemple :
+
+    Pour les entrées 3 et 5, faites afficher 8
+    Pour les entrées -7 et 6, faites afficher -1
+
+execs:
+    - langage: python3
+      fichier: arithmétique.py
+
+tests:
+    - tests/cas_positifs.yml
+    - tests/cas_négatifs.yml
+
+feedback+:
+    - Bravo! Vous savez aditionner comme un chef!
+    - Pour en savoir plus sur [l'utilisation des opérateurs](http://lesopérateurs.com)

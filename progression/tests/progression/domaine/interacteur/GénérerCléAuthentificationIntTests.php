@@ -27,7 +27,7 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 {
 	public function setUp(): void
 	{
-		$mockCléDAO = Mockery::mock("progression\dao\CléDAO");
+		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
 		$mockCléDAO
 			->allows("get_clé")
 			->with("jdoe", "clé existante")
@@ -41,7 +41,7 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 			);
 		$mockCléDAO->allows("get_clé")->andReturn(null);
 
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
 			->allows()
 			->get_clé_dao()
@@ -52,6 +52,7 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		DAOFactory::setInstance(null);
 	}
 
 	public function test_étant_donné_un_utilisateur_jdoe_lorsquon_génère_une_clé_d_authentification_une_nouvelle_clé_est_sauvegardée()
@@ -75,7 +76,7 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 		$this->assertNotNull($résultat_obtenu);
 	}
 
-	public function test_étant_donné_un_utilisateur_jdoe_lorsquon_génère_deux_clés_d_authentification_elles_ont_des_numéros_différents()
+	public function test_étant_donné_un_utilisateur_jdoe_lorsquon_génère_deux_clés_d_authentification_elles_ont_des_secrets_différents()
 	{
 		$mockCléDAO = DAOFactory::getInstance()->get_clé_dao();
 

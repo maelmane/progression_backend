@@ -16,15 +16,13 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-require_once __DIR__ . "/../../../TestCase.php";
+use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{QuestionProg, Question, Test, User};
-use progression\http\contrôleur\TestCtl;
-use Illuminate\Http\Request;
+use progression\domaine\entité\{QuestionProg, Question, TestProg, QuestionSys, TestSys, User};
 use Illuminate\Auth\GenericUser;
 
-final class TestCtlTests extends TestCase
+final class TestCtlTests extends ContrôleurTestCase
 {
 	public $user;
 
@@ -41,18 +39,31 @@ final class TestCtlTests extends TestCase
 		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		$question->tests = [
-			new Test("2 salutations", "Bonjour\nBonjour\n", "2"),
-			new Test("Aucune salutation", "", "0"),
+			new TestProg("2 salutations", "Bonjour\nBonjour\n", "2"),
+			new TestProg("Aucune salutation", "", "0"),
 		];
 
-		$mockQuestionDAO = Mockery::mock("progression\dao\QuestionDAO");
+		$mockQuestionDAO = Mockery::mock("progression\\dao\\question\\QuestionDAO");
 		$mockQuestionDAO
 			->shouldReceive("get_question")
-			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", Mockery::any())
+			->with("https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction")
 			->andReturn($question);
 
+		$question = new QuestionSys();
+		$question->type = Question::TYPE_SYS;
+		$question->nom = "Persmissions 2";
+		$question->uri = "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions2";
+		$question->tests = [
+			new TestSys("testNom", "testSortie", "testValidation", "utilisateurTest", "testFbp", "testFbn"),
+			new TestSys("testNom2", "testSortie2", "testValidation2", "utilisateurTest2", "testFbp2", "testFbn2"),
+		];
+
+		$mockQuestionDAO
+			->shouldReceive("get_question")
+			->with("https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions2")
+			->andReturn($question);
 		// DAOFactory
-		$mockDAOFactory = Mockery::mock("progression\dao\DAOFactory");
+		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);
@@ -63,7 +74,7 @@ final class TestCtlTests extends TestCase
 		Mockery::close();
 	}
 
-	public function test_étant_donné_le_chemin_dune_question_et_son_test_numero_0_lorsquon_appelle_get_on_obtient_le_test_numero_0_et_ses_relations_sous_forme_json()
+	public function test_étant_donné_le_chemin_dune_questionProg_et_son_test_numero_0_lorsquon_appelle_get_on_obtient_le_test_numero_0_et_ses_relations_sous_forme_json()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
@@ -71,8 +82,22 @@ final class TestCtlTests extends TestCase
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertStringEqualsFile(
-			__DIR__ . "/résultats_attendus/testCtlTest_1.json",
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/testCtlTest_question_prog.json",
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_le_chemin_dune_questionSys_et_son_test_numero_0_lorsquon_appelle_get_on_obtient_le_test_numero_0_et_ses_relations_sous_forme_json()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"GET",
+			"/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy/0",
+		);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/testCtlTest_question_sys.json",
 			$résultat_obtenu->getContent(),
 		);
 	}

@@ -19,15 +19,13 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\ObtenirAvancementInt;
-use progression\domaine\interacteur\ObtenirUserInt;
 use progression\domaine\interacteur\SauvegarderAvancementInt;
 use progression\http\transformer\AvancementTransformer;
 use progression\util\Encodage;
-use progression\domaine\entité\{User, Avancement, Question};
+use progression\domaine\entité\Avancement;
 
 class AvancementCtl extends Contrôleur
 {
@@ -36,6 +34,7 @@ class AvancementCtl extends Contrôleur
 		Log::debug("AvancementCtl.get. Params : ", [$request->all(), $username, $question_uri]);
 
 		$avancement = $this->obtenir_avancement($username, $question_uri);
+
 		$réponse = $this->valider_et_préparer_réponse($avancement, $username, $question_uri);
 
 		Log::debug("AvancementCtl.get. Retour : ", [$réponse]);
@@ -50,18 +49,16 @@ class AvancementCtl extends Contrôleur
 
 		if ($validateur->fails()) {
 			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
-		} elseif ($request->avancement && !$this->valider_permissions()) {
-			$réponse = $this->réponse_json(["erreur" => "Opération interdite."], 403);
 		} else {
-			$avancement = $request->avancement;
+			$avancement = $this->construire_avancement($username, $request->question_uri, $request->avancement ?? []);
 
-			$avancement_sauvegardé = $this->créer_ou_sauvegarder_avancement(
-				$avancement,
-				$username,
-				$request->question_uri,
-			);
+			if ($request->avancement != null || $avancement->etat == 0) {
+				$avancement_retourné = $this->sauvegarder_avancement($username, $request->question_uri, $avancement);
+			} else {
+				$avancement_retourné = $avancement;
+			}
 
-			$réponse = $this->valider_et_préparer_réponse($avancement_sauvegardé, $username, $request->question_uri);
+			$réponse = $this->valider_et_préparer_réponse($avancement_retourné, $username, $request->question_uri);
 		}
 
 		Log::debug("AvancementCtl.post. Retour : ", [$réponse]);
@@ -74,41 +71,15 @@ class AvancementCtl extends Contrôleur
 		Log::debug("AvancementCtl.valider_et_préparer_réponse. Params : ", [$avancement, $username, $question_uri]);
 
 		if ($avancement) {
-			$avancement->id = "{$username}/$question_uri";
-			$réponse_array = $this->avancement_to_array($avancement);
+			$avancement->id = $question_uri;
+			$réponse = $this->item($avancement, new AvancementTransformer($username));
 		} else {
-			$réponse_array = null;
+			$réponse = null;
 		}
 
-		$réponse = $this->préparer_réponse($réponse_array);
+		$réponse = $this->préparer_réponse($réponse);
 
 		Log::debug("AvancementCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
-		return $réponse;
-	}
-
-	private function avancement_to_array($avancement)
-	{
-		Log::debug("AvancementCtl.avancement_to_array. Params : ", [$avancement]);
-
-		$réponse = $this->item($avancement, new AvancementTransformer());
-
-		Log::debug("AvancementCtl.avancement_to_array. Retour : ", [$réponse]);
-
-		return $réponse;
-	}
-
-	private function créer_ou_sauvegarder_avancement($avancement, $username, $question_uri)
-	{
-		Log::debug("AvancementCtl.créer_ou_sauvegarder_avancement. Params : ", [$avancement, $username, $question_uri]);
-
-		$avancement_sauvegardé = $this->sauvegarder_avancement(
-			$username,
-			$question_uri,
-			$avancement ?? new Avancement(),
-		);
-
-		$réponse = $avancement_sauvegardé;
-		Log::debug("AvancementCtl.créer_ou_sauvegarder_avancement. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
@@ -117,8 +88,16 @@ class AvancementCtl extends Contrôleur
 		$validateur = Validator::make(
 			$request->all(),
 			[
-				"question_uri" => "required",
-				"avancement.état" => "required_with:avancement|integer|between:0,2",
+				"question_uri" => [
+					"required",
+					function ($attribute, $value, $fail) {
+						$url = Encodage::base64_decode_url($value);
+						if (!$url || Validator::make(["question_uri" => $url], ["question_uri" => "url"])->fails()) {
+							$fail("Le champ question_uri doit être un URL encodé en base64.");
+						}
+					},
+				],
+				"avancement.extra" => "string",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
@@ -128,18 +107,14 @@ class AvancementCtl extends Contrôleur
 		return $validateur;
 	}
 
-	private function valider_permissions()
-	{
-		return Gate::allows("update-avancement");
-	}
-
 	private function obtenir_avancement($username, $question_uri)
 	{
 		Log::debug("AvancementCtl.obtenir_avancement. Params : ", [$username, $question_uri]);
 
 		$avancementInt = new ObtenirAvancementInt();
+
 		$chemin = Encodage::base64_decode_url($question_uri);
-		$avancement = $avancementInt->get_avancement($username, $chemin);
+		$avancement = $avancementInt->get_avancement($username, $chemin, $this->get_includes());
 
 		Log::debug("AvancementCtl.obtenir_avancement. Retour : ", [$avancement]);
 		return $avancement;
@@ -153,9 +128,22 @@ class AvancementCtl extends Contrôleur
 		$chemin = Encodage::base64_decode_url($question_uri);
 
 		$nouvel_avancement = $avancementInt->sauvegarder($username, $chemin, $avancement);
-		$nouvel_avancement->id = "$username/$question_uri";
 
 		Log::debug("AvancementCtl.sauvegarder_avancement. Retour : ", [$nouvel_avancement]);
 		return $nouvel_avancement;
+	}
+
+	/**
+	 * @param array<string> $modifications
+	 */
+	private function construire_avancement(string $username, string $question_uri, array $modifications): Avancement
+	{
+		$avancementInt = new ObtenirAvancementInt();
+		$chemin = Encodage::base64_decode_url($question_uri);
+		$avancement = $avancementInt->get_avancement($username, $chemin, $this->get_includes()) ?? new Avancement();
+
+		$avancement->extra = $modifications["extra"] ?? $avancement->extra;
+
+		return $avancement;
 	}
 }

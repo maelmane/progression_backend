@@ -30,8 +30,12 @@ class InscriptionCtl extends Contrôleur
 		Log::debug("InscriptionCtl.inscription. Params : ", $request->all());
 		Log::info("{$request->ip()} - Tentative d'inscription : {$request->input("username")}");
 
-		$user = null;
-		$token = null;
+		$auth_local = getenv("AUTH_LOCAL") !== "false";
+		$auth_ldap = getenv("AUTH_LDAP") === "true";
+
+		if (!$auth_local && $auth_ldap) {
+			return $this->réponse_json(["erreur" => "Inscription locale non supportée."], 403);
+		}
 
 		$erreurs = $this->valider_paramètres($request);
 		if ($erreurs) {
@@ -72,7 +76,8 @@ class InscriptionCtl extends Contrôleur
 					$request->input("username"),
 			);
 
-			$token = GénérateurDeToken::get_instance()->générer_token($user);
+			$expirationToken = time() + $_ENV["JWT_TTL"];
+			$token = GénérateurDeToken::get_instance()->générer_token($user->username, $expirationToken);
 			$réponse = $this->préparer_réponse(["Token" => $token]);
 		} else {
 			Log::notice(
@@ -97,12 +102,13 @@ class InscriptionCtl extends Contrôleur
 			$request->all(),
 			[
 				"username" => "required|alpha_dash",
-				"password" => "required_without",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
 			],
-		);
+		)->sometimes("password", "required", function ($input) {
+			return getenv("AUTH_LOCAL") === "true";
+		});
 
 		if ($validateur->fails()) {
 			$réponse = $validateur->errors();

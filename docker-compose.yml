@@ -1,71 +1,72 @@
-version: "3"
+version: "3.9"
 services:
   db:
-    build: db/
-    container_name: progression_db
-    env_file: progression/app/.env
-    networks:
-      progressionnet:
-        ipv4_address: 172.20.0.2
+    image: mariadb
+    container_name: progression_db_$CI_ENVIRONMENT_SLUG
+    env_file: $ENV_FILE
     volumes:
-      - "./db/data:/var/lib/mysql"
-    environment:
-      MYSQL_ROOT_PASSWORD: password
+      - /var/lib/mysql
+    #  - "./progression_backend/progression/db/:/docker-entrypoint-initdb.d/"
+    restart: always
+    healthcheck:
+      test: 'mysql -u root -p$$DB_PASSWORD --silent --execute "SELECT 1;" > /tmp/test 2>&1'
+      interval: 10s
+      timeout: 20s
+      retries: 10
+
+  redis:
+    image: redis:latest
+    container_name: progression_redis_$CI_ENVIRONMENT_SLUG
+    volumes:
+      - /data
     restart: always
 
   progression:
-    image: progression_backend_progression
-    build: progression/
-    container_name: progression
-    env_file: progression/app/.env
-    networks:
-      progressionnet:
-        ipv4_address: 172.20.0.3
+    image: $CI_REGISTRY/$CI_PROJECT_PATH:$TAG_DEPLOY
+    build: progression
+    container_name: progression_api_$CI_ENVIRONMENT_SLUG
+    env_file: 
+      - $ENV_FILE
+      - VERSION
+    environment:
+      - APP_COMMIT_SHA=$CI_COMMIT_SHORT_SHA
     ports:
-      - 80:80
-    #En développement, monte les source directement dans le conteneur
-    volumes:
-      - "./progression/app/progression/:/var/www/progression/app/progression"
-    extra_hosts:
-      - "watson.dept-info.crosemont.quebec:205.237.24.200"
+      - 127.0.0.1:$INSTANCE_PORT:80
+    #En développement, monte les source dans le conteneur
+    #volumes:
+    #  - "./progression_backend/progression/app/:/var/www/progression/app/"
     restart: always
     depends_on:
       - db
+      - redis
 
   tests:
-    image: progression_backend_progression
-    build: progression/
-    container_name: progression_tests
-    environment:
-      - DB_SERVERNAME=172.20.0.2
-      - DB_USERNAME=root
-      - DB_PASSWORD=password
-      - DB_DBNAME=quiz_test
-      - HTTP_ORIGIN=https://example.com
-    volumes:
-      - "./db/build_db.sh/:/var/www/db/build_db.sh"
-      - "./db/create_db.sql/:/var/www/db/create_db.sql"
-      - "./progression/app/:/var/www/progression/app/"
-      - "./progression/tests/:/var/www/progression/tests/"
-      - "./progression/phpunit.xml:/var/www/progression/phpunit.xml"
-      - "./progression/phpstan.neon:/var/www/progression/phpstan.neon"
-    networks:
-      progressionnet:
-        ipv4_address: 172.20.0.5
-    depends_on:
-      - db
+    image: $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
+    #volumes:
+    #  - "./progression_backend/progression/app/:/var/www/progression/app/"
+    #  - "./progression_backend/progression/tests/:/var/www/progression/tests/"
+    #  - "./progression_backend/progression/db/:/var/www/progression/db/"
     restart: "no"
-    command: /var/www/progression/tests/exec_tests.sh
+    env_file: $ENV_FILE    
+    command: bash /var/www/progression/tests/exec_tests.sh
+    depends_on:
+      db:
+        condition: service_healthy
+
+  lint:
+    # On utilise l'image progression/dev parce que prettier est un package npm que l'on ne veut pas inclure dans progression_backend
+    image: $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
+    volumes:
+      - "./progression/app/:/tmp/progression/app/"
+      - "./progression/tests/:/tmp/progression/tests/"
+    restart: "no"
+    command: prettier --use-tabs --print-width 120 --php-version "7.4" -c /tmp/progression/**/*.php
 
   doc:
-    image: git.dti.crosemont.quebec:5050/progression/progression_backend:latest
-    volumes:
-      - "./progression/app/:/progression/app/"
-      - "./doc/:/doc/"
-    command: emacs --batch --load /root/.emacs.el --load /doc/publish.el --funcall org-publish-all
+    image: $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
+    #volumes:
+    #  - "./progression_backend/progression/:/progression/"
+    #  - "./progression_backend/doc/:/tmp/doc/"
+    #  - "./doc/:/tmp/progression/app/html/doc/"
+    command: bash -c 'if which emacs; then emacs --batch --load /root/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all; else (echo "Veuillez installer les outils de production de la documentation (voir Dockerfile)" && exit); fi'
 
-networks:
-  progressionnet:
-    ipam:
-      config:
-        - subnet: 172.20.0.0/24

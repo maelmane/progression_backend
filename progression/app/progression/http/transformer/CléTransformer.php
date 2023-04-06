@@ -18,23 +18,23 @@
 
 namespace progression\http\transformer;
 
-use League\Fractal;
 use progression\domaine\entité\Clé;
 
-class CléTransformer extends Fractal\TransformerAbstract
+class CléTransformer extends BaseTransformer
 {
 	public $type = "cle";
 
 	public function transform(Clé $clé)
 	{
 		$data_out = [
-			"id" => $clé->id,
+			"id" => "{$this->id}/{$clé->id}",
 			"secret" => $clé->secret,
 			"création" => $clé->création,
 			"expiration" => $clé->expiration,
 			"portée" => $clé->portée,
 			"links" => (isset($clé->links) ? $clé->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}cle/{$clé->id}",
+				"self" => "{$_ENV["APP_URL"]}cle/{$this->id}/{$clé->id}",
+				"user" => "{$_ENV["APP_URL"]}user/{$this->id}",
 			],
 		];
 

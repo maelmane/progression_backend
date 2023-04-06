@@ -19,21 +19,21 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\Test;
-use League\Fractal;
 
-class TestTransformer extends Fractal\TransformerAbstract
+class TestTransformer extends BaseTransformer
 {
 	public $type = "test";
 
 	public function transform(Test $test)
 	{
 		$data = [
-			"id" => $test->id,
+			"id" => "{$this->id}/{$test->id}",
 			"nom" => $test->nom,
-			"entrée" => $test->entrée,
-			"sortie_attendue" => $test->sortie_attendue,
+			"sortie_cachée" => $test->sortie_cachée,
+			"sortie_attendue" => !$test->sortie_cachée ? $test->sortie_attendue : "",
 			"links" => (isset($test->links) ? $test->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}test/{$test->id}",
+				"question" => "{$_ENV["APP_URL"]}question/{$this->id}",
+				"self" => "{$_ENV["APP_URL"]}test/{$this->id}/{$test->id}",
 			],
 		];
 

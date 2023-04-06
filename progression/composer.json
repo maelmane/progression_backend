@@ -1,22 +1,26 @@
 {
-    "name": "laravel/lumen",
-    "description": "The Laravel Lumen Framework.",
-    "keywords": ["framework", "laravel", "lumen"],
-    "license": "MIT",
+    "name": "progression/progression_backend",
+    "description": "Exerciseur de programmation en ligne.",
+    "keywords": ["programming","education"],
+    "license": "GPLv3",
     "type": "project",
     "require": {
         "php": "^7.3|^8.0",
+        "doctrine/dbal": "^2",
         "firebase/php-jwt": "^5.2",
+        "illuminate/redis": "^8.77.1",
         "laravel/lumen-framework": "^8.0",
-        "league/fractal": "^0.19.2",
+        "league/fractal": "^0.20.1",
+        "predis/predis": "^1.1.9",
         "symfony/config": "^5.2",
         "tymon/jwt-auth": "^1.0.0-beta.3@dev",
         "vlucas/phpdotenv": "^5"
     },
-	"require-dev": {
+    "require-dev": {
         "mockery/mockery": "@stable",
-        "phpstan/phpstan": "^0.12.81",
-        "phpunit/phpunit": "^9.5"
+        "nunomaduro/larastan": "1.0.3",
+        "phpstan/phpstan": "1.8.11",
+        "phpunit/phpunit": "9.5"
     },
     "autoload": {
         "psr-4": {

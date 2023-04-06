@@ -1,0 +1,72 @@
+{
+	"data": {
+		"type": "question",
+		"id": "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy",
+		"attributes": {
+			"niveau": "débutant",
+			"titre": "Octroyer toutes le permissions",
+			"objectif": "Octroiement de toutes les permissions.",
+			"description" : "Ceci est une question système complète",
+			"énoncé": "Il faut que l'étudiant trouve les commandes justes pour octroyer toutes les permissions à l'utilisateur krusty.",
+			"auteur": "Albert Einstein",
+			"licence": "poétique",
+			"sous-type": "questionSys",
+			"image": "l'image",
+			"utilisateur": "utilisateur",
+			"solution": "laSolution"
+		},
+		"links": {
+			"self": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy"
+		},
+		"relationships": {
+			"tests": {
+				"links": {
+					"self": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy/relationships/tests",
+					"related": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy/tests"
+				},
+				"data": [
+					{
+						"id": "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy/0",
+						"type": "test"
+					},
+					{
+						"id": "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy/1",
+						"type": "test"
+					}
+				]
+			}
+		}
+	},
+    "included": [
+        {
+            "attributes": {
+                "nom": "test 1",
+                "sortie_attendue": "vrai",
+				"sortie_cachée": false,
+                "utilisateur": "bob",
+                "validation": "[ -z vrai ]"
+            },
+            "id": "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy/0",
+            "links": {
+                "question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy",
+                "self": "https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy/0"
+            },
+            "type": "test"
+        },
+        {
+            "attributes": {
+                "nom": "test 2",
+                "sortie_attendue": "faux",
+				"sortie_cachée": false,
+                "utilisateur": "roger",
+                "validation": "[ -z faux ]"
+            },
+            "id": "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy/1",
+            "links": {
+                "question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy",
+                "self": "https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy/1"
+            },
+            "type": "test"
+        }
+    ]
+}

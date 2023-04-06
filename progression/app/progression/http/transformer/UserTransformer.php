@@ -1,41 +1,41 @@
 <?php
 /*
-	This file is part of Progression.
+   This file is part of Progression.
 
-	Progression is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+   Progression is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-	Progression is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+   Progression is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
-*/
+   You should have received a copy of the GNU General Public License
+   along with Progression.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace progression\http\transformer;
 
 use progression\domaine\entité\User;
-use League\Fractal;
 use progression\util\Encodage;
 
-class UserTransformer extends Fractal\TransformerAbstract
+class UserTransformer extends BaseTransformer
 {
 	public $type = "user";
 
-	protected $availableIncludes = ["avancements"];
+	protected array $availableIncludes = ["avancements", "cles"];
 
 	public function transform(User $user)
 	{
 		$data = [
-			"id" => $user->username,
+			"id" => $user->id,
 			"username" => $user->username,
 			"rôle" => $user->rôle,
+			"préférences" => $user->préférences,
 			"links" => (isset($user->links) ? $user->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}user/{$user->username}",
+				"self" => "{$_ENV["APP_URL"]}user/{$user->id}",
 			],
 		];
 
@@ -44,13 +44,28 @@ class UserTransformer extends Fractal\TransformerAbstract
 
 	public function includeAvancements(User $user)
 	{
+		$id_parent = $user->username;
+
 		foreach ($user->avancements as $uri => $avancement) {
-			$avancement->id = "{$user->username}/" . Encodage::base64_encode_url($uri);
+			$avancement->id = Encodage::base64_encode_url($uri);
 			$avancement->links = [
-				"related" => $_ENV["APP_URL"] . "user/{$user->username}",
+				"user" => $_ENV["APP_URL"] . "user/{$id_parent}",
 			];
 		}
 
-		return $this->collection($user->avancements, new AvancementTransformer(), "avancement");
+		return $this->collection($user->avancements, new AvancementTransformer($id_parent), "avancement");
+	}
+
+	public function includeCles(User $user)
+	{
+		$id_parent = $user->username;
+
+		foreach ($user->clés as $nom => $clé) {
+			$clé->links = [
+				"user" => $_ENV["APP_URL"] . "user/{$id_parent}",
+			];
+		}
+
+		return $this->collection($user->clés, new CléTransformer($id_parent), "cle");
 	}
 }

@@ -1,0 +1,57 @@
+{
+	"data": {
+		"type": "tentative",
+		"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d",
+		"attributes": {
+			"date_soumission": %1$d,
+			"feedback": "Encore un effort!",
+			"réussi": false,
+			"temps_exécution": 440,
+			"sous-type": "tentativeProg",
+			"langage": "non_réussi",
+			"code": "#+TODO\nprint(\"Hello world!\")",
+			"tests_réussis": 0
+		},
+		"links": {
+			"avancement": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
+			"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d"
+		},
+		"relationships": {
+			"resultats": {
+				"links": {
+					"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d/relationships/resultats",
+					"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d/resultats"
+				},
+				"data": [
+					{
+						"type": "resultat",
+						"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d/0"
+					}
+				]
+			},
+			"commentaires": {
+				"links": {
+					"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d/relationships/commentaires",
+					"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d/commentaires"
+				}
+			}
+		}
+	},
+	"included": [
+		{
+			"type": "resultat",
+			"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d/0",
+			"attributes": {
+				"sortie_observée": "Allo\nAllo\n",
+				"sortie_erreur": "",
+				"résultat": false,
+				"feedback": "C'est pas ça :(",
+				"temps_exec": 30
+			},
+			"links": {
+				"self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d/0",
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d"
+			}
+		}
+	]
+}

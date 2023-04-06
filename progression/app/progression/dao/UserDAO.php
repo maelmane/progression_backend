@@ -18,82 +18,85 @@
 
 namespace progression\dao;
 
-use mysqli_sql_exception;
 use progression\domaine\entité\User;
+use progression\dao\models\UserMdl;
+
+use DB;
+use Illuminate\Database\QueryException;
 
 class UserDAO extends EntitéDAO
 {
-	public function get_user($username)
+	public function get_user($username, $includes = [])
 	{
-		$objet = new User($username);
+		$user = null;
 
 		try {
-			$query = EntitéDAO::get_connexion()->prepare("SELECT username, role FROM user WHERE username = ? ");
-			$query->bind_param("s", $objet->username);
-
-			$query->execute();
-
-			$query->bind_result($objet->username, $objet->rôle);
-
-			$résultat = $query->fetch();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+			$user = UserMdl::query()
+				->where("username", $username)
+				->with(in_array("avancements", $includes) ? "avancements" : [])
+				->with(in_array("clés", $includes) ? "clés" : [])
+				->first();
+			return $user ? $this->construire([$user], $includes)[0] : null;
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		if ($résultat != null) {
-			$objet->avancements = $this->source->get_avancement_dao()->get_tous($username);
-		}
-
-		return $résultat != null ? $objet : null;
 	}
 
-	public function save($objet)
+	public function save($user)
 	{
 		try {
-			$query = EntitéDAO::get_connexion()->prepare(
-				"INSERT INTO user( username, role ) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE role=VALUES( role )",
-			);
-			$query->bind_param("si", $objet->username, $objet->rôle);
-			$query->execute();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+			$objet = [
+				"username" => $user->username,
+				"role" => $user->rôle,
+				"preferences" => $user->préférences,
+			];
+
+			return $this->construire([UserMdl::query()->updateOrCreate(["username" => $user->username], $objet)])[0];
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
-
-		return $this->get_user($objet->username);
 	}
 
 	public function set_password(User $user, string $password)
 	{
 		try {
-			$query = EntitéDAO::get_connexion()->prepare("UPDATE user SET password=? WHERE username=?");
-
 			$hash = password_hash($password, PASSWORD_DEFAULT);
-			$query->bind_param("ss", $hash, $user->username);
-			$query->execute();
-			$query->close();
-		} catch (mysqli_sql_exception $e) {
+			return DB::update("UPDATE user SET password=? WHERE username=?", [$hash, $user->username]);
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}
 
-	public function vérifier_password(User $user, string $password = null)
+	public function vérifier_password(User $user, string $password)
 	{
 		try {
-			$query = EntitéDAO::get_connexion()->prepare("SELECT password FROM user WHERE username=?");
-
-			$query->bind_param("s", $user->username);
-			$query->execute();
-
-			$hash = null;
-			$query->bind_result($hash);
-			$query->fetch();
-			$query->close();
-
-			return $hash && password_verify($password, $hash);
-		} catch (mysqli_sql_exception $e) {
+			$hash = DB::select("SELECT password FROM user WHERE username=?", [$user->username]);
+			return count($hash) == 1 && password_verify($password, $hash[0]->password);
+		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
+	}
+
+	public static function construire($data, $includes = [])
+	{
+		if ($data === null || count($data) == 0) {
+			return null;
+		}
+
+		$users = [];
+		foreach ($data as $user) {
+			$users[] = new User(
+				$user["username"],
+				$user["role"],
+				in_array("avancements", $includes)
+					? AvancementDAO::construire($user["avancements"], parent::filtrer_niveaux($includes, "avancements"))
+					: [],
+				in_array("clés", $includes)
+					? CléDAO::construire($user["clés"], parent::filtrer_niveaux($includes, "clés"))
+					: [],
+				$user["preferences"] ?? "",
+			);
+		}
+		return $users;
 	}
 }

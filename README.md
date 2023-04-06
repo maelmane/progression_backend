@@ -1,5 +1,3 @@
-# Version : 21.05.31
-
 Progression est un outil d'aide à l'apprentissage de la programmation principalement destiné à l'accompagnement des cours d'introduction et au tutorat lors des premières sessions des programmes d'informatique.
 
 L'outil se présente comme un site web donnant accès à des séquences d'exercices de plusieurs types, répondant à des facettes diverses de la programmation. L'enseignant pourra créer des séquences adaptés à ses étudiants et adaptatifs selon leurs résultats.

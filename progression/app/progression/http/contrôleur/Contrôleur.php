@@ -18,6 +18,7 @@
 
 namespace progression\http\contrôleur;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -26,9 +27,12 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\JsonApiSerializer;
+use League\Fractal\TransformerAbstract;
 
 class Contrôleur extends BaseController
 {
+	protected Manager $manager;
+
 	protected function réponse_json($réponse, $code)
 	{
 		return response()->json(
@@ -44,69 +48,66 @@ class Contrôleur extends BaseController
 
 	protected function getFractalManager()
 	{
+		return $this->manager;
+	}
+
+	public function __construct()
+	{
 		$request = app(Request::class);
-		$manager = new Manager();
+		$this->manager = new Manager();
 
 		// On redéfinit le Serializer pour avoir des liens «relationship» personnalisés
 
 		//JsonApiSerializer ajoute un slash à l'URL de base, on s'assure d'enlèver le slash ultime
 		$urlBase = preg_replace("/\/+$/", "", $_ENV["APP_URL"]);
 		//$manager->setSerializer(new JsonApiSerializer($urlBase));
-		$manager->setSerializer(new JsonApiSerializer($urlBase));
+		$this->manager->setSerializer(new JsonApiSerializer($urlBase));
 		if (!empty($request->query("include"))) {
-			$manager->parseIncludes($request->query("include"));
+			$this->manager->parseIncludes($request->query("include"));
 		}
-		return $manager;
+	}
+
+	/**
+	 * @return array<string>
+	 */
+	protected function get_includes(): array
+	{
+		return $this->manager->getRequestedIncludes();
 	}
 
 	public function item($data, $transformer)
 	{
 		if ($data == null) {
-			return [null];
+			return null;
 		}
 
-		$manager = $this->getFractalManager();
 		$resource = new Item($data, $transformer, $transformer->type);
-		$item = $manager->createData($resource)->toArray();
+		$item = $this->manager->createData($resource)->toArray();
 
 		return $item;
 	}
 
 	public function collection($data, $transformer)
 	{
-		if ($data == null) {
-			return [null];
+		if ($data === null) {
+			return null;
 		}
 
-		$manager = $this->getFractalManager();
 		$resource = new Collection($data, $transformer, $transformer->type);
-		$item = $manager->createData($resource)->toArray();
+		$item = $this->manager->createData($resource)->toArray();
 
 		return $item;
-	}
-
-	/**
-	 * @param LengthAwarePaginator $data
-	 * @param $transformer
-	 * @return array
-	 */
-	public function paginate($data, $transformer)
-	{
-		$manager = $this->getFractalManager();
-		$resource = new Collection($data, $transformer, $transformer->type);
-		$resource->setPaginator(new IlluminatePaginatorAdapter($data));
-		return $manager->createData($resource)->toArray();
 	}
 
 	protected function préparer_réponse($réponse, $code = 200)
 	{
 		$request = app(Request::class);
-		if ($réponse != null && $réponse != [null]) {
-			Log::info("({$request->ip()}) - {$request->method()} {$request->path()} (" . get_class($this) . ")");
-			return $this->réponse_json($réponse, $code);
-		} else {
+		if ($réponse === null) {
 			Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . get_class($this) . ")");
 			return $this->réponse_json(["erreur" => "Ressource non trouvée."], 404);
+		} else {
+			Log::info("({$request->ip()}) - {$request->method()} {$request->path()} (" . get_class($this) . ")");
+			return $this->réponse_json($réponse, $code);
 		}
 	}
 }

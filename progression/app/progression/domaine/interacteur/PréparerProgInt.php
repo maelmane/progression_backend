@@ -20,6 +20,14 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Exécutable;
 
+// Matche le contenu de toutes les zones TODO
+
+define("REGEX_MATCH_TODOS", "/(?s:(?<=\+TODO)(.*?))(?=-TODO|\Z)/");
+//                            ^              ^     ^        ^
+//                            |              |     |        └  ou la fin du document
+//                            |              |     └ jusqu'à une balise -TODO
+//                            |              └ matche le contenu
+//                            └sans égard aux sauts de ligne, matche tout ce qui suit un +TODO
 class PréparerProgInt
 {
 	public function préparer_exécutable($question, $tentative)
@@ -42,47 +50,76 @@ class PréparerProgInt
 			return null;
 		}
 
-		//S'il n'y a pas de +TODO, on considère que l'ébauche commence avec une zone éditable
-		if (!str_contains($ébauche, "+TODO")) {
-			$ébauche = "#+TODO\n" . $ébauche;
-			$code_utilisateur = "#+TODO\n" . $code_utilisateur;
-		} else {
-			$ébauche = "#\n" . $ébauche;
-			$code_utilisateur = "#\n" . $code_utilisateur;
-		}
+		$ébauche = $this->ajouter_todos_implicites($ébauche);
+		$code_utilisateur = $this->ajouter_todos_implicites($code_utilisateur);
 
+		$codeExécutable = $this->remplacer_todos_ébauche_par_todos_utilisateur($ébauche, $code_utilisateur);
+
+		$codeExécutable = $this->enlever_todos_implicites($codeExécutable);
+
+		return $codeExécutable;
+	}
+
+	private function ajouter_todos_implicites(string $code): string
+	{
+		//S'il n'y a pas de +TODO, ou que le premier est placé après le premiers -TODO,
+		//on considère que l'ébauche commence avec une zone éditable
+		$premier_plus_todo = strpos($code, "+TODO");
+		$premier_moins_todo = strpos($code, "-TODO");
+		if (!$premier_plus_todo || ($premier_moins_todo && $premier_plus_todo > $premier_moins_todo)) {
+			return "#+TODO\n" . $code;
+		} else {
+			return "#\n" . $code;
+		}
+	}
+
+	private function remplacer_todos_ébauche_par_todos_utilisateur(string $ébauche, string $code_utilisateur): string
+	{
 		$codeÉbauche = explode("\n", $ébauche);
 		$codeExécutable = [];
 
 		$todoIndex = 0;
 		$todoStatut = false;
 
-		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code_utilisateur, $todos_utilisateur);
+		preg_match_all(REGEX_MATCH_TODOS, $code_utilisateur, $todos_utilisateur);
 		foreach ($codeÉbauche as $ligne) {
-			if ($todoStatut && strpos($ligne, "-TODO")) {
+			$posMoinsTodo = strpos($ligne, "-TODO");
+			$posPlusTodo = strpos($ligne, "+TODO");
+
+			if ($todoStatut && $posMoinsTodo) {
 				$todoStatut = false;
 			}
 
-			if (!$todoStatut) {
+			if (!$todoStatut && !$posPlusTodo && !$posMoinsTodo) {
 				$codeExécutable[] = $ligne;
 			}
 
-			if (!$todoStatut && strpos($ligne, "+TODO")) {
-				$codeExécutable[] = $todos_utilisateur[1][$todoIndex++];
+			if (!$todoStatut && $posPlusTodo && !$posMoinsTodo) {
+				$codeExécutable[] = substr($ligne, 0, $posPlusTodo) . $todos_utilisateur[1][$todoIndex++];
 				$todoStatut = true;
+			}
+
+			if (!$todoStatut && $posPlusTodo && $posMoinsTodo) {
+				$codeExécutable[] =
+					substr($ligne, 0, $posPlusTodo) .
+					$todos_utilisateur[1][$todoIndex++] .
+					substr($ligne, $posMoinsTodo + 5);
 			}
 		}
 
-		//On enlève la première ligne et recompose le code
-		$codeExécutable = implode("\n", array_slice($codeExécutable, 1));
+		//On recompose le code
+		return implode("\n", $codeExécutable);
+	}
 
-		return $codeExécutable;
+	private function enlever_todos_implicites(string $codeExécutable): string
+	{
+		return substr($codeExécutable, strpos($codeExécutable, "\n") + 1);
 	}
 
 	private function vérifierNombreTodos($ébauche, $code_utilisateur)
 	{
-		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $code_utilisateur, $todos_utilisateur);
-		preg_match_all("/\+TODO.*\n((.|\n)*?)\n*(.*-TODO|\Z)/", $ébauche, $todos_ébauche);
+		preg_match_all(REGEX_MATCH_TODOS, $code_utilisateur, $todos_utilisateur);
+		preg_match_all(REGEX_MATCH_TODOS, $ébauche, $todos_ébauche);
 
 		$nb_todos_utilisateur = count($todos_utilisateur[1]);
 		$nb_todos_ébauche = count($todos_ébauche[1]);

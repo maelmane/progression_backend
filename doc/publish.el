@@ -15,11 +15,11 @@
 (setq org-publish-project-alist
       (list
        (list "org"
-             :base-directory "doc/"
+             :base-directory "/tmp/doc/"
              :base-extension "org"
              :recursive t
              :publishing-function '(org-html-publish-to-html)
-             :publishing-directory "progression/app/html/doc/"
+             :publishing-directory "/tmp/progression/app/html/doc/"
              :exclude (regexp-opt '("README" "draft" "démo" "thème"))
              :auto-sitemap t
              :sitemap-filename "index.org"
@@ -28,21 +28,21 @@
              :sitemap-style 'list
 			 )
        (list "démo"
-             :base-directory "doc/contenu/démo"
+             :base-directory "/tmp/doc/contenu/démo"
              :base-extension 'any
-             :publishing-directory "progression/app/html/doc/contenu/démo/"
+             :publishing-directory "/tmp/progression/app/html/doc/contenu/démo/"
              :publishing-function 'org-publish-attachment
              :recursive t)
        (list "thème"
-             :base-directory "doc/src"
+             :base-directory "/tmp/doc/src"
              :base-extension 'any
-             :publishing-directory "progression/app/html/doc/src/"
+             :publishing-directory "/tmp/progression/app/html/doc/src/"
              :publishing-function 'org-publish-attachment
              :recursive t)
        (list "images"
-             :base-directory "doc/images"
+             :base-directory "/tmp/doc/images"
              :base-extension (regexp-opt '("jpg" "jpeg" "gif" "png" "svg" "ico"))
-             :publishing-directory "progression/app/html/doc/images"
+             :publishing-directory "/tmp/progression/app/html/doc/images"
              :publishing-function 'org-publish-attachment
              :recursive t)
  ))

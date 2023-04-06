@@ -1,66 +1,311 @@
-# Select image from https://hub.docker.com/_/php/
-image: git.dti.crosemont.quebec:5050/progression/progression_backend:latest 
+image: docker/compose:1.29.2
+
+default:
+  tags: [docker]
+
+services:
+  - docker:20.10.16-dind
 
 # Select what we should cache
 cache:
   paths:
-  - vendor/
+  - progression/vendor
 
-before_script:
-# Install all project dependencies
-- php /composer.phar install --dev -d progression/
-
-services:
-  - mariadb:latest
+stages:
+  - verifications
+  - build_image
+  - test
+  - tag_image
+  - deploy_image
+  - build_doc
+  - deploy_doc
 
 stages:
   - test
   - doc
 
 variables:
-  MYSQL_DATABASE: $DB_DBNAME
-  MYSQL_USER: $DB_USERNAME
-  MYSQL_PASSWORD: $DB_PASSWORD
-  MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD
-  JWT_SECRET: "secret_à_changer"
-  JWT_TTL: 8640000
-  AUTH_TYPE: "no"
-  HTTP_ORIGIN: "https://example.com"
+  PROGRESSION_DIR: $CI_PROJECT_DIR
+  DOCKER_TLS_CERTDIR: ""
+  BRANCHE: $CI_COMMIT_REF_NAME
 
-# We test PHP7
+.preparer_contexte: &preparer_contexte
+    - apk add ca-certificates openssh
+    - mkdir ~/.ssh && cp $ID_RSA ~/.ssh/id_rsa && chmod 400 ~/.ssh/id_rsa
+    - echo -e "Host *\n  StrictHostKeyChecking no" > ~/.ssh/config
+    - docker context create --docker host=ssh://$CD_USER@$CD_HOST:$CD_PORT --description="Production" prod
+    - docker context use prod
+    - DOCKER_HOST= 
+
+.login: &login
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+# Stage test
+
+# Tests unitaires
 test_unitaires:
   stage: test
+  needs: 
+    - job: const_image
+      optional: true
   script:
-  - db/build_db.sh && mysql -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
-  - progression/vendor/bin/phpunit --configuration progression/phpunit.xml --coverage-text
+    - docker-compose pull tests
+    - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml tests 
   except:
-  - documentation
+    - master
 
-analyse_statique:
-  stage: test
-  script:
-  - php -d memory_limit=1G progression/vendor/bin/phpstan analyse -c progression/phpstan.neon
-  except:
-  - documentation
-
+# Linter
 linter:
   stage: test
+  needs: []
   script:
-  - shopt -s globstar && prettier -c progression/app/**/*.php progression/tests/**/*.php
+    - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests lint
   except:
-  - documentation
+    - master
 
-# Production de la documentation
-pages:
+# Stage build_image
+
+version_check:
+  stage: verifications
   script:
-  - db/build_db.sh && mysql -h $DB_SERVERNAME -uroot -p$DB_PASSWORD $DB_DBNAME < progression/tests/données_de_test.sql
-  - emacs --batch --load $HOME/.emacs.el --load doc/publish.el --funcall org-publish-all && mkdir public && cp -r progression/app/html/doc/* public/
+    - docker run -v $PWD:/progression_backend bitnami/git bash -c 'git config --global --add safe.directory /progression_backend && cd /progression_backend && VERSION_PREV=$(git show HEAD^:VERSION|cut -d "=" -f 2); VERSION_ACT=$(git show HEAD:VERSION|cut -d "=" -f 2); echo Version: $VERSION_PREV  → $VERSION_ACT; dpkg --compare-versions "$VERSION_ACT" "gt" "$VERSION_PREV" || ( echo ERREUR la version n’a pas avancé && exit 1 )'
+  only:
+  - master
+
+# Construction de l'image
+const_image:
+  stage: build_image
+  before_script: *login
+  variables:
+    DOCKER_BUILDKIT: 1 
+  script:
+    - docker build --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE progression
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
+
+
+# Stage tag
+
+tag_latest:
+  stage: tag_image
+  needs: [const_image]
+  before_script:
+    - *login
+  script:
+    - docker pull $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
+    - docker tag $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE $CI_REGISTRY/$CI_PROJECT_PATH:latest   
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:latest
+  only:
+    - master
+
+    
+# Stage deploy_image
+
+# Déploiement sur /dev
+deploy_dev:
+  stage: deploy_image
+  needs: [test_unitaires, linter]
+  environment:
+    name: dev
+    url: https://progression.dti.crosemont.quebec/dev/api/v1/
+    on_stop: stop_dev
+  before_script:
+    - *preparer_contexte
+    - *login
+  script:
+    - TAG_DEPLOY=dev docker-compose pull progression
+    - TAG_DEPLOY=dev docker-compose -p dev up --force-recreate -d progression
+  only:
+    - dev
+
+stop_dev:
+  stage: deploy_image
+  environment:
+    name: dev
+    action: stop
+  before_script:
+    - *preparer_contexte
+  script:
+    - docker-compose -p dev stop progression
+  when:
+    manual
+    
+# Déploiement sur /demo
+deploy_demo:
+  stage: deploy_image
+  needs: [tag_latest]
+  environment:
+    name: demo
+    url: https://progression.dti.crosemont.quebec/demo/api/v1/
+    on_stop: stop_demo
+  before_script:
+    - *preparer_contexte
+    - *login
+  script:
+    - TAG_DEPLOY=latest docker-compose pull progression
+    - TAG_DEPLOY=latest docker-compose -p demo up --force-recreate -d progression
+  only:
+    - master
+
+stop_demo:
+  stage: deploy_image
+  environment:
+    name: demo
+    action: stop
+  before_script:
+    - *preparer_contexte
+  script:
+    - docker-compose -p demo stop progression
+  when:
+    manual
+
+# Déploiement sur /staging
+deploy_staging:
+  stage: deploy_image
+  needs: [tag_latest]
+  environment:
+    name: staging
+    url: https://progression.dti.crosemont.quebec/staging/api/v1/
+    on_stop: stop_staging
+  before_script:
+    - *preparer_contexte
+    - *login
+  script:
+    - TAG_DEPLOY=latest docker-compose pull progression
+    - TAG_DEPLOY=latest docker-compose -p staging up --force-recreate -d progression
+  only:
+    - master
+
+stop_staging:
+  stage: deploy_image
+  environment:
+    name: staging
+    action: stop
+  before_script:
+    - *preparer_contexte
+  script:
+    - docker-compose -p staging stop progression
+  when:
+    manual
+
+# Déploiement sur progression.dti.crosemont.quebec
+deploy_dti:
+  stage: deploy_image
+  needs: [tag_latest]
+  environment:
+    name: dti_prod
+    url: https://progression.dti.crosemont.quebec/api/v1/
+    on_stop: stop_dti
+  before_script:
+    - *preparer_contexte
+    - *login
+  script:
+    - TAG_DEPLOY=latest docker-compose pull progression
+    - TAG_DEPLOY=latest docker-compose -p prod up --force-recreate -d progression
+  when:
+    manual
+  only:
+    - master
+
+stop_dti:
+  stage: deploy_image
+  environment:
+    name: dti_prod
+    action: stop
+  before_script:
+    - *preparer_contexte
+  script:
+    - docker-compose -p prod stop progression
+  when:
+    manual
+
+# Déploiement sur progression.crosemont.qc.ca/
+deploy_crosemont:
+  stage: deploy_image
+  needs: [tag_latest]
+  tags:
+    - docker
+    - crosemont
+  environment:
+    name: crosemont
+    url: https://progression.crosemont.qc.ca/api/v1/
+    on_stop: stop_crosemont
+  before_script:
+    - export CD_HOST=progression.crosemont.qc.ca CD_PORT=22 CD_USER=updater
+    - *preparer_contexte
+    - *login
+  script:
+    - TAG_DEPLOY=latest docker-compose pull progression
+    - TAG_DEPLOY=latest docker-compose -p prod up --force-recreate -d progression
+  when:
+    manual
+  only:
+    - master
+
+stop_crosemont:
+  stage: deploy_image
+  tags:
+    - docker
+    - crosemont
+  environment:
+    name: crosemont
+    action: stop
+  before_script:
+    - export CD_HOST=progression.crosemont.qc.ca CD_PORT=22 CD_USER=updater
+    - *preparer_contexte
+  script:
+    - docker-compose -p prod stop progression db redis
+  when:
+    manual
+    
+
+# Stage build_doc
+
+# Production de la documentation dev
+pages_dev:
+  stage: build_doc
+  needs: [deploy_dev]
+  variables:
+    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/dev/api/v1api/v1/
+  script:
+  - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
+  - mkdir -p public/dev && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/dev/
+  - "! grep -c nil public/dev/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
+  only:
+    - dev
   artifacts:
     paths:
     - public
-  stage: doc
+
+# Production de la documentation master
+pages_master:
+  stage: build_doc
+  needs:
+    - job: deploy_staging
+      optional: true
+  variables:
+    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/staging/api/v1api/v1/
+  script:
+  - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
+  - mkdir public && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/
+  - "! grep -c nil public/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
   only:
-  - master
-  - documentation
+    - dev
+    - master
+  artifacts:
+    paths:
+    - public
 
 
+# Stage deploy_doc
+
+# Déploiement de la doc
+pages:
+  stage: deploy_doc
+  script:
+    - echo OK #apparemment nécessaire...
+  artifacts:
+    paths:
+    - public
+  only:
+    - dev
+    - master
