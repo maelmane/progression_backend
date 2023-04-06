@@ -16,33 +16,86 @@ Cloner le projet **progression_backend**
 
 ```
 git clone https://git.dti.crosemont.quebec/progression/progression_backend.git (HTTPS)
-git clone git@git.dti.crosemont.quebec:progression/progression_backend.git (SSH)
+cd progression_backend
 ```
 
 ### Créer et adapter le fichier de configuration
 
-Créer le fichier .env ou copier le ficher d'exemple `.env.exemple` du répertoire `/progression/app`
+Créer le fichier .env ou copier le ficher d'exemple `.env.exemple` du répertoire `progression/app`
 
 ```
-cp app/.env.exemple app/.env
+cp progression/app/env.exemple progression/app/.env
 ```
 
-Modifier le type d'authentification et l'hôte pour le compilebox du fichier `.env`
+Modifier les options de configuration minimales :
 
-### En développement
-
-Désactiver **l'authentification** et effectuer les compilations avec l'exécuteur **compilebox** localement.
+#### URL d'origine
+URL d'origine permise pour les requêtes à l'API. Devrait être l'URL de l'application web.
 
 ```
-AUTH_TYPE=no
-COMPILEBOX_HOTE=172.20.0.1
+HTTP_ORIGIN=<URL de l'application web>
 ```
 
-Sans authentification, les utilisateurs sont automatiquement créés dès leur connexion sans mot de passe.
+Exemple:
+```
+# URL d'origine permise pour les requêtes à l'API. Devrait être l'URL de l'application web.
+HTTP_ORIGIN=https://progression.crosemont.qc.ca/
+```
+
+#### URL de l'API
+URL de base de l'API
+
+```
+APP_URL=<URL de l'API>
+```
+
+Exemple:
+```
+# URL de base de l'API
+APP_URL=https://progression.crosemont.qc.ca/api/v1
+```
+
+#### Secret JWT
+Secret pour le chiffrement de token JWT. 
+**GARDER ABSOLUMENT PRIVÉ.**
+
+```
+JWT_SECRET=<chaîne de caractères aléatoire>
+```
+
+Exemple:
+```
+# Secret JWT, À CHANGER ET GARDER PRIVÉ
+JWT_SECRET=OGlW&]K-J}hpW@9b(SuJ
+```
+
+#### Type d'authentification
+Type d'authentification requise
+
+`AUTH_LOCAL` : permet l'inscription et l'authentification locale
+`AUTH_LDAP` : permet l'authentification à partir d'un annuaire LDAP
+
+Si aucune des deux formes d'authentification n'est exigée, l'inscription se fait sans mot de passe.
+
+Exemple:
+```
+# Authentification locale permise ou via LDAP
+AUTH_LOCAL=true
+AUTH_LDAP=true
+```
+
+#### Exécuteur compilebox
+L'URL de l'exécuteur Compilebox. Nécessaire pour effectuer les compilations et exécution de programmes.
+
+Exemple:
+```
+# URL de l'exécuteur Compilebox
+COMPILEBOX_URL=http://progression.dti.crosemont.quebec:12380/compile
+```
 
 ### Construire les images docker
 
-Compilation des images docker
+Compilation l'image docker
 
 ```
 docker-compose build progression
@@ -56,15 +109,6 @@ Création (ou réinitialisation) de la base de données
 docker-compose up -d db
 ```
 
-(laissez quelques secondes de démarrage au SGBD)
-
-```
-docker exec -it progression_db bash
-cd /tmp/ && ./build_db.sh
-```
-
-Fermer le terminal avec Ctrl-D ou `exit`
-
 ## 2. Démarrer l'application
 
 Démarrage des conteneurs `progression` et `progression_db`
@@ -73,13 +117,13 @@ Démarrage des conteneurs `progression` et `progression_db`
 docker-compose up -d progression
 ```
 
-Pour voir ce qui est en cours d'exécution
+L'application est accessible via à l'adresse <APP_URL>
 
 ```
-docker-compose ps
+$ source .env
+$ curl $APP_URL/
+Progression 2.3.5(caef26)
 ```
-
-L'application est accessible via: http://172.20.0.3/
 
 ## 3. Exécution des tests (facultatif)
 
@@ -87,27 +131,4 @@ Lancer les tests
 
 ```
 docker-compose up tests
-```
-
-## 4. FAQ
-
-Q: Pourquoi `docker-compose build` me donne des erreurs ?
-
-- Assurez-vous que votre utilisateur fait partie du groupe docker. Le résultat de la commande `groups` devrait inclure le groupe `docker`.
-
-- Assurez-vous que Docker est en marche!
-
-```
-systemctl enable docker
-systemctl start docker
-```
-
-Q: Comment supprimer les images et les conteneurs inutiles ?
-
-- Utiliser ce script :
-
-```
-docker images --no-trunc | grep '<none>' | awk '{ print $3 }' | xargs -r docker rmi
-docker ps --filter status=dead --filter status=exited -aq | xargs -r docker rm
-docker volume ls -qf dangling=true | xargs -r docker volume rm
 ```
