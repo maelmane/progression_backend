@@ -78,8 +78,8 @@ class CommentaireCtl extends Contrôleur
 				"numéro_ligne" => ["required", "integer"],
 			],
 			[
-				"required" => "Le champ :attribute est obligatoire.",
-				"integer" => "Le champ :attribute doit être un entier.",
+				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
+				"integer" => "Err: 1003. Le champ :attribute doit être un entier.",
 			],
 		);
 	}

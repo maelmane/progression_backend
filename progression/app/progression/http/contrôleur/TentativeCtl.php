@@ -182,8 +182,9 @@ class TentativeCtl extends Contrôleur
 				"code" => "required|string|between:0,$TAILLE_CODE_MAX",
 			],
 			[
-				"required" => "Le champ :attribute est obligatoire.",
-				"code.between" => "Le code soumis " . mb_strlen($request->code) . " > :max caractères.",
+				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
+				"string" => "Err: 1003. Le champ :attribute doit être une chaîne de caractères.",
+				"code.between" => "Err: 1002. Le code soumis " . mb_strlen($request->code) . " > :max caractères.",
 			],
 		);
 	}

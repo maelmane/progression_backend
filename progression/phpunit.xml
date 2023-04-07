@@ -14,4 +14,17 @@
         <env name="CACHE_DRIVER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
     </php>
+	<coverage
+		includeUncoveredFiles="true"
+        pathCoverage="false"
+        ignoreDeprecatedCodeUnits="true">
+	  <include>
+		<directory suffix=".php">app/progression</directory>
+	  </include>
+      <report>
+        <cobertura 
+        outputFile="reports/coverage.xml"/>
+        <html outputDirectory="phpunit-html"/>
+      </report>      
+	</coverage>
 </phpunit>

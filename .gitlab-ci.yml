@@ -50,7 +50,13 @@ test_unitaires:
       optional: true
   script:
     - docker-compose pull tests
-    - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml tests 
+    - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml -v $PROGRESSION_DIR/reports/:/var/www/progression/reports tests
+
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: $PROGRESSION_DIR/reports/coverage.xml
   except:
     - master
 
@@ -79,8 +85,10 @@ const_image:
   variables:
     DOCKER_BUILDKIT: 1 
   script:
-    - docker build --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE progression
-    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
+    - docker build --target composer --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer -f docker/Dockerfile .
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer
+    - docker build --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE -f docker/Dockerfile .
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE    
 
 
 # Stage tag
@@ -265,7 +273,7 @@ pages_dev:
   stage: build_doc
   needs: [deploy_dev]
   variables:
-    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/dev/api/v1api/v1/
+    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/dev/api/v1
   script:
   - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
   - mkdir -p public/dev && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/dev/
@@ -283,7 +291,7 @@ pages_master:
     - job: deploy_staging
       optional: true
   variables:
-    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/staging/api/v1api/v1/
+    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/staging/api/v1
   script:
   - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
   - mkdir public && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/

@@ -217,7 +217,7 @@ final class PréparerProgIntTests extends TestCase
              #+VISIBLE
              #
              print(\"Allo le monde\")
-             #
+             # mais cela devrait apparaître
              # Rien à faire ici
              #
              
@@ -232,7 +232,7 @@ final class PréparerProgIntTests extends TestCase
              #+VISIBLE
              #+TODO
              print()
-             #-TODO
+             # pas ceci -TODO mais cela devrait apparaître
              # Rien à faire ici
              #+TODO
              # À faire
