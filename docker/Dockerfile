@@ -17,7 +17,7 @@ RUN pip3 install beautysh
 
 # beautifier JS et TS
 RUN apt install -y npm
-RUN npm --global install standard typescript ts-standard
+RUN npm --global install prettier @prettier/plugin-php standard typescript ts-standard
 RUN touch /tmp/tsconfig.eslint.json
 
 # ktlint beautifier kotlin

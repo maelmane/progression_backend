@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Création initiale
->/dev/null mysql --default-character-set=utf8 -h $DB_SERVERNAME -v -uroot -p$MYSQL_ROOT_PASSWORD <<EOF
-CREATE DATABASE IF NOT EXISTS $DB_DBNAME
+>/dev/null mysql --default-character-set=utf8 -h $DB_HOST -v -uroot -p$MYSQL_ROOT_PASSWORD <<EOF
+CREATE DATABASE IF NOT EXISTS $DB_DATABASE
 				  CHARACTER SET utf8mb4
 				  COLLATE utf8mb4_general_ci;
 show databases;
-USE $DB_DBNAME;				  
+USE $DB_DATABASE;
 DROP PROCEDURE IF EXISTS migration;
 
 DELIMITER &&
@@ -26,7 +26,7 @@ CREATE PROCEDURE migration()
     
     CREATE USER IF NOT EXISTS $DB_USERNAME@'%' IDENTIFIED BY "$DB_PASSWORD";
     
-    GRANT ALL PRIVILEGES ON $DB_DBNAME.* TO $DB_USERNAME@'%';
+    GRANT ALL PRIVILEGES ON $DB_DATABASE.* TO $DB_USERNAME@'%';
     
     INSERT INTO version VALUES(0);
     
@@ -46,5 +46,5 @@ wd=$(dirname ${BASH_SOURCE[0]})
 for migration in $(ls $wd/migrations.d/[0-9]*.sql)
 do
 	echo -n Migration $migration...
-	>/dev/null mysql --default-character-set=utf8 -v -h $DB_SERVERNAME -u$DB_USERNAME -p$DB_PASSWORD $DB_DBNAME < $migration && echo OK
+	>/dev/null mysql --default-character-set=utf8 -v -h $DB_HOST -u$DB_USERNAME -p$DB_PASSWORD $DB_DATABASE < $migration && echo OK
 done

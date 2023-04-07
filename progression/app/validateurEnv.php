@@ -10,8 +10,8 @@ $dotenv->required("APP_NAME")->allowedRegexValues("(.*)");
 $dotenv->required("APP_TIMEZONE")->allowedValues(["UTC"]);
 
 $dotenv->required("JWT_SECRET")->allowedRegexValues("(.*)");
-$dotenv->required("DB_SERVERNAME")->allowedRegexValues("(.*)");
-$dotenv->required("DB_DBNAME")->allowedRegexValues("(.*)");
+$dotenv->required("DB_HOST")->allowedRegexValues("(.*)");
+$dotenv->required("DB_DATABASE")->allowedRegexValues("(.*)");
 $dotenv->required("DB_USERNAME")->allowedRegexValues("([a-zA-Z0-9_]+)");
 $dotenv->required("DB_PASSWORD")->allowedRegexValues("(.*)");
 

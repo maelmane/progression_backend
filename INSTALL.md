@@ -15,7 +15,7 @@ Voici la procédure d'installation pour le backend de Progression.
 Cloner le projet **progression_backend**
 
 ```
-git clone https://git.dti.crosemont.quebec/progression/progression_backend.git (HTTPS)
+git clone https://git.dti.crosemont.quebec/progression/progression_backend.git
 cd progression_backend
 ```
 
@@ -93,20 +93,12 @@ Exemple:
 COMPILEBOX_URL=http://progression.dti.crosemont.quebec:12380/compile
 ```
 
-### Construire les images docker
+### Démarrer l'application
 
-Compilation l'image docker
-
-```
-docker-compose build progression
-```
-
-## 2. Démarrer l'application
-
-Démarrage des conteneurs `progression` et `progression_db`
+Démarrage des conteneurs `api` et `db`
 
 ```
-docker-compose up -d progression
+docker-compose up -d api
 ```
 
 L'application est accessible via à l'adresse <APP_URL>
@@ -115,12 +107,4 @@ L'application est accessible via à l'adresse <APP_URL>
 $ source .env
 $ curl $APP_URL/
 Progression 2.3.5(caef26)
-```
-
-## 3. Exécution des tests (facultatif)
-
-Lancer les tests
-
-```
-docker-compose run tests
 ```
