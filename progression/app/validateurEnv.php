@@ -21,6 +21,7 @@ $dotenv->ifpresent("AUTH_LDAP")->isBoolean();
 $dotenv->required("HTTP_ORIGIN")->allowedRegexValues("(.*)");
 
 $dotenv->required("QUESTION_TAILLE_MAX")->isInteger();
+$dotenv->required("TAILLE_CODE_MAX")->isInteger();
 $dotenv->required("JWT_TTL")->isInteger();
 
 $dotenv->required("COMPILEBOX_URL")->allowedRegexValues("(.*)");
