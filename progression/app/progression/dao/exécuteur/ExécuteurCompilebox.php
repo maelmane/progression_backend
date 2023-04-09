@@ -57,7 +57,7 @@ class ExécuteurCompilebox extends Exécuteur
 			"code" => $exécutable->code,
 			"parameters" => "",
 			"tests" => $tests_out,
-			"vm_name" => "remotecompiler",
+			"vm_name" => "registry.gitlab.com/projet-progression/compilebox/remotecompiler:latest",
 		];
 
 		return $this->envoyer_requête($data_rc);
