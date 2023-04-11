@@ -56,8 +56,8 @@ services:
       target: production
       context: .
     #En développement, monte les source dans le conteneur
-    volumes:
-      - "./progression_backend/progression/:/var/www/progression/"
+    #volumes:
+    #  - "./progression_backend/progression/:/var/www/progression/"
     restart: "no"
     env_file: ${ENV_FILE:-.env}
     command: bash /var/www/progression/tests/exec_tests.sh
