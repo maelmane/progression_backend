@@ -46,7 +46,7 @@ test_unitaires:
       optional: true
   script:
     - docker-compose pull tests
-    - docker-compose run -v $PROGRESSION_DIR/progression/:/var/www/progression/ -v $PROGRESSION_DIR/reports/:/var/www/progression/reports tests
+    - docker-compose run -v $PROGRESSION_DIR/reports/:/var/www/progression/reports tests
 
   artifacts:
     reports:
@@ -61,7 +61,7 @@ linter:
   stage: test
   needs: []
   script:
-    - docker-compose run -v $PROGRESSION_DIR/progression/:/var/www/progression/ lint
+    - docker-compose run lint
   except:
     - master
 
