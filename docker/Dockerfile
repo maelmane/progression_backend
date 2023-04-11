@@ -54,11 +54,11 @@ RUN mkdir -p /var/www/progression/
 
 WORKDIR /var/www/
 
+COPY --chown=www-data:www-data progression progression/
 COPY --from=composer --chown=www-data:www-data /var/www/vendor/ progression/vendor/
+
 RUN mkdir -p progression/app/storage
 RUN chown www-data:www-data progression/ progression/app/storage
-
-COPY --chown=www-data:www-data progression progression/
 
 RUN chmod +x progression/app/entrypoint.sh
 CMD [ "bash", "progression/app/entrypoint.sh" ]
