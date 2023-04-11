@@ -16,6 +16,3 @@ parameters:
     -
       message: '#^Access to an undefined property progression\\domaine\\entité\\[^\\]+::\$id.$#'
       path: app/progression/http/contrôleur/*Ctl.php
-    -
-      message: '#^Access to an undefined property progression\\domaine\\entité\\[^\\]+::\$links.$#'
-      path: app/progression/http/transformer/*Transformer.php
