@@ -20,10 +20,6 @@ stages:
   - build_doc
   - deploy_doc
 
-stages:
-  - test
-  - doc
-
 variables:
   PROGRESSION_DIR: $CI_PROJECT_DIR
   DOCKER_TLS_CERTDIR: ""
