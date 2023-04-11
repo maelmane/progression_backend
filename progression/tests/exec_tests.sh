@@ -16,6 +16,9 @@ $DIR/../db/build_db.sh && \
 echo Insertion des données de test
 mysql --default-character-set=utf8 -h $DB_HOST -uroot -p$DB_PASSWORD $DB_DATABASE < $DIR/données_de_test.sql || exit 2
 
+echo DIR: $DIR
+ls $DIR/../vendor/
+ls $DIR/../bin/
 # Tests unitaires
 if [ -z "$test_simple" ]
 then
