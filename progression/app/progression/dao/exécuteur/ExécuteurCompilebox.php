@@ -57,7 +57,7 @@ class ExécuteurCompilebox extends Exécuteur
 			"code" => $exécutable->code,
 			"parameters" => "",
 			"tests" => $tests_out,
-			"vm_name" => "remotecompiler",
+			"vm_name" => $_ENV["COMPILEBOX_IMAGE_EXÉCUTEUR"],
 		];
 
 		return $this->envoyer_requête($data_rc);
