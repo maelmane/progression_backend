@@ -25,4 +25,4 @@ $dotenv->required("TAILLE_CODE_MAX")->isInteger();
 $dotenv->required("JWT_TTL")->isInteger();
 
 $dotenv->required("COMPILEBOX_URL")->allowedRegexValues("(.*)");
-$dotenv->required("COMPILEBOX_IMAGE_EXÉCUTEUR")->allowedRegexValues("(.*)");
+$dotenv->required("COMPILEBOX_IMAGE_EXECUTEUR")->allowedRegexValues("(.*)");
