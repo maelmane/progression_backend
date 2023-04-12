@@ -59,7 +59,9 @@ test_unitaires:
 # Linter
 linter:
   stage: test
-  needs: []
+  needs:
+    - job: const_image
+      optional: true
   script:
     - docker-compose run lint
   except:
@@ -279,13 +281,13 @@ pages_dev:
   stage: build_doc
   needs: [deploy_dev]
   variables:
-    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/dev/api/v1
+    PROGRESSION_API_URL: $URL_DEV
   script:
   - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
   - mkdir -p public/dev && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/dev/
   - "! grep -c nil public/dev/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
-  only:
-    - dev
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "dev" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
   artifacts:
     paths:
     - public
@@ -297,9 +299,9 @@ pages_master:
     - job: deploy_staging
       optional: true
   variables:
-    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/staging/api/v1
+    PROGRESSION_API_URL: $URL_STAGING
   script:
-  - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
+  - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/$CI_PROJECT_NAMESPACE/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
   - mkdir public && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/
   - "! grep -c nil public/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
   only:
