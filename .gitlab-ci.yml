@@ -59,7 +59,9 @@ test_unitaires:
 # Linter
 linter:
   stage: test
-  needs: []
+  needs:
+    - job: const_image
+      optional: true
   script:
     - docker-compose run lint
   except:
