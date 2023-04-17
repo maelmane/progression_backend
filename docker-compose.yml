@@ -92,4 +92,4 @@ volumes:
 
 networks:
   progression_net:
-    name: progression_net
+    name: progression_net_$CI_ENVIRONMENT_SLUG
