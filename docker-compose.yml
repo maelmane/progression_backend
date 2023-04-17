@@ -92,3 +92,4 @@ volumes:
 
 networks:
   progression_net:
+    name: progression_net
