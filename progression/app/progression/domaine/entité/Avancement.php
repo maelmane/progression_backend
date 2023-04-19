@@ -49,7 +49,7 @@ class Avancement
 		$this->sauvegardes = $sauvegardes;
 		$this->extra = $extra;
 
-		if ($this->extra){
+		if ($this->extra) {
 			$this->extra = $this->extra;
 		}
 
