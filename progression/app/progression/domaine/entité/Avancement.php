@@ -49,8 +49,8 @@ class Avancement
 		$this->sauvegardes = $sauvegardes;
 		$this->extra = $extra;
 
-		if($this->extra){
-			$this->extra = "ok";
+		if ($this->extra){
+			$this->extra = $this->extra;
 		}
 
 		$this->mettre_à_jour_dates_et_état();
