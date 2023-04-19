@@ -32,7 +32,9 @@ final class UserTransformerTests extends TestCase
 
 		$résultat = [
 			"id" => "bob",
+			"courriel" => null,
 			"username" => "bob",
+			"état" => 0,
 			"rôle" => 0,
 			"préférences" => "",
 			"links" => [

@@ -38,7 +38,7 @@ final class LoginCtlTests extends ContrôleurTestCase
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob")
-			->andReturn(new User("bob"));
+			->andReturn(new User("bob", User::ÉTAT_ACTIF));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob", [])
@@ -127,9 +127,9 @@ final class LoginCtlTests extends ContrôleurTestCase
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "Marcel" && $user->rôle == User::ROLE_NORMAL;
+				return $user->username == "Marcel";
 			})
-			->andReturn(new User("Marcel"));
+			->andReturnArg(0);
 
 		$résultat_observé = $this->call("POST", "/auth", ["username" => "Marcel"]);
 

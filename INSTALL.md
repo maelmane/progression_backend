@@ -15,60 +15,96 @@ Voici la procédure d'installation pour le backend de Progression.
 Cloner le projet **progression_backend**
 
 ```
-git clone https://git.dti.crosemont.quebec/progression/progression_backend.git (HTTPS)
-git clone git@git.dti.crosemont.quebec:progression/progression_backend.git (SSH)
+git clone https://git.dti.crosemont.quebec/progression/progression_backend.git
+cd progression_backend
 ```
 
 ### Créer et adapter le fichier de configuration
 
-Créer le fichier .env ou copier le ficher d'exemple `.env.exemple` du répertoire `/progression/app`
+Créer le fichier .env ou copier le ficher d'exemple `.env.exemple` du répertoire `progression/app`
 
 ```
-cp app/.env.exemple app/.env
+cp progression/app/env.exemple progression/app/.env
 ```
 
-Modifier le type d'authentification et l'hôte pour le compilebox du fichier `.env`
+Modifier les options de configuration minimales :
 
-### En développement
-
-Désactiver **l'authentification** et effectuer les compilations avec l'exécuteur **compilebox** localement.
-
-```
-AUTH_LOCAL=no
-AUTH_LDAP=no
-COMPILEBOX_HOTE=172.20.0.1
-```
-
-Sans authentification, les utilisateurs sont automatiquement créés dès leur connexion sans mot de passe.
-
-### Construire les images docker
-
-Compilation des images docker
+#### URL d'origine
+URL d'origine permise pour les requêtes à l'API. Devrait être l'URL de l'application web.
 
 ```
-docker-compose build progression
+HTTP_ORIGIN=<URL de l'application web>
 ```
 
-## 2. Démarrer l'application
-
-Démarrage des conteneurs `progression` et `progression_db`
-
+Exemple:
 ```
-docker-compose up -d progression
+# URL d'origine permise pour les requêtes à l'API. Devrait être l'URL de l'application web.
+HTTP_ORIGIN=https://progression.crosemont.qc.ca/
 ```
 
-Pour voir ce qui est en cours d'exécution
+#### URL de l'API
+URL de base de l'API
 
 ```
-docker-compose ps
+APP_URL=<URL de l'API>
 ```
 
-L'application est accessible via: http://172.20.0.3/
+Exemple:
+```
+# URL de base de l'API
+APP_URL=https://progression.crosemont.qc.ca/api/v1
+```
 
-## 3. Exécution des tests (facultatif)
-
-Lancer les tests
+#### Secret JWT
+Secret pour le chiffrement de token JWT. 
+**GARDER ABSOLUMENT PRIVÉ.**
 
 ```
-docker-compose run tests
+JWT_SECRET=<chaîne de caractères aléatoire>
+```
+
+Exemple:
+```
+# Secret JWT, À CHANGER ET GARDER PRIVÉ
+JWT_SECRET=OGlW&]K-J}hpW@9b(SuJ
+```
+
+#### Type d'authentification
+Type d'authentification requise
+
+`AUTH_LOCAL` : permet l'inscription et l'authentification locale
+`AUTH_LDAP` : permet l'authentification à partir d'un annuaire LDAP
+
+Si aucune des deux formes d'authentification n'est exigée, l'inscription se fait sans mot de passe.
+
+Exemple:
+```
+# Authentification locale permise ou via LDAP
+AUTH_LOCAL=true
+AUTH_LDAP=true
+```
+
+#### Exécuteur compilebox
+L'URL de l'exécuteur Compilebox. Nécessaire pour effectuer les compilations et exécution de programmes.
+
+Exemple:
+```
+# URL de l'exécuteur Compilebox
+COMPILEBOX_URL=http://progression.dti.crosemont.quebec:12380/compile
+```
+
+### Démarrer l'application
+
+Démarrage des conteneurs `api` et `db`
+
+```
+docker-compose up -d api
+```
+
+L'application est accessible via à l'adresse <APP_URL>
+
+```
+$ source .env
+$ curl $APP_URL/
+Progression 2.3.5(caef26)
 ```

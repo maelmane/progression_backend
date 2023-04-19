@@ -31,7 +31,9 @@ class UserTransformer extends BaseTransformer
 	{
 		$data = [
 			"id" => $user->id,
+			"courriel" => $user->courriel,
 			"username" => $user->username,
+			"état" => $user->état,
 			"rôle" => $user->rôle,
 			"préférences" => $user->préférences,
 			"links" => (isset($user->links) ? $user->links : []) + [

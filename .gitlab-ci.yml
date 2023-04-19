@@ -46,7 +46,7 @@ test_unitaires:
       optional: true
   script:
     - docker-compose pull tests
-    - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests -v $PROGRESSION_DIR/progression/phpstan.neon:/var/www/progression/phpstan.neon -v $PROGRESSION_DIR/progression/phpunit.xml:/var/www/progression/phpunit.xml -v $PROGRESSION_DIR/reports/:/var/www/progression/reports tests
+    - docker-compose run -v $PROGRESSION_DIR/reports/:/var/www/progression/reports tests
 
   artifacts:
     reports:
@@ -59,9 +59,11 @@ test_unitaires:
 # Linter
 linter:
   stage: test
-  needs: []
+  needs:
+    - job: const_image
+      optional: true
   script:
-    - docker-compose run -v $PROGRESSION_DIR/progression/app:/var/www/progression/app -v $PROGRESSION_DIR/progression/tests:/var/www/progression/tests lint
+    - docker-compose run lint
   except:
     - master
 
@@ -110,14 +112,14 @@ deploy_dev:
   needs: [test_unitaires, linter]
   environment:
     name: dev
-    url: https://progression.dti.crosemont.quebec/dev/api/v1/
+    url: $URL_DEV
     on_stop: stop_dev
   before_script:
     - *preparer_contexte
     - *login
   script:
-    - TAG_DEPLOY=dev docker-compose pull progression
-    - TAG_DEPLOY=dev docker-compose -p dev up --force-recreate -d progression
+    - TAG_DEPLOY=dev docker-compose pull api
+    - TAG_DEPLOY=dev docker-compose -p dev up --force-recreate -d api
   only:
     - dev
 
@@ -129,7 +131,9 @@ stop_dev:
   before_script:
     - *preparer_contexte
   script:
-    - docker-compose -p dev stop progression
+    - docker-compose -p dev stop api
+  only:
+    - dev
   when:
     manual
     
@@ -139,16 +143,16 @@ deploy_demo:
   needs: [tag_latest]
   environment:
     name: demo
-    url: https://progression.dti.crosemont.quebec/demo/api/v1/
+    url: $URL_DEMO
     on_stop: stop_demo
   before_script:
     - *preparer_contexte
     - *login
   script:
-    - TAG_DEPLOY=latest docker-compose pull progression
-    - TAG_DEPLOY=latest docker-compose -p demo up --force-recreate -d progression
-  only:
-    - master
+    - TAG_DEPLOY=latest docker-compose pull api
+    - TAG_DEPLOY=latest docker-compose -p demo up --force-recreate -d api
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
 
 stop_demo:
   stage: deploy_image
@@ -158,7 +162,9 @@ stop_demo:
   before_script:
     - *preparer_contexte
   script:
-    - docker-compose -p demo stop progression
+    - docker-compose -p demo stop api
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
   when:
     manual
 
@@ -168,16 +174,16 @@ deploy_staging:
   needs: [tag_latest]
   environment:
     name: staging
-    url: https://progression.dti.crosemont.quebec/staging/api/v1/
+    url: $URL_STAGING
     on_stop: stop_staging
   before_script:
     - *preparer_contexte
     - *login
   script:
-    - TAG_DEPLOY=latest docker-compose pull progression
-    - TAG_DEPLOY=latest docker-compose -p staging up --force-recreate -d progression
-  only:
-    - master
+    - TAG_DEPLOY=latest docker-compose pull api
+    - TAG_DEPLOY=latest docker-compose -p staging up --force-recreate -d api
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
 
 stop_staging:
   stage: deploy_image
@@ -187,7 +193,9 @@ stop_staging:
   before_script:
     - *preparer_contexte
   script:
-    - docker-compose -p staging stop progression
+    - docker-compose -p staging stop api
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
   when:
     manual
 
@@ -203,12 +211,12 @@ deploy_dti:
     - *preparer_contexte
     - *login
   script:
-    - TAG_DEPLOY=latest docker-compose pull progression
-    - TAG_DEPLOY=latest docker-compose -p prod up --force-recreate -d progression
+    - TAG_DEPLOY=latest docker-compose pull api
+    - TAG_DEPLOY=latest docker-compose -p prod up --force-recreate -d api
   when:
     manual
-  only:
-    - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
 
 stop_dti:
   stage: deploy_image
@@ -218,7 +226,9 @@ stop_dti:
   before_script:
     - *preparer_contexte
   script:
-    - docker-compose -p prod stop progression
+    - docker-compose -p prod stop api db redis
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
   when:
     manual
 
@@ -238,12 +248,12 @@ deploy_crosemont:
     - *preparer_contexte
     - *login
   script:
-    - TAG_DEPLOY=latest docker-compose pull progression
-    - TAG_DEPLOY=latest docker-compose -p prod up --force-recreate -d progression
+    - TAG_DEPLOY=latest docker-compose pull api
+    - TAG_DEPLOY=latest docker-compose -p prod up --force-recreate -d api
   when:
     manual
-  only:
-    - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
 
 stop_crosemont:
   stage: deploy_image
@@ -257,7 +267,9 @@ stop_crosemont:
     - export CD_HOST=progression.crosemont.qc.ca CD_PORT=22 CD_USER=updater
     - *preparer_contexte
   script:
-    - docker-compose -p prod stop progression db redis
+    - docker-compose -p prod stop api db redis
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
   when:
     manual
     
@@ -269,13 +281,13 @@ pages_dev:
   stage: build_doc
   needs: [deploy_dev]
   variables:
-    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/dev/api/v1
+    PROGRESSION_API_URL: $URL_DEV
   script:
   - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
   - mkdir -p public/dev && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/dev/
   - "! grep -c nil public/dev/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
-  only:
-    - dev
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "dev" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
   artifacts:
     paths:
     - public
@@ -287,9 +299,9 @@ pages_master:
     - job: deploy_staging
       optional: true
   variables:
-    PROGRESSION_API_URL: https://progression.dti.crosemont.quebec/staging/api/v1
+    PROGRESSION_API_URL: $URL_STAGING
   script:
-  - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/progression/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
+  - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/$CI_PROJECT_NAMESPACE/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
   - mkdir public && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/
   - "! grep -c nil public/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
   only:

@@ -47,6 +47,8 @@ class UserDAO extends EntitéDAO
 		try {
 			$objet = [
 				"username" => $user->username,
+				"courriel" => $user->courriel,
+				"etat" => $user->état,
 				"role" => $user->rôle,
 				"preferences" => $user->préférences,
 			];
@@ -87,6 +89,8 @@ class UserDAO extends EntitéDAO
 		foreach ($data as $user) {
 			$users[] = new User(
 				$user["username"],
+				$user["courriel"],
+				$user["etat"],
 				$user["role"],
 				in_array("avancements", $includes)
 					? AvancementDAO::construire($user["avancements"], parent::filtrer_niveaux($includes, "avancements"))
