@@ -23,7 +23,7 @@
 	  </include>
       <report>
         <cobertura 
-        outputFile="reports/coverage.xml"/>
+        outputFile="reports/cobertura-coverage.xml"/>
         <html outputDirectory="phpunit-html"/>
       </report>      
 	</coverage>
