@@ -141,7 +141,7 @@ final class UserDAOTests extends TestCase
 		$avancement1 = new Avancement([], "Un titre", "facile");
 		$avancement2 = new Avancement([], "Un titre 2", "facile");
 
-		$réponse_attendue = new User("bob", User::ROLE_ADMIN);
+		$réponse_attendue = new User("bob", rôle: User::ROLE_ADMIN);
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [];
 

@@ -17,7 +17,7 @@ RUN pip3 install beautysh
 
 # beautifier JS et TS
 RUN apt install -y npm
-RUN npm --global install standard typescript ts-standard
+RUN npm --global install prettier @prettier/plugin-php standard typescript ts-standard
 RUN touch /tmp/tsconfig.eslint.json
 
 # ktlint beautifier kotlin
@@ -54,11 +54,11 @@ RUN mkdir -p /var/www/progression/
 
 WORKDIR /var/www/
 
+COPY --chown=www-data:www-data progression progression/
 COPY --from=composer --chown=www-data:www-data /var/www/vendor/ progression/vendor/
+
 RUN mkdir -p progression/app/storage
 RUN chown www-data:www-data progression/ progression/app/storage
-
-COPY --chown=www-data:www-data progression progression/
 
 RUN chmod +x progression/app/entrypoint.sh
 CMD [ "bash", "progression/app/entrypoint.sh" ]

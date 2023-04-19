@@ -23,28 +23,36 @@ use progression\domaine\entité\User;
 
 class InscriptionInt extends Interacteur
 {
-	function effectuer_inscription($username, $password = null, $role = User::ROLE_NORMAL)
-	{
+	function effectuer_inscription(
+		$username,
+		string|null $courriel = null,
+		$password = null,
+		int $rôle = User::ROLE_NORMAL
+	) {
+		if (!$username) {
+			return null;
+		}
+
 		$dao = $this->source_dao->get_user_dao();
 
 		$auth_local = getenv("AUTH_LOCAL") === "true";
 		$auth_ldap = getenv("AUTH_LDAP") === "true";
 
 		if ($auth_local) {
-			return $this->effectuer_inscription_avec_mdp($username, $password, $role);
+			if (!$password || !$courriel) {
+				return null;
+			} else {
+				return $this->effectuer_inscription_avec_mdp($username, $courriel, $password, $rôle);
+			}
 		} elseif ($auth_ldap) {
 			return null;
 		} else {
-			return $this->effectuer_inscription_sans_mdp($username, $role);
+			return $this->effectuer_inscription_sans_mdp($username, $rôle);
 		}
 	}
 
-	private function effectuer_inscription_avec_mdp($username, $password, $role)
+	private function effectuer_inscription_avec_mdp($username, string $courriel, $password, int $rôle)
 	{
-		if (!$username || !$password) {
-			return null;
-		}
-
 		$dao = $this->source_dao->get_user_dao();
 
 		$user = $dao->get_user($username);
@@ -53,15 +61,23 @@ class InscriptionInt extends Interacteur
 			return null;
 		}
 
-		$user = $dao->save(new User($username, $role));
+		$user = $dao->save(
+			new User(
+				$username,
+				$courriel,
+				rôle: $rôle,
+				état: $rôle == User::ROLE_ADMIN ? User::ÉTAT_ACTIF : User::ÉTAT_INACTIF,
+			),
+		);
 		$dao->set_password($user, $password);
 
 		return $user;
 	}
 
-	private function effectuer_inscription_sans_mdp($username, $role)
+	private function effectuer_inscription_sans_mdp($username, int $rôle)
 	{
 		$dao = $this->source_dao->get_user_dao();
-		return $dao->get_user($username) ?? $dao->save(new User($username, $role));
+		return $dao->get_user($username) ??
+			$dao->save(new User($username, courriel: null, rôle: $rôle, état: User::ÉTAT_ACTIF));
 	}
 }

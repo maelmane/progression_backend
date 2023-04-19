@@ -53,10 +53,11 @@ class InscriptionCtl extends Contrôleur
 		Log::debug("InscriptionCtl.effectuer_inscription. Params : ", [$request]);
 
 		$username = $request->input("username");
+		$courriel = $request->input("courriel");
 		$password = $request->input("password");
 
 		$inscriptionInt = new InscriptionInt();
-		$user = $inscriptionInt->effectuer_inscription($username, $password);
+		$user = $inscriptionInt->effectuer_inscription($username, $courriel, $password);
 
 		$réponse = $this->valider_et_préparer_réponse($user, $request);
 
@@ -105,9 +106,14 @@ class InscriptionCtl extends Contrôleur
 			],
 			[
 				"username.unique" => "Err: 1001. Le nom d'utilisateur existe déjà.",
+				"courriel.unique" => "Err: 1001. Le courriel existe déjà.",
+				"courriel.email" => "Err: 1003. Le champ courriel doit être un courriel valide.",
 				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
 			],
 		)
+			->sometimes("courriel", "required|email|unique:progression\dao\models\UserMdl,courriel", function ($input) {
+				return getenv("AUTH_LOCAL") === "true";
+			})
 			->sometimes("password", "required", function ($input) {
 				return getenv("AUTH_LOCAL") === "true";
 			})

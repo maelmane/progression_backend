@@ -32,11 +32,11 @@ final class LoginIntTests extends TestCase
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->allows()
-			->get_user("bob")
+			->get_user("bob", Mockery::Any())
 			->andReturn(new User("bob"));
 		$mockUserDAO
 			->allows()
-			->get_user("bob", Mockery::Any())
+			->get_user("bob")
 			->andReturn(new User("bob"));
 		$mockUserDAO->shouldReceive("get_user")->andReturn(null);
 		$mockUserDAO
@@ -64,7 +64,7 @@ final class LoginIntTests extends TestCase
 			->andReturn(true);
 		$mockCléDAO
 			->shouldReceive("get_clé")
-			->with("bob", "clé expirée")
+			->with("bob", "cle_expiree")
 			->andReturn(
 				new Clé(
 					"secret",
@@ -222,7 +222,7 @@ final class LoginIntTests extends TestCase
 	public function test_étant_donné_lutilisateur_existant_bob_lorsquon_login_avec_une_clé_d_authentification_expirée_on_obtient_null()
 	{
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "clé expirée", "secret");
+		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "cle_expiree", "secret");
 
 		$this->assertNull($résultat_obtenu);
 	}

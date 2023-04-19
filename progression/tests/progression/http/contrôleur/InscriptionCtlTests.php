@@ -43,15 +43,15 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 			->andReturn(new User("bob"));
 		$mockUserDAO
 			->shouldReceive("get_user")
-			->with("BOB")
-			->andReturn(new User("bob"));
-		$mockUserDAO
-			->shouldReceive("get_user")
 			->with("Marcel")
 			->andReturn(null);
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("Marcel2")
+			->andReturn(null);
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("johnny")
 			->andReturn(null);
 
 		// DAOFactory
@@ -100,9 +100,9 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "Marcel" && $user->rôle == User::ROLE_NORMAL;
+				return $user->username == "Marcel";
 			})
-			->andReturn(new User("Marcel"));
+			->andReturnArg(0);
 
 		$résultat_observé = $this->call("POST", "/inscription", ["username" => "Marcel"]);
 
@@ -111,11 +111,15 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	}
 
 	# AUTH_LOCAL = true
-	public function test_étant_donné_un_utilisateur_existant_avec_authentification_lorsquon_linscrit_de_nouveau_on_obtient_une_erreur_403()
+	public function test_étant_donné_un_utilisateur_existant_avec_authentification_lorsquon_linscrit_de_nouveau_avec_un_username_existant_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
 
-		$résultat_observé = $this->call("POST", "/inscription", ["username" => "bob", "password" => "test"]);
+		$résultat_observé = $this->call("POST", "/inscription", [
+			"username" => "bob",
+			"courriel" => "bob@gmail.com",
+			"password" => "test",
+		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
@@ -124,11 +128,32 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 		);
 	}
 
+	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_linscrit_avec_un_courriel_existant_on_obtient_une_erreur_400()
+	{
+		putenv("AUTH_LOCAL=true");
+
+		$résultat_observé = $this->call("POST", "/inscription", [
+			"username" => "johnny",
+			"courriel" => "jane@gmail.com",
+			"password" => "test",
+		]);
+
+		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertEquals(
+			'{"erreur":{"courriel":["Err: 1001. Le courriel existe déjà."]}}',
+			$résultat_observé->getContent(),
+		);
+	}
+
 	public function test_étant_donné_un_utilisateur_existant_avec_authentification_lorsquon_linscrit_de_nouveau_avec_une_casse_différente_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
 
-		$résultat_observé = $this->call("POST", "/inscription", ["username" => "BOB", "password" => "test"]);
+		$résultat_observé = $this->call("POST", "/inscription", [
+			"username" => "BOB",
+			"courriel" => "bob@gmail.com",
+			"password" => "test",
+		]);
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
 			'{"erreur":{"username":["Err: 1001. Le nom d\'utilisateur existe déjà."]}}',
@@ -140,23 +165,25 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=true");
 
-		$marcel = new User("Marcel2");
-
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDAO
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "Marcel2" && $user->rôle == User::ROLE_NORMAL;
+				return $user->username == "Marcel2";
 			})
-			->andReturn($marcel)
+			->andReturnArg(0)
 			->shouldReceive("set_password")
 			->once()
 			->withArgs(function ($user) {
 				return $user->username == "Marcel2";
 			}, "password");
 
-		$résultat_observé = $this->call("POST", "/inscription", ["username" => "Marcel2", "password" => "test"]);
+		$résultat_observé = $this->call("POST", "/inscription", [
+			"username" => "Marcel2",
+			"courriel" => "marcel2@gmail.com",
+			"password" => "test",
+		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
@@ -167,7 +194,11 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_une_authentificaton_locale_lorsquon_inscrit_un_nom_dutilisateur_vide_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
-		$résultat_observé = $this->call("POST", "/inscription", ["username" => "", "password" => "test"]);
+		$résultat_observé = $this->call("POST", "/inscription", [
+			"username" => "",
+			"courriel" => "vide@gmail.com",
+			"password" => "test",
+		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}
@@ -183,7 +214,7 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_une_authentificaton_locale_lorsquon_inscrit_sans_nom_dutlisateur_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
-		$résultat_observé = $this->call("POST", "/inscription", ["password" => "test"]);
+		$résultat_observé = $this->call("POST", "/inscription", ["courriel" => "test@gmail.com", "password" => "test"]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}
@@ -192,12 +223,28 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=true");
 
-		$résultat_observé = $this->call("POST", "/inscription", ["username" => "Marcel"]);
+		$résultat_observé = $this->call("POST", "/inscription", [
+			"username" => "Marcel",
+			"courriel" => "marcel@gmail.com",
+		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}
 
 	public function test_étant_donné_une_authentification_locale_lorsquon_inscrit_avec_mot_de_passe_vide_on_obtient_une_erreur_400()
+	{
+		putenv("AUTH_LOCAL=true");
+
+		$résultat_observé = $this->call("POST", "/inscription", [
+			"username" => "Marcel",
+			"courriel" => "marcel@gmail.com",
+			"password" => "",
+		]);
+
+		$this->assertEquals(400, $résultat_observé->status());
+	}
+
+	public function test_étant_donné_une_authentification_locale_lorsquon_inscrit_sans_courriel_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
 

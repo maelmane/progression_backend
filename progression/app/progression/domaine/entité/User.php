@@ -23,7 +23,12 @@ class User
 	const ROLE_NORMAL = 0;
 	const ROLE_ADMIN = 1;
 
+	const ÉTAT_INACTIF = 0;
+	const ÉTAT_ACTIF = 1;
+
 	public $username;
+	public string|null $courriel;
+	public int $état;
 	public $rôle = User::ROLE_NORMAL;
 	public $avancements;
 	public $clés;
@@ -31,12 +36,16 @@ class User
 
 	public function __construct(
 		$username,
+		string|null $courriel = null,
+		int $état = User::ÉTAT_INACTIF,
 		$rôle = User::ROLE_NORMAL,
 		$avancements = [],
 		$clés = [],
 		string $préférences = ""
 	) {
 		$this->username = $username;
+		$this->courriel = $courriel;
+		$this->état = $état;
 		$this->rôle = $rôle;
 		$this->avancements = $avancements;
 		$this->clés = $clés;
