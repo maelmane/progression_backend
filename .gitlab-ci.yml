@@ -52,7 +52,7 @@ test_unitaires:
     reports:
       coverage_report:
         coverage_format: cobertura
-        path: $PROGRESSION_DIR/reports/coverage.xml
+        path: $PROGRESSION_DIR/reports/cobertura-coverage.xml
   except:
     - master
 
