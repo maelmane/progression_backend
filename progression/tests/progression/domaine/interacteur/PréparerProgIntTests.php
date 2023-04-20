@@ -210,6 +210,54 @@ final class PréparerProgIntTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
+	public function test_étant_donné_une_questionprog_à_un_todo_en_début_de_ligne_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_code_utilisateur_dans_le_todo()
+	{
+		$résultat_attendu = new Exécutable(
+			"\nallo = \"Ceci est un test de TODO en début de ligne \"\nprint( allo )\n",
+			"python",
+		);
+
+		$question = new QuestionProg();
+		$question->exécutables["python"] = new Exécutable(
+			"\n+TODOnom_de_variable-TODO = \"Ceci est un test de TODO en début de ligne \"\nprint( allo )\n",
+			"python",
+		);
+
+		$tentative = new TentativeProg(
+			"python",
+			"\n+TODOallo-TODO = \"Ceci est un test de TODO en début de ligne \"\nprint( allo )\n",
+		);
+
+		$interacteur = new PréparerProgInt();
+		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
+	public function test_étant_donné_une_questionprog_à_un_todo_en_début_de_code_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_code_utilisateur_dans_le_todo()
+	{
+		$résultat_attendu = new Exécutable(
+			"allo = \"Ceci est un test de TODO en début de code\"\nprint( allo )\n",
+			"python",
+		);
+
+		$question = new QuestionProg();
+		$question->exécutables["python"] = new Exécutable(
+			"+TODOnom_de_variable-TODO = \"Ceci est un test de TODO en début de code\"\nprint( allo )\n",
+			"python",
+		);
+
+		$tentative = new TentativeProg(
+			"python",
+			"+TODOallo-TODO = \"Ceci est un test de TODO en début de code\"\nprint( allo )\n",
+		);
+
+		$interacteur = new PréparerProgInt();
+		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
 	public function test_étant_donné_une_questionprog_à_deux_todos_et_une_tentative_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_seulement_code_utilisateur_entre_todos()
 	{
 		$résultat_attendu = new Exécutable(
