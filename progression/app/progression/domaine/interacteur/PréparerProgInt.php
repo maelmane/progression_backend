@@ -66,7 +66,10 @@ class PréparerProgInt
 		//on considère que l'ébauche commence avec une zone éditable
 		$premier_plus_todo = strpos($code, "+TODO");
 		$premier_moins_todo = strpos($code, "-TODO");
-		if (!$premier_plus_todo || ($premier_moins_todo && $premier_plus_todo > $premier_moins_todo)) {
+		if (
+			$premier_plus_todo === false ||
+			($premier_moins_todo !== false && $premier_plus_todo > $premier_moins_todo)
+		) {
 			return "#+TODO\n" . $code;
 		} else {
 			return "#\n" . $code;
@@ -86,25 +89,26 @@ class PréparerProgInt
 			$posMoinsTodo = strpos($ligne, "-TODO");
 			$posPlusTodo = strpos($ligne, "+TODO");
 
-			if ($todoStatut && $posMoinsTodo) {
+			if ($todoStatut && $posMoinsTodo !== false) {
 				// Concatène la fin de la ligne suivant le -TODO
 				$codeExécutable[array_key_last($codeExécutable)] .= substr($ligne, $posMoinsTodo + 5);
 				$todoStatut = false;
 			}
 
-			if (!$todoStatut && !$posPlusTodo && !$posMoinsTodo) {
+			if (!$todoStatut && $posPlusTodo === false && $posMoinsTodo === false) {
 				// Hors zone TODO, on ajoute la ligne telle quelle
 				$codeExécutable[] = $ligne;
 			}
 
-			if (!$todoStatut && $posPlusTodo && !$posMoinsTodo) {
+			if (!$todoStatut && $posPlusTodo !== false && $posMoinsTodo === false) {
 				// Début d'un TODO, on ne garde que le début de la ligne avant le +TODO
 				// et on ajoute le code utilisateur
+
 				$codeExécutable[] = substr($ligne, 0, $posPlusTodo) . $todos_utilisateur[1][$todoIndex++];
 				$todoStatut = true;
 			}
 
-			if (!$todoStatut && $posPlusTodo && $posMoinsTodo) {
+			if (!$todoStatut && $posPlusTodo !== false && $posMoinsTodo !== false) {
 				// TODOS en ligne, on enlève les balises et on ajoute le code utilisateur
 				$codeExécutable[] =
 					substr($ligne, 0, $posPlusTodo) .
