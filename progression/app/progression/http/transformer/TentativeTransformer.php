@@ -64,10 +64,6 @@ class TentativeTransformer extends BaseTransformer
 	{
 		$id_parent = "{$this->id}/{$tentative->id}";
 
-		foreach ($tentative->résultats as $i => $résultat) {
-			$résultat->links = ["tentative" => "{$_ENV["APP_URL"]}tentative/{$id_parent}"];
-		}
-
 		return $this->collection($tentative->résultats, new RésultatTransformer($id_parent), "resultat");
 	}
 }

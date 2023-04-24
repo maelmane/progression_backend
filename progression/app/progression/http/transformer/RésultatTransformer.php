@@ -27,15 +27,14 @@ class RésultatTransformer extends BaseTransformer
 	public function transform(Résultat $réponse)
 	{
 		$data = [
-			"id" => "{$this->id}/{$réponse->id}",
+			"id" => $réponse->id,
 			"sortie_observée" => $réponse->sortie_observée,
 			"sortie_erreur" => $réponse->sortie_erreur,
 			"résultat" => $réponse->résultat,
 			"feedback" => $réponse->feedback,
 			"temps_exec" => $réponse->temps_exécution,
 			"links" => (isset($réponse->links) ? $réponse->links : []) + [
-				"tentative" => "{$_ENV["APP_URL"]}tentative/{$this->id}",
-				"self" => "{$_ENV["APP_URL"]}resultat/{$this->id}/{$réponse->id}",
+				"self" => "{$_ENV["APP_URL"]}resultat/$réponse->id",
 			],
 		];
 

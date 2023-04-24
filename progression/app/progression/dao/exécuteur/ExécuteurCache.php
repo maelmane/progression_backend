@@ -35,42 +35,69 @@ class ExécuteurCache extends Exécuteur
 	public function exécuter_prog($exécutable, $tests)
 	{
 		$code_standardisé = $this->standardiser_code($exécutable->code, $exécutable->lang) ?? $exécutable->code;
-		$entrées = "";
-		$params = "";
+		$réponse = [];
+		$réponse["résultats"] = [];
+		$tests_à_exécuter = [];
 		foreach ($tests as $test) {
-			$entrées .= $test->entrée;
-			$params .= $test->params;
+			$entrée = $test->entrée;
+			$params = $test->params;
+
+			$hash = $this->calculer_hash($code_standardisé, $exécutable->lang, $entrée, $params);
+			Log::debug("Hash: $hash");
+
+			$résultats = null;
+			try {
+				$résultats = $this->obtenir_de_la_cache($hash);
+			} catch (\Throwable $e) {
+				Log::error("Cache non disponible");
+				Log::error($e->getMessage());
+			}
+
+			if ($résultats !== false) {
+				$réponse["résultats"][$hash] = $résultats;
+			} else {
+				$tests_à_exécuter[$hash] = $test;
+				$réponse["résultats"][$hash] = null;
+			}
 		}
 
-		$hash = $this->calculer_hash($code_standardisé, $exécutable->lang, $entrées, $params);
-		Log::debug("Hash: $hash");
-
-		$résultats = null;
-		try {
-			$résultats = $this->obtenir_de_la_cache($hash);
-		} catch (\Throwable $e) {
-			Log::error("Cache non disponible");
-			Log::error($e->getMessage());
+		if (count($tests_à_exécuter) == 0) {
+			$réponse["temps_exécution"] = 0;
+		} else {
+			$résultats_exécution = $this->exécuter_tests($exécutable, $tests_à_exécuter);
+			foreach ($résultats_exécution["résultats"] as $hash => $résultat) {
+				$réponse["résultats"][$hash] = $résultat;
+			}
+			$réponse["temps_exécution"] = $résultats_exécution["temps_exécution"];
 		}
 
-		if (!$résultats) {
-			$réponse = $this->_exécuteur->exécuter_prog($exécutable, $tests);
+		return $réponse;
+	}
 
-			$résultats = $réponse["résultats"];
-			if (!$this->contient_des_erreurs($résultats)) {
+	private function exécuter_tests($exécutable, $tests)
+	{
+		$exécution = $this->_exécuteur->exécuter_prog($exécutable, $tests);
+
+		$réponses = $exécution["résultats"];
+
+		$résultats["temps_exécution"] = $exécution["temps_exécution"];
+		$résultats["résultats"] = [];
+		foreach ($réponses as $réponse) {
+			$hash = key($tests);
+			$résultats["résultats"][$hash] = $réponse;
+			if (!$this->contient_des_erreurs($réponse)) {
 				try {
-					$this->placer_sortie_en_cache($hash, $résultats);
+					$this->placer_sortie_en_cache($hash, $réponse);
 				} catch (\Throwable $e) {
 					Log::error("Cache non disponible");
 					Log::error($e->getMessage());
 				}
 			}
-		} else {
-			$réponse["résultats"] = $résultats;
-			$réponse["temps_exec"] = 0;
+
+			next($tests);
 		}
 
-		return $réponse;
+		return $résultats;
 	}
 
 	private function calculer_hash($code, $lang, $entrée, $params)
@@ -87,7 +114,7 @@ class ExécuteurCache extends Exécuteur
 	{
 		if (!Cache::has($hash)) {
 			Log::debug("Cache : Miss");
-			return null;
+			return false;
 		}
 
 		Log::debug("Cache : Hit");
@@ -101,11 +128,6 @@ class ExécuteurCache extends Exécuteur
 
 	private function contient_des_erreurs($résultat)
 	{
-		foreach ($résultat as $res) {
-			if ($res["errors"]) {
-				return true;
-			}
-		}
-		return false;
+		return $résultat["errors"];
 	}
 }

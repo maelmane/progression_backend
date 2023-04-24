@@ -25,7 +25,7 @@
 				"data": [
 					{
 						"type": "resultat",
-						"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d/0"
+						"id": "0"
 					}
 				]
 			},
@@ -40,7 +40,7 @@
 	"included": [
 		{
 			"type": "resultat",
-			"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d/0",
+			"id": "0",
 			"attributes": {
 				"sortie_observée": "Allo\nAllo\n",
 				"sortie_erreur": "",
@@ -49,8 +49,7 @@
 				"temps_exec": 30
 			},
 			"links": {
-				"self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d/0",
-				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/%1$d"
+				"self": "https://example.com/resultat/0"
 			}
 		}
 	]

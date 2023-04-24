@@ -25,7 +25,7 @@
         "data": [
           {
             "type": "resultat",
-            "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490/0"
+            "id": "0"
           }
         ]
       },
@@ -46,7 +46,7 @@
   "included": [
     {
       "type": "resultat",
-      "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490/0",
+      "id": "0",
       "attributes": {
         "sortie_observée": "ok",
         "sortie_erreur": "",
@@ -55,8 +55,7 @@
         "temps_exec": null
       },
       "links": {
-        "self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490/0",
-        "tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490"
+        "self": "https://example.com/resultat/0"
       }
     },
     {

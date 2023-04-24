@@ -31,24 +31,18 @@ final class RésultatTransformerTests extends TestCase
 		$résultat->id = "0";
 
 		$réponse_attendue = [
-			"id" =>
-				"bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
+			"id" => "0",
 			"sortie_observée" => "Bonjour\nBonjour\n",
 			"sortie_erreur" => "",
 			"résultat" => true,
 			"feedback" => "Bon travail!",
 			"temps_exec" => 15,
 			"links" => [
-				"tentative" =>
-					"https://example.com/tentative/bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
-				"self" =>
-					"https://example.com/resultat/bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490/0",
+				"self" => "https://example.com/resultat/0",
 			],
 		];
 
-		$résultatProgTransformer = new RésultatTransformer(
-			"bob/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614374490",
-		);
+		$résultatProgTransformer = new RésultatTransformer();
 		$résponse_observée = $résultatProgTransformer->transform($résultat);
 
 		$this->assertEquals($réponse_attendue, $résponse_observée);
