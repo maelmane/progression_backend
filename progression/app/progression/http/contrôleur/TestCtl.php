@@ -82,7 +82,7 @@ class TestCtl extends Contrôleur
 			$test = $question->tests[$numero];
 			$test->id = $numero;
 			$test->links = [
-				"related" => $_ENV["APP_URL"] . "question/" . $question_uri,
+				"question" => $_ENV["APP_URL"] . "question/" . $question_uri,
 			];
 		}
 

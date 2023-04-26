@@ -48,12 +48,16 @@ class ExécuteurCompilebox extends Exécuteur
 			$tests_out[] = ["stdin" => $test->entrée ?? "", "params" => $test->params ?? ""];
 		}
 
+		$langage = array_key_exists($exécutable->lang, self::langages)
+			? self::langages[$exécutable->lang]
+			: ($langage = $exécutable->lang);
+
 		$data_rc = [
-			"language" => self::langages[$exécutable->lang],
+			"language" => $langage,
 			"code" => $exécutable->code,
 			"parameters" => "",
 			"tests" => $tests_out,
-			"vm_name" => "remotecompiler",
+			"vm_name" => $_ENV["COMPILEBOX_IMAGE_EXECUTEUR"],
 		];
 
 		return $this->envoyer_requête($data_rc);
@@ -93,7 +97,15 @@ class ExécuteurCompilebox extends Exécuteur
 			$comp_resp = file_get_contents($_ENV["COMPILEBOX_URL"], false, $context);
 			return $comp_resp ? json_decode(str_replace("\r", "", $comp_resp), true) : false;
 		} catch (\ErrorException $e) {
-			throw new ExécutionException("Compilebox non disponible", 503, $e);
+			if (isset($http_response_header)) {
+				if ($http_response_header[0] == "HTTP/1.1 400 Bad Request") {
+					throw new ExécutionException("Requête intraitable par Compilebox", 400, $e);
+				} else {
+					throw new ExécutionException($e->getMessage(), $e->getCode(), $e);
+				}
+			} else {
+				throw new ExécutionException("Compilebox non disponible", 503, $e);
+			}
 		}
 	}
 }

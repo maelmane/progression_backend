@@ -1,32 +1,39 @@
 version: "3.9"
+
 services:
   db:
     image: mariadb
     container_name: progression_db_$CI_ENVIRONMENT_SLUG
-    env_file: $ENV_FILE
+    env_file: ${ENV_FILE:-.env}
     volumes:
-      - /var/lib/mysql
-    #  - "./progression_backend/progression/db/:/docker-entrypoint-initdb.d/"
+      - data:/var/lib/mysql
     restart: always
     healthcheck:
       test: 'mysql -u root -p$$DB_PASSWORD --silent --execute "SELECT 1;" > /tmp/test 2>&1'
       interval: 10s
       timeout: 20s
       retries: 10
+    networks:
+      - progression_net
 
   redis:
     image: redis:latest
     container_name: progression_redis_$CI_ENVIRONMENT_SLUG
     volumes:
-      - /data
+      - cache:/data
     restart: always
+    networks:
+      - progression_net
 
-  progression:
-    image: git.dti.crosemont.quebec:5050/progression/progression_backend:$TAG_DEPLOY
-    build: progression
-    container_name: progression_$CI_ENVIRONMENT_SLUG
-    env_file: 
-      - $ENV_FILE
+  api:
+    image: $CI_REGISTRY/$CI_PROJECT_PATH:$TAG_DEPLOY
+    build:
+      dockerfile: docker/Dockerfile
+      target: production
+      context: .
+    container_name: progression_api_$CI_ENVIRONMENT_SLUG
+    env_file:
+      - ${ENV_FILE:-.env}
       - VERSION
     environment:
       - APP_COMMIT_SHA=$CI_COMMIT_SHORT_SHA
@@ -34,41 +41,55 @@ services:
       - 127.0.0.1:$INSTANCE_PORT:80
     #En développement, monte les source dans le conteneur
     #volumes:
-    #  - "./progression_backend/progression/app/:/var/www/progression/app/"
+    #  - "./progression/app/:/var/www/progression/app/"
     restart: always
+    networks:
+      - progression_net
     depends_on:
       - db
       - redis
 
   tests:
-    image: git.dti.crosemont.quebec:5050/progression/progression_backend:$TAG_DEPLOY
-    container_name: progression_tests_$CI_ENVIRONMENT_SLUG
+    image: $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
+    build:
+      dockerfile: docker/Dockerfile
+      target: production
+      context: .
+    #En développement, monte les source dans le conteneur
     #volumes:
-    #  - "./progression_backend/progression/app/:/var/www/progression/app/"
-    #  - "./progression_backend/progression/tests/:/var/www/progression/tests/"
-    #  - "./progression_backend/progression/db/:/var/www/progression/db/"
+    #  - "./progression_backend/progression/:/var/www/progression/"
     restart: "no"
-    env_file: $ENV_FILE    
+    env_file: ${ENV_FILE:-.env}
     command: bash /var/www/progression/tests/exec_tests.sh
+    networks:
+      - progression_net
     depends_on:
       db:
         condition: service_healthy
 
   lint:
-    # On utilise l'image progression/dev parce que prettier est un package npm que l'on ne veut pas inclure dans progression_backend
-    image: git.dti.crosemont.quebec:5050/progression/dev:latest
-    container_name: progression_lint_$CI_ENVIRONMENT_SLUG
+    image: $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
     volumes:
       - "./progression/app/:/tmp/progression/app/"
       - "./progression/tests/:/tmp/progression/tests/"
     restart: "no"
+    networks:
+      - progression_net
     command: prettier --use-tabs --print-width 120 --php-version "7.4" -c /tmp/progression/**/*.php
 
   doc:
-    image: git.dti.crosemont.quebec:5050/progression/dev:latest
-    #volumes:
-    #  - "./progression_backend/progression/:/progression/"
-    #  - "./progression_backend/doc/:/tmp/doc/"
-    #  - "./doc/:/tmp/progression/app/html/doc/"
+    image: $CI_REGISTRY/progression/publication:latest
+    volumes:
+      - "./doc/:/tmp/doc/"
+      - "./doc/:/tmp/progression/app/html/doc/"
     command: bash -c 'if which emacs; then emacs --batch --load /root/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all; else (echo "Veuillez installer les outils de production de la documentation (voir Dockerfile)" && exit); fi'
+    networks:
+      - progression_net
 
+volumes:
+  data:
+  cache:
+
+networks:
+  progression_net:
+    name: progression_net_$CI_ENVIRONMENT_SLUG

@@ -33,9 +33,9 @@ class AvancementCtl extends Contrôleur
 	{
 		Log::debug("AvancementCtl.get. Params : ", [$request->all(), $username, $question_uri]);
 
-		$avancements = $this->obtenir_avancement($username, $question_uri);
+		$avancement = $this->obtenir_avancement($username, $question_uri);
 
-		$réponse = $this->valider_et_préparer_réponse($avancements, $username, $question_uri);
+		$réponse = $this->valider_et_préparer_réponse($avancement, $username, $question_uri);
 
 		Log::debug("AvancementCtl.get. Retour : ", [$réponse]);
 		return $réponse;
@@ -50,13 +50,15 @@ class AvancementCtl extends Contrôleur
 		if ($validateur->fails()) {
 			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} else {
-			$avancement_sauvegardé = $this->sauvegarder_avancement(
-				$username,
-				$request->question_uri,
-				$this->construire_avancement($request->avancement ?? []),
-			);
+			$avancement = $this->construire_avancement($username, $request->question_uri, $request->avancement ?? []);
 
-			$réponse = $this->valider_et_préparer_réponse($avancement_sauvegardé, $username, $request->question_uri);
+			if ($request->avancement != null || $avancement->etat == 0) {
+				$avancement_retourné = $this->sauvegarder_avancement($username, $request->question_uri, $avancement);
+			} else {
+				$avancement_retourné = $avancement;
+			}
+
+			$réponse = $this->valider_et_préparer_réponse($avancement_retourné, $username, $request->question_uri);
 		}
 
 		Log::debug("AvancementCtl.post. Retour : ", [$réponse]);
@@ -86,11 +88,19 @@ class AvancementCtl extends Contrôleur
 		$validateur = Validator::make(
 			$request->all(),
 			[
-				"question_uri" => "required",
+				"question_uri" => [
+					"required",
+					function ($attribute, $value, $fail) {
+						$url = Encodage::base64_decode_url($value);
+						if (!$url || Validator::make(["question_uri" => $url], ["question_uri" => "url"])->fails()) {
+							$fail("Err: 1003. Le champ question_uri doit être un URL encodé en base64.");
+						}
+					},
+				],
 				"avancement.extra" => "string",
 			],
 			[
-				"required" => "Le champ :attribute est obligatoire.",
+				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
 			],
 		);
 
@@ -124,14 +134,16 @@ class AvancementCtl extends Contrôleur
 	}
 
 	/**
-	 * @param array<string> $avancement
+	 * @param array<string> $modifications
 	 */
-	private function construire_avancement(array $avancement): Avancement
+	private function construire_avancement(string $username, string $question_uri, array $modifications): Avancement
 	{
-		return new Avancement(
-			titre: $avancement["titre"] ?? "",
-			niveau: $avancement["niveau"] ?? "",
-			extra: $avancement["extra"] ?? null,
-		);
+		$avancementInt = new ObtenirAvancementInt();
+		$chemin = Encodage::base64_decode_url($question_uri);
+		$avancement = $avancementInt->get_avancement($username, $chemin, $this->get_includes()) ?? new Avancement();
+
+		$avancement->extra = $modifications["extra"] ?? $avancement->extra;
+
+		return $avancement;
 	}
 }

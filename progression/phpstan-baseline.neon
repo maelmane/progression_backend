@@ -3746,6 +3746,11 @@ parameters:
 			path: app/progression/http/contrôleur/UserCtl.php
 
 		-
+			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:valider_paramètres\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: app/progression/http/contrôleur/UserCtl.php
+
+		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\ÉbaucheCtl\\:\\:get\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/ÉbaucheCtl.php

@@ -217,7 +217,6 @@ Tentative
 | feedback        | str  |                                                            |
 | réussi          | bool | vrai ssi la tentative a correctement répondu à la question |
 | temps_exécution | int  | temps d'exécution en ms                                    |
-| tests_réussis   | int  | nb de tests réussis                                        |
 | sous-type       | str  | tentativeProg                                              |
 |                 |      | tentativeSys                                               |
 |                 |      | tentativeBD                                                |
@@ -238,6 +237,7 @@ Une tentative de réponse à une QuestionProg.
 |-----------------+------+-------------------------|
 | langage         | str  |                         |
 | code            | str  |                         |
+| tests_réussis   | int  | nb de tests réussis     |
 
 ** Tentative (sous-type tentativeSys)
 
@@ -249,18 +249,7 @@ Une tentative de réponse à une QuestionSys.
 |-----------------+------+-------------------------|
 | conteneur       | str  |                         |
 | réponse         | str  |                         |
-
-** Tentative (sous-type tentativeSys)
-
-Une tentative de réponse à une question.
-
-*** Propriétés:
-
-| Nom             | Type | Valeurs                 |
-|-----------------+------+-------------------------|
-| réponse         | str  |                         |
 | tests_réussis   | int  | nb de tests réussis     |
-| temps_exécution | int  | temps d'exécution en ms |
 
 *** Relations :
 
@@ -277,12 +266,13 @@ question_uri/numéro
 
 *** Propriétés :
 
-| Nom             | Type | Valeurs |
-|-----------------+------+---------|
-| nom             | str  |         |
-| sortie_attendue | str  |         |
-| feedback_pos    | str  |         |
-| feedback_neg    | str  |         |
+| Nom             | Type | Valeurs                                                      |
+|-----------------+------+--------------------------------------------------------------|
+| nom             | str  |                                                              |
+| sortie_attendue | str  | La sortie attendue, ou chaîne vide si sortie_cachée est vrai |
+| feedback_pos    | str  |                                                              |
+| feedback_neg    | str  |                                                              |
+| sortie_cachée   | bool | vrai si la sortie attendue a été remplacée par ""            |
 
 
 ** TestProg (soustype de Test)
@@ -333,11 +323,12 @@ username
 
 *** Relations :
 
-| Nom      | Type | Valeurs          |
-|----------+------+------------------|
-| username | str  |                  |
-| rôle     | int  | 0=normal,1=admin |
-|----------+------+------------------|
+| Nom         | Type | Valeurs                                  |
+|-------------+------+------------------------------------------|
+| username    | str  |                                          |
+| rôle        | int  | 0=normal,1=admin                         |
+| préférences | str  | chaîne JSON décrivant les préférences UI |
+|-------------+------+------------------------------------------|
 
 *** Relations :
 
@@ -429,6 +420,14 @@ curl "<<get_api_url()>>/auth" --data '{"username": "jdoe", "password": "Crosemon
 #+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
 curl "<<get_api_url()>>/user/jdoe" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
+
+** Mettre à jour les préférences de ~jdoe~
+
+#+begin_src bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
+DATA='{"préférences": "{\"thème\": \"sombre\"}"}'
+
+curl "<<get_api_url()>>/user/jdoe" --data $DATA -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN"
+#+end_src
 
 ** Obtenir la question «Les fonctions avec paramètres/Rectangle» et ses tests: 
 
@@ -575,7 +574,8 @@ curl --data "$DATA" "<<get_api_url()>>/user/jdoe/cles" -H "Content-Type: applica
 DATA=$(cat <<EOF
 {
   "nom":"cléAuth$(head -c 9 /dev/urandom|base64|tr '/+' '_-')",
-  "portée":1
+  "portée":1,
+  "expiration": $(( $(date +%s) + 60 ))
 }
 EOF
 )

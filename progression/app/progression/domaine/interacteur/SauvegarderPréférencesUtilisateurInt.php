@@ -18,18 +18,22 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Avancement;
+use progression\domaine\entité\User;
+use progression\dao\DAOFactory;
 
-class ObtenirAvancementInt extends Interacteur
+class SauvegarderPréférencesUtilisateurInt extends Interacteur
 {
-	/**
-	 * @param mixed $includes
-	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
-	 */
-	function get_avancement($username, $question_uri, mixed $includes = [])
+	public function sauvegarder_préférences(string $username, string $préférences): User|null
 	{
-		$avancement = $this->source_dao->get_avancement_dao()->get_avancement($username, $question_uri, $includes);
+		$user_dao = $this->source_dao->get_user_dao();
 
-		return $avancement;
+		$user_existant = $user_dao->get_user($username, []);
+		if (!$user_existant) {
+			return null;
+		}
+
+		$user_existant->préférences = $préférences;
+
+		return $this->source_dao->get_user_dao()->save($user_existant);
 	}
 }

@@ -19,7 +19,7 @@
 namespace progression\http\transformer;
 
 use League\Fractal\TransformerAbstract;
-use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\{Collection, Item};
 
 class BaseTransformer extends TransformerAbstract
 {

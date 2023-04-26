@@ -80,7 +80,7 @@ final class ObtenirAvancementIntTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
-	public function test_étant_donné_un_user_existant_et_une_question_uri_inexistante_lorsquon_cherche_par_username_et_question_uri_on_obtient_un_nouvel_avancement_non_sauvegardé()
+	public function test_étant_donné_un_user_existant_et_une_question_uri_inexistante_lorsquon_cherche_par_username_et_question_uri_on_obtient_null()
 	{
 		$interacteur = new ObtenirAvancementInt();
 		$résultat_obtenu = $interacteur->get_avancement(
@@ -88,9 +88,6 @@ final class ObtenirAvancementIntTests extends TestCase
 			"prog1/les_fonctions_01/appeler_une_fonction_paramétrée_difficile",
 		);
 
-		$résultat_attendu = new Avancement(titre: "Une question difficile", niveau: "difficile");
-		$résultat_attendu->etat = 0;
-
-		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+		$this->assertNull($résultat_obtenu);
 	}
 }

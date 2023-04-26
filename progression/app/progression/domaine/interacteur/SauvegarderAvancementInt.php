@@ -18,14 +18,14 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Avancement, Question, QuestionProg, QuestionSys, Tentative, User};
+use progression\domaine\entité\{Avancement, Question, Tentative, User};
 
 class SauvegarderAvancementInt extends Interacteur
 {
 	public function sauvegarder(
 		string $username,
 		string $question_uri,
-		Avancement $nouvel_avancement,
+		Avancement $avancement,
 		Question $question = null
 	): Avancement|null {
 		$question = $question ?? $this->source_dao->get_question_dao()->get_question($question_uri);
@@ -34,40 +34,10 @@ class SauvegarderAvancementInt extends Interacteur
 			return null;
 		}
 
-		$nouvel_avancement->titre = $question->titre ?? "";
-		$nouvel_avancement->niveau = $question->niveau ?? "";
+		$avancement->titre = $question->titre;
+		$avancement->niveau = $question->niveau;
 
 		$dao_avancement = $this->source_dao->get_avancement_dao();
-		return $dao_avancement->save($username, $question_uri, $nouvel_avancement);
-	}
-
-	public function récupérer_avancement(string $username, string $question_uri, Tentative $tentative): Avancement
-	{
-		$dao_avancement = $this->source_dao->get_avancement_dao();
-		$avancement = $dao_avancement->get_avancement($username, $question_uri);
-
-		if ($avancement === null) {
-			$avancement = new Avancement();
-		}
-		$avancement->tentatives[] = $tentative;
-		return $avancement;
-	}
-
-	public function mettre_à_jour_dates_et_état(
-		Avancement $avancement,
-		int $date,
-		string $username,
-		string $question_uri
-	): void {
-		if (
-			$avancement->etat != Question::ETAT_REUSSI &&
-			$avancement->tentatives[array_key_last($avancement->tentatives)]->réussi
-		) {
-			$avancement->etat = Question::ETAT_REUSSI;
-			$avancement->date_réussite = $date;
-		}
-
-		$avancement->date_modification = $date;
-		$this->sauvegarder($username, $question_uri, $avancement);
+		return $dao_avancement->save($username, $question_uri, $avancement);
 	}
 }
