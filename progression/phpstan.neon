@@ -19,3 +19,4 @@ parameters:
     -
       message: '#^Access to an undefined property progression\\domaine\\entité\\[^\\]+::\$links.$#'
       path: app/progression/http/transformer/*Transformer.php
+    - '#^Access to private property progression\\domaine\\entité\\#'

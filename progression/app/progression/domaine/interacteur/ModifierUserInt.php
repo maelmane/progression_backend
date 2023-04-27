@@ -20,20 +20,24 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\User;
 use progression\dao\DAOFactory;
+use DomainException;
 
-class SauvegarderPréférencesUtilisateurInt extends Interacteur
+class ModifierUserInt extends Interacteur
 {
-	public function sauvegarder_préférences(string $username, string $préférences): User|null
+	public function modifier_préférences(User $user, string $préférences): User
 	{
-		$user_dao = $this->source_dao->get_user_dao();
+		$user->préférences = $préférences;
 
-		$user_existant = $user_dao->get_user($username, []);
-		if (!$user_existant) {
-			return null;
+		return $user;
+	}
+	public function modifier_état(User $user, int $état): User
+	{
+		if ($état == User::ÉTAT_ATTENTE_DE_VALIDATION) {
+			throw new DomainException("Transition d'état invalide");
 		}
 
-		$user_existant->préférences = $préférences;
+		$user->état = $état;
 
-		return $this->source_dao->get_user_dao()->save($user_existant);
+		return $user;
 	}
 }

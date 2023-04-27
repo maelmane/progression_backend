@@ -66,7 +66,7 @@ class InscriptionInt extends Interacteur
 				$username,
 				$courriel,
 				rôle: $rôle,
-				état: $rôle == User::ROLE_ADMIN ? User::ÉTAT_ACTIF : User::ÉTAT_INACTIF,
+				état: $rôle == User::ROLE_ADMIN ? User::ÉTAT_ACTIF : User::ÉTAT_ATTENTE_DE_VALIDATION,
 			),
 		);
 		$dao->set_password($user, $password);

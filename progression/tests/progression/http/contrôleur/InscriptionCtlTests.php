@@ -91,7 +91,7 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
 	}
 
-	public function test_étant_donné_un_utilisateur_inexistant_sans_authentification_lorsquon_linscrit_il_est_sauvegardé_et_on_obtient_un_token()
+	public function test_étant_donné_un_utilisateur_inexistant_sans_authentification_lorsquon_linscrit_il_est_sauvegardé_actif_et_on_obtient_un_token()
 	{
 		putenv("AUTH_LOCAL=false");
 
@@ -100,7 +100,7 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "Marcel";
+				return $user->username == "Marcel" && $user->état == User::ÉTAT_ACTIF;
 			})
 			->andReturnArg(0);
 
@@ -161,7 +161,7 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_linscrit_il_est_sauvegardé_et_on_obtient_un_token()
+	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_linscrit_il_est_sauvegardé_en_attente_et_on_obtient_un_token()
 	{
 		putenv("AUTH_LOCAL=true");
 
@@ -170,7 +170,7 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "Marcel2";
+				return $user->username == "Marcel2" && $user->état == User::ÉTAT_ATTENTE_DE_VALIDATION;
 			})
 			->andReturnArg(0)
 			->shouldReceive("set_password")

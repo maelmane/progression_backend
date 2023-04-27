@@ -18,6 +18,8 @@
 
 namespace progression\domaine\entité;
 
+use InvalidArgumentException;
+
 class User
 {
 	const ROLE_NORMAL = 0;
@@ -25,10 +27,11 @@ class User
 
 	const ÉTAT_INACTIF = 0;
 	const ÉTAT_ACTIF = 1;
+	const ÉTAT_ATTENTE_DE_VALIDATION = 2;
 
 	public $username;
 	public string|null $courriel;
-	public int $état;
+	private int $état;
 	public $rôle = User::ROLE_NORMAL;
 	public $avancements;
 	public $clés;
@@ -45,10 +48,33 @@ class User
 	) {
 		$this->username = $username;
 		$this->courriel = $courriel;
-		$this->état = $état;
+		$this->setÉtat($état);
 		$this->rôle = $rôle;
 		$this->avancements = $avancements;
 		$this->clés = $clés;
 		$this->préférences = $préférences;
+	}
+
+	public function setÉtat(int $un_état): void
+	{
+		if ($un_état < 0 || $un_état > 2) {
+			throw new InvalidArgumentException("état invalide");
+		}
+
+		$this->état = $un_état;
+	}
+
+	public function __set(string $name, mixed $value): void
+	{
+		if ($name == "état") {
+			$this->setÉtat($value);
+		} else {
+			$this->$name = $value;
+		}
+	}
+
+	public function __get(string $name): mixed
+	{
+		return $this->$name;
 	}
 }
