@@ -22,9 +22,11 @@ use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\http\transformer\UserTransformer;
+use progression\domaine\entité\User;
 use progression\domaine\entité\Avancement;
 use progression\domaine\interacteur\ObtenirUserInt;
-use progression\domaine\interacteur\SauvegarderPréférencesUtilisateurInt;
+use progression\domaine\interacteur\ModifierUserInt;
+use progression\domaine\interacteur\SauvegarderUtilisateurInt;
 use progression\util\Encodage;
 
 class UserCtl extends Contrôleur
@@ -52,10 +54,24 @@ class UserCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => $validation->errors()], 400);
 		}
 
-		$userInt = new SauvegarderPréférencesUtilisateurInt();
-		$user = $userInt->sauvegarder_préférences($username, $request->préférences ?? "");
+		$userInt = new ObtenirUserInt();
+		$user_existant = $userInt->get_user($username);
 
-		$réponse = $this->valider_et_préparer_réponse($user);
+		if ($user_existant) {
+			$userInt = new ModifierUserInt();
+
+			if (array_key_exists("préférences", $request->input())) {
+				$user_existant = $userInt->modifier_préférences($user_existant, $request->préférences);
+			}
+			if (array_key_exists("état", $request->input())) {
+				$user_existant = $userInt->modifier_état($user_existant, $request->état);
+			}
+
+			$userInt = new SauvegarderUtilisateurInt();
+			$user_existant = $userInt->sauvegarder_user($username, $user_existant);
+		}
+
+		$réponse = $this->valider_et_préparer_réponse($user_existant);
 
 		Log::debug("UserCtl.post. Retour : ", [$réponse]);
 		return $réponse;
@@ -84,7 +100,8 @@ class UserCtl extends Contrôleur
 		$validateur = Validator::make(
 			$request->all(),
 			[
-				"préférences" => "string|json|between:0,65535",
+				"préférences" => "sometimes|string|json|between:0,65535",
+				"état" => "sometimes|integer",
 			],
 			[
 				"json" => "Err: 1003. Le champ :attribute doit être en format json.",

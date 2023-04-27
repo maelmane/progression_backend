@@ -1,0 +1,30 @@
+{
+  "data": {
+    "type": "user",
+    "id": "jane",
+    "attributes": {
+      "username": "jane",
+      "courriel": null,
+      "état": 1,
+		  "rôle": 0,
+		  "préférences": ""
+    },
+    "links": {
+      "self": "https://example.com/user/jane"
+    },
+    "relationships": {
+      "avancements": {
+        "links": {
+          "self": "https://example.com/user/jane/relationships/avancements",
+          "related": "https://example.com/user/jane/avancements"
+        }
+      },
+      "cles": {
+        "links": {
+          "self": "https://example.com/user/jane/relationships/cles",
+          "related": "https://example.com/user/jane/cles"
+        }
+      }
+    }
+  }
+}

@@ -54,6 +54,10 @@ final class UserCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_user")
 			->with("roger", [])
 			->andReturn(null);
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("jane", [])
+			->andReturn(new User("jane"));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -148,6 +152,36 @@ final class UserCtlTests extends ContrôleurTestCase
 		);
 	}
 
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_post_un_état_valide_il_est_sauvegardé()
+	{
+		DAOFactory::getInstance()
+			->get_user_dao()
+			->shouldReceive("save")
+			->once()
+			->withArgs(function ($user) {
+				return $user->username == "jane" && $user->rôle == 0 && $user->état == User::ÉTAT_ACTIF;
+			})
+			->andReturn(new User("jane", état: User::ÉTAT_ACTIF));
+
+		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/jane", [
+			"état" => User::ÉTAT_ACTIF,
+		]);
+
+		$this->assertResponseStatus(200);
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/userCtlTest_user_état_modifié.json",
+			$résultatObtenu->getContent(),
+		);
+
+		$résultatObtenu = $this->actingAs($this->user)->call("GET", "/user/jane");
+
+		$this->assertResponseStatus(200);
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/userCtlTest_user_état_modifié.json",
+			$résultatObtenu->getContent(),
+		);
+	}
+
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_post_des_préférences_invalides_elles_ne_sont_pas_sauvegardées_et_on_obtient_une_erreur_400()
 	{
 		DAOFactory::getInstance()
@@ -155,6 +189,17 @@ final class UserCtlTests extends ContrôleurTestCase
 			->shouldNotReceive("save");
 
 		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/jdoe", ["préférences" => "test"]);
+
+		$this->assertResponseStatus(400);
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_post_un_état_invalide_il_n_est_pas_sauvegardé_et_on_obtient_une_erreur_400()
+	{
+		DAOFactory::getInstance()
+			->get_user_dao()
+			->shouldNotReceive("save");
+
+		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/jane", ["état" => "abc"]);
 
 		$this->assertResponseStatus(400);
 	}
@@ -167,6 +212,19 @@ final class UserCtlTests extends ContrôleurTestCase
 
 		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/roger", [
 			"préférences" => "{\"test\": 42}",
+		]);
+
+		$this->assertResponseStatus(404);
+	}
+
+	public function test_étant_donné_un_utilisateur_inexistant_lorsquon_post_un_état_il_n_est_pas_sauvegardé_et_on_obtient_une_erreur_404()
+	{
+		DAOFactory::getInstance()
+			->get_user_dao()
+			->shouldNotReceive("save");
+
+		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/roger", [
+			"état" => User::ÉTAT_ACTIF,
 		]);
 
 		$this->assertResponseStatus(404);

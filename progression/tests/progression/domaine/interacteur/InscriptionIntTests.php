@@ -46,7 +46,7 @@ final class InscriptionIntTests extends TestCase
 		DAOFactory::setInstance(null);
 	}
 
-	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_local_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User_inactif()
+	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_local_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User_en_attente()
 	{
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=true");
@@ -55,14 +55,16 @@ final class InscriptionIntTests extends TestCase
 		$mockUserDao
 			->allows()
 			->get_user("roger")
-			->andReturn(null, new User("roger", "roger@gmail.com", User::ÉTAT_INACTIF));
+			->andReturn(null, new User("roger", "roger@gmail.com", User::ÉTAT_ATTENTE_DE_VALIDATION));
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($user) {
-				return $user->username == "roger" && $user->rôle == User::ROLE_NORMAL;
+				return $user->username == "roger" &&
+					$user->rôle == User::ROLE_NORMAL &&
+					$user->état == User::ÉTAT_ATTENTE_DE_VALIDATION;
 			})
 			->once()
-			->andReturn(new User("roger", "roger@gmail.com", User::ÉTAT_INACTIF));
+			->andReturn(new User("roger", "roger@gmail.com", User::ÉTAT_ATTENTE_DE_VALIDATION));
 		$mockUserDao
 			->shouldReceive("set_password")
 			->once()
@@ -72,7 +74,7 @@ final class InscriptionIntTests extends TestCase
 
 		$user = (new InscriptionInt())->effectuer_inscription("roger", "roger@gmail.com", "password");
 
-		$this->assertEquals(new User("roger", "roger@gmail.com", User::ÉTAT_INACTIF), $user);
+		$this->assertEquals(new User("roger", "roger@gmail.com", User::ÉTAT_ATTENTE_DE_VALIDATION), $user);
 	}
 
 	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_no_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User_actif()
