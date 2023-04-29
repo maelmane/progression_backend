@@ -32,7 +32,7 @@ final class CommentaireDAOTests extends TestCase
 		parent::setUp();
 
 		$this->jdoe = new User("jdoe");
-		$this->admin = new User("admin", rôle: User::ROLE_ADMIN);
+		$this->admin = new User("admin", rôle: User::RÔLE::ADMIN);
 		$this->stefany = new User("Stefany");
 
 		app("db")

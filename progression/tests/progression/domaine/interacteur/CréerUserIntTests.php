@@ -61,7 +61,7 @@ final class CréerUserIntTests extends TestCase
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($user) {
-				return $user->username == "bob" && $user->rôle == USER::ROLE_NORMAL;
+				return $user->username == "bob" && $user->rôle == USER::RÔLE::NORMAL;
 			})
 			->andReturnArg(0);
 
@@ -80,7 +80,7 @@ final class CréerUserIntTests extends TestCase
 			->withArgs(function ($user) {
 				return $user->username == "bob" &&
 					$user->courriel == "bob@gmail.com" &&
-					$user->rôle == USER::ROLE_NORMAL;
+					$user->rôle == USER::RÔLE::NORMAL;
 			})
 			->andReturnArg(0);
 

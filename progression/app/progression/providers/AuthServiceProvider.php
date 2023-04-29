@@ -43,7 +43,7 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 		Gate::before(function ($user, $ability) {
-			if ($user->rôle == User::ROLE_ADMIN) {
+			if ($user->rôle == User::RÔLE::ADMIN) {
 				return true;
 			}
 		});

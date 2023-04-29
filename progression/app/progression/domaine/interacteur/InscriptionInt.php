@@ -27,7 +27,7 @@ class InscriptionInt extends Interacteur
 		$username,
 		string|null $courriel = null,
 		$password = null,
-		int $rôle = User::ROLE_NORMAL
+		int $rôle = User::RÔLE::NORMAL
 	) {
 		if (!$username) {
 			return null;
@@ -66,7 +66,7 @@ class InscriptionInt extends Interacteur
 				$username,
 				$courriel,
 				rôle: $rôle,
-				état: $rôle == User::ROLE_ADMIN ? User::ÉTAT_ACTIF : User::ÉTAT_ATTENTE_DE_VALIDATION,
+				état: $rôle == User::RÔLE::ADMIN ? ÉTAT::ACTIF : ÉTAT::ATTENTE_DE_VALIDATION,
 			),
 		);
 		$dao->set_password($user, $password);
@@ -78,6 +78,6 @@ class InscriptionInt extends Interacteur
 	{
 		$dao = $this->source_dao->get_user_dao();
 		return $dao->get_user($username) ??
-			$dao->save(new User($username, courriel: null, rôle: $rôle, état: User::ÉTAT_ACTIF));
+			$dao->save(new User($username, courriel: null, rôle: $rôle, état: ÉTAT::ACTIF));
 	}
 }

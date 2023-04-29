@@ -31,14 +31,14 @@ final class LoginCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser(["username" => "bob", "rôle" => User::RÔLE::NORMAL]);
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob")
-			->andReturn(new User("bob", User::ÉTAT_ACTIF));
+			->andReturn(new User("bob", ÉTAT::ACTIF));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob", [])

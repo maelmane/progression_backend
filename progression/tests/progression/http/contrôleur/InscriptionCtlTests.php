@@ -33,7 +33,7 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 
 		putenv("AUTH_LDAP=false");
 
-		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser(["username" => "bob", "rôle" => User::RÔLE::NORMAL]);
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -100,7 +100,8 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "Marcel" && $user->état == User::ÉTAT_ACTIF;
+				return $user->username == "Marcel" &&
+                                       $user->état == User::ÉTAT::ACTIF;
 			})
 			->andReturnArg(0);
 
@@ -170,7 +171,8 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "Marcel2" && $user->état == User::ÉTAT_ATTENTE_DE_VALIDATION;
+				return $user->username == "Marcel2" &&
+                                       $user->état == User::ÉTAT::ATTENTE_DE_VALIDATION;
 			})
 			->andReturnArg(0)
 			->shouldReceive("set_password")

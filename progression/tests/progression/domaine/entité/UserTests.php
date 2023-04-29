@@ -20,6 +20,7 @@ namespace progression\domaine\entité;
 
 use PHPUnit\Framework\TestCase;
 use \InvalidArgumentException;
+use progression\domaine\entité\User;
 
 final class UserTests extends TestCase
 {
@@ -27,10 +28,10 @@ final class UserTests extends TestCase
 	{
 		$username_attendu = "bob";
 		$courriel_attendu = "bob@gmail.com";
-		$état_attendu = User::ÉTAT_ACTIF;
-		$rôle_attendu = 0;
+		$résultat_obtenu = new User("bob", "bob@gmail.com", état: User::ÉTAT::ACTIF, rôle: User::RÔLE::NORMAL);
 
-		$résultat_obtenu = new User("bob", "bob@gmail.com", User::ÉTAT_ACTIF);
+		$état_attendu = User::ÉTAT::ACTIF;
+		$rôle_attendu = User::RÔLE::NORMAL;
 
 		$this->assertEquals($username_attendu, $résultat_obtenu->username);
 		$this->assertEquals($courriel_attendu, $résultat_obtenu->courriel);
@@ -38,18 +39,4 @@ final class UserTests extends TestCase
 		$this->assertEquals($rôle_attendu, $résultat_obtenu->rôle);
 	}
 
-	public function test_étant_donné_un_nouvel_User_lorsquon_linstancie_avec_un_état_invalide_on_obtient_une_InvalidArgumentException()
-	{
-		$this->expectException(InvalidArgumentException::class);
-
-		$résultat_obtenu = new User("bob", "bob@gmail.com", état: -1);
-	}
-
-	public function test_étant_donné_un_User_actif_lorsquon_lui_donne_un_état_invalide_on_obtient_une_InvalidArgumentException()
-	{
-		$this->expectException(InvalidArgumentException::class);
-
-		$résultat_obtenu = new User("bob");
-		$résultat_obtenu->état = -1;
-	}
 }

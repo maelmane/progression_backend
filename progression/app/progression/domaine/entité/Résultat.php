@@ -31,7 +31,7 @@ class Résultat
 		$sortie_erreur = "",
 		$résultat = false,
 		$feedback = null,
-		$temps_exécution = null
+		$temps_exécution = null,
 	) {
 		$this->résultat = $résultat;
 		$this->feedback = $feedback;

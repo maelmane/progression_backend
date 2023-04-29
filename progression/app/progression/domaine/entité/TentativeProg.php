@@ -32,7 +32,7 @@ class TentativeProg extends Tentative
 		$tests_réussis = 0,
 		$temps_exécution = null,
 		$feedback = null,
-		$commentaires = []
+		$commentaires = [],
 	) {
 		parent::__construct(
 			$date_soumission,

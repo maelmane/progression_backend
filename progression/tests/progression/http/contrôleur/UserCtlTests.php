@@ -29,11 +29,11 @@ final class UserCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::RÔLE::NORMAL]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$user = new User("jdoe", préférences: '{"app": {"pref1": 1, "pref2": 2}}');
+		$user = new User("jdoe", préférences: '{"app": {"pref1": 1, "pref2": 2}}', état: User::ÉTAT::INACTIF);
 		$user_et_avancements = new User("jdoe", préférences: '{"app": {"pref1": 1, "pref2": 2}}');
 		$user_et_avancements->avancements = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement(),
@@ -128,7 +128,7 @@ final class UserCtlTests extends ContrôleurTestCase
 			->once()
 			->withArgs(function ($user) use ($user_modifié, $préférences) {
 				return $user->username == "jdoe" &&
-					$user->rôle == 0 &&
+                                       $user->rôle == User::RÔLE::NORMAL &&
 					$user->préférences == '{"app": {"pref1": 3, "pref2": 4}}';
 			})
 			->andReturn(new User("jdoe", préférences: $préférences));
@@ -159,12 +159,12 @@ final class UserCtlTests extends ContrôleurTestCase
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "jane" && $user->rôle == 0 && $user->état == User::ÉTAT_ACTIF;
+				return $user->username == "jane" && $user->rôle == User::RÔLE::NORMAL && $user->état == User::ÉTAT::ACTIF;
 			})
-			->andReturn(new User("jane", état: User::ÉTAT_ACTIF));
+			->andReturn(new User("jane", état: User::ÉTAT::ACTIF));
 
 		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/jane", [
-			"état" => User::ÉTAT_ACTIF,
+			"état" => User::ÉTAT::ACTIF->value,
 		]);
 
 		$this->assertResponseStatus(200);
@@ -224,9 +224,22 @@ final class UserCtlTests extends ContrôleurTestCase
 			->shouldNotReceive("save");
 
 		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/roger", [
-			"état" => User::ÉTAT_ACTIF,
+			"état" => User::ÉTAT::ACTIF->value,
 		]);
 
 		$this->assertResponseStatus(404);
+	}
+
+    public function test_étant_donné_un_utilisateur_inactif_lorsquon_post_un_état_en_attente_on_obtient_une_erreur_400()
+	{
+		DAOFactory::getInstance()
+			->get_user_dao()
+			->shouldNotReceive("save");
+
+		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/jdoe", [
+			"état" => User::ÉTAT::ATTENTE_DE_VALIDATION->value,
+		]);
+
+		$this->assertResponseStatus(400);
 	}
 }

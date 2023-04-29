@@ -32,7 +32,7 @@ final class ÉbaucheCtlTests extends ContrôleurTestCase
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser(["username" => "bob", "rôle" => User::RÔLE::NORMAL]);
 
 		// Question
 		$question = new QuestionProg();

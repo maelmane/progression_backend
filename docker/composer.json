@@ -5,7 +5,7 @@
     "license": "GPLv3",
     "type": "project",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^8.2",
         "doctrine/dbal": "^2",
         "firebase/php-jwt": "^5.2",
         "illuminate/redis": "^8.77.1",

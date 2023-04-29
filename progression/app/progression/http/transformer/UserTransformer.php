@@ -33,8 +33,8 @@ class UserTransformer extends BaseTransformer
 			"id" => $user->id,
 			"courriel" => $user->courriel,
 			"username" => $user->username,
-			"état" => $user->état,
-			"rôle" => $user->rôle,
+			"état" => $user->état->value,
+			"rôle" => $user->rôle->value,
 			"préférences" => $user->préférences,
 			"links" => (isset($user->links) ? $user->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}user/{$user->id}",

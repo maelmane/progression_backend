@@ -22,17 +22,14 @@ use InvalidArgumentException;
 
 class User
 {
-	const ROLE_NORMAL = 0;
-	const ROLE_ADMIN = 1;
-
-	const ÉTAT_INACTIF = 0;
-	const ÉTAT_ACTIF = 1;
-	const ÉTAT_ATTENTE_DE_VALIDATION = 2;
+	const RÔLE = Rôle::class;
+	const ROLE = Rôle::class;
+	const ÉTAT = État::class;
 
 	public $username;
 	public string|null $courriel;
-	private int $état;
-	public $rôle = User::ROLE_NORMAL;
+	public État $état = État::INACTIF;
+	public Rôle $rôle = Rôle::NORMAL;
 	public $avancements;
 	public $clés;
 	public string $préférences;
@@ -40,41 +37,18 @@ class User
 	public function __construct(
 		$username,
 		string|null $courriel = null,
-		int $état = User::ÉTAT_INACTIF,
-		$rôle = User::ROLE_NORMAL,
+		État $état = État::INACTIF,
+		Rôle $rôle = Rôle::NORMAL,
 		$avancements = [],
 		$clés = [],
-		string $préférences = ""
+		string $préférences = "",
 	) {
 		$this->username = $username;
 		$this->courriel = $courriel;
-		$this->setÉtat($état);
+		$this->état = $état;
 		$this->rôle = $rôle;
 		$this->avancements = $avancements;
 		$this->clés = $clés;
 		$this->préférences = $préférences;
-	}
-
-	public function setÉtat(int $un_état): void
-	{
-		if ($un_état < 0 || $un_état > 2) {
-			throw new InvalidArgumentException("état invalide");
-		}
-
-		$this->état = $un_état;
-	}
-
-	public function __set(string $name, mixed $value): void
-	{
-		if ($name == "état") {
-			$this->setÉtat($value);
-		} else {
-			$this->$name = $value;
-		}
-	}
-
-	public function __get(string $name): mixed
-	{
-		return $this->$name;
 	}
 }

@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\User;
+use progression\domaine\entité\{User, État};
 use progression\dao\DAOFactory;
 use DomainException;
 
@@ -30,9 +30,9 @@ class ModifierUserInt extends Interacteur
 
 		return $user;
 	}
-	public function modifier_état(User $user, int $état): User
+	public function modifier_état(User $user, État $état): User
 	{
-		if ($état == User::ÉTAT_ATTENTE_DE_VALIDATION) {
+		if ($état == User::ÉTAT::ATTENTE_DE_VALIDATION) {
 			throw new DomainException("Transition d'état invalide");
 		}
 

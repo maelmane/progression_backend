@@ -4,11 +4,11 @@ COPY docker/composer.json /var/www/
 
 RUN composer install -d /var/www/
 
-FROM php:apache as production
+FROM php:8-apache as production
 
 # Mise a jour de la liste de package
 RUN apt update && apt upgrade -y && apt autoclean
-RUN apt update && apt install -y default-libmysqlclient-dev default-mysql-client python3-yaml libldap2-dev libyaml-dev libzip-dev python3 python3-pip && apt autoclean php7.4-dom
+RUN apt update && apt install -y default-libmysqlclient-dev default-mysql-client python3-yaml libldap2-dev libyaml-dev libzip-dev python3 python3-pip && apt autoclean php8-dom
 
 # Installation des beautifiers pour la standardisation du code soumis
 RUN apt install -y black

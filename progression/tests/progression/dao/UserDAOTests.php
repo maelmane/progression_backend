@@ -141,12 +141,12 @@ final class UserDAOTests extends TestCase
 		$avancement1 = new Avancement([], "Un titre", "facile");
 		$avancement2 = new Avancement([], "Un titre 2", "facile");
 
-		$réponse_attendue = new User("bob", rôle: User::ROLE_ADMIN);
+		$réponse_attendue = new User("bob", rôle: User::RÔLE::ADMIN);
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [];
 
 		$user_test = (new UserDAO())->get_user("bob");
-		$user_test->rôle = User::ROLE_ADMIN;
+		$user_test->rôle = User::RÔLE::ADMIN;
 
 		$réponse_observée = (new UserDAO())->save($user_test);
 		$this->assertEquals($réponse_attendue, $réponse_observée);

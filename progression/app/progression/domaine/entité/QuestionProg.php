@@ -35,7 +35,7 @@ class QuestionProg extends Question
 		$feedback_err = null,
 		$exécutables = [],
 		$tests = [],
-		string|null $description = null
+		string|null $description = null,
 	) {
 		parent::__construct(
 			$niveau,

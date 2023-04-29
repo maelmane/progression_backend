@@ -38,7 +38,7 @@ class Avancement
 		$titre = "",
 		$niveau = "",
 		array $sauvegardes = [],
-		string|null $extra = ""
+		string|null $extra = "",
 	) {
 		$this->etat = Question::ETAT_DEBUT;
 		$this->tentatives = $tentatives;

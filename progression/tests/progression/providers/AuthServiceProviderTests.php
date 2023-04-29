@@ -34,7 +34,7 @@ final class AuthServiceProviderTests extends TestCase
 	{
 		parent::setUp();
 
-		$this->utilisateurLambda = new GenericUser(["username" => "utilisateur_lambda", "rôle" => User::ROLE_NORMAL]);
+		$this->utilisateurLambda = new GenericUser(["username" => "utilisateur_lambda", "rôle" => User::RÔLE::NORMAL]);
 		$this->tokenUtilisateurLambda = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda");
 
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
