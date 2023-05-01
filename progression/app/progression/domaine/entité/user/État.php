@@ -18,11 +18,11 @@
 
 namespace progression\domaine\entité\user;
 
-enum État: string
+enum État: int
 {
-	case INACTIF = "inactif";
-	case ACTIF = "actif";
-	case ATTENTE_DE_VALIDATION = "attente_de_validation";
+	case INACTIF = 0;
+	case ACTIF = 1;
+	case ATTENTE_DE_VALIDATION = 2;
 }
 
 ?>

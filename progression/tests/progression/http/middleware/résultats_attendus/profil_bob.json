@@ -5,8 +5,8 @@
     "attributes": {
       "username": "bob",
       "courriel": null,
-      "état": "inactif",
-      "rôle": "normal",
+      "état": 0,
+      "rôle": 0,
       "préférences": ""
     },
     "links": {

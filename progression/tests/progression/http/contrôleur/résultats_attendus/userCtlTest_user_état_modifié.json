@@ -5,8 +5,8 @@
     "attributes": {
       "username": "jane",
       "courriel": null,
-      "état": "actif",
-		  "rôle": "normal",
+      "état": 1,
+		  "rôle": 0,
 		  "préférences": ""
     },
     "links": {

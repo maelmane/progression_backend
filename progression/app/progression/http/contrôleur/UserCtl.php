@@ -112,7 +112,7 @@ class UserCtl extends Contrôleur
 			$request->all(),
 			[
 				"préférences" => "sometimes|string|json|between:0,65535",
-				"état" => ["sometimes", "string", new Enum(État::class)],
+				"état" => ["sometimes", "integer", new Enum(État::class)],
 			],
 			[
 				"json" => "Err: 1003. Le champ :attribute doit être en format json.",

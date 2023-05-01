@@ -2,10 +2,10 @@
 
 namespace progression\domaine\entité\user;
 
-enum Rôle: string
+enum Rôle: int
 {
-	case NORMAL = "normal";
-	case ADMIN = "admin";
+	case NORMAL = 0;
+	case ADMIN = 1;
 }
 
 ?>

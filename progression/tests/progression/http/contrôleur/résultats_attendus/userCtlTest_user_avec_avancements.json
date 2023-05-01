@@ -5,8 +5,8 @@
     "attributes": {
       "username": "jdoe",
       "courriel": null,
-      "état": "inactif",
-      "rôle": "normal",
+      "état": 0,
+      "rôle": 0,
       "préférences": "{\"app\": {\"pref1\": 1, \"pref2\": 2}}"
     },
     "links": {
