@@ -19,7 +19,7 @@
 use progression\ContrôleurTestCase;
 
 use progression\http\contrôleur\GénérateurDeToken;
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\{Clé, Portée};
 use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
@@ -51,7 +51,7 @@ final class LoginCtlTests extends ContrôleurTestCase
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "cleValide01")
-			->andReturn(new Clé(null, (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_AUTH));
+			->andReturn(new Clé(null, (new \DateTime())->getTimestamp(), 0, Portée::AUTH));
 		$mockCléDAO
 			->shouldReceive("vérifier")
 			->with("bob", "cleValide01", "secret")

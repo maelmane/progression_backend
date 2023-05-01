@@ -21,14 +21,7 @@ use progression\ContrôleurTestCase;
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
 use progression\domaine\entité\question\{Question, QuestionProg};
-use progression\domaine\entité\{
-	Avancement,
-	TestProg,
-	Exécutable,
-	TentativeProg,
-	Commentaire,
-	Résultat,
-};
+use progression\domaine\entité\{Avancement, TestProg, Exécutable, TentativeProg, Commentaire, Résultat};
 use progression\domaine\entité\user\{User, Rôle};
 use progression\dao\question\ChargeurException;
 use Illuminate\Auth\GenericUser;

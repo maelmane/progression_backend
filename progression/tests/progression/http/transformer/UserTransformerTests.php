@@ -19,7 +19,7 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\user\User;
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\{Clé, Portée};
 use PHPUnit\Framework\TestCase;
 
 final class UserTransformerTests extends TestCase
@@ -50,8 +50,8 @@ final class UserTransformerTests extends TestCase
 	{
 		$user = new User("bob");
 		$user->clés = [
-			new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
-			new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
+			new Clé(null, 1624593600, 1624680000, Portée::AUTH),
+			new Clé(null, 1624593602, 1624680002, Portée::AUTH),
 		];
 
 		$userTransformer = new UserTransformer();

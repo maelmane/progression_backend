@@ -19,7 +19,7 @@
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\{Clé, Portée};
 use progression\domaine\entité\user\{User, Rôle};
 use Illuminate\Auth\GenericUser;
 
@@ -52,7 +52,7 @@ final class CléCtlTests extends ContrôleurTestCase
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("jdoe", "cle de test", [])
-			->andReturn(new Clé(1234, 1625709495, 1625713000, Clé::PORTEE_AUTH));
+			->andReturn(new Clé(1234, 1625709495, 1625713000, Portée::AUTH));
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("jdoe", "cle inexistante", [])
@@ -150,7 +150,7 @@ final class CléCtlTests extends ContrôleurTestCase
 
 		$this->assertNotNull($clé_sauvegardée->secret);
 		$this->assertEquals(0, $clé_sauvegardée->expiration);
-		$this->assertEquals(Clé::PORTEE_AUTH, $clé_sauvegardée->portée);
+		$this->assertEquals(Portée::AUTH->value, $clé_sauvegardée->portée);
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_0_on_obtient_une_clé_avec_un_secret_généré_aléatoirement_sans_expiration()
@@ -165,7 +165,7 @@ final class CléCtlTests extends ContrôleurTestCase
 
 		$this->assertNotNull($clé_sauvegardée->secret);
 		$this->assertEquals(0, $clé_sauvegardée->expiration);
-		$this->assertEquals(Clé::PORTEE_AUTH, $clé_sauvegardée->portée);
+		$this->assertEquals(Portée::AUTH->value, $clé_sauvegardée->portée);
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_on_obtient_une_clé_avec_un_secret_généré_aléatoirement_avec_expiration()
@@ -181,7 +181,7 @@ final class CléCtlTests extends ContrôleurTestCase
 
 		$this->assertNotNull($clé_sauvegardée->secret);
 		$this->assertEquals($expiration, $clé_sauvegardée->expiration);
-		$this->assertEquals(Clé::PORTEE_AUTH, $clé_sauvegardée->portée);
+		$this->assertEquals(Portée::AUTH->value, $clé_sauvegardée->portée);
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_passée_on_obtient_une_erreur_400()

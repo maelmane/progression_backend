@@ -19,7 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\{Clé, Portée};
 use progression\domaine\entité\user\User;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -58,7 +58,7 @@ final class LoginIntTests extends TestCase
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé valide")
-			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_AUTH));
+			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Portée::AUTH));
 		$mockCléDAO
 			->shouldReceive("vérifier")
 			->with("bob", "clé valide", "secret")
@@ -71,13 +71,13 @@ final class LoginIntTests extends TestCase
 					"secret",
 					(new \DateTime())->getTimestamp() - 2,
 					(new \DateTime())->getTimestamp() - 1,
-					Clé::PORTEE_AUTH,
+					Portée::AUTH,
 				),
 			);
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé révoquée")
-			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_REVOQUEE));
+			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Portée::REVOQUÉE));
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé inexistante")

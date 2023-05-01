@@ -9,6 +9,10 @@ parameters:
 			count: 1
 			path: app/progression/dao/models/AvancementMdl.php
 		-
+			message: "#^Property progression\\\\dao\\\\models\\\\CléMdl\\:\\:\\$appends type has no value type specified in iterable type array.$#"
+			count: 1
+			path: app/progression/dao/models/CléMdl.php
+		-
 			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:construire\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/dao/AvancementDAO.php
@@ -1279,49 +1283,39 @@ parameters:
 			path: app/progression/domaine/entité/Avancement.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:__construct\\(\\) has parameter \\$création with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:__construct\\(\\) has parameter \\$création with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Clé.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:__construct\\(\\) has parameter \\$expiration with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:__construct\\(\\) has parameter \\$expiration with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Clé.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:__construct\\(\\) has parameter \\$portée with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:__construct\\(\\) has parameter \\$secret with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Clé.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:__construct\\(\\) has parameter \\$secret with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:est_valide\\(\\) has no return type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Clé.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:est_valide\\(\\) has no return type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:\\$création has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Clé.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Clé\\:\\:\\$création has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:\\$expiration has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Clé.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Clé\\:\\:\\$expiration has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:\\$secret has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Clé.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Clé\\:\\:\\$portée has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Clé.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Clé\\:\\:\\$secret has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Clé.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\Commentaire\\:\\:__construct\\(\\) has parameter \\$créateur with no type specified\\.$#"

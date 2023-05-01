@@ -16,30 +16,10 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\entité\clé;
 
-class Clé
+enum Portée: int
 {
-	const PORTEE_REVOQUEE = 0;
-	const PORTEE_AUTH = 1;
-
-	public $secret;
-	public $création;
-	public $expiration;
-	public $portée;
-
-	public function __construct($secret, $création, $expiration, $portée = self::PORTEE_AUTH)
-	{
-		$this->secret = $secret;
-		$this->création = $création;
-		$this->expiration = $expiration;
-		$this->portée = $portée;
-	}
-
-	public function est_valide()
-	{
-		return $this->création <= (new \DateTime())->getTimestamp() &&
-			($this->expiration == 0 || $this->expiration > (new \DateTime())->getTimestamp()) &&
-			$this->portée > $this::PORTEE_REVOQUEE;
-	}
+	case REVOQUÉE = 0;
+	case AUTH = 1;
 }

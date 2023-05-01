@@ -18,7 +18,8 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Avancement, Clé};
+use progression\domaine\entité\Avancement;
+use progression\domaine\entité\clé\{Clé, Portée};
 use progression\domaine\entité\question\{Question, État};
 use progression\domaine\entité\user\{User, Rôle};
 use progression\TestCase;
@@ -98,8 +99,8 @@ final class UserDAOTests extends TestCase
 		$réponse_attendue = $this->bob;
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [
-			"clé de test" => new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
-			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
+			"clé de test" => new Clé(null, 1624593600, 1624680000, Portée::AUTH),
+			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Portée::AUTH),
 		];
 
 		$réponse_observée = (new UserDAO())->get_user("bob", ["clés"]);
@@ -110,8 +111,8 @@ final class UserDAOTests extends TestCase
 	{
 		$réponse_attendue = $this->bob;
 		$réponse_attendue->clés = [
-			"clé de test" => new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
-			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
+			"clé de test" => new Clé(null, 1624593600, 1624680000, Portée::AUTH),
+			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Portée::AUTH),
 		];
 
 		$réponse_observée = (new UserDAO())->get_user("bob", ["avancements", "clés"]);

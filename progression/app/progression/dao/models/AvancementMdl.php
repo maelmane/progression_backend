@@ -29,7 +29,7 @@ class AvancementMdl extends Model
 
 	protected $guarded = [];
 
-    protected $appends = ["etat"];
+	protected $appends = ["etat"];
 
 	public function getÉtatAttribute(): État
 	{
@@ -41,7 +41,7 @@ class AvancementMdl extends Model
 		$états = array_column(État::cases(), "value");
 		$this->attributes["etat"] = array_search($état->value, $états);
 	}
-    
+
 	public function tentatives_prog(): HasMany
 	{
 		return $this->hasMany(TentativeProgMdl::class, "avancement_id", "id");

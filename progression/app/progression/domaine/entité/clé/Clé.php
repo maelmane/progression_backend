@@ -16,28 +16,27 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\domaine\interacteur;
+namespace progression\domaine\entité\clé;
 
-use progression\domaine\entité\clé\Clé;
-use progression\dao\DAOFactory;
-
-class ObtenirCléInt extends Interacteur
+class Clé
 {
-	/**
-	 * @param mixed $includes
-	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
-	 */
-	public function get_clé($username, $numéro, mixed $includes = [])
+	public $secret;
+	public $création;
+	public $expiration;
+	public Portée $portée;
+
+	public function __construct($secret, $création, $expiration, Portée $portée = Portée::AUTH)
 	{
-		$dao = DAOFactory::getInstance()->get_clé_dao();
+		$this->secret = $secret;
+		$this->création = $création;
+		$this->expiration = $expiration;
+		$this->portée = $portée;
+	}
 
-		$clé = $dao->get_clé($username, $numéro, $includes);
-
-		if ($clé) {
-			//Caviarde le secret
-			$clé->secret = null;
-		}
-
-		return $clé;
+	public function est_valide()
+	{
+		return $this->création <= (new \DateTime())->getTimestamp() &&
+			($this->expiration == 0 || $this->expiration > (new \DateTime())->getTimestamp()) &&
+			$this->portée != Portée::REVOQUÉE;
 	}
 }

@@ -20,11 +20,9 @@ namespace progression\domaine\entité\question;
 
 enum Type: int
 {
-
 	case INCONNU = -1;
 	case SYS = 1;
 	case BD = 2;
 	case PROG = 3;
-
 }
 ?>

@@ -19,7 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use LDAP\Result;
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\{Clé, Portée};
 use progression\dao\{DAOFactory, UserDAO};
 
 class AuthException extends \Exception
@@ -36,7 +36,7 @@ class LoginInt extends Interacteur
 		if (
 			$clé &&
 			$clé->est_valide() &&
-			$clé->portée == Clé::PORTEE_AUTH &&
+			$clé->portée == Portée::AUTH &&
 			$dao->vérifier($username, $nom_clé, $secret)
 		) {
 			$dao = DAOFactory::getInstance()->get_user_dao();
