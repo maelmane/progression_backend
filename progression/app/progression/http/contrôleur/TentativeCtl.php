@@ -32,7 +32,7 @@ use progression\domaine\interacteur\{
 	SoumettreTentativeSysInt,
 };
 use progression\domaine\entité\{Avancement, Tentative, TentativeProg, TentativeSys, TentativeBD};
-use progression\domaine\entité\{Question, QuestionProg, QuestionSys, QuestionBD};
+use progression\domaine\entité\question\{Question, QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\entité\TestProg;
 use progression\dao\exécuteur\ExécutionException;
 use progression\dao\question\ChargeurException;

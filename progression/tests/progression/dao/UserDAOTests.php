@@ -18,7 +18,8 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Avancement, Clé, Question};
+use progression\domaine\entité\{Avancement, Clé};
+use progression\domaine\entité\question\{Question, État};
 use progression\domaine\entité\user\{User, Rôle};
 use progression\TestCase;
 
@@ -33,15 +34,15 @@ final class UserDAOTests extends TestCase
 		$avancement1 = new Avancement([], "Un titre", "facile");
 		$avancement1->date_modification = 1615696276;
 		$avancement1->date_réussite = null;
-		$avancement1->etat = Question::ETAT_NONREUSSI;
+		$avancement1->etat = État::NONREUSSI;
 		$avancement2 = new Avancement([], "Un titre", "facile");
 		$avancement2->date_modification = 1645739981;
 		$avancement2->date_réussite = 1645739959;
-		$avancement2->etat = Question::ETAT_NONREUSSI;
+		$avancement2->etat = État::NONREUSSI;
 		$avancement3 = new Avancement([], "Un titre 2", "facile");
 		$avancement3->date_modification = 1645739991;
 		$avancement3->date_réussite = 1645739969;
-		$avancement3->etat = Question::ETAT_REUSSI;
+		$avancement3->etat = État::REUSSI;
 
 		$this->bob = new User("bob");
 		$this->bob->avancements = [

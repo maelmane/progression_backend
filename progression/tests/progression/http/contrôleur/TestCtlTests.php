@@ -19,7 +19,8 @@
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{QuestionProg, Question, TestProg, QuestionSys, TestSys};
+use progression\domaine\entité\question\{Question, QuestionProg, QuestionSys, Type};
+use progression\domaine\entité\{TestSys, TestProg};
 use progression\domaine\entité\user\{User, Rôle};
 
 use Illuminate\Auth\GenericUser;
@@ -37,7 +38,7 @@ final class TestCtlTests extends ContrôleurTestCase
 
 		// Question
 		$question = new QuestionProg();
-		$question->type = Question::TYPE_PROG;
+		$question->type = Type::PROG;
 		$question->nom = "appeler_une_fonction_paramétrée";
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		$question->tests = [
@@ -52,7 +53,7 @@ final class TestCtlTests extends ContrôleurTestCase
 			->andReturn($question);
 
 		$question = new QuestionSys();
-		$question->type = Question::TYPE_SYS;
+		$question->type = Type::SYS;
 		$question->nom = "Persmissions 2";
 		$question->uri = "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions2";
 		$question->tests = [

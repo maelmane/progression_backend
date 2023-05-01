@@ -18,7 +18,8 @@
 
 namespace progression\dao\question;
 
-use progression\domaine\entité\{QuestionProg, Exécutable, TestProg};
+use progression\domaine\entité\question\QuestionProg;
+use progression\domaine\entité\{Exécutable, TestProg};
 use DomainException;
 
 class DécodeurQuestionProg extends DécodeurQuestion

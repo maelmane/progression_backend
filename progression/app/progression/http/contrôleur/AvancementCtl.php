@@ -26,6 +26,7 @@ use progression\domaine\interacteur\SauvegarderAvancementInt;
 use progression\http\transformer\AvancementTransformer;
 use progression\util\Encodage;
 use progression\domaine\entité\Avancement;
+use progression\domaine\entité\question\État;
 
 class AvancementCtl extends Contrôleur
 {
@@ -52,7 +53,7 @@ class AvancementCtl extends Contrôleur
 		} else {
 			$avancement = $this->construire_avancement($username, $request->question_uri, $request->avancement ?? []);
 
-			if ($request->avancement != null || $avancement->etat == 0) {
+			if ($request->avancement != null || $avancement->etat === État::DEBUT) {
 				$avancement_retourné = $this->sauvegarder_avancement($username, $request->question_uri, $avancement);
 			} else {
 				$avancement_retourné = $avancement;

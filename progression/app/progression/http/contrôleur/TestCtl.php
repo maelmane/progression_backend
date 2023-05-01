@@ -20,7 +20,7 @@ namespace progression\http\contrôleur;
 
 use progression\http\transformer\{TestProgTransformer, TestSysTransformer};
 use progression\domaine\interacteur\ObtenirQuestionInt;
-use progression\domaine\entité\{QuestionProg, QuestionSys};
+use progression\domaine\entité\question\{QuestionProg, QuestionSys};
 use progression\util\Encodage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -97,7 +97,6 @@ class TestCtl extends Contrôleur
 		$chemin = Encodage::base64_decode_url($question_uri);
 		$questionInt = new ObtenirQuestionInt();
 		$question = $questionInt->get_question($chemin);
-
 		Log::debug("TestCtl.obtenir_question. Retour : ", [$question]);
 		return $question;
 	}

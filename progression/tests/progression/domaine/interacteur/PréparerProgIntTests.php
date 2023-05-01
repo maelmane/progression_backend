@@ -18,7 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Exécutable, QuestionProg, TentativeProg};
+use progression\domaine\entité\question\QuestionProg;
+use progression\domaine\entité\{Exécutable, TentativeProg};
 use PHPUnit\Framework\TestCase;
 use Mockery;
 

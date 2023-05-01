@@ -18,7 +18,8 @@
 
 use progression\ContrôleurTestCase;
 
-use progression\domaine\entité\{Question, QuestionProg, Exécutable};
+use progression\domaine\entité\question\{Question, QuestionProg, Type};
+use progression\domaine\entité\Exécutable;
 use progression\domaine\entité\user\{User, Rôle};
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
@@ -37,7 +38,7 @@ final class ÉbaucheCtlTests extends ContrôleurTestCase
 
 		// Question
 		$question = new QuestionProg();
-		$question->type = Question::TYPE_PROG;
+		$question->type = Type::PROG;
 		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		// Ébauches

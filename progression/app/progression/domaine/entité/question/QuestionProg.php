@@ -16,14 +16,12 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\entité\question;
 
-class QuestionSys extends Question
+class QuestionProg extends Question
 {
-	public $image;
-	public $utilisateur;
-	public $solution;
-	public $tests;
+	public $exécutables = [];
+	public $tests = [];
 
 	public function __construct(
 		$niveau = null,
@@ -35,9 +33,7 @@ class QuestionSys extends Question
 		$feedback_pos = null,
 		$feedback_neg = null,
 		$feedback_err = null,
-		$image = null,
-		$utilisateur = null,
-		$solution = null,
+		$exécutables = [],
 		$tests = [],
 		string|null $description = null,
 	) {
@@ -53,10 +49,7 @@ class QuestionSys extends Question
 			$feedback_err,
 			$description,
 		);
-
-		$this->image = $image;
-		$this->utilisateur = $utilisateur;
-		$this->solution = $solution;
+		$this->exécutables = $exécutables;
 		$this->tests = $tests;
 	}
 }

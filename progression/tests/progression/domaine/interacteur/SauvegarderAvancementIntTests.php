@@ -18,7 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{TentativeProg, Avancement, Question, QuestionProg, QuestionSys, TentativeSys};
+use progression\domaine\entité\question\{Question, QuestionProg};
+use progression\domaine\entité\{TentativeProg, Avancement, TentativeSys};
 use progression\domaine\entité\user\User;
 use progression\domaine\interacteur\SauvegarderAvancementInt;
 use progression\dao\DAOFactory;

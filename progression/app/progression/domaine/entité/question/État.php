@@ -16,13 +16,12 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\domaine\entité\user;
+namespace progression\domaine\entité\question;
 
-enum État: string
+enum État: int
 {
-	case INACTIF = "inactif";
-	case ACTIF = "actif";
-	case ATTENTE_DE_VALIDATION = "attente_de_validation";
+	case DEBUT = 0;
+	case NONREUSSI = 1;
+	case REUSSI = 2;
 }
-
 ?>

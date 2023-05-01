@@ -15,11 +15,11 @@
    You should have received a copy of the GNU General Public License
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{Question, QuestionProg, Avancement, TentativeProg, Sauvegarde, Commentaire};
+use progression\domaine\entité\question\{Question, QuestionProg, État};
+use progression\domaine\entité\{Avancement, TentativeProg, Sauvegarde, Commentaire};
 use progression\domaine\entité\user\{User, Rôle};
 use Illuminate\Auth\GenericUser;
 
@@ -89,7 +89,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		$avancement_réussi = new Avancement();
 		$avancement_réussi->date_modification = 1614965818;
 		$avancement_réussi->date_réussite = 1614965817;
-		$avancement_réussi->etat = 2;
+		$avancement_réussi->etat = État::REUSSI;
 		$avancement_réussi->titre = "Avancement de test";
 		$avancement_réussi->niveau = "facile";
 		$avancement_réussi->extra = "Infos extra";
@@ -365,7 +365,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		);
 		$avancement_sauvegardé->date_modification = 1614965818;
 		$avancement_sauvegardé->date_réussite = 1614965817;
-		$avancement_sauvegardé->etat = 2;
+		$avancement_sauvegardé->etat = État::REUSSI;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO

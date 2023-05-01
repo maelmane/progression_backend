@@ -16,40 +16,15 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\entité\question;
 
-class QuestionProg extends Question
+enum Type: int
 {
-	public $exécutables = [];
-	public $tests = [];
 
-	public function __construct(
-		$niveau = null,
-		$titre = null,
-		string|null $objectif = null,
-		$enonce = null,
-		$auteur = null,
-		$licence = null,
-		$feedback_pos = null,
-		$feedback_neg = null,
-		$feedback_err = null,
-		$exécutables = [],
-		$tests = [],
-		string|null $description = null,
-	) {
-		parent::__construct(
-			$niveau,
-			$titre,
-			$objectif,
-			$enonce,
-			$auteur,
-			$licence,
-			$feedback_pos,
-			$feedback_neg,
-			$feedback_err,
-			$description,
-		);
-		$this->exécutables = $exécutables;
-		$this->tests = $tests;
-	}
+	case INCONNU = -1;
+	case SYS = 1;
+	case BD = 2;
+	case PROG = 3;
+
 }
+?>

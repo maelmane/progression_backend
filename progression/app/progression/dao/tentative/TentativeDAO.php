@@ -21,7 +21,7 @@ namespace progression\dao\tentative;
 use DB;
 use Illuminate\Database\QueryException;
 use progression\dao\{DAOException, EntitéDAO, SauvegardeDAO, CommentaireDAO};
-use progression\domaine\entité\Question;
+use progression\domaine\entité\question\{Question, Type};
 use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, TentativeBD};
 
 class TentativeDAO extends EntitéDAO
@@ -35,11 +35,11 @@ class TentativeDAO extends EntitéDAO
 	{
 		$type = $this->get_type($username, $question_uri);
 
-		if ($type == Question::TYPE_PROG) {
+		if ($type == Type::PROG) {
 			return $this->source->get_tentative_prog_dao()->get_toutes($username, $question_uri, $includes);
-		} elseif ($type == Question::TYPE_SYS) {
+		} elseif ($type == Type::SYS) {
 			return $this->source->get_tentative_sys_dao()->get_toutes($username, $question_uri, $includes);
-		} elseif ($type == Question::TYPE_BD) {
+		} elseif ($type == Type::BD) {
 			return $this->source->get_tentative_bd_dao()->get_toutes($username, $question_uri, $includes);
 		} else {
 			return [];
@@ -53,11 +53,11 @@ class TentativeDAO extends EntitéDAO
 	{
 		$type = $this->get_type($username, $question_uri);
 
-		if ($type == Question::TYPE_PROG) {
+		if ($type == Type::PROG) {
 			return $this->source->get_tentative_prog_dao()->get_tentative($username, $question_uri, $date, $includes);
-		} elseif ($type == Question::TYPE_SYS) {
+		} elseif ($type == Type::SYS) {
 			return $this->source->get_tentative_sys_dao()->get_tentative($username, $question_uri, $date, $includes);
-		} elseif ($type == Question::TYPE_BD) {
+		} elseif ($type == Type::BD) {
 			return $this->source->get_tentative_bd_dao()->get_tentative($username, $question_uri, $date, $includes);
 		} else {
 			return null;
@@ -86,7 +86,7 @@ class TentativeDAO extends EntitéDAO
 					[$question_uri, $username],
 				)[0]->type ?? null;
 
-			return array_key_exists($type, self::TYPES) ? self::TYPES[$type] : null;
+			return array_key_exists($type, self::TYPES) ? Type::from(self::TYPES[$type]) : null;
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}

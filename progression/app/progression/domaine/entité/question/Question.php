@@ -16,21 +16,10 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\entité\question;
 
 class Question
 {
-	const ETAT_CACHE = -1;
-	const ETAT_DEBUT = 0;
-	const ETAT_NONREUSSI = 1;
-	const ETAT_REUSSI = 2;
-
-	const TYPE_INCONNU = -1;
-	const TYPE_PROG_EVAL = 0;
-	const TYPE_SYS = 1;
-	const TYPE_BD = 2;
-	const TYPE_PROG = 3;
-
 	public $niveau = null;
 	public $titre = null;
 	public string|null $description = null;

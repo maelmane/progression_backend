@@ -20,14 +20,13 @@ use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
+use progression\domaine\entité\question\{Question, QuestionProg};
 use progression\domaine\entité\{
 	Avancement,
 	TestProg,
 	Exécutable,
-	Question,
 	TentativeProg,
 	Commentaire,
-	QuestionProg,
 	Résultat,
 };
 use progression\domaine\entité\user\{User, Rôle};
@@ -338,9 +337,6 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			titre: "Question réussie",
 			niveau: "Débutant",
 		);
-		$nouvel_avancement->etat = 2;
-		$nouvel_avancement->date_modification = 1653690241;
-		$nouvel_avancement->date_réussite = 1653690241;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
@@ -397,9 +393,6 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			titre: "Question réussie",
 			niveau: "Débutant",
 		);
-		$nouvel_avancement->etat = 2;
-		$nouvel_avancement->date_modification = 1653690241;
-		$nouvel_avancement->date_réussite = 1614374490;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
@@ -457,9 +450,6 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			titre: "Question non réussie",
 			niveau: "Débutant",
 		);
-		$nouvel_avancement->etat = 2;
-		$nouvel_avancement->date_modification = 1653690241;
-		$nouvel_avancement->date_réussite = 1653690241;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
@@ -515,8 +505,6 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			titre: "Question non réussie",
 			niveau: "Débutant",
 		);
-		$nouvel_avancement->etat = 1;
-		$nouvel_avancement->date_modification = 1653690241;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO

@@ -20,7 +20,8 @@ use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
-use progression\domaine\entité\{Avancement, TestSys, Exécutable, Question, QuestionSys, TentativeSys};
+use progression\domaine\entité\{Avancement, TestSys, Exécutable, TentativeSys};
+use progression\domaine\entité\question\{Question, QuestionSys};
 use progression\domaine\entité\user\{User, Rôle};
 
 use Illuminate\Auth\GenericUser;
