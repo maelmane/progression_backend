@@ -18,7 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Question, QuestionSys, Résultat, TentativeSys, TestSys, User};
+use progression\domaine\entité\{Question, QuestionSys, Résultat, TentativeSys, TestSys};
+use progression\domaine\entité\user\User;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;

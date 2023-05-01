@@ -20,7 +20,8 @@ use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
-use progression\domaine\entité\{Avancement, TestSys, Exécutable, Question, QuestionSys, TentativeSys, User};
+use progression\domaine\entité\{Avancement, TestSys, Exécutable, Question, QuestionSys, TentativeSys};
+use progression\domaine\entité\user\{User, Rôle};
 
 use Illuminate\Auth\GenericUser;
 
@@ -39,7 +40,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$_ENV["AUTH_TYPE"] = "no";
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::RÔLE::NORMAL]);
+		$this->user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL]);
 
 		// QuestionSys avec solution courte
 		$question_solution_courte_réussie = new QuestionSys(

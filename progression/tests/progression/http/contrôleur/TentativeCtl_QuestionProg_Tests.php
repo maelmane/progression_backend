@@ -29,8 +29,8 @@ use progression\domaine\entité\{
 	Commentaire,
 	QuestionProg,
 	Résultat,
-	User,
 };
+use progression\domaine\entité\user\{User, Rôle};
 use progression\dao\question\ChargeurException;
 use Illuminate\Auth\GenericUser;
 
@@ -49,7 +49,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$_ENV["AUTH_TYPE"] = "no";
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::RÔLE::NORMAL]);
+		$this->user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL]);
 
 		// QuestionProg
 		//aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU

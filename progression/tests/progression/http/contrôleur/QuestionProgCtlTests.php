@@ -18,7 +18,8 @@
 
 use progression\ContrôleurTestCase;
 
-use progression\domaine\entité\{Question, QuestionProg, Exécutable, TestProg, User};
+use progression\domaine\entité\{Question, QuestionProg, Exécutable, TestProg};
+use progression\domaine\entité\user\{User, Rôle};
 use progression\dao\DAOFactory;
 use progression\dao\question\ChargeurException;
 use Illuminate\Auth\GenericUser;
@@ -33,7 +34,7 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$this->user = new GenericUser(["username" => "bob", "rôle" => User::RÔLE::NORMAL]);
+		$this->user = new GenericUser(["username" => "bob", "rôle" => Rôle::NORMAL]);
 
 		// Question
 		$question = new QuestionProg();

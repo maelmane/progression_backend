@@ -16,11 +16,10 @@
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\entité\user;
 
 use PHPUnit\Framework\TestCase;
 use \InvalidArgumentException;
-use progression\domaine\entité\User;
 
 final class UserTests extends TestCase
 {
@@ -28,15 +27,14 @@ final class UserTests extends TestCase
 	{
 		$username_attendu = "bob";
 		$courriel_attendu = "bob@gmail.com";
-		$résultat_obtenu = new User("bob", "bob@gmail.com", état: User::ÉTAT::ACTIF, rôle: User::RÔLE::NORMAL);
+		$résultat_obtenu = new User("bob", "bob@gmail.com", état: État::ACTIF, rôle: Rôle::NORMAL);
 
-		$état_attendu = User::ÉTAT::ACTIF;
-		$rôle_attendu = User::RÔLE::NORMAL;
+		$état_attendu = État::ACTIF;
+		$rôle_attendu = Rôle::NORMAL;
 
 		$this->assertEquals($username_attendu, $résultat_obtenu->username);
 		$this->assertEquals($courriel_attendu, $résultat_obtenu->courriel);
 		$this->assertEquals($état_attendu, $résultat_obtenu->état);
 		$this->assertEquals($rôle_attendu, $résultat_obtenu->rôle);
 	}
-
 }

@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use progression\domaine\interacteur\ObtenirUserInt;
-use progression\domaine\entité\User;
+use progression\domaine\entité\user\{User, État, Rôle};
 use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
 use UnexpectedValueException;
@@ -43,7 +43,7 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 		Gate::before(function ($user, $ability) {
-			if ($user->rôle == User::RÔLE::ADMIN) {
+			if ($user->rôle == Rôle::ADMIN) {
 				return true;
 			}
 		});

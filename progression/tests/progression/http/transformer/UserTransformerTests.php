@@ -18,7 +18,7 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\User;
+use progression\domaine\entité\user\User;
 use progression\domaine\entité\Clé;
 use PHPUnit\Framework\TestCase;
 
@@ -34,8 +34,8 @@ final class UserTransformerTests extends TestCase
 			"id" => "bob",
 			"courriel" => null,
 			"username" => "bob",
-			"état" => 0,
-			"rôle" => 0,
+			"état" => "inactif",
+			"rôle" => "normal",
 			"préférences" => "",
 			"links" => [
 				"self" => "https://example.com/user/bob",

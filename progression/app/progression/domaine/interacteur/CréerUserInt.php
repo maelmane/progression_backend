@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\User;
+use progression\domaine\entité\user\User;
 
 class CréerUserInt extends Interacteur
 {

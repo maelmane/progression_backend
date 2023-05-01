@@ -19,7 +19,8 @@
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{Avancement, User, TentativeProg, Sauvegarde, Commentaire};
+use progression\domaine\entité\{Avancement, TentativeProg, Sauvegarde, Commentaire};
+use progression\domaine\entité\user\{User, Rôle};
 use Illuminate\Auth\GenericUser;
 
 final class AvancementsCtlTests extends ContrôleurTestCase
@@ -168,7 +169,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_ayant_des_avancements_lorsquon_appelle_get_on_obtient_tous_les_avancements_et_ses_relations_sous_forme_json()
 	{
-		$user = new GenericUser(["username" => "jdoe", "rôle" => User::RÔLE::NORMAL]);
+		$user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL]);
 		$résultat_observé = $this->actingAs($user)->call("GET", "/user/jdoe/avancements");
 
 		$this->assertResponseStatus(200);
@@ -180,7 +181,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_ayant_des_avancements_lorsquon_appelle_get_en_incluant_les_tentatives_on_obtient_tous_les_avancements_et_ses_relations_sous_forme_json()
 	{
-		$user = new GenericUser(["username" => "jdoe", "rôle" => User::RÔLE::NORMAL]);
+		$user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL]);
 		$résultat_observé = $this->actingAs($user)->call("GET", "/user/jdoe/avancements?include=tentatives");
 
 		$this->assertResponseStatus(200);
@@ -192,7 +193,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_ayant_des_avancements_lorsquon_appelle_get_en_incluant_les_tentatives_et_les_sauvegardes_on_obtient_tous_les_avancements_et_ses_relations_sous_forme_json()
 	{
-		$user = new GenericUser(["username" => "jdoe", "rôle" => User::RÔLE::NORMAL]);
+		$user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL]);
 		$résultat_observé = $this->actingAs($user)->call(
 			"GET",
 			"/user/jdoe/avancements?include=tentatives,sauvegardes",
@@ -207,7 +208,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_ayant_des_avancements_lorsquon_appelle_get_en_incluant_les_tentatives_leur_commentaires_et_les_sauvegardes_on_obtient_tous_les_avancements_et_ses_relations_sous_forme_json()
 	{
-		$user = new GenericUser(["username" => "jdoe", "rôle" => User::RÔLE::NORMAL]);
+		$user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL]);
 		$résultat_observé = $this->actingAs($user)->call(
 			"GET",
 			"/user/jdoe/avancements?include=tentatives.commentaires,sauvegardes",
@@ -223,7 +224,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_sans_avancement_lorsquon_appelle_get_on_obtient_un_tableau_vide()
 	{
-		$user = new GenericUser(["username" => "bob", "rôle" => User::RÔLE::NORMAL]);
+		$user = new GenericUser(["username" => "bob", "rôle" => Rôle::NORMAL]);
 		$résultat_observé = $this->actingAs($user)->call("GET", "/user/bob/avancements");
 
 		$this->assertResponseStatus(200);

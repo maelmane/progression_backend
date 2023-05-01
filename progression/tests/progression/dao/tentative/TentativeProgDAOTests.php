@@ -18,7 +18,8 @@
 
 namespace progression\dao\tentative;
 
-use progression\domaine\entité\{TentativeProg, Résultat, Commentaire, User};
+use progression\domaine\entité\{TentativeProg, Résultat, Commentaire};
+use progression\domaine\entité\user\{User, Rôle};
 use progression\TestCase;
 use progression\dao\{DAOException, DAOFactory};
 use progression\dao\EntitéDAO;
@@ -56,7 +57,7 @@ final class TentativeProgDAOTests extends TestCase
 	public function test_étant_donné_une_TentativeProg_non_réussie_lorsquon_récupère_la_tentative_en_incluant_les_commentaires_et_leur_créateur_on_obtient_une_tentative_de_type_prog_avec_ses_commentaires_et_leur_créateur()
 	{
 		$this->jdoe = new User("jdoe");
-		$this->admin = new User("admin", rôle: User::RÔLE::ADMIN);
+		$this->admin = new User("admin", rôle: Rôle::ADMIN);
 		$this->stefany = new User("Stefany");
 
 		$commentaires = [];

@@ -3,7 +3,7 @@
     "type": "avancement",
     "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
     "attributes": {
-      "état": 2,
+	  "état": 2,
       "titre": "Titre",
       "niveau": "facile",
       "date_modification": 1614965818,

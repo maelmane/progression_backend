@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{User};
+use progression\domaine\entité\user\{User, État};
 use PHPUnit\Framework\TestCase;
 
 final class ModifierUserIntTests extends TestCase
@@ -47,45 +47,45 @@ final class ModifierUserIntTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_inactif_lorsquon_modifie_son_état_pour_actif_on_obtient_un_utilisateur_actif()
 	{
-		$user_test = new User("bob", état: ÉTAT::INACTIF);
+		$user_test = new User("bob", état: État::INACTIF);
 
 		$interacteur = new ModifierUserInt();
-		$user_modifié = $interacteur->modifier_état($user_test, ÉTAT::ACTIF);
+		$user_modifié = $interacteur->modifier_état($user_test, État::ACTIF);
 
-		$this->assertEquals(new User("bob", état: ÉTAT::ACTIF), $user_test);
-		$this->assertEquals(new User("bob", état: ÉTAT::ACTIF), $user_modifié);
+		$this->assertEquals(new User("bob", état: État::ACTIF), $user_test);
+		$this->assertEquals(new User("bob", état: État::ACTIF), $user_modifié);
 	}
 
 	public function test_étant_donné_un_utilisateur_en_attente_lorsquon_modifie_son_état_pour_actif_on_obtient_un_utilisateur_actif()
 	{
-		$user_test = new User("bob", état: ÉTAT::ATTENTE_DE_VALIDATION);
+		$user_test = new User("bob", état: État::ATTENTE_DE_VALIDATION);
 
 		$interacteur = new ModifierUserInt();
-		$user_modifié = $interacteur->modifier_état($user_test, ÉTAT::ACTIF);
+		$user_modifié = $interacteur->modifier_état($user_test, État::ACTIF);
 
-		$this->assertEquals(new User("bob", état: ÉTAT::ACTIF), $user_test);
-		$this->assertEquals(new User("bob", état: ÉTAT::ACTIF), $user_modifié);
+		$this->assertEquals(new User("bob", état: État::ACTIF), $user_test);
+		$this->assertEquals(new User("bob", état: État::ACTIF), $user_modifié);
 	}
 
 	public function test_étant_donné_un_utilisateur_en_attente_lorsquon_modifie_son_état_pour_inactif_on_obtient_un_utilisateur_inactif()
 	{
-		$user_test = new User("bob", état: ÉTAT::ATTENTE_DE_VALIDATION);
+		$user_test = new User("bob", état: État::ATTENTE_DE_VALIDATION);
 
 		$interacteur = new ModifierUserInt();
-		$user_modifié = $interacteur->modifier_état($user_test, ÉTAT::INACTIF);
+		$user_modifié = $interacteur->modifier_état($user_test, État::INACTIF);
 
-		$this->assertEquals(new User("bob", état: ÉTAT::INACTIF), $user_test);
-		$this->assertEquals(new User("bob", état: ÉTAT::INACTIF), $user_modifié);
+		$this->assertEquals(new User("bob", état: État::INACTIF), $user_test);
+		$this->assertEquals(new User("bob", état: État::INACTIF), $user_modifié);
 	}
 
 	public function test_étant_donné_un_utilisateur_inactif_lorsquon_modifie_son_état_pour_en_attente_on_obtient_une_exception()
 	{
-		$user_test = new User("bob", état: ÉTAT::INACTIF);
+		$user_test = new User("bob", état: État::INACTIF);
 
 		$interacteur = new ModifierUserInt();
 
 		$this->expectException(\DomainException::class);
 
-		$user_modifié = $interacteur->modifier_état($user_test, ÉTAT::ATTENTE_DE_VALIDATION);
+		$user_modifié = $interacteur->modifier_état($user_test, État::ATTENTE_DE_VALIDATION);
 	}
 }

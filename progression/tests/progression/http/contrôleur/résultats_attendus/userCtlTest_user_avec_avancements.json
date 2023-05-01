@@ -42,7 +42,7 @@
       "type": "avancement",
       "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
       "attributes": {
-        "état": 0,
+        "état" : 0,
         "titre": "",
         "niveau": "",
         "date_modification": null,
@@ -77,7 +77,7 @@
         "niveau": "",
         "titre": "",
         "extra": "",
-        "état": 0
+        "état" : 0
       },
       "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
       "links": {

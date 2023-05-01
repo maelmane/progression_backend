@@ -19,7 +19,8 @@
 namespace progression\domaine\interacteur;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{User, Clé};
+use progression\domaine\entité\Clé;
+use progression\domaine\entité\user\User;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 

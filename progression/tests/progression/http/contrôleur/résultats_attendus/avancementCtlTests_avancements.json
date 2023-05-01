@@ -6,7 +6,7 @@
         "date_réussite": null,
         "niveau": "",
         "titre": "",
-        "état": "inactif",
+        "état": 0,
         "extra": ""
       },
       "id": "jdoe/dXJpX2E",
@@ -37,7 +37,7 @@
         "date_réussite": null,
         "niveau": "",
         "titre": "",
-        "état": "inactif",
+        "état": 0,
         "extra": ""
       },
       "id": "jdoe/dXJpX2I",

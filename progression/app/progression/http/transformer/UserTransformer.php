@@ -18,7 +18,7 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\User;
+use progression\domaine\entité\user\{User, État, Rôle};
 use progression\util\Encodage;
 
 class UserTransformer extends BaseTransformer

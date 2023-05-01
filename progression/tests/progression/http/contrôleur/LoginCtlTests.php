@@ -19,7 +19,8 @@
 use progression\ContrôleurTestCase;
 
 use progression\http\contrôleur\GénérateurDeToken;
-use progression\domaine\entité\{User, Clé};
+use progression\domaine\entité\Clé;
+use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
 
@@ -31,14 +32,14 @@ final class LoginCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$this->user = new GenericUser(["username" => "bob", "rôle" => User::RÔLE::NORMAL]);
+		$this->user = new GenericUser(["username" => "bob", "rôle" => Rôle::NORMAL]);
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob")
-			->andReturn(new User("bob", ÉTAT::ACTIF));
+			->andReturn(new User("bob", état: État::ACTIF));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob", [])

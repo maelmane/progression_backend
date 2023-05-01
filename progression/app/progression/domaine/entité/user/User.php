@@ -16,16 +16,12 @@
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\entité\user;
 
 use InvalidArgumentException;
 
 class User
 {
-	const RÔLE = Rôle::class;
-	const ROLE = Rôle::class;
-	const ÉTAT = État::class;
-
 	public $username;
 	public string|null $courriel;
 	public État $état = État::INACTIF;

@@ -18,7 +18,8 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Avancement, User, Clé, Question};
+use progression\domaine\entité\{Avancement, Clé, Question};
+use progression\domaine\entité\user\{User, Rôle};
 use progression\TestCase;
 
 final class UserDAOTests extends TestCase
@@ -141,12 +142,12 @@ final class UserDAOTests extends TestCase
 		$avancement1 = new Avancement([], "Un titre", "facile");
 		$avancement2 = new Avancement([], "Un titre 2", "facile");
 
-		$réponse_attendue = new User("bob", rôle: User::RÔLE::ADMIN);
+		$réponse_attendue = new User("bob", rôle: Rôle::ADMIN);
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [];
 
 		$user_test = (new UserDAO())->get_user("bob");
-		$user_test->rôle = User::RÔLE::ADMIN;
+		$user_test->rôle = Rôle::ADMIN;
 
 		$réponse_observée = (new UserDAO())->save($user_test);
 		$this->assertEquals($réponse_attendue, $réponse_observée);

@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\User;
+use progression\domaine\entité\user\User;
 use progression\dao\DAOFactory;
 
 class SauvegarderUtilisateurInt extends Interacteur

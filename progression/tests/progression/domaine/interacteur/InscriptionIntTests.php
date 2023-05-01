@@ -19,7 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\User;
+use progression\domaine\entité\user\{User, État, Rôle};
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -55,14 +55,16 @@ final class InscriptionIntTests extends TestCase
 		$mockUserDao
 			->allows()
 			->get_user("roger")
-			->andReturn(null, new User("roger", "roger@gmail.com", ÉTAT::ATTENTE_DE_VALIDATION));
+			->andReturn(null, new User("roger", "roger@gmail.com", État::ATTENTE_DE_VALIDATION));
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($user) {
-				return $user->username == "roger" && $user->rôle == User::RÔLE::NORMAL && $user->état == ÉTAT::ATTENTE_DE_VALIDATION;
+				return $user->username == "roger" &&
+					$user->rôle == Rôle::NORMAL &&
+					$user->état == État::ATTENTE_DE_VALIDATION;
 			})
 			->once()
-			->andReturn(new User("roger", "roger@gmail.com", ÉTAT::ATTENTE_DE_VALIDATION));
+			->andReturn(new User("roger", "roger@gmail.com", État::ATTENTE_DE_VALIDATION));
 		$mockUserDao
 			->shouldReceive("set_password")
 			->once()
@@ -72,7 +74,7 @@ final class InscriptionIntTests extends TestCase
 
 		$user = (new InscriptionInt())->effectuer_inscription("roger", "roger@gmail.com", "password");
 
-		$this->assertEquals(new User("roger", "roger@gmail.com", ÉTAT::ATTENTE_DE_VALIDATION), $user);
+		$this->assertEquals(new User("roger", "roger@gmail.com", État::ATTENTE_DE_VALIDATION), $user);
 	}
 
 	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_no_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User_actif()
@@ -88,7 +90,7 @@ final class InscriptionIntTests extends TestCase
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($user) {
-				return $user->username == "roger" && $user->état == ÉTAT::ACTIF;
+				return $user->username == "roger" && $user->état == État::ACTIF;
 			})
 			->once()
 			->andReturnArg(0);
@@ -96,7 +98,7 @@ final class InscriptionIntTests extends TestCase
 
 		$user = (new InscriptionInt())->effectuer_inscription("roger");
 
-		$this->assertEquals(new User("roger", état: ÉTAT::ACTIF), $user);
+		$this->assertEquals(new User("roger", état: État::ACTIF), $user);
 	}
 
 	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_local_lorsquon_effectue_linscription_sans_mdp_on_obtient_null()
@@ -144,11 +146,11 @@ final class InscriptionIntTests extends TestCase
 		$mockUserDao
 			->allows()
 			->get_user("admin")
-			->andReturn(null, new User("admin", "admin@gmail.com", ÉTAT::ACTIF, User::RÔLE::ADMIN));
+			->andReturn(null, new User("admin", "admin@gmail.com", État::ACTIF, Rôle::ADMIN));
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($user) {
-				return $user->username == "admin" && $user->état == ÉTAT::ACTIF && $user->rôle == User::RÔLE::ADMIN;
+				return $user->username == "admin" && $user->état == État::ACTIF && $user->rôle == Rôle::ADMIN;
 			})
 			->once()
 			->andReturnArg(0);
@@ -163,10 +165,10 @@ final class InscriptionIntTests extends TestCase
 			"admin",
 			"admin@gmail.com",
 			"password",
-			rôle: User::RÔLE::ADMIN,
+			rôle: Rôle::ADMIN,
 		);
 
-		$this->assertEquals(new User("admin", "admin@gmail.com", ÉTAT::ACTIF, User::RÔLE::ADMIN), $user);
+		$this->assertEquals(new User("admin", "admin@gmail.com", État::ACTIF, Rôle::ADMIN), $user);
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_effectue_à_nouveau_linscription_on_obtient_null()

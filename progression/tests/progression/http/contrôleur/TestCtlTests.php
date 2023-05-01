@@ -19,7 +19,9 @@
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{QuestionProg, Question, TestProg, QuestionSys, TestSys, User};
+use progression\domaine\entité\{QuestionProg, Question, TestProg, QuestionSys, TestSys};
+use progression\domaine\entité\user\{User, Rôle};
+
 use Illuminate\Auth\GenericUser;
 
 final class TestCtlTests extends ContrôleurTestCase
@@ -29,7 +31,7 @@ final class TestCtlTests extends ContrôleurTestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		$this->user = new GenericUser(["username" => "bob", "rôle" => User::RÔLE::NORMAL]);
+		$this->user = new GenericUser(["username" => "bob", "rôle" => Rôle::NORMAL]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
 

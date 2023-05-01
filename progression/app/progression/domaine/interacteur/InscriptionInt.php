@@ -19,16 +19,12 @@
 namespace progression\domaine\interacteur;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\User;
+use progression\domaine\entité\user\{User, État, Rôle};
 
 class InscriptionInt extends Interacteur
 {
-	function effectuer_inscription(
-		$username,
-		string|null $courriel = null,
-		$password = null,
-		int $rôle = User::RÔLE::NORMAL
-	) {
+	function effectuer_inscription($username, string|null $courriel = null, $password = null, Rôle $rôle = Rôle::NORMAL)
+	{
 		if (!$username) {
 			return null;
 		}
@@ -51,7 +47,7 @@ class InscriptionInt extends Interacteur
 		}
 	}
 
-	private function effectuer_inscription_avec_mdp($username, string $courriel, $password, int $rôle)
+	private function effectuer_inscription_avec_mdp($username, string $courriel, $password, Rôle $rôle)
 	{
 		$dao = $this->source_dao->get_user_dao();
 
@@ -66,7 +62,7 @@ class InscriptionInt extends Interacteur
 				$username,
 				$courriel,
 				rôle: $rôle,
-				état: $rôle == User::RÔLE::ADMIN ? ÉTAT::ACTIF : ÉTAT::ATTENTE_DE_VALIDATION,
+				état: $rôle == Rôle::ADMIN ? État::ACTIF : État::ATTENTE_DE_VALIDATION,
 			),
 		);
 		$dao->set_password($user, $password);
@@ -74,10 +70,10 @@ class InscriptionInt extends Interacteur
 		return $user;
 	}
 
-	private function effectuer_inscription_sans_mdp($username, int $rôle)
+	private function effectuer_inscription_sans_mdp($username, Rôle $rôle)
 	{
 		$dao = $this->source_dao->get_user_dao();
 		return $dao->get_user($username) ??
-			$dao->save(new User($username, courriel: null, rôle: $rôle, état: ÉTAT::ACTIF));
+			$dao->save(new User($username, courriel: null, rôle: $rôle, état: État::ACTIF));
 	}
 }

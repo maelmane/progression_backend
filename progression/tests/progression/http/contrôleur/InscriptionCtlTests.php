@@ -19,7 +19,7 @@
 use progression\ContrôleurTestCase;
 
 use progression\http\contrôleur\GénérateurDeToken;
-use progression\domaine\entité\User;
+use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
 
@@ -33,7 +33,7 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 
 		putenv("AUTH_LDAP=false");
 
-		$this->user = new GenericUser(["username" => "bob", "rôle" => User::RÔLE::NORMAL]);
+		$this->user = new GenericUser(["username" => "bob", "rôle" => Rôle::NORMAL]);
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -100,8 +100,7 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "Marcel" &&
-                                       $user->état == User::ÉTAT::ACTIF;
+				return $user->username == "Marcel" && $user->état == État::ACTIF;
 			})
 			->andReturnArg(0);
 
@@ -171,8 +170,7 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "Marcel2" &&
-                                       $user->état == User::ÉTAT::ATTENTE_DE_VALIDATION;
+				return $user->username == "Marcel2" && $user->état == État::ATTENTE_DE_VALIDATION;
 			})
 			->andReturnArg(0)
 			->shouldReceive("set_password")

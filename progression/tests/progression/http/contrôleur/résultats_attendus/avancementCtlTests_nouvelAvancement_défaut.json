@@ -3,7 +3,7 @@
 		"type": "avancement",
 		"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb25fZGVmYXV0",
 		"attributes": {
-			"état": "inactif",
+			"état": 0,
 			"date_modification": null,
 			"date_réussite": null,
 			"niveau": "test",

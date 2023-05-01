@@ -18,7 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{TentativeProg, Avancement, Question, QuestionProg, QuestionSys, User, TentativeSys};
+use progression\domaine\entité\{TentativeProg, Avancement, Question, QuestionProg, QuestionSys, TentativeSys};
+use progression\domaine\entité\user\User;
 use progression\domaine\interacteur\SauvegarderAvancementInt;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;

@@ -18,7 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Commentaire, User};
+use progression\domaine\entité\Commentaire;
+use progression\domaine\entité\user\User;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;

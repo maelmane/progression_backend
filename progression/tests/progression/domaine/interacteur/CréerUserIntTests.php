@@ -19,7 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{User};
+use progression\domaine\entité\user\{User, Rôle};
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -61,7 +61,7 @@ final class CréerUserIntTests extends TestCase
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($user) {
-				return $user->username == "bob" && $user->rôle == USER::RÔLE::NORMAL;
+				return $user->username == "bob" && $user->rôle == Rôle::NORMAL;
 			})
 			->andReturnArg(0);
 
@@ -78,9 +78,7 @@ final class CréerUserIntTests extends TestCase
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($user) {
-				return $user->username == "bob" &&
-					$user->courriel == "bob@gmail.com" &&
-					$user->rôle == USER::RÔLE::NORMAL;
+				return $user->username == "bob" && $user->courriel == "bob@gmail.com" && $user->rôle == Rôle::NORMAL;
 			})
 			->andReturnArg(0);
 
