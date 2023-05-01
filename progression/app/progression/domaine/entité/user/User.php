@@ -22,7 +22,7 @@ use InvalidArgumentException;
 
 class User
 {
-	public $username;
+	public string $username;
 	public string|null $courriel;
 	public État $état = État::INACTIF;
 	public Rôle $rôle = Rôle::NORMAL;
@@ -31,7 +31,7 @@ class User
 	public string $préférences;
 
 	public function __construct(
-		$username,
+		string $username,
 		string|null $courriel = null,
 		État $état = État::INACTIF,
 		Rôle $rôle = Rôle::NORMAL,

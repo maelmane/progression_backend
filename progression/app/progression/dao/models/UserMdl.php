@@ -34,23 +34,23 @@ class UserMdl extends Model
 	public function getÉtatAttribute(): État
 	{
 		$états = array_column(État::cases(), "value");
-		return État::from($états[$this->etat]);
+		return État::from($états[$this->attributes["etat"]]);
 	}
-	public function setÉtatAttribute(État $état)
+	public function setÉtatAttribute(État $état): void
 	{
 		$états = array_column(État::cases(), "value");
-		$this->etat = array_search($état->value, $états);
+		$this->attributes["etat"] = array_search($état->value, $états);
 	}
 
 	public function getRôleAttribute(): Rôle
 	{
 		$rôles = array_column(Rôle::cases(), "value");
-		return Rôle::from($rôles[$this->role]);
+		return Rôle::from($rôles[$this->attributes["role"]]);
 	}
-	public function setRôleAttribute(Rôle $rôle)
+	public function setRôleAttribute(Rôle $rôle): void
 	{
 		$rôles = array_column(Rôle::cases(), "value");
-		$this->role = array_search($rôle->value, $rôles);
+		$this->attributes["role"] = array_search($rôle->value, $rôles);
 	}
 
 	public function avancements(): HasMany

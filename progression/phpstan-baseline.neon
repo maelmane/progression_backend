@@ -1,6 +1,10 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Property progression\\\\dao\\\\models\\\\UserMdl\\:\\:\\$appends type has no value type specified in iterable type array.$#"
+			count: 1
+			path: app/progression/dao/models/UserMdl.php
+		-
 			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:construire\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/dao/AvancementDAO.php
@@ -2031,44 +2035,24 @@ parameters:
 			path: app/progression/domaine/entité/TestSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\User\\:\\:__construct\\(\\) has parameter \\$avancements with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\user\\\\User\\:\\:__construct\\(\\) has parameter \\$avancements with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/user/User.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\User\\:\\:__construct\\(\\) has parameter \\$clés with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\user\\\\User\\:\\:__construct\\(\\) has parameter \\$clés with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/user/User.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\User\\:\\:__construct\\(\\) has parameter \\$rôle with no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\user\\\\User\\:\\:\\$avancements has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/user/User.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\User\\:\\:__construct\\(\\) has parameter \\$username with no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\user\\\\User\\:\\:\\$clés has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\User\\:\\:\\$avancements has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/User.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\User\\:\\:\\$clés has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/User.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\User\\:\\:\\$rôle has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/User.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\User\\:\\:\\$username has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/user/User.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ConnecterConteneurInt\\:\\:connexion_conteneur\\(\\) has no return type specified\\.$#"
