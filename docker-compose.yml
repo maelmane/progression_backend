@@ -72,7 +72,7 @@ services:
     restart: "no"
     networks:
       - progression_net
-    command: prettier /var/www/progression/**/*.php
+    command: prettier -c /var/www/progression/**/*.php
 
   doc:
     image: $CI_REGISTRY/progression/publication:latest
