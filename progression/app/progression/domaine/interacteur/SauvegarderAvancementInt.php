@@ -18,7 +18,9 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Avancement, Question, Tentative, User};
+use progression\domaine\entité\{Avancement, Tentative};
+use progression\domaine\entité\question\Question;
+use progression\domaine\entité\user\User;
 
 class SauvegarderAvancementInt extends Interacteur
 {
@@ -26,7 +28,7 @@ class SauvegarderAvancementInt extends Interacteur
 		string $username,
 		string $question_uri,
 		Avancement $avancement,
-		Question $question = null
+		Question $question = null,
 	): Avancement|null {
 		$question = $question ?? $this->source_dao->get_question_dao()->get_question($question_uri);
 

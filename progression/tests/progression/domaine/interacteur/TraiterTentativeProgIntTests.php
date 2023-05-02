@@ -18,7 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{QuestionProg, TentativeProg, TestProg, Résultat};
+use progression\domaine\entité\question\QuestionProg;
+use progression\domaine\entité\{TentativeProg, TestProg, Résultat};
 use PHPUnit\Framework\TestCase;
 
 final class TraiterTentativeProgIntTests extends TestCase

@@ -18,7 +18,10 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Avancement, User, Clé, Question};
+use progression\domaine\entité\Avancement;
+use progression\domaine\entité\clé\{Clé, Portée};
+use progression\domaine\entité\question\{Question, État};
+use progression\domaine\entité\user\{User, Rôle};
 use progression\TestCase;
 
 final class UserDAOTests extends TestCase
@@ -32,15 +35,15 @@ final class UserDAOTests extends TestCase
 		$avancement1 = new Avancement([], "Un titre", "facile");
 		$avancement1->date_modification = 1615696276;
 		$avancement1->date_réussite = null;
-		$avancement1->etat = Question::ETAT_NONREUSSI;
+		$avancement1->etat = État::NONREUSSI;
 		$avancement2 = new Avancement([], "Un titre", "facile");
 		$avancement2->date_modification = 1645739981;
 		$avancement2->date_réussite = 1645739959;
-		$avancement2->etat = Question::ETAT_NONREUSSI;
+		$avancement2->etat = État::NONREUSSI;
 		$avancement3 = new Avancement([], "Un titre 2", "facile");
 		$avancement3->date_modification = 1645739991;
 		$avancement3->date_réussite = 1645739969;
-		$avancement3->etat = Question::ETAT_REUSSI;
+		$avancement3->etat = État::REUSSI;
 
 		$this->bob = new User("bob");
 		$this->bob->avancements = [
@@ -96,8 +99,8 @@ final class UserDAOTests extends TestCase
 		$réponse_attendue = $this->bob;
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [
-			"clé de test" => new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
-			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
+			"clé de test" => new Clé(null, 1624593600, 1624680000, Portée::AUTH),
+			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Portée::AUTH),
 		];
 
 		$réponse_observée = (new UserDAO())->get_user("bob", ["clés"]);
@@ -108,8 +111,8 @@ final class UserDAOTests extends TestCase
 	{
 		$réponse_attendue = $this->bob;
 		$réponse_attendue->clés = [
-			"clé de test" => new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
-			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
+			"clé de test" => new Clé(null, 1624593600, 1624680000, Portée::AUTH),
+			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Portée::AUTH),
 		];
 
 		$réponse_observée = (new UserDAO())->get_user("bob", ["avancements", "clés"]);
@@ -141,12 +144,12 @@ final class UserDAOTests extends TestCase
 		$avancement1 = new Avancement([], "Un titre", "facile");
 		$avancement2 = new Avancement([], "Un titre 2", "facile");
 
-		$réponse_attendue = new User("bob", User::ROLE_ADMIN);
+		$réponse_attendue = new User("bob", rôle: Rôle::ADMIN);
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [];
 
 		$user_test = (new UserDAO())->get_user("bob");
-		$user_test->rôle = User::ROLE_ADMIN;
+		$user_test->rôle = Rôle::ADMIN;
 
 		$réponse_observée = (new UserDAO())->save($user_test);
 		$this->assertEquals($réponse_attendue, $réponse_observée);

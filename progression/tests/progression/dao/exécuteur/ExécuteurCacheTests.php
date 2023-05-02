@@ -30,9 +30,10 @@ final class ExécuteurCacheTests extends TestCase
 		parent::setUp();
 
 		$this->mock_exécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
-		$this->mock_exécuteur
-			->shouldReceive("exécuter_prog")
-			->andReturn(["temps_exécution" => 12345, "résultats" => [["output" => "sortie exécutée", "errors" => ""]]]);
+		$this->mock_exécuteur->shouldReceive("exécuter_prog")->andReturn([
+			"temps_exécution" => 12345,
+			"résultats" => [["output" => "sortie exécutée", "errors" => ""]],
+		]);
 		$this->mock_standardiseur = Mockery::mock("progression\\dao\\exécuteur\\Standardiseur");
 		$this->mock_standardiseur
 			->shouldReceive("standardiser")
@@ -73,7 +74,10 @@ final class ExécuteurCacheTests extends TestCase
 		);
 
 		$this->assertEquals(
-			["temps_exécution" => 12345, "résultats" => [["output" => "sortie exécutée", "errors" => ""]]],
+			[
+				"temps_exécution" => 12345,
+				"résultats" => [["output" => "sortie exécutée", "errors" => ""]],
+			],
 			$résultat,
 		);
 	}
@@ -99,7 +103,10 @@ final class ExécuteurCacheTests extends TestCase
 		);
 
 		$this->assertEquals(
-			["temps_exec" => 0, "résultats" => [["output" => "sortie prise en cache", "errors" => ""]]],
+			[
+				"temps_exec" => 0,
+				"résultats" => [["output" => "sortie prise en cache", "errors" => ""]],
+			],
 			$résultat,
 		);
 	}
@@ -124,7 +131,13 @@ final class ExécuteurCacheTests extends TestCase
 			$test,
 		);
 
-		$this->assertEquals(["temps_exec" => 0, "résultats" => [["output" => "", "errors" => ""]]], $résultat);
+		$this->assertEquals(
+			[
+				"temps_exec" => 0,
+				"résultats" => [["output" => "", "errors" => ""]],
+			],
+			$résultat,
+		);
 	}
 
 	public function test_étant_donné_une_cache_contenant_le_code_à_exécuter_lorsquon_exécute_le_même_code_avec_un_autre_langage_les_mêmes_entrées_et_paramètres_on_obtient_le_code_exécuté()
@@ -147,7 +160,10 @@ final class ExécuteurCacheTests extends TestCase
 		);
 
 		$this->assertEquals(
-			["temps_exécution" => 12345, "résultats" => [["output" => "sortie exécutée", "errors" => ""]]],
+			[
+				"temps_exécution" => 12345,
+				"résultats" => [["output" => "sortie exécutée", "errors" => ""]],
+			],
 			$résultat,
 		);
 	}
@@ -172,7 +188,10 @@ final class ExécuteurCacheTests extends TestCase
 		);
 
 		$this->assertEquals(
-			["temps_exécution" => 12345, "résultats" => [["output" => "sortie exécutée", "errors" => ""]]],
+			[
+				"temps_exécution" => 12345,
+				"résultats" => [["output" => "sortie exécutée", "errors" => ""]],
+			],
 			$résultat,
 		);
 	}
@@ -197,7 +216,10 @@ final class ExécuteurCacheTests extends TestCase
 		);
 
 		$this->assertEquals(
-			["temps_exécution" => 12345, "résultats" => [["output" => "sortie exécutée", "errors" => ""]]],
+			[
+				"temps_exécution" => 12345,
+				"résultats" => [["output" => "sortie exécutée", "errors" => ""]],
+			],
 			$résultat,
 		);
 	}
@@ -223,7 +245,10 @@ final class ExécuteurCacheTests extends TestCase
 		);
 
 		$this->assertEquals(
-			["temps_exec" => 0, "résultats" => [["output" => "sortie prise en cache", "errors" => ""]]],
+			[
+				"temps_exec" => 0,
+				"résultats" => [["output" => "sortie prise en cache", "errors" => ""]],
+			],
 			$résultat,
 		);
 	}

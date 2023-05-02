@@ -17,8 +17,9 @@
  */
 
 use progression\ContrôleurTestCase;
-
-use progression\domaine\entité\{Question, QuestionSys, User, TestSys};
+use progression\domaine\entité\question\{Question, QuestionSys, Type};
+use progression\domaine\entité\TestSys;
+use progression\domaine\entité\user\{User, Rôle};
 use progression\dao\DAOFactory;
 use progression\dao\question\ChargeurException;
 use Illuminate\Auth\GenericUser;
@@ -30,11 +31,14 @@ final class QuestionSysCtlTests extends ContrôleurTestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser([
+			"username" => "jdoe",
+			"rôle" => Rôle::NORMAL,
+		]);
 
 		//QuestionSys avec solution sans pregmatch
 		$questionSys = new QuestionSys();
-		$questionSys->type = Question::TYPE_SYS;
+		$questionSys->type = Type::SYS;
 		$questionSys->nom = "toutes_les_permissions2";
 		$questionSys->solution = "laSolution";
 		$questionSys->uri = "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions2";

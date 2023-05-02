@@ -16,31 +16,12 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\entité\question;
 
-class Question
+class QuestionProg extends Question
 {
-	const ETAT_CACHE = -1;
-	const ETAT_DEBUT = 0;
-	const ETAT_NONREUSSI = 1;
-	const ETAT_REUSSI = 2;
-
-	const TYPE_INCONNU = -1;
-	const TYPE_PROG_EVAL = 0;
-	const TYPE_SYS = 1;
-	const TYPE_BD = 2;
-	const TYPE_PROG = 3;
-
-	public $niveau = null;
-	public $titre = null;
-	public string|null $description = null;
-	public string|null $objectif = null;
-	public $enonce = null;
-	public $auteur = null;
-	public $licence = null;
-	public $feedback_pos = null;
-	public $feedback_neg = null;
-	public $feedback_err = null;
+	public $exécutables = [];
+	public $tests = [];
 
 	public function __construct(
 		$niveau = null,
@@ -52,17 +33,23 @@ class Question
 		$feedback_pos = null,
 		$feedback_neg = null,
 		$feedback_err = null,
-		string|null $description = null
+		$exécutables = [],
+		$tests = [],
+		string|null $description = null,
 	) {
-		$this->niveau = $niveau;
-		$this->titre = $titre;
-		$this->objectif = $objectif;
-		$this->enonce = $enonce;
-		$this->auteur = $auteur;
-		$this->licence = $licence;
-		$this->feedback_pos = $feedback_pos;
-		$this->feedback_neg = $feedback_neg;
-		$this->feedback_err = $feedback_err;
-		$this->description = $description;
+		parent::__construct(
+			$niveau,
+			$titre,
+			$objectif,
+			$enonce,
+			$auteur,
+			$licence,
+			$feedback_pos,
+			$feedback_neg,
+			$feedback_err,
+			$description,
+		);
+		$this->exécutables = $exécutables;
+		$this->tests = $tests;
 	}
 }

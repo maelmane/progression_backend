@@ -16,27 +16,32 @@
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\entité\user;
+
+use InvalidArgumentException;
 
 class User
 {
-	const ROLE_NORMAL = 0;
-	const ROLE_ADMIN = 1;
-
-	public $username;
-	public $rôle = User::ROLE_NORMAL;
+	public string $username;
+	public string|null $courriel;
+	public État $état = État::INACTIF;
+	public Rôle $rôle = Rôle::NORMAL;
 	public $avancements;
 	public $clés;
 	public string $préférences;
 
 	public function __construct(
-		$username,
-		$rôle = User::ROLE_NORMAL,
+		string $username,
+		string|null $courriel = null,
+		État $état = État::INACTIF,
+		Rôle $rôle = Rôle::NORMAL,
 		$avancements = [],
 		$clés = [],
-		string $préférences = ""
+		string $préférences = "",
 	) {
 		$this->username = $username;
+		$this->courriel = $courriel;
+		$this->état = $état;
 		$this->rôle = $rôle;
 		$this->avancements = $avancements;
 		$this->clés = $clés;

@@ -18,11 +18,11 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\User;
+use progression\domaine\entité\user\User;
 
 class CréerUserInt extends Interacteur
 {
-	function créer_user($username)
+	function créer_user($username, string $courriel = null)
 	{
 		if (!$username) {
 			return null;
@@ -35,7 +35,7 @@ class CréerUserInt extends Interacteur
 		if ($user) {
 			return null;
 		} else {
-			$user = new User($username);
+			$user = new User($username, $courriel);
 			$user = $user_dao->save($user);
 		}
 

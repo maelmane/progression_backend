@@ -18,7 +18,8 @@
 
 namespace progression\dao\question;
 
-use progression\domaine\entité\{QuestionSys, TestSys};
+use progression\domaine\entité\question\QuestionSys;
+use progression\domaine\entité\TestSys;
 use DomainException;
 
 class DécodeurQuestionSys extends DécodeurQuestion

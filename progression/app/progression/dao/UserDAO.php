@@ -18,7 +18,7 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\User;
+use progression\domaine\entité\user\User;
 use progression\dao\models\UserMdl;
 
 use DB;
@@ -47,7 +47,9 @@ class UserDAO extends EntitéDAO
 		try {
 			$objet = [
 				"username" => $user->username,
-				"role" => $user->rôle,
+				"courriel" => $user->courriel,
+				"état" => $user->état,
+				"rôle" => $user->rôle,
 				"preferences" => $user->préférences,
 			];
 
@@ -87,7 +89,9 @@ class UserDAO extends EntitéDAO
 		foreach ($data as $user) {
 			$users[] = new User(
 				$user["username"],
-				$user["role"],
+				$user["courriel"],
+				$user["état"],
+				$user["rôle"],
 				in_array("avancements", $includes)
 					? AvancementDAO::construire($user["avancements"], parent::filtrer_niveaux($includes, "avancements"))
 					: [],

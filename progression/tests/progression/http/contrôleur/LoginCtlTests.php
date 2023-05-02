@@ -19,7 +19,8 @@
 use progression\ContrôleurTestCase;
 
 use progression\http\contrôleur\GénérateurDeToken;
-use progression\domaine\entité\{User, Clé};
+use progression\domaine\entité\clé\{Clé, Portée};
+use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
 
@@ -31,14 +32,17 @@ final class LoginCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser([
+			"username" => "bob",
+			"rôle" => Rôle::NORMAL,
+		]);
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob")
-			->andReturn(new User("bob"));
+			->andReturn(new User("bob", état: État::ACTIF));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob", [])
@@ -50,7 +54,7 @@ final class LoginCtlTests extends ContrôleurTestCase
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "cleValide01")
-			->andReturn(new Clé(null, (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_AUTH));
+			->andReturn(new Clé(null, (new \DateTime())->getTimestamp(), 0, Portée::AUTH));
 		$mockCléDAO
 			->shouldReceive("vérifier")
 			->with("bob", "cleValide01", "secret")
@@ -91,7 +95,10 @@ final class LoginCtlTests extends ContrôleurTestCase
 		putenv("AUTH_LOCAL=false");
 		putenv("AUTH_LDAP=true");
 
-		$résultat_observé = $this->call("POST", "/auth", ["username" => "Marcel", "password" => "password"]);
+		$résultat_observé = $this->call("POST", "/auth", [
+			"username" => "Marcel",
+			"password" => "password",
+		]);
 
 		$this->assertEquals(401, $résultat_observé->status());
 		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_observé->getContent());
@@ -127,11 +134,13 @@ final class LoginCtlTests extends ContrôleurTestCase
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "Marcel" && $user->rôle == User::ROLE_NORMAL;
+				return $user->username == "Marcel";
 			})
-			->andReturn(new User("Marcel"));
+			->andReturnArg(0);
 
-		$résultat_observé = $this->call("POST", "/auth", ["username" => "Marcel"]);
+		$résultat_observé = $this->call("POST", "/auth", [
+			"username" => "Marcel",
+		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
@@ -151,7 +160,10 @@ final class LoginCtlTests extends ContrôleurTestCase
 			})
 			->andReturn(true);
 
-		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob", "password" => "test"]);
+		$résultat_observé = $this->call("POST", "/auth", [
+			"username" => "bob",
+			"password" => "test",
+		]);
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
 	}
@@ -161,7 +173,10 @@ final class LoginCtlTests extends ContrôleurTestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->call("POST", "/auth", ["username" => "Marcel", "password" => "test"]);
+		$résultat_observé = $this->call("POST", "/auth", [
+			"username" => "Marcel",
+			"password" => "test",
+		]);
 
 		$this->assertEquals(401, $résultat_observé->status());
 		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_observé->getContent());
@@ -180,7 +195,10 @@ final class LoginCtlTests extends ContrôleurTestCase
 			}, "incorrect")
 			->andReturn(false);
 
-		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob", "password" => "incorrect"]);
+		$résultat_observé = $this->call("POST", "/auth", [
+			"username" => "bob",
+			"password" => "incorrect",
+		]);
 
 		$this->assertEquals(401, $résultat_observé->status());
 		$this->assertEquals('{"erreur":"Accès interdit."}', $résultat_observé->getContent());
@@ -193,7 +211,10 @@ final class LoginCtlTests extends ContrôleurTestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->call("POST", "/auth", ["username" => "", "password" => "test"]);
+		$résultat_observé = $this->call("POST", "/auth", [
+			"username" => "",
+			"password" => "test",
+		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}
@@ -203,7 +224,10 @@ final class LoginCtlTests extends ContrôleurTestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->call("POST", "/auth", ["username" => "bo bo", "password" => "test"]);
+		$résultat_observé = $this->call("POST", "/auth", [
+			"username" => "bo bo",
+			"password" => "test",
+		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}
@@ -213,7 +237,9 @@ final class LoginCtlTests extends ContrôleurTestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->call("POST", "/auth", ["password" => "test"]);
+		$résultat_observé = $this->call("POST", "/auth", [
+			"password" => "test",
+		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}
@@ -233,7 +259,10 @@ final class LoginCtlTests extends ContrôleurTestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->call("POST", "/auth", ["username" => "bob", "password" => ""]);
+		$résultat_observé = $this->call("POST", "/auth", [
+			"username" => "bob",
+			"password" => "",
+		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}

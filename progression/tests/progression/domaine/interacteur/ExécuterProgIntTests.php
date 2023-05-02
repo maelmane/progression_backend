@@ -45,7 +45,10 @@ final class ExécuterProgIntTests extends TestCase
 					return $param == [new Test("premier test", "ok\n", "1")];
 				}),
 			)
-			->andReturn(["temps_exec" => 0.234, "résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.6]]]);
+			->andReturn([
+				"temps_exec" => 0.234,
+				"résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.6]],
+			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_prog")
 			->with(
@@ -103,7 +106,10 @@ final class ExécuterProgIntTests extends TestCase
 
 		$résultat_observé = (new ExécuterProgInt())->exécuter($exécutable_valide, $test);
 
-		$résultat_attendu = ["temps_exécution" => 234, "résultats" => [new Résultat("ok\n", "", false, null, 600)]];
+		$résultat_attendu = [
+			"temps_exécution" => 234,
+			"résultats" => [new Résultat("ok\n", "", false, null, 600)],
+		];
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 

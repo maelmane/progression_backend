@@ -326,6 +326,8 @@ username
 | Nom         | Type | Valeurs                                  |
 |-------------+------+------------------------------------------|
 | username    | str  |                                          |
+| courriel    | str  |                                          |
+| état        | int  | 0=en attente de confirmation,1=activé    |
 | rôle        | int  | 0=normal,1=admin                         |
 | préférences | str  | chaîne JSON décrivant les préférences UI |
 |-------------+------+------------------------------------------|

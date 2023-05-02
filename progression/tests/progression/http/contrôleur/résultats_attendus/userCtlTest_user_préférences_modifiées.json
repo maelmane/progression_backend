@@ -4,6 +4,8 @@
     "id": "jdoe",
     "attributes": {
       "username": "jdoe",
+      "courriel": null,
+      "état": 0,
 		"rôle": 0,
 		"préférences": "{\"app\": {\"pref1\": 3, \"pref2\": 4}}"
     },

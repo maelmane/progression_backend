@@ -16,14 +16,20 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\entité\question;
 
-class QuestionSys extends Question
+class Question
 {
-	public $image;
-	public $utilisateur;
-	public $solution;
-	public $tests;
+	public $niveau = null;
+	public $titre = null;
+	public string|null $description = null;
+	public string|null $objectif = null;
+	public $enonce = null;
+	public $auteur = null;
+	public $licence = null;
+	public $feedback_pos = null;
+	public $feedback_neg = null;
+	public $feedback_err = null;
 
 	public function __construct(
 		$niveau = null,
@@ -35,28 +41,17 @@ class QuestionSys extends Question
 		$feedback_pos = null,
 		$feedback_neg = null,
 		$feedback_err = null,
-		$image = null,
-		$utilisateur = null,
-		$solution = null,
-		$tests = [],
-		string|null $description = null
+		string|null $description = null,
 	) {
-		parent::__construct(
-			$niveau,
-			$titre,
-			$objectif,
-			$enonce,
-			$auteur,
-			$licence,
-			$feedback_pos,
-			$feedback_neg,
-			$feedback_err,
-			$description,
-		);
-
-		$this->image = $image;
-		$this->utilisateur = $utilisateur;
-		$this->solution = $solution;
-		$this->tests = $tests;
+		$this->niveau = $niveau;
+		$this->titre = $titre;
+		$this->objectif = $objectif;
+		$this->enonce = $enonce;
+		$this->auteur = $auteur;
+		$this->licence = $licence;
+		$this->feedback_pos = $feedback_pos;
+		$this->feedback_neg = $feedback_neg;
+		$this->feedback_err = $feedback_err;
+		$this->description = $description;
 	}
 }

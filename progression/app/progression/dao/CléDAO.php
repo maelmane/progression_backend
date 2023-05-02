@@ -20,7 +20,7 @@ namespace progression\dao;
 
 use DB;
 use Illuminate\Database\QueryException;
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\{Clé, Portée};
 use progression\dao\models\{CléMdl, UserMdl};
 
 class CléDAO extends EntitéDAO
@@ -74,7 +74,7 @@ class CléDAO extends EntitéDAO
 				"hash" => $secret_hashé,
 				"creation" => $clé->création,
 				"expiration" => $clé->expiration,
-				"portee" => $clé->portée,
+				"portee" => $clé->portée->value,
 			];
 			$clé_créée = $this->construire([CléMdl::create($objet)])[$nom];
 
@@ -107,7 +107,7 @@ class CléDAO extends EntitéDAO
 		$clés = [];
 		foreach ($data as $item) {
 			$nom = $item["nom"];
-			$clés[$nom] = new Clé(null, $item["creation"], $item["expiration"], $item["portee"]);
+			$clés[$nom] = new Clé(null, $item["creation"], $item["expiration"], Portée::from($item["portee"]));
 		}
 		return $clés;
 	}

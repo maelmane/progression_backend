@@ -18,7 +18,7 @@
 
 namespace progression\dao\question;
 
-use progression\domaine\entité\QuestionProg;
+use progression\domaine\entité\question\QuestionProg;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 

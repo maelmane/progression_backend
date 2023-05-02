@@ -18,22 +18,13 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\User;
+use progression\domaine\entité\user\User;
 use progression\dao\DAOFactory;
 
-class SauvegarderPréférencesUtilisateurInt extends Interacteur
+class SauvegarderUtilisateurInt extends Interacteur
 {
-	public function sauvegarder_préférences(string $username, string $préférences): User|null
+	public function sauvegarder_user(string $username, User $user_modifié): User|null
 	{
-		$user_dao = $this->source_dao->get_user_dao();
-
-		$user_existant = $user_dao->get_user($username, []);
-		if (!$user_existant) {
-			return null;
-		}
-
-		$user_existant->préférences = $préférences;
-
-		return $this->source_dao->get_user_dao()->save($user_existant);
+		return $this->source_dao->get_user_dao()->save($user_modifié);
 	}
 }
