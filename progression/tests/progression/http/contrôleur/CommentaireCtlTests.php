@@ -19,7 +19,8 @@
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{Commentaire, User};
+use progression\domaine\entité\Commentaire;
+use progression\domaine\entité\user\{User, Rôle};
 use Illuminate\Auth\GenericUser;
 
 final class CommentaireCtlTests extends ContrôleurTestCase
@@ -30,7 +31,10 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser([
+			"username" => "jdoe",
+			"rôle" => Rôle::NORMAL,
+		]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
@@ -63,7 +67,11 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/commentaires",
-			["message" => "Bon travail", "créateur" => "oteur", "numéro_ligne" => 5],
+			[
+				"message" => "Bon travail",
+				"créateur" => "oteur",
+				"numéro_ligne" => 5,
+			],
 		);
 		$this->assertEquals(200, $résultat_obtenu->status());
 
@@ -92,7 +100,11 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/commentaires",
-			["message" => "Bon travail", "créateur" => "oteur", "numéro_ligne" => "numero non entier"],
+			[
+				"message" => "Bon travail",
+				"créateur" => "oteur",
+				"numéro_ligne" => "numero non entier",
+			],
 		);
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(

@@ -18,7 +18,9 @@
 
 use progression\ContrôleurTestCase;
 
-use progression\domaine\entité\{Question, QuestionProg, Exécutable, TestProg, User};
+use progression\domaine\entité\question\{Question, QuestionProg, Type};
+use progression\domaine\entité\{Exécutable, TestProg};
+use progression\domaine\entité\user\{User, Rôle};
 use progression\dao\DAOFactory;
 use progression\dao\question\ChargeurException;
 use Illuminate\Auth\GenericUser;
@@ -33,11 +35,14 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser([
+			"username" => "bob",
+			"rôle" => Rôle::NORMAL,
+		]);
 
 		// Question
 		$question = new QuestionProg();
-		$question->type = Question::TYPE_PROG;
+		$question->type = Type::PROG;
 		$question->uri = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 		$question->titre = "Appeler une fonction paramétrée";
 		$question->objectif = "Appel d'une fonction existante recevant un paramètre";

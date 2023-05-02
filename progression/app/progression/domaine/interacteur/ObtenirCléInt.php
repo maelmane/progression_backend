@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\Clé;
 use progression\dao\DAOFactory;
 
 class ObtenirCléInt extends Interacteur

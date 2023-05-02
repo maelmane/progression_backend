@@ -19,7 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{User};
+use progression\domaine\entité\user\{User, Rôle};
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -61,7 +61,7 @@ final class CréerUserIntTests extends TestCase
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($user) {
-				return $user->username == "bob" && $user->rôle == USER::ROLE_NORMAL;
+				return $user->username == "bob" && $user->rôle == Rôle::NORMAL;
 			})
 			->andReturnArg(0);
 
@@ -69,6 +69,23 @@ final class CréerUserIntTests extends TestCase
 		$résultat_obtenu = $userInt->créer_user("bob");
 
 		$this->assertEquals(new User("bob"), $résultat_obtenu);
+	}
+
+	public function test_étant_donné_un_nom_dutilisateur_et_un_courriel_valide_lorsquon_crée_lutilisateur_il_est_sauvegardé()
+	{
+		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
+
+		$mockUserDao
+			->shouldReceive("save")
+			->withArgs(function ($user) {
+				return $user->username == "bob" && $user->courriel == "bob@gmail.com" && $user->rôle == Rôle::NORMAL;
+			})
+			->andReturnArg(0);
+
+		$userInt = new CréerUserInt();
+		$résultat_obtenu = $userInt->créer_user("bob", "bob@gmail.com");
+
+		$this->assertEquals(new User("bob", "bob@gmail.com"), $résultat_obtenu);
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_le_crée_de_nouveau_on_obtient_null()

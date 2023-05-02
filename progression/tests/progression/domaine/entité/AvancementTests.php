@@ -19,6 +19,7 @@
 namespace progression\domaine\entité;
 
 use PHPUnit\Framework\TestCase;
+use progression\domaine\entité\question\État;
 
 final class AvancementTests extends TestCase
 {
@@ -28,7 +29,7 @@ final class AvancementTests extends TestCase
 			new Sauvegarde("python", "test"),
 		]);
 
-		$this->assertEquals(Question::ETAT_NONREUSSI, $résultat_obtenu->etat);
+		$this->assertEquals(État::NONREUSSI, $résultat_obtenu->etat);
 		$this->assertEquals("Titre", $résultat_obtenu->titre);
 		$this->assertEquals("niveau", $résultat_obtenu->niveau);
 		$this->assertEquals(654321, $résultat_obtenu->date_modification);
@@ -41,7 +42,7 @@ final class AvancementTests extends TestCase
 	{
 		$résultat_obtenu = new Avancement([], "Titre", "niveau", []);
 
-		$this->assertEquals(Question::ETAT_DEBUT, $résultat_obtenu->etat);
+		$this->assertEquals(État::DEBUT, $résultat_obtenu->etat);
 		$this->assertNull($résultat_obtenu->date_modification);
 		$this->assertNull($résultat_obtenu->date_réussite);
 	}
@@ -59,7 +60,7 @@ final class AvancementTests extends TestCase
 			[],
 		);
 
-		$this->assertEquals(Question::ETAT_REUSSI, $résultat_obtenu->etat);
+		$this->assertEquals(État::REUSSI, $résultat_obtenu->etat);
 		$this->assertEquals(654323, $résultat_obtenu->date_modification);
 	}
 
@@ -76,7 +77,7 @@ final class AvancementTests extends TestCase
 			[],
 		);
 
-		$this->assertEquals(Question::ETAT_REUSSI, $résultat_obtenu->etat);
+		$this->assertEquals(État::REUSSI, $résultat_obtenu->etat);
 		$this->assertEquals(654321, $résultat_obtenu->date_réussite);
 	}
 

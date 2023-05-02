@@ -18,6 +18,7 @@
 
 namespace progression\dao\models;
 
+use progression\domaine\entité\user\{État, Rôle};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -27,6 +28,30 @@ class UserMdl extends Model
 	public $timestamps = false;
 
 	protected $guarded = [];
+
+	protected $appends = ["etat", "role"];
+
+	public function getÉtatAttribute(): État
+	{
+		$états = array_column(État::cases(), "value");
+		return État::from($états[$this->attributes["etat"]]);
+	}
+	public function setÉtatAttribute(État $état): void
+	{
+		$états = array_column(État::cases(), "value");
+		$this->attributes["etat"] = array_search($état->value, $états);
+	}
+
+	public function getRôleAttribute(): Rôle
+	{
+		$rôles = array_column(Rôle::cases(), "value");
+		return Rôle::from($rôles[$this->attributes["role"]]);
+	}
+	public function setRôleAttribute(Rôle $rôle): void
+	{
+		$rôles = array_column(Rôle::cases(), "value");
+		$this->attributes["role"] = array_search($rôle->value, $rôles);
+	}
 
 	public function avancements(): HasMany
 	{

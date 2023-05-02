@@ -1,6 +1,18 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Property progression\\\\dao\\\\models\\\\UserMdl\\:\\:\\$appends type has no value type specified in iterable type array.$#"
+			count: 1
+			path: app/progression/dao/models/UserMdl.php
+		-
+			message: "#^Property progression\\\\dao\\\\models\\\\AvancementMdl\\:\\:\\$appends type has no value type specified in iterable type array.$#"
+			count: 1
+			path: app/progression/dao/models/AvancementMdl.php
+		-
+			message: "#^Property progression\\\\dao\\\\models\\\\CléMdl\\:\\:\\$appends type has no value type specified in iterable type array.$#"
+			count: 1
+			path: app/progression/dao/models/CléMdl.php
+		-
 			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:construire\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/dao/AvancementDAO.php
@@ -1251,11 +1263,6 @@ parameters:
 			path: app/progression/domaine/entité/Avancement.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Avancement\\:\\:\\$etat has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Avancement.php
-
-		-
 			message: "#^Property progression\\\\domaine\\\\entité\\\\Avancement\\:\\:\\$niveau has no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/Avancement.php
@@ -1276,49 +1283,39 @@ parameters:
 			path: app/progression/domaine/entité/Avancement.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:__construct\\(\\) has parameter \\$création with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:__construct\\(\\) has parameter \\$création with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Clé.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:__construct\\(\\) has parameter \\$expiration with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:__construct\\(\\) has parameter \\$expiration with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Clé.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:__construct\\(\\) has parameter \\$portée with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:__construct\\(\\) has parameter \\$secret with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Clé.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:__construct\\(\\) has parameter \\$secret with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:est_valide\\(\\) has no return type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Clé.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:est_valide\\(\\) has no return type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:\\$création has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Clé.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Clé\\:\\:\\$création has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:\\$expiration has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Clé.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Clé\\:\\:\\$expiration has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:\\$secret has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Clé.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Clé\\:\\:\\$portée has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Clé.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Clé\\:\\:\\$secret has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Clé.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\Commentaire\\:\\:__construct\\(\\) has parameter \\$créateur with no type specified\\.$#"
@@ -1386,224 +1383,224 @@ parameters:
 			path: app/progression/domaine/entité/Exécutable.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$auteur with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$auteur with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$feedback_err with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$feedback_err with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$feedback_neg with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$feedback_neg with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$feedback_pos with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$feedback_pos with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$niveau with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$niveau with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$titre with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$titre with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$auteur has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$auteur has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$enonce has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$enonce has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$feedback_err has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$feedback_err has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$feedback_neg has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$feedback_neg has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$feedback_pos has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$feedback_pos has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$licence has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$licence has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$niveau has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$niveau has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$titre has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$titre has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/Question.php
+			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$auteur with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$auteur with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
+			path: app/progression/domaine/entité/question/QuestionProg.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
+			path: app/progression/domaine/entité/question/QuestionProg.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$exécutables with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$exécutables with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
+			path: app/progression/domaine/entité/question/QuestionProg.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$feedback_err with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$feedback_err with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
+			path: app/progression/domaine/entité/question/QuestionProg.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$feedback_neg with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$feedback_neg with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
+			path: app/progression/domaine/entité/question/QuestionProg.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$feedback_pos with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$feedback_pos with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
+			path: app/progression/domaine/entité/question/QuestionProg.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
+			path: app/progression/domaine/entité/question/QuestionProg.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$niveau with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$niveau with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
+			path: app/progression/domaine/entité/question/QuestionProg.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$tests with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$tests with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
+			path: app/progression/domaine/entité/question/QuestionProg.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$titre with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$titre with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
+			path: app/progression/domaine/entité/question/QuestionProg.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:\\$exécutables has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:\\$exécutables has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
+			path: app/progression/domaine/entité/question/QuestionProg.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:\\$tests has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:\\$tests has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
+			path: app/progression/domaine/entité/question/QuestionProg.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$auteur with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$auteur with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$feedback_err with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$feedback_err with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$feedback_neg with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$feedback_neg with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$feedback_pos with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$feedback_pos with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$image with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$image with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$niveau with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$niveau with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$solution with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$solution with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$tests with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$tests with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$titre with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$titre with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$utilisateur with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$utilisateur with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:\\$image has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:\\$image has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:\\$solution has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:\\$solution has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:\\$tests has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:\\$tests has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:\\$utilisateur has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:\\$utilisateur has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
+			path: app/progression/domaine/entité/question/QuestionSys.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\Résultat\\:\\:__construct\\(\\) has parameter \\$feedback with no type specified\\.$#"
@@ -2031,44 +2028,24 @@ parameters:
 			path: app/progression/domaine/entité/TestSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\User\\:\\:__construct\\(\\) has parameter \\$avancements with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\user\\\\User\\:\\:__construct\\(\\) has parameter \\$avancements with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/user/User.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\User\\:\\:__construct\\(\\) has parameter \\$clés with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\user\\\\User\\:\\:__construct\\(\\) has parameter \\$clés with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/user/User.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\User\\:\\:__construct\\(\\) has parameter \\$rôle with no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\user\\\\User\\:\\:\\$avancements has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/user/User.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\User\\:\\:__construct\\(\\) has parameter \\$username with no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\user\\\\User\\:\\:\\$clés has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\User\\:\\:\\$avancements has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/User.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\User\\:\\:\\$clés has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/User.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\User\\:\\:\\$rôle has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/User.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\User\\:\\:\\$username has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/user/User.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ConnecterConteneurInt\\:\\:connexion_conteneur\\(\\) has no return type specified\\.$#"
@@ -2226,11 +2203,6 @@ parameters:
 			path: app/progression/domaine/interacteur/InscriptionInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription\\(\\) has parameter \\$role with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/InscriptionInt.php
@@ -2246,22 +2218,12 @@ parameters:
 			path: app/progression/domaine/interacteur/InscriptionInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_avec_mdp\\(\\) has parameter \\$role with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_avec_mdp\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/InscriptionInt.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_sans_mdp\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_sans_mdp\\(\\) has parameter \\$role with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/InscriptionInt.php
 

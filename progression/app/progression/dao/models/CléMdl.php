@@ -18,6 +18,7 @@
 
 namespace progression\dao\models;
 
+use progression\domaine\entité\clé\Portée;
 use Illuminate\Database\Eloquent\Model;
 
 class CléMdl extends Model
@@ -26,6 +27,19 @@ class CléMdl extends Model
 	public $timestamps = false;
 
 	protected $guarded = [];
+
+	protected $appends = ["portee"];
+
+	public function getPortéeAttribute(): Portée
+	{
+		$portées = array_column(Portée::cases(), "value");
+		return Portée::from($portées[$this->attributes["portee"]]);
+	}
+	public function setPortéeAttribute(Portée $portée): void
+	{
+		$portées = array_column(Portée::cases(), "value");
+		$this->attributes["portee"] = array_search($portée->value, $portées);
+	}
 }
 
 ?>

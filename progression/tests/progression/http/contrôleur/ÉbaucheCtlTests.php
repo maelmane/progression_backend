@@ -18,7 +18,9 @@
 
 use progression\ContrôleurTestCase;
 
-use progression\domaine\entité\{Question, QuestionProg, Exécutable, User};
+use progression\domaine\entité\question\{Question, QuestionProg, Type};
+use progression\domaine\entité\Exécutable;
+use progression\domaine\entité\user\{User, Rôle};
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
 
@@ -32,11 +34,14 @@ final class ÉbaucheCtlTests extends ContrôleurTestCase
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$this->user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser([
+			"username" => "bob",
+			"rôle" => Rôle::NORMAL,
+		]);
 
 		// Question
 		$question = new QuestionProg();
-		$question->type = Question::TYPE_PROG;
+		$question->type = Type::PROG;
 		$question->chemin = "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction";
 
 		// Ébauches

@@ -16,20 +16,25 @@
 	along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace progression\domaine\entité;
+namespace progression\domaine\entité\user;
 
 use PHPUnit\Framework\TestCase;
+use \InvalidArgumentException;
 
 final class UserTests extends TestCase
 {
 	public function test_étant_donné_un_User_instancié_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
 	{
 		$username_attendu = "bob";
-		$rôle_attendu = 0;
+		$courriel_attendu = "bob@gmail.com";
+		$résultat_obtenu = new User("bob", "bob@gmail.com", état: État::ACTIF, rôle: Rôle::NORMAL);
 
-		$résultat_obtenu = new User("bob");
+		$état_attendu = État::ACTIF;
+		$rôle_attendu = Rôle::NORMAL;
 
 		$this->assertEquals($username_attendu, $résultat_obtenu->username);
+		$this->assertEquals($courriel_attendu, $résultat_obtenu->courriel);
+		$this->assertEquals($état_attendu, $résultat_obtenu->état);
 		$this->assertEquals($rôle_attendu, $résultat_obtenu->rôle);
 	}
 }

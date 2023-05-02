@@ -4,6 +4,8 @@
     "id": "bob",
     "attributes": {
       "username": "bob",
+      "courriel": null,
+      "état": 0,
       "rôle": 0,
       "préférences": ""
     },

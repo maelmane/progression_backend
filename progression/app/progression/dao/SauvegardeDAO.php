@@ -79,7 +79,13 @@ class SauvegardeDAO extends EntitéDAO
 			];
 
 			return $this->construire([
-				SauvegardeMdl::updateOrCreate(["avancement_id" => $avancement["id"], "langage" => $langage], $objet),
+				SauvegardeMdl::updateOrCreate(
+					[
+						"avancement_id" => $avancement["id"],
+						"langage" => $langage,
+					],
+					$objet,
+				),
 			])[$langage];
 		} catch (QueryException $e) {
 			throw new DAOException($e);

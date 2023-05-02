@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\{Clé, Portée};
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -32,12 +32,7 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 			->allows("get_clé")
 			->with("jdoe", "clé existante")
 			->andReturn(
-				new Clé(
-					null,
-					(new \DateTime())->getTimestamp(),
-					(new \DateTime())->getTimestamp() + 1,
-					Clé::PORTEE_AUTH,
-				),
+				new Clé(null, (new \DateTime())->getTimestamp(), (new \DateTime())->getTimestamp() + 1, Portée::AUTH),
 			);
 		$mockCléDAO->allows("get_clé")->andReturn(null);
 
@@ -67,7 +62,7 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 					$nom == "nouvelle clé" &&
 					$clé->création - (new \DateTime())->getTimestamp() < 1 &&
 					$clé->expiration == 0 &&
-					$clé->portée == Clé::PORTEE_AUTH;
+					$clé->portée == Portée::AUTH;
 			})
 			->andReturnArg(2);
 

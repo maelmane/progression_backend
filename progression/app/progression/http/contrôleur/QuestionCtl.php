@@ -20,7 +20,7 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
+use progression\domaine\entité\question\{QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\interacteur\ObtenirQuestionInt;
 use progression\http\transformer\{QuestionProgTransformer, QuestionSysTransformer};
 use progression\util\Encodage;

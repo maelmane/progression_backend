@@ -18,7 +18,7 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\Clé;
 
 class CléTransformer extends BaseTransformer
 {
@@ -31,7 +31,7 @@ class CléTransformer extends BaseTransformer
 			"secret" => $clé->secret,
 			"création" => $clé->création,
 			"expiration" => $clé->expiration,
-			"portée" => $clé->portée,
+			"portée" => $clé->portée->value,
 			"links" => (isset($clé->links) ? $clé->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}cle/{$this->id}/{$clé->id}",
 				"user" => "{$_ENV["APP_URL"]}user/{$this->id}",

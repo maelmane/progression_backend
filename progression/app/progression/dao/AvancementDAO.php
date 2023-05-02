@@ -70,7 +70,7 @@ class AvancementDAO extends EntitéDAO
 			}
 
 			$objet = [];
-			$objet["etat"] = $avancement->etat;
+			$objet["état"] = $avancement->etat;
 			$objet["question_uri"] = $question_uri;
 			$objet["titre"] = $avancement->titre;
 			$objet["niveau"] = $avancement->niveau;
@@ -119,7 +119,7 @@ class AvancementDAO extends EntitéDAO
 					? SauvegardeDAO::construire($item["sauvegardes"], parent::filtrer_niveaux($includes, "sauvegardes"))
 					: [],
 			);
-			$avancement->etat = $item["etat"];
+			$avancement->etat = $item["état"];
 			$avancement->date_modification = $item["date_modification"];
 			$avancement->date_réussite = $item["date_reussite"];
 			$avancement->extra = $item["extra"];

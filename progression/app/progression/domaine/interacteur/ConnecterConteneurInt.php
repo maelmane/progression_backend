@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Question;
+use progression\domaine\entité\question\{Question, État};
 
 class ConnecterConteneurInt extends Interacteur
 {
@@ -73,7 +73,7 @@ class ConnecterConteneurInt extends Interacteur
 
 	protected function get_data_rc()
 	{
-		if ($this->avancement->etat == Question::ETAT_DEBUT) {
+		if ($this->avancement->etat == État::DEBUT) {
 			$data_rc = $this->get_data_nouveau_conteneur();
 		} else {
 			$data_rc = $this->get_data_conteneur();

@@ -21,7 +21,7 @@ if [ -z "$test_simple" ]
 then
 	$DIR/../vendor/bin/phpunit -d memory_limit=-1 --configuration $DIR/../phpunit.xml || exit 1
 else
-	$DIR/../vendor/bin/phpunit --configuration $DIR/../phpunit.xml --coverage-text --filter "$test_simple" || exit 1
+	$DIR/../vendor/bin/phpunit --configuration $DIR/../phpunit.xml  --filter "$test_simple" || exit 1
 fi
 
 # Analyseur statique, si on exécute tous les tests

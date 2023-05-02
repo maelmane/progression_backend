@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Question, QuestionProg};
+use progression\domaine\entité\question\{Question, QuestionProg};
 use progression\dao\DAOFactory;
 use progression\dao\question\QuestionDAO;
 use PHPUnit\Framework\TestCase;

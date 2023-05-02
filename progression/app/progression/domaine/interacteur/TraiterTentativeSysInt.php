@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Question;
+use progression\domaine\entité\question\Question;
 
 class TraiterTentativeSysInt extends Interacteur
 {

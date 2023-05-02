@@ -5,29 +5,40 @@ DELETE FROM sauvegarde;
 DELETE FROM cle;
 DELETE FROM user;
 
-INSERT INTO user(id, username, password, actif, role) VALUES (
+INSERT INTO user(id, courriel, username, password, etat, role) VALUES (
   1,
+  null,
   "jdoe",
   "Crosemont2021!",
-  1,
+  0,
   0
 ), (
   2,
+  null,
   "bob",
   "motDePasse",
-  1,
+  0,
   0
 ), (
   3,
+  null,
   "admin",
   "mdpAdmin",
-  1,
+  0,
   1
 ), (
   4,
+  null,
   "Stefany",
-  NULL,
-  1,
+  null,
+  0,
+  0
+), (
+  5,
+  "jane@gmail.com",
+  "jane",
+  null,
+  0,
   0
 );
 

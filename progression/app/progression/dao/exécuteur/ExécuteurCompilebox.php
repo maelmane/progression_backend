@@ -45,7 +45,10 @@ class ExécuteurCompilebox extends Exécuteur
 	{
 		$tests_out = [];
 		foreach ($tests as $test) {
-			$tests_out[] = ["stdin" => $test->entrée ?? "", "params" => $test->params ?? ""];
+			$tests_out[] = [
+				"stdin" => $test->entrée ?? "",
+				"params" => $test->params ?? "",
+			];
 		}
 
 		$langage = array_key_exists($exécutable->lang, self::langages)

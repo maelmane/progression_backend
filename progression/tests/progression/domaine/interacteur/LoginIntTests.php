@@ -19,7 +19,8 @@
 namespace progression\domaine\interacteur;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{User, Clé};
+use progression\domaine\entité\clé\{Clé, Portée};
+use progression\domaine\entité\user\User;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -32,11 +33,11 @@ final class LoginIntTests extends TestCase
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->allows()
-			->get_user("bob")
+			->get_user("bob", Mockery::Any())
 			->andReturn(new User("bob"));
 		$mockUserDAO
 			->allows()
-			->get_user("bob", Mockery::Any())
+			->get_user("bob")
 			->andReturn(new User("bob"));
 		$mockUserDAO->shouldReceive("get_user")->andReturn(null);
 		$mockUserDAO
@@ -57,26 +58,26 @@ final class LoginIntTests extends TestCase
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé valide")
-			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_AUTH));
+			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Portée::AUTH));
 		$mockCléDAO
 			->shouldReceive("vérifier")
 			->with("bob", "clé valide", "secret")
 			->andReturn(true);
 		$mockCléDAO
 			->shouldReceive("get_clé")
-			->with("bob", "clé expirée")
+			->with("bob", "cle_expiree")
 			->andReturn(
 				new Clé(
 					"secret",
 					(new \DateTime())->getTimestamp() - 2,
 					(new \DateTime())->getTimestamp() - 1,
-					Clé::PORTEE_AUTH,
+					Portée::AUTH,
 				),
 			);
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé révoquée")
-			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Clé::PORTEE_REVOQUEE));
+			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Portée::REVOQUÉE));
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé inexistante")
@@ -222,7 +223,7 @@ final class LoginIntTests extends TestCase
 	public function test_étant_donné_lutilisateur_existant_bob_lorsquon_login_avec_une_clé_d_authentification_expirée_on_obtient_null()
 	{
 		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "clé expirée", "secret");
+		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "cle_expiree", "secret");
 
 		$this->assertNull($résultat_obtenu);
 	}

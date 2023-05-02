@@ -4,6 +4,8 @@
     "id": "monique",
     "attributes": {
       "username": "monique",
+      "courriel": null,
+      "état": 0,
 		"rôle": 0,
 		"préférences": ""
     },

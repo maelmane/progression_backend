@@ -18,7 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{TestSys, Résultat, QuestionSys, TentativeSys};
+use progression\domaine\entité\question\QuestionSys;
+use progression\domaine\entité\{TestSys, Résultat, TentativeSys};
 use progression\dao\exécuteur\Exécuteur;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
@@ -61,7 +62,11 @@ final class ExécuterSysIntTests extends TestCase
 			->andReturn([
 				"temps_exec" => 0.124,
 				"résultats" => [["output" => "", "errors" => "", "time" => 0.2]],
-				"conteneur" => ["id" => "conteneurTestCompileBox", "ip" => "172.45.2.2", "port" => 45667],
+				"conteneur" => [
+					"id" => "conteneurTestCompileBox",
+					"ip" => "172.45.2.2",
+					"port" => 45667,
+				],
 			]);
 
 		$mockExécuteur
@@ -73,7 +78,11 @@ final class ExécuterSysIntTests extends TestCase
 			->andReturn([
 				"temps_exec" => 0.124,
 				"résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.2]],
-				"conteneur" => ["id" => "ConteneurEnvoyéParTentative", "ip" => "172.45.2.2", "port" => 45667],
+				"conteneur" => [
+					"id" => "ConteneurEnvoyéParTentative",
+					"ip" => "172.45.2.2",
+					"port" => 45667,
+				],
 			]);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -92,7 +101,11 @@ final class ExécuterSysIntTests extends TestCase
 
 	public function test_étant_donné_une_question_avec_une_tentative_sans_conteneur_on_recoit_lid_du_conteneur_de_compile_box()
 	{
-		$résultat_attendu = ["id" => "conteneurTestCompileBox", "ip" => "172.45.2.2", "port" => 45667];
+		$résultat_attendu = [
+			"id" => "conteneurTestCompileBox",
+			"ip" => "172.45.2.2",
+			"port" => 45667,
+		];
 
 		$exécuter_sys_int = new ExécuterSysInt();
 
@@ -122,7 +135,11 @@ final class ExécuterSysIntTests extends TestCase
 
 	public function test_étant_donné_une_question_avec_une_tentative_avec_conteneur_on_recoit_lid_de_la_tentative_le_bon_temps_dexécution_et_le_bon_résultat()
 	{
-		$conteneur_attendu = ["id" => "ConteneurEnvoyéParTentative", "ip" => "172.45.2.2", "port" => 45667];
+		$conteneur_attendu = [
+			"id" => "ConteneurEnvoyéParTentative",
+			"ip" => "172.45.2.2",
+			"port" => 45667,
+		];
 
 		$exécuter_sys_int = new ExécuterSysInt();
 
