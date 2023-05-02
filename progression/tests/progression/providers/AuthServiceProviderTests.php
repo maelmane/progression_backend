@@ -34,7 +34,10 @@ final class AuthServiceProviderTests extends TestCase
 	{
 		parent::setUp();
 
-		$this->utilisateurLambda = new GenericUser(["username" => "utilisateur_lambda", "rôle" => Rôle::NORMAL]);
+		$this->utilisateurLambda = new GenericUser([
+			"username" => "utilisateur_lambda",
+			"rôle" => Rôle::NORMAL,
+		]);
 		$this->tokenUtilisateurLambda = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda");
 
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -227,9 +230,15 @@ final class AuthServiceProviderTests extends TestCase
 	public function test_étant_donné_un_token_ressource_qui_contient_différents_url_lorsquon_effectue_une_requête_à_une_ressource_non_autorisée_on_obtient_403()
 	{
 		$ressources = [
-			["url" => "^user/autre_utilisateur/avancements$", "method" => "get"],
+			[
+				"url" => "^user/autre_utilisateur/avancements$",
+				"method" => "get",
+			],
 			["url" => "^user/autre_utilisateur$", "method" => "get"],
-			["url" => "^user/autre_utilisateur/relationships/avancement$/", "method" => "post"],
+			[
+				"url" => "^user/autre_utilisateur/relationships/avancement$/",
+				"method" => "post",
+			],
 		];
 		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
 

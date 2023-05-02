@@ -33,8 +33,14 @@ final class CléCtlTests extends ContrôleurTestCase
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL]);
-		$this->admin = new GenericUser(["username" => "admin", "rôle" => Rôle::ADMIN]);
+		$this->user = new GenericUser([
+			"username" => "jdoe",
+			"rôle" => Rôle::NORMAL,
+		]);
+		$this->admin = new GenericUser([
+			"username" => "admin",
+			"rôle" => Rôle::ADMIN,
+		]);
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");

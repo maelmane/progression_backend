@@ -41,7 +41,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$_ENV["AUTH_TYPE"] = "no";
 		$_ENV["APP_URL"] = "https://example.com/";
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL]);
+		$this->user = new GenericUser([
+			"username" => "jdoe",
+			"rôle" => Rôle::NORMAL,
+		]);
 
 		// QuestionProg
 		//aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU
@@ -176,7 +179,11 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				"temps_exec" => 0.551,
 				"résultats" => [
 					["output" => "Bonjour\n", "errors" => "", "time" => 0.03],
-					["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03],
+					[
+						"output" => "Bonjour\nBonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
 				],
 			]);
 		$mockExécuteur
@@ -186,7 +193,13 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			})
 			->andReturn([
 				"temps_exec" => 0.551,
-				"résultats" => [["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03]],
+				"résultats" => [
+					[
+						"output" => "Bonjour\nBonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
+				],
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_prog")
@@ -197,7 +210,11 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				"temps_exec" => 0.44,
 				"résultats" => [
 					["output" => "Allo\n", "errors" => "", "time" => 0.03],
-					["output" => "Allo\nAllo\n", "errors" => "", "time" => 0.03],
+					[
+						"output" => "Allo\nAllo\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
 				],
 			]);
 		$mockExécuteur
@@ -207,7 +224,13 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			})
 			->andReturn([
 				"temps_exec" => 0.44,
-				"résultats" => [["output" => "Allo\nAllo\n", "errors" => "", "time" => 0.03]],
+				"résultats" => [
+					[
+						"output" => "Allo\nAllo\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
+				],
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_prog")
@@ -356,7 +379,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/tentatives?include=resultats",
-			["langage" => "réussi", "code" => "#+TODO\nprint(\"Hello world!\")"],
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -412,7 +438,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives?include=resultats",
-			["langage" => "réussi", "code" => "#+TODO\nprint(\"Hello world!\")"],
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -467,7 +496,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives?include=resultats",
-			["langage" => "réussi", "code" => "#+TODO\nprint(\"Hello world!\")"],
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -522,7 +554,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives?include=resultats",
-			["langage" => "non_réussi", "code" => "#+TODO\nprint(\"Hello world!\")"],
+			[
+				"langage" => "non_réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -552,7 +587,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives",
-			["langage" => "erreur", "code" => "#+TODO\nprint(\"on ne se rendra pas à exécuter ceci\")"],
+			[
+				"langage" => "erreur",
+				"code" => "#+TODO\nprint(\"on ne se rendra pas à exécuter ceci\")",
+			],
 		);
 
 		$this->assertEquals(503, $résultat_obtenu->status());
@@ -564,7 +602,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives",
-			["langage" => "réussi", "code" => "print(\"Hello world!\")"],
+			[
+				"langage" => "réussi",
+				"code" => "print(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
@@ -579,7 +620,11 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			[
 				"langage" => "réussi",
 				"code" => "#+TODO\nprint(\"Hello world!\")",
-				"test" => ["nom" => "Bonjour", "entrée" => "bonjour", "sortie_attendue" => "Bonjour\nBonjour\n"],
+				"test" => [
+					"nom" => "Bonjour",
+					"entrée" => "bonjour",
+					"sortie_attendue" => "Bonjour\nBonjour\n",
+				],
 			],
 		);
 
@@ -678,7 +723,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives",
-			["langage" => "inconnu", "code" => "print(\"Hello world!\")"],
+			[
+				"langage" => "inconnu",
+				"code" => "print(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
@@ -722,7 +770,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives",
-			["langage" => "réussi", "code" => "$testCode"],
+			[
+				"langage" => "réussi",
+				"code" => "$testCode",
+			],
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());

@@ -33,7 +33,10 @@ final class ValidationPermissionsTests extends TestCase
 		parent::setUp();
 
 		$_ENV["AUTH_TYPE"] = "ldap";
-		$this->user = new GenericUser(["username" => "bob", "rôle" => Rôle::NORMAL]);
+		$this->user = new GenericUser([
+			"username" => "bob",
+			"rôle" => Rôle::NORMAL,
+		]);
 		$token = GénérateurDeToken::get_instance()->générer_token("bob");
 		$this->headers = ["HTTP_Authorization" => "Bearer " . $token];
 
@@ -94,7 +97,10 @@ final class ValidationPermissionsTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_admin_connecté_lorsquon_demande_une_ressource_pour_l_utilisateur_existant_bob_on_obtient_son_profil()
 	{
-		$admin = new GenericUser(["username" => "admin", "rôle" => Rôle::ADMIN]);
+		$admin = new GenericUser([
+			"username" => "admin",
+			"rôle" => Rôle::ADMIN,
+		]);
 		$résultat_obtenu = $this->actingAs($admin)->call("GET", "/user/bob");
 
 		$this->assertJsonStringEqualsJsonFile(

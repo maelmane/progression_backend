@@ -43,7 +43,10 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 			->andReturn(new User("bob"));
 
 		// Avancement
-		$avancements = ["uri_a" => new Avancement(), "uri_b" => new Avancement()];
+		$avancements = [
+			"uri_a" => new Avancement(),
+			"uri_b" => new Avancement(),
+		];
 
 		$avancements_et_tentatives = [
 			"uri_a" => new Avancement(

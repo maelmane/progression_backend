@@ -30,7 +30,10 @@ final class UserCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL]);
+		$this->user = new GenericUser([
+			"username" => "jdoe",
+			"rôle" => Rôle::NORMAL,
+		]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
 

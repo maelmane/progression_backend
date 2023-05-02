@@ -33,7 +33,10 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 
 		putenv("AUTH_LDAP=false");
 
-		$this->user = new GenericUser(["username" => "bob", "rôle" => Rôle::NORMAL]);
+		$this->user = new GenericUser([
+			"username" => "bob",
+			"rôle" => Rôle::NORMAL,
+		]);
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -85,7 +88,9 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=false");
 
-		$résultat_observé = $this->call("POST", "/inscription", ["username" => "bob"]);
+		$résultat_observé = $this->call("POST", "/inscription", [
+			"username" => "bob",
+		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
@@ -104,7 +109,9 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 			})
 			->andReturnArg(0);
 
-		$résultat_observé = $this->call("POST", "/inscription", ["username" => "Marcel"]);
+		$résultat_observé = $this->call("POST", "/inscription", [
+			"username" => "Marcel",
+		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
@@ -206,7 +213,10 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_une_authentificaton_locale_lorsquon_inscrit_un_nom_dutilisateur_invalide_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
-		$résultat_observé = $this->call("POST", "/inscription", ["username" => "bo bo", "password" => "test"]);
+		$résultat_observé = $this->call("POST", "/inscription", [
+			"username" => "bo bo",
+			"password" => "test",
+		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}
@@ -214,7 +224,10 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_une_authentificaton_locale_lorsquon_inscrit_sans_nom_dutlisateur_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
-		$résultat_observé = $this->call("POST", "/inscription", ["courriel" => "test@gmail.com", "password" => "test"]);
+		$résultat_observé = $this->call("POST", "/inscription", [
+			"courriel" => "test@gmail.com",
+			"password" => "test",
+		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}
@@ -248,7 +261,10 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=true");
 
-		$résultat_observé = $this->call("POST", "/inscription", ["username" => "Marcel", "password" => ""]);
+		$résultat_observé = $this->call("POST", "/inscription", [
+			"username" => "Marcel",
+			"password" => "",
+		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}

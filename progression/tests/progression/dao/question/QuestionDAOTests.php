@@ -40,8 +40,12 @@ final class QuestionDAOTests extends TestCase
 	{
 		$résultat_attendu = new QuestionProg();
 		$résultat_attendu->titre = "Question de test";
-		$résultat_attendu->exécutables = ["python" => new Exécutable("print(\"Allo le monde\")", "python")];
-		$résultat_attendu->tests = [0 => new TestProg("#1", "Allo le monde", "")];
+		$résultat_attendu->exécutables = [
+			"python" => new Exécutable("print(\"Allo le monde\")", "python"),
+		];
+		$résultat_attendu->tests = [
+			0 => new TestProg("#1", "Allo le monde", ""),
+		];
 		$résultat_attendu->uri = "file://" . __DIR__ . "/démo/boucles/boucle_énumérée/info.yml";
 
 		$mockChargeurFichier = Mockery::mock("progression\\dao\\question\\ChargeurQuestionFichier");

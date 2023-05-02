@@ -92,7 +92,10 @@ class TentativeProgDAO extends TentativeDAO
 
 			return $this->construire([
 				TentativeProgMdl::updateOrCreate(
-					["avancement_id" => $avancement["id"], "date_soumission" => $tentative->date_soumission],
+					[
+						"avancement_id" => $avancement["id"],
+						"date_soumission" => $tentative->date_soumission,
+					],
 					$objet,
 				),
 			])[$tentative->date_soumission];

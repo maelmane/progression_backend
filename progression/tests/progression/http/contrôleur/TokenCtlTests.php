@@ -29,7 +29,10 @@ final class TokenCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$this->user = new GenericUser(["username" => "utilisateur_lambda", "rôle" => Rôle::NORMAL]);
+		$this->user = new GenericUser([
+			"username" => "utilisateur_lambda",
+			"rôle" => Rôle::NORMAL,
+		]);
 
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO

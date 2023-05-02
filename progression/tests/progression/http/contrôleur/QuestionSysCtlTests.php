@@ -31,7 +31,10 @@ final class QuestionSysCtlTests extends ContrôleurTestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL]);
+		$this->user = new GenericUser([
+			"username" => "jdoe",
+			"rôle" => Rôle::NORMAL,
+		]);
 
 		//QuestionSys avec solution sans pregmatch
 		$questionSys = new QuestionSys();

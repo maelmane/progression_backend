@@ -31,7 +31,10 @@ final class AvancementCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL]);
+		$this->user = new GenericUser([
+			"username" => "jdoe",
+			"rôle" => Rôle::NORMAL,
+		]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
 
@@ -241,7 +244,10 @@ final class AvancementCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_un_avancement_existant_lorsquon_appelle_post_sans_question_uri_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
-			"avancement" => ["titre" => "Question test", "niveau" => "niveau test"],
+			"avancement" => [
+				"titre" => "Question test",
+				"niveau" => "niveau test",
+			],
 		]);
 
 		$this->assertResponseStatus(400);
@@ -254,7 +260,10 @@ final class AvancementCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_un_avancement_existant_lorsquon_appelle_post_avec_un_question_uri_non_encodé_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
-			"avancement" => ["titre" => "Question test", "niveau" => "niveau test"],
+			"avancement" => [
+				"titre" => "Question test",
+				"niveau" => "niveau test",
+			],
 			"question_uri" => "http://test.exemple.com/info.yml",
 		]);
 
@@ -268,7 +277,10 @@ final class AvancementCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_un_avancement_existant_lorsquon_appelle_post_avec_un_question_uri_non_valide_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
-			"avancement" => ["titre" => "Question test", "niveau" => "niveau test"],
+			"avancement" => [
+				"titre" => "Question test",
+				"niveau" => "niveau test",
+			],
 			"question_uri" => "Q2VjaSBuJ2VzdCBwdXMgdW4gVVJJ",
 		]);
 
@@ -417,7 +429,10 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		$mockAvancementDAO->shouldNotReceive("save");
 
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
-			"avancement" => ["titre" => "Question test", "niveau" => "niveau test"],
+			"avancement" => [
+				"titre" => "Question test",
+				"niveau" => "niveau test",
+			],
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25faW5leGlzdGFudGU",
 		]);
 
