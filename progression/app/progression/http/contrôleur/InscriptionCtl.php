@@ -108,13 +108,17 @@ class InscriptionCtl extends Contrôleur
 				"username.unique" => "Err: 1001. Le nom d'utilisateur existe déjà.",
 				"courriel.unique" => "Err: 1001. Le courriel existe déjà.",
 				"courriel.email" => "Err: 1003. Le champ courriel doit être un courriel valide.",
+				"password.regex" =>
+					"Err: 1003. Le mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre.",
 				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
 			],
 		)
 			->sometimes("courriel", "required|email|unique:progression\dao\models\UserMdl,courriel", function ($input) {
 				return getenv("AUTH_LOCAL") === "true";
 			})
-			->sometimes("password", "required", function ($input) {
+			->sometimes("password", "required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/u", function (
+				$input,
+			) {
 				return getenv("AUTH_LOCAL") === "true";
 			})
 			->sometimes("username", "unique:progression\dao\models\UserMdl,username", function ($input) {
