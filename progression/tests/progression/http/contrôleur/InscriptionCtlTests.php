@@ -125,7 +125,7 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 		$résultat_observé = $this->call("POST", "/inscription", [
 			"username" => "bob",
 			"courriel" => "bob@gmail.com",
-			"password" => "test",
+			"password" => "Test1234",
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
@@ -142,12 +142,46 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 		$résultat_observé = $this->call("POST", "/inscription", [
 			"username" => "johnny",
 			"courriel" => "jane@gmail.com",
-			"password" => "test",
+			"password" => "Test1234",
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
 			'{"erreur":{"courriel":["Err: 1001. Le courriel existe déjà."]}}',
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_linscrit_avec_un_courriel_invalide_on_obtient_une_erreur_400()
+	{
+		putenv("AUTH_LOCAL=true");
+
+		$résultat_observé = $this->call("POST", "/inscription", [
+			"username" => "bobby",
+			"courriel" => "bobby.com",
+			"password" => "Test1234",
+		]);
+
+		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertEquals(
+			'{"erreur":{"courriel":["Err: 1003. Le champ courriel doit être un courriel valide."]}}',
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_linscrit_avec_un_password_invalide_on_obtient_une_erreur_400()
+	{
+		putenv("AUTH_LOCAL=true");
+
+		$résultat_observé = $this->call("POST", "/inscription", [
+			"username" => "bobby",
+			"courriel" => "bobby@gmail.com",
+			"password" => "pasbon",
+		]);
+
+		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertEquals(
+			'{"erreur":{"password":["Err: 1003. Le mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
@@ -159,7 +193,7 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 		$résultat_observé = $this->call("POST", "/inscription", [
 			"username" => "BOB",
 			"courriel" => "bob@gmail.com",
-			"password" => "test",
+			"password" => "Test1234",
 		]);
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
@@ -189,7 +223,7 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 		$résultat_observé = $this->call("POST", "/inscription", [
 			"username" => "Marcel2",
 			"courriel" => "marcel2@gmail.com",
-			"password" => "test",
+			"password" => "Test1234",
 		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
@@ -204,7 +238,7 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 		$résultat_observé = $this->call("POST", "/inscription", [
 			"username" => "",
 			"courriel" => "vide@gmail.com",
-			"password" => "test",
+			"password" => "Test1234",
 		]);
 
 		$this->assertEquals(400, $résultat_observé->status());

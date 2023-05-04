@@ -42,7 +42,7 @@ username/question_uri
 | niveau            | str  |               | Le niveau de la question tel qu'il était lors de la dernière tentative |
 | date_modification | int  |               | La date de la dernière tentative                                       |
 | date_réussie      | int  |               | La date de la première tentative réussie                               |
-| extra             | str  |               | Infos extra à stoquer avec l'Avancement
+| extra             | str  |               | Infos extra à stoquer avec l'Avancement                                |
 
 *** Relations :
 
@@ -293,10 +293,10 @@ Un test de validation d'une QuestionSys auquel sont soumises les solutions propo
 
 *** Propriétés :
 
-| Nom          | Type | Valeurs                  |
-|--------------+------+--------------------------|
-| validation   | str  |                          |
-| utilisateur  | str  |l'utilisateur du conteneur|
+| Nom         | Type | Valeurs                    |
+|-------------+------+----------------------------|
+| validation  | str  |                            |
+| utilisateur | str  | l'utilisateur du conteneur |
 
 ** Token ressource
 
@@ -321,16 +321,16 @@ Un utilisateur du système.
 *** Identifiant :
 username
 
-*** Relations :
+*** Propriétés :
 
-| Nom         | Type | Valeurs                                  |
-|-------------+------+------------------------------------------|
-| username    | str  |                                          |
-| courriel    | str  |                                          |
-| état        | int  | 0=en attente de confirmation,1=activé    |
-| rôle        | int  | 0=normal,1=admin                         |
-| préférences | str  | chaîne JSON décrivant les préférences UI |
-|-------------+------+------------------------------------------|
+| Nom         | Type | Valeurs                                          |
+|-------------+------+--------------------------------------------------|
+| username    | str  |                                                  |
+| courriel    | str  |                                                  |
+| état        | int  | 0=inactif, 1=actif, 2=en attente de confirmation |
+| rôle        | int  | 0=normal, 1=admin                                |
+| préférences | str  | chaîne JSON décrivant les préférences UI         |
+|-------------+------+--------------------------------------------------|
 
 *** Relations :
 
