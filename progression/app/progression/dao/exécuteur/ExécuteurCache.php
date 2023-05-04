@@ -18,6 +18,8 @@
 
 namespace progression\dao\exécuteur;
 
+use progression\domaine\entité\{Exécutable, Test};
+
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 
@@ -74,7 +76,11 @@ class ExécuteurCache extends Exécuteur
 		return $réponse;
 	}
 
-	private function exécuter_tests($exécutable, $tests)
+	/**
+	 * @param array<Test> $tests
+	 * @return array<mixed>
+	 */
+	private function exécuter_tests(Exécutable $exécutable, array $tests): array
 	{
 		$exécution = $this->_exécuteur->exécuter_prog($exécutable, $tests);
 
