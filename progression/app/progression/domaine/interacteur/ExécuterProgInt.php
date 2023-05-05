@@ -29,12 +29,12 @@ class ExécuterProgInt extends Interacteur
 			return null;
 		}
 		$réponse = [];
-		$résultats = null;
+		$résultats = [];
 
-		$réponse["temps_exécution"] = intval($comp_resp["temps_exec"] * 1000);
+		$réponse["temps_exécution"] = intval($comp_resp["temps_exécution"] * 1000);
 
-		foreach ($comp_resp["résultats"] as $résultat) {
-			$résultats[] = new Résultat(
+		foreach ($comp_resp["résultats"] as $hash => $résultat) {
+			$résultats[$hash] = new Résultat(
 				$résultat["output"],
 				$résultat["errors"],
 				false,

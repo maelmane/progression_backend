@@ -181,7 +181,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				return $exec->lang == "réussi" && count($test) == 2;
 			})
 			->andReturn([
-				"temps_exec" => 0.551,
+				"temps_exécution" => 0.551,
 				"résultats" => [
 					["output" => "Bonjour\n", "errors" => "", "time" => 0.03],
 					["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03],
@@ -193,7 +193,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				return $exec->lang == "réussi" && count($test) == 1;
 			})
 			->andReturn([
-				"temps_exec" => 0.551,
+				"temps_exécution" => 0.551,
 				"résultats" => [["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03]],
 			]);
 		$mockExécuteur
@@ -202,7 +202,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				return $exec->lang == "non_réussi" && count($test) == 2;
 			})
 			->andReturn([
-				"temps_exec" => 0.44,
+				"temps_exécution" => 0.44,
 				"résultats" => [
 					["output" => "Allo\n", "errors" => "", "time" => 0.03],
 					["output" => "Allo\nAllo\n", "errors" => "", "time" => 0.03],
@@ -214,7 +214,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				return $exec->lang == "non_réussi" && count($test) == 1;
 			})
 			->andReturn([
-				"temps_exec" => 0.44,
+				"temps_exécution" => 0.44,
 				"résultats" => [["output" => "Allo\nAllo\n", "errors" => "", "time" => 0.03]],
 			]);
 		$mockExécuteur
@@ -588,97 +588,6 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Tentative intraitable."}', $résultat_obtenu->getContent());
-	}
-
-	public function test_étant_donné_une_tentative_avec_un_test_unique_comportant_une_sortie_attendue_lorsquelle_est_soumise_lavancement_et_la_tentative_on_obtient_la_TentativeProg_réussie()
-	{
-		$résultat_obtenu = $this->actingAs($this->user)->call(
-			"POST",
-			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives?include=resultats",
-			[
-				"langage" => "réussi",
-				"code" => "#+TODO\nprint(\"Hello world!\")",
-				"test" => ["nom" => "Bonjour", "entrée" => "bonjour", "sortie_attendue" => "Bonjour\nBonjour\n"],
-			],
-		);
-
-		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
-		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertLessThanOrEqual(1, $heure_tentative - time());
-
-		$this->assertJsonStringEqualsJsonString(
-			sprintf(
-				file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_test_unique.json"),
-				$heure_tentative,
-			),
-			$résultat_obtenu->getContent(),
-		);
-	}
-
-	public function test_étant_donné_un_avancement_non_réussi_et_une_tentative_avec_un_test_unique_lorsquelle_est_soumise_lavancement_et_la_tentative_ne_sont_pas_sauvegardés_et_obtient_la_TentativeProg_réussie()
-	{
-		$résultat_obtenu = $this->actingAs($this->user)->call(
-			"POST",
-			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives?include=resultats",
-			[
-				"langage" => "réussi",
-				"code" => "#+TODO\nprint(\"Hello world!\")",
-				"test" => ["nom" => "Bonjour", "entrée" => "bonjour"],
-				"index" => 1,
-			],
-		);
-
-		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
-
-		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
-		$mockTentativeDAO->shouldNotReceive("save")->withAnyArgs();
-
-		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
-		$mockAvancementDAO->shouldNotReceive("save")->withAnyArgs();
-
-		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertLessThanOrEqual(1, $heure_tentative - time());
-
-		$this->assertJsonStringEqualsJsonString(
-			sprintf(
-				file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_test_unique_réussie.json"),
-				$heure_tentative,
-			),
-			$résultat_obtenu->getContent(),
-		);
-	}
-
-	public function test_étant_donné_un_avancement_non_réussi_et_une_tentative_avec_un_test_unique_lorsquelle_est_soumise_lavancement_et_la_tentative_ne_sont_pas_sauvegardés_et_obtient_la_TentativeProg_non_réussie()
-	{
-		$résultat_obtenu = $this->actingAs($this->user)->call(
-			"POST",
-			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives?include=resultats",
-			[
-				"langage" => "non_réussi",
-				"code" => "#+TODO\nprint(\"Hello world!\")",
-				"test" => ["nom" => "Bonjour", "entrée" => "bonjour"],
-				"index" => 1,
-			],
-		);
-
-		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
-
-		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
-		$mockTentativeDAO->shouldNotReceive("save")->withAnyArgs();
-
-		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
-		$mockAvancementDAO->shouldNotReceive("save")->withAnyArgs();
-
-		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertLessThanOrEqual(1, $heure_tentative - time());
-
-		$this->assertJsonStringEqualsJsonString(
-			sprintf(
-				file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_test_unique_non_réussie.json"),
-				$heure_tentative,
-			),
-			$résultat_obtenu->getContent(),
-		);
 	}
 
 	public function test_étant_donné_une_tentative_avec_une_question_inexistante_lorsquelle_est_soumise_on_obtient_Tentative_intraitable()

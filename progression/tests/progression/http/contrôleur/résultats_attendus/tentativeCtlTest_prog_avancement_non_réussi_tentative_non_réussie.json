@@ -50,7 +50,7 @@
 				"sortie_erreur": "",
 				"résultat": false,
 				"feedback": "C'est pas ça :(",
-				"temps_exec": 30
+				"temps_exécution": 30
 			},
 			"links": {
 				"self": "https://example.com/resultat/0"
@@ -64,7 +64,7 @@
 				"sortie_erreur": "",
 				"résultat": false,
 				"feedback": "C'est pas ça :(",
-				"temps_exec": 30
+				"temps_exécution": 30
 			},
 			"links": {
 				"self": "https://example.com/resultat/1"

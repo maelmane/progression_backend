@@ -26,19 +26,20 @@ class TraiterTentativeProgInt extends Interacteur
 		$erreur = false;
 
 		foreach ($tests as $i => $test) {
-			if ($this->vérifier_solution($tentative->résultats[$i], $test->sortie_attendue)) {
-				$tentative->résultats[$i]->feedback = $test->feedback_pos;
-				$tentative->résultats[$i]->résultat = true;
+			$hash = array_keys($tentative->résultats)[$i];
+			if ($this->vérifier_solution($tentative->résultats[$hash], $test->sortie_attendue)) {
+				$tentative->résultats[$hash]->feedback = $test->feedback_pos;
+				$tentative->résultats[$hash]->résultat = true;
 				$nb_tests_réussis++;
 			} else {
-				$tentative->résultats[$i]->résultat = false;
-				if ($tentative->résultats[$i]->sortie_erreur) {
+				$tentative->résultats[$hash]->résultat = false;
+				if ($tentative->résultats[$hash]->sortie_erreur) {
 					$erreur = true;
 					if ($test->feedback_err) {
-						$tentative->résultats[$i]->feedback = $test->feedback_err;
+						$tentative->résultats[$hash]->feedback = $test->feedback_err;
 					}
 				} else {
-					$tentative->résultats[$i]->feedback = $test->feedback_neg;
+					$tentative->résultats[$hash]->feedback = $test->feedback_neg;
 				}
 			}
 		}

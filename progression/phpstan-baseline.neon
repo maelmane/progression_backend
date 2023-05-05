@@ -2681,11 +2681,6 @@ parameters:
 			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeProgInt\\:\\:soumettre_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeProgInt\\:\\:traiterTentativeProg\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php
@@ -2752,11 +2747,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeSysInt\\:\\:soumettre_tentative\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SoumettreTentativeSysInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeSysInt\\:\\:soumettre_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/SoumettreTentativeSysInt.php
 
@@ -3536,11 +3526,6 @@ parameters:
 			path: app/progression/http/contrôleur/TentativeCtl.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative_prog\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/TentativeCtl.php
@@ -3561,11 +3546,6 @@ parameters:
 			path: app/progression/http/contrôleur/TentativeCtl.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative_prog\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative_sys\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/TentativeCtl.php
@@ -3582,11 +3562,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative_sys\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative_sys\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/TentativeCtl.php
 
@@ -4229,3 +4204,7 @@ parameters:
 			message: "#^Method progression\\\\util\\\\Encodage\\:\\:base64_encode_url\\(\\) has parameter \\$string with no type specified\\.$#"
 			count: 1
 			path: app/progression/util/Encodage.php
+		-
+			message: "#^Method progression\\\\http\\\\contrôleur\\\\RésultatCtl::valider_paramètres\\(\\) has no return type specified.$#"
+			count: 1
+			path: app/progression/http/contrôleur/RésultatCtl.php

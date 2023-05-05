@@ -31,6 +31,7 @@ use progression\domaine\interacteur\{
 	SoumettreTentativeProgInt,
 	SoumettreTentativeSysInt,
 };
+use progression\http\contrôleur\RésultatCtl;
 use progression\domaine\entité\{Avancement, Tentative, TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{Question, QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\entité\TestProg;
@@ -68,6 +69,11 @@ class TentativeCtl extends Contrôleur
 	public function post(Request $request, $username, $question_uri)
 	{
 		Log::debug("TentativeCtl.post. Params : ", [$request->all(), $username]);
+
+		if (isset($request->test) || isset($request->index)) {
+			$request->merge(["question_uri", $question_uri]);
+			return (new RésultatCtl())->put($request);
+		}
 
 		$chemin = Encodage::base64_decode_url($question_uri);
 
@@ -122,22 +128,11 @@ class TentativeCtl extends Contrôleur
 
 	private function traiter_post_QuestionProg(Request $request, $username, $chemin, $question)
 	{
-		$tests = !empty($request->test)
-			? [
-				$this->construire_test(
-					isset($request->index)
-						? $question->tests[$request->index]
-						: new TestProg($request->test["nom"] ?? "", ""),
-					$request->test["entrée"] ?? null,
-					$request->test["params"] ?? null,
-					$request->test["sortie_attendue"] ?? null,
-				),
-			]
-			: $question->tests;
+		$tests = $question->tests;
 
 		$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
 
-		$tentative_résultante = $this->soumettre_tentative_prog($username, $question, $tests, $tentative);
+		$tentative_résultante = $this->soumettre_tentative_prog($question, $tests, $tentative);
 		if (!$tentative_résultante) {
 			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
@@ -158,7 +153,7 @@ class TentativeCtl extends Contrôleur
 
 		$tentative = new TentativeSys(["id" => $conteneur], $request->réponse, (new \DateTime())->getTimestamp());
 
-		$tentative_résultante = $this->soumettre_tentative_sys($username, $question, $question->tests, $tentative);
+		$tentative_résultante = $this->soumettre_tentative_sys($question, $question->tests, $tentative);
 		if (!$tentative_résultante) {
 			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
@@ -219,19 +214,19 @@ class TentativeCtl extends Contrôleur
 		return $test;
 	}
 
-	private function soumettre_tentative_prog($username, $question, $tests, $tentative)
+	private function soumettre_tentative_prog($question, $tests, $tentative)
 	{
-		return $this->soumettre_tentative($username, $question, $tests, $tentative, new SoumettreTentativeProgInt());
+		return $this->soumettre_tentative($question, $tests, $tentative, new SoumettreTentativeProgInt());
 	}
-	private function soumettre_tentative_sys($username, $question, $tests, $tentative)
+	private function soumettre_tentative_sys($question, $tests, $tentative)
 	{
-		return $this->soumettre_tentative($username, $question, $tests, $tentative, new SoumettreTentativeSysInt());
+		return $this->soumettre_tentative($question, $tests, $tentative, new SoumettreTentativeSysInt());
 	}
 
-	private function soumettre_tentative($username, $question, $tests, $tentative, $intéracteur)
+	private function soumettre_tentative($question, $tests, $tentative, $intéracteur)
 	{
 		try {
-			$résultat = $intéracteur->soumettre_tentative($username, $question, $tests, $tentative);
+			$résultat = $intéracteur->soumettre_tentative($question, $tests, $tentative);
 		} catch (ExécutionException $e) {
 			if ($e->getCode() >= 500) {
 				Log::error($e->getMessage());

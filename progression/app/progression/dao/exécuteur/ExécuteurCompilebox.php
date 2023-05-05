@@ -79,7 +79,7 @@ class ExécuteurCompilebox extends Exécuteur
 			"vm_name" => $image,
 		];
 
-		return $this->envoyer_requête($data_rc);
+		return $this->préparer_résultats($this->envoyer_requête($data_rc));
 	}
 
 	private function envoyer_requête($data_rc)
@@ -107,5 +107,17 @@ class ExécuteurCompilebox extends Exécuteur
 				throw new ExécutionException("Compilebox non disponible", 503, $e);
 			}
 		}
+	}
+
+	/**
+	 * @param array<mixed> $résultats
+	 * @return array<mixed>
+	 */
+	private function préparer_résultats(array $résultats): array
+	{
+		return [
+			"résultats" => $résultats["résultats"],
+			"temps_exécution" => $résultats["temps_exec"],
+		];
 	}
 }

@@ -32,7 +32,7 @@ class RésultatTransformer extends BaseTransformer
 			"sortie_erreur" => $réponse->sortie_erreur,
 			"résultat" => $réponse->résultat,
 			"feedback" => $réponse->feedback,
-			"temps_exec" => $réponse->temps_exécution,
+			"temps_exécution" => $réponse->temps_exécution,
 			"links" => (isset($réponse->links) ? $réponse->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}resultat/$réponse->id",
 			],
