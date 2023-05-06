@@ -44,6 +44,9 @@ $router->group(["middleware" => "auth"], function () use ($router) {
 
 	// Test
 	$router->get("/test/{question_uri}/{numero:[[:digit:]]+}", "TestCtl@get");
+
+	// Résultat
+	$router->put("/resultat", "RésultatCtl@put");
 });
 
 $router->group(["middleware" => ["auth", "validationPermissions"]], function () use ($router) {
@@ -71,7 +74,6 @@ $router->group(["middleware" => ["auth", "validationPermissions"]], function () 
 	);
 
 	// Résultat
-	$router->put("/resultat", "RésultatCtl@put");
 	$router->post("/test/{username}/{question_uri}/{numero:[[:digit:]]+}", "NotImplementedCtl@get");
 
 	// Sauvegarde
