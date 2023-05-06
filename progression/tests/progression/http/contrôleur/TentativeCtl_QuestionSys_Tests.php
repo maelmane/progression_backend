@@ -164,7 +164,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 				return $tentative->réponse == "Mauvaise réponse";
 			})
 			->andReturn([
-				"temps_exec" => 0.5,
+				"temps_exécution" => 0.5,
 				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
 				"conteneur" => [
 					"id" => "leConteneurDeLaNouvelleTentative",
@@ -178,7 +178,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 				return $tentative->réponse == "Bonne réponse";
 			})
 			->andReturn([
-				"temps_exec" => 0.65,
+				"temps_exécution" => 0.65,
 				"résultats" => [["output" => "Correcte", "time" => 0.2]],
 				"conteneur" => [
 					"id" => "leConteneurDeLaNouvelleTentative",

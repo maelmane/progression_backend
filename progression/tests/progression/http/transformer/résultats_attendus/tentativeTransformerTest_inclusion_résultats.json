@@ -2,9 +2,6 @@
     {
         "feedback": "feedback",
         "id": "0",
-        "links": {
-            "tentative": "https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760"
-        },
         "résultat": false,
         "sortie_erreur": "error",
         "sortie_observée": "output",
@@ -13,9 +10,6 @@
     {
         "feedback": "feedback 2",
         "id": "1",
-        "links": {
-            "tentative": "https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760"
-        },
         "résultat": true,
         "sortie_erreur": "error 2",
         "sortie_observée": "output 2",

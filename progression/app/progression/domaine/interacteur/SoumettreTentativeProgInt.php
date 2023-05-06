@@ -22,7 +22,7 @@ use progression\domaine\entité\{Avancement, Question};
 
 class SoumettreTentativeProgInt extends Interacteur
 {
-	public function soumettre_tentative($username, $question, $tests, $tentative)
+	public function soumettre_tentative($question, $tests, $tentative)
 	{
 		$exécutable = null;
 

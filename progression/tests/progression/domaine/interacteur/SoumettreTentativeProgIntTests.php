@@ -91,7 +91,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 				return $exécutable->lang == "python";
 			})
 			->andReturn([
-				"temps_exec" => 0.122,
+				"temps_exécution" => 0.122,
 				"résultats" => [["output" => "sortieTest", "errors" => "", "time" => 0.1]],
 			]);
 		$mockExécuteur
@@ -100,7 +100,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 				return $exécutable->lang == "java";
 			})
 			->andReturn([
-				"temps_exec" => 0.122,
+				"temps_exécution" => 0.122,
 				"résultats" => [["output" => "Incorrecte", "errors" => "", "time" => 0.1]],
 			]);
 
@@ -115,7 +115,6 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		self::$question = new QuestionProg();
 		self::$question->titre = "Bonsoir";
 		self::$question->niveau = "facile";
-		self::$question->uri = "https://example.com/question";
 		self::$question->tests = [
 			new TestProg(
 				nom: "nomTest",
@@ -178,7 +177,6 @@ final class SoumettreTentativeProgIntTests extends TestCase
 
 		$interacteur = new SoumettreTentativeProgInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
 			self::$question,
 			self::$question->tests,
 			self::$tentativeSoumiseIncorrecte,
