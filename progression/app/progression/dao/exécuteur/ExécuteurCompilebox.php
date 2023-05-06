@@ -60,7 +60,8 @@ class ExécuteurCompilebox extends Exécuteur
 			"vm_name" => $_ENV["COMPILEBOX_IMAGE_EXECUTEUR"],
 		];
 
-		return $this->envoyer_requête($data_rc);
+		$réponse = $this->envoyer_requête($data_rc);
+		return $this->préparer_résultats($réponse);
 	}
 
 	public function exécuter_sys($utilisateur, $image, $conteneur, $tests)
