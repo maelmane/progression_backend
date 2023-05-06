@@ -70,10 +70,24 @@ class TentativeCtl extends Contrôleur
 	{
 		Log::debug("TentativeCtl.post. Params : ", [$request->all(), $username]);
 
-		if (isset($request->test) || isset($request->index)) {
-			$request->merge(["question_uri", $question_uri]);
-			return (new RésultatCtl())->put($request);
+		// Rétrocompatibilité
+		// Utilise Résultat pour fournir un test unique
+		// Désuet dans v3
+		assert(version_compare(getenv("APP_VERSION")?:"3", "3", "<"), "Les tests uniques via TentativeCtl doivent être retirés");
+
+		if (isset($request->test)) {
+			$request->merge(["question_uri" => $question_uri]);
+			if (isset($request->index)) {
+				$request->request->remove("index");
+			}
+			$résultat = (new RésultatCtl())->put($request);
+			$data = $résultat->getData();
+
+			$data->included = [$data->data];
+			$résultat->setData($data);
+			return $résultat;
 		}
+		// Fin Désuet dans v3
 
 		$chemin = Encodage::base64_decode_url($question_uri);
 
