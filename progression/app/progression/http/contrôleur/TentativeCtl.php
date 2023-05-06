@@ -73,7 +73,10 @@ class TentativeCtl extends Contrôleur
 		// Rétrocompatibilité
 		// Utilise Résultat pour fournir un test unique
 		// Désuet dans v3
-		assert(version_compare(getenv("APP_VERSION")?:"3", "3", "<"), "Les tests uniques via TentativeCtl doivent être retirés");
+		assert(
+			version_compare(getenv("APP_VERSION") ?: "3", "3", "<"),
+			"Les tests uniques via TentativeCtl doivent être retirés",
+		);
 
 		if (isset($request->test)) {
 			$request->merge(["question_uri" => $question_uri]);
