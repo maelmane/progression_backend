@@ -521,21 +521,6 @@ parameters:
 			path: app/progression/dao/exécuteur/ExécuteurCache.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCache\\:\\:exécuter_prog\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCache.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCache\\:\\:exécuter_prog\\(\\) has parameter \\$exécutable with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCache.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCache\\:\\:exécuter_prog\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCache.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCache\\:\\:obtenir_de_la_cache\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/dao/exécuteur/ExécuteurCache.php

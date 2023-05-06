@@ -18,7 +18,7 @@
 
 namespace progression\dao\exécuteur;
 
-use progression\domaine\entité\{Exécutable, Test};
+use progression\domaine\entité\{Exécutable, TestProg, Résultat};
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
@@ -33,12 +33,29 @@ class ExécuteurCache extends Exécuteur
 		$this->_exécuteur = $exécuteur;
 		$this->_standardiseur = $standardiseur;
 	}
-
+	/**
+	 * @param Exécutable $exécutable
+	 * @param array<TestProg> $tests
+	 *
+	 * @return array<mixed> Un tableau de "résultats"=>array<id, Résultat> et "temps_exécution"=>int
+	 */
 	public function exécuter_prog($exécutable, $tests)
 	{
 		$code_standardisé = $this->standardiser_code($exécutable->code, $exécutable->lang) ?? $exécutable->code;
-		$réponse = [];
-		$réponse["résultats"] = [];
+
+		$résultats = $this->obtenir_résultats($code_standardisé, $exécutable, $tests);
+
+		return $résultats;
+	}
+	/**
+	 * @param array<TestProg> $tests
+	 *
+	 * @return array<mixed> Un tableau de "résultats"=>array<id, Résultat> et "temps_exécution"=>int
+	 */
+
+	private function obtenir_résultats(string $code_standardisé, Exécutable $exécutable, array $tests): array
+	{
+		$résultats = [];
 		$tests_à_exécuter = [];
 		foreach ($tests as $test) {
 			$entrée = $test->entrée;
@@ -47,38 +64,52 @@ class ExécuteurCache extends Exécuteur
 			$hash = $this->calculer_hash($code_standardisé, $exécutable->lang, $entrée, $params);
 			Log::debug("Hash: $hash");
 
-			$résultats = null;
+			$résultat = false;
 			try {
-				$résultats = $this->obtenir_de_la_cache($hash);
+				$résultat = $this->obtenir_de_la_cache($hash);
 			} catch (\Throwable $e) {
 				Log::error("Cache non disponible");
 				Log::error($e->getMessage());
 			}
 
-			if ($résultats !== false) {
-				$réponse["résultats"][$hash] = $résultats;
+			if ($résultat !== false) {
+				$résultats[$hash] = $résultat;
 			} else {
+				// Si le Résultat n'est pas trouvé dans la cache, on conserve le test pour exécution
 				$tests_à_exécuter[$hash] = $test;
-				$réponse["résultats"][$hash] = null;
 			}
 		}
 
-		if (count($tests_à_exécuter) == 0) {
-			$réponse["temps_exécution"] = 0;
-		} else {
-			$résultats_exécution = $this->exécuter_tests($exécutable, $tests_à_exécuter);
-			foreach ($résultats_exécution["résultats"] as $hash => $résultat) {
-				$réponse["résultats"][$hash] = $résultat;
-			}
-			$réponse["temps_exécution"] = $résultats_exécution["temps_exécution"];
-		}
-
-		return $réponse;
+		// Remplit le tableau $résultats avec les Résultats de tests non présants dans la cache
+		$temps_exécution = $this->exécuter_tests_manquants($tests_à_exécuter, $exécutable, $résultats);
+		return ["résultats" => $résultats, "temps_exécution" => $temps_exécution];
 	}
 
 	/**
-	 * @param array<Test> $tests
-	 * @return array<mixed>
+	 * @param array<TestProg> $tests_à_exécuter
+	 * @param array<Résultat> $résultats Tableau de Résultats à remplir des résultats manquants
+	 *
+	 * @return int le temps d'exécution des tests manquants
+	 */
+	private function exécuter_tests_manquants(array $tests_à_exécuter, Exécutable $exécutable, array &$résultats): int
+	{
+		if ($tests_à_exécuter) {
+			$résultats_exécution = $this->exécuter_tests($exécutable, $tests_à_exécuter);
+			foreach ($résultats_exécution["résultats"] as $hash => $résultat) {
+				$résultats[$hash] = $résultat;
+			}
+			return $résultats_exécution["temps_exécution"];
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * Exécute en lot de tests
+	 *
+	 * @param array<TestProg> $tests
+	 *
+	 * @return array<mixed> Un tableau de "résultats"=>array<id, Résultat> et "temps_exécution"=>int
 	 */
 	private function exécuter_tests(Exécutable $exécutable, array $tests): array
 	{
