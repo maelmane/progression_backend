@@ -59,7 +59,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 				return $question == self::$question_de_test && $tentative == self::$tentative_correcte;
 			})
 			->andReturn([
-				"temps_exec" => 0.5,
+				"temps_exécution" => 0.5,
 				"résultats" => [["output" => "Correcte", "time" => 0.1]],
 				"conteneur" => ["id" => "Conteneur de test correct", "ip" => "172.45.2.2", "port" => 45667],
 			]);
@@ -69,7 +69,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 				return $question == self::$question_de_test && $tentative == self::$tentative_incorrecte;
 			})
 			->andReturn([
-				"temps_exec" => 0.5,
+				"temps_exécution" => 0.5,
 				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
 				"conteneur" => ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
 			]);
@@ -81,7 +81,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 					$question == self::$question_réponse_courte_avec_regex;
 			})
 			->andReturn([
-				"temps_exec" => 0.5,
+				"temps_exécution" => 0.5,
 				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
 				"conteneur" => ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
 			]);
@@ -92,7 +92,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 				return $question == self::$question_de_test && !$tentative->conteneur["id"];
 			})
 			->andReturn([
-				"temps_exec" => 0.5,
+				"temps_exécution" => 0.5,
 				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
 				"conteneur" => ["id" => "Nouveau Conteneur", "ip" => "172.45.2.2", "port" => 45667],
 			]);
@@ -158,7 +158,6 @@ final class SoumettreTentativeSysIntTests extends TestCase
 
 		$interacteur = new SoumettreTentativeSysInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
 			self::$question_de_test,
 			self::$question_de_test->tests,
 			new TentativeSys(["id" => "Conteneur de test correct"], null, 1615696286),
@@ -181,7 +180,6 @@ final class SoumettreTentativeSysIntTests extends TestCase
 
 		$interacteur = new SoumettreTentativeSysInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
 			self::$question_de_test,
 			self::$question_de_test->tests,
 			new TentativeSys(["id" => "Conteneur de test incorrect"], null, 1615696286),
@@ -205,7 +203,6 @@ final class SoumettreTentativeSysIntTests extends TestCase
 
 		$interacteur = new SoumettreTentativeSysInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
 			self::$question_réponse_courte,
 			null,
 			new TentativeSys(["id" => "Conteneur de test incorrect"], "Bonne réponse", 1615696286),
@@ -230,7 +227,6 @@ final class SoumettreTentativeSysIntTests extends TestCase
 
 		$interacteur = new SoumettreTentativeSysInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
 			self::$question_réponse_courte,
 			null,
 			new TentativeSys(["id" => "Conteneur de test incorrect"], "Mauvaise réponse", 1615696286),
@@ -254,7 +250,6 @@ final class SoumettreTentativeSysIntTests extends TestCase
 
 		$interacteur = new SoumettreTentativeSysInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
 			self::$question_réponse_courte_avec_regex,
 			null,
 			new TentativeSys(["id" => "Conteneur de test incorrect"], "Bonne réponse", 1615696286),
@@ -278,7 +273,6 @@ final class SoumettreTentativeSysIntTests extends TestCase
 
 		$interacteur = new SoumettreTentativeSysInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
 			self::$question_de_test,
 			self::$question_de_test->tests,
 			self::$tentative_soumise_sans_conteneur,

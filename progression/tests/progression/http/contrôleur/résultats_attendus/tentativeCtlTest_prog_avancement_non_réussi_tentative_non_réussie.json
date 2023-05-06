@@ -31,11 +31,11 @@
 				"data": [
 					{
 						"type": "resultat",
-						"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/0"
+						"id": "0"
 					},
 					{
 						"type": "resultat",
-						"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/1"
+						"id": "1"
 					}
 				]
 			}
@@ -44,32 +44,32 @@
 	"included": [
 		{
 			"type": "resultat",
-			"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/0",
+			"id": "0",
 			"attributes": {
 				"sortie_observée": "Allo\n",
 				"sortie_erreur": "",
 				"résultat": false,
 				"feedback": "C'est pas ça :(",
-				"temps_exec": 30
+				"temps_exec": 30,
+				"temps_exécution": 30
 			},
 			"links": {
-				"self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/0",
-				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
+				"self": "https://example.com/resultat/0"
 			}
 		},
 		{
 			"type": "resultat",
-			"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/1",
+			"id": "1",
 			"attributes": {
 				"sortie_observée": "Allo\nAllo\n",
 				"sortie_erreur": "",
 				"résultat": false,
 				"feedback": "C'est pas ça :(",
-				"temps_exec": 30
+				"temps_exec": 30,
+				"temps_exécution": 30
 			},
 			"links": {
-				"self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/1",
-				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
+				"self": "https://example.com/resultat/1"
 			}
 		}
 	]
