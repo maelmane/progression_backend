@@ -36,6 +36,7 @@ final class RésultatTransformerTests extends TestCase
 			"sortie_erreur" => "",
 			"résultat" => true,
 			"feedback" => "Bon travail!",
+			"temps_exec" => 15,
 			"temps_exécution" => 15,
 			"links" => [
 				"self" => "https://example.com/resultat/0",

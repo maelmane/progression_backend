@@ -52,6 +52,7 @@
         "sortie_erreur": "",
         "résultat": true,
         "feedback": null,
+        "temps_exec": null,
         "temps_exécution": null
       },
       "links": {

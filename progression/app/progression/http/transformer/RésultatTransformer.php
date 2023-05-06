@@ -26,12 +26,18 @@ class RésultatTransformer extends BaseTransformer
 
 	public function transform(Résultat $réponse)
 	{
+		assert(
+			version_compare(getenv("APP_VERSION") ?: "3", "3", "<"),
+			"temps_exec doit être enlevé, remplacé par temps_exécution",
+		);
+
 		$data = [
 			"id" => $réponse->id,
 			"sortie_observée" => $réponse->sortie_observée,
 			"sortie_erreur" => $réponse->sortie_erreur,
 			"résultat" => $réponse->résultat,
 			"feedback" => $réponse->feedback,
+			"temps_exec" => $réponse->temps_exécution,
 			"temps_exécution" => $réponse->temps_exécution,
 			"links" => (isset($réponse->links) ? $réponse->links : []) + [
 				"self" => "{$_ENV["APP_URL"]}resultat/$réponse->id",

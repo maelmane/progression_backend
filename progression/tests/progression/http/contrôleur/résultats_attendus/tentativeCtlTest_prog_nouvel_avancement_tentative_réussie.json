@@ -48,6 +48,7 @@
                 "résultat": true,
                 "sortie_erreur": "",
                 "sortie_observée": "Bonjour\n",
+                "temps_exec": 30,
                 "temps_exécution": 30
             },
             "id": "0",
@@ -62,6 +63,7 @@
                 "résultat": true,
                 "sortie_erreur": "",
                 "sortie_observée": "Bonjour\nBonjour\n",
+                "temps_exec": 30,
                 "temps_exécution": 30
             },
             "id": "1",

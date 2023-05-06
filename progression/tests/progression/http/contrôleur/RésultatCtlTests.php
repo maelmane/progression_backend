@@ -32,7 +32,6 @@ final class RésultatCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$_ENV["AUTH_TYPE"] = "no";
 		$_ENV["APP_URL"] = "https://example.com/";
 		$_ENV["TAILLE_CODE_MAX"] = 1000;
 
@@ -63,6 +62,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_question")
 			->with("https://depot.com/question_réussie")
 			->andReturn($question_réussie);
+		$mockQuestionDAO->shouldReceive("get_question")->andReturn(null);
 
 		// Exécuteur
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
@@ -111,7 +111,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		$this->assertEquals(200, $résultat_obtenu->status());
 
 		$this->assertJsonStringEqualsJsonString(
-			file_get_contents(__DIR__ . "/résultats_attendus/résultat_prog_unique_avec_test.json"),
+			file_get_contents(__DIR__ . "/résultats_attendus/résultat_prog_unique_soumis_avec_test.json"),
 			$résultat_obtenu->getContent(),
 		);
 	}
@@ -128,7 +128,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		$this->assertEquals(200, $résultat_obtenu->status());
 
 		$this->assertJsonStringEqualsJsonString(
-			file_get_contents(__DIR__ . "/résultats_attendus/résultat_prog_unique_avec_indice.json"),
+			file_get_contents(__DIR__ . "/résultats_attendus/résultat_prog_unique_soumis_avec_indice.json"),
 			$résultat_obtenu->getContent(),
 		);
 	}
@@ -146,7 +146,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		$this->assertEquals(200, $résultat_obtenu->status());
 
 		$this->assertJsonStringEqualsJsonString(
-			file_get_contents(__DIR__ . "/résultats_attendus/résultat_prog_unique_avec_indice_et_test.json"),
+			file_get_contents(__DIR__ . "/résultats_attendus/résultat_prog_unique_soumis_avec_indice_et_test.json"),
 			$résultat_obtenu->getContent(),
 		);
 	}
@@ -181,7 +181,53 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_un_test_unique_avec_indice_de_test_inexistant_lorsquelle_est_soumise_on_obtient_une_erreur_404()
+	public function test_étant_donné_un_test_unique_sans_langage_lorsquelle_est_soumise_on_obtient_une_erreur_400()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
+			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
+			"code" => "#+TODO\nprint(\"Hello world!\")",
+			"test" => 1,
+		]);
+
+		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals(
+			'{"erreur":{"langage":["Err: 1004. Le champ langage est obligatoire."]}}',
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_test_unique_sans_code_lorsquelle_est_soumise_on_obtient_une_erreur_400()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
+			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
+			"langage" => "python",
+			"test" => 1,
+		]);
+
+		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals(
+			'{"erreur":{"code":["Err: 1004. Le champ code est obligatoire."]}}',
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_test_unique_pour_une_question_inexistante_lorsquelle_est_soumise_on_obtient_une_erreur_400()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
+			"question_uri" => "aHR0cHM6Ly9leGVtcGxlLmNvbS9xdWVzdGlvbl9pbnRyb3V2YWJsZS55bWw",
+			"langage" => "réussi",
+			"code" => "#+TODO\nprint(\"Hello world!\")",
+			"test" => 1,
+		]);
+
+		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals(
+			'{"erreur":"Err: 1002. La question https:\/\/exemple.com\/question_introuvable.yml n\'existe pas."}',
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_test_unique_avec_indice_de_test_inexistant_lorsquelle_est_soumise_on_obtient_une_erreur_400()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
@@ -190,6 +236,42 @@ final class RésultatCtlTests extends ContrôleurTestCase
 			"index" => 42,
 		]);
 
-		$this->assertEquals(404, $résultat_obtenu->status());
+		$this->assertEquals(400, $résultat_obtenu->status());
+	}
+
+	public function test_étant_donné_un_test_unique_ayant_du_code_dépassant_la_taille_maximale_de_caractères_on_obtient_une_erreur_400()
+	{
+		$_ENV["TAILLE_CODE_MAX"] = 23;
+		$testCode = "#+TODO\n日本語でのテストです\n#-TODO"; //24 caractères UTF8
+
+		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat/", [
+			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
+			"index" => 0,
+			"langage" => "réussi",
+			"code" => "$testCode",
+		]);
+		$_ENV["TAILLE_CODE_MAX"] = 1000;
+
+		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals(
+			'{"erreur":{"code":["Err: 1002. Le code soumis 24 > 23 caractères."]}}',
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_test_unique_ayant_exactement_la_taille_maximale_de_caractères_on_obtient_un_code_200()
+	{
+		$_ENV["TAILLE_CODE_MAX"] = 24;
+		$testCode = "#+TODO\n日本語でのテストです\n#-TODO"; //24 caractères UTF8
+
+		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
+			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
+			"index" => 0,
+			"langage" => "réussi",
+			"code" => "$testCode",
+		]);
+		$_ENV["TAILLE_CODE_MAX"] = 1000;
+
+		$this->assertEquals(200, $résultat_obtenu->status());
 	}
 }

@@ -630,6 +630,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			],
 		);
 
+		$_ENV["TAILLE_CODE_MAX"] = 1000;
+
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
 			'{"erreur":{"code":["Err: 1002. Le code soumis 24 > 23 caractères."]}}',
@@ -652,6 +654,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives",
 			["langage" => "réussi", "code" => "$testCode"],
 		);
+
+		$_ENV["TAILLE_CODE_MAX"] = 1000;
 
 		$this->assertEquals(200, $résultat_obtenu->status());
 	}

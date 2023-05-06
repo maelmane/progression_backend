@@ -90,6 +90,9 @@ class RésultatCtl extends Contrôleur
 				"index" => "integer",
 			],
 			[
+				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
+				"code.between" =>
+					"Err: 1002. Le code soumis " . mb_strlen($request->code) . " > $TAILLE_CODE_MAX caractères.",
 				"question_uri.required" => "Err: 1004. Le champ question_uri est obligatoire.",
 				"test.required_without" => "Err: 1004. Le champ test est obligatoire lorsque index n'est pas présent.",
 			],
@@ -103,7 +106,8 @@ class RésultatCtl extends Contrôleur
 		$questionInt = new ObtenirQuestionInt();
 
 		try {
-			return $questionInt->get_question($chemin);
+			return $questionInt->get_question($chemin) ??
+				throw new ContrôleurException("Err: 1002. La question $chemin n'existe pas.", 400);
 		} catch (RuntimeException $erreur) {
 			throw new ContrôleurException($erreur->getMessage(), 502);
 		} catch (DomainException $erreur) {
@@ -113,28 +117,19 @@ class RésultatCtl extends Contrôleur
 		}
 	}
 
-	private function construire_test(
-		TestProg $test,
-		string|null $entrée,
-		string|null $params,
-		string|null $sortie_attendue
-	): TestProg {
-		if ($entrée !== null) {
-			$test->entrée = $entrée;
-		}
-		if ($params !== null) {
-			$test->params = $params;
-		}
-		if ($sortie_attendue !== null) {
-			$test->sortie_attendue = $sortie_attendue;
-		}
-
-		return $test;
+	private function construire_test(Request $request): TestProg
+	{
+		return new TestProg(
+			nom: $request->test["nom"] ?? "",
+			sortie_attendue: $request->test["sortie_attendue"] ?? "",
+			entrée: $request->test["entrée"] ?? null,
+			params: $request->test["params"] ?? null,
+		);
 	}
 
 	private function valider_et_préparer_réponse(Résultat|null $résultat): JsonResponse
 	{
-		Log::debug("RésultatCtl.valider_et_préparer_réponse. Params : ", [$résultat]);
+		Log::debug("RésulangageltatCtl.valider_et_préparer_réponse. Params : ", [$résultat]);
 
 		if ($résultat) {
 			$réponse = $this->item($résultat, new RésultatTransformer());
@@ -151,18 +146,9 @@ class RésultatCtl extends Contrôleur
 	private function traiter_put_QuestionProg(Request $request, string $chemin, QuestionProg $question): Résultat|null
 	{
 		if (!isset($request->index)) {
-			$test = $this->construire_test(
-				new TestProg($request->test["nom"] ?? "", ""),
-				$request->test["entrée"] ?? null,
-				$request->test["params"] ?? null,
-				$request->test["sortie_attendue"] ?? null,
-			);
+			$test = $this->construire_test($request);
 		} else {
-			if (array_key_exists($request->index, $question->tests)) {
-				$test = $question->tests[$request->index];
-			} else {
-				return null;
-			}
+			$test = $question->tests[$request->index] ?? throw new ContrôleurException("Indice de test invalide", 400);
 		}
 
 		$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
