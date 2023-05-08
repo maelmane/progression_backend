@@ -158,9 +158,17 @@ class TentativeCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
 
+		// Rétrocompatibilité
+		// Utilise Résultat pour fournir un test unique
+		// Désuet dans v3
+		assert(
+			version_compare(getenv("APP_VERSION") ?: "3", "3", "<"),
+			"Les tests uniques via TentativeCtl doivent être retirés",
+		);
 		if (empty($request->test)) {
 			$this->sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative_résultante);
 		}
+		// Fin désuet dans v3
 
 		$tentative_résultante->id = $tentative->date_soumission;
 		$réponse = $this->item($tentative_résultante, new TentativeProgTransformer("$username/$request->question_uri"));
