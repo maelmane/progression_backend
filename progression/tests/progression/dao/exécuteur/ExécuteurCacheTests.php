@@ -311,6 +311,15 @@ final class ExécuteurCacheTests extends TestCase
 			$tests,
 		);
 
+		//Vérifie l'ordre des éléments
+		$this->assertEquals(
+			[
+				"390a8d682420723d7c735e0ce50ad7cf",
+				"f97c05380cec8b86f554ce8269d05c72",
+				"7d67d2eaef4e827e4f28f8d891e8740e",
+			],
+			array_keys($résultat["résultats"]),
+		);
 		$this->assertEquals(
 			[
 				"temps_exécution" => 54321,

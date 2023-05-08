@@ -75,7 +75,9 @@ class ExécuteurCache extends Exécuteur
 			if ($résultat !== false) {
 				$résultats[$hash] = $résultat;
 			} else {
-				// Si le Résultat n'est pas trouvé dans la cache, on conserve le test pour exécution
+				// Si le Résultat n'est pas trouvé dans la cache, on «réserve» l'espace dans le tableau
+				// et on conserve le test pour exécution
+				$résultats[$hash] = false;
 				$tests_à_exécuter[$hash] = $test;
 			}
 		}

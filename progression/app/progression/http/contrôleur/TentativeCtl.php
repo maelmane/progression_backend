@@ -84,6 +84,10 @@ class TentativeCtl extends Contrôleur
 				$request->request->remove("index");
 			}
 			$résultat = (new RésultatCtl())->put($request);
+
+			if ($résultat->status() >= 300) {
+				return $résultat;
+			}
 			$data = $résultat->getData();
 
 			$data->included = [$data->data];
