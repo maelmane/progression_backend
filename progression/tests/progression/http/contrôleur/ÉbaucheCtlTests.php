@@ -20,7 +20,7 @@ use progression\ContrôleurTestCase;
 
 use progression\domaine\entité\question\{Question, QuestionProg, Type};
 use progression\domaine\entité\Exécutable;
-use progression\domaine\entité\user\{User, Rôle};
+use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
 
@@ -37,6 +37,7 @@ final class ÉbaucheCtlTests extends ContrôleurTestCase
 		$this->user = new GenericUser([
 			"username" => "bob",
 			"rôle" => Rôle::NORMAL,
+			"état" => État::ACTIF,
 		]);
 
 		// Question

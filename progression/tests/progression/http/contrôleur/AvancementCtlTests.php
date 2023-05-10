@@ -21,6 +21,7 @@ use progression\dao\DAOFactory;
 use progression\domaine\entité\question\{Question, QuestionProg, État};
 use progression\domaine\entité\{Avancement, TentativeProg, Sauvegarde, Commentaire};
 use progression\domaine\entité\user\{User, Rôle};
+use progression\domaine\entité\user\État as UserÉtat;
 use Illuminate\Auth\GenericUser;
 
 final class AvancementCtlTests extends ContrôleurTestCase
@@ -34,6 +35,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		$this->user = new GenericUser([
 			"username" => "jdoe",
 			"rôle" => Rôle::NORMAL,
+			"état" => UserÉtat::ACTIF,
 		]);
 
 		$_ENV["APP_URL"] = "https://example.com/";

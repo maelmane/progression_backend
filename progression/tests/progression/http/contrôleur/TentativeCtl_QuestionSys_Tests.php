@@ -22,7 +22,7 @@ use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
 use progression\domaine\entité\{Avancement, TestSys, Exécutable, TentativeSys};
 use progression\domaine\entité\question\{Question, QuestionSys};
-use progression\domaine\entité\user\{User, Rôle};
+use progression\domaine\entité\user\{User, Rôle, État};
 
 use Illuminate\Auth\GenericUser;
 
@@ -44,6 +44,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$this->user = new GenericUser([
 			"username" => "jdoe",
 			"rôle" => Rôle::NORMAL,
+			"état" => État::ACTIF,
 		]);
 
 		// QuestionSys avec solution courte

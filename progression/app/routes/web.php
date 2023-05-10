@@ -27,11 +27,13 @@ $router->get("/", function () use ($router) {
 // Configuration serveur
 $router->get("/config", "ConfigCtl@get");
 
-// Authentification
-$router->post("/auth/", "LoginCtl@login");
+// Inscription
 $router->post("/inscription/", "InscriptionCtl@inscription");
 
-$router->group(["middleware" => "auth"], function () use ($router) {
+// Authentification
+$router->post("/auth/", "LoginCtl@login");
+
+$router->group(["middleware" => ["auth", "étatNonInactif"]], function () use ($router) {
 	// Ébauche
 	$router->get("/ebauche/{question_uri}/{langage}", "ÉbaucheCtl@get");
 
@@ -46,7 +48,7 @@ $router->group(["middleware" => "auth"], function () use ($router) {
 	$router->get("/test/{question_uri}/{numero:[[:digit:]]+}", "TestCtl@get");
 });
 
-$router->group(["middleware" => ["auth", "validationPermissions"]], function () use ($router) {
+$router->group(["middleware" => ["auth", "étatNonInactif", "permissionsRessources"]], function () use ($router) {
 	// Avancement
 	$router->get("/avancement/{username}/{question_uri}", "AvancementCtl@get");
 	$router->get("/avancement/{username}/{chemin}/relationships/tentatives", "NotImplementedCtl@get");

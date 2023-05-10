@@ -3818,16 +3818,6 @@ parameters:
 			path: app/progression/http/middleware/Cors.php
 
 		-
-			message: "#^Method progression\\\\http\\\\middleware\\\\ValidationPermissions\\:\\:handle\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/middleware/ValidationPermissions.php
-
-		-
-			message: "#^Method progression\\\\http\\\\middleware\\\\ValidationPermissions\\:\\:handle\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/middleware/ValidationPermissions.php
-
-		-
 			message: "#^Method progression\\\\http\\\\transformer\\\\AvancementTransformer\\:\\:includeSauvegardes\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/transformer/AvancementTransformer.php

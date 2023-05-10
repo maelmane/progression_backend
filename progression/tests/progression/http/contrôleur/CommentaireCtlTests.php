@@ -20,7 +20,7 @@ use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\Commentaire;
-use progression\domaine\entité\user\{User, Rôle};
+use progression\domaine\entité\user\{User, Rôle, État};
 use Illuminate\Auth\GenericUser;
 
 final class CommentaireCtlTests extends ContrôleurTestCase
@@ -34,6 +34,7 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 		$this->user = new GenericUser([
 			"username" => "jdoe",
 			"rôle" => Rôle::NORMAL,
+			"état" => État::ACTIF,
 		]);
 
 		$_ENV["APP_URL"] = "https://example.com/";
