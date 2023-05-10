@@ -20,7 +20,7 @@ use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\clé\{Clé, Portée};
-use progression\domaine\entité\user\{User, Rôle};
+use progression\domaine\entité\user\{User, Rôle, État};
 use Illuminate\Auth\GenericUser;
 
 final class CléCtlTests extends ContrôleurTestCase
@@ -36,10 +36,12 @@ final class CléCtlTests extends ContrôleurTestCase
 		$this->user = new GenericUser([
 			"username" => "jdoe",
 			"rôle" => Rôle::NORMAL,
+			"état" => État::ACTIF,
 		]);
 		$this->admin = new GenericUser([
 			"username" => "admin",
 			"rôle" => Rôle::ADMIN,
+			"état" => État::ACTIF,
 		]);
 
 		// UserDAO

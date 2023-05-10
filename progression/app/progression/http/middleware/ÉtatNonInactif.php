@@ -19,16 +19,15 @@
 namespace progression\http\middleware;
 
 use Closure;
+use Laravel\Lumen\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\JsonResponse;
 
-class ValidationPermissions
+class ÉtatNonInactif
 {
-	public function handle($request, Closure $next)
+	public function handle(Request $request, Closure $next): JsonResponse
 	{
-		if (
-			Gate::allows("acces-utilisateur", $request) ||
-			($request->input("tkres") && Gate::allows("acces-ressource", $request))
-		) {
+		if (Gate::allows("utilisateur-non-inactif", $request)) {
 			return $next($request);
 		} else {
 			return response()->json(

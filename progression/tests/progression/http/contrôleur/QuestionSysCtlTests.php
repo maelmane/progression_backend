@@ -19,7 +19,7 @@
 use progression\ContrôleurTestCase;
 use progression\domaine\entité\question\{Question, QuestionSys, Type};
 use progression\domaine\entité\TestSys;
-use progression\domaine\entité\user\{User, Rôle};
+use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\DAOFactory;
 use progression\dao\question\ChargeurException;
 use Illuminate\Auth\GenericUser;
@@ -34,6 +34,7 @@ final class QuestionSysCtlTests extends ContrôleurTestCase
 		$this->user = new GenericUser([
 			"username" => "jdoe",
 			"rôle" => Rôle::NORMAL,
+			"état" => État::ACTIF,
 		]);
 
 		//QuestionSys avec solution sans pregmatch

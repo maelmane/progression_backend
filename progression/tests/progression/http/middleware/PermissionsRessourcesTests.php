@@ -18,12 +18,12 @@
 
 use progression\TestCase;
 
-use progression\domaine\entité\user\{User, Rôle};
+use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
 use progression\http\contrôleur\GénérateurDeToken;
 
-final class ValidationPermissionsTests extends TestCase
+final class PermissionsRessourcesTests extends TestCase
 {
 	public $user;
 	public $headers;
@@ -36,6 +36,7 @@ final class ValidationPermissionsTests extends TestCase
 		$this->user = new GenericUser([
 			"username" => "bob",
 			"rôle" => Rôle::NORMAL,
+			"état" => État::ACTIF,
 		]);
 		$token = GénérateurDeToken::get_instance()->générer_token("bob");
 		$this->headers = ["HTTP_Authorization" => "Bearer " . $token];
@@ -100,6 +101,7 @@ final class ValidationPermissionsTests extends TestCase
 		$admin = new GenericUser([
 			"username" => "admin",
 			"rôle" => Rôle::ADMIN,
+			"état" => État::ACTIF,
 		]);
 		$résultat_obtenu = $this->actingAs($admin)->call("GET", "/user/bob");
 

@@ -21,6 +21,7 @@ namespace progression\http\contrôleur;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\LoginInt;
 
@@ -60,7 +61,11 @@ class LoginCtl extends Contrôleur
 			$user = $loginInt->effectuer_login_par_identifiant($username, $password, $domaine);
 		}
 
-		$réponse = $this->valider_et_préparer_réponse($user, $request);
+		if ($this->valider_état_utilisateur($request)) {
+			$réponse = $this->valider_et_préparer_réponse($user, $request);
+		} else {
+			$réponse = $this->réponse_json(["erreur" => "Accès interdit."], 401);
+		}
 
 		Log::debug("LoginCtl.effectuer_login. Retour : ", [$réponse]);
 		return $réponse;
@@ -142,5 +147,10 @@ class LoginCtl extends Contrôleur
 
 		Log::debug("LoginCtl.valider_paramètres. Retour : ", [$réponse]);
 		return $réponse;
+	}
+
+	private function valider_état_utilisateur(Request $request): bool
+	{
+		return Gate::allows("utilisateur-validé", $request) && Gate::allows("utilisateur-non-inactif", $request);
 	}
 }

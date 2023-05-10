@@ -36,6 +36,7 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 		$this->user = new GenericUser([
 			"username" => "bob",
 			"rôle" => Rôle::NORMAL,
+			"état" => État::ACTIF,
 		]);
 
 		// UserDAO

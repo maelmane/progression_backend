@@ -93,6 +93,14 @@ class AuthServiceProvider extends ServiceProvider
 
 			return false;
 		});
+
+		Gate::define("utilisateur-non-inactif", function ($user, $request) {
+			return $user->état != État::INACTIF;
+		});
+
+		Gate::define("utilisateur-validé", function ($user, $request) {
+			return $user->état != État::ATTENTE_DE_VALIDATION;
+		});
 	}
 
 	private function décoderToken($tokenEncodé, $request)
