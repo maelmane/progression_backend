@@ -53,7 +53,8 @@
             },
             "id": "0",
             "links": {
-                "self": "https://example.com/resultat/0"
+                "self": "https://example.com/resultat/0",
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241"
             },
             "type": "resultat"
         },
@@ -68,7 +69,8 @@
             },
             "id": "1",
             "links": {
-                "self": "https://example.com/resultat/1"
+                "self": "https://example.com/resultat/1",
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241"
             },
             "type": "resultat"
         }

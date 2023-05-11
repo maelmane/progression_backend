@@ -20,7 +20,9 @@ use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
-use progression\domaine\entité\{TestProg, Exécutable, Question, QuestionProg, Résultat, User};
+use progression\domaine\entité\{TestProg, Exécutable, Résultat};
+use progression\domaine\entité\question\{Question, QuestionProg};
+use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\question\ChargeurException;
 use Illuminate\Auth\GenericUser;
 
@@ -35,7 +37,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		$_ENV["APP_URL"] = "https://example.com/";
 		$_ENV["TAILLE_CODE_MAX"] = 1000;
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL, "état" => État::ACTIF]);
 
 		// QuestionProg
 		//aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU

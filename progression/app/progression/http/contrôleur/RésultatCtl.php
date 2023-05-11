@@ -23,7 +23,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 use progression\http\transformer\RésultatTransformer;
-use progression\domaine\entité\{QuestionProg, Résultat, TestProg, TentativeProg};
+use progression\domaine\entité\question\QuestionProg;
+use progression\domaine\entité\{Résultat, TestProg, TentativeProg};
 use progression\domaine\interacteur\{ObtenirQuestionInt, SoumettreTentativeProgInt};
 use progression\util\Encodage;
 use RuntimeException;
@@ -165,7 +166,7 @@ class RésultatCtl extends Contrôleur
 	private function soumettre_tentative(
 		QuestionProg $question,
 		TestProg $test,
-		TentativeProg $tentative
+		TentativeProg $tentative,
 	): TentativeProg {
 		try {
 			$intéracteur = new SoumettreTentativeProgInt();

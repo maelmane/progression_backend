@@ -54,7 +54,8 @@
 				"temps_exécution": 30
 			},
 			"links": {
-				"self": "https://example.com/resultat/0"
+				"self": "https://example.com/resultat/0",
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
 			}
 		},
 		{
@@ -69,7 +70,8 @@
 				"temps_exécution": 30
 			},
 			"links": {
-				"self": "https://example.com/resultat/1"
+				"self": "https://example.com/resultat/1",
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
 			}
 		}
 	]
