@@ -1,0 +1,30 @@
+{
+  "data": {
+    "type": "user",
+    "id": "Marcel2",
+    "attributes": {
+      "courriel": "marcel2@gmail.com",
+      "username": "Marcel2",
+      "état": 2,
+      "rôle": 0,
+      "préférences": ""
+    },
+    "links": {
+      "self": "https:\/\/example.com\/user\/Marcel2"
+    },
+    "relationships": {
+      "avancements": {
+        "links": {
+          "self": "https:\/\/example.com\/user\/Marcel2\/relationships\/avancements",
+          "related": "https:\/\/example.com\/user\/Marcel2\/avancements"
+        }
+      },
+      "cles": {
+        "links": {
+          "self": "https:\/\/example.com\/user\/Marcel2\/relationships\/cles",
+          "related": "https:\/\/example.com\/user\/Marcel2\/cles"
+        }
+      }
+    }
+  }
+}

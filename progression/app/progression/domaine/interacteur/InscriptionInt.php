@@ -20,6 +20,9 @@ namespace progression\domaine\interacteur;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\user\{User, État, Rôle};
+use progression\http\transformer\UserTransformer;
+use progression\http\contrôleur\GénérateurDeToken;
+use Carbon\Carbon;
 
 class InscriptionInt extends Interacteur
 {
@@ -66,6 +69,29 @@ class InscriptionInt extends Interacteur
 			),
 		);
 		$dao->set_password($user, $password);
+
+		if ($rôle != Rôle::ADMIN) {
+			$ressources = [
+				"data" => [
+					"url_user" => getenv("APP_URL") . "user/" . $username,
+					"user" => [
+						"username" => $user->username,
+						"courriel" => $user->courriel,
+						"rôle" => $user->rôle,
+					],
+				],
+				"permissions" => [
+					"user" => [
+						"url" => "^user/" . $username . "$",
+						"method" => "^POST$",
+					],
+				],
+			];
+
+			$expirationToken = Carbon::now()->addMinutes((int) getenv("JWT_EXPIRATION"))->timestamp;
+			$token = GénérateurDeToken::get_instance()->générer_token($username, $expirationToken, $ressources);
+			$this->source_dao->get_expéditeur()->envoyer_validation_courriel($user, $token);
+		}
 
 		return $user;
 	}

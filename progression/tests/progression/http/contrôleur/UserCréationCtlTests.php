@@ -19,11 +19,12 @@
 use progression\ContrôleurTestCase;
 
 use progression\http\contrôleur\GénérateurDeToken;
-use progression\domaine\entité\user\{User, Rôle, État};
+use progression\domaine\entité\user\{User, État, Rôle};
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
+use Carbon\Carbon;
 
-final class InscriptionCtlTests extends ContrôleurTestCase
+final class UserCréationCtlTests extends ContrôleurTestCase
 {
 	public $user;
 
@@ -32,6 +33,8 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 		parent::setUp();
 
 		putenv("AUTH_LDAP=false");
+
+		$_ENV["APP_URL"] = "https://example.com/";
 
 		$this->user = new GenericUser([
 			"username" => "bob",
@@ -63,41 +66,36 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 
-		//Mock du générateur de token
-		GénérateurDeToken::set_instance(
-			new class extends GénérateurDeToken {
-				public function __construct()
-				{
-				}
-
-				function générer_token($user, $ressources = null, $expiration = 0)
-				{
-					return "token valide";
-				}
-			},
-		);
+		$mockExpéditeurDao = Mockery::mock("progression\\dao\\mail\Expéditeur");
+		$mockDAOFactory
+			->allows()
+			->get_expéditeur()
+			->andReturn($mockExpéditeurDao);
 	}
 
 	public function tearDown(): void
 	{
 		Mockery::close();
-		GénérateurDeToken::set_instance(null);
 	}
 
 	#  AUTH_LOCAL = false
-	public function test_étant_donné_un_utilisateur_existant_sans_authentification_lorsquon_inscrit_de_nouveau_on_obtient_un_token_pour_lutilisateur()
+	public function test_étant_donné_un_utilisateur_existant_sans_authentification_lorsquon_inscrit_de_nouveau_on_obtient_un_user()
 	{
 		putenv("AUTH_LOCAL=false");
 
-		$résultat_observé = $this->call("POST", "/inscription", [
-			"username" => "bob",
-		]);
+		$résultat_observé = $this->call("PUT", "/user/bob", ["username" => "bob"]);
+
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/userCréationCtlTest_user_existant_sans_auth.json",
+			$résultat_observé->getContent(),
+		);
 	}
 
-	public function test_étant_donné_un_utilisateur_inexistant_sans_authentification_lorsquon_linscrit_il_est_sauvegardé_actif_et_on_obtient_un_token()
+	public function test_étant_donné_un_utilisateur_inexistant_sans_authentification_lorsquon_linscrit_il_est_sauvegardé_et_on_obtient_un_user()
 	{
 		putenv("AUTH_LOCAL=false");
 
@@ -106,16 +104,20 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "Marcel" && $user->état == État::ACTIF;
+				return $user->username == "Marcel";
 			})
 			->andReturnArg(0);
 
-		$résultat_observé = $this->call("POST", "/inscription", [
-			"username" => "Marcel",
-		]);
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
+
+		$résultat_observé = $this->call("PUT", "/user/Marcel", ["username" => "Marcel"]);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/userCréationCtlTest_user_inexistant_sans_auth.json",
+			$résultat_observé->getContent(),
+		);
 	}
 
 	# AUTH_LOCAL = true
@@ -123,7 +125,10 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=true");
 
-		$résultat_observé = $this->call("POST", "/inscription", [
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
+
+		$résultat_observé = $this->call("PUT", "/user/bob", [
 			"username" => "bob",
 			"courriel" => "bob@gmail.com",
 			"password" => "Test1234",
@@ -140,7 +145,10 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=true");
 
-		$résultat_observé = $this->call("POST", "/inscription", [
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
+
+		$résultat_observé = $this->call("PUT", "/user/johnny", [
 			"username" => "johnny",
 			"courriel" => "jane@gmail.com",
 			"password" => "Test1234",
@@ -157,7 +165,10 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=true");
 
-		$résultat_observé = $this->call("POST", "/inscription", [
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
+
+		$résultat_observé = $this->call("PUT", "/user/bobby", [
 			"username" => "bobby",
 			"courriel" => "bobby.com",
 			"password" => "Test1234",
@@ -174,7 +185,10 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=true");
 
-		$résultat_observé = $this->call("POST", "/inscription", [
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
+
+		$résultat_observé = $this->call("PUT", "/user/bobby", [
 			"username" => "bobby",
 			"courriel" => "bobby@gmail.com",
 			"password" => "pasbon",
@@ -191,7 +205,10 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=true");
 
-		$résultat_observé = $this->call("POST", "/inscription", [
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
+
+		$résultat_observé = $this->call("PUT", "/user/BOB", [
 			"username" => "BOB",
 			"courriel" => "bob@gmail.com",
 			"password" => "Test1234",
@@ -203,16 +220,18 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_linscrit_il_est_sauvegardé_en_attente_et_on_obtient_un_token()
+	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_linscrit_il_est_sauvegardé_et_on_obtient_un_user()
 	{
 		putenv("AUTH_LOCAL=true");
+
+		$_ENV["JWT_SECRET"] = "secret-test";
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDAO
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
-				return $user->username == "Marcel2" && $user->état == État::ATTENTE_DE_VALIDATION;
+				return $user->username == "Marcel2";
 			})
 			->andReturnArg(0)
 			->shouldReceive("set_password")
@@ -221,37 +240,48 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 				return $user->username == "Marcel2";
 			}, "password");
 
-		$résultat_observé = $this->call("POST", "/inscription", [
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldReceive("envoyer_validation_courriel")->once();
+
+		$résultat_observé = $this->call("PUT", "/user/Marcel2", [
 			"username" => "Marcel2",
 			"courriel" => "marcel2@gmail.com",
 			"password" => "Test1234",
 		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/userCréationCtlTest_user_inexistant_avec_auth.json",
+			$résultat_observé->getContent(),
+		);
 	}
 
 	# Identifiants invalides
 
-	public function test_étant_donné_une_authentificaton_locale_lorsquon_inscrit_un_nom_dutilisateur_vide_on_obtient_une_erreur_400()
+	public function test_étant_donné_une_authentificaton_locale_lorsquon_inscrit_un_nom_dutilisateur_vide_on_obtient_une_erreur_405()
 	{
 		putenv("AUTH_LOCAL=true");
-		$résultat_observé = $this->call("POST", "/inscription", [
+
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
+
+		$résultat_observé = $this->call("PUT", "/user/", [
 			"username" => "",
 			"courriel" => "vide@gmail.com",
 			"password" => "Test1234",
 		]);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertEquals(405, $résultat_observé->status());
 	}
 
 	public function test_étant_donné_une_authentificaton_locale_lorsquon_inscrit_un_nom_dutilisateur_invalide_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
-		$résultat_observé = $this->call("POST", "/inscription", [
-			"username" => "bo bo",
-			"password" => "test",
-		]);
+
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
+
+		$résultat_observé = $this->call("PUT", "/user/dupont", ["username" => "dupond", "password" => "test"]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}
@@ -259,10 +289,11 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_une_authentificaton_locale_lorsquon_inscrit_sans_nom_dutlisateur_on_obtient_une_erreur_400()
 	{
 		putenv("AUTH_LOCAL=true");
-		$résultat_observé = $this->call("POST", "/inscription", [
-			"courriel" => "test@gmail.com",
-			"password" => "test",
-		]);
+
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
+
+		$résultat_observé = $this->call("PUT", "/user/ ", ["courriel" => "test@gmail.com", "password" => "test"]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}
@@ -271,7 +302,10 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=true");
 
-		$résultat_observé = $this->call("POST", "/inscription", [
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
+
+		$résultat_observé = $this->call("PUT", "/user/Marcel", [
 			"username" => "Marcel",
 			"courriel" => "marcel@gmail.com",
 		]);
@@ -283,7 +317,10 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=true");
 
-		$résultat_observé = $this->call("POST", "/inscription", [
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
+
+		$résultat_observé = $this->call("PUT", "/user/Marcel", [
 			"username" => "Marcel",
 			"courriel" => "marcel@gmail.com",
 			"password" => "",
@@ -296,10 +333,10 @@ final class InscriptionCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=true");
 
-		$résultat_observé = $this->call("POST", "/inscription", [
-			"username" => "Marcel",
-			"password" => "",
-		]);
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
+
+		$résultat_observé = $this->call("PUT", "/user/Marcel", ["username" => "Marcel", "password" => "password"]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 	}

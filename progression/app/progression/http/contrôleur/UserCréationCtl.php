@@ -19,15 +19,19 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\InscriptionInt;
+use progression\domaine\entité\user\{User, État, Rôle};
+use progression\http\transformer\UserTransformer;
 
-class InscriptionCtl extends Contrôleur
+class UserCréationCtl extends Contrôleur
 {
-	public function inscription(Request $request)
+	public function put(Request $request, string $username): JsonResponse
 	{
-		Log::debug("InscriptionCtl.inscription. Params : ", $request->all());
+		Log::debug("UserCréationCtl.inscription. Params : ", $request->all());
 		Log::info("{$request->ip()} - Tentative d'inscription : {$request->input("username")}");
 
 		$auth_local = getenv("AUTH_LOCAL") !== "false";
@@ -44,13 +48,13 @@ class InscriptionCtl extends Contrôleur
 			$réponse = $this->effectuer_inscription($request);
 		}
 
-		Log::debug("InscriptionCtl.inscription. Retour : ", [$réponse]);
+		Log::debug("UserCréationCtl.inscription. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
-	private function effectuer_inscription($request)
+	private function effectuer_inscription(Request $request): JsonResponse
 	{
-		Log::debug("InscriptionCtl.effectuer_inscription. Params : ", [$request]);
+		Log::debug("UserCréationCtl.effectuer_inscription. Params : ", [$request]);
 
 		$username = $request->input("username");
 		$courriel = $request->input("courriel");
@@ -59,45 +63,33 @@ class InscriptionCtl extends Contrôleur
 		$inscriptionInt = new InscriptionInt();
 		$user = $inscriptionInt->effectuer_inscription($username, $courriel, $password);
 
-		$réponse = $this->valider_et_préparer_réponse($user, $request);
+		$réponse = $this->valider_et_préparer_réponse($user);
 
-		Log::debug("InscriptionCtl.effectuer_inscription. Retour : ", [$réponse]);
+		Log::debug("UserCréationCtl.effectuer_inscription. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
-	private function valider_et_préparer_réponse($user, $request)
+	private function valider_et_préparer_réponse(User|null $user): JsonResponse
 	{
-		Log::debug("InscriptionCtl.valider_et_préparer_réponse. Params : ", [$user]);
+		Log::debug("UserCtl.valider_et_préparer_réponse. Params : ", [$user]);
 
 		if ($user) {
-			Log::info(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					get_class($this) .
-					") Inscription. username: " .
-					$request->input("username"),
-			);
-
-			$expirationToken = time() + $_ENV["JWT_TTL"];
-			$token = GénérateurDeToken::get_instance()->générer_token($user->username, $expirationToken);
-			$réponse = $this->préparer_réponse(["Token" => $token]);
+			$user->id = $user->username;
+			$réponse = $this->item($user, new UserTransformer());
 		} else {
-			Log::notice(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					get_class($this) .
-					") Échec de l'inscription. username: " .
-					$request->input("username"),
-			);
-
-			$réponse = $this->réponse_json(["erreur" => "Échec de l'inscription."], 403);
+			$réponse = null;
 		}
 
-		Log::debug("InscriptionCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
+		$réponse = $this->préparer_réponse($réponse);
+
+		Log::debug("UserCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
+
 		return $réponse;
 	}
 
-	private function valider_paramètres($request)
+	private function valider_paramètres(Request $request): MessageBag|null
 	{
-		Log::debug("InscriptionCtl.valider_paramètres : ", $request->all());
+		Log::debug("UserCréationCtl.valider_paramètres : ", $request->all());
 
 		$validateur = Validator::make(
 			$request->all(),
@@ -116,9 +108,7 @@ class InscriptionCtl extends Contrôleur
 			->sometimes("courriel", "required|email|unique:progression\dao\models\UserMdl,courriel", function ($input) {
 				return getenv("AUTH_LOCAL") === "true";
 			})
-			->sometimes("password", "required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/u", function (
-				$input,
-			) {
+			->sometimes("password", "required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/u", function ($input) {
 				return getenv("AUTH_LOCAL") === "true";
 			})
 			->sometimes("username", "unique:progression\dao\models\UserMdl,username", function ($input) {
@@ -131,7 +121,7 @@ class InscriptionCtl extends Contrôleur
 			$réponse = null;
 		}
 
-		Log::debug("InscriptionCtl.valider_paramètres. Retour : ", [$réponse]);
+		Log::debug("UserCréationCtl.valider_paramètres. Retour : ", [$réponse]);
 		return $réponse;
 	}
 }

@@ -37,7 +37,7 @@ class AuthServiceProvider extends ServiceProvider
 	public function boot()
 	{
 		Gate::guessPolicyNamesUsing(function ($modelClass) {
-			if ($modelClass == "progression\domaine\entité\User") {
+			if ($modelClass == "progression\domaine\entité\user\User") {
 				return "acces-utilisateur";
 			}
 		});
@@ -55,7 +55,6 @@ class AuthServiceProvider extends ServiceProvider
 		$this->app["auth"]->viaRequest("api", function ($request) {
 			$tokenEncodé = trim(str_ireplace("bearer", "", $request->header("Authorization")));
 			$tokenDécodé = $this->décoderToken($tokenEncodé, $request);
-
 			if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
 				$obtenirUserInteracteur = new ObtenirUserInt();
 				return $obtenirUserInteracteur->get_user($tokenDécodé["username"]);
@@ -68,8 +67,11 @@ class AuthServiceProvider extends ServiceProvider
 			$token = trim(str_ireplace("bearer", "", $request->header("Authorization")));
 			$tokenDécodé = $this->décoderToken($token, $request);
 			if (
-				$tokenDécodé &&
-				$this->vérifierRessourceAutorisée($tokenDécodé["ressources"], $request) &&
+				is_array($tokenDécodé) &&
+				array_key_exists("ressources", $tokenDécodé) &&
+				is_array($tokenDécodé["ressources"]) &&
+				array_key_exists("permissions", $tokenDécodé["ressources"]) &&
+				$this->vérifierRessourceAutorisée($tokenDécodé["ressources"]["permissions"] ?: null, $request) &&
 				mb_strtolower($user->username) == mb_strtolower($request->username)
 			) {
 				return true;
@@ -83,10 +85,13 @@ class AuthServiceProvider extends ServiceProvider
 			$tokenRessourceDécodé = $this->décoderToken($tokenRessource, $request);
 
 			if (
-				$tokenRessourceDécodé &&
+				is_array($tokenRessourceDécodé) &&
+				array_key_exists("ressources", $tokenRessourceDécodé) &&
+				is_array($tokenRessourceDécodé["ressources"]) &&
+				array_key_exists("permissions", $tokenRessourceDécodé["ressources"]) &&
 				mb_strtolower($request->username) == mb_strtolower($tokenRessourceDécodé["username"]) &&
 				$this->vérifierExpirationToken($tokenRessourceDécodé) &&
-				$this->vérifierRessourceAutorisée($tokenRessourceDécodé["ressources"], $request)
+				$this->vérifierRessourceAutorisée($tokenRessourceDécodé["ressources"]["permissions"] ?: null, $request)
 			) {
 				return true;
 			}

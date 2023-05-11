@@ -16,27 +16,31 @@
 use progression\ContrôleurTestCase;
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use progression\http\contrôleur\GénérateurDeToken;
 
 final class GénérateurDeTokenTests extends ContrôleurTestCase
 {
 	public function test_étant_donné_un_nom_dutilisateur_une_ressource_et_une_date_dexpiration_lorsquon_génère_un_token_on_obtient_un_token_avec_les_informations_correspondantes()
 	{
-		$expectedUsername = "utilisateur_lambda";
+		$usernameAttendu = "utilisateur_lambda";
 		$expirationAttendue = "1648684800";
 		$ressourcesAttendue = json_encode([
-			["url" => "url/ressource", "method" => "GET"],
-			["url" => "url/autre_ressource", "method" => "POST"],
+			"permissions" => [
+				["url" => "url/ressource", "method" => "GET"],
+				["url" => "url/autre_ressource", "method" => "POST"],
+			],
 		]);
 
 		$token = GénérateurDeToken::get_instance()->générer_token(
-			$expectedUsername,
+			$usernameAttendu,
 			$expirationAttendue,
 			$ressourcesAttendue,
 		);
 
 		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
-		$this->assertEquals($expectedUsername, $tokenDécodé->username);
+
+		$this->assertEquals($usernameAttendu, $tokenDécodé->username);
 		$this->assertEquals($expirationAttendue, $tokenDécodé->expired);
 		$this->assertEquals($ressourcesAttendue, $tokenDécodé->ressources);
 	}
@@ -44,9 +48,11 @@ final class GénérateurDeTokenTests extends ContrôleurTestCase
 	public function test_étant_donné_un_token_généré_avec_un_nom_dutilisateur_seulement_lorsquon_génère_un_token_on_obtient_un_token_avec_ses_valeurs_par_défaut_sauf_le_nom_dutilisateur()
 	{
 		$expirationAttendue = "0";
-		$ressourcesAttendue = [(object) ["url" => ".*", "method" => ".*"]];
+		$ressourcesAttendue = (object) [
+			"permissions" => (object) ["api" => (object) ["url" => ".*", "method" => ".*"]],
+		];
 		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda");
-		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
+		$tokenDécodé = JWT::decode($token, new Key($_ENV["JWT_SECRET"], "HS256"));
 		$this->assertEquals($ressourcesAttendue, $tokenDécodé->ressources);
 		$this->assertEquals($expirationAttendue, $tokenDécodé->expired);
 	}
