@@ -19,6 +19,7 @@
 namespace progression\http\contrôleur;
 
 use Firebase\JWT\JWT;
+use Carbon\Carbon;
 
 class GénérateurDeToken
 {
@@ -42,11 +43,14 @@ class GénérateurDeToken
 		GénérateurDeToken::$instance = $générateur;
 	}
 
-	function générer_token($username, $expiration = 0, $ressources = [["url" => ".*", "method" => ".*"]])
-	{
+	function générer_token(
+		$username,
+		$expiration = 0,
+		$ressources = ["permissions" => ["api" => ["url" => ".*", "method" => ".*"]]],
+	) {
 		$payload = [
 			"username" => $username,
-			"current" => time(),
+			"current" => Carbon::now()->timestamp,
 			"expired" => $expiration,
 			"ressources" => $ressources,
 			"version" => 1,

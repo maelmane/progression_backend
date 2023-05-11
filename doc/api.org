@@ -6,11 +6,10 @@
 * Points d'entrée
 
 ** Publics
-| Méthode | URL               | Description                            | Paramètres                                   | Réponse             |
-| POST    | ~/auth~           | Authentification                       | username, password ou key_name et key_secret | token, un token JWT |
-| POST    | ~/inscription~    | Inscription                            | username, password, rôle                     | token, un token JWT |
-| GET     | ~/config~         | Configuration du serveur               |                                              |                     |
-| GET     | ~/doc~            | Documentation                          |                                              | str (HTML)          |
+| Méthode | URL                | Description                            | Paramètres                                   | Réponse             |
+| POST    | ~/auth~            | Authentification                       | username, password ou key_name et key_secret | token, un token JWT |
+| PUT     | ~/user/{username}~ | Inscription                            | username, user                               | User                |
+| GET     | ~/config~          | Configuration du serveur               |                                              |                     |
 
 ** Privés
 Les points d’entrée privés requièrent un token dans l’entête : «Authentification: Bearer <token>»
@@ -19,6 +18,12 @@ Les points d’entrée privés requièrent un token dans l’entête : «Authent
 | GET     | ~/user/{username}~  | Obtient l'utilisateur /username/       | username                                    | User                |
 | GET     | ~/question/{uri}~   | Obtient la question disponible à <uri> | uri                                         | Question            |
 | POST    | ~/token/{username}~ | Obtient un token pour {username}       | username, ressources demandées en json      | token, un token JWT |
+
+** Désuètes
+| Méthode | URL                 | Description                            | Paramètres                                  | Réponse             |
+| POST    | ~/inscription~      | Inscription                            | username, password, rôle                    | token, un token JWT |
+
+Cette route a été remplacée par PUT /user/{username} et sera supprimées dans la version 3.0.0
 
 * Ressources
 

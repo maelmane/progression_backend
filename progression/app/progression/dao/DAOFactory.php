@@ -21,6 +21,7 @@ namespace progression\dao;
 use progression\dao\question\QuestionDAO;
 use progression\dao\tentative\{TentativeDAO, TentativeProgDAO, TentativeSysDAO};
 use progression\dao\exécuteur\{ExécuteurCache, ExécuteurCompilebox, ExécutionException, Standardiseur};
+use progression\dao\mail\Expéditeur;
 
 class DAOFactory
 {
@@ -90,5 +91,10 @@ class DAOFactory
 	function get_exécuteur()
 	{
 		return new ExécuteurCache(new ExécuteurCompilebox(), new Standardiseur());
+	}
+
+	function get_expéditeur(): Expéditeur
+	{
+		return new Expéditeur();
 	}
 }

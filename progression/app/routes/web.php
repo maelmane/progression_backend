@@ -28,7 +28,7 @@ $router->get("/", function () use ($router) {
 $router->get("/config", "ConfigCtl@get");
 
 // Inscription
-$router->post("/inscription/", "InscriptionCtl@inscription");
+$router->put("/user/{username}", "UserCréationCtl@put");
 
 // Authentification
 $router->post("/auth/", "LoginCtl@login");

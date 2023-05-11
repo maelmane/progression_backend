@@ -3153,46 +3153,6 @@ parameters:
 			path: app/progression/http/contrôleur/GénérateurDeToken.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:effectuer_inscription\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:effectuer_inscription\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:inscription\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:valider_et_préparer_réponse\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$user with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:valider_paramètres\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:valider_paramètres\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:effectuer_login\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/LoginCtl.php

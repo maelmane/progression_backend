@@ -20,7 +20,9 @@ namespace progression\domaine\interacteur;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\user\{User, État, Rôle};
+use progression\http\contrôleur\GénérateurDeToken;
 use PHPUnit\Framework\TestCase;
+use Carbon\Carbon;
 use Mockery;
 
 final class InscriptionIntTests extends TestCase
@@ -30,7 +32,11 @@ final class InscriptionIntTests extends TestCase
 		parent::setUp();
 
 		putenv("AUTH_LOCAL=true");
+
+		putenv("APP_URL=https://example.com/");
+
 		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
+		$mockExpéditeurDao = Mockery::mock("progression\\dao\\mail\Expéditeur");
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory
@@ -38,18 +44,35 @@ final class InscriptionIntTests extends TestCase
 			->get_user_dao()
 			->andReturn($mockUserDao);
 		DAOFactory::setInstance($mockDAOFactory);
+
+		$mockDAOFactory
+			->allows()
+			->get_expéditeur()
+			->andReturn($mockExpéditeurDao);
+
+		/*$mockGénérateurDeToken
+			->allows()
+			->get_instance();*/
+
+		// Username, date expiration, ressource
 	}
 
 	public function tearDown(): void
 	{
 		Mockery::close();
 		DAOFactory::setInstance(null);
+		GénérateurDeToken::set_instance(null);
 	}
 
 	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_local_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User_en_attente()
 	{
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=true");
+
+		$_ENV["JWT_SECRET"] = "secret-test";
+		putenv("JWT_EXPIRATION=15");
+
+		Carbon::setTestNowAndTimezone(Carbon::create(2001, 5, 21, 12));
 
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
@@ -71,6 +94,42 @@ final class InscriptionIntTests extends TestCase
 			->withArgs(function ($user, $password) {
 				return $user->username == "roger" && $password == "password";
 			});
+
+		$mockGénérateurDeToken = Mockery::mock("progression\\http\\contrôleur\\GénérateurDeToken");
+		GénérateurDeToken::set_instance($mockGénérateurDeToken);
+
+		$mockGénérateurDeToken
+			->shouldReceive("générer_token")
+			->once()
+			->withArgs(function ($username, $expiration, $ressources) {
+				$ressources_attendues = [
+					"data" => [
+						"url_user" => "https://example.com/user/roger",
+						"user" => [
+							"username" => "roger",
+							"courriel" => "roger@gmail.com",
+							"rôle" => Rôle::NORMAL,
+						],
+					],
+					"permissions" => [
+						"user" => [
+							"url" => "^user/roger$",
+							"method" => "^POST$",
+						],
+					],
+				];
+
+				return $username == "roger" && $expiration == 990447300 && $ressources == $ressources_attendues;
+			})
+			->andReturn("token valide");
+
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao
+			->shouldReceive("envoyer_validation_courriel")
+			->withArgs(function ($user, $token) {
+				return $user->courriel == "roger@gmail.com" && $token == "token valide";
+			})
+			->andReturn();
 
 		$user = (new InscriptionInt())->effectuer_inscription("roger", "roger@gmail.com", "password");
 
@@ -95,6 +154,9 @@ final class InscriptionIntTests extends TestCase
 			->once()
 			->andReturnArg(0);
 		$mockUserDao->shouldNotReceive("set_password");
+
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
 
 		$user = (new InscriptionInt())->effectuer_inscription("roger");
 
@@ -132,6 +194,9 @@ final class InscriptionIntTests extends TestCase
 		$mockUserDao->shouldNotReceive("save");
 		$mockUserDao->shouldNotReceive("set_password");
 
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
+
 		$user = (new InscriptionInt())->effectuer_inscription("roger");
 
 		$this->assertNull($user);
@@ -141,6 +206,8 @@ final class InscriptionIntTests extends TestCase
 	{
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
+
+		$_ENV["JWT_SECRET"] = "secret-test";
 
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao

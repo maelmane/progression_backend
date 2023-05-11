@@ -51,6 +51,7 @@ $app->configure("app");
 $app->configure("version");
 $app->configure("database");
 $app->configure("logging");
+$app->configure("mail");
 
 /*
    |--------------------------------------------------------------------------
@@ -103,6 +104,7 @@ $app->middleware([progression\http\middleware\Cors::class]);
 // $app->register(App\Providers\AppServiceProvider::class);
 $app->register(progression\providers\AuthServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
 
 // $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
