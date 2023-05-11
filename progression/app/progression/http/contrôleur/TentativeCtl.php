@@ -70,32 +70,6 @@ class TentativeCtl extends Contrôleur
 	{
 		Log::debug("TentativeCtl.post. Params : ", [$request->all(), $username]);
 
-		// Rétrocompatibilité
-		// Utilise Résultat pour fournir un test unique
-		// Désuet dans v3
-		assert(
-			version_compare(getenv("APP_VERSION") ?: "3", "3", "<"),
-			"Les tests uniques via TentativeCtl doivent être retirés",
-		);
-
-		if (isset($request->test)) {
-			$request->merge(["question_uri" => $question_uri]);
-			if (isset($request->index)) {
-				$request->request->remove("index");
-			}
-			$résultat = (new RésultatCtl())->put($request);
-
-			if ($résultat->status() >= 300) {
-				return $résultat;
-			}
-			$data = $résultat->getData();
-
-			$data->included = [$data->data];
-			$résultat->setData($data);
-			return $résultat;
-		}
-		// Fin Désuet dans v3
-
 		$chemin = Encodage::base64_decode_url($question_uri);
 
 		try {
@@ -158,17 +132,7 @@ class TentativeCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
 
-		// Rétrocompatibilité
-		// Utilise Résultat pour fournir un test unique
-		// Désuet dans v3
-		assert(
-			version_compare(getenv("APP_VERSION") ?: "3", "3", "<"),
-			"Les tests uniques via TentativeCtl doivent être retirés",
-		);
-		if (empty($request->test)) {
-			$this->sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative_résultante);
-		}
-		// Fin désuet dans v3
+		$this->sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative_résultante);
 
 		$tentative_résultante->id = $tentative->date_soumission;
 		$réponse = $this->item($tentative_résultante, new TentativeProgTransformer("$username/$request->question_uri"));

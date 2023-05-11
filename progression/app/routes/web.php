@@ -100,16 +100,3 @@ $router->group(["middleware" => ["auth", "étatNonInactif", "permissionsRessourc
 	$router->post("/user/{username}", "UserCtl@post");
 	$router->get("/user/{username}/relationships/avancements", "NotImplementedCtl@get");
 });
-
-// Rétrocompatibilité
-// Permet à TentativeCtl de fournir un test unique
-// Désuet dans v3
-assert(
-	version_compare(getenv("APP_VERSION") ?: "3", "3", "<"),
-	"Les tests uniques via TentativeCtl doivent être retirés",
-);
-// Résultat
-$router->group(["middleware" => ["auth", "testUnique"]], function () use ($router) {
-	$router->post("/avancement/{username}/{question_uri}/tentatives", "TentativeCtl@post");
-});
-// Fin Désuet dans v3

@@ -50,7 +50,6 @@
 				"sortie_erreur": "",
 				"résultat": true,
 				"feedback": "C'est ça!",
-				"temps_exec": 30,
 				"temps_exécution": 30
 			},
 			"links": {
@@ -66,7 +65,6 @@
 				"sortie_erreur": "",
 				"résultat": true,
 				"feedback": "C'est ça!",
-				"temps_exec": 30,
 				"temps_exécution": 30
 			},
 			"links": {
