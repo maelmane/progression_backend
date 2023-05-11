@@ -577,14 +577,14 @@ final class AuthServiceProviderTests extends TestCase
 
 		$this->call(
 			"GET",
-			"/user/utilisateur_inactif_normal",
+			"/config",
 			[],
 			[],
 			[],
 			["HTTP_Authorization" => "Bearer " . $this->tokenUtilisateurInactifNormal],
 		);
 
-		$this->assertResponseStatus(403);
+		$this->assertResponseStatus(200);
 	}
 
 	public function test_étant_donné_un_utilisateur_non_validé_lorsquon_tente_de_lauthentifier_on_obtient_un_code_401()
@@ -604,7 +604,26 @@ final class AuthServiceProviderTests extends TestCase
 		$this->assertResponseStatus(401);
 	}
 
-	public function test_étant_donné_un_utilisateur_non_validé_et_un_token_ressource_valide_lorsquon_tente_de_modifier_son_état_on_obtient_un_code_200()
+	public function test_étant_donné_un_utilisateur_non_validé_et_un_token_ressource_valide_pour_des_ressources_d_autrui_lorsquon_tente_dutiliser_le_token_on_obtient_une_erreur_403()
+	{
+		$ressources = [["url" => "/user/utilisateur_en_attente_normal", "method" => "^POST$"]];
+		$tokenRessource = GénérateurDeToken::get_instance()->générer_token("autre_utilisateur", 0, $ressources);
+
+		$this->call(
+			"GET",
+			"/user/autre_utilisateur",
+			[
+				"état" => "1",
+			],
+			[],
+			[],
+			["HTTP_Authorization" => "Bearer " . $this->tokenUtilisateurEnAttenteNormal],
+		);
+
+		$this->assertResponseStatus(403);
+	}
+
+	public function test_étant_donné_un_utilisateur_non_validé_et_un_token_ressource_valide_pour_ses_propres_ressources_lorsquon_tente_de_modifier_son_état_on_obtient_un_code_200()
 	{
 		$ressources = [["url" => "/user/utilisateur_en_attente_normal", "method" => "^POST$"]];
 		$tokenRessource = GénérateurDeToken::get_instance()->générer_token(
