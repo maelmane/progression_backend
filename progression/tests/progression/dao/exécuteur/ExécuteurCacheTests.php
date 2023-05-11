@@ -30,10 +30,12 @@ final class ExécuteurCacheTests extends TestCase
 		parent::setUp();
 
 		$this->mock_exécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
-		$this->mock_exécuteur->shouldReceive("exécuter_prog")->andReturn([
-			"temps_exécution" => 12345,
-			"résultats" => [["output" => "sortie exécutée", "errors" => ""]],
-		]);
+		$this->mock_exécuteur
+			->shouldReceive("exécuter_prog")
+			->withArgs(function ($exécutable, $tests) {
+				return $exécutable->code == "nouveau code";
+			})
+			->andReturn(["temps_exécution" => 12345, "résultats" => [["output" => "sortie exécutée", "errors" => ""]]]);
 		$this->mock_standardiseur = Mockery::mock("progression\\dao\\exécuteur\\Standardiseur");
 		$this->mock_standardiseur
 			->shouldReceive("standardiser")
@@ -67,7 +69,7 @@ final class ExécuteurCacheTests extends TestCase
 		Cache::shouldNotReceive("get");
 		Cache::shouldReceive("put")
 			->once()
-			->with("e8032dd801819a71571c41b3c87f529a", [["output" => "sortie exécutée", "errors" => ""]]);
+			->with("e8032dd801819a71571c41b3c87f529a", ["output" => "sortie exécutée", "errors" => ""]);
 		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
 			$test,
@@ -76,7 +78,7 @@ final class ExécuteurCacheTests extends TestCase
 		$this->assertEquals(
 			[
 				"temps_exécution" => 12345,
-				"résultats" => [["output" => "sortie exécutée", "errors" => ""]],
+				"résultats" => ["e8032dd801819a71571c41b3c87f529a" => ["output" => "sortie exécutée", "errors" => ""]],
 			],
 			$résultat,
 		);
@@ -90,7 +92,7 @@ final class ExécuteurCacheTests extends TestCase
 		Cache::shouldReceive("get")
 			->once()
 			->with("e8032dd801819a71571c41b3c87f529a")
-			->andReturn([["output" => "sortie prise en cache", "errors" => ""]]);
+			->andReturn(["output" => "sortie prise en cache", "errors" => ""]);
 		Cache::shouldReceive("has")
 			->once()
 			->with("e8032dd801819a71571c41b3c87f529a")
@@ -104,8 +106,10 @@ final class ExécuteurCacheTests extends TestCase
 
 		$this->assertEquals(
 			[
-				"temps_exec" => 0,
-				"résultats" => [["output" => "sortie prise en cache", "errors" => ""]],
+				"temps_exécution" => 0,
+				"résultats" => [
+					"e8032dd801819a71571c41b3c87f529a" => ["output" => "sortie prise en cache", "errors" => ""],
+				],
 			],
 			$résultat,
 		);
@@ -119,7 +123,7 @@ final class ExécuteurCacheTests extends TestCase
 		Cache::shouldReceive("get")
 			->once()
 			->with("e8032dd801819a71571c41b3c87f529a")
-			->andReturn([["output" => "", "errors" => ""]]);
+			->andReturn(["output" => "", "errors" => ""]);
 		Cache::shouldReceive("has")
 			->once()
 			->with("e8032dd801819a71571c41b3c87f529a")
@@ -133,8 +137,8 @@ final class ExécuteurCacheTests extends TestCase
 
 		$this->assertEquals(
 			[
-				"temps_exec" => 0,
-				"résultats" => [["output" => "", "errors" => ""]],
+				"temps_exécution" => 0,
+				"résultats" => ["e8032dd801819a71571c41b3c87f529a" => ["output" => "", "errors" => ""]],
 			],
 			$résultat,
 		);
@@ -152,7 +156,7 @@ final class ExécuteurCacheTests extends TestCase
 		Cache::shouldNotReceive("get");
 		Cache::shouldReceive("put")
 			->once()
-			->with("8d7dd086fe94394520c14fe098159378", [["output" => "sortie exécutée", "errors" => ""]]);
+			->with("8d7dd086fe94394520c14fe098159378", ["output" => "sortie exécutée", "errors" => ""]);
 
 		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
@@ -162,7 +166,7 @@ final class ExécuteurCacheTests extends TestCase
 		$this->assertEquals(
 			[
 				"temps_exécution" => 12345,
-				"résultats" => [["output" => "sortie exécutée", "errors" => ""]],
+				"résultats" => ["8d7dd086fe94394520c14fe098159378" => ["output" => "sortie exécutée", "errors" => ""]],
 			],
 			$résultat,
 		);
@@ -180,7 +184,7 @@ final class ExécuteurCacheTests extends TestCase
 		Cache::shouldNotReceive("get");
 		Cache::shouldReceive("put")
 			->once()
-			->with("879f8745392494c38a966d01eab2a23e", [["output" => "sortie exécutée", "errors" => ""]]);
+			->with("879f8745392494c38a966d01eab2a23e", ["output" => "sortie exécutée", "errors" => ""]);
 
 		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
@@ -190,7 +194,7 @@ final class ExécuteurCacheTests extends TestCase
 		$this->assertEquals(
 			[
 				"temps_exécution" => 12345,
-				"résultats" => [["output" => "sortie exécutée", "errors" => ""]],
+				"résultats" => ["879f8745392494c38a966d01eab2a23e" => ["output" => "sortie exécutée", "errors" => ""]],
 			],
 			$résultat,
 		);
@@ -208,7 +212,7 @@ final class ExécuteurCacheTests extends TestCase
 		Cache::shouldNotReceive("get");
 		Cache::shouldReceive("put")
 			->once()
-			->with("78e4674804ee6f7955997243441507d8", [["output" => "sortie exécutée", "errors" => ""]]);
+			->with("78e4674804ee6f7955997243441507d8", ["output" => "sortie exécutée", "errors" => ""]);
 
 		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
 			$exécutable,
@@ -218,7 +222,7 @@ final class ExécuteurCacheTests extends TestCase
 		$this->assertEquals(
 			[
 				"temps_exécution" => 12345,
-				"résultats" => [["output" => "sortie exécutée", "errors" => ""]],
+				"résultats" => ["78e4674804ee6f7955997243441507d8" => ["output" => "sortie exécutée", "errors" => ""]],
 			],
 			$résultat,
 		);
@@ -236,7 +240,7 @@ final class ExécuteurCacheTests extends TestCase
 		Cache::shouldReceive("get")
 			->once()
 			->with("e8032dd801819a71571c41b3c87f529a")
-			->andReturn([["output" => "sortie prise en cache", "errors" => ""]]);
+			->andReturn(["output" => "sortie prise en cache", "errors" => ""]);
 		Cache::shouldNotReceive("put");
 
 		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
@@ -246,8 +250,84 @@ final class ExécuteurCacheTests extends TestCase
 
 		$this->assertEquals(
 			[
-				"temps_exec" => 0,
-				"résultats" => [["output" => "sortie prise en cache", "errors" => ""]],
+				"temps_exécution" => 0,
+				"résultats" => [
+					"e8032dd801819a71571c41b3c87f529a" => ["output" => "sortie prise en cache", "errors" => ""],
+				],
+			],
+			$résultat,
+		);
+	}
+
+	public function test_étant_donné_une_cache_contenant_le_code_à_exécuter_dun_seul_test_exécute_un_code_pour_trois_test_on_obtient_le_code_en_cache_puis_le_code_exécuté_dans_le_bon_ordre()
+	{
+		$this->mock_standardiseur
+			->shouldReceive("standardiser")
+			->with("Code exécution multiple", "python")
+			->andReturn("Code exécution multiple");
+
+		$this->mock_exécuteur
+			->shouldReceive("exécuter_prog")
+			->withArgs(function ($exécutable, $tests) {
+				return $exécutable->code == "Code exécution multiple" && count($tests) == 2;
+			})
+			->andReturn([
+				"temps_exécution" => 54321,
+				"résultats" => [
+					["output" => "sortie exécutée 1", "errors" => ""],
+					["output" => "sortie exécutée 2", "errors" => ""],
+				],
+			]);
+
+		Cache::shouldReceive("has")
+			->once()
+			->with("f97c05380cec8b86f554ce8269d05c72")
+			->andReturn(true);
+		Cache::shouldReceive("has")
+			->with(Mockery::Any())
+			->andReturn(false);
+		Cache::shouldReceive("get")
+			->once()
+			->with("f97c05380cec8b86f554ce8269d05c72")
+			->andReturn(["output" => "sortie prise en cache", "errors" => ""]);
+		Cache::shouldReceive("put")
+			->once()
+			->with("390a8d682420723d7c735e0ce50ad7cf", ["output" => "sortie exécutée 1", "errors" => ""])
+			->andReturn(["output" => "sortie exécutée 1", "errors" => ""]);
+		Cache::shouldReceive("put")
+			->once()
+			->with("7d67d2eaef4e827e4f28f8d891e8740e", ["output" => "sortie exécutée 2", "errors" => ""])
+			->andReturn(["output" => "sortie exécutée 2", "errors" => ""]);
+
+		$exécutable = new Exécutable("Code exécution multiple", "python");
+		$tests = [
+			new TestProg("test", "sortie 1", "entrée 1", "param"),
+			new TestProg("test", "sortie 2", "entrée 2", "param"),
+			new TestProg("test", "sortie 3", "entrée 3", "param"),
+		];
+
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
+			$exécutable,
+			$tests,
+		);
+
+		//Vérifie l'ordre des éléments
+		$this->assertEquals(
+			[
+				"390a8d682420723d7c735e0ce50ad7cf",
+				"f97c05380cec8b86f554ce8269d05c72",
+				"7d67d2eaef4e827e4f28f8d891e8740e",
+			],
+			array_keys($résultat["résultats"]),
+		);
+		$this->assertEquals(
+			[
+				"temps_exécution" => 54321,
+				"résultats" => [
+					"390a8d682420723d7c735e0ce50ad7cf" => ["output" => "sortie exécutée 1", "errors" => ""],
+					"f97c05380cec8b86f554ce8269d05c72" => ["output" => "sortie prise en cache", "errors" => ""],
+					"7d67d2eaef4e827e4f28f8d891e8740e" => ["output" => "sortie exécutée 2", "errors" => ""],
+				],
 			],
 			$résultat,
 		);

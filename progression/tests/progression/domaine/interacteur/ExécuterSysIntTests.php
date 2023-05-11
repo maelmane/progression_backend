@@ -39,7 +39,6 @@ final class ExécuterSysIntTests extends TestCase
 		self::$questionTest = new QuestionSys();
 		self::$questionTest->titre = "Bonsoir";
 		self::$questionTest->niveau = "facile";
-		self::$questionTest->uri = "https://example.com/question";
 		self::$questionTest->feedback_neg = "feedbackGénéralNégatif";
 		self::$questionTest->feedback_pos = "feedbackGénéralPositif";
 		self::$questionTest->tests = [
@@ -60,7 +59,7 @@ final class ExécuterSysIntTests extends TestCase
 				return $question == self::$questionTest && $tentative == new TentativeSys("", "", 1615696286);
 			})
 			->andReturn([
-				"temps_exec" => 0.124,
+				"temps_exécution" => 0.124,
 				"résultats" => [["output" => "", "errors" => "", "time" => 0.2]],
 				"conteneur" => [
 					"id" => "conteneurTestCompileBox",
@@ -76,7 +75,7 @@ final class ExécuterSysIntTests extends TestCase
 					$tentative == new TentativeSys("ConteneurEnvoyéParTentative", "", 1615696286);
 			})
 			->andReturn([
-				"temps_exec" => 0.124,
+				"temps_exécution" => 0.124,
 				"résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.2]],
 				"conteneur" => [
 					"id" => "ConteneurEnvoyéParTentative",
@@ -112,7 +111,6 @@ final class ExécuterSysIntTests extends TestCase
 		$question = new QuestionSys();
 		$question->titre = "Bonsoir";
 		$question->niveau = "facile";
-		$question->uri = "https://example.com/question";
 		$question->feedback_neg = "feedbackGénéralNégatif";
 		$question->feedback_pos = "feedbackGénéralPositif";
 		$question->tests = [
@@ -146,7 +144,6 @@ final class ExécuterSysIntTests extends TestCase
 		$question = new QuestionSys();
 		$question->titre = "Bonsoir";
 		$question->niveau = "facile";
-		$question->uri = "https://example.com/question";
 		$question->feedback_neg = "feedbackGénéralNégatif";
 		$question->feedback_pos = "feedbackGénéralPositif";
 		$question->tests = [

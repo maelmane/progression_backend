@@ -46,7 +46,7 @@ final class ExécuterProgIntTests extends TestCase
 				}),
 			)
 			->andReturn([
-				"temps_exec" => 0.234,
+				"temps_exécution" => 0.234,
 				"résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.6]],
 			]);
 		$mockExécuteur
@@ -63,7 +63,7 @@ final class ExécuterProgIntTests extends TestCase
 				}),
 			)
 			->andReturn([
-				"temps_exec" => 0.124,
+				"temps_exécution" => 0.124,
 				"résultats" => [
 					["output" => "ok\n", "errors" => "", "time" => 0.08],
 					["output" => "ok\nok\n", "errors" => "", "time" => 0.04],
@@ -81,7 +81,7 @@ final class ExécuterProgIntTests extends TestCase
 				}),
 			)
 			->andReturn([
-				"temps_exec" => 0.567,
+				"temps_exécution" => 0.567,
 				"résultats" => [["output" => "", "errors" => "erreur", "time" => 0.04]],
 			]);
 

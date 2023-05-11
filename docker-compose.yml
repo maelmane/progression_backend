@@ -59,7 +59,9 @@ services:
     #volumes:
     #  - "./progression_backend/progression/:/var/www/progression/"
     restart: "no"
-    env_file: ${ENV_FILE:-.env}
+    env_file:
+      - ${ENV_FILE:-.env}
+      - VERSION
     command: bash /var/www/progression/tests/exec_tests.sh
     networks:
       - progression_net
