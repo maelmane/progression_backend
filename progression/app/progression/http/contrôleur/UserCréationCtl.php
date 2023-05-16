@@ -29,7 +29,7 @@ use progression\http\transformer\UserTransformer;
 
 class UserCréationCtl extends Contrôleur
 {
-	public function put(Request $request, string $username): JsonResponse
+	public function put(Request $request): JsonResponse
 	{
 		Log::debug("UserCréationCtl.inscription. Params : ", $request->all());
 		Log::info("{$request->ip()} - Tentative d'inscription : {$request->input("username")}");
@@ -97,6 +97,8 @@ class UserCréationCtl extends Contrôleur
 				"username" => "required|regex:/^\w{1,64}$/u",
 			],
 			[
+				"username.regex" =>
+					"Err: 1003. Le nom d'utilisateur doit être composé de 2 à 64 caractères alphanumériques.",
 				"username.unique" => "Err: 1001. Le nom d'utilisateur existe déjà.",
 				"courriel.unique" => "Err: 1001. Le courriel existe déjà.",
 				"courriel.email" => "Err: 1003. Le champ courriel doit être un courriel valide.",
