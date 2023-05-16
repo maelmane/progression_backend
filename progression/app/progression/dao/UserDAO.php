@@ -26,13 +26,36 @@ use Illuminate\Database\QueryException;
 
 class UserDAO extends EntitéDAO
 {
-	public function get_user($username, $includes = [])
+	/**
+	 * @param array<string> $includes
+	 */
+	public function get_user(string $username, array $includes = []): User|null
 	{
-		$user = null;
-
 		try {
 			$user = UserMdl::query()
 				->where("username", $username)
+				->with(in_array("avancements", $includes) ? "avancements" : [])
+				->with(in_array("clés", $includes) ? "clés" : [])
+				->first();
+			return $user ? $this->construire([$user], $includes)[0] : null;
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+
+	/**
+	 * @param array<string> $includes
+	 */
+	public function trouver(string $username = null, string $courriel = null, array $includes = []): User|null
+	{
+		if (!$username && !$courriel) {
+			return null;
+		}
+
+		try {
+			$user = UserMdl::query()
+				->where($username !== null ? "username" : [], $username)
+				->where($courriel !== null ? "courriel" : [], $courriel)
 				->with(in_array("avancements", $includes) ? "avancements" : [])
 				->with(in_array("clés", $includes) ? "clés" : [])
 				->first();
@@ -88,17 +111,17 @@ class UserDAO extends EntitéDAO
 		$users = [];
 		foreach ($data as $user) {
 			$users[] = new User(
-				$user["username"],
-				$user["courriel"],
-				$user["état"],
-				$user["rôle"],
-				in_array("avancements", $includes)
+				username: $user["username"],
+				courriel: $user["courriel"],
+				état: $user["état"],
+				rôle: $user["rôle"],
+				avancements: in_array("avancements", $includes)
 					? AvancementDAO::construire($user["avancements"], parent::filtrer_niveaux($includes, "avancements"))
 					: [],
-				in_array("clés", $includes)
+				clés: in_array("clés", $includes)
 					? CléDAO::construire($user["clés"], parent::filtrer_niveaux($includes, "clés"))
 					: [],
-				$user["preferences"] ?? "",
+				préférences: $user["preferences"] ?? "",
 			);
 		}
 		return $users;

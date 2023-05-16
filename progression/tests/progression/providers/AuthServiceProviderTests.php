@@ -534,7 +534,7 @@ final class AuthServiceProviderTests extends TestCase
 			"POST",
 			"/auth",
 			[
-				"username" => "utilisateur_inactif_normal",
+				"identifiant" => "utilisateur_inactif_normal",
 				"password" => "password",
 			],
 			[],
@@ -593,7 +593,7 @@ final class AuthServiceProviderTests extends TestCase
 			"POST",
 			"/auth",
 			[
-				"username" => "utilisateur_en_attente_normal",
+				"identifiant" => "utilisateur_en_attente_normal",
 				"password" => "password",
 			],
 			[],

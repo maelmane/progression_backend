@@ -14,7 +14,7 @@ INSERT INTO user(id, courriel, username, password, etat, role) VALUES (
   0
 ), (
   2,
-  null,
+  "bob@progressionmail.com",
   "bob",
   "motDePasse",
   0,

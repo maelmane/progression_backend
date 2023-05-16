@@ -6,10 +6,11 @@
 * Points d'entrée
 
 ** Publics
-| Méthode | URL                | Description                            | Paramètres                                   | Réponse             |
-| POST    | ~/auth~            | Authentification                       | username, password ou key_name et key_secret | token, un token JWT |
-| PUT     | ~/user/{username}~ | Inscription                            | username, user                               | User                |
-| GET     | ~/config~          | Configuration du serveur               |                                              |                     |
+| Méthode | URL       | Description              | Paramètres                                     | Réponse             |
+| POST    | ~/auth~   | Authentification         | identifiant (username ou courriel) et password | token, un token JWT |
+|         |           |                          | username, key_name et key_secret               | token, un token JWT |
+| PUT     | ~/user~   | Inscription              | user                                           | User                |
+| GET     | ~/config~ | Configuration du serveur |                                                |                     |
 
 ** Privés
 Les points d’entrée privés requièrent un token dans l’entête : «Authentification: Bearer <token>»
@@ -18,12 +19,6 @@ Les points d’entrée privés requièrent un token dans l’entête : «Authent
 | GET     | ~/user/{username}~  | Obtient l'utilisateur /username/       | username                                    | User                |
 | GET     | ~/question/{uri}~   | Obtient la question disponible à <uri> | uri                                         | Question            |
 | POST    | ~/token/{username}~ | Obtient un token pour {username}       | username, ressources demandées en json      | token, un token JWT |
-
-** Désuètes
-| Méthode | URL                 | Description                            | Paramètres                                  | Réponse             |
-| POST    | ~/inscription~      | Inscription                            | username, password, rôle                    | token, un token JWT |
-
-Cette route a été remplacée par PUT /user/{username} et sera supprimées dans la version 3.0.0
 
 * Ressources
 
@@ -368,11 +363,11 @@ curl() {
 
 export -f curl
 
-export TOKEN=$(/usr/bin/curl "<<get_api_url()>>/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | grep -Po '(?<=Token":").*(?=")')
+export TOKEN=$(/usr/bin/curl "<<get_api_url()>>/auth" --data '{"identifiant": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | grep -Po '(?<=Token":").*(?=")')
 
 if [ -z "$TOKEN" ]
 then
-	export TOKEN=$(/usr/bin/curl "<<get_api_url()>>/inscription" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | grep -Po '(?<=Token":").*(?=")')
+    export TOKEN=$(/usr/bin/curl "<<get_api_url()>>/user" -X PUT --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | grep -Po '(?<=Token":").*(?=")')
 fi
 
 #+END_SRC
@@ -416,7 +411,15 @@ curl "<<get_api_url()>>/config"
 
 #+NAME: AUTHENTIFICATION
 #+BEGIN_SRC bash :eval yes
-curl "<<get_api_url()>>/auth" --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json"
+curl "<<get_api_url()>>/auth" --data '{"identifiant": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json"
+#+END_SRC
+
+#+RESULTS:
+** Authentification par courriel en tant qu’utilisateur ~jdoe~
+
+#+NAME: AUTHENTIFICATION
+#+BEGIN_SRC bash :eval yes
+curl "<<get_api_url()>>/auth" --data '{"identifiant": "jdoe@courriel.com", "password": "Crosemont2021!"}' -H "Content-Type: application/json"
 #+END_SRC
 
 #+RESULTS:
