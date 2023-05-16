@@ -28,10 +28,10 @@ $router->get("/", function () use ($router) {
 $router->get("/config", "ConfigCtl@get");
 
 // Inscription
-$router->put("/user/{username}", "UserCréationCtl@put");
+$router->put("/user", "UserCréationCtl@put");
 
 // Authentification
-$router->post("/auth/", "LoginCtl@login");
+$router->post("/auth", "LoginCtl@login");
 
 $router->group(["middleware" => ["auth", "étatNonInactif"]], function () use ($router) {
 	// Ébauche
