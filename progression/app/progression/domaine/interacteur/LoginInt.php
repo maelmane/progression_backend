@@ -56,7 +56,6 @@ class LoginInt extends Interacteur
 		}
 
 		$user = null;
-
 		$auth_local = getenv("AUTH_LOCAL") === "true";
 		$auth_ldap = getenv("AUTH_LDAP") === "true";
 
@@ -78,13 +77,13 @@ class LoginInt extends Interacteur
 		return $user;
 	}
 
-	function login_local($username, $password)
+	function login_local(string $identifiant, string $password)
 	{
-		if ($password === null) {
-			return null;
-		}
-
-		$user = (new ObtenirUserInt())->get_user($username);
+		$obtenirUserInt = new ObtenirUserInt();
+		$user =
+			strpos($identifiant, "@") === false
+				? $obtenirUserInt->get_user($identifiant)
+				: $obtenirUserInt->trouver(courriel: $identifiant);
 		if ($user && $this->source_dao->get_user_dao()->vérifier_password($user, $password)) {
 			return $user;
 		} else {
@@ -92,15 +91,11 @@ class LoginInt extends Interacteur
 		}
 	}
 
-	function login_ldap($username, $password, $domaine)
+	function login_ldap(string $identifiant, string $password, string $domaine)
 	{
-		if ($password === null) {
-			return null;
-		}
-
 		$user = null;
-		if ($this->get_username_ldap($username, $password, $domaine)) {
-			$user = $this->login_sans_authentification($username);
+		if ($this->get_username_ldap($identifiant, $password, $domaine)) {
+			$user = $this->login_sans_authentification($identifiant);
 		}
 
 		return $user;
@@ -111,7 +106,7 @@ class LoginInt extends Interacteur
 		return $champ && !empty(trim($champ));
 	}
 
-	function get_username_ldap($username, $password, $domaine)
+	function get_username_ldap(string $identifiant, string $password, string $domaine)
 	{
 		if ($domaine != $_ENV["LDAP_DOMAINE"]) {
 			throw new \Exception("Domaine multiple non implémenté");
@@ -130,7 +125,7 @@ class LoginInt extends Interacteur
 		if ($_ENV["LDAP_DN_BIND"] && $_ENV["LDAP_PW_BIND"]) {
 			$bind = ldap_bind($ldap, $_ENV["LDAP_DN_BIND"], $_ENV["LDAP_PW_BIND"]);
 		} else {
-			$bind = ldap_bind($ldap, $username, $password);
+			$bind = ldap_bind($ldap, $identifiant, $password);
 		}
 
 		if (!$bind) {
@@ -142,7 +137,7 @@ class LoginInt extends Interacteur
 		}
 
 		//Recherche de l'utilisateur à authentifier
-		$result = ldap_search($ldap, $_ENV["LDAP_BASE"], "({$_ENV["LDAP_UID"]}=$username)", ["dn", "cn", 1]);
+		$result = ldap_search($ldap, $_ENV["LDAP_BASE"], "({$_ENV["LDAP_UID"]}=$identifiant)", ["dn", "cn", 1]);
 		if ($result instanceof Result) {
 			$user = ldap_get_entries($ldap, $result);
 			return $user &&

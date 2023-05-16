@@ -33,7 +33,7 @@ use DomainException;
 
 class UserCtl extends Contrôleur
 {
-	public function get(Request $request, $username = null)
+	public function get(Request $request, string $username): JsonResponse
 	{
 		Log::debug("UserCtl.get. Params : ", [$request->all(), $username]);
 
@@ -88,18 +88,15 @@ class UserCtl extends Contrôleur
 		return $réponse;
 	}
 
-	private function obtenir_user($username)
+	private function obtenir_user(string $username): User|null
 	{
 		Log::debug("UserCtl.obtenir_user. Params : ", [$username]);
 
 		$userInt = new ObtenirUserInt();
-		$user = null;
 
-		if ($username != null && $username != "") {
-			$user = $userInt->get_user($username, $this->get_includes());
-			if ($user) {
-				$user->avancements = $this->réencoder_uris($user->avancements);
-			}
+		$user = $userInt->get_user(username: $username, includes: $this->get_includes());
+		if ($user) {
+			$user->avancements = $this->réencoder_uris($user->avancements);
 		}
 
 		Log::debug("UserCtl.obtenir_user. Retour : ", [$user]);

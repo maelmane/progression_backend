@@ -30,7 +30,7 @@ class LoginCtl extends Contrôleur
 	public function login(Request $request)
 	{
 		Log::debug("LoginCtl.login. Params : ", $request->all());
-		Log::info("{$request->ip()} - Tentative de login : {$request->input("username")}");
+		Log::info("{$request->ip()} - Tentative de login : {$request->input("identifiant")}");
 
 		$erreurs = $this->valider_paramètres($request);
 		if ($erreurs) {
@@ -47,7 +47,7 @@ class LoginCtl extends Contrôleur
 	{
 		Log::debug("LoginCtl.effectuer_login. Params : ", [$request]);
 
-		$username = $request->input("username");
+		$identifiant = $request->input("identifiant");
 		$key_name = $request->input("key_name");
 		$key_secret = $request->input("key_secret");
 		$password = $request->input("password");
@@ -56,9 +56,9 @@ class LoginCtl extends Contrôleur
 		$loginInt = new LoginInt();
 
 		if ($key_name && $key_secret) {
-			$user = $loginInt->effectuer_login_par_clé($username, $key_name, $key_secret);
+			$user = $loginInt->effectuer_login_par_clé($identifiant, $key_name, $key_secret);
 		} else {
-			$user = $loginInt->effectuer_login_par_identifiant($username, $password, $domaine);
+			$user = $loginInt->effectuer_login_par_identifiant($identifiant, $password, $domaine);
 		}
 
 		if ($this->valider_état_utilisateur($request)) {
@@ -79,8 +79,8 @@ class LoginCtl extends Contrôleur
 			Log::info(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
 					get_class($this) .
-					") Login. username: " .
-					$request->input("username"),
+					") Login. identifiant: " .
+					$request->input("identifiant"),
 			);
 
 			$token = $this->générer_token($user);
@@ -89,8 +89,8 @@ class LoginCtl extends Contrôleur
 			Log::notice(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
 					get_class($this) .
-					") Accès interdit. username: " .
-					$request->input("username"),
+					") Accès interdit. identifiant: " .
+					$request->input("identifiant"),
 			);
 
 			$réponse = $this->réponse_json(["erreur" => "Accès interdit."], 401);
@@ -118,26 +118,39 @@ class LoginCtl extends Contrôleur
 		$validateur = Validator::make(
 			$request->all(),
 			[
-				"username" => "bail|required|regex:/^\w{1,64}$/u",
+				"identifiant" => "required|string|between:2,64",
 				"key_secret" => "required_with:key_name",
 				"key_name" => "alpha_dash:ascii",
 			],
 			[
 				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
+				"identifiant.regex" => "L'identifiant doit être un nom d'utilisateur ou un courriel valide.",
 				"password.required_without" =>
 					"Err: 1004. Le champ password est obligatoire lorsque key_name n'est pas présent.",
 				"key_secret.required_with" =>
 					"Err: 1004. Le champ key_secret est obligatoire lorsque key_name est présent.",
-				"username.regex" => "Err: 1003. Le nom d'utilisateur doit être de la forme '\w{1,64}'.",
 				"key_secret.required" => "Err: 1004. Le champ key_secret est obligatoire lorsque key_name est présent",
 				"key_name.alpha_dash" => "Err: 1003. Le champ key_name doit être alphanumérique 'a-Z0-9-_'",
 			],
-		)->sometimes("password", "required_without:key_name", function ($input) {
-			$auth_local = getenv("AUTH_LOCAL") !== "false";
-			$auth_ldap = getenv("AUTH_LDAP") === "true";
+		)
+			->sometimes("password", "required_without:key_name", function ($input) {
+				$auth_local = getenv("AUTH_LOCAL") !== "false";
+				$auth_ldap = getenv("AUTH_LDAP") === "true";
 
-			return $auth_local || $auth_ldap;
-		});
+				return $auth_local || $auth_ldap;
+			})
+			->sometimes("identifiant", "regex:/^\w{2,64}$/u", function ($input) {
+				$auth_local = getenv("AUTH_LOCAL") !== "false";
+				$auth_ldap = getenv("AUTH_LDAP") === "true";
+
+				return isset($input->key_name) || (!$auth_local && !$auth_ldap);
+			})
+			->sometimes("identifiant", ["regex:/^\w{2,64}$|^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/u"], function ($input) {
+				$auth_local = getenv("AUTH_LOCAL") !== "false";
+				$auth_ldap = getenv("AUTH_LDAP") === "true";
+
+				return !isset($input->key_name) && ($auth_local || $auth_ldap);
+			});
 
 		if ($validateur->fails()) {
 			$réponse = $validateur->errors();

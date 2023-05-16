@@ -45,7 +45,7 @@ final class UserDAOTests extends TestCase
 		$avancement3->date_réussite = 1645739969;
 		$avancement3->etat = État::REUSSI;
 
-		$this->bob = new User("bob");
+		$this->bob = new User("bob", courriel: "bob@progressionmail.com");
 		$this->bob->avancements = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $avancement1,
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => $avancement2,
@@ -67,7 +67,7 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_sans_inclusion_on_obtient_son_profil()
 	{
-		$réponse_attendue = new User("bob");
+		$réponse_attendue = new User("bob", courriel: "bob@progressionmail.com");
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [];
 
@@ -77,7 +77,7 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_EN_MAJUSCULES_sans_inclusion_on_obtient_son_profil()
 	{
-		$réponse_attendue = new User("bob");
+		$réponse_attendue = new User("bob", courriel: "bob@progressionmail.com");
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [];
 
@@ -90,7 +90,17 @@ final class UserDAOTests extends TestCase
 		$réponse_attendue = $this->bob;
 		$réponse_attendue->clés = [];
 
-		$réponse_observée = (new UserDAO())->get_user("bob", ["avancements"]);
+		$réponse_observée = (new UserDAO())->get_user("bob", includes: ["avancements"]);
+		$this->assertEquals($réponse_attendue, $réponse_observée);
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_courriel_EN_MAJUSCULES_sans_inclusion_on_obtient_son_profil()
+	{
+		$réponse_attendue = new User("bob", courriel: "bob@progressionmail.com");
+		$réponse_attendue->avancements = [];
+		$réponse_attendue->clés = [];
+
+		$réponse_observée = (new UserDAO())->trouver(courriel: "BOB@progressionmail.com");
 		$this->assertEquals($réponse_attendue, $réponse_observée);
 	}
 
@@ -103,7 +113,7 @@ final class UserDAOTests extends TestCase
 			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Portée::AUTH),
 		];
 
-		$réponse_observée = (new UserDAO())->get_user("bob", ["clés"]);
+		$réponse_observée = (new UserDAO())->get_user("bob", includes: ["clés"]);
 		$this->assertEquals($réponse_attendue, $réponse_observée);
 	}
 
@@ -115,15 +125,55 @@ final class UserDAOTests extends TestCase
 			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Portée::AUTH),
 		];
 
-		$réponse_observée = (new UserDAO())->get_user("bob", ["avancements", "clés"]);
+		$réponse_observée = (new UserDAO())->get_user("bob", includes: ["avancements", "clés"]);
 		$this->assertEquals($réponse_attendue, $réponse_observée);
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_courriel_sans_inclusion_on_obtient_son_profil()
+	{
+		$réponse_attendue = new User("bob", courriel: "bob@progressionmail.com");
+		$réponse_attendue->avancements = [];
+		$réponse_attendue->clés = [];
+
+		$réponse_observée = (new UserDAO())->trouver(courriel: "bob@progressionmail.com");
+		$this->assertEquals($réponse_attendue, $réponse_observée);
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_et_courriel_sans_inclusion_on_obtient_son_profil()
+	{
+		$réponse_attendue = new User("bob", courriel: "bob@progressionmail.com");
+		$réponse_attendue->avancements = [];
+		$réponse_attendue->clés = [];
+
+		$réponse_observée = (new UserDAO())->trouver(username: "bob", courriel: "bob@progressionmail.com");
+		$this->assertEquals($réponse_attendue, $réponse_observée);
+	}
+
+	public function test_étant_donné_un_utilisateur_inexistant_lorsquon_le_cherche_par_son_courriel_on_obtient_null()
+	{
+		$réponse_observée = (new UserDAO())->trouver(courriel: "inconnu@nullepart.com");
+		$this->assertNull($réponse_observée);
 	}
 
 	public function test_étant_donné_un_utilisateur_inexistant_lorsquon_le_cherche_par_son_username_on_obtient_null()
 	{
+		$réponse_observée = (new UserDAO())->get_user("alice");
+		$this->assertNull($réponse_observée);
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_le_cherche_par_son_username_avec_le_courriel_dun_autre_utilisateur_on_obtient_null()
+	{
 		$réponse_attendue = null;
 
-		$réponse_observée = (new UserDAO())->get_user("alice");
+		$réponse_observée = (new UserDAO())->trouver("bob", courriel: "jane@gmail.com");
+		$this->assertEquals($réponse_attendue, $réponse_observée);
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_le_cherche_par_son_username_avec_un_courriel_inexistant_on_obtient_null()
+	{
+		$réponse_attendue = null;
+
+		$réponse_observée = (new UserDAO())->trouver("bob", courriel: "inconnum@nullepart.com");
 		$this->assertEquals($réponse_attendue, $réponse_observée);
 	}
 
@@ -144,7 +194,7 @@ final class UserDAOTests extends TestCase
 		$avancement1 = new Avancement([], "Un titre", "facile");
 		$avancement2 = new Avancement([], "Un titre 2", "facile");
 
-		$réponse_attendue = new User("bob", rôle: Rôle::ADMIN);
+		$réponse_attendue = new User("bob", courriel: "bob@progressionmail.com", rôle: Rôle::ADMIN);
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [];
 

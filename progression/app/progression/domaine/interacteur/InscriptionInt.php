@@ -32,8 +32,6 @@ class InscriptionInt extends Interacteur
 			return null;
 		}
 
-		$dao = $this->source_dao->get_user_dao();
-
 		$auth_local = getenv("AUTH_LOCAL") === "true";
 		$auth_ldap = getenv("AUTH_LDAP") === "true";
 
@@ -50,7 +48,7 @@ class InscriptionInt extends Interacteur
 		}
 	}
 
-	private function effectuer_inscription_avec_mdp($username, string $courriel, $password, Rôle $rôle)
+	private function effectuer_inscription_avec_mdp(string $username, string $courriel, string $password, Rôle $rôle)
 	{
 		$dao = $this->source_dao->get_user_dao();
 

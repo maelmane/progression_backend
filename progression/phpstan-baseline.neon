@@ -438,21 +438,6 @@ parameters:
 			path: app/progression/dao/UserDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\UserDAO\\:\\:get_user\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/UserDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\UserDAO\\:\\:get_user\\(\\) has parameter \\$includes with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/UserDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\UserDAO\\:\\:get_user\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/UserDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\UserDAO\\:\\:save\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/dao/UserDAO.php
@@ -2198,16 +2183,6 @@ parameters:
 			path: app/progression/domaine/interacteur/InscriptionInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_avec_mdp\\(\\) has parameter \\$password with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_avec_mdp\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_sans_mdp\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/InscriptionInt.php
@@ -2273,52 +2248,12 @@ parameters:
 			path: app/progression/domaine/interacteur/LoginInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:get_username_ldap\\(\\) has parameter \\$domaine with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:get_username_ldap\\(\\) has parameter \\$password with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:get_username_ldap\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_ldap\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/LoginInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_ldap\\(\\) has parameter \\$domaine with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_ldap\\(\\) has parameter \\$password with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_ldap\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_local\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_local\\(\\) has parameter \\$password with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_local\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/LoginInt.php
 
@@ -2476,16 +2411,6 @@ parameters:
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirTentativeInt\\:\\:get_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/ObtenirTentativeInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirUserInt\\:\\:get_user\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ObtenirUserInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirUserInt\\:\\:get_user\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ObtenirUserInt.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\PatenaudeCitationInt\\:\\:get_citation\\(\\) has no return type specified\\.$#"
@@ -3596,26 +3521,6 @@ parameters:
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\TokenCtl\\:\\:post\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/TokenCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:get\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/UserCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:get\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/UserCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:obtenir_user\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/UserCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:obtenir_user\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/UserCtl.php
 
 		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:valider_et_préparer_réponse\\(\\) has no return type specified\\.$#"

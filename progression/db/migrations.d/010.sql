@@ -9,7 +9,7 @@ DELIMITER &&
 
 		  START TRANSACTION;
 
-		  ALTER TABLE user ADD COLUMN `courriel` VARCHAR(255) NULL;
+		  ALTER TABLE user ADD COLUMN `courriel` VARCHAR(255) NULL UNIQUE;
 		  ALTER TABLE user RENAME COLUMN `actif` TO `etat`;
 
 		  UPDATE `version` SET `version` = 10;

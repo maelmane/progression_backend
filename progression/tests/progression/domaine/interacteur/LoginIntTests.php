@@ -37,6 +37,10 @@ final class LoginIntTests extends TestCase
 			->andReturn(new User("bob"));
 		$mockUserDAO
 			->allows()
+			->trouver(null, "bob@progressionmail.com", Mockery::Any())
+			->andReturn(new User("bob", "bob@progressionmail.com"));
+		$mockUserDAO
+			->allows()
 			->get_user("bob")
 			->andReturn(new User("bob"));
 		$mockUserDAO->shouldReceive("get_user")->andReturn(null);
@@ -162,7 +166,7 @@ final class LoginIntTests extends TestCase
 		$this->assertNull($résultat_obtenu);
 	}
 
-	public function test_étant_donné_lutilisateur_existant_bob_et_une_authentification_de_type_local_lorsquon_login_avec_mdp_correct_on_obtient_un_objet_user_nommé_bob()
+	public function test_étant_donné_lutilisateur_existant_bob_et_une_authentification_de_type_local_lorsquon_login_avec_username_et_mdp_correct_on_obtient_un_objet_user_nommé_bob()
 	{
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
@@ -171,6 +175,17 @@ final class LoginIntTests extends TestCase
 		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("bob", "password");
 
 		$this->assertEquals(new User("bob"), $résultat_obtenu);
+	}
+
+	public function test_étant_donné_lutilisateur_existant_bob_et_une_authentification_de_type_local_lorsquon_login_avec_courriel_et_mdp_correct_on_obtient_un_objet_user_nommé_bob()
+	{
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
+
+		$interacteur = new LoginInt();
+		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("bob@progressionmail.com", "password");
+
+		$this->assertEquals(new User("bob", "bob@progressionmail.com"), $résultat_obtenu);
 	}
 
 	public function test_étant_donné_lutilisateur_existant_bob_et_une_authentification_de_type_local_lorsquon_login_avec_mdp_incorrect_on_obtient_null()
