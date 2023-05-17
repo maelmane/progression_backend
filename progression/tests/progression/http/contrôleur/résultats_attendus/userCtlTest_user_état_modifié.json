@@ -24,6 +24,12 @@
           "self": "https://example.com/user/jane/relationships/cles",
           "related": "https://example.com/user/jane/cles"
         }
+      },
+      "tokens": {
+        "links": {
+          "related": "https://example.com/user/jane/tokens",
+          "self": "https://example.com/user/jane/relationships/tokens"
+        }
       }
     }
   }

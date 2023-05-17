@@ -319,7 +319,7 @@ final class AuthServiceProviderTests extends TestCase
 
 		$responseTokenCtl = $this->call(
 			"POST",
-			"/token/utilisateur_malveillant",
+			"/user/utilisateur_malveillant/tokens",
 			["ressources" => $ressourcesUtilisateurInnocent],
 			[],
 			[],
@@ -327,7 +327,8 @@ final class AuthServiceProviderTests extends TestCase
 		);
 
 		$tokenJson = json_decode($responseTokenCtl->getContent(), false);
-		$tokenUtilisateurMalveillant = $tokenJson->Token;
+
+		$tokenUtilisateurMalveillant = $tokenJson->data->attributes->jwt;
 		$this->call(
 			"GET",
 			"/user/utilisateur_innocent",

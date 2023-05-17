@@ -22,12 +22,17 @@ use progression\dao\DAOFactory;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\user\{User, Rôle, État};
 use Illuminate\Auth\GenericUser;
+use Carbon\Carbon;
 
 final class TokenCtlTests extends ContrôleurTestCase
 {
 	public function setUp(): void
 	{
 		parent::setUp();
+
+		Carbon::setTestNowAndTimezone(Carbon::create(2001, 5, 21, 12));
+
+		$_ENV["APP_URL"] = "https://example.com/";
 
 		$this->user = new GenericUser([
 			"username" => "utilisateur_lambda",
@@ -44,20 +49,6 @@ final class TokenCtlTests extends ContrôleurTestCase
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		DAOFactory::setInstance($mockDAOFactory);
-
-		//Mock du générateur de token
-		GénérateurDeToken::set_instance(
-			new class extends GénérateurDeToken {
-				public function __construct()
-				{
-				}
-
-				function générer_token($user, $ressources = null, $expiration = 0)
-				{
-					return "token valide";
-				}
-			},
-		);
 	}
 
 	public function tearDown(): void
@@ -68,14 +59,15 @@ final class TokenCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_token_qui_donne_accès_à_une_ressource_lorsquon_effectue_un_post_on_obtient_un_token_avec_les_ressources_voulues()
 	{
-		$tokenAttendu = '{"Token":"token valide"}';
-
-		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/token/utilisateur_lambda", [
+		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/user/utilisateur_lambda/tokens", [
 			"ressources" => "ressources",
 		]);
-		$tokenObtenu = $résultatObtenu->getContent();
+		$résultat_observé = $résultat_obtenu;
 
-		$this->assertEquals(200, $résultatObtenu->status());
-		$this->assertEquals($tokenAttendu, $tokenObtenu);
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/token_ressources.json",
+			$résultat_observé->getContent(),
+		);
 	}
 }

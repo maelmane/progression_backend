@@ -1,0 +1,17 @@
+{
+  "data": {
+    "type": "token",
+    "id": "utilisateur_lambda/990446400",
+    "attributes": {
+      "username": "utilisateur_lambda",
+      "création": 990446400,
+      "expiration": 0,
+      "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InV0aWxpc2F0ZXVyX2xhbWJkYSIsImN1cnJlbnQiOjk5MDQ0NjQwMCwiZXhwaXJlZCI6MCwicmVzc291cmNlcyI6InJlc3NvdXJjZXMiLCJ2ZXJzaW9uIjoxfQ.Heml09QG358gIbjEOuFEbZkB-DpJHOZ3fdnGFA_UPVE",
+      "version": 3
+    },
+    "links": {
+      "self": "https://example.com/token/utilisateur_lambda/990446400",
+      "user": "https://example.com/user/utilisateur_lambda"
+    }
+  }
+}
