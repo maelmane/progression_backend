@@ -3,9 +3,9 @@
     "type": "user",
     "id": "bob",
     "attributes": {
-      "courriel": null,
+      "courriel": "bob@progressionmail.com",
       "username": "bob",
-      "état": 0,
+      "état": 1,
       "rôle": 0,
       "préférences": ""
     },

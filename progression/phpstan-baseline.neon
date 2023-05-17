@@ -2163,36 +2163,6 @@ parameters:
 			path: app/progression/domaine/interacteur/GénérerCléAuthentificationInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription\\(\\) has parameter \\$password with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_avec_mdp\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_sans_mdp\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_sans_mdp\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\Interacteur\\:\\:__construct\\(\\) has parameter \\$sourceDAO with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/Interacteur.php

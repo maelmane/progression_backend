@@ -42,17 +42,31 @@ class UserCréationCtl extends Contrôleur
 		}
 
 		$erreurs = $this->valider_paramètres($request);
+
 		if ($erreurs) {
-			$réponse = $this->réponse_json(["erreur" => $erreurs], 400);
+			if (
+				$erreurs->hasAny("username", "courriel") &&
+				(str_starts_with($erreurs->first("username"), "Err: 1001.") ||
+					str_starts_with($erreurs->first("courriel"), "Err: 1001."))
+			) {
+				$réponse = $this->réponse_json(["erreur" => $erreurs], 409);
+			} else {
+				$réponse = $this->réponse_json(["erreur" => $erreurs], 400);
+			}
 		} else {
-			$réponse = $this->effectuer_inscription($request);
+			$user = $this->effectuer_inscription($request);
+			if ($user === null) {
+				$réponse = $this->réponse_json(["erreur" => "Opération interdite."], 403);
+			} else {
+				$réponse = $this->valider_et_préparer_réponse($user);
+			}
 		}
 
 		Log::debug("UserCréationCtl.inscription. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
-	private function effectuer_inscription(Request $request): JsonResponse
+	private function effectuer_inscription(Request $request): User|null
 	{
 		Log::debug("UserCréationCtl.effectuer_inscription. Params : ", [$request]);
 
@@ -63,10 +77,9 @@ class UserCréationCtl extends Contrôleur
 		$inscriptionInt = new InscriptionInt();
 		$user = $inscriptionInt->effectuer_inscription($username, $courriel, $password);
 
-		$réponse = $this->valider_et_préparer_réponse($user);
+		Log::debug("UserCréationCtl.effectuer_inscription. Retour : ", [$user]);
 
-		Log::debug("UserCréationCtl.effectuer_inscription. Retour : ", [$réponse]);
-		return $réponse;
+		return $user;
 	}
 
 	private function valider_et_préparer_réponse(User|null $user): JsonResponse
@@ -90,6 +103,36 @@ class UserCréationCtl extends Contrôleur
 	private function valider_paramètres(Request $request): MessageBag|null
 	{
 		Log::debug("UserCréationCtl.valider_paramètres : ", $request->all());
+
+		$réponse = $this->valider_paramètres_renvoi_courriel($request)
+			? $this->valider_paramètres_nouvelle_inscritption($request)
+			: null;
+
+		Log::debug("UserCréationCtl.valider_paramètres. Retour : ", [$réponse]);
+		return $réponse;
+	}
+
+	private function valider_paramètres_renvoi_courriel(Request $request): bool
+	{
+		Log::debug("UserCréationCtl.valider_paramètres_renvoi_courriel : ", $request->all());
+
+		// Demande de retour de courriel de validation
+		$validateur = Validator::make($request->all(), [
+			"username" => "required|regex:/^\w{1,64}$/u|exists:progression\dao\models\UserMdl,username",
+			"courriel" => "required|email|exists:progression\dao\models\UserMdl,courriel",
+			"password" => "prohibited",
+		]);
+
+		$réponse = $validateur->fails() ? true : false;
+
+		Log::debug("UserCréationCtl.valider_paramètres_renvoi_courriel. Retour : ", [$réponse]);
+
+		return $réponse;
+	}
+
+	private function valider_paramètres_nouvelle_inscritption(Request $request): MessageBag|null
+	{
+		Log::debug("UserCréationCtl.valider_paramètres_nouvelle_inscritption : ", $request->all());
 
 		$validateur = Validator::make(
 			$request->all(),
@@ -123,7 +166,7 @@ class UserCréationCtl extends Contrôleur
 			$réponse = null;
 		}
 
-		Log::debug("UserCréationCtl.valider_paramètres. Retour : ", [$réponse]);
+		Log::debug("UserCréationCtl.valider_paramètres_nouvelle_inscritption. Retour : ", [$réponse]);
 		return $réponse;
 	}
 }

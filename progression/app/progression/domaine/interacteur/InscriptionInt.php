@@ -26,8 +26,12 @@ use Carbon\Carbon;
 
 class InscriptionInt extends Interacteur
 {
-	function effectuer_inscription($username, string|null $courriel = null, $password = null, Rôle $rôle = Rôle::NORMAL)
-	{
+	function effectuer_inscription(
+		string $username,
+		string|null $courriel = null,
+		string $password = null,
+		Rôle $rôle = Rôle::NORMAL,
+	): User|null {
 		if (!$username) {
 			return null;
 		}
@@ -36,10 +40,19 @@ class InscriptionInt extends Interacteur
 		$auth_ldap = getenv("AUTH_LDAP") === "true";
 
 		if ($auth_local) {
-			if (!$password || !$courriel) {
+			if (!$courriel) {
 				return null;
 			} else {
-				return $this->effectuer_inscription_avec_mdp($username, $courriel, $password, $rôle);
+				if ($password) {
+					return $this->effectuer_inscription_avec_mdp($username, $courriel, $password, $rôle);
+				} else {
+					$user = $this->get_user($username);
+					if ($user && $user->état == État::ATTENTE_DE_VALIDATION) {
+						return $this->envoyer_courriel_de_validation($user);
+					} else {
+						return null;
+					}
+				}
 			}
 		} elseif ($auth_ldap) {
 			return null;
@@ -48,16 +61,36 @@ class InscriptionInt extends Interacteur
 		}
 	}
 
-	private function effectuer_inscription_avec_mdp(string $username, string $courriel, string $password, Rôle $rôle)
+	private function get_user(string $username): User|null
 	{
 		$dao = $this->source_dao->get_user_dao();
+		return $dao->get_user($username);
+	}
 
-		$user = $dao->get_user($username);
+	private function effectuer_inscription_avec_mdp(
+		string $username,
+		string $courriel,
+		string $password,
+		Rôle $rôle,
+	): User|null {
+		$user = $this->get_user($username);
 
 		if ($user) {
 			return null;
 		}
 
+		$user = $this->sauvegarder_user($username, $courriel, $password, $rôle);
+
+		if (!$user) {
+			return null;
+		} else {
+			return $rôle != Rôle::ADMIN ? $this->envoyer_courriel_de_validation($user) : $user;
+		}
+	}
+
+	private function sauvegarder_user(string $username, string $courriel, string $password, Rôle $rôle): User|null
+	{
+		$dao = $this->source_dao->get_user_dao();
 		$user = $dao->save(
 			new User(
 				$username,
@@ -68,33 +101,36 @@ class InscriptionInt extends Interacteur
 		);
 		$dao->set_password($user, $password);
 
-		if ($rôle != Rôle::ADMIN) {
-			$ressources = [
-				"data" => [
-					"url_user" => getenv("APP_URL") . "user/" . $username,
-					"user" => [
-						"username" => $user->username,
-						"courriel" => $user->courriel,
-						"rôle" => $user->rôle,
-					],
-				],
-				"permissions" => [
-					"user" => [
-						"url" => "^user/" . $username . "$",
-						"method" => "^POST$",
-					],
-				],
-			];
+		return $user;
+	}
 
-			$expirationToken = Carbon::now()->addMinutes((int) getenv("JWT_EXPIRATION"))->timestamp;
-			$token = GénérateurDeToken::get_instance()->générer_token($username, $expirationToken, $ressources);
-			$this->source_dao->get_expéditeur()->envoyer_validation_courriel($user, $token);
-		}
+	private function envoyer_courriel_de_validation(User $user): User
+	{
+		$ressources = [
+			"data" => [
+				"url_user" => getenv("APP_URL") . "user/" . $user->username,
+				"user" => [
+					"username" => $user->username,
+					"courriel" => $user->courriel,
+					"rôle" => $user->rôle,
+				],
+			],
+			"permissions" => [
+				"user" => [
+					"url" => "^user/" . $user->username . "$",
+					"method" => "^POST$",
+				],
+			],
+		];
+
+		$expirationToken = Carbon::now()->addMinutes((int) getenv("JWT_EXPIRATION"))->timestamp;
+		$token = GénérateurDeToken::get_instance()->générer_token($user->username, $expirationToken, $ressources);
+		$this->source_dao->get_expéditeur()->envoyer_validation_courriel($user, $token);
 
 		return $user;
 	}
 
-	private function effectuer_inscription_sans_mdp($username, Rôle $rôle)
+	private function effectuer_inscription_sans_mdp(string $username, Rôle $rôle): User|null
 	{
 		$dao = $this->source_dao->get_user_dao();
 		return $dao->get_user($username) ??
