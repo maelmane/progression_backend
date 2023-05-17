@@ -20,6 +20,7 @@ namespace progression\domaine\interacteur;
 
 use LDAP\Result;
 use progression\domaine\entité\clé\{Clé, Portée};
+use progression\domaine\entité\user\Rôle;
 use progression\dao\{DAOFactory, UserDAO};
 
 class AuthException extends \Exception
@@ -153,11 +154,6 @@ class LoginInt extends Interacteur
 
 	function login_sans_authentification($username)
 	{
-		$user = (new ObtenirUserInt())->get_user($username);
-		if (!$user) {
-			$user = (new CréerUserInt())->créer_user($username);
-		}
-
-		return $user;
+		return (new InscriptionInt())->effectuer_inscription($username, null, null, Rôle::NORMAL);
 	}
 }

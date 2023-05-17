@@ -38,13 +38,6 @@ final class LoginCtlTests extends ContrôleurTestCase
 			"état" => État::ACTIF,
 		]);
 
-		Gate::shouldReceive("allows")
-			->with("utilisateur-validé", Mockery::Any())
-			->andReturn(true);
-		Gate::shouldReceive("allows")
-			->with("utilisateur-non-inactif", Mockery::Any())
-			->andReturn(true);
-
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO

@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\LoginInt;
+use progression\domaine\entité\user\User;
 
 class LoginCtl extends Contrôleur
 {
@@ -45,7 +46,7 @@ class LoginCtl extends Contrôleur
 
 	private function effectuer_login($request)
 	{
-		Log::debug("LoginCtl.effectuer_login. Params : ", [$request]);
+		Log::debug("LoginCtl.effectuer_login. Params : ", [$request->all()]);
 
 		$identifiant = $request->input("identifiant");
 		$key_name = $request->input("key_name");
@@ -55,13 +56,13 @@ class LoginCtl extends Contrôleur
 
 		$loginInt = new LoginInt();
 
-		if ($key_name && $key_secret) {
+		if ($key_name) {
 			$user = $loginInt->effectuer_login_par_clé($identifiant, $key_name, $key_secret);
 		} else {
 			$user = $loginInt->effectuer_login_par_identifiant($identifiant, $password, $domaine);
 		}
 
-		if ($this->valider_état_utilisateur($request)) {
+		if ($user && $this->valider_état_utilisateur($user, $request)) {
 			$réponse = $this->valider_et_préparer_réponse($user, $request);
 		} else {
 			$réponse = $this->réponse_json(["erreur" => "Accès interdit."], 401);
@@ -162,8 +163,9 @@ class LoginCtl extends Contrôleur
 		return $réponse;
 	}
 
-	private function valider_état_utilisateur(Request $request): bool
+	private function valider_état_utilisateur(User $user, Request $request): bool
 	{
-		return Gate::allows("utilisateur-validé", $request) && Gate::allows("utilisateur-non-inactif", $request);
+		return Gate::forUser($user)->allows("utilisateur-validé", $request) &&
+			Gate::forUser($user)->allows("utilisateur-non-inactif", $request);
 	}
 }

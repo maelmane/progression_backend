@@ -144,7 +144,7 @@ final class LoginIntTests extends TestCase
 		$this->assertNull($résultat_obtenu);
 	}
 
-	public function test_étant_donné_lutilisateur_Banane_inexistant_et_une_authentification_de_type_no_lorsquon_login_sans_mot_de_passe_il_est_créé_et_on_obtient_un_objet_user_nommé_Banane()
+	public function test_étant_donné_lutilisateur_Banane_inexistant_et_une_authentification_de_type_no_lorsquon_login_sans_mot_de_passe_il_est_créé_et_on_obtient_un_objet_user_actif_nommé_Banane()
 	{
 		putenv("AUTH_LOCAL=false");
 		putenv("AUTH_LDAP=false");
