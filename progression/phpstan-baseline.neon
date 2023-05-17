@@ -3513,16 +3513,6 @@ parameters:
 			path: app/progression/http/contrôleur/TestCtl.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TokenCtl\\:\\:post\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TokenCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TokenCtl\\:\\:post\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TokenCtl.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:valider_et_préparer_réponse\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/UserCtl.php
@@ -3906,16 +3896,6 @@ parameters:
 			message: "#^Property progression\\\\http\\\\transformer\\\\TestTransformer\\:\\:\\$type has no type specified\\.$#"
 			count: 1
 			path: app/progression/http/transformer/TestTransformer.php
-
-		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\UserTransformer\\:\\:includeAvancements\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/UserTransformer.php
-
-		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\UserTransformer\\:\\:includeCles\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/UserTransformer.php
 
 		-
 			message: "#^Method progression\\\\http\\\\transformer\\\\UserTransformer\\:\\:transform\\(\\) has no return type specified\\.$#"

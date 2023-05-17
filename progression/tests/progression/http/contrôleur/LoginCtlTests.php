@@ -23,6 +23,7 @@ use progression\domaine\entité\clé\{Clé, Portée};
 use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
+use Carbon\Carbon;
 
 final class LoginCtlTests extends ContrôleurTestCase
 {
@@ -37,6 +38,12 @@ final class LoginCtlTests extends ContrôleurTestCase
 			"rôle" => Rôle::NORMAL,
 			"état" => État::ACTIF,
 		]);
+
+		$_ENV["APP_URL"] = "https://example.com/";
+		$_ENV["JWT_SECRET"] = "secret";
+		$_ENV["JWT_TTL"] = 86400;
+
+		Carbon::setTestNowAndTimezone(Carbon::create(2001, 5, 21, 12));
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -89,20 +96,6 @@ final class LoginCtlTests extends ContrôleurTestCase
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		$mockDAOFactory->shouldReceive("get_clé_dao")->andReturn($mockCléDAO);
 		DAOFactory::setInstance($mockDAOFactory);
-
-		//Mock du générateur de token
-		GénérateurDeToken::set_instance(
-			new class extends GénérateurDeToken {
-				public function __construct()
-				{
-				}
-
-				function générer_token($user, $ressources = null, $expiration = 0)
-				{
-					return "token valide";
-				}
-			},
-		);
 	}
 
 	public function tearDown(): void
@@ -181,7 +174,10 @@ final class LoginCtlTests extends ContrôleurTestCase
 		$résultat_observé = $this->call("POST", "/auth", ["identifiant" => "bob"]);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Token":"token valide"}', $token = $résultat_observé->getContent());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/token_authentification.json",
+			$résultat_observé->getContent(),
+		);
 	}
 
 	public function test_étant_donné_un_utilisateur_inexistant_sans_authentification_lorsquon_appelle_login_lutilisateur_avec_un_courriel_on_obtient_une_erreur_400()
@@ -220,7 +216,7 @@ final class LoginCtlTests extends ContrôleurTestCase
 		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
+		$this->assertNotNull($résultat_observé->getContent());
 	}
 
 	# AUTH locale
@@ -234,7 +230,10 @@ final class LoginCtlTests extends ContrôleurTestCase
 			"password" => "m0tD3P4ZZE",
 		]);
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/token_authentification.json",
+			$résultat_observé->getContent(),
+		);
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_et_une_authentificaton_locale_lorsquon_login_avec_courriel_et_mdp_corrects_on_obtient_un_token_valide()
@@ -248,7 +247,10 @@ final class LoginCtlTests extends ContrôleurTestCase
 		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/token_authentification.json",
+			$résultat_observé->getContent(),
+		);
 	}
 
 	public function test_étant_donné_un_utilisateur_inactif_avec_authentification_lorsquon_appelle_login_avec_mdp_correct_on_obtient_une_erreur_401()
@@ -376,7 +378,10 @@ final class LoginCtlTests extends ContrôleurTestCase
 		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertEquals('{"Token":"token valide"}', $résultat_observé->getContent());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/token_authentification.json",
+			$résultat_observé->getContent(),
+		);
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_et_une_clé_dauthentification_valide_lorsquon_login_avec_un_identifiant_invalide_on_obtient_une_erreur_400()

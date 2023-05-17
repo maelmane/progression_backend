@@ -24,6 +24,12 @@
           "self": "https://example.com/user/jdoe/relationships/cles",
           "related": "https://example.com/user/jdoe/cles"
         }
+      },
+      "tokens": {
+        "links": {
+          "related": "https://example.com/user/jdoe/tokens",
+          "self": "https://example.com/user/jdoe/relationships/tokens"
+        }
       }
     }
   }

@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\interacteur\LoginInt;
 use progression\domaine\entité\user\User;
+use progression\http\transformer\TokenTransformer;
+use Carbon\Carbon;
 
 class LoginCtl extends Contrôleur
 {
@@ -85,7 +87,7 @@ class LoginCtl extends Contrôleur
 			);
 
 			$token = $this->générer_token($user);
-			$réponse = $this->préparer_réponse(["Token" => $token]);
+			$réponse = $this->item($token, new TokenTransformer($user->username));
 		} else {
 			Log::notice(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
@@ -105,7 +107,7 @@ class LoginCtl extends Contrôleur
 	{
 		Log::debug("LoginCtl.générer_token. Params : ", [$user]);
 
-		$expirationToken = time() + $_ENV["JWT_TTL"];
+		$expirationToken = Carbon::now()->addSeconds((int) getenv("JWT_TTL"))->timestamp;
 		$token = GénérateurDeToken::get_instance()->générer_token($user->username, $expirationToken);
 
 		Log::debug("LoginCtl.générer_token. Retour : ", [$token]);
