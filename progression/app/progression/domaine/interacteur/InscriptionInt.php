@@ -108,7 +108,7 @@ class InscriptionInt extends Interacteur
 	{
 		$ressources = [
 			"data" => [
-				"url_user" => getenv("APP_URL") . "user/" . $user->username,
+				"url_user" => getenv("APP_URL") . "/user/" . $user->username,
 				"user" => [
 					"username" => $user->username,
 					"courriel" => $user->courriel,

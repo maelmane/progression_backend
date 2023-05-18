@@ -38,8 +38,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$_ENV["AUTH_TYPE"] = "no";
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("AUTH_TYPE=no");
+		putenv("APP_URL=https://example.com");
 
 		$this->user = new GenericUser([
 			"username" => "jdoe",
@@ -629,7 +629,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 	public function test_étant_donné_une_tentative_ayant_du_code_dépassant_la_taille_maximale_de_caractères_on_obtient_une_erreur_400()
 	{
-		$_ENV["TAILLE_CODE_MAX"] = 23;
+		putenv("TAILLE_CODE_MAX=23");
 		$testCode = "#+TODO\n日本語でのテストです\n#-TODO"; //24 caractères UTF8
 
 		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
@@ -644,7 +644,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			],
 		);
 
-		$_ENV["TAILLE_CODE_MAX"] = 1000;
+		putenv("TAILLE_CODE_MAX=1000");
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(

@@ -38,8 +38,8 @@ class TentativeTransformer extends BaseTransformer
 			"réussi" => $tentative->réussi,
 			"temps_exécution" => $tentative->temps_exécution,
 			"links" => (isset($tentative->links) ? $tentative->links : []) + [
-				"avancement" => "{$_ENV["APP_URL"]}avancement/{$this->id}",
-				"self" => "{$_ENV["APP_URL"]}tentative/{$this->id}/{$tentative->id}",
+				"avancement" => "{$this->urlBase}/avancement/{$this->id}",
+				"self" => "{$this->urlBase}/tentative/{$this->id}/{$tentative->id}",
 			],
 		];
 
@@ -54,7 +54,7 @@ class TentativeTransformer extends BaseTransformer
 
 		foreach ($commentaires as $numéro => $commentaire) {
 			$commentaire->links = [
-				"tentative" => "{$_ENV["APP_URL"]}tentative/{$id_parent}",
+				"tentative" => "{$this->urlBase}/tentative/{$id_parent}",
 			];
 		}
 		return $this->collection($commentaires, new CommentaireTransformer($id_parent), "commentaire");
@@ -66,7 +66,7 @@ class TentativeTransformer extends BaseTransformer
 
 		foreach ($tentative->résultats as $i => $résultat) {
 			$résultat->links = [
-				"tentative" => "{$_ENV["APP_URL"]}tentative/{$id_parent}",
+				"tentative" => "{$this->urlBase}/tentative/{$id_parent}",
 			];
 		}
 

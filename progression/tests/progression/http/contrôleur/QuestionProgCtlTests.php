@@ -33,7 +33,7 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		$this->user = new GenericUser([
 			"username" => "bob",

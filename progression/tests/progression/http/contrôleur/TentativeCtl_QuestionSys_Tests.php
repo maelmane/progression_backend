@@ -38,8 +38,8 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$_ENV["AUTH_TYPE"] = "no";
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("AUTH_TYPE=no");
+		putenv("APP_URL=https://example.com");
 
 		$this->user = new GenericUser([
 			"username" => "jdoe",

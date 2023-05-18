@@ -36,7 +36,7 @@ final class UserCtlTests extends ContrôleurTestCase
 			"état" => État::ACTIF,
 		]);
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		$user = new User("jdoe", préférences: '{"app": {"pref1": 1, "pref2": 2}}', état: État::INACTIF);
 		$user_et_avancements = new User("jdoe", préférences: '{"app": {"pref1": 1, "pref2": 2}}');

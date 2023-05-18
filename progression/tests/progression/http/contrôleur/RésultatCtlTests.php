@@ -34,8 +34,8 @@ final class RésultatCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$_ENV["APP_URL"] = "https://example.com/";
-		$_ENV["TAILLE_CODE_MAX"] = 1000;
+		putenv("APP_URL=https://example.com");
+		putenv("TAILLE_CODE_MAX=1000");
 
 		$this->user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL, "état" => État::ACTIF]);
 
@@ -243,7 +243,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_test_unique_ayant_du_code_dépassant_la_taille_maximale_de_caractères_on_obtient_une_erreur_400()
 	{
-		$_ENV["TAILLE_CODE_MAX"] = 23;
+		putenv("TAILLE_CODE_MAX=23");
 		$testCode = "#+TODO\n日本語でのテストです\n#-TODO"; //24 caractères UTF8
 
 		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat/", [
@@ -252,7 +252,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 			"langage" => "réussi",
 			"code" => "$testCode",
 		]);
-		$_ENV["TAILLE_CODE_MAX"] = 1000;
+		putenv("TAILLE_CODE_MAX=1000");
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
@@ -263,7 +263,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_test_unique_ayant_exactement_la_taille_maximale_de_caractères_on_obtient_un_code_200()
 	{
-		$_ENV["TAILLE_CODE_MAX"] = 24;
+		putenv("TAILLE_CODE_MAX=24");
 		$testCode = "#+TODO\n日本語でのテストです\n#-TODO"; //24 caractères UTF8
 
 		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
@@ -272,7 +272,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 			"langage" => "réussi",
 			"code" => "$testCode",
 		]);
-		$_ENV["TAILLE_CODE_MAX"] = 1000;
+		putenv("TAILLE_CODE_MAX=1000");
 
 		$this->assertEquals(200, $résultat_obtenu->status());
 	}

@@ -71,7 +71,7 @@ class RésultatCtl extends Contrôleur
 
 	private function valider_paramètres(Request $request)
 	{
-		$TAILLE_CODE_MAX = (int) $_ENV["TAILLE_CODE_MAX"];
+		$TAILLE_CODE_MAX = (int) getenv("TAILLE_CODE_MAX");
 
 		$validateur = Validator::make(
 			$request->all(),

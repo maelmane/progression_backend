@@ -27,7 +27,7 @@ final class SauvegardeTransformerTests extends TestCase
 	{
 		parent::setUp();
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 	}
 
 	public function test_étant_donné_une_sauvegarde_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()

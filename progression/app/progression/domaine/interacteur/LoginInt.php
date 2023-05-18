@@ -109,12 +109,12 @@ class LoginInt extends Interacteur
 
 	function get_username_ldap(string $identifiant, string $password, string $domaine)
 	{
-		if ($domaine != $_ENV["LDAP_DOMAINE"]) {
+		if ($domaine != getenv("LDAP_DOMAINE")) {
 			throw new \Exception("Domaine multiple non implémenté");
 		}
 
 		// Connexion au serveur LDAP
-		$ldap = ldap_connect("ldap://" . $_ENV["LDAP_HOTE"], $_ENV["LDAP_PORT"]);
+		$ldap = ldap_connect("ldap://" . getenv("LDAP_HOTE"), (int) getenv("LDAP_PORT"));
 		if (!$ldap) {
 			syslog(LOG_ERR, "Erreur de configuration LDAP");
 			throw new \Exception("Erreur de configuration LDAP");
@@ -123,8 +123,8 @@ class LoginInt extends Interacteur
 		ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
 
 		// Bind l'utilisateur LDAP
-		if ($_ENV["LDAP_DN_BIND"] && $_ENV["LDAP_PW_BIND"]) {
-			$bind = ldap_bind($ldap, $_ENV["LDAP_DN_BIND"], $_ENV["LDAP_PW_BIND"]);
+		if (getenv("LDAP_DN_BIND") && getenv("LDAP_PW_BIND")) {
+			$bind = ldap_bind($ldap, getenv("LDAP_DN_BIND"), getenv("LDAP_PW_BIND"));
 		} else {
 			$bind = ldap_bind($ldap, $identifiant, $password);
 		}
@@ -138,7 +138,7 @@ class LoginInt extends Interacteur
 		}
 
 		//Recherche de l'utilisateur à authentifier
-		$result = ldap_search($ldap, $_ENV["LDAP_BASE"], "({$_ENV["LDAP_UID"]}=$identifiant)", ["dn", "cn", 1]);
+		$result = ldap_search($ldap, getenv("LDAP_BASE") ?: "", "({getenv('LDAP_UID')}=$identifiant)", ["dn", "cn", 1]);
 		if ($result instanceof Result) {
 			$user = ldap_get_entries($ldap, $result);
 			return $user &&

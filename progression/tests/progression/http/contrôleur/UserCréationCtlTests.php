@@ -33,8 +33,8 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 
 		putenv("AUTH_LDAP=false");
 
-		$_ENV["APP_URL"] = "https://example.com/";
-		$_ENV["JWT_SECRET"] = "secret-test";
+		putenv("APP_URL=https://example.com");
+		putenv("JWT_SECRET=secret-test");
 
 		$this->user = new GenericUser([
 			"username" => "bob",

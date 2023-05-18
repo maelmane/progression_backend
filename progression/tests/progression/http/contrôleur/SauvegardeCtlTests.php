@@ -37,7 +37,7 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 			"état" => État::ACTIF,
 		]);
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		// Sauvegarde
 		$sauvegarde = new Sauvegarde(1620150294, "print(\"Hello world!\")");

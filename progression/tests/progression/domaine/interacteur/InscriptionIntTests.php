@@ -33,7 +33,7 @@ final class InscriptionIntTests extends TestCase
 
 		putenv("AUTH_LOCAL=true");
 
-		putenv("APP_URL=https://example.com/");
+		putenv("APP_URL=https://example.com");
 
 		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
 		$mockExpéditeurDao = Mockery::mock("progression\\dao\\mail\Expéditeur");
@@ -69,7 +69,7 @@ final class InscriptionIntTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=true");
 
-		$_ENV["JWT_SECRET"] = "secret-test";
+		putenv("JWT_SECRET=secret-test");
 		putenv("JWT_EXPIRATION=15");
 
 		Carbon::setTestNowAndTimezone(Carbon::create(2001, 5, 21, 12));
@@ -207,7 +207,7 @@ final class InscriptionIntTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$_ENV["JWT_SECRET"] = "secret-test";
+		putenv("JWT_SECRET=secret-test");
 
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
