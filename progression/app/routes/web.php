@@ -93,7 +93,7 @@ $router->group(["middleware" => ["auth", "étatNonInactif", "permissionsRessourc
 	$router->get("/tentative/{username}/{question_uri}/{timestamp:[[:digit:]]{10}}/resultats", "NotImplementedCtl@get");
 
 	// Token
-	$router->post("/token/{username}/", "TokenCtl@post");
+	$router->post("/user/{username}/tokens", "TokenCtl@post");
 
 	// User
 	$router->get("/user/{username}", "UserCtl@get");

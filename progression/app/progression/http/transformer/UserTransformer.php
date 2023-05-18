@@ -20,12 +20,13 @@ namespace progression\http\transformer;
 
 use progression\domaine\entité\user\{User, État, Rôle};
 use progression\util\Encodage;
+use League\Fractal\Resource\Collection;
 
 class UserTransformer extends BaseTransformer
 {
 	public $type = "user";
 
-	protected array $availableIncludes = ["avancements", "cles"];
+	protected array $availableIncludes = ["avancements", "cles", "tokens"];
 
 	public function transform(User $user)
 	{
@@ -44,7 +45,7 @@ class UserTransformer extends BaseTransformer
 		return $data;
 	}
 
-	public function includeAvancements(User $user)
+	public function includeAvancements(User $user): Collection
 	{
 		$id_parent = $user->username;
 
@@ -58,7 +59,7 @@ class UserTransformer extends BaseTransformer
 		return $this->collection($user->avancements, new AvancementTransformer($id_parent), "avancement");
 	}
 
-	public function includeCles(User $user)
+	public function includeCles(User $user): Collection
 	{
 		$id_parent = $user->username;
 
@@ -69,5 +70,13 @@ class UserTransformer extends BaseTransformer
 		}
 
 		return $this->collection($user->clés, new CléTransformer($id_parent), "cle");
+	}
+
+	public function includeTokens(User $user): Collection
+	{
+		$id_parent = $user->username;
+
+		//On n'enverra jamais les tokens
+		return $this->collection([], new TokenTransformer($id_parent), "token");
 	}
 }

@@ -22,7 +22,6 @@ use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\user\{User, État, Rôle};
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
-use Carbon\Carbon;
 
 final class UserCréationCtlTests extends ContrôleurTestCase
 {

@@ -24,7 +24,13 @@
           "self": "https:\/\/example.com\/user\/Marcel\/relationships\/cles",
           "related": "https:\/\/example.com\/user\/Marcel\/cles"
         }
-      }
+      },
+      "tokens": {
+        "links": {
+          "related": "https://example.com/user/Marcel/tokens",
+          "self": "https://example.com/user/Marcel/relationships/tokens"
+        }
+      }	
     }
   }
 }

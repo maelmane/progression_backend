@@ -19,19 +19,22 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use progression\http\transformer\TokenTransformer;
 
 class TokenCtl extends Contrôleur
 {
-	public function post(Request $request, $username)
+	public function post(Request $request, string $username): JsonResponse
 	{
-		Log::debug("TokenCtl.post. Params : ", [$request, $username]);
+		Log::debug("TokenCtl.post. Params : ", [$request->all()]);
 
 		$ressources = $request->input("ressources");
 
 		$expirationToken = $request->input("expiration") ?? 0;
 		$token = GénérateurDeToken::get_instance()->générer_token($username, $expirationToken, $ressources);
-		$réponse = $this->préparer_réponse(["Token" => $token]);
+		$réponse = $this->préparer_réponse($this->item($token, new TokenTransformer($username)));
+
 		Log::debug("TokenCtl.post. Réponse : ", [$réponse]);
 
 		return $réponse;

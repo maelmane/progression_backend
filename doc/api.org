@@ -18,7 +18,6 @@ Les points d’entrée privés requièrent un token dans l’entête : «Authent
 | Méthode | URL                 | Description                            | Paramètres                                  | Réponse             |
 | GET     | ~/user/{username}~  | Obtient l'utilisateur /username/       | username                                    | User                |
 | GET     | ~/question/{uri}~   | Obtient la question disponible à <uri> | uri                                         | Question            |
-| POST    | ~/token/{username}~ | Obtient un token pour {username}       | username, ressources demandées en json      | token, un token JWT |
 
 * Ressources
 
@@ -334,9 +333,11 @@ username
 
 *** Relations :
 
-| Nom         | Cardinalité | Type       | description         |
-|-------------+-------------+------------+---------------------|
-| avancements | 1-n         | Avancement | Liste d'avancements |
+| Nom         | Cardinalité | Type       | description                       |
+|-------------+-------------+------------+-----------------------------------|
+| avancements | 1-n         | Avancement | Liste d'avancements               |
+| cles        | 1-n         | Clé        | Liste de clés                     |
+| tokens      | 1-n         | Token      | Liste de tokens en écriture seule |
 
 
 * Exemples
@@ -537,7 +538,7 @@ EOF
 
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
-curl --data "$DATA" "<<get_api_url()>>/token/jdoe" -H "Authorization: Bearer $TOKEN"
+curl --data "$DATA" "<<get_api_url()>>/user/jdoe/tokens" -H "Authorization: Bearer $TOKEN"
 #+END_SRC
 
 ** Créer ou mettre à jour la sauvegarde de ~jdoe~ pour la question «Les fonctions avec paramètres/Rectangle» et un code ~python~
