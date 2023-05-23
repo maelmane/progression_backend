@@ -22,7 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\entité\Commentaire;
-use progression\domaine\interacteur\SauvegarderCommentaireInt;
+use progression\domaine\interacteur\{SauvegarderCommentaireInt, IntéracteurException};
 use progression\http\transformer\CommentaireTransformer;
 use progression\util\Encodage;
 
@@ -32,40 +32,40 @@ class CommentaireCtl extends Contrôleur
 	{
 		Log::debug("CommentaireCtl.post. Params : ", [$request->all(), $username]);
 		$commentaire = null;
-		$réponse = null;
 
 		$question_uriDécodé = Encodage::base64_decode_url($question_uri);
 
+		$réponse = null;
 		$validateur = $this->valider_paramètres($request);
 		if ($validateur->fails()) {
-			Log::notice(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Paramètres invalides",
+			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
+		} else {
+			$commentaireInt = new SauvegarderCommentaireInt();
+
+			$commentaire = $commentaireInt->sauvegarder_commentaire(
+				$username,
+				$question_uriDécodé,
+				$timestamp,
+				null,
+				new Commentaire(
+					$request->message,
+					$request->créateur,
+					(new \DateTime())->getTimestamp(),
+					$request->numéro_ligne,
+				),
 			);
-			return $this->réponse_json(["erreur" => $validateur->errors()], 400);
+
+			$numéro = array_key_first($commentaire);
+			$commentaire[$numéro]->id = $numéro;
+
+			$réponse = $this->item(
+				$commentaire[$numéro],
+				new CommentaireTransformer("{$username}/{$question_uri}/{$timestamp}"),
+			);
 		}
 
-		$commentaireInt = new SauvegarderCommentaireInt();
-		$commentaire = $commentaireInt->sauvegarder_commentaire(
-			$username,
-			$question_uriDécodé,
-			$timestamp,
-			null,
-			new Commentaire(
-				$request->message,
-				$request->créateur,
-				(new \DateTime())->getTimestamp(),
-				$request->numéro_ligne,
-			),
-		);
-
-		$numéro = array_key_first($commentaire);
-
-		$commentaire[$numéro]->id = $numéro;
-		$réponse = $this->item(
-			$commentaire[$numéro],
-			new CommentaireTransformer("{$username}/{$question_uri}/{$timestamp}"),
-		);
-		return $this->préparer_réponse($réponse);
+		Log::debug("CommentaireCtl.post. Retour : ", [$réponse]);
+		return $réponse;
 	}
 
 	private function valider_paramètres($request)

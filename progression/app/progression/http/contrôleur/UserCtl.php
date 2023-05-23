@@ -23,8 +23,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\http\transformer\UserTransformer;
 use progression\domaine\entité\Avancement;
-use progression\domaine\interacteur\ObtenirUserInt;
-use progression\domaine\interacteur\SauvegarderPréférencesUtilisateurInt;
+use progression\domaine\interacteur\{ObtenirUserInt, SauvegarderPréférencesUtilisateurInt, IntéracteurException};
 use progression\util\Encodage;
 
 class UserCtl extends Contrôleur
@@ -33,9 +32,10 @@ class UserCtl extends Contrôleur
 	{
 		Log::debug("UserCtl.get. Params : ", [$request->all(), $username]);
 
+		$réponse = null;
 		$user = $this->obtenir_user($username);
-
 		$réponse = $this->valider_et_préparer_réponse($user);
+
 		Log::debug("UserCtl.get. Retour : ", [$réponse]);
 		return $réponse;
 	}
@@ -43,19 +43,16 @@ class UserCtl extends Contrôleur
 	public function post(Request $request, string $username): JsonResponse
 	{
 		Log::debug("UserCtl.post. Params : ", [$request->all(), $username]);
+
+		$réponse = null;
 		$validation = $this->valider_paramètres($request);
-
 		if ($validation->fails()) {
-			Log::notice(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Paramètres invalides",
-			);
-			return $this->réponse_json(["erreur" => $validation->errors()], 400);
+			$réponse = $this->réponse_json(["erreur" => $validation->errors()], 400);
+		} else {
+			$userInt = new SauvegarderPréférencesUtilisateurInt();
+			$user = $userInt->sauvegarder_préférences($username, $request->préférences ?? "");
+			$réponse = $this->valider_et_préparer_réponse($user);
 		}
-
-		$userInt = new SauvegarderPréférencesUtilisateurInt();
-		$user = $userInt->sauvegarder_préférences($username, $request->préférences ?? "");
-
-		$réponse = $this->valider_et_préparer_réponse($user);
 
 		Log::debug("UserCtl.post. Retour : ", [$réponse]);
 		return $réponse;

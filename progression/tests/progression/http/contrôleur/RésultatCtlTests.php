@@ -49,6 +49,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 				// Ébauches
 				"réussi" => new Exécutable("#+TODO\nprint(\"Hello world!\")", "réussi"),
 				"non_réussi" => new Exécutable("//+TODO\nSystem.out.println(\"Hello world!\")", "non_réussi"),
+				"erreur" => new Exécutable("//+TODO\nSystem.out.println(\"Hello world!\")", "erreur"),
 			],
 			// TestsProg
 			tests: [
@@ -77,6 +78,12 @@ final class RésultatCtlTests extends ContrôleurTestCase
 					"abcdef0123456789" => ["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03],
 				],
 			]);
+		$mockExécuteur
+			->shouldReceive("exécuter_prog")
+			->withArgs(function ($exec, $test) {
+				return $exec->lang == "erreur";
+			})
+			->andThrow(new ExécutionException("Err: 1005. Exécuteur non disponible.", 503));
 
 		// User
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -237,6 +244,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		]);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals('{"erreur":"Err: 1003. L\'indice de test n\'existe pas."}', $résultat_obtenu->getContent());
 	}
 
 	public function test_étant_donné_un_test_unique_ayant_du_code_dépassant_la_taille_maximale_de_caractères_on_obtient_une_erreur_400()
@@ -273,5 +281,18 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		$_ENV["TAILLE_CODE_MAX"] = 1000;
 
 		$this->assertEquals(200, $résultat_obtenu->status());
+	}
+
+	public function test_étant_donné_un_test_unique_compilebox_inaccessible_lorsquon_appelle_post_on_obtient_Service_non_disponible()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat/", [
+			"langage" => "erreur",
+			"code" => "#+TODO\nprint(\"on ne se rendra pas à exécuter ceci\")",
+			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
+			"index" => 0,
+		]);
+
+		$this->assertEquals(503, $résultat_obtenu->status());
+		$this->assertEquals('{"erreur":"Err: 1005. Exécuteur non disponible."}', $résultat_obtenu->getContent());
 	}
 }

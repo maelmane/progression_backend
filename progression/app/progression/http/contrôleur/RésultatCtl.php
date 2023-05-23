@@ -24,7 +24,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 use progression\http\transformer\RésultatTransformer;
 use progression\domaine\entité\{QuestionProg, Résultat, TestProg, TentativeProg};
-use progression\domaine\interacteur\{ObtenirQuestionInt, SoumettreTentativeProgInt};
+use progression\domaine\interacteur\{
+	ObtenirQuestionInt,
+	SoumettreTentativeProgInt,
+	SoumettreTentativeIntéracteurException,
+	IntéracteurException,
+};
 use progression\util\Encodage;
 use RuntimeException;
 use DomainException;
@@ -47,23 +52,20 @@ class RésultatCtl extends Contrôleur
 
 		$chemin = Encodage::base64_decode_url($request->question_uri);
 
-		try {
-			$question = $this->récupérer_question($chemin);
-
-			$réponse = $this->traiter_put_QuestionProg($request, $chemin, $question);
-		} catch (ContrôleurException $erreur) {
-			Log::notice(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					__CLASS__ .
-					")
-				{$erreur->getMessage()}",
-			);
-			return $this->réponse_json(["erreur" => $erreur->getMessage()], $erreur->getCode());
+		$question = $this->récupérer_question($chemin);
+		if (!$question) {
+			$réponse = $this->réponse_json(["erreur" => "Err: 1002. La question " . $chemin . " n'existe pas."], 400);
+		} elseif (isset($request->index) && !array_key_exists($request->index, $question->tests)) {
+			$réponse = $this->réponse_json(["erreur" => "Err: 1003. L'indice de test n'existe pas."], 400);
+		} else {
+			$test = isset($request->index) ? $question->tests[$request->index] : $this->construire_test($request);
+			$résultat = $this->traiter_put_QuestionProg($request, $chemin, $question, $test);
+			if (!$résultat) {
+				$réponse = $this->réponse_json(["erreur" => "Err: 1000. La tentative n'est pas traitable."], 400);
+			} else {
+				$réponse = $this->valider_et_préparer_réponse($résultat);
+			}
 		}
-
-		$réponse = $this->valider_et_préparer_réponse($réponse);
-
-		Log::debug("RésultatCtl.put. Retour : ", [$réponse]);
 
 		return $réponse;
 	}
@@ -101,20 +103,9 @@ class RésultatCtl extends Contrôleur
 		return $validateur;
 	}
 
-	private function récupérer_question(string $chemin): QuestionProg
+	private function récupérer_question(string $chemin): QuestionProg|null
 	{
-		$questionInt = new ObtenirQuestionInt();
-
-		try {
-			return $questionInt->get_question($chemin) ??
-				throw new ContrôleurException("Err: 1002. La question $chemin n'existe pas.", 400);
-		} catch (RuntimeException $erreur) {
-			throw new ContrôleurException($erreur->getMessage(), 502);
-		} catch (DomainException $erreur) {
-			throw new ContrôleurException($erreur->getMessage(), 400);
-		} catch (ChargeurException $erreur) {
-			throw new ContrôleurException($erreur->getMessage(), 400);
-		}
+		return (new ObtenirQuestionInt())->get_question($chemin);
 	}
 
 	private function construire_test(Request $request): TestProg
@@ -143,17 +134,18 @@ class RésultatCtl extends Contrôleur
 		return $réponse;
 	}
 
-	private function traiter_put_QuestionProg(Request $request, string $chemin, QuestionProg $question): Résultat|null
-	{
-		if (!isset($request->index)) {
-			$test = $this->construire_test($request);
-		} else {
-			$test = $question->tests[$request->index] ?? throw new ContrôleurException("Indice de test invalide", 400);
-		}
-
+	private function traiter_put_QuestionProg(
+		Request $request,
+		string $chemin,
+		QuestionProg $question,
+		TestProg $test
+	): Résultat|null {
 		$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
 
 		$tentative_résultante = $this->soumettre_tentative($question, $test, $tentative);
+		if (!$tentative_résultante) {
+			return null;
+		}
 
 		$hash = array_key_first($tentative_résultante->résultats);
 		$résultat = $tentative_résultante->résultats[$hash];
@@ -166,25 +158,10 @@ class RésultatCtl extends Contrôleur
 		QuestionProg $question,
 		TestProg $test,
 		TentativeProg $tentative
-	): TentativeProg {
-		try {
-			$intéracteur = new SoumettreTentativeProgInt();
-			$résultat = $intéracteur->soumettre_tentative($question, [$test], $tentative);
-		} catch (ExécutionException $e) {
-			if ($e->getCode() >= 500) {
-				Log::error($e->getMessage());
-				if ($e->getPrevious()) {
-					Log::error($e->getPrevious()->getMessage());
-				}
-				throw new ContrôleurException("Service non disponible.", 503);
-			} else {
-				throw new ContrôleurException($e->getMessage(), $e->getCode());
-			}
-		}
+	): TentativeProg|null {
+		$intéracteur = new SoumettreTentativeProgInt();
+		$résultat = $intéracteur->soumettre_tentative($question, [$test], $tentative);
 
-		if ($résultat == null) {
-			throw new ContrôleurException("Requête intraitable.", 400);
-		}
 		return $résultat;
 	}
 }

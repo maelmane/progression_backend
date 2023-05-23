@@ -25,6 +25,7 @@ class ExécuterProgInt extends Interacteur
 	public function exécuter($exécutable, $tests)
 	{
 		$comp_resp = $this->source_dao->get_exécuteur()->exécuter_prog($exécutable, $tests);
+
 		if (!$comp_resp) {
 			return null;
 		}

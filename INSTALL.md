@@ -21,10 +21,10 @@ cd progression_backend
 
 ### Créer et adapter le fichier de configuration
 
-Créer le fichier .env ou copier le ficher d'exemple `.env.exemple` du répertoire `progression/app`
+Créer le fichier .env ou copier le ficher d'exemple `env.exemple`
 
 ```
-cp progression/app/env.exemple progression/app/.env
+cp env.exemple .env
 ```
 
 Modifier les options de configuration minimales :

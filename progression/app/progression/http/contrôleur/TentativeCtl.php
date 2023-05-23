@@ -30,27 +30,24 @@ use progression\domaine\interacteur\{
 	SauvegarderTentativeInt,
 	SoumettreTentativeProgInt,
 	SoumettreTentativeSysInt,
+	IntéracteurException,
 };
 use progression\http\contrôleur\RésultatCtl;
 use progression\domaine\entité\{Avancement, Tentative, TentativeProg, TentativeSys, TentativeBD};
 use progression\domaine\entité\{Question, QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\entité\TestProg;
-use progression\dao\exécuteur\ExécutionException;
-use progression\dao\question\ChargeurException;
+use progression\domaine\interacteur\{SoumettreTentativeIntéracteurException};
 use progression\util\Encodage;
-use DomainException, LengthException, RuntimeException;
 
 class TentativeCtl extends Contrôleur
 {
 	public function get(Request $request, string $username, string $question_uri, int $timestamp): JsonResponse
 	{
+		$réponse = null;
 		$tentative = $this->obtenir_tentative($username, $question_uri, $timestamp);
-
 		if ($tentative != null) {
 			$tentative->id = "$timestamp";
 		}
-
-		$réponse = null;
 
 		if ($tentative instanceof TentativeProg) {
 			$réponse = $this->item(
@@ -98,39 +95,24 @@ class TentativeCtl extends Contrôleur
 
 		$chemin = Encodage::base64_decode_url($question_uri);
 
-		try {
-			$question = $this->récupérer_question($chemin);
+		$réponse = null;
 
-			if ($question instanceof QuestionProg) {
-				$validation = $this->valider_paramètres_prog($request);
-				if ($validation->fails()) {
-					Log::notice(
-						"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-							__CLASS__ .
-							") Paramètres invalides",
-					);
-					return $this->réponse_json(["erreur" => $validation->errors()], 400);
-				}
-				$réponse = $this->traiter_post_QuestionProg($request, $username, $chemin, $question);
-			} elseif ($question instanceof QuestionSys) {
-				$réponse = $this->traiter_post_QuestionSys($request, $username, $chemin, $question);
-			} else {
-				Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-				return $this->réponse_json(["erreur" => "Question de type non implémentée."], 501);
+		$question = $this->récupérer_question($chemin);
+
+		if ($question instanceof QuestionProg) {
+			$validation = $this->valider_paramètres_prog($request);
+			if ($validation->fails()) {
+				return $this->réponse_json(["erreur" => $validation->errors()], 400);
 			}
-		} catch (ContrôleurException $erreur) {
-			Log::notice(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					__CLASS__ .
-					")
-				{$erreur->getMessage()}",
-			);
-
-			return $this->réponse_json(["erreur" => $erreur->getMessage()], $erreur->getCode());
+			$réponse = $this->traiter_post_QuestionProg($request, $username, $chemin, $question);
+		} elseif ($question instanceof QuestionSys) {
+			$réponse = $this->traiter_post_QuestionSys($request, $username, $chemin, $question);
+		} else {
+			Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+			return $this->réponse_json(["erreur" => "Question de type non implémentée."], 501);
 		}
 
 		Log::debug("TentativeCtl.post. Retour : ", [$réponse]);
-
 		return $réponse;
 	}
 
@@ -217,15 +199,7 @@ class TentativeCtl extends Contrôleur
 	{
 		$questionInt = new ObtenirQuestionInt();
 
-		try {
-			return $questionInt->get_question($chemin);
-		} catch (RuntimeException $erreur) {
-			throw new ContrôleurException($erreur->getMessage(), 502);
-		} catch (DomainException $erreur) {
-			throw new ContrôleurException($erreur->getMessage(), 400);
-		} catch (ChargeurException $erreur) {
-			throw new ContrôleurException($erreur->getMessage(), 400);
-		}
+		return $questionInt->get_question($chemin);
 	}
 
 	private function construire_test($test, string|null $entrée, string|null $params, string|null $sortie_attendue)
@@ -254,24 +228,7 @@ class TentativeCtl extends Contrôleur
 
 	private function soumettre_tentative($question, $tests, $tentative, $intéracteur)
 	{
-		try {
-			$résultat = $intéracteur->soumettre_tentative($question, $tests, $tentative);
-		} catch (ExécutionException $e) {
-			if ($e->getCode() >= 500) {
-				Log::error($e->getMessage());
-				if ($e->getPrevious()) {
-					Log::error($e->getPrevious()->getMessage());
-				}
-				throw new ContrôleurException("Service non disponible.", 503);
-			} else {
-				throw new ContrôleurException($e->getMessage(), $e->getCode());
-			}
-		}
-
-		if ($tentative == null) {
-			throw new ContrôleurException("Requête intraitable.", 400);
-		}
-		return $résultat;
+		return $intéracteur->soumettre_tentative($question, $tests, $tentative);
 	}
 
 	private function sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative)

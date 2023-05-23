@@ -18,6 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
+use progression\dao\DAOException;
+
 class ObtenirUserInt extends Interacteur
 {
 	/**
@@ -26,6 +28,10 @@ class ObtenirUserInt extends Interacteur
 	 */
 	function get_user($username, mixed $includes = [])
 	{
-		return $this->source_dao->get_user_dao()->get_user($username, $includes);
+		try {
+			return $this->source_dao->get_user_dao()->get_user($username, $includes);
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e);
+		}
 	}
 }

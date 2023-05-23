@@ -18,12 +18,18 @@
 
 namespace progression\domaine\interacteur;
 
+use progression\dao\DAOException;
+
 class EnregistrerSauvegardeInt extends Interacteur
 {
 	public function enregistrer($username, $question_uri, $langage, $sauvegarde)
 	{
 		$dao_sauvegarde = $this->source_dao->get_sauvegarde_dao();
-		$resultat_sauvegarde = $dao_sauvegarde->save($username, $question_uri, $langage, $sauvegarde);
+		try {
+			$resultat_sauvegarde = $dao_sauvegarde->save($username, $question_uri, $langage, $sauvegarde);
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e);
+		}
 		return $resultat_sauvegarde;
 	}
 }
