@@ -21,8 +21,7 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
-use progression\domaine\interacteur\ObtenirSauvegardeInt;
-use progression\domaine\interacteur\EnregistrerSauvegardeInt;
+use progression\domaine\interacteur\{ObtenirSauvegardeInt, EnregistrerSauvegardeInt, IntéracteurException};
 use progression\http\transformer\SauvegardeTransformer;
 use progression\util\Encodage;
 use progression\domaine\entité\Sauvegarde;
@@ -32,6 +31,8 @@ class SauvegardeCtl extends Contrôleur
 	public function get(Request $request, $username, $question_uri, $langage)
 	{
 		Log::debug("SauvegardeCtl.get. Params : ", [$request->all(), $username, $question_uri, $langage]);
+
+		$réponse = null;
 
 		$sauvegarde = $this->obtenir_sauvegarde($username, $question_uri, $langage);
 		$réponse = $this->valider_et_préparer_réponse($sauvegarde, $username, $question_uri, $langage);
@@ -45,7 +46,6 @@ class SauvegardeCtl extends Contrôleur
 		Log::debug("SauvegardeCtl.post. Params : ", [$request->all(), $username, $question_uri]);
 
 		$réponse = null;
-
 		$validateur = $this->valider_paramètres($request);
 		if ($validateur->fails()) {
 			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);

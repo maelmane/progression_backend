@@ -21,7 +21,7 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use progression\domaine\interacteur\InscriptionInt;
+use progression\domaine\interacteur\{InscriptionInt, IntéracteurException};
 
 class InscriptionCtl extends Contrôleur
 {
@@ -37,9 +37,10 @@ class InscriptionCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => "Inscription locale non supportée."], 403);
 		}
 
-		$erreurs = $this->valider_paramètres($request);
-		if ($erreurs) {
-			$réponse = $this->réponse_json(["erreur" => $erreurs], 400);
+		$réponse = null;
+		$validateur = $this->valider_paramètres($request);
+		if ($validateur->fails()) {
+			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} else {
 			$réponse = $this->effectuer_inscription($request);
 		}
@@ -96,8 +97,6 @@ class InscriptionCtl extends Contrôleur
 
 	private function valider_paramètres($request)
 	{
-		Log::debug("InscriptionCtl.valider_paramètres : ", $request->all());
-
 		$validateur = Validator::make(
 			$request->all(),
 			[
@@ -105,6 +104,7 @@ class InscriptionCtl extends Contrôleur
 			],
 			[
 				"username.unique" => "Err: 1001. Le nom d'utilisateur existe déjà.",
+				"username.regex" => "Err: 1003. Le nom d'utilisateur est invalide",
 				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
 			],
 		)
@@ -115,13 +115,6 @@ class InscriptionCtl extends Contrôleur
 				return getenv("AUTH_LOCAL") === "true";
 			});
 
-		if ($validateur->fails()) {
-			$réponse = $validateur->errors();
-		} else {
-			$réponse = null;
-		}
-
-		Log::debug("InscriptionCtl.valider_paramètres. Retour : ", [$réponse]);
-		return $réponse;
+		return $validateur;
 	}
 }

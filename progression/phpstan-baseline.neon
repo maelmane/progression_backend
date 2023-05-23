@@ -2646,11 +2646,6 @@ parameters:
 			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeProgInt\\:\\:soumettre_tentative\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeProgInt\\:\\:soumettre_tentative\\(\\) has parameter \\$question with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php

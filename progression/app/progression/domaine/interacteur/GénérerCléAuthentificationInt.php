@@ -20,6 +20,7 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Clé;
 use progression\dao\DAOFactory;
+use progression\dao\DAOException;
 
 class GénérerCléAuthentificationInt extends Interacteur
 {

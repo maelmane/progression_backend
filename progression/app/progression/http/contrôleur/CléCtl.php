@@ -22,7 +22,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\entité\Clé;
-use progression\domaine\interacteur\{ObtenirCléInt, GénérerCléAuthentificationInt};
+use progression\domaine\interacteur\{ObtenirCléInt, GénérerCléAuthentificationInt, IntéracteurException};
+use progression\dao\DAOException;
 use progression\http\transformer\CléTransformer;
 
 class CléCtl extends Contrôleur
@@ -33,6 +34,7 @@ class CléCtl extends Contrôleur
 
 		$nom_décodé = urldecode($nom);
 
+		$réponse = null;
 		$clé = $this->obtenir_clé($username, $nom_décodé);
 		$réponse = $this->valider_et_préparer_réponse($clé, $username, $nom_décodé);
 
@@ -46,12 +48,12 @@ class CléCtl extends Contrôleur
 
 		$validateur = $this->valider_paramètres($request);
 
+		$réponse = null;
 		if ($validateur->fails()) {
 			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} else {
 			$cléInt = new GénérerCléAuthentificationInt();
 			$clé = $cléInt->générer_clé($username, $request->nom, $request->expiration ?? 0);
-
 			$réponse = $this->valider_et_préparer_réponse($clé, $username, $request->nom);
 		}
 
