@@ -56,7 +56,7 @@ class Handler extends ExceptionHandler
 
 		return response()->json(
 			["erreur" => $exception->getMessage()],
-			$exception->getCode(),
+			$exception->getCode() > 0 ? $exception->getCode() : 500,
 			[
 				"Content-Type" => "application/vnd.api+json",
 				"Charset" => "utf-8",
