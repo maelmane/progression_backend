@@ -57,6 +57,16 @@ class InscriptionInt extends Interacteur
 		return false;
 	}
 
+	public function effectuer_inscription_sans_mdp(
+		string $username,
+		string $courriel = null,
+		Rôle $rôle = Rôle::NORMAL,
+	): User|null {
+		$dao = $this->source_dao->get_user_dao();
+		return $dao->get_user($username) ??
+			$dao->save(new User($username, courriel: $courriel, rôle: $rôle, état: État::ACTIF));
+	}
+
 	private function effectuer_inscription_avec_mdp(
 		string $username,
 		string $courriel,
@@ -115,12 +125,5 @@ class InscriptionInt extends Interacteur
 		$expirationToken = Carbon::now()->addMinutes((int) getenv("JWT_EXPIRATION"))->timestamp;
 		$token = GénérateurDeToken::get_instance()->générer_token($user->username, $expirationToken, $ressources);
 		$this->source_dao->get_expéditeur()->envoyer_validation_courriel($user, $token);
-	}
-
-	public function effectuer_inscription_sans_mdp(string $username, Rôle $rôle = Rôle::NORMAL): User|null
-	{
-		$dao = $this->source_dao->get_user_dao();
-		return $dao->get_user($username) ??
-			$dao->save(new User($username, courriel: null, rôle: $rôle, état: État::ACTIF));
 	}
 }

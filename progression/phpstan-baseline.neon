@@ -2193,51 +2193,6 @@ parameters:
 			path: app/progression/domaine/interacteur/LoginInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:effectuer_login_par_identifiant\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:effectuer_login_par_identifiant\\(\\) has parameter \\$domaine with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:effectuer_login_par_identifiant\\(\\) has parameter \\$password with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:effectuer_login_par_identifiant\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:get_username_ldap\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_ldap\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_local\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_sans_authentification\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_sans_authentification\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:vérifier_champ_valide\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/LoginInt.php
