@@ -1,0 +1,36 @@
+{
+	"data": {
+		"type": "user",
+		"id": "nouveau",
+		"attributes": {
+			"courriel": "nouveau@mail.com",
+			"username": "nouveau",
+			"état": 2,
+			"rôle": 0,
+			"préférences": ""
+		},
+		"links": {
+			"self": "https:\/\/example.com\/user\/nouveau"
+		},
+		"relationships": {
+			"avancements": {
+				"links": {
+					"self": "https:\/\/example.com\/user\/nouveau\/relationships\/avancements",
+					"related": "https:\/\/example.com\/user\/nouveau\/avancements"
+				}
+			},
+			"cles": {
+				"links": {
+					"self": "https:\/\/example.com\/user\/nouveau\/relationships\/cles",
+					"related": "https:\/\/example.com\/user\/nouveau\/cles"
+				}
+			},
+			"tokens": {
+				"links": {
+					"related": "https://example.com/user/nouveau/tokens",
+					"self": "https://example.com/user/nouveau/relationships/tokens"
+				}
+			}
+		}
+	}
+}

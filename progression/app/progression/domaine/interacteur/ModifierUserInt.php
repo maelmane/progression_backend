@@ -19,7 +19,6 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\user\{User, État};
-use progression\dao\DAOFactory;
 use DomainException;
 
 class ModifierUserInt extends Interacteur

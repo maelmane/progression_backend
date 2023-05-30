@@ -25,7 +25,7 @@ final class TentativeProgTransformerTests extends TestCase
 {
 	public function test_étant_donné_une_TentativeProg_instanciée_avec_des_valeurs_minimales_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		$tentative = new TentativeProg("python", "codeTest");
 		$tentative->id = "id";
@@ -52,7 +52,7 @@ final class TentativeProgTransformerTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		$tentative = new TentativeProg(
 			"python",
@@ -94,7 +94,7 @@ final class TentativeProgTransformerTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_instanciée_avec_des_résultats_lorsquon_inclut_les_résultats_on_obtient_un_tableau_de_résultats()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		$tentative = new TentativeProg(
 			"python",
@@ -131,7 +131,7 @@ final class TentativeProgTransformerTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_instanciée_avec_des_commentaires_lorsquon_inclut_les_commentaires_on_obtient_un_tableau_de_commentaires()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		$tentative = new TentativeProg("python", "codeTest", 1614711760, false, [], 2, 34567, "feedBackTest", [
 			new Commentaire("Message", "jdoe", 123456, 12),

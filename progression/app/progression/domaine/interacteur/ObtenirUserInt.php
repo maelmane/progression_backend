@@ -19,6 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\user\User;
+use progression\dao\DAOException;
 
 class ObtenirUserInt extends Interacteur
 {
@@ -39,8 +40,12 @@ class ObtenirUserInt extends Interacteur
 	 */
 	function trouver(string $username = null, string $courriel = null, mixed $includes = []): User|null
 	{
-		$dao = $this->source_dao->get_user_dao();
-		$user = $dao->trouver(username: $username, courriel: $courriel, includes: $includes);
-		return $user;
+		try {
+			$dao = $this->source_dao->get_user_dao();
+			$user = $dao->trouver(username: $username, courriel: $courriel, includes: $includes);
+			return $user;
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e, 503);
+		}
 	}
 }

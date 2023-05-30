@@ -19,6 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\user\User;
+use progression\dao\DAOException;
 
 class CréerUserInt extends Interacteur
 {
@@ -30,13 +31,16 @@ class CréerUserInt extends Interacteur
 
 		$user_dao = $this->source_dao->get_user_dao();
 
-		$user = $user_dao->get_user($username);
-
-		if ($user) {
-			return null;
-		} else {
-			$user = new User($username, $courriel);
-			$user = $user_dao->save($user);
+		try {
+			$user = $user_dao->get_user($username);
+			if ($user) {
+				return null;
+			} else {
+				$user = new User($username, $courriel);
+				$user = $user_dao->save($user);
+			}
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e, 503);
 		}
 
 		return $user;

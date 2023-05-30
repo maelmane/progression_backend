@@ -33,8 +33,8 @@ class CléTransformer extends BaseTransformer
 			"expiration" => $clé->expiration,
 			"portée" => $clé->portée->value,
 			"links" => (isset($clé->links) ? $clé->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}cle/{$this->id}/{$clé->id}",
-				"user" => "{$_ENV["APP_URL"]}user/{$this->id}",
+				"self" => "{$this->urlBase}/cle/{$this->id}/{$clé->id}",
+				"user" => "{$this->urlBase}/user/{$this->id}",
 			],
 		];
 

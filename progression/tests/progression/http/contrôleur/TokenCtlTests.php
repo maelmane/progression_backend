@@ -32,7 +32,7 @@ final class TokenCtlTests extends ContrôleurTestCase
 
 		Carbon::setTestNowAndTimezone(Carbon::create(2001, 5, 21, 12));
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		$this->user = new GenericUser([
 			"username" => "utilisateur_lambda",

@@ -21,10 +21,10 @@ cd progression_backend
 
 ### Créer et adapter le fichier de configuration
 
-Créer le fichier .env ou copier le ficher d'exemple `.env.exemple` du répertoire `progression/app`
+Créer le fichier .env ou copier le ficher d'exemple `env.exemple`
 
 ```
-cp progression/app/env.exemple progression/app/.env
+cp env.exemple .env
 ```
 
 Modifier les options de configuration minimales :
@@ -92,6 +92,19 @@ Exemple:
 # URL de l'exécuteur Compilebox
 COMPILEBOX_URL=http://progression.dti.crosemont.quebec:12380/compile
 ```
+
+#### Courriels
+Configuration du serveur de courriel
+
+`MAIL_MAILER` : type de serveur (smtp, gunmail, etc.)
+`MAIL_HOST` : serveur de courriel
+`MAIL_PORT` : port du service
+`MAIL_USERNAME` : nom d'utilisateur du service
+`MAIL_PASSWORD` : mot de passe du service
+`MAIL_ENCRYPTION` : type de chiffrement (no, tls)
+`MAIL_FROM_ADDRESS` : adresse de provenance des courriels envoyés
+`MAIL_FROM_NAME` : nom de l'expéditeur
+`MAIL_REDIRECTON` : adresse des liens inclus dans le texte des courriels (validation, page d'accueil, forums, etc.)
 
 ### Démarrer l'application
 

@@ -23,7 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
-use progression\domaine\interacteur\LoginInt;
+use progression\domaine\interacteur\{LoginInt, IntéracteurException};
 use progression\domaine\entité\user\User;
 use progression\http\transformer\TokenTransformer;
 use Carbon\Carbon;
@@ -35,9 +35,10 @@ class LoginCtl extends Contrôleur
 		Log::debug("LoginCtl.login. Params : ", $request->all());
 		Log::info("{$request->ip()} - Tentative de login : {$request->input("identifiant")}");
 
-		$erreurs = $this->valider_paramètres($request);
-		if ($erreurs) {
-			$réponse = $this->réponse_json(["erreur" => $erreurs], 400);
+		$réponse = null;
+		$validateur = $this->valider_paramètres($request);
+		if ($validateur->fails()) {
+			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} else {
 			$réponse = $this->effectuer_login($request);
 		}
@@ -116,8 +117,6 @@ class LoginCtl extends Contrôleur
 
 	private function valider_paramètres($request)
 	{
-		Log::debug("LoginCtl.valider_paramètres : ", $request->all());
-
 		$validateur = Validator::make(
 			$request->all(),
 			[
@@ -155,14 +154,7 @@ class LoginCtl extends Contrôleur
 				return !isset($input->key_name) && ($auth_local || $auth_ldap);
 			});
 
-		if ($validateur->fails()) {
-			$réponse = $validateur->errors();
-		} else {
-			$réponse = null;
-		}
-
-		Log::debug("LoginCtl.valider_paramètres. Retour : ", [$réponse]);
-		return $réponse;
+		return $validateur;
 	}
 
 	private function valider_état_utilisateur(User $user, Request $request): bool

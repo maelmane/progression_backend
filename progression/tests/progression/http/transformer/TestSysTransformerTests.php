@@ -25,7 +25,7 @@ final class TestSysTransformerTests extends TestCase
 {
 	public function test_étant_donné_un_test_instanciée_avec_des_valeurs_minimales_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		$test = new TestSys("Permissions", "-rwxrwxrwx");
 		$test->id = "0";
@@ -51,7 +51,7 @@ final class TestSysTransformerTests extends TestCase
 
 	public function test_étant_donné_un_test_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		$test = new TestSys("Permissions", "-rwxrwxrwx", "ls -l", "root");
 		$test->numéro = 0;

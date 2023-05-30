@@ -60,7 +60,7 @@ class ExécuteurCompilebox extends Exécuteur
 			"code" => $exécutable->code,
 			"parameters" => "",
 			"tests" => $tests_out,
-			"vm_name" => $_ENV["COMPILEBOX_IMAGE_EXECUTEUR"],
+			"vm_name" => getenv("COMPILEBOX_IMAGE_EXECUTEUR"),
 		];
 
 		$réponse = $this->envoyer_requête($data_rc);
@@ -98,7 +98,11 @@ class ExécuteurCompilebox extends Exécuteur
 		$context = stream_context_create($options_rc);
 
 		try {
-			$comp_resp = file_get_contents($_ENV["COMPILEBOX_URL"], false, $context);
+			$comp_resp = file_get_contents(
+				getenv("COMPILEBOX_URL") ?: "http://localhost:12380/compile",
+				false,
+				$context,
+			);
 			return $comp_resp ? json_decode(str_replace("\r", "", $comp_resp), true) : false;
 		} catch (\ErrorException $e) {
 			if (isset($http_response_header)) {

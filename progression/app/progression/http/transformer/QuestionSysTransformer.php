@@ -42,7 +42,7 @@ class QuestionSysTransformer extends QuestionTransformer
 		foreach ($question->tests as $i => $test) {
 			$test->id = $i;
 			$test->links = [
-				"question" => $_ENV["APP_URL"] . "question/{$id_parent}",
+				"question" => $this->urlBase . "/question/{$id_parent}",
 			];
 		}
 

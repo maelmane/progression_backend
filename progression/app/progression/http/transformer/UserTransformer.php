@@ -38,7 +38,7 @@ class UserTransformer extends BaseTransformer
 			"rôle" => $user->rôle->value,
 			"préférences" => $user->préférences,
 			"links" => (isset($user->links) ? $user->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}user/{$user->id}",
+				"self" => "{$this->urlBase}/user/{$user->id}",
 			],
 		];
 
@@ -52,7 +52,7 @@ class UserTransformer extends BaseTransformer
 		foreach ($user->avancements as $uri => $avancement) {
 			$avancement->id = Encodage::base64_encode_url($uri);
 			$avancement->links = [
-				"user" => $_ENV["APP_URL"] . "user/{$id_parent}",
+				"user" => $this->urlBase . "/user/{$id_parent}",
 			];
 		}
 
@@ -65,7 +65,7 @@ class UserTransformer extends BaseTransformer
 
 		foreach ($user->clés as $nom => $clé) {
 			$clé->links = [
-				"user" => $_ENV["APP_URL"] . "user/{$id_parent}",
+				"user" => $this->urlBase . "/user/{$id_parent}",
 			];
 		}
 

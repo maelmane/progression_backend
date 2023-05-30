@@ -37,7 +37,7 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 			"état" => État::ACTIF,
 		]);
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		// Commentaire
 		$commentaire = new Commentaire("Bon travail", $this->user, 1615696276, 5);

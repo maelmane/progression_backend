@@ -114,7 +114,7 @@ class AuthServiceProvider extends ServiceProvider
 			//JWT::decode fournit une stdClass, le moyen le plus simple de transformer en array
 			//est de réencoder/décoder en json.
 			// @phpstan-ignore-next-line
-			return json_decode(json_encode(JWT::decode($tokenEncodé, $_ENV["JWT_SECRET"], ["HS256"])), true);
+			return json_decode(json_encode(JWT::decode($tokenEncodé, getenv("JWT_SECRET"), ["HS256"])), true);
 		} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
 			Log::notice(
 				"(" .

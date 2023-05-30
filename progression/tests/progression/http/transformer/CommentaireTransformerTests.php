@@ -26,7 +26,7 @@ final class CommentaireTransformerTests extends TestCase
 {
 	public function test_étant_donné_un_commentaire_instancié_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		$commentaire = new Commentaire(
 			"message envoyer par interacteurMocker",

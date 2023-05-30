@@ -32,7 +32,7 @@ final class PermissionsRessourcesTests extends TestCase
 	{
 		parent::setUp();
 
-		$_ENV["AUTH_TYPE"] = "ldap";
+		putenv("AUTH_TYPE=ldap");
 		$this->user = new GenericUser([
 			"username" => "bob",
 			"rôle" => Rôle::NORMAL,

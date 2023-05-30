@@ -39,9 +39,9 @@ final class LoginCtlTests extends ContrôleurTestCase
 			"état" => État::ACTIF,
 		]);
 
-		$_ENV["APP_URL"] = "https://example.com/";
-		$_ENV["JWT_SECRET"] = "secret";
-		$_ENV["JWT_TTL"] = 86400;
+		putenv("APP_URL=https://example.com/");
+		putenv("JWT_SECRET=secret");
+		putenv("JWT_TTL=86400");
 
 		Carbon::setTestNowAndTimezone(Carbon::create(2001, 5, 21, 12));
 

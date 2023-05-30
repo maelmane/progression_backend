@@ -21,8 +21,7 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use progression\domaine\interacteur\ObtenirAvancementInt;
-use progression\domaine\interacteur\SauvegarderAvancementInt;
+use progression\domaine\interacteur\{ObtenirAvancementInt, SauvegarderAvancementInt, IntéracteurException};
 use progression\http\transformer\AvancementTransformer;
 use progression\util\Encodage;
 use progression\domaine\entité\Avancement;
@@ -35,7 +34,6 @@ class AvancementCtl extends Contrôleur
 		Log::debug("AvancementCtl.get. Params : ", [$request->all(), $username, $question_uri]);
 
 		$avancement = $this->obtenir_avancement($username, $question_uri);
-
 		$réponse = $this->valider_et_préparer_réponse($avancement, $username, $question_uri);
 
 		Log::debug("AvancementCtl.get. Retour : ", [$réponse]);
@@ -48,6 +46,7 @@ class AvancementCtl extends Contrôleur
 
 		$validateur = $this->valider_paramètres($request);
 
+		$réponse = null;
 		if ($validateur->fails()) {
 			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} else {
@@ -55,11 +54,11 @@ class AvancementCtl extends Contrôleur
 
 			if ($request->avancement != null || $avancement->etat === État::DEBUT) {
 				$avancement_retourné = $this->sauvegarder_avancement($username, $request->question_uri, $avancement);
+				$réponse = $this->valider_et_préparer_réponse($avancement_retourné, $username, $request->question_uri);
 			} else {
 				$avancement_retourné = $avancement;
+				$réponse = $this->valider_et_préparer_réponse($avancement_retourné, $username, $request->question_uri);
 			}
-
-			$réponse = $this->valider_et_préparer_réponse($avancement_retourné, $username, $request->question_uri);
 		}
 
 		Log::debug("AvancementCtl.post. Retour : ", [$réponse]);

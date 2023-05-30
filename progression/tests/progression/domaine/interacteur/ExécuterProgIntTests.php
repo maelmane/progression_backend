@@ -30,7 +30,7 @@ final class ExécuterProgIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$_ENV["COMPILEBOX_URL"] = "file://" . __DIR__ . "/ExécuterProgIntTests_fichiers/test_exec_prog_int_python";
+		putenv("COMPILEBOX_URL=file://" . __DIR__ . "/ExécuterProgIntTests_fichiers/test_exec_prog_int_python");
 		$_SERVER["REMOTE_ADDR"] = "";
 		$_SERVER["PHP_SELF"] = "";
 
