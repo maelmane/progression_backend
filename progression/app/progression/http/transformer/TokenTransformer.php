@@ -29,7 +29,7 @@ class TokenTransformer extends BaseTransformer
 	 */
 	public function transform(string $token): array
 	{
-		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
+		$tokenDécodé = JWT::decode($token, getenv("JWT_SECRET"), ["HS256"]);
 
 		return [
 			/* @phpstan-ignore-next-line */
@@ -44,8 +44,8 @@ class TokenTransformer extends BaseTransformer
 			"version" => 3,
 			"links" => [
 				/* @phpstan-ignore-next-line */
-				"self" => "{$_ENV["APP_URL"]}token/{$this->id}/{$tokenDécodé->current}",
-				"user" => "{$_ENV["APP_URL"]}user/{$this->id}",
+				"self" => "{$this->urlBase}/token/{$this->id}/{$tokenDécodé->current}",
+				"user" => "{$this->urlBase}/user/{$this->id}",
 			],
 		];
 	}

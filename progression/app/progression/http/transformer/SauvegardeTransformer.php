@@ -31,8 +31,8 @@ class SauvegardeTransformer extends BaseTransformer
 			"date_sauvegarde" => $sauvegarde->date_sauvegarde,
 			"code" => $sauvegarde->code,
 			"links" => (isset($sauvegarde->links) ? $sauvegarde->links : []) + [
-				"avancement" => "{$_ENV["APP_URL"]}avancement/{$this->id}",
-				"self" => "{$_ENV["APP_URL"]}sauvegarde/{$this->id}/{$sauvegarde->id}",
+				"avancement" => "{$this->urlBase}/avancement/{$this->id}",
+				"self" => "{$this->urlBase}/sauvegarde/{$this->id}/{$sauvegarde->id}",
 			],
 		];
 

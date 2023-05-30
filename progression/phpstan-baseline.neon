@@ -2163,36 +2163,6 @@ parameters:
 			path: app/progression/domaine/interacteur/GénérerCléAuthentificationInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription\\(\\) has parameter \\$password with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_avec_mdp\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_sans_mdp\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_sans_mdp\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\Interacteur\\:\\:__construct\\(\\) has parameter \\$sourceDAO with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/Interacteur.php
@@ -2529,11 +2499,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeProgInt\\:\\:exécuter_prog\\(\\) has parameter \\$testsQuestion with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeProgInt\\:\\:soumettre_tentative\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php
 
@@ -2921,11 +2886,6 @@ parameters:
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\CléCtl\\:\\:valider_paramètres\\(\\) has parameter \\$request with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/CléCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\CommentaireCtl\\:\\:post\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/CommentaireCtl.php
 
 		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\CommentaireCtl\\:\\:post\\(\\) has parameter \\$question_uri with no type specified\\.$#"

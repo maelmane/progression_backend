@@ -38,7 +38,7 @@ final class TestCtlTests extends ContrôleurTestCase
 			"état" => État::ACTIF,
 		]);
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		// Question
 		$question = new QuestionProg();

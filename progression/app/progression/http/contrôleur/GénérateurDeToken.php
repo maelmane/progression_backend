@@ -18,6 +18,7 @@
 
 namespace progression\http\contrôleur;
 
+use \RuntimeException;
 use Firebase\JWT\JWT;
 use Carbon\Carbon;
 
@@ -56,7 +57,11 @@ class GénérateurDeToken
 			"version" => 1,
 		];
 
-		$token = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
+		$secret = getenv("JWT_SECRET");
+		if (!$secret) {
+			throw new RuntimeException("Le secret JWT ne doit pas être vide");
+		}
+		$token = JWT::encode($payload, $secret, "HS256");
 
 		return $token;
 	}

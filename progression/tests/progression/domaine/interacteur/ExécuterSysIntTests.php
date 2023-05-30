@@ -32,7 +32,7 @@ final class ExécuterSysIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$_ENV["COMPILEBOX_URL"] = "file://" . __DIR__ . "/ExécuterSysIntTests_fichiers/test_exec_question_sys";
+		putenv("COMPILEBOX_URL=file://" . __DIR__ . "/ExécuterSysIntTests_fichiers/test_exec_question_sys");
 		$_SERVER["REMOTE_ADDR"] = "";
 		$_SERVER["PHP_SELF"] = "";
 

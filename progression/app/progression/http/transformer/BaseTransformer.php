@@ -24,12 +24,14 @@ use League\Fractal\Resource\{Collection, Item};
 class BaseTransformer extends TransformerAbstract
 {
 	public $id;
+	protected string $urlBase;
 	protected array $availableIncludes = [];
 	protected array $availableParams = [];
 
 	public function __construct($id = null)
 	{
 		$this->id = $id;
+		$this->urlBase = preg_replace("/\/+$/", "", getenv("APP_URL") ?: "") ?? "";
 	}
 
 	/**

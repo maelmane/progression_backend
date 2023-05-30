@@ -39,7 +39,7 @@ class QuestionProgTransformer extends QuestionTransformer
 
 		foreach ($question->tests as $test) {
 			$test->links = [
-				"question" => $_ENV["APP_URL"] . "question/{$id_parent}",
+				"question" => $this->urlBase . "/question/{$id_parent}",
 			];
 		}
 
@@ -52,7 +52,7 @@ class QuestionProgTransformer extends QuestionTransformer
 
 		foreach ($question->exécutables as $ébauche) {
 			$ébauche->links = [
-				"question" => $_ENV["APP_URL"] . "question/{$id_parent}",
+				"question" => $this->urlBase . "/question/{$id_parent}",
 			];
 		}
 

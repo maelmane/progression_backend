@@ -18,6 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
+use progression\dao\DAOException;
+
 class ObtenirSauvegardeInt extends Interacteur
 {
 	/**
@@ -26,10 +28,13 @@ class ObtenirSauvegardeInt extends Interacteur
 	 */
 	function get_sauvegarde($username, $question_uri, $langage, mixed $includes = [])
 	{
-		$sauvegarde = $this->source_dao
-			->get_sauvegarde_dao()
-			->get_sauvegarde($username, $question_uri, $langage, $includes);
-
+		try {
+			$sauvegarde = $this->source_dao
+				->get_sauvegarde_dao()
+				->get_sauvegarde($username, $question_uri, $langage, $includes);
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e, 503);
+		}
 		return $sauvegarde;
 	}
 }

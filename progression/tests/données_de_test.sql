@@ -40,6 +40,13 @@ INSERT INTO user(id, courriel, username, password, etat, role) VALUES (
   null,
   0,
   0
+), (
+  6,
+  "nouveau@progressionmail.com",
+  "nouveau",
+  "Test1234",
+  2,
+  0
 );
 
 INSERT INTO cle(nom, hash, creation, expiration, portee, user_id) VALUES (

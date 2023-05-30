@@ -7,7 +7,8 @@ data/
 doc/images/sequence.png
 doc/images/soumettre.png
 doc/index.org
-	
+
+.env	
 progression/app/tmp/
 progression/app/CodeMirror/
 progression/vendor/

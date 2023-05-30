@@ -38,7 +38,7 @@ final class GénérateurDeTokenTests extends ContrôleurTestCase
 			$ressourcesAttendue,
 		);
 
-		$tokenDécodé = JWT::decode($token, $_ENV["JWT_SECRET"], ["HS256"]);
+		$tokenDécodé = JWT::decode($token, getenv("JWT_SECRET"), ["HS256"]);
 
 		$this->assertEquals($usernameAttendu, $tokenDécodé->username);
 		$this->assertEquals($expirationAttendue, $tokenDécodé->expired);
@@ -52,7 +52,7 @@ final class GénérateurDeTokenTests extends ContrôleurTestCase
 			"permissions" => (object) ["api" => (object) ["url" => ".*", "method" => ".*"]],
 		];
 		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda");
-		$tokenDécodé = JWT::decode($token, new Key($_ENV["JWT_SECRET"], "HS256"));
+		$tokenDécodé = JWT::decode($token, new Key(getenv("JWT_SECRET"), "HS256"));
 		$this->assertEquals($ressourcesAttendue, $tokenDécodé->ressources);
 		$this->assertEquals($expirationAttendue, $tokenDécodé->expired);
 	}

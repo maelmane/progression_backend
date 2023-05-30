@@ -38,7 +38,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 			"état" => UserÉtat::ACTIF,
 		]);
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");

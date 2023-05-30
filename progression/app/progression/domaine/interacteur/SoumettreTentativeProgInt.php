@@ -18,29 +18,37 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Avancement, Question};
+use progression\domaine\entité\{Avancement, Question, TentativeProg};
+use progression\dao\exécuteur\ExécutionException;
 
 class SoumettreTentativeProgInt extends Interacteur
 {
-	public function soumettre_tentative($question, $tests, $tentative)
+	public function soumettre_tentative($question, $tests, $tentative): TentativeProg|null
 	{
 		$exécutable = null;
 
 		$préparerProgInt = new PréparerProgInt();
 		$exécutable = $préparerProgInt->préparer_exécutable($question, $tentative);
 
-		if ($exécutable) {
-			$résultats = $this->exécuter_prog($exécutable, $tests);
-			if ($résultats) {
-				$tentative->temps_exécution = $résultats["temps_exécution"];
-				$tentative->résultats = $résultats["résultats"];
-				$rétroactions["feedback_pos"] = $question->feedback_pos;
-				$rétroactions["feedback_neg"] = $question->feedback_neg;
-				$rétroactions["feedback_err"] = $question->feedback_err;
-				$tentativeTraitée = $this->traiterTentativeProg($tentative, $rétroactions, $tests);
-				return $tentativeTraitée;
-			}
+		if (!$exécutable) {
+			return null;
 		}
+
+		try {
+			$résultats = $this->exécuter_prog($exécutable, $tests);
+		} catch (ExécutionException $e) {
+			throw new IntéracteurException($e, 503);
+		}
+		if ($résultats) {
+			$tentative->temps_exécution = $résultats["temps_exécution"];
+			$tentative->résultats = $résultats["résultats"];
+			$rétroactions["feedback_pos"] = $question->feedback_pos;
+			$rétroactions["feedback_neg"] = $question->feedback_neg;
+			$rétroactions["feedback_err"] = $question->feedback_err;
+			$tentativeTraitée = $this->traiterTentativeProg($tentative, $rétroactions, $tests);
+			return $tentativeTraitée;
+		}
+
 		return null;
 	}
 

@@ -36,7 +36,7 @@ class QuestionTransformer extends BaseTransformer
 			"auteur" => $question->auteur ?? "",
 			"licence" => $question->licence ?? "",
 			"links" => [
-				"self" => $_ENV["APP_URL"] . "question/" . $question->id,
+				"self" => $this->urlBase . "/question/" . $question->id,
 			],
 		];
 

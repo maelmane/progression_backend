@@ -33,7 +33,7 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		$this->user = new GenericUser([
 			"username" => "bob",
@@ -70,8 +70,12 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 			->andReturn($question);
 		$mockQuestionDAO
 			->shouldReceive("get_question")
+			->with("https://depot.com/roger/questions_invalide")
+			->andThrow(new ChargeurException("Question invalide."));
+		$mockQuestionDAO
+			->shouldReceive("get_question")
 			->with(Mockery::any())
-			->andThrow(new ChargeurException());
+			->andThrow(new ChargeurException("Question inexistante."));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -121,6 +125,16 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":"Question indisponible"}', $résultat_obtenu->getContent());
+		$this->assertEquals('{"erreur":"Question inexistante."}', $résultat_obtenu->getContent());
+	}
+	public function test_étant_donné_le_chemin_dune_question_invalide_lorsquon_appelle_get_on_obtient_une_erreur_400()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"GET",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX2ludmFsaWRl",
+		);
+
+		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals('{"erreur":"Question invalide."}', $résultat_obtenu->getContent());
 	}
 }

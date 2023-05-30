@@ -38,8 +38,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$_ENV["AUTH_TYPE"] = "no";
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("AUTH_TYPE=no");
+		putenv("APP_URL=https://example.com");
 
 		$this->user = new GenericUser([
 			"username" => "jdoe",
@@ -103,7 +103,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$mockQuestionDAO
 			->shouldReceive("get_question")
 			->with(Mockery::Any())
-			->andThrow(new ChargeurException("Impossible de récupérer la question"));
+			->andThrow(new ChargeurException("Erreur lors de la récupération de la question."));
 
 		// Tentative
 		// Tentative réussie
@@ -226,7 +226,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "erreur";
 			})
-			->andThrow(new ExécutionException("Erreur test://TentativeCtlTests.php", 503));
+			->andThrow(new ExécutionException("Exécuteur non disponible.", 503));
 
 		//Avancement
 
@@ -583,7 +583,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		);
 
 		$this->assertEquals(503, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":"Service non disponible."}', $résultat_obtenu->getContent());
+		$this->assertEquals('{"erreur":"Exécuteur non disponible."}', $résultat_obtenu->getContent());
 	}
 
 	public function test_étant_donné_une_tentative_avec_un_code_sans_TODO_lorsquelle_est_soumise_on_obtient_Tentative_intraitable()
@@ -609,7 +609,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		]);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":"Impossible de récupérer la question"}', $résultat_obtenu->getContent());
+		$this->assertEquals(
+			'{"erreur":"Erreur lors de la récupération de la question."}',
+			$résultat_obtenu->getContent(),
+		);
 	}
 
 	public function test_étant_donné_une_tentative_avec_un_langage_inconnu_lorsquelle_est_soumise_on_obtient_Tentative_intraitable()
@@ -629,7 +632,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 	public function test_étant_donné_une_tentative_ayant_du_code_dépassant_la_taille_maximale_de_caractères_on_obtient_une_erreur_400()
 	{
-		$_ENV["TAILLE_CODE_MAX"] = 23;
+		putenv("TAILLE_CODE_MAX=23");
 		$testCode = "#+TODO\n日本語でのテストです\n#-TODO"; //24 caractères UTF8
 
 		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
@@ -644,7 +647,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			],
 		);
 
-		$_ENV["TAILLE_CODE_MAX"] = 1000;
+		putenv("TAILLE_CODE_MAX=1000");
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
