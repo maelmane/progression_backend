@@ -41,7 +41,8 @@ class TokenTransformer extends BaseTransformer
 			/* @phpstan-ignore-next-line */
 			"expiration" => $tokenDécodé->expired,
 			"jwt" => $token,
-			"version" => 3,
+			/* @phpstan-ignore-next-line */
+			"version" => $tokenDécodé->version,
 			"links" => [
 				/* @phpstan-ignore-next-line */
 				"self" => "{$this->urlBase}/token/{$this->id}/{$tokenDécodé->current}",
