@@ -301,17 +301,57 @@ Un test de validation d'une QuestionSys auquel sont soumises les solutions propo
 
 Un token JWT donnant accès à une ou plusieurs ressources. Une date d'expiration de 0 signifie que le token n'expire jamais.
 
-Les ressources sont définies par leur URI et par la méthode de requête HTTP, avec une expression régulière. Un token ressource peut décrire une ou plusieurs ressources.
-
 *** Propriétés :
 
-| Nom             | Type |  Valeurs  |
-|-----------------+------+-----------|
-| username        | str  |           |
-| current         | int  | timestamp |
-| expired         | int  | timestamp |
-| ressources      | str  |           |
-| version         | int  |           |
+| Nom         | Type | Valeurs                                |
+|-------------|------|----------------------------------------|
+| username    | str  | l'utilisateur propriétaire du token    |
+| création    | int  | timestamp à la création                |
+| expiration  | int  | timestamp d'expiration                 |
+| data        | str  | données incluses dans le token         |
+| permissions | str  | permissions incluses dans le token     |
+| jwt         | str  | token jwt signé                        |
+| version     | int  | version de l'api ayant généré le token |
+
+**** Data
+
+data contient un objet peuplé de n'importes quelles données utiles.
+
+***** Exemple :
+
+#+begin_src json
+{
+  "user" : {
+    "username" : "bob",
+    "..."
+  },
+  "config" : {
+    "var1": 42,
+  }
+}
+#+end_src
+
+
+**** Ressources
+
+Les ressources sont définies par leur URI et par la méthode de requête HTTP, avec une expression régulière. Un token ressource peut décrire une ou plusieurs ressources.
+
+***** Exemple :
+
+#+begin_src json
+{
+  "nom" : {
+    "url" : "url_permis",
+    "method" : "méthode permise"
+  }
+}
+#+end_src
+
+*** Relations
+
+| Nom  | Cardinalité | Type | Description                                   |
+|------|-------------|------|-----------------------------------------------|
+| user |         1-1 | User | l'utilisateur pour lequel a été créé le token |
 
 ** Utilisateur
 
