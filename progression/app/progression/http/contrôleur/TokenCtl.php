@@ -32,7 +32,11 @@ class TokenCtl extends Contrôleur
 		$ressources = $request->input("ressources");
 
 		$expirationToken = $request->input("expiration") ?? 0;
-		$token = GénérateurDeToken::get_instance()->générer_token($username, $expirationToken, $ressources);
+		$token = GénérateurDeToken::get_instance()->générer_token(
+			username: $username,
+			expiration: $expirationToken,
+			ressources: $ressources ?? ["permissions" => ["api" => ["url" => ".*", "method" => ".*"]]],
+		);
 		$réponse = $this->préparer_réponse($this->item($token, new TokenTransformer($username)));
 
 		Log::debug("TokenCtl.post. Réponse : ", [$réponse]);
