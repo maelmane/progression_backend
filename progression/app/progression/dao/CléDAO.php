@@ -107,7 +107,7 @@ class CléDAO extends EntitéDAO
 		$clés = [];
 		foreach ($data as $item) {
 			$nom = $item["nom"];
-			$clés[$nom] = new Clé(null, $item["creation"], $item["expiration"], Portée::from($item["portee"]));
+			$clés[$nom] = new Clé(null, $item["creation"], $item["expiration"], Portée::cases()[$item["portee"]]);
 		}
 		return $clés;
 	}

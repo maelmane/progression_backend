@@ -34,8 +34,15 @@ class UserTransformer extends BaseTransformer
 			"id" => $user->id,
 			"courriel" => $user->courriel,
 			"username" => $user->username,
-			"état" => $user->état->value,
-			"rôle" => $user->rôle->value,
+			"état" => match ($user->état) {
+				État::INACTIF => "inactif",
+				État::ACTIF => "actif",
+				État::ATTENTE_DE_VALIDATION => "en_attente_de_validation",
+			},
+			"rôle" => match ($user->rôle) {
+				Rôle::NORMAL => "normal",
+				Rôle::ADMIN => "admin",
+			},
 			"préférences" => $user->préférences,
 			"links" => (isset($user->links) ? $user->links : []) + [
 				"self" => "{$this->urlBase}/user/{$user->id}",

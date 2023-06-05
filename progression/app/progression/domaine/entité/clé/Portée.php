@@ -20,6 +20,6 @@ namespace progression\domaine\entité\clé;
 
 enum Portée: int
 {
-	case REVOQUÉE = 0;
+	case RÉVOQUÉE = 0;
 	case AUTH = 1;
 }

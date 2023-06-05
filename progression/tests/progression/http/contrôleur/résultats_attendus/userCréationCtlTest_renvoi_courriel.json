@@ -5,8 +5,8 @@
 		"attributes": {
 			"courriel": "nouveau@mail.com",
 			"username": "nouveau",
-			"état": 2,
-			"rôle": 0,
+			"état": "en_attente_de_validation",
+			"rôle": "normal",
 			"préférences": ""
 		},
 		"links": {

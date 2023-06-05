@@ -18,7 +18,8 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\{Avancement, Question, TentativeProg, TentativeSys};
+use progression\domaine\entité\{Avancement, TentativeProg, TentativeSys};
+use progression\domaine\entité\question\État;
 
 class AvancementTransformer extends BaseTransformer
 {
@@ -31,7 +32,11 @@ class AvancementTransformer extends BaseTransformer
 	{
 		$data_out = [
 			"id" => "{$this->id}/{$avancement->id}",
-			"état" => $avancement->etat,
+			"état" => match ($avancement->etat) {
+				État::DEBUT => "début",
+				État::NONREUSSI => "non_réussi",
+				État::REUSSI => "réussi",
+			},
 			"titre" => $avancement->titre,
 			"niveau" => $avancement->niveau,
 			"date_modification" => $avancement->date_modification,

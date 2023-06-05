@@ -5,8 +5,8 @@
     "attributes": {
       "courriel": "marcel2@gmail.com",
       "username": "Marcel2",
-      "état": 2,
-      "rôle": 0,
+      "état": "en_attente_de_validation",
+      "rôle": "normal",
       "préférences": ""
     },
     "links": {

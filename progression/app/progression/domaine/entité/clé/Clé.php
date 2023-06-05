@@ -37,6 +37,6 @@ class Clé
 	{
 		return $this->création <= (new \DateTime())->getTimestamp() &&
 			($this->expiration == 0 || $this->expiration > (new \DateTime())->getTimestamp()) &&
-			$this->portée != Portée::REVOQUÉE;
+			$this->portée != Portée::RÉVOQUÉE;
 	}
 }
