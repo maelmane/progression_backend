@@ -21,4 +21,18 @@ use Exception;
 
 class DAOException extends Exception
 {
+	public Exception $previous;
+
+	public function __construct(mixed $e)
+	{
+		if ($e instanceof Exception) {
+			$this->previous = $e;
+			$this->message = "Erreur d'accès à la base de données";
+		} else {
+			$this->previous = $e->toString();
+			$this->message = $e->toString();
+		}
+
+		$this->code = 500;
+	}
 }

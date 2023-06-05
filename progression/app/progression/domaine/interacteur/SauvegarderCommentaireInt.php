@@ -19,7 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Commentaire;
-use progression\dao\DAOFactory;
+use progression\dao\DAOException;
 
 class SauvegarderCommentaireInt extends Interacteur
 {
@@ -29,8 +29,12 @@ class SauvegarderCommentaireInt extends Interacteur
 			return null;
 		}
 
-		return $this->source_dao
-			->get_commentaire_dao()
-			->save($username, $question_uri, $date_soummision, $numéro, $commentaire);
+		try {
+			return $this->source_dao
+				->get_commentaire_dao()
+				->save($username, $question_uri, $date_soummision, $numéro, $commentaire);
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e, 503);
+		}
 	}
 }

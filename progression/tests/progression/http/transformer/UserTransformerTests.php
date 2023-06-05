@@ -34,8 +34,8 @@ final class UserTransformerTests extends TestCase
 			"id" => "bob",
 			"courriel" => null,
 			"username" => "bob",
-			"état" => 0,
-			"rôle" => 0,
+			"état" => "inactif",
+			"rôle" => "normal",
 			"préférences" => "",
 			"links" => [
 				"self" => "https://example.com/user/bob",

@@ -18,12 +18,11 @@
 
 namespace progression\http\contrôleur;
 
-use progression\domaine\interacteur\ObtenirQuestionInt;
+use progression\domaine\interacteur\{ObtenirQuestionInt, IntéracteurException};
 use progression\http\transformer\ÉbaucheTransformer;
 use progression\util\Encodage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use DomainException, LengthException, RuntimeException;
 
 class ÉbaucheCtl extends Contrôleur
 {
@@ -31,19 +30,9 @@ class ÉbaucheCtl extends Contrôleur
 	{
 		Log::debug("ÉbaucheCtl.get. Params : ", [$request->all(), $question_uri, $langage]);
 
-		try {
-			$question = $this->obtenir_question($question_uri);
-			$réponse = $this->valider_et_préparer_réponse($question, $question_uri, $langage);
-		} catch (LengthException $erreur) {
-			Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			$réponse = $this->réponse_json(["message" => "Limite de volume dépassé."], 509);
-		} catch (RuntimeException $erreur) {
-			Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			$réponse = $this->réponse_json(["message" => "Ressource indisponible sur le serveur distant."], 502);
-		} catch (DomainException $erreur) {
-			Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			$réponse = $this->réponse_json(["message" => "Requête intraitable."], 400);
-		}
+		$réponse = null;
+		$question = $this->obtenir_question($question_uri);
+		$réponse = $this->valider_et_préparer_réponse($question, $question_uri, $langage);
 
 		Log::debug("ÉbaucheCtl.get. Retour : ", [$réponse]);
 

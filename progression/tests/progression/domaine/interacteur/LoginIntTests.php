@@ -81,7 +81,7 @@ final class LoginIntTests extends TestCase
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé révoquée")
-			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Portée::REVOQUÉE));
+			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Portée::RÉVOQUÉE));
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé inexistante")
@@ -104,14 +104,6 @@ final class LoginIntTests extends TestCase
 	{
 		Mockery::close();
 		DAOFactory::setInstance(null);
-	}
-
-	public function test_étant_donné_lutilisateur_null_lorsquon_login_obtient_null()
-	{
-		$interacteur = new LoginInt();
-		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant(null);
-
-		$this->assertNull($résultat_obtenu);
 	}
 
 	public function test_étant_donné_lutilisateur_vide_lorsquon_login_obtient_null()

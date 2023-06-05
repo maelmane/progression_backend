@@ -33,6 +33,7 @@ final class TokenCtlTests extends ContrôleurTestCase
 		Carbon::setTestNowAndTimezone(Carbon::create(2001, 5, 21, 12));
 
 		putenv("APP_URL=https://example.com");
+		putenv("APP_VERSION=1.2.3");
 
 		$this->user = new GenericUser([
 			"username" => "utilisateur_lambda",
@@ -57,7 +58,7 @@ final class TokenCtlTests extends ContrôleurTestCase
 		GénérateurDeToken::set_instance(null);
 	}
 
-	public function test_étant_donné_un_token_qui_donne_accès_à_une_ressource_lorsquon_effectue_un_post_on_obtient_un_token_avec_les_ressources_voulues()
+	public function test_étant_donné_un_token_qui_donne_accès_à_une_ressource_lorsquon_effectue_un_post_on_obtient_un_token_avec_les_ressources_voulues_sans_expiration()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/user/utilisateur_lambda/tokens", [
 			"ressources" => "ressources",
@@ -67,6 +68,33 @@ final class TokenCtlTests extends ContrôleurTestCase
 		$this->assertEquals(200, $résultat_obtenu->status());
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/token_ressources.json",
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_token_qui_donne_accès_à_un_date_dexpiration_lorsquon_effectue_un_post_on_obtient_un_token_avec_expiration()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/user/utilisateur_lambda/tokens", [
+			"ressources" => "ressources",
+			"expiration" => 1685831340,
+		]);
+		$résultat_observé = $résultat_obtenu;
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/token_ressources_avec_expiration.json",
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_token_sans_ressource_ni_expiration_lorsquon_effectue_un_post_on_obtient_un_token_universel_sans_expiration()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/user/utilisateur_lambda/tokens", []);
+		$résultat_observé = $résultat_obtenu;
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/token_ressources_universel.json",
 			$résultat_observé->getContent(),
 		);
 	}

@@ -42,6 +42,7 @@ final class LoginCtlTests extends ContrôleurTestCase
 		putenv("APP_URL=https://example.com/");
 		putenv("JWT_SECRET=secret");
 		putenv("JWT_TTL=86400");
+		putenv("APP_VERSION=1.2.3");
 
 		Carbon::setTestNowAndTimezone(Carbon::create(2001, 5, 21, 12));
 

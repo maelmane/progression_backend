@@ -18,27 +18,28 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\clé\{Clé, Portée};
-use progression\dao\DAOFactory;
-use progression\dao\DAOException;
+use Exception;
 
-class GénérerCléAuthentificationInt extends Interacteur
+class IntéracteurException extends Exception
 {
-	public function générer_clé($username, $nom, $expiration = 0)
+	public Exception $previous;
+
+	public function __construct(mixed $e, int $code = null)
 	{
-		if (!$nom || !$username) {
-			return null;
+		if ($e instanceof Exception) {
+			$this->previous = $e;
+			$this->message = $e->getMessage();
+			$this->code = $code ?? $e->getCode();
+		} elseif (is_string($e)) {
+			$this->message = $e;
+			$this->code = $code;
+		} else {
+			$this->message = $e->toString();
+			$this->code = $code;
 		}
 
-		$dao = $this->source_dao->get_clé_dao();
-
-		if ($dao->get_clé($username, $nom)) {
-			return null;
+		if (!$this->code) {
+			$this->code = 500;
 		}
-
-		$secret = bin2hex(random_bytes(20));
-		$clé = new Clé($secret, time(), $expiration, Portée::AUTH);
-
-		return $dao->save($username, $nom, $clé);
 	}
 }

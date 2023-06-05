@@ -25,9 +25,7 @@ use Illuminate\Validation\Rules\Enum;
 use progression\http\transformer\UserTransformer;
 use progression\domaine\entité\user\{User, État};
 use progression\domaine\entité\Avancement;
-use progression\domaine\interacteur\ObtenirUserInt;
-use progression\domaine\interacteur\ModifierUserInt;
-use progression\domaine\interacteur\SauvegarderUtilisateurInt;
+use progression\domaine\interacteur\{ObtenirUserInt, IntéracteurException, ModifierUserInt, SauvegarderUtilisateurInt};
 use progression\util\Encodage;
 use DomainException;
 
@@ -37,9 +35,10 @@ class UserCtl extends Contrôleur
 	{
 		Log::debug("UserCtl.get. Params : ", [$request->all(), $username]);
 
+		$réponse = null;
 		$user = $this->obtenir_user($username);
-
 		$réponse = $this->valider_et_préparer_réponse($user);
+
 		Log::debug("UserCtl.get. Retour : ", [$réponse]);
 		return $réponse;
 	}
@@ -47,12 +46,10 @@ class UserCtl extends Contrôleur
 	public function post(Request $request, string $username): JsonResponse
 	{
 		Log::debug("UserCtl.post. Params : ", [$request->all(), $username]);
+
 		$validation = $this->valider_paramètres($request);
 
 		if ($validation->fails()) {
-			Log::notice(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Paramètres invalides",
-			);
 			return $this->réponse_json(["erreur" => $validation->errors()], 400);
 		}
 

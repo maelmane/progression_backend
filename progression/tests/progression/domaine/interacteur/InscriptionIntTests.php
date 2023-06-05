@@ -39,22 +39,10 @@ final class InscriptionIntTests extends TestCase
 		$mockExpéditeurDao = Mockery::mock("progression\\dao\\mail\Expéditeur");
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_user_dao()
-			->andReturn($mockUserDao);
+		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDao);
 		DAOFactory::setInstance($mockDAOFactory);
 
-		$mockDAOFactory
-			->allows()
-			->get_expéditeur()
-			->andReturn($mockExpéditeurDao);
-
-		/*$mockGénérateurDeToken
-			->allows()
-			->get_instance();*/
-
-		// Username, date expiration, ressource
+		$mockDAOFactory->shouldReceive("get_expéditeur")->andReturn($mockExpéditeurDao);
 	}
 
 	public function tearDown(): void
@@ -76,9 +64,13 @@ final class InscriptionIntTests extends TestCase
 
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
-			->allows()
-			->get_user("roger")
+			->shouldReceive("get_user")
+			->with("roger")
 			->andReturn(null, new User("roger", "roger@gmail.com", État::ATTENTE_DE_VALIDATION));
+		$mockUserDao
+			->shouldReceive("trouver")
+			->with(Mockery::any(), "roger@gmail.com")
+			->andReturn(null);
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($user) {
@@ -131,7 +123,7 @@ final class InscriptionIntTests extends TestCase
 			})
 			->andReturn();
 
-		$user = (new InscriptionInt())->effectuer_inscription("roger", "roger@gmail.com", "password");
+		$user = (new InscriptionInt())->effectuer_inscription_locale("roger", "roger@gmail.com", "password");
 
 		$this->assertEquals(new User("roger", "roger@gmail.com", État::ATTENTE_DE_VALIDATION), $user);
 	}
@@ -143,8 +135,8 @@ final class InscriptionIntTests extends TestCase
 
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
-			->allows()
-			->get_user("roger")
+			->shouldReceive("get_user")
+			->with("roger")
 			->andReturn(null, new User("roger"));
 		$mockUserDao
 			->shouldReceive("save")
@@ -158,7 +150,7 @@ final class InscriptionIntTests extends TestCase
 		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
 		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
 
-		$user = (new InscriptionInt())->effectuer_inscription("roger");
+		$user = (new InscriptionInt())->effectuer_inscription_sans_mdp("roger");
 
 		$this->assertEquals(new User("roger", état: État::ACTIF), $user);
 	}
@@ -170,34 +162,13 @@ final class InscriptionIntTests extends TestCase
 
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
-			->allows()
-			->get_user("roger")
+			->shouldReceive("get_user")
+			->with("roger")
 			->andReturn(null, new User("roger"));
 		$mockUserDao->shouldNotReceive("save");
 		$mockUserDao->shouldNotReceive("set_password");
 
-		$user = (new InscriptionInt())->effectuer_inscription("roger", "roger@gmail.com");
-
-		$this->assertNull($user);
-	}
-
-	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_ldap_lorsquon_effectue_linscription_on_obtient_null()
-	{
-		putenv("AUTH_LOCAL=false");
-		putenv("AUTH_LDAP=true");
-
-		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
-		$mockUserDao
-			->allows()
-			->get_user("roger")
-			->andReturn(null, new User("roger"));
-		$mockUserDao->shouldNotReceive("save");
-		$mockUserDao->shouldNotReceive("set_password");
-
-		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
-		$mockExpéditeurDao->shouldNotReceive("envoyer_validation_courriel");
-
-		$user = (new InscriptionInt())->effectuer_inscription("roger");
+		$user = (new InscriptionInt())->effectuer_inscription_locale("roger", "roger@gmail.com", null);
 
 		$this->assertNull($user);
 	}
@@ -211,9 +182,13 @@ final class InscriptionIntTests extends TestCase
 
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
-			->allows()
-			->get_user("admin")
+			->shouldReceive("get_user")
+			->with("admin")
 			->andReturn(null, new User("admin", "admin@gmail.com", État::ACTIF, Rôle::ADMIN));
+		$mockUserDao
+			->shouldReceive("trouver")
+			->with(Mockery::any(), "admin@gmail.com")
+			->andReturn(null);
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($user) {
@@ -228,7 +203,7 @@ final class InscriptionIntTests extends TestCase
 				return $user->username == "admin" && $password == "password";
 			});
 
-		$user = (new InscriptionInt())->effectuer_inscription(
+		$user = (new InscriptionInt())->effectuer_inscription_locale(
 			"admin",
 			"admin@gmail.com",
 			"password",
@@ -238,15 +213,58 @@ final class InscriptionIntTests extends TestCase
 		$this->assertEquals(new User("admin", "admin@gmail.com", État::ACTIF, Rôle::ADMIN), $user);
 	}
 
-	public function test_étant_donné_un_utilisateur_existant_lorsquon_effectue_à_nouveau_linscription_on_obtient_null()
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_linscrit_avec_le_même_username_on_obtient_null()
 	{
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
-			->allows()
-			->get_user("bob")
-			->andReturn(new User("bob"));
+			->shouldReceive("get_user")
+			->with("bob")
+			->andReturn(new User("bob", "bob@progressionmail.com"));
 
-		$user = (new InscriptionInt())->effectuer_inscription("bob", courriel: null, password: "password");
+		$user = (new InscriptionInt())->effectuer_inscription_locale(
+			"bob",
+			courriel: "bob@test.com",
+			password: "password",
+		);
+
+		$this->assertNull($user);
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_linscrit_avec_le_même_courriel_on_obtient_null()
+	{
+		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
+		$mockUserDao
+			->shouldReceive("get_user")
+			->with("bob")
+			->andReturn(new User("bob", "bob@progressionmail.com"));
+		$mockUserDao
+			->shouldReceive("trouver")
+			->with(null, "bob@progressionmail.com")
+			->andReturn(new User("bob", "bob@progressionmail.com"));
+		$mockUserDao->shouldReceive("get_user")->andReturn(null);
+
+		$user = (new InscriptionInt())->effectuer_inscription_locale(
+			"autrenom",
+			courriel: "bob@progressionmail.com",
+			password: "password",
+		);
+
+		$this->assertNull($user);
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_lorsquon_linscrit_avec_le_même_courriel_et_username_on_obtient_null()
+	{
+		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
+		$mockUserDao
+			->shouldReceive("get_user")
+			->with("bob")
+			->andReturn(new User("bob", "bob@progressionmail.com"));
+
+		$user = (new InscriptionInt())->effectuer_inscription_locale(
+			"bob",
+			courriel: "bob@progressionmail.com",
+			password: "password",
+		);
 
 		$this->assertNull($user);
 	}

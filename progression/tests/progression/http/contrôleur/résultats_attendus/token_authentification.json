@@ -6,8 +6,8 @@
       "username": "bob",
       "création": 990446400,
       "expiration": 990532800,
-      "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImJvYiIsImN1cnJlbnQiOjk5MDQ0NjQwMCwiZXhwaXJlZCI6OTkwNTMyODAwLCJyZXNzb3VyY2VzIjp7InBlcm1pc3Npb25zIjp7ImFwaSI6eyJ1cmwiOiIuKiIsIm1ldGhvZCI6Ii4qIn19fSwidmVyc2lvbiI6MX0.QN7Sxk8NFmo-Vcp8ialMkwMlsk0s_U1qSEJgsNhA5j4",
-      "version": 3
+      "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImJvYiIsImN1cnJlbnQiOjk5MDQ0NjQwMCwiZXhwaXJlZCI6OTkwNTMyODAwLCJyZXNzb3VyY2VzIjp7InBlcm1pc3Npb25zIjp7ImFwaSI6eyJ1cmwiOiIuKiIsIm1ldGhvZCI6Ii4qIn19fSwidmVyc2lvbiI6IjEuMi4zIn0.4T4764jXRcM6rIWTEa1yKN3nBtZRliUjBzJewYZaPIo",
+      "version": "1.2.3"
     },
     "links": {
       "self": "https://example.com/token/bob/990446400",

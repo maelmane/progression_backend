@@ -18,7 +18,6 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\dao\DAOFactory;
 use progression\domaine\entité\user\{User, État, Rôle};
 use progression\http\transformer\UserTransformer;
 use progression\http\contrôleur\GénérateurDeToken;
@@ -26,45 +25,46 @@ use Carbon\Carbon;
 
 class InscriptionInt extends Interacteur
 {
-	function effectuer_inscription(
+	public function effectuer_inscription_locale(
 		string $username,
-		string|null $courriel = null,
-		string $password = null,
+		string $courriel,
+		string|null $password,
 		Rôle $rôle = Rôle::NORMAL,
 	): User|null {
-		if (!$username) {
-			return null;
-		}
+		$dao = $this->source_dao->get_user_dao();
+		$user = $dao->get_user($username);
+		if (!$user && $password) {
+			$user_créé = $this->effectuer_inscription_avec_mdp($username, $courriel, $password, $rôle);
 
-		$auth_local = getenv("AUTH_LOCAL") === "true";
-		$auth_ldap = getenv("AUTH_LDAP") === "true";
-
-		if ($auth_local) {
-			if (!$courriel) {
-				return null;
-			} else {
-				if ($password) {
-					return $this->effectuer_inscription_avec_mdp($username, $courriel, $password, $rôle);
-				} else {
-					$user = $this->get_user($username);
-					if ($user && $user->état == État::ATTENTE_DE_VALIDATION) {
-						return $this->envoyer_courriel_de_validation($user);
-					} else {
-						return null;
-					}
-				}
+			if ($user_créé && $user_créé->rôle != Rôle::ADMIN) {
+				$this->envoyer_courriel_de_validation($user_créé);
 			}
-		} elseif ($auth_ldap) {
-			return null;
-		} else {
-			return $this->effectuer_inscription_sans_mdp($username, $rôle);
+
+			return $user_créé;
+		} elseif ($user && !$password) {
+			return $this->effectuer_renvoi_de_courriel($user) ? $user : null;
 		}
+
+		return null;
 	}
 
-	private function get_user(string $username): User|null
+	private function effectuer_renvoi_de_courriel(User $user): bool
 	{
+		if ($user->état == État::ATTENTE_DE_VALIDATION) {
+			$this->envoyer_courriel_de_validation($user);
+			return true;
+		}
+		return false;
+	}
+
+	public function effectuer_inscription_sans_mdp(
+		string $username,
+		string $courriel = null,
+		Rôle $rôle = Rôle::NORMAL,
+	): User|null {
 		$dao = $this->source_dao->get_user_dao();
-		return $dao->get_user($username);
+		return $dao->get_user($username) ??
+			$dao->save(new User($username, courriel: $courriel, rôle: $rôle, état: État::ACTIF));
 	}
 
 	private function effectuer_inscription_avec_mdp(
@@ -73,23 +73,22 @@ class InscriptionInt extends Interacteur
 		string $password,
 		Rôle $rôle,
 	): User|null {
-		$user = $this->get_user($username);
-
-		if ($user) {
+		$dao = $this->source_dao->get_user_dao();
+		if ($dao->trouver(courriel: $courriel)) {
 			return null;
 		}
 
-		$user = $this->sauvegarder_user($username, $courriel, $password, $rôle);
+		$user = $this->créer_etsauvegarder_user($username, $courriel, $password, $rôle);
 
-		if (!$user) {
-			return null;
-		} else {
-			return $rôle != Rôle::ADMIN ? $this->envoyer_courriel_de_validation($user) : $user;
-		}
+		return $user;
 	}
 
-	private function sauvegarder_user(string $username, string $courriel, string $password, Rôle $rôle): User|null
-	{
+	private function créer_etsauvegarder_user(
+		string $username,
+		string $courriel,
+		string $password,
+		Rôle $rôle,
+	): User|null {
 		$dao = $this->source_dao->get_user_dao();
 		$user = $dao->save(
 			new User(
@@ -104,7 +103,7 @@ class InscriptionInt extends Interacteur
 		return $user;
 	}
 
-	private function envoyer_courriel_de_validation(User $user): User
+	private function envoyer_courriel_de_validation(User $user): void
 	{
 		$ressources = [
 			"data" => [
@@ -126,14 +125,5 @@ class InscriptionInt extends Interacteur
 		$expirationToken = Carbon::now()->addMinutes((int) getenv("JWT_EXPIRATION"))->timestamp;
 		$token = GénérateurDeToken::get_instance()->générer_token($user->username, $expirationToken, $ressources);
 		$this->source_dao->get_expéditeur()->envoyer_validation_courriel($user, $token);
-
-		return $user;
-	}
-
-	private function effectuer_inscription_sans_mdp(string $username, Rôle $rôle): User|null
-	{
-		$dao = $this->source_dao->get_user_dao();
-		return $dao->get_user($username) ??
-			$dao->save(new User($username, courriel: null, rôle: $rôle, état: État::ACTIF));
 	}
 }

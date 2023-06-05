@@ -18,6 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
+use progression\dao\DAOException;
+
 class ObtenirAvancementsInt extends Interacteur
 {
 	/**
@@ -26,6 +28,10 @@ class ObtenirAvancementsInt extends Interacteur
 	 */
 	function get_avancements($username, mixed $includes = [])
 	{
-		return $this->source_dao->get_avancement_dao()->get_tous($username, $includes);
+		try {
+			return $this->source_dao->get_avancement_dao()->get_tous($username, $includes);
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e, 503);
+		}
 	}
 }

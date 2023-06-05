@@ -19,12 +19,17 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{Avancement, Question};
+use progression\dao\DAOException;
 
 class SoumettreTentativeSysInt extends Interacteur
 {
 	public function soumettre_tentative($question, $tests, $tentative)
 	{
-		$tentativeTraitée = $this->exécuter_validation($question, $tentative);
+		try {
+			$tentativeTraitée = $this->exécuter_validation($question, $tentative);
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e, 503);
+		}
 		if ($question->solution) {
 			if ($this->vérifier_réponse_courte($question, $tentativeTraitée)) {
 				$tentativeTraitée->réussi = true;

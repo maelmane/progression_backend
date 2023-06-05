@@ -18,38 +18,29 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\clé\{Clé, Portée};
 use PHPUnit\Framework\TestCase;
 
-final class CléTransformerTests extends TestCase
+final class TokenTransformerTests extends TestCase
 {
 	public function setUp(): void
 	{
 		parent::setUp();
 
 		putenv("APP_URL=https://example.com");
+		putenv("APP_VERSION=1.2.3");
+		putenv("JWT_SECRET=secret");
 	}
 
-	public function test_étant_donné_une_clé_d_authentification_lorsquon_la_transforme_on_obtient_un_array_identifque()
+	public function tests_étant_donné_un_token_valide_lorsquon_le_transforme_on_obtient_le_tableau_équivalent()
 	{
-		$clé = new Clé("1234", "2021-06-25 00:00:00", "2021-06-26 00:00:00", Portée::AUTH);
-		$clé->id = "clé%20de%20test";
+		$token =
+			"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InV0aWxpc2F0ZXVyX2xhbWJkYSIsImN1cnJlbnQiOjk5MDQ0NjQwMCwiZXhwaXJlZCI6MTY4NTgzMTM0MCwicmVzc291cmNlcyI6InJlc3NvdXJjZXMiLCJ2ZXJzaW9uIjoiMS4yLjMifQ.NR4TnTAp-LXZZDGM8EWhSFFQpSda19nULaca9hGcGXI";
 
-		$transformer = new CléTransformer("jdoe");
-		$résultat_obtenu = $transformer->transform($clé);
-
-		$résultat_attendu = [
-			"id" => "jdoe/clé%20de%20test",
-			"secret" => "1234",
-			"création" => "2021-06-25 00:00:00",
-			"expiration" => "2021-06-26 00:00:00",
-			"portée" => "authentification",
-			"links" => [
-				"self" => "https://example.com/cle/jdoe/clé%20de%20test",
-				"user" => "https://example.com/user/jdoe",
-			],
-		];
-
-		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+		$tokenTransformer = new TokenTransformer("utilisateur_lambda");
+		$résultats_obtenus = $tokenTransformer->transform($token);
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/token_ressources_avec_expiration.json",
+			json_encode($résultats_obtenus),
+		);
 	}
 }

@@ -21,11 +21,10 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use progression\domaine\entité\question\{QuestionProg, QuestionSys, QuestionBD};
-use progression\domaine\interacteur\ObtenirQuestionInt;
+use progression\domaine\interacteur\{ObtenirQuestionInt, IntéracteurException};
 use progression\http\transformer\{QuestionProgTransformer, QuestionSysTransformer};
 use progression\util\Encodage;
 use progression\dao\question\ChargeurException;
-use DomainException, LengthException, RuntimeException;
 
 class QuestionCtl extends Contrôleur
 {
@@ -33,39 +32,9 @@ class QuestionCtl extends Contrôleur
 	{
 		Log::debug("QuestionCtl.get. Params : ", [$request->all(), $uri]);
 
-		try {
-			$question = $this->obtenir_question($uri);
-			$réponse = $this->valider_et_préparer_réponse($question, $uri);
-		} catch (LengthException $erreur) {
-			Log::warning(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					__CLASS__ .
-					") ERR: {$erreur->getMessage()}",
-			);
-			$réponse = $this->réponse_json(["erreur" => "Limite de volume dépassé."], 413);
-		} catch (RuntimeException $erreur) {
-			Log::notice(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					__CLASS__ .
-					") ERR: {$erreur->getMessage()}",
-			);
-			$réponse = $this->réponse_json(["erreur" => "Ressource indisponible sur le serveur distant."], 502);
-		} catch (DomainException $erreur) {
-			Log::notice(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					__CLASS__ .
-					") ERR: {$erreur->getMessage()}",
-			);
-			$réponse = $this->réponse_json(["erreur" => "Requête intraitable."], 400);
-		} catch (ChargeurException $erreur) {
-			Log::notice(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					__CLASS__ .
-					") ERR: {$erreur->getMessage()}",
-			);
-
-			$réponse = $this->réponse_json(["erreur" => "Question indisponible"], 400);
-		}
+		$réponse = null;
+		$question = $this->obtenir_question($uri);
+		$réponse = $this->valider_et_préparer_réponse($question, $uri);
 
 		Log::debug("QuestionCtl.get. Retour : ", [$réponse]);
 

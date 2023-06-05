@@ -54,7 +54,7 @@ class GénérateurDeToken
 			"current" => Carbon::now()->timestamp,
 			"expired" => $expiration,
 			"ressources" => $ressources,
-			"version" => 1,
+			"version" => getenv("APP_VERSION"),
 		];
 
 		$secret = getenv("JWT_SECRET");

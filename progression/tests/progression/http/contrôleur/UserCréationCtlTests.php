@@ -230,6 +230,10 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDAO
+			->shouldReceive("trouver")
+			->with(Mockery::any(), "marcel2@gmail.com")
+			->andReturn(null);
+		$mockUserDAO
 			->shouldReceive("save")
 			->once()
 			->withArgs(function ($user) {
