@@ -102,7 +102,7 @@ final class CléCtlTests extends ContrôleurTestCase
                    "secret": null,
                    "création": 1625709495,
                    "expiration": 1625713000,
-                   "portée": 1
+                   "portée": "authentification"
                  },
                  "links": {
                    "self": "https://example.com/cle/jdoe/cle de test",
@@ -136,7 +136,7 @@ final class CléCtlTests extends ContrôleurTestCase
                    "secret": null,
                    "création": 1625709495,
                    "expiration": 1625713000,
-                   "portée": 1
+                   "portée": "authentification"
                  },
                  "links": {
                    "self": "https://example.com/cle/jdoe/cle de test",
@@ -158,7 +158,7 @@ final class CléCtlTests extends ContrôleurTestCase
 
 		$this->assertNotNull($clé_sauvegardée->secret);
 		$this->assertEquals(0, $clé_sauvegardée->expiration);
-		$this->assertEquals(Portée::AUTH->value, $clé_sauvegardée->portée);
+		$this->assertEquals("authentification", $clé_sauvegardée->portée);
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_0_on_obtient_une_clé_avec_un_secret_généré_aléatoirement_sans_expiration()
@@ -173,7 +173,7 @@ final class CléCtlTests extends ContrôleurTestCase
 
 		$this->assertNotNull($clé_sauvegardée->secret);
 		$this->assertEquals(0, $clé_sauvegardée->expiration);
-		$this->assertEquals(Portée::AUTH->value, $clé_sauvegardée->portée);
+		$this->assertEquals("authentification", $clé_sauvegardée->portée);
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_on_obtient_une_clé_avec_un_secret_généré_aléatoirement_avec_expiration()
@@ -189,7 +189,7 @@ final class CléCtlTests extends ContrôleurTestCase
 
 		$this->assertNotNull($clé_sauvegardée->secret);
 		$this->assertEquals($expiration, $clé_sauvegardée->expiration);
-		$this->assertEquals(Portée::AUTH->value, $clé_sauvegardée->portée);
+		$this->assertEquals("authentification", $clé_sauvegardée->portée);
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_passée_on_obtient_une_erreur_400()

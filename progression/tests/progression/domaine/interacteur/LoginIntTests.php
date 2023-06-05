@@ -81,7 +81,7 @@ final class LoginIntTests extends TestCase
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé révoquée")
-			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Portée::REVOQUÉE));
+			->andReturn(new Clé("secret", (new \DateTime())->getTimestamp(), 0, Portée::RÉVOQUÉE));
 		$mockCléDAO
 			->shouldReceive("get_clé")
 			->with("bob", "clé inexistante")

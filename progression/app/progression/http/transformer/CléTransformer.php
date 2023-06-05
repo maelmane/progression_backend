@@ -18,7 +18,7 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\clé\Clé;
+use progression\domaine\entité\clé\{Clé, Portée};
 
 class CléTransformer extends BaseTransformer
 {
@@ -31,7 +31,10 @@ class CléTransformer extends BaseTransformer
 			"secret" => $clé->secret,
 			"création" => $clé->création,
 			"expiration" => $clé->expiration,
-			"portée" => $clé->portée->value,
+			"portée" => match ($clé->portée) {
+				Portée::RÉVOQUÉE => "révoquée",
+				Portée::AUTH => "authentification",
+			},
 			"links" => (isset($clé->links) ? $clé->links : []) + [
 				"self" => "{$this->urlBase}/cle/{$this->id}/{$clé->id}",
 				"user" => "{$this->urlBase}/user/{$this->id}",

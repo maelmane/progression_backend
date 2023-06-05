@@ -2,7 +2,7 @@
 	"date_modification": null,
 	"date_réussite": null,
 	"id": "jdoe/id",
-	"\u00e9tat": 0,
+	"état": "début",
 	"links": {
 		"self": "https://example.com/avancement/jdoe/id",
 		"question":"https://example.com/question/id",

@@ -1,7 +1,7 @@
 [
 	{
 		"nom": "2 salutations",
-		"entr\u00e9e": "2",
+		"entrée": "2",
 		"params": "",
 		"sortie_attendue": "Bonjour\nBonjour\n",
 		"sortie_cachée": false,
@@ -15,7 +15,7 @@
 	},
 	{
 		"nom": "Aucune salutation",
-		"entr\u00e9e": "0",
+		"entrée": "0",
 		"params": "",
 		"sortie_attendue": "",
 		"sortie_cachée": false,
