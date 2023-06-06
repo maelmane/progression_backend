@@ -45,7 +45,7 @@ final class TokenCtlTests extends ContrôleurTestCase
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("utilisateur_lambda")
-			->andReturn(new User("utilisateur_lambda"));
+			->andReturn(new User(username: "utilisateur_lambda", date_inscription: 0));
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);

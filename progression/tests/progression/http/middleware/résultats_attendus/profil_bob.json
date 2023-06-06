@@ -5,6 +5,7 @@
     "attributes": {
       "username": "bob",
       "courriel": null,
+      "date_inscription": 1590828610,
       "état": "inactif",
       "rôle": "normal",
       "préférences": ""

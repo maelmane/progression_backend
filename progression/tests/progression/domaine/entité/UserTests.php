@@ -18,6 +18,7 @@
 
 namespace progression\domaine\entité\user;
 
+use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 use \InvalidArgumentException;
 
@@ -27,14 +28,24 @@ final class UserTests extends TestCase
 	{
 		$username_attendu = "bob";
 		$courriel_attendu = "bob@gmail.com";
-		$résultat_obtenu = new User("bob", "bob@gmail.com", état: État::ACTIF, rôle: Rôle::NORMAL);
-
 		$état_attendu = État::ACTIF;
 		$rôle_attendu = Rôle::NORMAL;
+		$date_inscription_attendu = 1615420800;
+
+		Carbon::setTestNow(Carbon::create(2021, 3, 11, 0, 0, 0));
+		$résultat_obtenu = new User(
+			username: "bob",
+			date_inscription: 1615420800,
+			courriel: "bob@gmail.com",
+			état: État::ACTIF,
+			rôle: Rôle::NORMAL,
+		);
+		Carbon::setTestNow();
 
 		$this->assertEquals($username_attendu, $résultat_obtenu->username);
 		$this->assertEquals($courriel_attendu, $résultat_obtenu->courriel);
 		$this->assertEquals($état_attendu, $résultat_obtenu->état);
 		$this->assertEquals($rôle_attendu, $résultat_obtenu->rôle);
+		$this->assertEquals($date_inscription_attendu, $résultat_obtenu->date_inscription);
 	}
 }

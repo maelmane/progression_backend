@@ -49,11 +49,11 @@ final class CléCtlTests extends ContrôleurTestCase
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("jdoe")
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob")
-			->andReturn(new User("bob"));
+			->andReturn(new User(username: "bob", date_inscription: 0));
 
 		//CléDAO
 		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");

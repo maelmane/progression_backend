@@ -25,62 +25,71 @@ final class ModifierUserIntTests extends TestCase
 {
 	public function test_étant_donné_un_utilisateur_sans_préférences_lorsquon_lui_ajoute_des_préférences_on_obtient_le_même_utilisateur_avec_des_préférences()
 	{
-		$user_test = new User("bob");
+		$user_test = new User(username: "bob", date_inscription: 0);
 
 		$interacteur = new ModifierUserInt();
 		$user_modifié = $interacteur->modifier_préférences($user_test, "mes préférences");
 
-		$this->assertEquals(new User("bob", préférences: "mes préférences"), $user_test);
-		$this->assertEquals(new User("bob", préférences: "mes préférences"), $user_modifié);
+		$this->assertEquals(new User(username: "bob", date_inscription: 0, préférences: "mes préférences"), $user_test);
+		$this->assertEquals(
+			new User(username: "bob", date_inscription: 0, préférences: "mes préférences"),
+			$user_modifié,
+		);
 	}
 
 	public function test_étant_donné_un_utilisateur_avec_préférences_lorsquon_modifie_des_préférences_on_obtient_le_même_utilisateur_avec_des_nouvelles_préférences()
 	{
-		$user_test = new User("bob", préférences: "des préférences originales");
+		$user_test = new User(username: "bob", date_inscription: 0, préférences: "des préférences originales");
 
 		$interacteur = new ModifierUserInt();
 		$user_modifié = $interacteur->modifier_préférences($user_test, "d'autres préférences");
 
-		$this->assertEquals(new User("bob", préférences: "d'autres préférences"), $user_test);
-		$this->assertEquals(new User("bob", préférences: "d'autres préférences"), $user_modifié);
+		$this->assertEquals(
+			new User(username: "bob", date_inscription: 0, préférences: "d'autres préférences"),
+			$user_test,
+		);
+		$this->assertEquals(
+			new User(username: "bob", date_inscription: 0, préférences: "d'autres préférences"),
+			$user_modifié,
+		);
 	}
 
 	public function test_étant_donné_un_utilisateur_inactif_lorsquon_modifie_son_état_pour_actif_on_obtient_un_utilisateur_actif()
 	{
-		$user_test = new User("bob", état: État::INACTIF);
+		$user_test = new User(username: "bob", date_inscription: 0, état: État::INACTIF);
 
 		$interacteur = new ModifierUserInt();
 		$user_modifié = $interacteur->modifier_état($user_test, État::ACTIF);
 
-		$this->assertEquals(new User("bob", état: État::ACTIF), $user_test);
-		$this->assertEquals(new User("bob", état: État::ACTIF), $user_modifié);
+		$this->assertEquals(new User(username: "bob", date_inscription: 0, état: État::ACTIF), $user_test);
+		$this->assertEquals(new User(username: "bob", date_inscription: 0, état: État::ACTIF), $user_modifié);
 	}
 
 	public function test_étant_donné_un_utilisateur_en_attente_lorsquon_modifie_son_état_pour_actif_on_obtient_un_utilisateur_actif()
 	{
-		$user_test = new User("bob", état: État::ATTENTE_DE_VALIDATION);
+		$user_test = new User(username: "bob", date_inscription: 0, état: État::ATTENTE_DE_VALIDATION);
 
 		$interacteur = new ModifierUserInt();
 		$user_modifié = $interacteur->modifier_état($user_test, État::ACTIF);
 
-		$this->assertEquals(new User("bob", état: État::ACTIF), $user_test);
-		$this->assertEquals(new User("bob", état: État::ACTIF), $user_modifié);
+		$this->assertEquals(new User(username: "bob", date_inscription: 0, état: État::ACTIF), $user_test);
+		$this->assertEquals(new User(username: "bob", date_inscription: 0, état: État::ACTIF), $user_modifié);
 	}
 
 	public function test_étant_donné_un_utilisateur_en_attente_lorsquon_modifie_son_état_pour_inactif_on_obtient_un_utilisateur_inactif()
 	{
-		$user_test = new User("bob", état: État::ATTENTE_DE_VALIDATION);
+		$user_test = new User(username: "bob", date_inscription: 0, état: État::ATTENTE_DE_VALIDATION);
 
 		$interacteur = new ModifierUserInt();
 		$user_modifié = $interacteur->modifier_état($user_test, État::INACTIF);
 
-		$this->assertEquals(new User("bob", état: État::INACTIF), $user_test);
-		$this->assertEquals(new User("bob", état: État::INACTIF), $user_modifié);
+		$this->assertEquals(new User(username: "bob", date_inscription: 0, état: État::INACTIF), $user_test);
+		$this->assertEquals(new User(username: "bob", date_inscription: 0, état: État::INACTIF), $user_modifié);
 	}
 
 	public function test_étant_donné_un_utilisateur_inactif_lorsquon_modifie_son_état_pour_en_attente_on_obtient_une_exception()
 	{
-		$user_test = new User("bob", état: État::INACTIF);
+		$user_test = new User(username: "bob", date_inscription: 0, état: État::INACTIF);
 
 		$interacteur = new ModifierUserInt();
 

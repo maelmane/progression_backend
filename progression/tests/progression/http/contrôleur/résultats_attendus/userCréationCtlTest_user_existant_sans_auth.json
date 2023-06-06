@@ -3,8 +3,9 @@
     "type": "user",
     "id": "bob",
     "attributes": {
-      "courriel": "bob@progressionmail.com",
       "username": "bob",
+	  "date_inscription": 1590828610,
+      "courriel": "bob@progressionmail.com",
       "état": "actif",
       "rôle": "normal",
       "préférences": ""

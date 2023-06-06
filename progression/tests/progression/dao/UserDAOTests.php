@@ -45,7 +45,7 @@ final class UserDAOTests extends TestCase
 		$avancement3->date_réussite = 1645739969;
 		$avancement3->etat = État::REUSSI;
 
-		$this->bob = new User("bob", courriel: "bob@progressionmail.com");
+		$this->bob = new User(username: "bob", date_inscription: 1590828610, courriel: "bob@progressionmail.com");
 		$this->bob->avancements = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $avancement1,
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => $avancement2,
@@ -67,7 +67,11 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_sans_inclusion_on_obtient_son_profil()
 	{
-		$réponse_attendue = new User("bob", courriel: "bob@progressionmail.com");
+		$réponse_attendue = new User(
+			username: "bob",
+			date_inscription: 1590828610,
+			courriel: "bob@progressionmail.com",
+		);
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [];
 
@@ -77,7 +81,11 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_EN_MAJUSCULES_sans_inclusion_on_obtient_son_profil()
 	{
-		$réponse_attendue = new User("bob", courriel: "bob@progressionmail.com");
+		$réponse_attendue = new User(
+			username: "bob",
+			date_inscription: 1590828610,
+			courriel: "bob@progressionmail.com",
+		);
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [];
 
@@ -96,7 +104,11 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_courriel_EN_MAJUSCULES_sans_inclusion_on_obtient_son_profil()
 	{
-		$réponse_attendue = new User("bob", courriel: "bob@progressionmail.com");
+		$réponse_attendue = new User(
+			username: "bob",
+			date_inscription: 1590828610,
+			courriel: "bob@progressionmail.com",
+		);
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [];
 
@@ -131,7 +143,11 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_courriel_sans_inclusion_on_obtient_son_profil()
 	{
-		$réponse_attendue = new User("bob", courriel: "bob@progressionmail.com");
+		$réponse_attendue = new User(
+			username: "bob",
+			date_inscription: 1590828610,
+			courriel: "bob@progressionmail.com",
+		);
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [];
 
@@ -141,7 +157,11 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_cherche_par_son_username_et_courriel_sans_inclusion_on_obtient_son_profil()
 	{
-		$réponse_attendue = new User("bob", courriel: "bob@progressionmail.com");
+		$réponse_attendue = new User(
+			username: "bob",
+			date_inscription: 1590828610,
+			courriel: "bob@progressionmail.com",
+		);
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [];
 
@@ -179,8 +199,8 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_inexistant_lorsquon_le_sauvegarde_il_est_créé_dans_la_BD_et_on_obtient_son_profil()
 	{
-		$réponse_attendue = new User("gaston");
-		$user_test = new User("gaston");
+		$réponse_attendue = new User(username: "gaston", date_inscription: 0);
+		$user_test = new User(username: "gaston", date_inscription: 0);
 
 		$réponse_observée = (new UserDAO())->save($user_test);
 		$this->assertEquals($réponse_attendue, $réponse_observée);
@@ -194,7 +214,12 @@ final class UserDAOTests extends TestCase
 		$avancement1 = new Avancement([], "Un titre", "facile");
 		$avancement2 = new Avancement([], "Un titre 2", "facile");
 
-		$réponse_attendue = new User("bob", courriel: "bob@progressionmail.com", rôle: Rôle::ADMIN);
+		$réponse_attendue = new User(
+			username: "bob",
+			date_inscription: 1590828610,
+			courriel: "bob@progressionmail.com",
+			rôle: Rôle::ADMIN,
+		);
 		$réponse_attendue->avancements = [];
 		$réponse_attendue->clés = [];
 
@@ -210,7 +235,7 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_lorsquon_vérifie_un_mot_de_passe_correct_on_obtient_vrai()
 	{
-		$user = new User("bob");
+		$user = new User(username: "bob", date_inscription: 0);
 
 		$dao = new UserDAO();
 		$dao->set_password($user, "test de mot de passe");
@@ -220,7 +245,7 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_lorsquon_vérifie_un_mot_de_passe_incorrect_on_obtient_faux()
 	{
-		$user = new User("bob");
+		$user = new User(username: "bob", date_inscription: 0);
 
 		$dao = new UserDAO();
 		$dao->set_password($user, "test de mot de passe");
@@ -230,7 +255,7 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_lorsquon_change_son_mot_de_passe_et_vérifie_l_ancien_on_obtient_faux()
 	{
-		$user = new User("bob");
+		$user = new User(username: "bob", date_inscription: 0);
 
 		$dao = new UserDAO();
 		$dao->set_password($user, "test de mot de passe");

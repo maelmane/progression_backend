@@ -67,17 +67,32 @@ final class AuthServiceProviderTests extends TestCase
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("utilisateur_actif_normal", [])
-			->andReturn(new User(username: "utilisateur_actif_normal", état: État::ACTIF, rôle: Rôle::NORMAL));
+			->andReturn(
+				new User(
+					username: "utilisateur_actif_normal",
+					date_inscription: 0,
+					état: État::ACTIF,
+					rôle: Rôle::NORMAL,
+				),
+			);
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("utilisateur_inactif_normal", [])
-			->andReturn(new User(username: "utilisateur_inactif_normal", état: État::INACTIF, rôle: Rôle::NORMAL));
+			->andReturn(
+				new User(
+					username: "utilisateur_inactif_normal",
+					date_inscription: 0,
+					état: État::INACTIF,
+					rôle: Rôle::NORMAL,
+				),
+			);
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("utilisateur_en_attente_normal", [])
 			->andReturn(
 				new User(
 					username: "utilisateur_en_attente_normal",
+					date_inscription: 0,
 					état: État::ATTENTE_DE_VALIDATION,
 					rôle: Rôle::NORMAL,
 				),
@@ -85,19 +100,37 @@ final class AuthServiceProviderTests extends TestCase
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("UTILISATEUR_ACTIF_NORMAL", [])
-			->andReturn(new User(username: "utilisateur_actif_normal", état: État::ACTIF, rôle: Rôle::NORMAL));
+			->andReturn(
+				new User(
+					username: "utilisateur_actif_normal",
+					date_inscription: 0,
+					état: État::ACTIF,
+					rôle: Rôle::NORMAL,
+				),
+			);
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("autre_utilisateur", [])
-			->andReturn(new User(username: "autre_utilisateur", état: État::ACTIF, rôle: Rôle::NORMAL));
+			->andReturn(
+				new User(username: "autre_utilisateur", date_inscription: 0, état: État::ACTIF, rôle: Rôle::NORMAL),
+			);
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("utilisateur_innocent", [])
-			->andReturn(new User(username: "utilisateur_innocent", état: État::ACTIF, rôle: Rôle::NORMAL));
+			->andReturn(
+				new User(username: "utilisateur_innocent", date_inscription: 0, état: État::ACTIF, rôle: Rôle::NORMAL),
+			);
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("utilisateur_malveillant", [])
-			->andReturn(new User(username: "utilisateur_malveillant", état: État::ACTIF, rôle: Rôle::NORMAL));
+			->andReturn(
+				new User(
+					username: "utilisateur_malveillant",
+					date_inscription: 0,
+					état: État::ACTIF,
+					rôle: Rôle::NORMAL,
+				),
+			);
 		$mockUserDAO->shouldReceive("get_user")->andReturn(null);
 		$mockUserDAO->shouldReceive("vérifier_password")->andReturn(true);
 		$mockUserDAO->shouldReceive("save")->andReturnArg(0);

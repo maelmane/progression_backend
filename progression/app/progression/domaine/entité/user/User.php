@@ -29,9 +29,11 @@ class User
 	public $avancements;
 	public $clés;
 	public string $préférences;
+	public int $date_inscription;
 
 	public function __construct(
 		string $username,
+		int $date_inscription,
 		string|null $courriel = null,
 		État $état = État::INACTIF,
 		Rôle $rôle = Rôle::NORMAL,
@@ -46,5 +48,6 @@ class User
 		$this->avancements = $avancements;
 		$this->clés = $clés;
 		$this->préférences = $préférences;
+		$this->date_inscription = $date_inscription;
 	}
 }
