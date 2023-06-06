@@ -94,7 +94,7 @@ class UserDAO extends EntitéDAO
 				in_array("clés", $includes)
 					? CléDAO::construire($user["clés"], parent::filtrer_niveaux($includes, "clés"))
 					: [],
-				$user["preferences"] ?? "",
+				préférences: $user["preferences"] ?? "",
 			);
 		}
 		return $users;
