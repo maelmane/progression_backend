@@ -34,15 +34,15 @@ final class LoginIntTests extends TestCase
 		$mockUserDAO
 			->allows()
 			->get_user("bob", Mockery::Any())
-			->andReturn(new User("bob"));
+			->andReturn(new User(username: "bob", date_inscription: 0));
 		$mockUserDAO
 			->allows()
 			->trouver(null, "bob@progressionmail.com", Mockery::Any())
-			->andReturn(new User("bob", "bob@progressionmail.com"));
+			->andReturn(new User(username: "bob", date_inscription: 0, courriel: "bob@progressionmail.com"));
 		$mockUserDAO
 			->allows()
 			->get_user("bob")
-			->andReturn(new User("bob"));
+			->andReturn(new User(username: "bob", date_inscription: 0));
 		$mockUserDAO->shouldReceive("get_user")->andReturn(null);
 		$mockUserDAO
 			->allows()
@@ -53,7 +53,7 @@ final class LoginIntTests extends TestCase
 			->vérifier_password(Mockery::Any(), Mockery::Any())
 			->andReturn(false);
 
-		$mockUserDAO->shouldReceive("save")->andReturn(new User("Banane"));
+		$mockUserDAO->shouldReceive("save")->andReturn(new User(username: "Banane", date_inscription: 0));
 		$mockUserDAO->shouldReceive("set_password")->withArgs(function ($user, $password) {
 			return $user->username == "Banane" && $password == "password";
 		});
@@ -122,7 +122,7 @@ final class LoginIntTests extends TestCase
 		$interacteur = new LoginInt();
 		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("bob");
 
-		$this->assertEquals(new User("bob"), $résultat_obtenu);
+		$this->assertEquals(new User(username: "bob", date_inscription: 0), $résultat_obtenu);
 	}
 
 	public function test_étant_donné_lutilisateur_bob_existant_et_une_authentification_de_type_ldap_lorsquon_login_sans_mot_de_passe_on_obtient_null()
@@ -144,7 +144,7 @@ final class LoginIntTests extends TestCase
 		$interacteur = new LoginInt();
 		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("Banane");
 
-		$this->assertEquals(new User("Banane"), $résultat_obtenu);
+		$this->assertEquals(new User(username: "Banane", date_inscription: 0), $résultat_obtenu);
 	}
 
 	public function test_étant_donné_lutilisateur_Banane_inexistant_et_une_authentification_de_type_ldap_lorsquon_login_sans_mot_de_passe_on_obtient_null()
@@ -166,7 +166,7 @@ final class LoginIntTests extends TestCase
 		$interacteur = new LoginInt();
 		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("bob", "password");
 
-		$this->assertEquals(new User("bob"), $résultat_obtenu);
+		$this->assertEquals(new User(username: "bob", date_inscription: 0), $résultat_obtenu);
 	}
 
 	public function test_étant_donné_lutilisateur_existant_bob_et_une_authentification_de_type_local_lorsquon_login_avec_courriel_et_mdp_correct_on_obtient_un_objet_user_nommé_bob()
@@ -177,7 +177,10 @@ final class LoginIntTests extends TestCase
 		$interacteur = new LoginInt();
 		$résultat_obtenu = $interacteur->effectuer_login_par_identifiant("bob@progressionmail.com", "password");
 
-		$this->assertEquals(new User("bob", "bob@progressionmail.com"), $résultat_obtenu);
+		$this->assertEquals(
+			new User(username: "bob", date_inscription: 0, courriel: "bob@progressionmail.com"),
+			$résultat_obtenu,
+		);
 	}
 
 	public function test_étant_donné_lutilisateur_existant_bob_et_une_authentification_de_type_local_lorsquon_login_avec_mdp_incorrect_on_obtient_null()
@@ -208,7 +211,7 @@ final class LoginIntTests extends TestCase
 		$interacteur = new LoginInt();
 		$résultat_obtenu = $interacteur->effectuer_login_par_clé("bob", "clé valide", "secret");
 
-		$this->assertEquals(new User("bob"), $résultat_obtenu);
+		$this->assertEquals(new User(username: "bob", date_inscription: 0), $résultat_obtenu);
 	}
 
 	public function test_étant_donné_lutilisateur_existant_bob_lorsquon_login_avec_une_clé_d_authentification_inexistante_on_obtient_null()

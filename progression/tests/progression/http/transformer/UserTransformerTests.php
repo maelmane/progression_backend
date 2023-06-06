@@ -18,25 +18,33 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\user\User;
+use progression\domaine\entité\user\{User, État, Rôle};
 use progression\domaine\entité\clé\{Clé, Portée};
 use PHPUnit\Framework\TestCase;
 
 final class UserTransformerTests extends TestCase
 {
-	public function test_étant_donné_un_user_instancié_avec_id_2_et_nom_bob_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
+	public function test_étant_donné_un_user_instancié_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
 		putenv("APP_URL=https://example.com");
-		$user = new User("bob");
+		$user = new User(
+			username: "bob",
+			date_inscription: 1590828610,
+			courriel: "bob@testmail.com",
+			état: État::ACTIF,
+			rôle: Rôle::NORMAL,
+			préférences: "les rouges",
+		);
 		$user->id = "bob";
 
 		$résultat = [
 			"id" => "bob",
-			"courriel" => null,
+			"courriel" => "bob@testmail.com",
 			"username" => "bob",
-			"état" => "inactif",
+			"état" => "actif",
 			"rôle" => "normal",
-			"préférences" => "",
+			"date_inscription" => 1590828610,
+			"préférences" => "les rouges",
 			"links" => [
 				"self" => "https://example.com/user/bob",
 			],
@@ -48,7 +56,7 @@ final class UserTransformerTests extends TestCase
 
 	public function test_étant_donné_un_user_avec_ses_clés_lorsquon_inclut_les_clés_on_reçoit_un_tableau_de_clés()
 	{
-		$user = new User("bob");
+		$user = new User(username: "bob", date_inscription: 0);
 		$user->clés = [
 			new Clé(null, 1624593600, 1624680000, Portée::AUTH),
 			new Clé(null, 1624593602, 1624680002, Portée::AUTH),

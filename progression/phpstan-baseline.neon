@@ -2078,16 +2078,6 @@ parameters:
 			path: app/progression/domaine/interacteur/ConnecterConteneurInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\CréerUserInt\\:\\:créer_user\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/CréerUserInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\CréerUserInt\\:\\:créer_user\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/CréerUserInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\EnregistrerSauvegardeInt\\:\\:enregistrer\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/EnregistrerSauvegardeInt.php

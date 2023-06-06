@@ -74,6 +74,7 @@ class UserDAO extends EntitéDAO
 				"état" => $user->état,
 				"rôle" => $user->rôle,
 				"preferences" => $user->préférences,
+				"date_inscription" => $user->date_inscription,
 			];
 
 			return $this->construire([UserMdl::query()->updateOrCreate(["username" => $user->username], $objet)])[0];
@@ -112,6 +113,7 @@ class UserDAO extends EntitéDAO
 		foreach ($data as $user) {
 			$users[] = new User(
 				username: $user["username"],
+				date_inscription: $user["date_inscription"],
 				courriel: $user["courriel"],
 				état: $user["état"],
 				rôle: $user["rôle"],

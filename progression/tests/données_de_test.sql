@@ -5,48 +5,54 @@ DELETE FROM sauvegarde;
 DELETE FROM cle;
 DELETE FROM user;
 
-INSERT INTO user(id, courriel, username, password, etat, role) VALUES (
+INSERT INTO user(id, courriel, username, password, etat, role, date_inscription) VALUES (
   1,
   null,
   "jdoe",
   "Crosemont2021!",
   0,
-  0
+  0,
+  1600828609
 ), (
   2,
   "bob@progressionmail.com",
   "bob",
   "motDePasse",
   0,
-  0
+  0,
+  1590828610
 ), (
   3,
   null,
   "admin",
   "mdpAdmin",
   0,
-  1
+  1,
+  1580828611
 ), (
   4,
   null,
   "Stefany",
   null,
   0,
-  0
+  0,
+  1610828610
 ), (
   5,
   "jane@gmail.com",
   "jane",
   null,
   0,
-  0
+  0,
+  1610828611
 ), (
   6,
   "nouveau@progressionmail.com",
   "nouveau",
   "Test1234",
   2,
-  0
+  0,
+  1610828612
 );
 
 INSERT INTO cle(nom, hash, creation, expiration, portee, user_id) VALUES (

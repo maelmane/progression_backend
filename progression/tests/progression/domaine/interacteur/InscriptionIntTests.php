@@ -20,7 +20,6 @@ namespace progression\domaine\interacteur;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\user\{User, État, Rôle};
-use progression\http\contrôleur\GénérateurDeToken;
 use PHPUnit\Framework\TestCase;
 use Carbon\Carbon;
 use Mockery;
@@ -34,22 +33,33 @@ final class InscriptionIntTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 
 		putenv("APP_URL=https://example.com");
+		putenv("JWT_SECRET=secret-test");
+		putenv("JWT_EXPIRATION=15");
+		putenv("APP_VERSION=2.0.0");
 
 		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
-		$mockExpéditeurDao = Mockery::mock("progression\\dao\\mail\Expéditeur");
+		$mockUserDao
+			->shouldReceive("get_user")
+			->with("bob")
+			->andReturn(new User(username: "bob", date_inscription: 0, courriel: "bob@progressionmail.com"));
+		$mockUserDao
+			->shouldReceive("trouver")
+			->with(null, "bob@progressionmail.com")
+			->andReturn(new User(username: "bob", date_inscription: 0, courriel: "bob@progressionmail.com"));
+		$mockUserDao->shouldReceive("get_user")->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDao);
-		DAOFactory::setInstance($mockDAOFactory);
 
+		$mockExpéditeurDao = Mockery::mock("progression\\dao\\mail\Expéditeur");
 		$mockDAOFactory->shouldReceive("get_expéditeur")->andReturn($mockExpéditeurDao);
+		DAOFactory::setInstance($mockDAOFactory);
 	}
 
 	public function tearDown(): void
 	{
 		Mockery::close();
 		DAOFactory::setInstance(null);
-		GénérateurDeToken::set_instance(null);
 	}
 
 	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_local_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User_en_attente()
@@ -57,16 +67,21 @@ final class InscriptionIntTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=true");
 
-		putenv("JWT_SECRET=secret-test");
-		putenv("JWT_EXPIRATION=15");
-
-		Carbon::setTestNowAndTimezone(Carbon::create(2001, 5, 21, 12));
+		Carbon::setTestNow(Carbon::create(2001, 5, 21, 12));
 
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
 			->shouldReceive("get_user")
 			->with("roger")
-			->andReturn(null, new User("roger", "roger@gmail.com", État::ATTENTE_DE_VALIDATION));
+			->andReturn(
+				null,
+				new User(
+					username: "roger",
+					date_inscription: 0,
+					courriel: "roger@gmail.com",
+					état: État::ATTENTE_DE_VALIDATION,
+				),
+			);
 		$mockUserDao
 			->shouldReceive("trouver")
 			->with(Mockery::any(), "roger@gmail.com")
@@ -79,7 +94,14 @@ final class InscriptionIntTests extends TestCase
 					$user->état == État::ATTENTE_DE_VALIDATION;
 			})
 			->once()
-			->andReturn(new User("roger", "roger@gmail.com", État::ATTENTE_DE_VALIDATION));
+			->andReturn(
+				new User(
+					username: "roger",
+					date_inscription: 0,
+					courriel: "roger@gmail.com",
+					état: État::ATTENTE_DE_VALIDATION,
+				),
+			);
 		$mockUserDao
 			->shouldReceive("set_password")
 			->once()
@@ -87,45 +109,27 @@ final class InscriptionIntTests extends TestCase
 				return $user->username == "roger" && $password == "password";
 			});
 
-		$mockGénérateurDeToken = Mockery::mock("progression\\http\\contrôleur\\GénérateurDeToken");
-		GénérateurDeToken::set_instance($mockGénérateurDeToken);
-
-		$mockGénérateurDeToken
-			->shouldReceive("générer_token")
-			->once()
-			->withArgs(function ($username, $expiration, $ressources) {
-				$ressources_attendues = [
-					"data" => [
-						"url_user" => "https://example.com/user/roger",
-						"user" => [
-							"username" => "roger",
-							"courriel" => "roger@gmail.com",
-							"rôle" => Rôle::NORMAL,
-						],
-					],
-					"permissions" => [
-						"user" => [
-							"url" => "^user/roger$",
-							"method" => "^POST$",
-						],
-					],
-				];
-
-				return $username == "roger" && $expiration == 990447300 && $ressources == $ressources_attendues;
-			})
-			->andReturn("token valide");
-
 		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
 		$mockExpéditeurDao
 			->shouldReceive("envoyer_validation_courriel")
 			->withArgs(function ($user, $token) {
-				return $user->courriel == "roger@gmail.com" && $token == "token valide";
+				return $user->courriel == "roger@gmail.com" &&
+					$token ==
+						"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InJvZ2VyIiwiY3VycmVudCI6OTkwNDQ2NDAwLCJleHBpcmVkIjo5OTA0NDczMDAsInJlc3NvdXJjZXMiOnsiZGF0YSI6eyJ1cmxfdXNlciI6Imh0dHBzOlwvXC9leGFtcGxlLmNvbVwvdXNlclwvcm9nZXIiLCJ1c2VyIjp7InVzZXJuYW1lIjoicm9nZXIiLCJjb3VycmllbCI6InJvZ2VyQGdtYWlsLmNvbSIsInJcdTAwZjRsZSI6MH19LCJwZXJtaXNzaW9ucyI6eyJ1c2VyIjp7InVybCI6Il51c2VyXC9yb2dlciQiLCJtZXRob2QiOiJeUE9TVCQifX19LCJ2ZXJzaW9uIjoiMi4wLjAifQ.Og0J_bP4xxypUvClVU1qLqDmHxB_Dfyk_2RiNxFYRMI";
 			})
 			->andReturn();
 
 		$user = (new InscriptionInt())->effectuer_inscription_locale("roger", "roger@gmail.com", "password");
 
-		$this->assertEquals(new User("roger", "roger@gmail.com", État::ATTENTE_DE_VALIDATION), $user);
+		$this->assertEquals(
+			new User(
+				username: "roger",
+				date_inscription: 0,
+				courriel: "roger@gmail.com",
+				état: État::ATTENTE_DE_VALIDATION,
+			),
+			$user,
+		);
 	}
 
 	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_no_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User_actif()
@@ -133,11 +137,13 @@ final class InscriptionIntTests extends TestCase
 		putenv("AUTH_LOCAL=false");
 		putenv("AUTH_LDAP=false");
 
+		Carbon::setTestNow(Carbon::create(2001, 5, 21, 12));
+
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
 			->shouldReceive("get_user")
 			->with("roger")
-			->andReturn(null, new User("roger"));
+			->andReturn(null, new User(username: "roger", date_inscription: 0));
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($user) {
@@ -152,7 +158,7 @@ final class InscriptionIntTests extends TestCase
 
 		$user = (new InscriptionInt())->effectuer_inscription_sans_mdp("roger");
 
-		$this->assertEquals(new User("roger", état: État::ACTIF), $user);
+		$this->assertEquals(new User(username: "roger", date_inscription: 990446400, état: État::ACTIF), $user);
 	}
 
 	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_local_lorsquon_effectue_linscription_sans_mdp_on_obtient_null()
@@ -164,7 +170,7 @@ final class InscriptionIntTests extends TestCase
 		$mockUserDao
 			->shouldReceive("get_user")
 			->with("roger")
-			->andReturn(null, new User("roger"));
+			->andReturn(null, new User(username: "roger", date_inscription: 0));
 		$mockUserDao->shouldNotReceive("save");
 		$mockUserDao->shouldNotReceive("set_password");
 
@@ -178,13 +184,22 @@ final class InscriptionIntTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		putenv("JWT_SECRET=secret-test");
+		Carbon::setTestNow(Carbon::create(2001, 5, 21, 12));
 
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDao
 			->shouldReceive("get_user")
 			->with("admin")
-			->andReturn(null, new User("admin", "admin@gmail.com", État::ACTIF, Rôle::ADMIN));
+			->andReturn(
+				null,
+				new User(
+					username: "admin",
+					date_inscription: 0,
+					courriel: "admin@gmail.com",
+					état: État::ACTIF,
+					rôle: Rôle::ADMIN,
+				),
+			);
 		$mockUserDao
 			->shouldReceive("trouver")
 			->with(Mockery::any(), "admin@gmail.com")
@@ -210,17 +225,20 @@ final class InscriptionIntTests extends TestCase
 			rôle: Rôle::ADMIN,
 		);
 
-		$this->assertEquals(new User("admin", "admin@gmail.com", État::ACTIF, Rôle::ADMIN), $user);
+		$this->assertEquals(
+			new User(
+				username: "admin",
+				date_inscription: 990446400,
+				courriel: "admin@gmail.com",
+				état: État::ACTIF,
+				rôle: Rôle::ADMIN,
+			),
+			$user,
+		);
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_linscrit_avec_le_même_username_on_obtient_null()
 	{
-		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
-		$mockUserDao
-			->shouldReceive("get_user")
-			->with("bob")
-			->andReturn(new User("bob", "bob@progressionmail.com"));
-
 		$user = (new InscriptionInt())->effectuer_inscription_locale(
 			"bob",
 			courriel: "bob@test.com",
@@ -232,17 +250,6 @@ final class InscriptionIntTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_linscrit_avec_le_même_courriel_on_obtient_null()
 	{
-		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
-		$mockUserDao
-			->shouldReceive("get_user")
-			->with("bob")
-			->andReturn(new User("bob", "bob@progressionmail.com"));
-		$mockUserDao
-			->shouldReceive("trouver")
-			->with(null, "bob@progressionmail.com")
-			->andReturn(new User("bob", "bob@progressionmail.com"));
-		$mockUserDao->shouldReceive("get_user")->andReturn(null);
-
 		$user = (new InscriptionInt())->effectuer_inscription_locale(
 			"autrenom",
 			courriel: "bob@progressionmail.com",
@@ -254,12 +261,6 @@ final class InscriptionIntTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_linscrit_avec_le_même_courriel_et_username_on_obtient_null()
 	{
-		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
-		$mockUserDao
-			->shouldReceive("get_user")
-			->with("bob")
-			->andReturn(new User("bob", "bob@progressionmail.com"));
-
 		$user = (new InscriptionInt())->effectuer_inscription_locale(
 			"bob",
 			courriel: "bob@progressionmail.com",

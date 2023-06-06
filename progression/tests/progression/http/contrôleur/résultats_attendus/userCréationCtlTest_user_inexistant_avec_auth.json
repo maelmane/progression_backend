@@ -3,8 +3,9 @@
     "type": "user",
     "id": "Marcel2",
     "attributes": {
-      "courriel": "marcel2@gmail.com",
       "username": "Marcel2",
+	  "date_inscription": 1610810612,		
+      "courriel": "marcel2@gmail.com",
       "état": "en_attente_de_validation",
       "rôle": "normal",
       "préférences": ""

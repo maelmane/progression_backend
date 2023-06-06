@@ -44,7 +44,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 		$mockUserDao
 			->allows()
 			->get_user("jdoe")
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		//Tentatives avec conteneur
 		self::$tentative_correcte = new TentativeSys(["id" => "Conteneur de test correct"], null, 1615696286);

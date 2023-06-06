@@ -30,7 +30,7 @@ final class CommentaireTransformerTests extends TestCase
 
 		$commentaire = new Commentaire(
 			"message envoyer par interacteurMocker",
-			new User("createur_test"),
+			new User(username: "createur_test", date_inscription: 0),
 			122456747,
 			15,
 		);

@@ -3,8 +3,9 @@
 		"type": "user",
 		"id": "nouveau",
 		"attributes": {
-			"courriel": "nouveau@mail.com",
 			"username": "nouveau",
+			"date_inscription": 1610828612,
+			"courriel": "nouveau@mail.com",
 			"état": "en_attente_de_validation",
 			"rôle": "normal",
 			"préférences": ""

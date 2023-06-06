@@ -37,7 +37,7 @@ final class SauvegarderAvancementIntTests extends TestCase
 		$mockUserDAO
 			->allows()
 			->get_user("jdoe")
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO

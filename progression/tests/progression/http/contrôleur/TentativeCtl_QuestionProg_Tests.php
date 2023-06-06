@@ -129,7 +129,9 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			tests_réussis: 2,
 			feedback: "feedbackTest",
 			temps_exécution: 5,
-			commentaires: [new Commentaire("message", new User("créateur"), 1614374490, 42)],
+			commentaires: [
+				new Commentaire("message", new User(username: "créateur", date_inscription: 0), 1614374490, 42),
+			],
 		);
 
 		// Tentative non réussie
@@ -263,7 +265,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$mockUserDAO
 			->allows("get_user")
 			->with("jdoe")
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");

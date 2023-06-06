@@ -3,8 +3,9 @@
     "type": "user",
     "id": "Marcel",
     "attributes": {
-      "courriel": null,
       "username": "Marcel",
+      "date_inscription": 1610810612,		
+      "courriel": null,
       "état": "actif",
       "rôle": "normal",
       "préférences": ""
