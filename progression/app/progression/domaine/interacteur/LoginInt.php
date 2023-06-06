@@ -29,17 +29,21 @@ class LoginInt extends Interacteur
 	{
 		$dao = $this->source_dao->get_clé_dao();
 
-		$clé = $dao->get_clé($username, $nom_clé);
-		if (
-			$clé &&
-			$clé->est_valide() &&
-			$clé->portée == Portée::AUTH &&
-			$dao->vérifier($username, $nom_clé, $secret)
-		) {
-			$dao = $this->source_dao->get_user_dao();
-			return $dao->get_user($username);
-		} else {
-			return null;
+		try {
+			$clé = $dao->get_clé($username, $nom_clé);
+			if (
+				$clé &&
+				$clé->est_valide() &&
+				$clé->portée == Portée::AUTH &&
+				$dao->vérifier($username, $nom_clé, $secret)
+			) {
+				$dao = $this->source_dao->get_user_dao();
+				return $dao->get_user($username);
+			} else {
+				return null;
+			}
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e);
 		}
 	}
 
@@ -56,19 +60,15 @@ class LoginInt extends Interacteur
 		$auth_local = getenv("AUTH_LOCAL") === "true";
 		$auth_ldap = getenv("AUTH_LDAP") === "true";
 
-		try {
-			if ($auth_ldap && $domaine) {
-				// LDAP
-				$user = $this->login_ldap($identifiant, $password, $domaine);
-			} elseif ($auth_local) {
-				// Local
-				$user = $this->login_local($identifiant, $password);
-			} elseif (!$auth_ldap) {
-				// Sans authentification
-				$user = $this->login_sans_authentification($identifiant, null);
-			}
-		} catch (DAOException $e) {
-			throw new IntéracteurException($e, 503);
+		if ($auth_ldap && $domaine) {
+			// LDAP
+			$user = $this->login_ldap($identifiant, $password, $domaine);
+		} elseif ($auth_local) {
+			// Local
+			$user = $this->login_local($identifiant, $password);
+		} elseif (!$auth_ldap) {
+			// Sans authentification
+			$user = $this->login_sans_authentification($identifiant, null);
 		}
 
 		return $user;
@@ -78,15 +78,17 @@ class LoginInt extends Interacteur
 	{
 		$user = null;
 
-		if ($password) {
-			$obtenirUserInt = new ObtenirUserInt();
-			$user =
-				strpos($identifiant, "@") === false
-					? $obtenirUserInt->get_user($identifiant)
-					: $obtenirUserInt->trouver(courriel: $identifiant);
+		$obtenirUserInt = new ObtenirUserInt();
+		$user =
+			strpos($identifiant, "@") === false
+				? $obtenirUserInt->get_user($identifiant)
+				: $obtenirUserInt->trouver(courriel: $identifiant);
+		try {
 			if (!$user || !$this->source_dao->get_user_dao()->vérifier_password($user, $password)) {
 				return null;
 			}
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e);
 		}
 
 		return $user;

@@ -32,8 +32,8 @@ final class InscriptionIntTests extends TestCase
 		parent::setUp();
 
 		putenv("AUTH_LOCAL=true");
-
 		putenv("APP_URL=https://example.com");
+		putenv("PREFERENCES_DEFAUT=");
 
 		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
 		$mockExpéditeurDao = Mockery::mock("progression\\dao\\mail\Expéditeur");
@@ -152,7 +152,99 @@ final class InscriptionIntTests extends TestCase
 
 		$user = (new InscriptionInt())->effectuer_inscription_sans_mdp("roger");
 
-		$this->assertEquals(new User("roger", état: État::ACTIF), $user);
+		$this->assertEquals(new User("roger", état: État::ACTIF, préférences: ""), $user);
+	}
+
+	public function test_étant_donné_un_utilisateur_non_existant_sans_authentification_et_une_variable_PREFERENCES_DEFAUT_définie_lorsquon_effectue_linscription_il_est_sauvegardé_avec_des_préférences_par_défaut()
+	{
+		putenv("AUTH_LOCAL=false");
+		putenv("AUTH_LDAP=false");
+		putenv("PREFERENCES_DEFAUT=préférences par défaut");
+
+		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
+		$mockUserDao
+			->allows()
+			->get_user("roger")
+			->andReturn(null, new User("roger", préférences: "préférences par défaut"));
+		$mockUserDao
+			->shouldReceive("save")
+			->withArgs(function ($user) {
+				return $user->username == "roger" && $user->préférences == "préférences par défaut";
+			})
+			->once()
+			->andReturn(new User("roger", préférences: "préférences par défaut"));
+
+		$user = (new InscriptionInt())->effectuer_inscription_sans_mdp("roger");
+
+		$this->assertEquals(new User("roger", préférences: "préférences par défaut"), $user);
+	}
+
+	public function test_étant_donné_un_utilisateur_non_existant_un_type_dauthentification_locale_et_une_variable_PREFERENCES_DEFAUT_définie_lorsquon_effectue_linscription_il_est_sauvegardé_avec_des_préférences_par_défaut()
+	{
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
+		putenv("PREFERENCES_DEFAUT=préférences par défaut");
+
+		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
+		$mockUserDao
+			->allows()
+			->get_user("roger")
+			->andReturn(null, new User("roger", courriel: "roger@testmail.com", préférences: "préférences par défaut"));
+		$mockUserDao
+			->shouldReceive("trouver")
+			->with(Mockery::any(), "roger@testmail.com")
+			->andReturn(null);
+		$mockUserDao
+			->shouldReceive("save")
+			->withArgs(function ($user) {
+				return $user->username == "roger" && $user->préférences == "préférences par défaut";
+			})
+			->once()
+			->andReturn(new User("roger", courriel: "roger@testmail.com", préférences: "préférences par défaut"));
+		$mockUserDao
+			->shouldReceive("set_password")
+			->once()
+			->withArgs(function ($user, $password) {
+				return $user->username == "roger" && $password == "password";
+			});
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao
+			->shouldReceive("envoyer_validation_courriel")
+			->withArgs(function ($user, $token) {
+				return $user->courriel == "roger@testmail.com";
+			})
+			->andReturn();
+
+		$user = (new InscriptionInt())->effectuer_inscription_locale("roger", "roger@testmail.com", "password");
+
+		$this->assertEquals(
+			new User("roger", courriel: "roger@testmail.com", préférences: "préférences par défaut"),
+			$user,
+		);
+	}
+
+	public function test_étant_donné_un_utilisateur_non_existant_sans_authentification_et_une_variable_PREFERENCES_DEFAUT_non_définie_lorsquon_effectue_linscription_il_est_sauvegardé_sans_préférences()
+	{
+		putenv("AUTH_LOCAL=false");
+		putenv("AUTH_LDAP=false");
+		putenv("PREFERENCES_DEFAUT=");
+
+		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
+		$mockUserDao
+			->allows()
+			->get_user("roger")
+			->andReturn(null, new User("roger", préférences: ""));
+		$mockUserDao
+			->shouldReceive("save")
+			->withArgs(function ($user) {
+				return $user->username == "roger" && $user->préférences == "";
+			})
+			->once()
+			->andReturn(new User("roger", préférences: ""));
+
+		$user = (new InscriptionInt())->effectuer_inscription_sans_mdp("roger");
+
+		$this->assertEquals(new User("roger", préférences: ""), $user);
 	}
 
 	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_local_lorsquon_effectue_linscription_sans_mdp_on_obtient_null()

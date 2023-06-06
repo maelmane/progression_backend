@@ -64,7 +64,15 @@ class InscriptionInt extends Interacteur
 	): User|null {
 		$dao = $this->source_dao->get_user_dao();
 		return $dao->get_user($username) ??
-			$dao->save(new User($username, courriel: $courriel, rôle: $rôle, état: État::ACTIF));
+			$dao->save(
+				new User(
+					$username,
+					courriel: $courriel,
+					rôle: $rôle,
+					état: État::ACTIF,
+					préférences: getenv("PREFERENCES_DEFAUT") ?: "",
+				),
+			);
 	}
 
 	private function effectuer_inscription_avec_mdp(
@@ -96,6 +104,7 @@ class InscriptionInt extends Interacteur
 				$courriel,
 				rôle: $rôle,
 				état: $rôle == Rôle::ADMIN ? État::ACTIF : État::ATTENTE_DE_VALIDATION,
+				préférences: getenv("PREFERENCES_DEFAUT") ?: "",
 			),
 		);
 		$dao->set_password($user, $password);

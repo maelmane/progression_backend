@@ -47,8 +47,8 @@ class UserCtl extends Contrôleur
 	{
 		Log::debug("UserCtl.post. Params : ", [$request->all(), $username]);
 
+		$réponse = null;
 		$validation = $this->valider_paramètres($request);
-
 		if ($validation->fails()) {
 			return $this->réponse_json(["erreur" => $validation->errors()], 400);
 		}
