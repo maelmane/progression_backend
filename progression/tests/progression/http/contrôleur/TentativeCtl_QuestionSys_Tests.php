@@ -254,7 +254,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$mockUserDAO
 			->allows("get_user")
 			->with("jdoe")
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");

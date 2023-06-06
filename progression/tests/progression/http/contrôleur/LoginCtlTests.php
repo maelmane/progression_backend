@@ -51,23 +51,23 @@ final class LoginCtlTests extends ContrôleurTestCase
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob")
-			->andReturn(new User("bob", état: État::ACTIF));
+			->andReturn(new User(username: "bob", date_inscription: 0, état: État::ACTIF));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob", [])
-			->andReturn(new User("bob", état: État::ACTIF));
+			->andReturn(new User(username: "bob", date_inscription: 0, état: État::ACTIF));
 		$mockUserDAO
 			->shouldReceive("trouver")
 			->with(null, "bob@progressionmail.com", [])
-			->andReturn(new User("bob", état: État::ACTIF));
+			->andReturn(new User(username: "bob", date_inscription: 0, état: État::ACTIF));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("roger")
-			->andReturn(new User("roger", état: État::INACTIF));
+			->andReturn(new User(username: "roger", date_inscription: 0, état: État::INACTIF));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("marcel")
-			->andReturn(new User("marcel", état: État::ATTENTE_DE_VALIDATION));
+			->andReturn(new User(username: "marcel", date_inscription: 0, état: État::ATTENTE_DE_VALIDATION));
 		$mockUserDAO->shouldReceive("get_user")->andReturn(null);
 
 		$mockUserDAO

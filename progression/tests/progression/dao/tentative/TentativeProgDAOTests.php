@@ -56,9 +56,9 @@ final class TentativeProgDAOTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_non_réussie_lorsquon_récupère_la_tentative_en_incluant_les_commentaires_et_leur_créateur_on_obtient_une_tentative_de_type_prog_avec_ses_commentaires_et_leur_créateur()
 	{
-		$this->jdoe = new User("jdoe");
-		$this->admin = new User("admin", rôle: Rôle::ADMIN);
-		$this->stefany = new User("Stefany");
+		$this->jdoe = new User(username: "jdoe", date_inscription: 1600828609);
+		$this->admin = new User(username: "admin", date_inscription: 1580828611, rôle: Rôle::ADMIN);
+		$this->stefany = new User(username: "Stefany", date_inscription: 1610828610);
 
 		$commentaires = [];
 		$commentaires[1] = new Commentaire("le 1er message", $this->jdoe, 1615696277, 14);

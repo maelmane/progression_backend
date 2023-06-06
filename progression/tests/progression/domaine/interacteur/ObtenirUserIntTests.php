@@ -33,15 +33,15 @@ final class ObtenirUserIntTests extends TestCase
 		$mockUserDao
 			->shouldReceive("get_user")
 			->with("bob", [])
-			->andReturn(new User("bob"));
+			->andReturn(new User(username: "bob", date_inscription: 0));
 		$mockUserDao
 			->shouldReceive("trouver")
 			->with(null, "bob@progressionmail.com", [])
-			->andReturn(new User("bob"));
+			->andReturn(new User(username: "bob", date_inscription: 0));
 		$mockUserDao
 			->shouldReceive("trouver")
 			->with("bob", "bob@progressionmail.com", [])
-			->andReturn(new User("bob"));
+			->andReturn(new User(username: "bob", date_inscription: 0));
 
 		$mockUserDao->shouldReceive("get_user")->andReturn(null);
 
@@ -65,7 +65,7 @@ final class ObtenirUserIntTests extends TestCase
 		$interacteur = new ObtenirUserInt();
 		$résultat_obtenu = $interacteur->get_user("bob");
 
-		$résultat_attendu = new User("bob");
+		$résultat_attendu = new User(username: "bob", date_inscription: 0);
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
@@ -74,7 +74,7 @@ final class ObtenirUserIntTests extends TestCase
 		$interacteur = new ObtenirUserInt();
 		$résultat_obtenu = $interacteur->trouver(courriel: "bob@progressionmail.com");
 
-		$résultat_attendu = new User("bob");
+		$résultat_attendu = new User(username: "bob", date_inscription: 0);
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
@@ -83,7 +83,7 @@ final class ObtenirUserIntTests extends TestCase
 		$interacteur = new ObtenirUserInt();
 		$résultat_obtenu = $interacteur->trouver(username: "bob", courriel: "bob@progressionmail.com");
 
-		$résultat_attendu = new User("bob");
+		$résultat_attendu = new User(username: "bob", date_inscription: 0);
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 

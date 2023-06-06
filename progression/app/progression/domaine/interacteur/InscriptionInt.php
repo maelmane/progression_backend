@@ -66,7 +66,8 @@ class InscriptionInt extends Interacteur
 		return $dao->get_user($username) ??
 			$dao->save(
 				new User(
-					$username,
+					username: $username,
+					date_inscription: Carbon::now()->getTimestamp(),
 					courriel: $courriel,
 					rôle: $rôle,
 					état: État::ACTIF,
@@ -100,8 +101,9 @@ class InscriptionInt extends Interacteur
 		$dao = $this->source_dao->get_user_dao();
 		$user = $dao->save(
 			new User(
-				$username,
-				$courriel,
+				username: $username,
+				date_inscription: Carbon::now()->getTimestamp(),
+				courriel: $courriel,
 				rôle: $rôle,
 				état: $rôle == Rôle::ADMIN ? État::ACTIF : État::ATTENTE_DE_VALIDATION,
 				préférences: getenv("PREFERENCES_DEFAUT") ?: "",

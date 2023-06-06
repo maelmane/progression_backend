@@ -33,6 +33,8 @@ final class PermissionsRessourcesTests extends TestCase
 		parent::setUp();
 
 		putenv("AUTH_TYPE=ldap");
+		putenv("APP_URL=https://example.com/");
+
 		$this->user = new GenericUser([
 			"username" => "bob",
 			"rôle" => Rôle::NORMAL,
@@ -46,15 +48,15 @@ final class PermissionsRessourcesTests extends TestCase
 		$mockUserDAO
 			->allows()
 			->get_user("bob", [])
-			->andReturn(new User("bob"));
+			->andReturn(new User(username: "bob", date_inscription: 1590828610));
 		$mockUserDAO
 			->allows()
 			->get_user("Bob", [])
-			->andReturn(new User("bob"));
+			->andReturn(new User(username: "bob", date_inscription: 1590828610));
 		$mockUserDAO
 			->allows()
 			->get_user("jdoe", [])
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 1590828610));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");

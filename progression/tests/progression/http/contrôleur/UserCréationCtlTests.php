@@ -22,6 +22,7 @@ use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\user\{User, État, Rôle};
 use progression\dao\DAOFactory;
 use Illuminate\Auth\GenericUser;
+use Carbon\Carbon;
 
 final class UserCréationCtlTests extends ContrôleurTestCase
 {
@@ -47,11 +48,25 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob")
-			->andReturn(new User("bob", "bob@progressionmail.com", état: État::ACTIF));
+			->andReturn(
+				new User(
+					username: "bob",
+					date_inscription: 1590828610,
+					courriel: "bob@progressionmail.com",
+					état: État::ACTIF,
+				),
+			);
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("nouveau")
-			->andReturn(new User("nouveau", "nouveau@mail.com", état: État::ATTENTE_DE_VALIDATION));
+			->andReturn(
+				new User(
+					username: "nouveau",
+					date_inscription: 1610828612,
+					courriel: "nouveau@mail.com",
+					état: État::ATTENTE_DE_VALIDATION,
+				),
+			);
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("Marcel")
@@ -102,6 +117,8 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_un_utilisateur_inexistant_sans_authentification_lorsquon_linscrit_il_est_sauvegardé_et_on_obtient_un_user()
 	{
 		putenv("AUTH_LOCAL=false");
+
+		Carbon::setTestNow(Carbon::create(2021, 01, 16, 15, 23, 32));
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDAO
@@ -227,6 +244,8 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_linscrit_il_est_sauvegardé_et_on_obtient_un_user()
 	{
 		putenv("AUTH_LOCAL=true");
+
+		Carbon::setTestNow(Carbon::create(2021, 01, 16, 15, 23, 32));
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
 		$mockUserDAO

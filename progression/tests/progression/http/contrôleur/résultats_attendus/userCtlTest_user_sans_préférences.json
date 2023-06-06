@@ -4,6 +4,7 @@
     "id": "monique",
     "attributes": {
       "username": "monique",
+      "date_inscription":1600828609,
       "courriel": null,
       "état": "inactif",
 		"rôle": "normal",

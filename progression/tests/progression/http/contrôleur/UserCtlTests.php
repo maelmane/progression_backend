@@ -38,8 +38,17 @@ final class UserCtlTests extends ContrôleurTestCase
 
 		putenv("APP_URL=https://example.com");
 
-		$user = new User("jdoe", préférences: '{"app": {"pref1": 1, "pref2": 2}}', état: État::INACTIF);
-		$user_et_avancements = new User("jdoe", préférences: '{"app": {"pref1": 1, "pref2": 2}}');
+		$user = new User(
+			username: "jdoe",
+			date_inscription: 1600828609,
+			préférences: '{"app": {"pref1": 1, "pref2": 2}}',
+			état: État::INACTIF,
+		);
+		$user_et_avancements = new User(
+			username: "jdoe",
+			date_inscription: 1600828609,
+			préférences: '{"app": {"pref1": 1, "pref2": 2}}',
+		);
 		$user_et_avancements->avancements = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement(),
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement(),
@@ -62,7 +71,7 @@ final class UserCtlTests extends ContrôleurTestCase
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("jane", [])
-			->andReturn(new User("jane"));
+			->andReturn(new User(username: "jane", date_inscription: 1600828609));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -100,7 +109,7 @@ final class UserCtlTests extends ContrôleurTestCase
 			->get_user_dao()
 			->shouldReceive("get_user")
 			->with("monique", [])
-			->andReturn(new User("monique"));
+			->andReturn(new User(username: "monique", date_inscription: 1600828609));
 
 		$résultatObtenu = $this->actingAs($this->user)->call("GET", "/user/monique");
 
@@ -126,7 +135,7 @@ final class UserCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_post_des_préférences_elles_sont_sauvegardées_et_retournée()
 	{
 		$préférences = '{"app": {"pref1": 3, "pref2": 4}}';
-		$user_modifié = new User("jdoe", 42, préférences: $préférences);
+		$user_modifié = new User(username: "jdoe", date_inscription: 1600828609, préférences: $préférences);
 		DAOFactory::getInstance()
 			->get_user_dao()
 			->shouldReceive("save")
@@ -136,7 +145,7 @@ final class UserCtlTests extends ContrôleurTestCase
 					$user->rôle == Rôle::NORMAL &&
 					$user->préférences == '{"app": {"pref1": 3, "pref2": 4}}';
 			})
-			->andReturn(new User("jdoe", préférences: $préférences));
+			->andReturn(new User(username: "jdoe", date_inscription: 1600828609, préférences: $préférences));
 
 		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/jdoe", [
 			"préférences" => '{"app": {"pref1": 3, "pref2": 4}}',
@@ -166,7 +175,7 @@ final class UserCtlTests extends ContrôleurTestCase
 			->withArgs(function ($user) {
 				return $user->username == "jane" && $user->rôle == Rôle::NORMAL && $user->état == État::ACTIF;
 			})
-			->andReturn(new User("jane", état: État::ACTIF));
+			->andReturn(new User(username: "jane", date_inscription: 1600828609, état: État::ACTIF));
 
 		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/jane", [
 			"état" => État::ACTIF->value,

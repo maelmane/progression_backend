@@ -45,11 +45,11 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("jdoe")
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("roger")
-			->andReturn(new User("roger"));
+			->andReturn(new User(username: "roger", date_inscription: 0));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("Marcel")
@@ -123,8 +123,18 @@ final class AvancementCtlTests extends ContrôleurTestCase
 					tests_réussis: 2,
 					feedback: "feedbackTest",
 					commentaires: [
-						new Commentaire("Ceci est un commentaire", new User("oteur"), 1614974921, 42),
-						new Commentaire("Ceci est un autre commentaire", new User("oteur"), 1614974922, 43),
+						new Commentaire(
+							"Ceci est un commentaire",
+							new User(username: "oteur", date_inscription: 0),
+							1614974921,
+							42,
+						),
+						new Commentaire(
+							"Ceci est un autre commentaire",
+							new User(username: "oteur", date_inscription: 0),
+							1614974922,
+							43,
+						),
 					],
 				),
 				1614965818 => new TentativeProg(
@@ -136,7 +146,12 @@ final class AvancementCtlTests extends ContrôleurTestCase
 					tests_réussis: 2,
 					feedback: "feedbackTest",
 					commentaires: [
-						new Commentaire("Ceci est encore un autre commentaire", new User("oteur"), 1614984921, 24),
+						new Commentaire(
+							"Ceci est encore un autre commentaire",
+							new User(username: "oteur", date_inscription: 0),
+							1614984921,
+							24,
+						),
 					],
 				),
 			],

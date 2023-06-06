@@ -34,6 +34,7 @@ class UserTransformer extends BaseTransformer
 			"id" => $user->id,
 			"courriel" => $user->courriel,
 			"username" => $user->username,
+			"date_inscription" => $user->date_inscription,
 			"état" => match ($user->état) {
 				État::INACTIF => "inactif",
 				État::ACTIF => "actif",

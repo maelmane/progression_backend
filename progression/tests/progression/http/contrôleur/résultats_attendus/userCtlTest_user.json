@@ -4,6 +4,7 @@
     "id": "jdoe",
     "attributes": {
       "username": "jdoe",
+      "date_inscription":1600828609,
       "courriel": null,
       "état": "inactif",
 		"rôle": "normal",

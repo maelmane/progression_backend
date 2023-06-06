@@ -41,7 +41,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		$mockUserDao
 			->allows()
 			->get_user("jdoe")
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// Mock TentativeDAO
 		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeProgDAO");
