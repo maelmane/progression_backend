@@ -53,7 +53,7 @@ class InscriptionInt extends Interacteur
 			return null;
 		}
 
-		$user = $dao->save(new User($username, $role));
+		$user = $dao->save(new User($username, $role, préférences: getenv("PREFERENCES_DEFAUT") ?: ""));
 		$dao->set_password($user, $password);
 
 		return $user;
@@ -62,6 +62,7 @@ class InscriptionInt extends Interacteur
 	private function effectuer_inscription_sans_mdp($username, $role)
 	{
 		$dao = $this->source_dao->get_user_dao();
-		return $dao->get_user($username) ?? $dao->save(new User($username, $role));
+		return $dao->get_user($username) ??
+			$dao->save(new User($username, $role, préférences: getenv("PREFERENCES_DEFAUT") ?: ""));
 	}
 }
