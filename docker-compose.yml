@@ -62,7 +62,8 @@ services:
     env_file:
       - ${ENV_FILE:-.env}
       - VERSION
-    command: bash /var/www/progression/tests/exec_tests.sh
+    entrypoint: bash /var/www/progression/tests/exec_tests.sh
+    user: www-data
     networks:
       - progression_net
     depends_on:
