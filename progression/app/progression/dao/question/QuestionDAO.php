@@ -46,7 +46,6 @@ class QuestionDAO extends EntitéDAO
 			throw new DomainException("Le fichier ne peut pas être décodé. Erreur inconnue.");
 		}
 
-		$infos_question["uri"] = $uri;
 		$type = $infos_question["type"] ?? ($type = "prog");
 		if ($type == "prog") {
 			return DécodeurQuestionProg::load(new QuestionProg(), $infos_question);

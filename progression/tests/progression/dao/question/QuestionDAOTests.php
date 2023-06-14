@@ -37,34 +37,71 @@ final class QuestionDAOTests extends TestCase
 
 	public function test_étant_donné_un_fichier_de_question_valide_lorsquon_charge_la_question_on_obtient_un_objet_Question_correspondant()
 	{
-		$résultat_attendu = new QuestionProg();
-		$résultat_attendu->titre = "Question de test";
-		$résultat_attendu->exécutables = ["python" => new Exécutable("print(\"Allo le monde\")", "python")];
-		$résultat_attendu->tests = [0 => new TestProg("#1", "Allo le monde", "")];
-		$résultat_attendu->uri = "file://" . __DIR__ . "/démo/boucles/boucle_énumérée/info.yml";
-
-		$mockChargeurFichier = Mockery::mock("progression\\dao\\question\\ChargeurQuestionFichier");
-		$mockChargeurFichier->shouldReceive("récupérer_question")->andReturn([
-			"type" => "prog",
-			"titre" => "Question de test",
-			"ébauches" => [
-				"python" => "print(\"Allo le monde\")",
+		$résultat_attendu = new QuestionProg(
+			niveau: "débutant",
+			titre: "Affichage répété",
+			objectif: "Exercice simple sur les itérations à nombre d'itérations fixe",
+			enonce: "Saisissez un nombre sur l'entrée standard puis faites afficher la phrase «Bonjour le monde!» autant de fois.",
+			auteur: "Albert Einstein",
+			licence: "poétique",
+			feedback_pos: "Bravo! tu es prêt à passer à un type de boucles plus complexe",
+			feedback_neg: "Pour tout savoir sur les itérations énumérées : [clique ici](http://unlien.com)",
+			exécutables: [
+				"python" => new Exécutable("print(\"Bonjour le monde\")\n", "python"),
+				"java" => new Exécutable("System.out.println(\"Bonjour le monde\");\n", "java"),
 			],
-			"tests" => [
-				[
-					"entrée" => "",
-					"sortie" => "Allo le monde",
-				],
+			tests: [
+				new TestProg(nom: "1 fois", entrée: 1, sortie_attendue: "Bonjour le monde"),
+				new TestProg(
+					nom: "0 fois",
+					entrée: 0,
+					sortie_attendue: "",
+					feedback_pos: "Bien joué! 0 est aussi une entrée valable.",
+					feedback_neg: "N'oublie pas les cas limites, 0 est aussi une entrée valable!",
+				),
 			],
-		]);
-
-		$mockFactory = Mockery::mock("progression\\dao\\question\\ChargeurFactory");
-		$mockFactory->shouldReceive("get_chargeur_question_fichier")->andReturn($mockChargeurFichier);
-
-		ChargeurFactory::set_instance($mockFactory);
+		);
 
 		$résultat_obtenu = (new QuestionDAO())->get_question(
 			"file://" . __DIR__ . "/démo/boucles/boucle_énumérée/info.yml",
+		);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
+	public function test_étant_donné_un_fichier_de_question_valide_avec_énoncé_multiparties_lorsquon_charge_la_question_on_obtient_un_objet_Question_correspondant()
+	{
+		$résultat_attendu = new QuestionProg(
+			niveau: "débutant",
+			titre: "Affichage répété",
+			objectif: "Exercice simple sur les itérations à nombre d'itérations fixe",
+			enonce: [
+				[
+					"titre" => "Instructions",
+					"texte" => "On veut faire afficher une salutation un certain nombre de fois.",
+				],
+				[
+					"titre" => "À faire",
+					"texte" =>
+						"Saisissez un nombre sur l'entrée standard puis faites afficher la phrase «Bonjour le monde!» autant de fois.",
+				],
+			],
+			auteur: "Albert Einstein",
+			licence: "poétique",
+			feedback_pos: "Bravo! tu es prêt à passer à un type de boucles plus complexe",
+			feedback_neg: "Pour tout savoir sur les itérations énumérées : [clique ici](http://unlien.com)",
+			exécutables: [
+				"python" => new Exécutable("print(\"Bonjour le monde\")\n", "python"),
+				"java" => new Exécutable("System.out.println(\"Bonjour le monde\");\n", "java"),
+			],
+			tests: [
+				new TestProg(nom: "1 fois", entrée: 1, sortie_attendue: "Bonjour le monde"),
+				new TestProg(nom: "0 fois", entrée: 0, sortie_attendue: ""),
+			],
+		);
+
+		$résultat_obtenu = (new QuestionDAO())->get_question(
+			"file://" . __DIR__ . "/démo/boucles/énoncé_multiparties/info.yml",
 		);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
@@ -110,7 +147,6 @@ final class QuestionDAOTests extends TestCase
 		];
 		$résultat_attendu->tests[0]->validation = "ls –l test.txt";
 		$résultat_attendu->tests[0]->utilisateur = "matt";
-		$résultat_attendu->uri = "file://" . __DIR__ . "/démo/permissions_sys/permissions/info.yml";
 
 		$résultat_obtenu = (new QuestionDAO())->get_question(
 			"file://" . __DIR__ . "/démo/permissions_sys/permissions/info.yml",
@@ -161,7 +197,6 @@ final class QuestionDAOTests extends TestCase
 		];
 		$résultat_attendu->tests[0]->validation = "ls –l test.txt";
 		$résultat_attendu->tests[0]->utilisateur = "matt";
-		$résultat_attendu->uri = "file://" . __DIR__ . "/démo/permissions_sys/permissions/info.yml";
 
 		$résultat_obtenu = (new QuestionDAO())->get_question(
 			"file://" . __DIR__ . "/démo/permissions_sys/permissions/info.yml",
