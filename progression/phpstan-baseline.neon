@@ -1376,11 +1376,6 @@ parameters:
 			path: app/progression/domaine/entité/Question.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$feedback_err with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/Question.php
@@ -1456,11 +1451,6 @@ parameters:
 			path: app/progression/domaine/entité/QuestionProg.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$exécutables with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/QuestionProg.php
@@ -1512,11 +1502,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$auteur with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/QuestionSys.php
 

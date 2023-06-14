@@ -22,7 +22,6 @@ class DécodeurQuestion
 {
 	public static function load($question, $infos_question)
 	{
-		$question->uri = $infos_question["uri"];
 		$question->niveau = $infos_question["niveau"] ?? null;
 		$question->titre = $infos_question["titre"] ?? null;
 		$question->objectif = $infos_question["objectif"] ?? null;

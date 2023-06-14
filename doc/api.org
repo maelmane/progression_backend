@@ -125,19 +125,19 @@ Question
 
 *** Propriétés :
 
-| Nom         | Type | Valeurs      |
-|-------------+------+--------------|
-| uri         | str  |              |
-| niveau      | str  |              |
-| titre       | str  |              |
-| description | str  |              |
-| objectif    | str  |              |
-| énoncé      | str  |              |
-| auteur      | str  |              |
-| licence     | str  |              |
-| sous-type   | str  | questionProg |
-|             |      | questionSys  |
-|             |      | questionBD   |
+| Nom         | Type                 | Valeurs      |
+|-------------+----------------------+--------------|
+| uri         | str                  |              |
+| niveau      | str                  |              |
+| titre       | str                  |              |
+| description | str                  |              |
+| objectif    | str                  |              |
+| énoncé      | str ou liste de dict |              |
+| auteur      | str                  |              |
+| licence     | str                  |              |
+| sous-type   | str                  | questionProg |
+|             |                      | questionSys  |
+|             |                      | questionBD   |
 
 ** Question (sous-type QuestionProg)
 
