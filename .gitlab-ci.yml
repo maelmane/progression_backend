@@ -26,12 +26,12 @@ variables:
   BRANCHE: $CI_COMMIT_REF_NAME
 
 .preparer_contexte: &preparer_contexte
+    - DOCKER_HOST= 
     - apk add ca-certificates openssh
     - mkdir ~/.ssh && cp $ID_RSA ~/.ssh/id_rsa && chmod 400 ~/.ssh/id_rsa
     - echo -e "Host *\n  StrictHostKeyChecking no" > ~/.ssh/config
     - docker context create --docker host=ssh://$CD_USER@$CD_HOST:$CD_PORT --description="Production" prod
     - docker context use prod
-    - DOCKER_HOST= 
 
 .login: &login
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
