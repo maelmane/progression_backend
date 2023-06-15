@@ -30,12 +30,12 @@ class QuestionProg extends Question
 		$enonce = null,
 		$auteur = null,
 		$licence = null,
-		$feedback_pos = null,
-		$feedback_neg = null,
-		$feedback_err = null,
+		string $feedback_pos = null,
+		string $feedback_neg = null,
+		string $feedback_err = null,
 		$exécutables = [],
 		$tests = [],
-		string|null $description = null,
+		string|null $description = null
 	) {
 		parent::__construct(
 			$niveau,

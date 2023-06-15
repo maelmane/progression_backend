@@ -39,7 +39,7 @@ class User
 		Rôle $rôle = Rôle::NORMAL,
 		$avancements = [],
 		$clés = [],
-		string $préférences = "",
+		string $préférences = ""
 	) {
 		$this->username = $username;
 		$this->courriel = $courriel;

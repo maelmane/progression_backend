@@ -143,7 +143,7 @@ class RésultatCtl extends Contrôleur
 		Request $request,
 		string $chemin,
 		QuestionProg $question,
-		TestProg $test,
+		TestProg $test
 	): Résultat|null {
 		$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
 
@@ -162,7 +162,7 @@ class RésultatCtl extends Contrôleur
 	private function soumettre_tentative(
 		QuestionProg $question,
 		TestProg $test,
-		TentativeProg $tentative,
+		TentativeProg $tentative
 	): TentativeProg|null {
 		$intéracteur = new SoumettreTentativeProgInt();
 		return $intéracteur->soumettre_tentative($question, [$test], $tentative);

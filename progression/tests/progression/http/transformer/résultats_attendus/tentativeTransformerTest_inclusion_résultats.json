@@ -1,7 +1,7 @@
 [
   {
     "feedback": "feedback",
-    "id": "0",
+    "id": "bebe123",
     "résultat": false,
     "sortie_erreur": "error",
     "sortie_observée": "output",
@@ -12,7 +12,7 @@
   },
   {
     "feedback": "feedback 2",
-    "id": "1",
+    "id": "cafe456",
     "résultat": true,
     "sortie_erreur": "error 2",
     "sortie_observée": "output 2",

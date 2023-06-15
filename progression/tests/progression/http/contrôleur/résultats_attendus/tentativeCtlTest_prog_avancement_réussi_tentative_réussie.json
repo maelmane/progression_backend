@@ -52,7 +52,8 @@
             },
             "id": "bebe123",
             "links": {
-                "self": "https://example.com/resultat/bebe123"
+                "self": "https://example.com/resultat/bebe123",
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241"
             },
             "type": "resultat"
         },
@@ -62,12 +63,12 @@
                 "résultat": true,
                 "sortie_erreur": null,
                 "sortie_observée": null,
-                "temps_exec": 30,
                 "temps_exécution": 30
             },
             "id": "cafe456",
             "links": {
-                "self": "https://example.com/resultat/cafe456"
+                "self": "https://example.com/resultat/cafe456",
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1653690241"
             },
             "type": "resultat"
         }

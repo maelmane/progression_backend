@@ -1358,26 +1358,6 @@ parameters:
 			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/Question.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$feedback_err with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/Question.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$feedback_neg with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/Question.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$feedback_pos with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/Question.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/question/Question.php
@@ -1403,21 +1383,6 @@ parameters:
 			path: app/progression/domaine/entité/question/Question.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$feedback_err has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/Question.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$feedback_neg has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/Question.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$feedback_pos has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/Question.php
-
-		-
 			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$licence has no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/question/Question.php
@@ -1437,31 +1402,11 @@ parameters:
 			count: 1
 			path: app/progression/domaine/entité/question/QuestionProg.php
 
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/QuestionProg.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$exécutables with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/question/QuestionProg.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$feedback_err with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/QuestionProg.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$feedback_neg with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/QuestionProg.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$feedback_pos with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/QuestionProg.php
-
 		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
 			count: 1
@@ -1494,26 +1439,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$auteur with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$feedback_err with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$feedback_neg with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/question/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$feedback_pos with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/question/QuestionSys.php
 

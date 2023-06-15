@@ -29,7 +29,7 @@ class InscriptionInt extends Interacteur
 		string $username,
 		string $courriel,
 		string|null $password,
-		Rôle $rôle = Rôle::NORMAL,
+		Rôle $rôle = Rôle::NORMAL
 	): User|null {
 		$dao = $this->source_dao->get_user_dao();
 		$user = $dao->get_user($username);
@@ -60,7 +60,7 @@ class InscriptionInt extends Interacteur
 	public function effectuer_inscription_sans_mdp(
 		string $username,
 		string $courriel = null,
-		Rôle $rôle = Rôle::NORMAL,
+		Rôle $rôle = Rôle::NORMAL
 	): User|null {
 		$dao = $this->source_dao->get_user_dao();
 		return $dao->get_user($username) ??
@@ -80,7 +80,7 @@ class InscriptionInt extends Interacteur
 		string $username,
 		string $courriel,
 		string $password,
-		Rôle $rôle,
+		Rôle $rôle
 	): User|null {
 		$dao = $this->source_dao->get_user_dao();
 		if ($dao->trouver(courriel: $courriel)) {
@@ -96,7 +96,7 @@ class InscriptionInt extends Interacteur
 		string $username,
 		string $courriel,
 		string $password,
-		Rôle $rôle,
+		Rôle $rôle
 	): User|null {
 		$dao = $this->source_dao->get_user_dao();
 		$user = $dao->save(

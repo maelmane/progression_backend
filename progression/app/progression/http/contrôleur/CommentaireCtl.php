@@ -93,7 +93,7 @@ class CommentaireCtl extends Contrôleur
 		Commentaire $commentaire,
 		string $username,
 		string $question_uri,
-		int $timestamp,
+		int $timestamp
 	): JsonResponse {
 		Log::debug("CommentaireCtl.valider_et_préparer_réponse. Params : ", [
 			$commentaire,

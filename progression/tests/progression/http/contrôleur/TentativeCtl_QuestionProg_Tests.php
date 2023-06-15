@@ -161,7 +161,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			code: "codeTest",
 			date_soumission: "1614374490",
 			réussi: true,
-			résultats: [new Résultat("ok", "", true)],
+			résultats: ["bebe123" => new Résultat("ok", "", true)],
 			tests_réussis: 2,
 			feedback: "feedbackTest",
 			temps_exécution: 5,

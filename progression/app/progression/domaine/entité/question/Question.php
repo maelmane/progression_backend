@@ -27,9 +27,9 @@ class Question
 	public $enonce = null;
 	public $auteur = null;
 	public $licence = null;
-	public $feedback_pos = null;
-	public $feedback_neg = null;
-	public $feedback_err = null;
+	public string|null $feedback_pos = null;
+	public string|null $feedback_neg = null;
+	public string|null $feedback_err = null;
 
 	/**
 	 * @param string|array<mixed>|null $enonce
@@ -41,10 +41,10 @@ class Question
 		string|array|null $enonce = null,
 		$auteur = null,
 		$licence = null,
-		$feedback_pos = null,
-		$feedback_neg = null,
-		$feedback_err = null,
-		string|null $description = null,
+		string $feedback_pos = null,
+		string $feedback_neg = null,
+		string $feedback_err = null,
+		string|null $description = null
 	) {
 		$this->niveau = $niveau;
 		$this->titre = $titre;

@@ -50,7 +50,7 @@ class LoginInt extends Interacteur
 	public function effectuer_login_par_identifiant(
 		string $identifiant,
 		string $password = null,
-		string $domaine = null,
+		string $domaine = null
 	): User|null {
 		if (!$this->vérifier_champ_valide($identifiant)) {
 			return null;

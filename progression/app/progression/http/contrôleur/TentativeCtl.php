@@ -33,7 +33,7 @@ use progression\domaine\interacteur\{
 	IntéracteurException,
 };
 use progression\http\contrôleur\RésultatCtl;
-use progression\domaine\entité\{Avancement, Tentative, TentativeProg, TentativeSys, TentativeBD};
+use progression\domaine\entité\{Avancement, Tentative, TentativeProg, TentativeSys, TentativeBD, Résultat};
 use progression\domaine\entité\question\{Question, QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\entité\TestProg;
 use progression\domaine\interacteur\{SoumettreTentativeIntéracteurException};

@@ -47,7 +47,7 @@ class GénérateurDeToken
 	function générer_token(
 		$username,
 		$expiration = 0,
-		$ressources = ["permissions" => ["api" => ["url" => ".*", "method" => ".*"]]],
+		$ressources = ["permissions" => ["api" => ["url" => ".*", "method" => ".*"]]]
 	) {
 		$payload = [
 			"username" => $username,
