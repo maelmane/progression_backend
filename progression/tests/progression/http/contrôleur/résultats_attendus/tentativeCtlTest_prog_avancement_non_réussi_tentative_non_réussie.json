@@ -31,11 +31,11 @@
 				"data": [
 					{
 						"type": "resultat",
-						"id": "0"
+						"id": "bebe123"
 					},
 					{
 						"type": "resultat",
-						"id": "1"
+						"id": "cafe456"
 					}
 				]
 			}
@@ -44,7 +44,7 @@
 	"included": [
 		{
 			"type": "resultat",
-			"id": "0",
+			"id": "bebe123",
 			"attributes": {
 				"sortie_observée": "Allo\n",
 				"sortie_erreur": "",
@@ -54,22 +54,22 @@
 				"temps_exécution": 30
 			},
 			"links": {
-				"self": "https://example.com/resultat/0"
+				"self": "https://example.com/resultat/bebe123"
 			}
 		},
 		{
 			"type": "resultat",
-			"id": "1",
+			"id": "cafe456",
 			"attributes": {
-				"sortie_observée": "Allo\nAllo\n",
-				"sortie_erreur": "",
+				"sortie_observée": null,
+				"sortie_erreur": null,
 				"résultat": false,
 				"feedback": "C'est pas ça :(",
 				"temps_exec": 30,
 				"temps_exécution": 30
 			},
 			"links": {
-				"self": "https://example.com/resultat/1"
+				"self": "https://example.com/resultat/cafe456"
 			}
 		}
 	]

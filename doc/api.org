@@ -266,13 +266,13 @@ question_uri/numéro
 
 *** Propriétés :
 
-| Nom             | Type | Valeurs                                                      |
-|-----------------+------+--------------------------------------------------------------|
-| nom             | str  |                                                              |
-| sortie_attendue | str  | La sortie attendue, ou chaîne vide si sortie_cachée est vrai |
-| feedback_pos    | str  |                                                              |
-| feedback_neg    | str  |                                                              |
-| sortie_cachée   | bool | vrai si la sortie attendue a été remplacée par ""            |
+| Nom             | Type | Valeurs                                               |
+|-----------------+------+-------------------------------------------------------|
+| nom             | str  |                                                       |
+| sortie_attendue | str  | La sortie attendue, ou null si sortie_cachée est vrai |
+| feedback_pos    | str  |                                                       |
+| feedback_neg    | str  |                                                       |
+| sortie_cachée   | bool | vrai si les entrées et sorties ont été caviardées     |
 
 
 ** TestProg (soustype de Test)
@@ -281,11 +281,11 @@ Un test de validation d'une QuestionProg auquel sont soumises les solutions prop
 
 *** Propriétés :
 
-| Nom          | Type | Valeurs |
-|--------------+------+---------|
-| entrée       | str  |         |
-| params       | str  |         |
-| feedback_err | str  |         |
+| Nom          | Type | Valeurs                                                       |
+|--------------+------+---------------------------------------------------------------|
+| entrée       | str  | L'entrée du programme ou null si sortie_cachée est vrai       |
+| params       | str  | Les paramètres du programme ou null si sortie_cachée est vrai |
+| feedback_err | str  |                                                               |
 
 ** TestSys (soustype de Test)
 

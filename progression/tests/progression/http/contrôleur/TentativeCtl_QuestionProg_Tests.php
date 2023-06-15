@@ -66,8 +66,26 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			],
 			// TestsProg
 			tests: [
-				new TestProg("1 salutations", "Bonjour\n", "1", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
-				new TestProg("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
+				new TestProg(
+					nom: "1 salutation",
+					sortie_attendue: "Bonjour\n",
+					entrée: "1",
+					params: "",
+					feedback_pos: "C'est ça!",
+					feedback_neg: "C'est pas ça :(",
+					feedback_err: "arrrg!",
+					sortie_cachée: false,
+				),
+				new TestProg(
+					nom: "2 salutations",
+					sortie_attendue: "Bonjour\nBonjour\n",
+					entrée: "2",
+					params: "",
+					feedback_pos: "C'est ça!",
+					feedback_neg: "C'est pas ça :(",
+					feedback_err: "arrrg!",
+					sortie_cachée: true,
+				),
 			],
 		);
 
@@ -86,8 +104,26 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			],
 			// TestsProg
 			tests: [
-				new TestProg("1 salutation", "Bonjour\n", "1", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
-				new TestProg("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
+				new TestProg(
+					nom: "1 salutation",
+					sortie_attendue: "Bonjour\n",
+					entrée: "1",
+					params: "",
+					feedback_pos: "C'est ça!",
+					feedback_neg: "C'est pas ça :(",
+					feedback_err: "arrrg!",
+					sortie_cachée: false,
+				),
+				new TestProg(
+					nom: "2 salutations",
+					sortie_attendue: "Bonjour\nBonjour\n",
+					entrée: "2",
+					params: "",
+					feedback_pos: "C'est ça!",
+					feedback_neg: "C'est pas ça :(",
+					feedback_err: "arrrg!",
+					sortie_cachée: true,
+				),
 			],
 		);
 
@@ -183,8 +219,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->andReturn([
 				"temps_exécution" => 0.551,
 				"résultats" => [
-					["output" => "Bonjour\n", "errors" => "", "time" => 0.03],
-					["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03],
+					"bebe123" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03],
+					"cafe456" => ["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03],
 				],
 			]);
 		$mockExécuteur
@@ -194,7 +230,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			})
 			->andReturn([
 				"temps_exécution" => 0.551,
-				"résultats" => [["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03]],
+				"résultats" => ["bebe456" => ["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03]],
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_prog")
@@ -204,8 +240,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->andReturn([
 				"temps_exécution" => 0.44,
 				"résultats" => [
-					["output" => "Allo\n", "errors" => "", "time" => 0.03],
-					["output" => "Allo\nAllo\n", "errors" => "", "time" => 0.03],
+					"bebe123" => ["output" => "Allo\n", "errors" => "", "time" => 0.03],
+					"cafe456" => ["output" => "Allo\nAllo\n", "errors" => "", "time" => 0.03],
 				],
 			]);
 		$mockExécuteur
@@ -215,7 +251,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			})
 			->andReturn([
 				"temps_exécution" => 0.44,
-				"résultats" => [["output" => "Allo\nAllo\n", "errors" => "", "time" => 0.03]],
+				"résultats" => ["cafe123" => ["output" => "Allo\nAllo\n", "errors" => "", "time" => 0.03]],
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_prog")
@@ -328,8 +364,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			tests_réussis: 2,
 			temps_exécution: 551,
 			résultats: [
-				new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
-				new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
+				"bebe123" => new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
+				"cafe456" => new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
 			],
 			feedback: "Bon travail!",
 		);
@@ -387,8 +423,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			tests_réussis: 2,
 			temps_exécution: 551,
 			résultats: [
-				new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
-				new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
+				"bebe123" => new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
+				"cafe456" => new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
 			],
 			feedback: "Bon travail!",
 		);
@@ -446,8 +482,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			tests_réussis: 2,
 			temps_exécution: 551,
 			résultats: [
-				new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
-				new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
+				"bebe123" => new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
+				"cafe456" => new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
 			],
 			feedback: "Bon travail!",
 		);
@@ -504,8 +540,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			tests_réussis: 0,
 			temps_exécution: 440,
 			résultats: [
-				new Résultat("Allo\n", "", false, "C'est pas ça :(", 30),
-				new Résultat("Allo\nAllo\n", "", false, "C'est pas ça :(", 30),
+				"bebe123" => new Résultat("Allo\n", "", false, "C'est pas ça :(", 30),
+				"cafe456" => new Résultat("Allo\nAllo\n", "", false, "C'est pas ça :(", 30),
 			],
 			feedback: "Encore un effort!",
 		);

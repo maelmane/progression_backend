@@ -60,9 +60,13 @@ class RésultatCtl extends Contrôleur
 		} else {
 			$test = isset($request->index) ? $question->tests[$request->index] : $this->construire_test($request);
 			$résultat = $this->traiter_put_QuestionProg($request, $chemin, $question, $test);
+
 			if (!$résultat) {
 				$réponse = $this->réponse_json(["erreur" => "Err: 1000. La tentative n'est pas traitable."], 400);
 			} else {
+				if ($test->sortie_cachée) {
+					$résultat = $this->caviarder_résultat($résultat);
+				}
 				$réponse = $this->valider_et_préparer_réponse($résultat);
 			}
 		}
@@ -160,7 +164,13 @@ class RésultatCtl extends Contrôleur
 		TentativeProg $tentative
 	): TentativeProg|null {
 		$intéracteur = new SoumettreTentativeProgInt();
-		$résultat = $intéracteur->soumettre_tentative($question, [$test], $tentative);
+		return $intéracteur->soumettre_tentative($question, [$test], $tentative);
+	}
+
+	private function caviarder_résultat(Résultat $résultat): Résultat
+	{
+		$résultat->sortie_observée = null;
+		$résultat->sortie_erreur = null;
 
 		return $résultat;
 	}
