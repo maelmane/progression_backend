@@ -116,6 +116,8 @@ class TentativeCtl extends Contrôleur
 
 		$this->sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative_résultante);
 
+		$tentative_résultante = $this->caviarder_résultats_des_tests_cachés($tentative_résultante, $tests);
+
 		$tentative_résultante->id = $tentative->date_soumission;
 		$réponse = $this->item($tentative_résultante, new TentativeProgTransformer("$username/$request->question_uri"));
 
@@ -209,6 +211,30 @@ class TentativeCtl extends Contrôleur
 
 		$avancementInt = new SauvegarderAvancementInt();
 		$avancementInt->sauvegarder($username, $chemin, $avancement, $question);
+	}
+
+	/**
+	 * @param array<TestProg> $tests
+	 */
+	private function caviarder_résultats_des_tests_cachés(TentativeProg $tentative, array $tests): TentativeProg
+	{
+		foreach ($tests as $i => $test) {
+			$hash = array_keys($tentative->résultats)[$i];
+
+			if ($tests[$i]->sortie_cachée) {
+				$this->caviarder_résultat($tentative->résultats[$hash]);
+			}
+		}
+
+		return $tentative;
+	}
+
+	private function caviarder_résultat(Résultat $résultat): Résultat
+	{
+		$résultat->sortie_observée = null;
+		$résultat->sortie_erreur = null;
+
+		return $résultat;
 	}
 
 	private function récupérer_conteneur($username, $chemin)

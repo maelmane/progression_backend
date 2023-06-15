@@ -31,11 +31,14 @@ class Question
 	public $feedback_neg = null;
 	public $feedback_err = null;
 
+	/**
+	 * @param string|array<mixed>|null $enonce
+	 */
 	public function __construct(
 		$niveau = null,
 		$titre = null,
 		string|null $objectif = null,
-		$enonce = null,
+		string|array|null $enonce = null,
 		$auteur = null,
 		$licence = null,
 		$feedback_pos = null,

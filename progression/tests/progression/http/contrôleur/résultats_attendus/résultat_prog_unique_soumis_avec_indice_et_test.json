@@ -4,7 +4,8 @@
 			"feedback": "C'est ça!",
 			"résultat": true,
 			"sortie_erreur": "",
-			"sortie_observée": "Bonjour\nBonjour\n",
+			"sortie_observée": "Bonjour\nBonjour\nBonjour\n",
+			"temps_exec": 30,
 			"temps_exécution": 30
 		},
 		"id": "abcdef0123456789",

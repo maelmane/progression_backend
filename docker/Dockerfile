@@ -4,7 +4,7 @@ COPY docker/composer.json /var/www/
 
 RUN composer install -d /var/www/
 
-FROM php:8-apache as production
+FROM php:apache-buster as production
 
 # Mise a jour de la liste de package
 RUN apt update && apt upgrade -y && apt autoclean
@@ -25,7 +25,7 @@ RUN apt install -y openjdk-11-jre
 RUN curl -sSL --output /usr/local/bin/ktlint https://github.com/pinterest/ktlint/releases/download/0.46.1/ktlint && chmod a+x /usr/local/bin/ktlint
 
 # Installation du validateur
-RUN pip3 install progression_qc==0.3.1
+RUN pip3 install progression_qc==0.4.3
 
 # Ajout d'extensions PHP
 RUN docker-php-ext-install -j$(nproc) mysqli ldap zip pdo pdo_mysql

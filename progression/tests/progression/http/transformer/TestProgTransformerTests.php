@@ -79,4 +79,41 @@ final class TestProgTransformerTests extends TestCase
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
+
+	public function test_étant_donné_un_test_caché_lorsquon_récupère_son_transformer_on_obtient_des_entrées_params_et_sorties_nulls()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
+
+		$test = new TestProg(
+			nom: "Somme de deux nombres",
+			sortie_attendue: "42",
+			entrée: "21\n21\n",
+			params: "-h",
+			sortie_cachée: true,
+		);
+		$test->numéro = 0;
+		$test->id = "0";
+
+		$résultat_attendu = [
+			"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+			"nom" => "Somme de deux nombres",
+			"entrée" => null,
+			"params" => null,
+			"sortie_attendue" => null,
+			"sortie_cachée" => true,
+			"links" => [
+				"question" =>
+					"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				"self" =>
+					"https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+			],
+		];
+
+		$testTransformer = new TestProgTransformer(
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		);
+		$résultat_obtenu = $testTransformer->transform($test);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
 }

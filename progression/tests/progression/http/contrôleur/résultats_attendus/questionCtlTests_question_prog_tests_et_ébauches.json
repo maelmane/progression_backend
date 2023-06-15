@@ -71,10 +71,10 @@
       "id": "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1",
       "attributes": {
         "nom": "Aucune salutation",
-        "entrée": "0",
-        "params": "param_A param_B",
-        "sortie_attendue": "",
-		"sortie_cachée": false
+        "entrée": null,
+        "params": null,
+        "sortie_attendue": null,
+		"sortie_cachée": true
       },
       "links": {
           "question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",

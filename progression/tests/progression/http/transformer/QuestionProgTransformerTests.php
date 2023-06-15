@@ -75,8 +75,21 @@ final class QuestionProgTransformerTests extends TestCase
 			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$question->tests = [
-			new TestProg("2 salutations", "Bonjour\nBonjour\n", "2"),
-			new TestProg("Aucune salutation", "", "0"),
+			new TestProg(
+				nom: "2 salutations",
+				entrée: "2",
+				params: "Bonjour",
+				sortie_attendue: "Bonjour\nBonjour\n",
+				sortie_cachée: false,
+			),
+
+			new TestProg(
+				nom: "Aucune salutation",
+				entrée: "0",
+				params: "Rien",
+				sortie_attendue: "\n",
+				sortie_cachée: true,
+			),
 		];
 
 		$questionProgTransformer = new QuestionProgTransformer();
@@ -87,7 +100,6 @@ final class QuestionProgTransformerTests extends TestCase
 		foreach ($résultats_obtenus->getData() as $résultat) {
 			$tests[] = $résultat;
 		}
-
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/questionProgTransformerTest_inclusion_tests.json",
 			json_encode($tests),

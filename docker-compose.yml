@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   db:
-    image: mariadb
+    image: mariadb:lts
     container_name: progression_db_$CI_ENVIRONMENT_SLUG
     env_file: ${ENV_FILE:-.env}
     volumes:
