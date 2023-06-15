@@ -4,7 +4,7 @@ COPY docker/composer.json /var/www/
 
 RUN composer install -d /var/www/
 
-FROM php:apache as production
+FROM php:apache-buster as production
 
 # Mise a jour de la liste de package
 RUN apt update && apt upgrade -y && apt autoclean
