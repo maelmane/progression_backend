@@ -1402,11 +1402,11 @@ parameters:
 			count: 1
 			path: app/progression/domaine/entité/question/QuestionProg.php
 
+		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$exécutables with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/question/QuestionProg.php
 
-		-
 		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
 			count: 1

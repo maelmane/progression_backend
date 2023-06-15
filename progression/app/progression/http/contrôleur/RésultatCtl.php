@@ -39,11 +39,11 @@ use progression\dao\exécuteur\ExécutionException;
 
 class RésultatCtl extends Contrôleur
 {
-	public function put(Request $request): JsonResponse
+	public function post(Request $request, string $uri): JsonResponse
 	{
-		Log::debug("RésultatCtl.put. Params : ", [$request->all()]);
+		Log::debug("RésultatCtl.post. Params : ", [$request->all()]);
 
-		$validation = $this->valider_paramètres($request);
+		$validation = $this->valider_paramètres($request, $uri);
 		if ($validation->fails()) {
 			Log::notice(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Paramètres invalides",
@@ -51,16 +51,16 @@ class RésultatCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => $validation->errors()], 400);
 		}
 
-		$chemin = Encodage::base64_decode_url($request->question_uri);
+		$chemin = Encodage::base64_decode_url($uri);
 
 		$question = $this->récupérer_question($chemin);
 		if (!$question) {
-			$réponse = $this->réponse_json(["erreur" => "Err: 1002. La question " . $chemin . " n'existe pas."], 400);
+			$réponse = $this->réponse_json(["erreur" => "Err: 1002. La question " . $chemin . " n'existe pas."], 404);
 		} elseif (isset($request->index) && !array_key_exists($request->index, $question->tests)) {
 			$réponse = $this->réponse_json(["erreur" => "Err: 1003. L'indice de test n'existe pas."], 400);
 		} else {
 			$test = isset($request->index) ? $question->tests[$request->index] : $this->construire_test($request);
-			$résultat = $this->traiter_put_QuestionProg($request, $chemin, $question, $test);
+			$résultat = $this->traiter_post_QuestionProg($request, $chemin, $question, $test);
 
 			if (!$résultat) {
 				$réponse = $this->réponse_json(["erreur" => "Err: 1000. La tentative n'est pas traitable."], 400);
@@ -72,22 +72,23 @@ class RésultatCtl extends Contrôleur
 			}
 		}
 
+		Log::debug("RésultatCtl.post. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
-	private function valider_paramètres(Request $request)
+	private function valider_paramètres(Request $request, string $uri)
 	{
 		$TAILLE_CODE_MAX = (int) getenv("TAILLE_CODE_MAX");
 
 		$validateur = Validator::make(
-			$request->all(),
+			[...$request->all(), "uri" => $uri],
 			[
-				"question_uri" => [
+				"uri" => [
 					"required",
 					function ($attribute, $value, $fail) {
 						$url = Encodage::base64_decode_url($value);
-						if (!$url || Validator::make(["question_uri" => $url], ["question_uri" => "url"])->fails()) {
-							$fail("Err: 1003. Le champ question_uri doit être un URL encodé en base64.");
+						if (!$url || Validator::make(["uri" => $url], ["uri" => "url"])->fails()) {
+							$fail("Err: 1003. Le champ uri doit être un URL encodé en base64.");
 						}
 					},
 				],
@@ -139,7 +140,7 @@ class RésultatCtl extends Contrôleur
 		return $réponse;
 	}
 
-	private function traiter_put_QuestionProg(
+	private function traiter_post_QuestionProg(
 		Request $request,
 		string $chemin,
 		QuestionProg $question,

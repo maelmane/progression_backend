@@ -48,7 +48,7 @@ $router->group(["middleware" => ["auth", "étatNonInactif"]], function () use ($
 	$router->get("/test/{question_uri}/{numero:[[:digit:]]+}", "TestCtl@get");
 
 	// Résultat
-	$router->put("/resultat", "RésultatCtl@put");
+	$router->post("/question/{uri}/resultats", "RésultatCtl@post");
 });
 
 $router->group(["middleware" => ["auth", "étatNonInactif", "permissionsRessources"]], function () use ($router) {
