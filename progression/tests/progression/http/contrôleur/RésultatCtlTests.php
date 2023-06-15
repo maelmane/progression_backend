@@ -53,8 +53,36 @@ final class RésultatCtlTests extends ContrôleurTestCase
 			],
 			// TestsProg
 			tests: [
-				new TestProg("1 salutations", "Bonjour\n", "1", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
-				new TestProg("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
+				new TestProg(
+					nom: "1 salutations",
+					sortie_attendue: "Bonjour\n",
+					entrée: "1",
+					params: "",
+					feedback_pos: "C'est ça!",
+					feedback_neg: "C'est pas ça :(",
+					feedback_err: "arrrg!",
+					sortie_cachée: false,
+				),
+				new TestProg(
+					nom: "2 salutations",
+					sortie_attendue: "Bonjour\nBonjour\n",
+					entrée: "2",
+					params: "",
+					feedback_pos: "C'est ça!",
+					feedback_neg: "C'est pas ça :(",
+					feedback_err: "arrrg!",
+					sortie_cachée: true,
+				),
+				new TestProg(
+					nom: "3 salutations",
+					sortie_attendue: "Bonjour\nBonjour\nBonjour\n",
+					entrée: "3",
+					params: "",
+					feedback_pos: "C'est ça!",
+					feedback_neg: "C'est pas ça :(",
+					feedback_err: "arrrg!",
+					sortie_cachée: false,
+				),
 			],
 		);
 
@@ -75,7 +103,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 			->andReturn([
 				"temps_exécution" => 0.551,
 				"résultats" => [
-					"abcdef0123456789" => ["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03],
+					"abcdef0123456789" => ["output" => "Bonjour\nBonjour\nBonjour\n", "errors" => "", "time" => 0.03],
 				],
 			]);
 		$mockExécuteur
@@ -106,13 +134,13 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		Mockery::close();
 		DAOFactory::setInstance(null);
 	}
-	public function test_étant_donné_un_test_unique_comportant_un_test_lorsquelle_est_soumise_on_obtient_le_résultat_réussi_pour_le_test_fourni()
+	public function test_étant_donné_un_test_unique_lorsquil_est_soumis_on_obtient_le_résultat_réussi_pour_le_test_fourni()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
 			"langage" => "réussi",
 			"code" => "#+TODO\nprint(\"Hello world!\")",
-			"test" => ["nom" => "Bonjour", "entrée" => "bonjour", "sortie_attendue" => "Bonjour\nBonjour\n"],
+			"test" => ["nom" => "Bonjour", "entrée" => "bonjour", "sortie_attendue" => "Bonjour\nBonjour\nBonjour\n"],
 		]);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -122,14 +150,13 @@ final class RésultatCtlTests extends ContrôleurTestCase
 			$résultat_obtenu->getContent(),
 		);
 	}
-
-	public function test_étant_donné_un_test_unique_comportant_un_numéro_de_test_lorsquelle_est_soumise_on_obtient_le_résultat_réussi_pour_le_test_de_la_question()
+	public function test_étant_donné_un_test_unique_comportant_un_numéro_de_test_lorsquil_est_soumis_on_obtient_le_résultat_réussi_pour_le_test_de_la_question()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
 			"langage" => "réussi",
 			"code" => "#+TODO\nprint(\"Hello world!\")",
-			"index" => 1,
+			"index" => 2,
 		]);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -140,13 +167,30 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_un_test_unique_comportant_un_numéro_de_test_et_un_test_lorsquelle_est_soumise_on_obtient_le_résultat_réussi_pour_le_test_de_la_question()
+	public function test_étant_donné_un_test_unique_caché_lorsquil_est_soumis_on_obtient_le_résultat_caviardé()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
 			"langage" => "réussi",
 			"code" => "#+TODO\nprint(\"Hello world!\")",
 			"index" => 1,
+		]);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+
+		$this->assertJsonStringEqualsJsonString(
+			file_get_contents(__DIR__ . "/résultats_attendus/résultat_prog_unique_soumis_avec_test_caché.json"),
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_test_unique_comportant_un_numéro_de_test_et_un_test_lorsquil_est_soumis_on_obtient_le_résultat_réussi_pour_le_test_de_la_question()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
+			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
+			"langage" => "réussi",
+			"code" => "#+TODO\nprint(\"Hello world!\")",
+			"index" => 2,
 			"test" => ["nom" => "Bonjour", "entrée" => "bonjour", "sortie_attendue" => "Salut\n"],
 		]);
 
@@ -158,7 +202,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_un_test_unique_sans_test_lorsquelle_est_soumise_on_obtient_une_erreur_400()
+	public function test_étant_donné_un_test_unique_sans_test_lorsquil_est_soumis_on_obtient_une_erreur_400()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
@@ -173,7 +217,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_un_test_unique_sans_uri_lorsquelle_est_soumise_on_obtient_une_erreur_400()
+	public function test_étant_donné_un_test_unique_sans_uri_lorsquil_est_soumis_on_obtient_une_erreur_400()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
 			"langage" => "réussi",
@@ -188,7 +232,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_un_test_unique_sans_langage_lorsquelle_est_soumise_on_obtient_une_erreur_400()
+	public function test_étant_donné_un_test_unique_sans_langage_lorsquil_est_soumis_on_obtient_une_erreur_400()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
@@ -203,7 +247,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_un_test_unique_sans_code_lorsquelle_est_soumise_on_obtient_une_erreur_400()
+	public function test_étant_donné_un_test_unique_sans_code_lorsquil_est_soumis_on_obtient_une_erreur_400()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
@@ -218,7 +262,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_un_test_unique_pour_une_question_inexistante_lorsquelle_est_soumise_on_obtient_une_erreur_400()
+	public function test_étant_donné_un_test_unique_pour_une_question_inexistante_lorsquil_est_soumis_on_obtient_une_erreur_400()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
 			"question_uri" => "aHR0cHM6Ly9leGVtcGxlLmNvbS9xdWVzdGlvbl9pbnRyb3V2YWJsZS55bWw",
@@ -234,7 +278,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_un_test_unique_avec_indice_de_test_inexistant_lorsquelle_est_soumise_on_obtient_une_erreur_400()
+	public function test_étant_donné_un_test_unique_avec_indice_de_test_inexistant_lorsquil_est_soumis_on_obtient_une_erreur_400()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",

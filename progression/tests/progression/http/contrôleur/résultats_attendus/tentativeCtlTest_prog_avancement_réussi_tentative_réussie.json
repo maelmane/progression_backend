@@ -26,11 +26,11 @@
             "resultats": {
                 "data": [
                     {
-                        "id": "0",
+                        "id": "bebe123",
                         "type": "resultat"
                     },
                     {
-                        "id": "1",
+                        "id": "cafe456",
                         "type": "resultat"
                     }
                 ],
@@ -51,9 +51,9 @@
                 "temps_exec": 30,
                 "temps_exécution": 30
             },
-            "id": "0",
+            "id": "bebe123",
             "links": {
-                "self": "https://example.com/resultat/0"
+                "self": "https://example.com/resultat/bebe123"
             },
             "type": "resultat"
         },
@@ -61,14 +61,14 @@
             "attributes": {
                 "feedback": "C'est ça!",
                 "résultat": true,
-                "sortie_erreur": "",
-                "sortie_observée": "Bonjour\nBonjour\n",
+                "sortie_erreur": null,
+                "sortie_observée": null,
                 "temps_exec": 30,
                 "temps_exécution": 30
             },
-            "id": "1",
+            "id": "cafe456",
             "links": {
-                "self": "https://example.com/resultat/1"
+                "self": "https://example.com/resultat/cafe456"
             },
             "type": "resultat"
         }

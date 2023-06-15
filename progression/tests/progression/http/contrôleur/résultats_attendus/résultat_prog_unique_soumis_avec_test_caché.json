@@ -1,10 +1,10 @@
 {
 	"data": {
 		"attributes": {
-			"feedback": "C'est ça!",
-			"résultat": true,
-			"sortie_erreur": "",
-			"sortie_observée": "Bonjour\nBonjour\nBonjour\n",
+			"feedback": "C'est pas ça :(",
+			"résultat": false,
+			"sortie_erreur": null,
+			"sortie_observée": null,
 			"temps_exec": 30,
 			"temps_exécution": 30
 		},
