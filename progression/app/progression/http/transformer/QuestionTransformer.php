@@ -37,6 +37,7 @@ class QuestionTransformer extends BaseTransformer
 			"licence" => $question->licence ?? "",
 			"links" => [
 				"self" => $this->urlBase . "/question/" . $question->id,
+				"résultats" => $this->urlBase . "/question/" . $question->id . "/resultats",
 			],
 		];
 
