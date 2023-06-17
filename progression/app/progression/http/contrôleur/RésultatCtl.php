@@ -64,7 +64,7 @@ class RésultatCtl extends Contrôleur
 			if (!$résultat) {
 				$réponse = $this->réponse_json(["erreur" => "Err: 1000. La tentative n'est pas traitable."], 400);
 			} else {
-				if ($test->sortie_cachée) {
+				if ($test->caché) {
 					$résultat = $this->caviarder_résultat($résultat);
 				}
 				$réponse = $this->valider_et_préparer_réponse($résultat);

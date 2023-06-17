@@ -263,7 +263,7 @@ class TentativeCtl extends Contrôleur
 		foreach ($tests as $i => $test) {
 			$hash = array_keys($tentative->résultats)[$i];
 
-			if ($tests[$i]->sortie_cachée) {
+			if ($tests[$i]->caché) {
 				$this->caviarder_résultat($tentative->résultats[$hash]);
 			}
 		}

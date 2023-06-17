@@ -57,14 +57,14 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 					sortie_attendue: "Bonjour\nBonjour\n",
 					entrée: "2",
 					params: "param_0 param_1",
-					sortie_cachée: false,
+					caché: false,
 				),
 				new TestProg(
 					nom: "Aucune salutation",
 					sortie_attendue: "Cette sortie devrait être cachée",
 					entrée: "Cette entrée être caché",
 					params: "Ce param devrait être caché",
-					sortie_cachée: true,
+					caché: true,
 				),
 			],
 		);
