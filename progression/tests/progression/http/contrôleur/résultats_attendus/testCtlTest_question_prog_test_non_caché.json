@@ -6,7 +6,7 @@
 			"nom": "2 salutations",
 			"entrée": "2",
 			"sortie_attendue": "Bonjour\nBonjour\n",
-			"sortie_cachée": false,
+			"caché": false,
 			"params": "Bonjour"
 		},
 		"links": {

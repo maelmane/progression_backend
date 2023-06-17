@@ -74,7 +74,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 					feedback_pos: "C'est ça!",
 					feedback_neg: "C'est pas ça :(",
 					feedback_err: "arrrg!",
-					sortie_cachée: false,
+					caché: false,
 				),
 				new TestProg(
 					nom: "2 salutations",
@@ -84,7 +84,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 					feedback_pos: "C'est ça!",
 					feedback_neg: "C'est pas ça :(",
 					feedback_err: "arrrg!",
-					sortie_cachée: true,
+					caché: true,
 				),
 			],
 		);
@@ -112,7 +112,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 					feedback_pos: "C'est ça!",
 					feedback_neg: "C'est pas ça :(",
 					feedback_err: "arrrg!",
-					sortie_cachée: false,
+					caché: false,
 				),
 				new TestProg(
 					nom: "2 salutations",
@@ -122,7 +122,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 					feedback_pos: "C'est ça!",
 					feedback_neg: "C'est pas ça :(",
 					feedback_err: "arrrg!",
-					sortie_cachée: true,
+					caché: true,
 				),
 			],
 		);

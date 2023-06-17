@@ -29,8 +29,8 @@ class TestProgTransformer extends BaseTransformer
 	{
 		$data = (new TestTransformer($this->id))->transform($test);
 		$data = array_merge($data, [
-			"entrée" => $test->sortie_cachée ? null : $test->entrée,
-			"params" => $test->sortie_cachée ? null : $test->params,
+			"entrée" => $test->caché ? null : $test->entrée,
+			"params" => $test->caché ? null : $test->params,
 		]);
 
 		return $data;

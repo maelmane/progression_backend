@@ -6,7 +6,7 @@
 			"nom": "Aucune salutation",
 			"entrée": null,
 			"sortie_attendue": null,
-			"sortie_cachée": true,
+			"caché": true,
 			"params": null
 		},
 		"links": {
