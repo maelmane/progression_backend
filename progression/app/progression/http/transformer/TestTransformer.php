@@ -29,8 +29,8 @@ class TestTransformer extends BaseTransformer
 		$data = [
 			"id" => "{$this->id}/{$test->id}",
 			"nom" => $test->nom,
-			"sortie_cachée" => $test->sortie_cachée,
-			"sortie_attendue" => $test->sortie_cachée ? null : $test->sortie_attendue,
+			"caché" => $test->caché,
+			"sortie_attendue" => $test->caché ? null : $test->sortie_attendue,
 			"links" => (isset($test->links) ? $test->links : []) + [
 				"question" => "{$this->urlBase}/question/{$this->id}",
 				"self" => "{$this->urlBase}/test/{$this->id}/{$test->id}",

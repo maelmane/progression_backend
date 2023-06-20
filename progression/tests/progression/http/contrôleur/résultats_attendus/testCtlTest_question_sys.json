@@ -5,7 +5,7 @@
 		"attributes": {
 			"nom": "testNom",
 			"sortie_attendue": "testSortie",
-			"sortie_cachée": false,
+			"caché": false,
 			"validation": "testValidation",
 			"utilisateur": "utilisateurTest"
 		},

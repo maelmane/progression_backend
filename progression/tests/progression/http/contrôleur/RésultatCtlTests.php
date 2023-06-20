@@ -63,7 +63,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 					feedback_pos: "C'est ça!",
 					feedback_neg: "C'est pas ça :(",
 					feedback_err: "arrrg!",
-					sortie_cachée: false,
+					caché: false,
 				),
 				new TestProg(
 					nom: "2 salutations",
@@ -73,7 +73,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 					feedback_pos: "C'est ça!",
 					feedback_neg: "C'est pas ça :(",
 					feedback_err: "arrrg!",
-					sortie_cachée: true,
+					caché: true,
 				),
 				new TestProg(
 					nom: "3 salutations",
@@ -83,7 +83,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 					feedback_pos: "C'est ça!",
 					feedback_neg: "C'est pas ça :(",
 					feedback_err: "arrrg!",
-					sortie_cachée: false,
+					caché: false,
 				),
 			],
 		);

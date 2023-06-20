@@ -39,6 +39,7 @@ class ExécuteurCompilebox extends Exécuteur
 		"powershell" => 15,
 		"typescript" => 16,
 		"kotlin" => 17,
+		"c#" => 18,
 	];
 
 	public function exécuter_prog($exécutable, $tests)

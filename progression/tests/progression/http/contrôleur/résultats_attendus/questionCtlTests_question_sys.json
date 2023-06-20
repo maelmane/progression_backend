@@ -43,7 +43,7 @@
             "attributes": {
                 "nom": "test 1",
                 "sortie_attendue": "vrai",
-				"sortie_cachée": false,
+				"caché": false,
                 "utilisateur": "bob",
                 "validation": "[ -z vrai ]"
             },
@@ -58,7 +58,7 @@
             "attributes": {
                 "nom": "test 2",
                 "sortie_attendue": "faux",
-				"sortie_cachée": false,
+				"caché": false,
                 "utilisateur": "roger",
                 "validation": "[ -z faux ]"
             },

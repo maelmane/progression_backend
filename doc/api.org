@@ -271,7 +271,7 @@ question_uri/numéro
 | sortie_attendue | str  | La sortie attendue, ou null si sortie_cachée est vrai |
 | feedback_pos    | str  |                                                       |
 | feedback_neg    | str  |                                                       |
-| sortie_cachée   | bool | vrai si les entrées et sorties ont été caviardées     |
+| caché           | bool | vrai si les entrées et sorties ont été caviardées     |
 
 
 ** TestProg (soustype de Test)

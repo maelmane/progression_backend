@@ -80,16 +80,10 @@ final class QuestionProgTransformerTests extends TestCase
 				entrée: "2",
 				params: "Bonjour",
 				sortie_attendue: "Bonjour\nBonjour\n",
-				sortie_cachée: false,
+				caché: false,
 			),
 
-			new TestProg(
-				nom: "Aucune salutation",
-				entrée: "0",
-				params: "Rien",
-				sortie_attendue: "\n",
-				sortie_cachée: true,
-			),
+			new TestProg(nom: "Aucune salutation", entrée: "0", params: "Rien", sortie_attendue: "\n", caché: true),
 		];
 
 		$questionProgTransformer = new QuestionProgTransformer();
