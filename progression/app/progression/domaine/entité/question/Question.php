@@ -44,7 +44,7 @@ class Question
 		string $feedback_pos = null,
 		string $feedback_neg = null,
 		string $feedback_err = null,
-		string|null $description = null
+		string|null $description = null,
 	) {
 		$this->niveau = $niveau;
 		$this->titre = $titre;

@@ -2883,56 +2883,6 @@ parameters:
 			path: app/progression/http/contrôleur/GénérateurDeToken.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:effectuer_login\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:effectuer_login\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:générer_token\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:générer_token\\(\\) has parameter \\$user with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:login\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:valider_et_préparer_réponse\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$user with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:valider_paramètres\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:valider_paramètres\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\NotImplementedCtl\\:\\:get\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/NotImplementedCtl.php
@@ -3421,21 +3371,6 @@ parameters:
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\ÉbaucheCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$question_uri with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/ÉbaucheCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\middleware\\\\Authenticate\\:\\:handle\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/middleware/Authenticate.php
-
-		-
-			message: "#^Method progression\\\\http\\\\middleware\\\\Authenticate\\:\\:handle\\(\\) has parameter \\$guard with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/middleware/Authenticate.php
-
-		-
-			message: "#^Method progression\\\\http\\\\middleware\\\\Authenticate\\:\\:handle\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/middleware/Authenticate.php
 
 		-
 			message: "#^Property progression\\\\http\\\\middleware\\\\Authenticate\\:\\:\\$auth has no type specified\\.$#"
