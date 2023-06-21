@@ -20,6 +20,8 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\Validator as ValidatorImpl;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use progression\http\transformer\TokenTransformer;
 
@@ -29,18 +31,44 @@ class TokenCtl extends Contrôleur
 	{
 		Log::debug("TokenCtl.post. Params : ", [$request->all()]);
 
-		$ressources = $request->input("ressources");
+		$validateur = $this->valider_paramètres($request);
 
-		$expirationToken = $request->input("expiration") ?? 0;
-		$token = GénérateurDeToken::get_instance()->générer_token(
-			username: $username,
-			expiration: $expirationToken,
-			ressources: $ressources ?? ["permissions" => ["api" => ["url" => ".*", "method" => ".*"]]],
-		);
-		$réponse = $this->préparer_réponse($this->item($token, new TokenTransformer($username)));
+		if ($validateur->stopOnFirstFailure()->fails()) {
+			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
+		} else {
+			$data = $request->input("data");
+			$ressources = $data["ressources"];
+			$expiration = $data["expiration"];
+
+			$token = GénérateurDeToken::get_instance()->générer_token(
+				username: $username,
+				expiration: $expiration,
+				ressources: $ressources ?? ["tout" => ["url" => ".*", "method" => ".*"]],
+			);
+			$réponse = $this->préparer_réponse($this->item($token, new TokenTransformer($username)));
+		}
 
 		Log::debug("TokenCtl.post. Réponse : ", [$réponse]);
-
 		return $réponse;
+	}
+
+	private function valider_paramètres(Request $request): ValidatorImpl
+	{
+		$validateur = Validator::make(
+			$request->all(),
+			[
+				"data" => "required",
+				"data.ressources" => "required",
+				"data.ressources.*.url" => "required|string",
+				"data.ressources.*.method" => "required|string",
+				"data.expiration" => "required|integer",
+			],
+			[
+				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
+				"data.expiration.integer" => "Err: 1003. Le champ expiration doit être un nombre entier.",
+			],
+		);
+
+		return $validateur;
 	}
 }

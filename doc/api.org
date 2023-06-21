@@ -3,21 +3,55 @@
 #+TITLE: API Progression
 #+PROPERTY: header-args:bash :results output :exports both :noweb yes
 
-* Points d'entrée
+* Point d'entrée
 
-** Publics
-| Méthode | URL       | Description              | Paramètres                                     | Réponse             |
-| POST    | ~/auth~   | Authentification         | identifiant (username ou courriel) et password | token, un token JWT |
-|         |           |                          | username, key_name et key_secret               | token, un token JWT |
-| PUT     | ~/user~   | Inscription              | user                                           | User                |
-| GET     | ~/config~ | Configuration du serveur |                                                |                     |
+| Méthode | URL | Description              | Paramètres | Réponse |
+|---------+-----+--------------------------+------------+---------|
+| GET     | ~/~ | Configuration du serveur |            | Config  |
 
-** Privés
-Les points d’entrée privés requièrent un token dans l’entête : «Authentification: Bearer <token>»
+** Liens :
 
-| Méthode | URL                 | Description                            | Paramètres                                  | Réponse             |
-| GET     | ~/user/{username}~  | Obtient l'utilisateur /username/       | username                                    | User                |
-| GET     | ~/question/{uri}~   | Obtient la question disponible à <uri> | uri                                         | Question            |
+| Nom         | Description                  |
+|-------------+------------------------------|
+| inscription | Inscription d'un utilisateur |
+
+* Authentification
+
+Trois méthodes permettent l'authentification pour n'importe quelle requête :
+
+1. Identifiant et mot de passe
+
+   | Paramètre   | Description                   | Type | Défaut |
+   |-------------+-------------------------------+------+--------|
+   | identifiant | Nom d'utilisateur ou courriel | str  |        |
+   | password    | Mot de passe                  | str  |        |
+   
+2. Identifiant et clé d'accès
+
+   | Paramètre   | Description                   | Type | Défaut |
+   |-------------+-------------------------------+------+--------|
+   | identifiant | Nom d'utilisateur ou courriel | str  |        |
+   | key_name    | Identifiant de la clé         | Clé  |        |
+   | key_secret  | Secret correspondant à la clé | str  |        |
+
+   La clé nommée par ~key_name~ doit exister avec la portée «auth».
+
+3. Token JWT
+
+   Dans l'entête ~Authorization~, un [[*Token][Token]] «au porteur» :
+
+   ~Authorization: bearer <token JWT>~
+
+
+* Autorisation
+
+L'autorisation d'accéder aux ressources est donnée par un [[*Token][Token]] dans l'entête ~Authorization~ ou dans le paramètre ~tkres~ :
+
+   | Paramètre   | Description                   | Type  | Défaut |
+   |-------------+-------------------------------+-------+--------|
+   | identifiant | Nom d'utilisateur ou courriel | str   |        |
+   | tkres       | Token d'accès                 | Token |        |
+
 
 * Ressources
 
@@ -297,25 +331,25 @@ Un test de validation d'une QuestionSys auquel sont soumises les solutions propo
 | validation  | str  |                            |
 | utilisateur | str  | l'utilisateur du conteneur |
 
-** Token ressource
+** Token
 
 Un token JWT donnant accès à une ou plusieurs ressources. Une date d'expiration de 0 signifie que le token n'expire jamais.
 
 *** Propriétés :
 
-| Nom         | Type | Valeurs                                |
-|-------------|------|----------------------------------------|
-| username    | str  | l'utilisateur propriétaire du token    |
-| création    | int  | timestamp à la création                |
-| expiration  | int  | timestamp d'expiration                 |
-| data        | str  | données incluses dans le token         |
-| permissions | str  | permissions incluses dans le token     |
-| jwt         | str  | token jwt signé                        |
-| version     | int  | version de l'api ayant généré le token |
+| Nom        | Type | Valeurs                                |
+|------------+------+----------------------------------------|
+| username   | str  | l'utilisateur propriétaire du token    |
+| création   | int  | timestamp à la création                |
+| expiration | int  | timestamp d'expiration                 |
+| data       | str  | données incluses dans le token         |
+| ressources | str  | ressources permises par le token       |
+| jwt        | str  | token jwt signé                        |
+| version    | int  | version de l'api ayant généré le token |
 
 **** Data
 
-data contient un objet peuplé de n'importes quelles données utiles.
+data contient un objet peuplé de n'importes quelles données utiles au destinataire du token.
 
 ***** Exemple :
 
@@ -332,7 +366,7 @@ data contient un objet peuplé de n'importes quelles données utiles.
 #+end_src
 
 
-**** Ressources
+**** ressources
 
 Les ressources sont définies par leur URI et par la méthode de requête HTTP, avec une expression régulière. Un token ressource peut décrire une ou plusieurs ressources.
 
@@ -340,9 +374,9 @@ Les ressources sont définies par leur URI et par la méthode de requête HTTP, 
 
 #+begin_src json
 {
-  "nom" : {
-    "url" : "url_permis",
-    "method" : "méthode permise"
+  "get_bob" : {
+    "url" : "^/user/bob$",
+    "method" : "^GET$"
   }
 }
 #+end_src
@@ -386,7 +420,7 @@ username
 #+begin_src sh :exports none
 if [ -z "$PROGRESSION_API_URL" ]
 then
-	echo -n "https://progression.dti.crosemont.quebec/api/v1"
+	echo -n "https://progression.dti.crosemont.quebec/api/v3"
 else
 	echo -n $PROGRESSION_API_URL
 fi
@@ -404,12 +438,11 @@ curl() {
 
 export -f curl
 
-export TOKEN=$(/usr/bin/curl "<<get_api_url()>>/auth" --data '{"identifiant": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | grep -Po '(?<=Token":").*(?=")')
+# Inscription
+/usr/bin/curl "<<get_api_url()>>/user" -X PUT --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | grep -Po '(?<=Token":").*(?=")'
 
-if [ -z "$TOKEN" ]
-then
-    export TOKEN=$(/usr/bin/curl "<<get_api_url()>>/user" -X PUT --data '{"username": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json" | grep -Po '(?<=Token":").*(?=")')
-fi
+# Récupère le token
+export TOKEN=$(/usr/bin/curl "<<get_api_url()>>/user/jdoe/tokens" --data '{"identifiant": "jdoe", "password": "Crosemont2021!", "ressources": ["tout": {"url": ".*", "method": ".*"}] }' -H "Content-Type: application/json" | grep -Po '(?<=Token":").*(?=")')
 
 #+END_SRC
 
@@ -445,14 +478,14 @@ print( formatte_json( decode_json( decode_b64( json_str ) ) ) )
 ** Obtenir la configuration du serveur
 
 #+BEGIN_SRC bash :eval yes :session *bash* :results output :exports both :post json_pretty(*this*)
-curl "<<get_api_url()>>/config"
+curl "<<get_api_url()>>/"
 #+END_SRC
 
 ** Authentification en tant qu’utilisateur ~jdoe~
 
 #+NAME: AUTHENTIFICATION
 #+BEGIN_SRC bash :eval yes
-curl "<<get_api_url()>>/auth" --data '{"identifiant": "jdoe", "password": "Crosemont2021!"}' -H "Content-Type: application/json"
+curl "<<get_api_url()>>/user/jdoe" -X PUT --data '{"identifiant": "jdoe", "courriel": "jdoe@courriel.com", "password": "Crosemont2021!"}' -H "Content-Type: application/json"
 #+END_SRC
 
 #+RESULTS:
@@ -460,7 +493,7 @@ curl "<<get_api_url()>>/auth" --data '{"identifiant": "jdoe", "password": "Crose
 
 #+NAME: AUTHENTIFICATION
 #+BEGIN_SRC bash :eval yes
-curl "<<get_api_url()>>/auth" --data '{"identifiant": "jdoe@courriel.com", "password": "Crosemont2021!"}' -H "Content-Type: application/json"
+curl "<<get_api_url()>>/user/jdoe/tokens" --data '{"identifiant": "jdoe@courriel.com", "password": "Crosemont2021!", "ressources": ["tout": {"url": ".*", "method": ".*"}] }' -H "Content-Type: application/json"
 #+END_SRC
 
 #+RESULTS:

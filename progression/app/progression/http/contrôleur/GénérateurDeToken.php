@@ -44,11 +44,8 @@ class GénérateurDeToken
 		GénérateurDeToken::$instance = $générateur;
 	}
 
-	function générer_token(
-		$username,
-		$expiration = 0,
-		$ressources = ["permissions" => ["api" => ["url" => ".*", "method" => ".*"]]]
-	) {
+	function générer_token($username, $expiration = 0, $ressources = ["tout" => ["url" => ".*", "method" => ".*"]])
+	{
 		$payload = [
 			"username" => $username,
 			"current" => Carbon::now()->timestamp,

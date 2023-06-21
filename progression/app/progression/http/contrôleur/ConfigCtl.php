@@ -19,7 +19,9 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use progression\http\transformer\ConfigTransformer;
 
 class ConfigCtl extends Contrôleur
 {
@@ -28,9 +30,12 @@ class ConfigCtl extends Contrôleur
 		Log::debug("ConfigCtl.get");
 
 		$config = [
-			"AUTH" => [
-				"LDAP" => getenv("AUTH_LDAP") == "true",
-				"LOCAL" => getenv("AUTH_LOCAL") == "true",
+			"version" => config("app.name") . " " . config("version.numéro") . "(" . config("version.commit_sha") . ")",
+			"config" => [
+				"AUTH" => [
+					"LDAP" => getenv("AUTH_LDAP") == "true",
+					"LOCAL" => getenv("AUTH_LOCAL") == "true",
+				],
 			],
 		];
 
@@ -40,12 +45,32 @@ class ConfigCtl extends Contrôleur
 				"URL_MDP_REINIT" => getenv("LDAP_URL_MDP_REINIT"),
 			];
 
-			$config["LDAP"] = $config_ldap;
+			$config["config"]["LDAP"] = $config_ldap;
 		}
 
-		$réponse = $this->préparer_réponse($config);
+		$réponse = $this->valider_et_préparer_réponse($config);
 
 		Log::debug("ConfigCtl.get. Retour : ", [$réponse]);
+		return $réponse;
+	}
+
+	/**
+	 * @param array<mixed> $config
+	 */
+	private function valider_et_préparer_réponse(array $config): JsonResponse
+	{
+		Log::debug("ConfigCtl.valider_et_préparer_réponse. Params : ", [$config]);
+
+		if ($config) {
+			$config["id"] = "serveur";
+			$réponse = $this->item($config, new ConfigTransformer());
+		} else {
+			$réponse = null;
+		}
+
+		$réponse = $this->préparer_réponse($réponse);
+
+		Log::debug("ConfigCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
 		return $réponse;
 	}
 }

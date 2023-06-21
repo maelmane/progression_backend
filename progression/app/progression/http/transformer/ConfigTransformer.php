@@ -16,40 +16,26 @@
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace progression\domaine\entité\question;
+namespace progression\http\transformer;
 
-class QuestionProg extends Question
+class ConfigTransformer extends BaseTransformer
 {
-	public $exécutables = [];
-	public $tests = [];
+	public string $type = "config";
 
-	public function __construct(
-		$niveau = null,
-		$titre = null,
-		string|null $objectif = null,
-		$enonce = null,
-		$auteur = null,
-		$licence = null,
-		string $feedback_pos = null,
-		string $feedback_neg = null,
-		string $feedback_err = null,
-		$exécutables = [],
-		$tests = [],
-		string|null $description = null,
-	) {
-		parent::__construct(
-			$niveau,
-			$titre,
-			$objectif,
-			$enonce,
-			$auteur,
-			$licence,
-			$feedback_pos,
-			$feedback_neg,
-			$feedback_err,
-			$description,
-		);
-		$this->exécutables = $exécutables;
-		$this->tests = $tests;
+	/**
+	 * @param array<mixed> $config
+	 * @return array<mixed>
+	 */
+	public function transform(array $config): array
+	{
+		$data_out = $config + [
+			"id" => $config["id"],
+			"links" => [
+				"self" => "{$this->urlBase}/",
+				"inscrire" => "{$this->urlBase}/user/",
+			],
+		];
+
+		return $data_out;
 	}
 }

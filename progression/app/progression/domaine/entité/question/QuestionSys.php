@@ -39,7 +39,7 @@ class QuestionSys extends Question
 		$utilisateur = null,
 		$solution = null,
 		$tests = [],
-		string|null $description = null
+		string|null $description = null,
 	) {
 		parent::__construct(
 			$niveau,
