@@ -20,6 +20,8 @@ namespace progression\http\transformer;
 
 use PHPUnit\Framework\TestCase;
 use progression\domaine\entité\{TentativeSys, Résultat, Commentaire};
+use progression\domaine\entité\user\User;
+use progression\http\transformer\dto\TentativeDTO;
 
 final class TentativeSysTransformerTests extends TestCase
 {
@@ -28,7 +30,6 @@ final class TentativeSysTransformerTests extends TestCase
 		putenv("APP_URL=https://example.com");
 
 		$tentative = new TentativeSys("conteneurDeLaTentative", "oui");
-		$tentative->id = "id";
 
 		$tentativeTransformer = new TentativeSysTransformer("roger/uri");
 		$résultat = [
@@ -47,7 +48,19 @@ final class TentativeSysTransformerTests extends TestCase
 			],
 		];
 
-		$this->assertEquals($résultat, $tentativeTransformer->transform($tentative));
+		$this->assertEquals(
+			$résultat,
+			$tentativeTransformer->transform(
+				new TentativeDTO(
+					id: "roger/uri/id",
+					objet: $tentative,
+					liens: [
+						"avancement" => "https://example.com/avancement/roger/uri",
+						"self" => "https://example.com/tentative/roger/uri/id",
+					],
+				),
+			),
+		);
 	}
 
 	public function test_étant_donné_une_TentativeSys_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
@@ -63,9 +76,8 @@ final class TentativeSysTransformerTests extends TestCase
 			2,
 			34567,
 			"feedBackTest",
-			[new Commentaire("Message", "jdoe", 123456, 12)],
+			[new Commentaire("Message", new User("jdoe", 0), 123456, 12)],
 		);
-		$tentative->id = "1614711760";
 
 		$tentativeTransformer = new TentativeSysTransformer(
 			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
@@ -89,7 +101,21 @@ final class TentativeSysTransformerTests extends TestCase
 			],
 		];
 
-		$this->assertEquals($résultat, $tentativeTransformer->transform($tentative));
+		$this->assertEquals(
+			$résultat,
+			$tentativeTransformer->transform(
+				new TentativeDTO(
+					id: "roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
+					objet: $tentative,
+					liens: [
+						"avancement" =>
+							"https://example.com/avancement/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+						"self" =>
+							"https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
+					],
+				),
+			),
+		);
 	}
 
 	public function test_étant_donné_une_TentativeSys_instanciée_avec_des_résultats_lorsquon_inclut_les_résultats_on_obtient_un_tableau_de_résultats()
@@ -105,15 +131,20 @@ final class TentativeSysTransformerTests extends TestCase
 			2,
 			34567,
 			"feedBackTest",
-			[new Commentaire("Message", "jdoe", 123456, 12)],
+			[new Commentaire("Message", new User("jdoe", 0), 123456, 12)],
 		);
-		$tentative->id = "1614711760";
 
 		$tentativeTransformer = new TentativeSysTransformer(
 			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 		);
 
-		$inclusionsResultats = $tentativeTransformer->includeResultats($tentative);
+		$inclusionsResultats = $tentativeTransformer->includeResultats(
+			new TentativeDTO(
+				id: "roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760/0",
+				objet: $tentative,
+				liens: [],
+			),
+		);
 
 		$listeRésultats = [];
 		foreach ($inclusionsResultats->getData() as $résultat) {
@@ -135,14 +166,15 @@ final class TentativeSysTransformerTests extends TestCase
 			"oui",
 			1614711760,
 			false,
+			[],
 			2,
 			34567,
 			"feedBackTest",
-			[],
-			[new Commentaire("Message", "jdoe", 123456, 12), new Commentaire("Message 2", "bob", 654321, 13)],
+			[
+				new Commentaire("Message", new User("jdoe", 0), 123456, 12),
+				new Commentaire("Message 2", new User("bob", 0), 654321, 13),
+			],
 		);
-		$tentative->id = "1614711760";
-
 		$tentativeTransformer = new TentativeSysTransformer(
 			"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 		);
@@ -154,7 +186,13 @@ final class TentativeSysTransformerTests extends TestCase
 			"numéro_ligne" => 12,
 		];
 
-		$inclusionsCommentaires = $tentativeTransformer->includeCommentaires($tentative);
+		$inclusionsCommentaires = $tentativeTransformer->includeCommentaires(
+			new TentativeDTO(
+				id: "roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760/0",
+				objet: $tentative,
+				liens: [],
+			),
+		);
 
 		$listeCommentaires = [];
 		foreach ($inclusionsCommentaires->getData() as $commentaire) {

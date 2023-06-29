@@ -25,18 +25,21 @@ final class GénérateurDeTokenTests extends ContrôleurTestCase
 	{
 		$usernameAttendu = "utilisateur_lambda";
 		$expirationAttendue = "1648684800";
-		$ressourcesAttendue = json_encode([
+		$ressourcesAttendue = json_decode(
+			json_encode([
+				"permissions" => [
+					["url" => "url/ressource", "method" => "GET"],
+					["url" => "url/autre_ressource", "method" => "POST"],
+				],
+			]),
+		);
+
+		$token = GénérateurDeToken::get_instance()->générer_token("utilisateur_lambda", 1648684800, [
 			"permissions" => [
 				["url" => "url/ressource", "method" => "GET"],
 				["url" => "url/autre_ressource", "method" => "POST"],
 			],
 		]);
-
-		$token = GénérateurDeToken::get_instance()->générer_token(
-			$usernameAttendu,
-			$expirationAttendue,
-			$ressourcesAttendue,
-		);
 
 		$tokenDécodé = JWT::decode($token, getenv("JWT_SECRET"), ["HS256"]);
 

@@ -19,6 +19,7 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\clé\{Clé, Portée};
+use progression\http\transformer\dto\GénériqueDTO;
 use PHPUnit\Framework\TestCase;
 
 final class CléTransformerTests extends TestCase
@@ -33,10 +34,8 @@ final class CléTransformerTests extends TestCase
 	public function test_étant_donné_une_clé_d_authentification_lorsquon_la_transforme_on_obtient_un_array_identifque()
 	{
 		$clé = new Clé("1234", "2021-06-25 00:00:00", "2021-06-26 00:00:00", Portée::AUTH);
-		$clé->id = "clé%20de%20test";
 
 		$transformer = new CléTransformer("jdoe");
-		$résultat_obtenu = $transformer->transform($clé);
 
 		$résultat_attendu = [
 			"id" => "jdoe/clé%20de%20test",
@@ -50,6 +49,16 @@ final class CléTransformerTests extends TestCase
 			],
 		];
 
+		$résultat_obtenu = $transformer->transform(
+			new GénériqueDTO(
+				id: "jdoe/clé%20de%20test",
+				objet: $clé,
+				liens: [
+					"self" => "https://example.com/cle/jdoe/clé%20de%20test",
+					"user" => "https://example.com/user/jdoe",
+				],
+			),
+		);
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 }

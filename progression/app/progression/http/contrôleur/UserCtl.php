@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use progression\http\transformer\UserTransformer;
+use progression\http\transformer\dto\UserDTO;
 use progression\domaine\entité\user\{User, État};
 use progression\domaine\entité\Avancement;
 use progression\domaine\interacteur\{ObtenirUserInt, IntéracteurException, ModifierUserInt, SauvegarderUtilisateurInt};
@@ -85,6 +86,20 @@ class UserCtl extends Contrôleur
 		return $réponse;
 	}
 
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $username): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+		return [
+			"self" => "{$urlBase}/user/{$username}",
+			"avancements" => "{$urlBase}/user/{$username}/avancements",
+			"clés" => "{$urlBase}/user/{$username}/cles",
+			"tokens" => "{$urlBase}/user/{$username}/tokens",
+		];
+	}
+
 	private function obtenir_user(string $username): User|null
 	{
 		Log::debug("UserCtl.obtenir_user. Params : ", [$username]);
@@ -118,13 +133,16 @@ class UserCtl extends Contrôleur
 		return $validateur;
 	}
 
-	private function valider_et_préparer_réponse($user)
+	protected function valider_et_préparer_réponse($user)
 	{
 		Log::debug("UserCtl.valider_et_préparer_réponse. Params : ", [$user]);
 
 		if ($user) {
-			$user->id = $user->username;
-			$réponse = $this->item($user, new UserTransformer());
+			$id = $user->username;
+			$liens = self::get_liens($user->username);
+			$dto = new UserDTO(id: $id, objet: $user, liens: $liens);
+
+			$réponse = $this->item($dto, new UserTransformer());
 		} else {
 			$réponse = null;
 		}

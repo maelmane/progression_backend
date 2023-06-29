@@ -13,7 +13,8 @@
       "links": {
           "question": "https://example.com/question/dXJpX2E",
           "user": "https://example.com/user/jdoe",
-          "self": "https://example.com/avancement/jdoe/dXJpX2E"
+          "self": "https://example.com/avancement/jdoe/dXJpX2E",
+          "soumettre": "https://example.com/avancement/jdoe/dXJpX2E/tentatives"
       },
       "relationships": {
         "sauvegardes": {
@@ -60,7 +61,8 @@
       "links": {
           "question": "https://example.com/question/dXJpX2I",
           "user": "https://example.com/user/jdoe",
-          "self": "https://example.com/avancement/jdoe/dXJpX2I"
+          "self": "https://example.com/avancement/jdoe/dXJpX2I",
+          "soumettre": "https://example.com/avancement/jdoe/dXJpX2I/tentatives"
       },
       "relationships": {
         "sauvegardes": {

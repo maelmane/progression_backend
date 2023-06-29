@@ -19,21 +19,23 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\Sauvegarde;
+use progression\http\transformer\dto\GénériqueDTO;
 
 class SauvegardeTransformer extends BaseTransformer
 {
 	public $type = "sauvegarde";
 
-	public function transform(Sauvegarde $sauvegarde)
+	public function transform(GénériqueDTO $data_in)
 	{
+		$id = $data_in->id;
+		$sauvegarde = $data_in->objet;
+		$liens = $data_in->liens;
+
 		$data_out = [
-			"id" => "{$this->id}/{$sauvegarde->id}",
+			"id" => $id,
 			"date_sauvegarde" => $sauvegarde->date_sauvegarde,
 			"code" => $sauvegarde->code,
-			"links" => (isset($sauvegarde->links) ? $sauvegarde->links : []) + [
-				"avancement" => "{$this->urlBase}/avancement/{$this->id}",
-				"self" => "{$this->urlBase}/sauvegarde/{$this->id}/{$sauvegarde->id}",
-			],
+			"links" => $liens,
 		];
 
 		return $data_out;

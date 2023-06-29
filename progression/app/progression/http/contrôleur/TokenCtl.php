@@ -24,6 +24,7 @@ use Illuminate\Validation\Validator as ValidatorImpl;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use progression\http\transformer\TokenTransformer;
+use progression\http\transformer\dto\GénériqueDTO;
 
 class TokenCtl extends Contrôleur
 {
@@ -45,11 +46,32 @@ class TokenCtl extends Contrôleur
 				expiration: $expiration,
 				ressources: $ressources ?? ["tout" => ["url" => ".*", "method" => ".*"]],
 			);
-			$réponse = $this->préparer_réponse($this->item($token, new TokenTransformer($username)));
+			$signature = explode(".", $token)[2];
+			$réponse = $this->préparer_réponse(
+				$this->item(
+					new GénériqueDTO(id: $signature, objet: $token, liens: TokenCtl::get_liens($username, $signature)),
+					new TokenTransformer(),
+				),
+			);
 		}
 
 		Log::debug("TokenCtl.post. Réponse : ", [$réponse]);
 		return $réponse;
+	}
+
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $username, string $id): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+
+		$liens = [
+			"self" => "{$urlBase}/token/{$id}",
+			"user" => "{$urlBase}/user/{$username}",
+		];
+
+		return $liens;
 	}
 
 	private function valider_paramètres(Request $request): ValidatorImpl

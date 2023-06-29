@@ -24,15 +24,8 @@ use League\Fractal\Resource\{Collection, Item};
 class BaseTransformer extends TransformerAbstract
 {
 	public $id;
-	protected string $urlBase;
 	protected array $availableIncludes = [];
 	protected array $availableParams = [];
-
-	public function __construct($id = null)
-	{
-		$this->id = $id;
-		$this->urlBase = preg_replace("/\/+$/", "", getenv("APP_URL") ?: "") ?? "";
-	}
 
 	/**
 	 *
@@ -40,16 +33,8 @@ class BaseTransformer extends TransformerAbstract
 	 * Elles retournent un array *non transformé*
 	 * public function includeXXX(){}
 	 *
-	 * @param array<mixed> $data
 	 */
-	protected function collection($data, $transformer, ?string $resourceKey = null): Collection
-	{
-		foreach ($data as $id => $item) {
-			$item->id = "$id";
-		}
-
-		return parent::collection($data, $transformer, $resourceKey);
-	}
+	//	protected function collection($data, $transformer, ?string $resourceKey = null): Collection
 
 	protected function sélectionnerChamps($objet, $fields)
 	{

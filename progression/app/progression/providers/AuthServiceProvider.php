@@ -155,6 +155,10 @@ class AuthServiceProvider extends ServiceProvider
 		Gate::define("utilisateur-validé", function ($user, $request) {
 			return $user->état != État::ATTENTE_DE_VALIDATION;
 		});
+
+		Gate::define("soumettre-tentative", function ($user, $username) {
+			return mb_strtolower($user->username) == mb_strtolower($username);
+		});
 	}
 
 	private function décoderToken($tokenEncodé, $request)

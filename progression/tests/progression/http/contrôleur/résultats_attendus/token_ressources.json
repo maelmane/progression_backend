@@ -1,16 +1,16 @@
 {
   "data": {
     "type": "token",
-    "id": "utilisateur_lambda/990446400",
+    "id": "_iJOe7kAomaoD94NWrXG8fkY6MDhD8g7R25hzo7J9es",
     "attributes": {
       "username": "utilisateur_lambda",
       "création": 990446400,
       "expiration": 0,
-      "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InV0aWxpc2F0ZXVyX2xhbWJkYSIsImN1cnJlbnQiOjk5MDQ0NjQwMCwiZXhwaXJlZCI6MCwicmVzc291cmNlcyI6InJlc3NvdXJjZXMiLCJ2ZXJzaW9uIjoiMS4yLjMifQ.Nsk9jJE9w8QI8QRSxcw5aoaLBbBRroj36h3SB1aoB94",
+      "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InV0aWxpc2F0ZXVyX2xhbWJkYSIsImN1cnJlbnQiOjk5MDQ0NjQwMCwiZXhwaXJlZCI6MCwiZGF0YSI6W10sInJlc3NvdXJjZXMiOnsicmVzc291cmNlcyI6eyJ1cmwiOiJ0ZXN0IiwibWV0aG9kIjoiUE9TVCJ9fSwidmVyc2lvbiI6IjEuMi4zIn0._iJOe7kAomaoD94NWrXG8fkY6MDhD8g7R25hzo7J9es",
       "version": "1.2.3"
     },
     "links": {
-      "self": "https://example.com/token/utilisateur_lambda/990446400",
+		"self": "https://example.com/token/_iJOe7kAomaoD94NWrXG8fkY6MDhD8g7R25hzo7J9es",
       "user": "https://example.com/user/utilisateur_lambda"
     }
   }

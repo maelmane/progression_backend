@@ -19,6 +19,7 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\Sauvegarde;
+use progression\http\transformer\dto\GénériqueDTO;
 use PHPUnit\Framework\TestCase;
 
 final class SauvegardeTransformerTests extends TestCase
@@ -33,12 +34,17 @@ final class SauvegardeTransformerTests extends TestCase
 	public function test_étant_donné_une_sauvegarde_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
 	{
 		$sauvegarde = new Sauvegarde(1620150294, "print(\"Hello world!\")");
-		$sauvegarde->id = "python";
 
 		$sauvegardeTransformer = new SauvegardeTransformer(
 			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 		);
-		$résultats_obtenus = $sauvegardeTransformer->transform($sauvegarde);
+		$résultats_obtenus = $sauvegardeTransformer->transform(
+			new GénériqueDTO(
+				id: "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+				objet: $sauvegarde,
+				liens: [],
+			),
+		);
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/sauvegardeTransformerTest_1.json",

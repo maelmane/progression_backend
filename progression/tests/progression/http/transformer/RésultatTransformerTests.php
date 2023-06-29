@@ -20,6 +20,7 @@ namespace progression\http\transformer;
 
 use PHPUnit\Framework\TestCase;
 use progression\domaine\entité\Résultat;
+use progression\http\transformer\dto\GénériqueDTO;
 
 final class RésultatTransformerTests extends TestCase
 {
@@ -28,7 +29,6 @@ final class RésultatTransformerTests extends TestCase
 		putenv("APP_URL=https://example.com");
 
 		$résultat = new Résultat("Bonjour\nBonjour\n", "", true, "Bon travail!", 15);
-		$résultat->id = "0";
 
 		$réponse_attendue = [
 			"id" => "0",
@@ -43,7 +43,15 @@ final class RésultatTransformerTests extends TestCase
 		];
 
 		$résultatProgTransformer = new RésultatTransformer();
-		$résponse_observée = $résultatProgTransformer->transform($résultat);
+		$résponse_observée = $résultatProgTransformer->transform(
+			new GénériqueDTO(
+				id: "0",
+				objet: $résultat,
+				liens: [
+					"self" => "https://example.com/resultat/0",
+				],
+			),
+		);
 
 		$this->assertEquals($réponse_attendue, $résponse_observée);
 	}

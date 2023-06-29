@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Validator;
 use progression\domaine\entité\Commentaire;
 use progression\domaine\interacteur\{SauvegarderCommentaireInt, IntéracteurException};
 use progression\http\transformer\CommentaireTransformer;
+use progression\http\transformer\dto\GénériqueDTO;
 use progression\util\Encodage;
 
 class CommentaireCtl extends Contrôleur
@@ -58,19 +59,32 @@ class CommentaireCtl extends Contrôleur
 			if (count($commentaire) > 0) {
 				$numéro = array_key_first($commentaire);
 
-				$commentaire[$numéro]->id = $numéro;
-
 				$réponse = $this->valider_et_préparer_réponse(
 					$numéro !== null ? $commentaire[$numéro] : null,
 					$username,
 					$question_uri,
 					$timestamp,
+					$numéro,
 				);
 			}
 		}
 
 		Log::debug("CommentaireCtl.post. Retour : ", [$réponse]);
 		return $réponse;
+	}
+
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $id, int $numéro, Commentaire $commentaire): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+
+		return [
+			"self" => "{$urlBase}/commentaire/{$id}/{$numéro}",
+			"auteur" => "{$urlBase}/user/{$commentaire->créateur->username}",
+			"tentative" => "{$urlBase}/tentative/{$id}",
+		];
 	}
 
 	private function valider_paramètres($request)
@@ -94,6 +108,7 @@ class CommentaireCtl extends Contrôleur
 		string $username,
 		string $question_uri,
 		int $timestamp,
+		int $numéro,
 	): JsonResponse {
 		Log::debug("CommentaireCtl.valider_et_préparer_réponse. Params : ", [
 			$commentaire,
@@ -102,7 +117,13 @@ class CommentaireCtl extends Contrôleur
 			$timestamp,
 		]);
 
-		$réponse = $this->item($commentaire, new CommentaireTransformer("{$username}/{$question_uri}/{$timestamp}"));
+		$dto = new GénériqueDTO(
+			id: "{$username}/{$question_uri}/{$timestamp}/{$numéro}",
+			objet: $commentaire,
+			liens: CommentaireCtl::get_liens("{$username}/{$question_uri}/{$timestamp}", $numéro, $commentaire),
+		);
+
+		$réponse = $this->item($dto, new CommentaireTransformer());
 
 		$réponse = $this->préparer_réponse($réponse);
 

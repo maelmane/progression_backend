@@ -20,6 +20,7 @@ namespace progression\http\transformer;
 
 use progression\domaine\entité\{Exécutable, TestProg};
 use progression\domaine\entité\question\QuestionProg;
+use progression\http\transformer\dto\QuestionProgDTO;
 use PHPUnit\Framework\TestCase;
 
 final class QuestionProgTransformerTests extends TestCase
@@ -33,9 +34,8 @@ final class QuestionProgTransformerTests extends TestCase
 	public function test_étant_donné_une_questionprog_instanciée_avec_des_valeurs_minimales_lorsquon_le_transforme_on_obtient_un_tableau_d_objets_identique()
 	{
 		$question = new QuestionProg();
-		$question->id = "id";
 
-		$item = (new QuestionProgTransformer())->transform($question);
+		$item = (new QuestionProgTransformer())->transform(new QuestionProgDTO(id: "id", objet: $question, liens: []));
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/questionProgTransformerTest_minimal.json",
@@ -47,20 +47,23 @@ final class QuestionProgTransformerTests extends TestCase
 	{
 		$username = "jdoe";
 
-		$question = new QuestionProg();
-		$question->nom = "appeler_une_fonction_paramétrée";
-		$question->titre = "Appeler une fonction paramétrée";
-		$question->objectif = "Appeler une fonction existante recevant un paramètre";
-		$question->description = "Ceci est une fonction prog complète";
-		$question->enonce =
-			"La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
-		$question->auteur = "Albert Einstein";
-		$question->licence = "poétique";
-		$question->niveau = "débutant";
-		$question->id =
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
+		$question = new QuestionProg(
+			titre: "Appeler une fonction paramétrée",
+			objectif: "Appeler une fonction existante recevant un paramètre",
+			description: "Ceci est une fonction prog complète",
+			enonce: "La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.",
+			auteur: "Albert Einstein",
+			licence: "poétique",
+			niveau: "débutant",
+		);
 
-		$item = (new QuestionProgTransformer())->transform($question);
+		$item = (new QuestionProgTransformer())->transform(
+			new QuestionProgDTO(
+				id: "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				objet: $question,
+				liens: [],
+			),
+		);
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/questionProgTransformerTest_1.json",
@@ -71,8 +74,6 @@ final class QuestionProgTransformerTests extends TestCase
 	public function test_étant_donné_une_question_avec_ses_tests_lorsquon_inclut_les_tests_on_reçoit_un_tableau_de_tests_numérotés_dans_le_même_ordre()
 	{
 		$question = new QuestionProg();
-		$question->id =
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$question->tests = [
 			new TestProg(
@@ -88,7 +89,13 @@ final class QuestionProgTransformerTests extends TestCase
 
 		$questionProgTransformer = new QuestionProgTransformer();
 
-		$résultats_obtenus = $questionProgTransformer->includeTests($question);
+		$résultats_obtenus = $questionProgTransformer->includeTests(
+			new QuestionProgDTO(
+				id: "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				objet: $question,
+				liens: [],
+			),
+		);
 
 		$tests = [];
 		foreach ($résultats_obtenus->getData() as $résultat) {
@@ -104,11 +111,15 @@ final class QuestionProgTransformerTests extends TestCase
 	{
 		$question = new QuestionProg();
 		$question->tests = [];
-		$question->id =
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$questionProgTransformer = new QuestionProgTransformer();
-		$résultat_obtenu = $questionProgTransformer->includeTests($question);
+		$résultat_obtenu = $questionProgTransformer->includeTests(
+			new QuestionProgDTO(
+				id: "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				objet: $question,
+				liens: [],
+			),
+		);
 
 		$this->assertEquals(0, count($résultat_obtenu->getData()));
 	}
@@ -120,12 +131,16 @@ final class QuestionProgTransformerTests extends TestCase
 			"python" => new Exécutable("print(\"Hello world\")", "python"),
 			"java" => new Exécutable("System.out.println(\"Hello world\")", "java"),
 		];
-		$question->id =
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$questionProgTransformer = new QuestionProgTransformer();
 
-		$résultats_obtenus = $questionProgTransformer->includeEbauches($question);
+		$résultats_obtenus = $questionProgTransformer->includeEbauches(
+			new QuestionProgDTO(
+				id: "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				objet: $question,
+				liens: [],
+			),
+		);
 
 		$ébauches = [];
 		foreach ($résultats_obtenus->getData() as $résultat) {
@@ -142,11 +157,15 @@ final class QuestionProgTransformerTests extends TestCase
 	{
 		$question = new QuestionProg();
 		$question->exécutables = [];
-		$question->id =
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$questionProgTransformer = new QuestionProgTransformer();
-		$résultat_obtenu = $questionProgTransformer->includeEbauches($question);
+		$résultat_obtenu = $questionProgTransformer->includeEbauches(
+			new QuestionProgDTO(
+				id: "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				objet: $question,
+				liens: [],
+			),
+		);
 
 		$this->assertEquals(0, count($résultat_obtenu->getData()));
 	}

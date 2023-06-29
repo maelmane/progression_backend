@@ -19,24 +19,26 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\Test;
+use progression\http\transformer\dto\GénériqueDTO;
 
 class TestTransformer extends BaseTransformer
 {
 	public $type = "test";
 
-	public function transform(Test $test)
+	public function transform(GénériqueDTO $data_in)
 	{
-		$data = [
-			"id" => "{$this->id}/{$test->id}",
+		$id = $data_in->id;
+		$test = $data_in->objet;
+		$liens = $data_in->liens;
+
+		$data_out = [
+			"id" => $id,
 			"nom" => $test->nom,
 			"caché" => $test->caché,
 			"sortie_attendue" => $test->caché ? null : $test->sortie_attendue,
-			"links" => (isset($test->links) ? $test->links : []) + [
-				"question" => "{$this->urlBase}/question/{$this->id}",
-				"self" => "{$this->urlBase}/test/{$this->id}/{$test->id}",
-			],
+			"links" => $liens,
 		];
 
-		return $data;
+		return $data_out;
 	}
 }

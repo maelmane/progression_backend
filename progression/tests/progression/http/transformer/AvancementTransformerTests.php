@@ -18,7 +18,8 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\{Avancement, TentativeProg, Question, Sauvegarde};
+use progression\domaine\entité\{Avancement, TentativeProg, Question, Sauvegarde, Résultat};
+use progression\http\transformer\dto\AvancementDTO;
 use PHPUnit\Framework\TestCase;
 
 final class AvancementTransformerTests extends TestCase
@@ -33,10 +34,15 @@ final class AvancementTransformerTests extends TestCase
 	public function test_étant_donné_un_avancement_instancié_avec_des_valeurs_minimales_lorsquon_récupère_son_transformer_on_obtient_un_array_d_objets_identique()
 	{
 		$avancement = new Avancement();
-		$avancement->id = "id";
 
 		$avancementTransformer = new AvancementTransformer("jdoe");
-		$résultats_obtenus = $avancementTransformer->transform($avancement);
+		$résultats_obtenus = $avancementTransformer->transform(
+			new AvancementDTO(
+				objet: $avancement,
+				id: "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				liens: [],
+			),
+		);
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementTransformerTest_minimal.json",
 			json_encode($résultats_obtenus),
@@ -47,11 +53,14 @@ final class AvancementTransformerTests extends TestCase
 	{
 		$avancement = new Avancement([], "Ginette Reno", "Un peu plus haut, un peu plus loin");
 
-		$avancement->id =
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
-
 		$avancementTransformer = new AvancementTransformer("jdoe");
-		$résultats_obtenus = $avancementTransformer->transform($avancement);
+		$résultats_obtenus = $avancementTransformer->transform(
+			new AvancementDTO(
+				id: "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				objet: $avancement,
+				liens: [],
+			),
+		);
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementTransformerTest_base.json",
 			json_encode($résultats_obtenus),
@@ -68,11 +77,15 @@ final class AvancementTransformerTests extends TestCase
 			"Ginette Reno",
 			"Un peu plus haut, un peu plus loin",
 		);
-		$avancement->id =
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$avancementTransformer = new AvancementTransformer("jdoe");
-		$avancement_obtenu = $avancementTransformer->transform($avancement);
+		$avancement_obtenu = $avancementTransformer->transform(
+			new AvancementDTO(
+				id: "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				objet: $avancement,
+				liens: [],
+			),
+		);
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementTransformerTest_avancement_réussi.json",
@@ -92,10 +105,14 @@ final class AvancementTransformerTests extends TestCase
 		);
 
 		$avancementTransformer = new AvancementTransformer("jdoe");
-		$avancement->id =
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
-		$avancement_obtenu = $avancementTransformer->transform($avancement);
+		$avancement_obtenu = $avancementTransformer->transform(
+			new AvancementDTO(
+				id: "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				objet: $avancement,
+				liens: [],
+			),
+		);
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/avancementTransformerTest_avancement_non_réussi.json",
@@ -131,12 +148,11 @@ final class AvancementTransformerTests extends TestCase
 			"Ginette Reno",
 			"Un peu plus haut, un peu plus loin",
 		);
-		$avancement->id =
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
-
 		$avancementTransformer = new AvancementTransformer("jdoe");
 
-		$résultats_obtenus = $avancementTransformer->includeTentatives($avancement);
+		$résultats_obtenus = $avancementTransformer->includeTentatives(
+			new AvancementDTO(id: "jdoe/dW5fYXZhbmNlbWVudA", objet: $avancement, liens: []),
+		);
 
 		$tentatives = [];
 		foreach ($résultats_obtenus->getData() as $résultat) {
@@ -147,19 +163,65 @@ final class AvancementTransformerTests extends TestCase
 			json_encode($tentatives),
 		);
 	}
+
+	public function test_étant_donné_un_avancement_avec_ses_tentatives_lorsquon_inclut_les_tentatives_avec_résultats_on_reçoit_un_tableau_de_tentatives_avec_résultats()
+	{
+		$avancement = new Avancement(
+			[
+				"1614711760" => new TentativeProg(
+					"python",
+					"codeTestPython",
+					1614711760,
+					false,
+					[new Résultat("test 1"), new Résultat("test 2")],
+					2,
+					324775,
+					"feedbackTest Python",
+				),
+				"1614711761" => new TentativeProg(
+					"java",
+					"codeTestJava",
+					1614711761,
+					true,
+					[new Résultat("test 3"), new Résultat("test 4")],
+					2,
+					3245,
+					"feedbackTest Java",
+				),
+			],
+			"Ginette Reno",
+			"Un peu plus haut, un peu plus loin",
+		);
+		$avancementTransformer = new AvancementTransformer("jdoe");
+
+		$résultats_obtenus = $avancementTransformer->includeTentatives(
+			new AvancementDTO(id: "jdoe/dW5fYXZhbmNlbWVudA", objet: $avancement, liens: []),
+		);
+
+		$tentatives = [];
+		foreach ($résultats_obtenus->getData() as $résultat) {
+			$tentatives[] = $résultat;
+		}
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/avancementTransformerTest_inclusion_tentatives_et_résultats.json",
+			json_encode($tentatives),
+		);
+	}
+
 	public function test_étant_donné_un_avancement_avec_ses_sauvegardes_lorsquon_inclut_les_sauvegardes_on_reçoit_un_tableau_de_sauvegardes()
 	{
 		$sauvegardes = [];
 		$sauvegardes["python"] = new Sauvegarde(1620150294, "print(\"Hello world!\")");
 		$sauvegardes["java"] = new Sauvegarde(1620150375, "System.out.println(\"Hello world!\");");
 		$avancement = new Avancement([], "Un titre", "un niveau", $sauvegardes);
-		$avancement->id =
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$avancementTransformer = new AvancementTransformer("jdoe");
-		$résultats_obtenus = $avancementTransformer->includeSauvegardes($avancement);
+		$résultats_obtenus = $avancementTransformer->includeSauvegardes(
+			new AvancementDTO(id: "jdoe/dW5fYXZhbmNlbWVudA", objet: $avancement, liens: []),
+		);
 
 		$listeSauvegardes = [];
+
 		foreach ($résultats_obtenus->getData() as $résultat) {
 			$listeSauvegardes[] = $résultat;
 		}
@@ -172,20 +234,24 @@ final class AvancementTransformerTests extends TestCase
 	public function test_étant_donné_un_avancement_sans_tentative_lorsquon_inclut_les_tentatives_on_reçoit_un_tableau_vide()
 	{
 		$avancement = new Avancement([], "Un titre", "un niveau");
-		$avancement->id =
-			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$avancementTransformer = new AvancementTransformer("jdoe");
-		$this->assertEquals([], $avancementTransformer->includeTentatives($avancement)->getData());
+		$résultats_obtenus = $avancementTransformer->includeTentatives(
+			new AvancementDTO(id: "jdoe/dW5fYXZhbmNlbWVudA", objet: $avancement, liens: []),
+		);
+
+		$this->assertEquals([], $résultats_obtenus->getData());
 	}
 
 	public function test_étant_donné_un_avancement_sans_sauvegarde_lorsquon_inclut_les_sauvegardes_on_reçoit_un_tableau_vide()
 	{
 		$avancement = new Avancement([], "Un titre", "un niveau");
-		$avancement->id =
-			"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$avancementTransformer = new AvancementTransformer("jdoe");
-		$this->assertEquals([], $avancementTransformer->includeSauvegardes($avancement)->getData());
+		$résultats_obtenus = $avancementTransformer->includeSauvegardes(
+			new AvancementDTO(id: "jdoe/dW5fYXZhbmNlbWVudA", objet: $avancement, liens: []),
+		);
+
+		$this->assertEquals([], $résultats_obtenus->getData());
 	}
 }

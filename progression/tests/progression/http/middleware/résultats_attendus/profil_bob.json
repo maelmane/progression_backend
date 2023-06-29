@@ -11,7 +11,10 @@
       "préférences": ""
     },
     "links": {
-      "self": "https://example.com/user/bob"
+		"self": "https://example.com/user/bob",
+        "avancements": "https://example.com/user/bob/avancements",
+        "clés": "https://example.com/user/bob/cles",
+        "tokens": "https://example.com/user/bob/tokens"
     },
     "relationships": {
       "avancements": {
@@ -24,12 +27,6 @@
         "links": {
           "self": "https://example.com/user/bob/relationships/cles",
           "related": "https://example.com/user/bob/cles"
-        }
-      },
-      "tokens": {
-        "links": {
-          "related": "https://example.com/user/bob/tokens",
-          "self": "https://example.com/user/bob/relationships/tokens"
         }
       }
     }

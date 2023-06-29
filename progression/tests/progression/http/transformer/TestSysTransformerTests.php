@@ -19,6 +19,7 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\TestSys;
+use progression\http\transformer\dto\GénériqueDTO;
 use PHPUnit\Framework\TestCase;
 
 final class TestSysTransformerTests extends TestCase
@@ -28,7 +29,6 @@ final class TestSysTransformerTests extends TestCase
 		putenv("APP_URL=https://example.com");
 
 		$test = new TestSys("Permissions", "-rwxrwxrwx");
-		$test->id = "0";
 
 		$résultat_attendu = [
 			"id" => "uri/0",
@@ -43,8 +43,17 @@ final class TestSysTransformerTests extends TestCase
 			],
 		];
 
-		$testTransformer = new TestSysTransformer("uri");
-		$résultat_obtenu = $testTransformer->transform($test);
+		$testTransformer = new TestSysTransformer();
+		$résultat_obtenu = $testTransformer->transform(
+			new GénériqueDTO(
+				id: "uri/0",
+				objet: $test,
+				liens: [
+					"question" => "https://example.com/question/uri",
+					"self" => "https://example.com/test/uri/0",
+				],
+			),
+		);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
@@ -54,11 +63,10 @@ final class TestSysTransformerTests extends TestCase
 		putenv("APP_URL=https://example.com");
 
 		$test = new TestSys("Permissions", "-rwxrwxrwx", "ls -l", "root");
-		$test->numéro = 0;
-		$test->id = "0";
 
 		$résultat_attendu = [
-			"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+			"id" =>
+				"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 			"nom" => "Permissions",
 			"sortie_attendue" => "-rwxrwxrwx",
 			"caché" => false,
@@ -72,10 +80,19 @@ final class TestSysTransformerTests extends TestCase
 			],
 		];
 
-		$testTransformer = new TestSysTransformer(
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		$testTransformer = new TestSysTransformer();
+		$résultat_obtenu = $testTransformer->transform(
+			new GénériqueDTO(
+				id: "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+				objet: $test,
+				liens: [
+					"question" =>
+						"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+					"self" =>
+						"https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+				],
+			),
 		);
-		$résultat_obtenu = $testTransformer->transform($test);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}

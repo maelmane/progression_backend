@@ -27,6 +27,9 @@ $router->get("/", "ConfigCtl@get");
 $router->put("/user", "UserCréationCtl@put");
 
 $router->group(["middleware" => ["auth", "étatNonInactif"]], function () use ($router) {
+	// Config pour un utilisateur authentifié
+	$router->post("/", "ConfigCtl@get");
+
 	// Ébauche
 	$router->get("/ebauche/{question_uri}/{langage}", "ÉbaucheCtl@get");
 

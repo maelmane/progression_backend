@@ -36,6 +36,7 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 
 		putenv("APP_URL=https://example.com");
 		putenv("JWT_SECRET=secret-test");
+		putenv("PREFERENCES_DEFAUT={préférences par défaut}");
 
 		$this->user = new GenericUser([
 			"username" => "bob",

@@ -21,6 +21,7 @@ namespace progression\http\transformer;
 use PHPUnit\Framework\TestCase;
 use progression\domaine\entité\Commentaire;
 use progression\domaine\entité\user\User;
+use progression\http\transformer\dto\GénériqueDTO;
 
 final class CommentaireTransformerTests extends TestCase
 {
@@ -48,7 +49,19 @@ final class CommentaireTransformerTests extends TestCase
 			],
 		];
 
-		$commentaire->id = 11;
-		$this->assertEquals($résultat_attendu, $commentaireTransformer->transform($commentaire));
+		$this->assertEquals(
+			$résultat_attendu,
+			$commentaireTransformer->transform(
+				new GénériqueDTO(
+					id: "createur_test/test/122456747/11",
+					objet: $commentaire,
+					liens: [
+						"auteur" => "https://example.com/user/createur_test",
+						"self" => "https://example.com/commentaire/createur_test/test/122456747/11",
+						"tentative" => "https://example.com/tentative/createur_test/test/122456747",
+					],
+				),
+			),
+		);
 	}
 }

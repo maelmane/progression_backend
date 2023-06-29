@@ -20,6 +20,7 @@ namespace progression\http\transformer;
 
 use progression\domaine\entité\question\QuestionSys;
 use progression\domaine\entité\TestSys;
+use progression\http\transformer\dto\QuestionDTO;
 use PHPUnit\Framework\TestCase;
 
 final class QuestionSysTransformerTests extends TestCase
@@ -34,9 +35,8 @@ final class QuestionSysTransformerTests extends TestCase
 	public function test_étant_donné_une_questionsys_instanciée_avec_des_valeurs_minimales_lorsquon_le_transforme_on_obtient_un_tableau_d_objets_identique()
 	{
 		$question = new QuestionSys();
-		$question->id = "id";
 
-		$item = (new QuestionSysTransformer())->transform($question);
+		$item = (new QuestionSysTransformer())->transform(new QuestionDTO(id: "id", objet: $question, liens: []));
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/questionSysTransformerTest_minimal.json",
@@ -48,23 +48,26 @@ final class QuestionSysTransformerTests extends TestCase
 	{
 		$username = "jdoe";
 
-		$question = new QuestionSys();
-		$question->id =
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
-		$question->nom = "appeler_une_fonction_paramétrée";
-		$question->titre = "Appeler une fonction paramétrée";
-		$question->objectif = "Appeler une fonction existante recevant un paramètre";
-		$question->description = "Ceci est une question système complète";
-		$question->enonce =
-			"La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.";
-		$question->auteur = "Albert Einstein";
-		$question->licence = "poétique";
-		$question->niveau = "débutant";
-		$question->image = "imageDeLaQuestion";
-		$question->utilisateur = "Ginette";
-		$question->solution = "laSolution";
+		$question = new QuestionSys(
+			titre: "Appeler une fonction paramétrée",
+			objectif: "Appeler une fonction existante recevant un paramètre",
+			description: "Ceci est une question système complète",
+			enonce: "La fonction `salutations` affiche une salution autant de fois que la valeur reçue en paramètre. Utilisez-la pour faire afficher «Bonjour le monde!» autant de fois que le nombre reçu en entrée.",
+			auteur: "Albert Einstein",
+			licence: "poétique",
+			niveau: "débutant",
+			image: "imageDeLaQuestion",
+			utilisateur: "Ginette",
+			solution: "laSolution",
+		);
 
-		$item = (new QuestionSysTransformer())->transform($question);
+		$item = (new QuestionSysTransformer())->transform(
+			new QuestionDTO(
+				id: "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				objet: $question,
+				liens: [],
+			),
+		);
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/questionSysTransformerTest_base.json",
@@ -75,8 +78,6 @@ final class QuestionSysTransformerTests extends TestCase
 	public function test_étant_donné_une_question_avec_ses_tests_lorsquon_inclut_les_tests_on_reçoit_un_tableau_de_tests_numérotés_dans_le_même_ordre()
 	{
 		$question = new QuestionSys();
-		$question->id =
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$question->tests = [
 			new TestSys("Toutes Permissions", "-rwxrwxrwx", "laValidation", "utilisateur"),
@@ -84,7 +85,13 @@ final class QuestionSysTransformerTests extends TestCase
 		];
 
 		$questionSysTransformer = new QuestionSysTransformer();
-		$résultats_obtenus = $questionSysTransformer->includeTests($question);
+		$résultats_obtenus = $questionSysTransformer->includeTests(
+			new QuestionDTO(
+				id: "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				objet: $question,
+				liens: [],
+			),
+		);
 
 		$tests = [];
 		foreach ($résultats_obtenus->getData() as $résultat) {
@@ -101,11 +108,15 @@ final class QuestionSysTransformerTests extends TestCase
 	{
 		$question = new QuestionSys();
 		$question->tests = [];
-		$question->id =
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24";
 
 		$questionSysTransformer = new QuestionSysTransformer();
-		$résultat_obtenu = $questionSysTransformer->includeTests($question);
+		$résultat_obtenu = $questionSysTransformer->includeTests(
+			new QuestionDTO(
+				id: "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				objet: $question,
+				liens: [],
+			),
+		);
 
 		$this->assertEquals(0, count($résultat_obtenu->getData()));
 	}

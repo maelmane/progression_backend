@@ -19,7 +19,7 @@
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\Avancement;
+use progression\domaine\entité\{Avancement, TentativeProg};
 use progression\domaine\entité\user\{User, État, Rôle};
 use Illuminate\Auth\GenericUser;
 
@@ -53,6 +53,21 @@ final class UserCtlTests extends ContrôleurTestCase
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement(),
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement(),
 		];
+		$user_et_avancements_et_tentatives = new User(username: "jdoe", date_inscription: 1600828609);
+		$user_et_avancements_et_tentatives->avancements = [
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement(
+				tentatives: [
+					new TentativeProg("python", "print('42')", 1600828610),
+					new TentativeProg("java", "System.out.print(\"42\")", 1600828612),
+				],
+			),
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement(
+				tentatives: [
+					new TentativeProg("python", "print('43')", 1600828614),
+					new TentativeProg("java", "System.out.print(\"43\")", 1600828616),
+				],
+			),
+		];
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -60,6 +75,10 @@ final class UserCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_user")
 			->with("jdoe", ["avancements"])
 			->andReturn($user_et_avancements);
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("jdoe", ["avancements", "avancements.tentatives"])
+			->andReturn($user_et_avancements_et_tentatives);
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("jdoe", [])
@@ -127,6 +146,17 @@ final class UserCtlTests extends ContrôleurTestCase
 		$this->assertResponseStatus(200);
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/userCtlTest_user_avec_avancements.json",
+			$résultatObtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_le_nom_dun_utilisateur_lorsquon_appelle_get_en_incluant_les_avancements_et_tentatives_on_obtient_lutilisateur_et_ses_avancements_et_tentatives_sous_forme_json()
+	{
+		$résultatObtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe?include=avancements.tentatives");
+
+		$this->assertResponseStatus(200);
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/userCtlTest_user_avec_avancements_et_tentatives.json",
 			$résultatObtenu->getContent(),
 		);
 	}

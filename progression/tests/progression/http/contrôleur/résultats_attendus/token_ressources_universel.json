@@ -1,7 +1,7 @@
 {
   "data": {
     "type": "token",
-    "id": "utilisateur_lambda/990446400",
+    "id": "NR4TnTAp-LXZZDGM8EWhSFFQpSda19nULaca9hGcGXI",
     "attributes": {
       "username": "utilisateur_lambda",
       "création": 990446400,
@@ -10,7 +10,7 @@
       "version": "1.2.3"
     },
     "links": {
-      "self": "https://example.com/token/utilisateur_lambda/990446400",
+      "self": "https://example.com/token/NR4TnTAp-LXZZDGM8EWhSFFQpSda19nULaca9hGcGXI",
       "user": "https://example.com/user/utilisateur_lambda"
     }
   }

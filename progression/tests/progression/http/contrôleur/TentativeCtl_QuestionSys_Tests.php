@@ -25,6 +25,7 @@ use progression\domaine\entité\question\{Question, QuestionSys};
 use progression\domaine\entité\user\{User, Rôle, État};
 
 use Illuminate\Auth\GenericUser;
+use Carbon\Carbon;
 
 final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 {
@@ -37,6 +38,8 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 	public function setUp(): void
 	{
 		parent::setUp();
+
+		Carbon::setTestNow(Carbon::create(2022, 05, 27, 22, 24, 01));
 
 		putenv("AUTH_TYPE=no");
 		putenv("APP_URL=https://example.com");

@@ -4,14 +4,17 @@
     "id": "monique",
     "attributes": {
       "username": "monique",
-      "date_inscription":1600828609,
+      "date_inscription": 1600828609,
       "courriel": null,
       "état": "inactif",
-		"rôle": "normal",
-		"préférences": ""
+      "rôle": "normal",
+      "préférences": ""
     },
     "links": {
-      "self": "https://example.com/user/monique"
+      "self": "https://example.com/user/monique",
+      "tokens": "https://example.com/user/monique/tokens",
+      "avancements": "https://example.com/user/monique/avancements",
+      "clés": "https://example.com/user/monique/cles"
     },
     "relationships": {
       "avancements": {
@@ -24,12 +27,6 @@
         "links": {
           "self": "https://example.com/user/monique/relationships/cles",
           "related": "https://example.com/user/monique/cles"
-        }
-      },
-      "tokens": {
-        "links": {
-          "related": "https://example.com/user/monique/tokens",
-          "self": "https://example.com/user/monique/relationships/tokens"
         }
       }
     }
