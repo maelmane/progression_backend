@@ -18,7 +18,8 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Commentaire, User};
+use progression\domaine\entité\Commentaire;
+use progression\domaine\entité\user\{User, Rôle};
 use progression\TestCase;
 
 final class CommentaireDAOTests extends TestCase
@@ -31,9 +32,9 @@ final class CommentaireDAOTests extends TestCase
 	{
 		parent::setUp();
 
-		$this->jdoe = new User("jdoe");
-		$this->admin = new User("admin", User::ROLE_ADMIN);
-		$this->stefany = new User("Stefany");
+		$this->jdoe = new User(username: "jdoe", date_inscription: 1600828609);
+		$this->admin = new User(username: "admin", date_inscription: 1580828611, rôle: Rôle::ADMIN);
+		$this->stefany = new User(username: "Stefany", date_inscription: 1610828610);
 
 		app("db")
 			->connection()

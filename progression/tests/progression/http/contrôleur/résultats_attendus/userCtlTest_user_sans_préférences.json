@@ -4,11 +4,17 @@
     "id": "monique",
     "attributes": {
       "username": "monique",
-		"rôle": 0,
-		"préférences": ""
+      "date_inscription": 1600828609,
+      "courriel": null,
+      "état": "inactif",
+      "rôle": "normal",
+      "préférences": ""
     },
     "links": {
-      "self": "https://example.com/user/monique"
+      "self": "https://example.com/user/monique",
+      "tokens": "https://example.com/user/monique/tokens",
+      "avancements": "https://example.com/user/monique/avancements",
+      "clés": "https://example.com/user/monique/cles"
     },
     "relationships": {
       "avancements": {

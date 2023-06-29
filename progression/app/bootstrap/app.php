@@ -2,7 +2,7 @@
 
 require_once __DIR__ . "/../../vendor/autoload.php";
 
-date_default_timezone_set(env("APP_TIMEZONE", "UTC"));
+date_default_timezone_set("UTC");
 
 /*
    |--------------------------------------------------------------------------
@@ -51,6 +51,7 @@ $app->configure("app");
 $app->configure("version");
 $app->configure("database");
 $app->configure("logging");
+$app->configure("mail");
 
 /*
    |--------------------------------------------------------------------------
@@ -71,25 +72,16 @@ $app->routeMiddleware([
 	"auth" => progression\http\middleware\Authenticate::class,
 ]);
 
-// Rétrocompatibilité
-// Permet à TentativeCtl de fournir un test unique
-// Désuet dans v3
-assert(
-	version_compare(getenv("APP_VERSION") ?: "3", "3", "<"),
-	"Les tests uniques via TentativeCtl doivent être retirés",
-);
 $app->routeMiddleware([
-	"testUnique" => progression\http\middleware\TestUnique::class,
+	"permissionsRessources" => progression\http\middleware\PermissionsRessources::class,
 ]);
-// Fin Désuet dans v3
 
 $app->routeMiddleware([
-	//	"validationPermissions" =>
-	//		$_ENV["AUTH_TYPE"] == "no"
-	//			? progression\http\middleware\Bypass::class
-	//			: progression\http\middleware\ValidationPermissions::class,
+	"étatNonInactif" => progression\http\middleware\ÉtatNonInactif::class,
+]);
 
-	"validationPermissions" => progression\http\middleware\ValidationPermissions::class,
+$app->routeMiddleware([
+	"étatValidé" => progression\http\middleware\ÉtatValidé::class,
 ]);
 
 $app->routeMiddleware([
@@ -112,6 +104,7 @@ $app->middleware([progression\http\middleware\Cors::class]);
 // $app->register(App\Providers\AppServiceProvider::class);
 $app->register(progression\providers\AuthServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
 
 // $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);

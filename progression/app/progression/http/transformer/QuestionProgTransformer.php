@@ -19,12 +19,13 @@
 namespace progression\http\transformer;
 
 use progression\util\Encodage;
+use progression\http\transformer\dto\{QuestionDTO, QuestionProgDTO};
 
 class QuestionProgTransformer extends QuestionTransformer
 {
 	protected array $availableIncludes = ["tests", "ebauches"];
 
-	public function transform($question)
+	public function transform(QuestionDTO $question)
 	{
 		$data_out = array_merge(parent::transform($question), [
 			"sous-type" => "questionProg",
@@ -33,29 +34,19 @@ class QuestionProgTransformer extends QuestionTransformer
 		return $data_out;
 	}
 
-	public function includeTests($question)
+	public function includeTests(QuestionProgDTO $data_in)
 	{
-		$id_parent = $question->id;
+		$id = $data_in->id;
+		$question = $data_in->objet;
 
-		foreach ($question->tests as $test) {
-			$test->links = [
-				"question" => $_ENV["APP_URL"] . "question/{$id_parent}",
-			];
-		}
-
-		return $this->collection($question->tests, new TestProgTransformer($id_parent), "test");
+		return $this->collection($data_in->tests, new TestProgTransformer(), "test");
 	}
 
-	public function includeEbauches($question)
+	public function includeEbauches(QuestionProgDTO $data_in)
 	{
-		$id_parent = $question->id;
+		$id = $data_in->id;
+		$question = $data_in->objet;
 
-		foreach ($question->exécutables as $ébauche) {
-			$ébauche->links = [
-				"question" => $_ENV["APP_URL"] . "question/{$id_parent}",
-			];
-		}
-
-		return $this->collection($question->exécutables, new ÉbaucheTransformer($id_parent), "ebauche");
+		return $this->collection($data_in->ébauches, new ÉbaucheTransformer(), "ebauche");
 	}
 }

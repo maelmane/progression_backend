@@ -18,21 +18,24 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\{Test, TestProg};
+use progression\domaine\entité\TestProg;
+use progression\http\transformer\dto\GénériqueDTO;
 use League\Fractal;
 
 class TestProgTransformer extends BaseTransformer
 {
 	public $type = "test";
 
-	public function transform(TestProg $test)
+	public function transform(GénériqueDTO $data_in)
 	{
-		$data = (new TestTransformer($this->id))->transform($test);
-		$data = array_merge($data, [
+		$test = $data_in->objet;
+
+		$data_out = (new TestTransformer())->transform($data_in);
+		$data_out = array_merge($data_out, [
 			"entrée" => $test->caché ? null : $test->entrée,
 			"params" => $test->caché ? null : $test->params,
 		]);
 
-		return $data;
+		return $data_out;
 	}
 }

@@ -30,7 +30,7 @@ final class ExécuterProgIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$_ENV["COMPILEBOX_URL"] = "file://" . __DIR__ . "/ExécuterProgIntTests_fichiers/test_exec_prog_int_python";
+		putenv("COMPILEBOX_URL=file://" . __DIR__ . "/ExécuterProgIntTests_fichiers/test_exec_prog_int_python");
 		$_SERVER["REMOTE_ADDR"] = "";
 		$_SERVER["PHP_SELF"] = "";
 
@@ -106,7 +106,10 @@ final class ExécuterProgIntTests extends TestCase
 
 		$résultat_observé = (new ExécuterProgInt())->exécuter($exécutable_valide, $test);
 
-		$résultat_attendu = ["temps_exécution" => 234, "résultats" => [new Résultat("ok\n", "", false, null, 600)]];
+		$résultat_attendu = [
+			"temps_exécution" => 234,
+			"résultats" => [new Résultat("ok\n", "", false, null, 600)],
+		];
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 

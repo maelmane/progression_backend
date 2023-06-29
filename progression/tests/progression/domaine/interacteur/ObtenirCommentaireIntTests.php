@@ -18,7 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Commentaire, User};
+use progression\domaine\entité\Commentaire;
+use progression\domaine\entité\user\User;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -32,9 +33,9 @@ final class ObtenirCommentaireIntTests extends TestCase
 		$mockCommentaireDAO = Mockery::mock("progression\\dao\\CommentaireDAO");
 
 		$tableauCommentaires = [
-			new Commentaire("le 1er message", new User("jdoe"), 1615696276, 14),
-			new Commentaire("le 2er message", new User("admin"), 1615696276, 12),
-			new Commentaire("le 3er message", new User("Stefany"), 1615696276, 14),
+			new Commentaire("le 1er message", new User(username: "jdoe", date_inscription: 0), 1615696276, 14),
+			new Commentaire("le 2er message", new User(username: "admin", date_inscription: 0), 1615696276, 12),
+			new Commentaire("le 3er message", new User(username: "Stefany", date_inscription: 0), 1615696276, 14),
 		];
 
 		$mockCommentaireDAO
@@ -44,7 +45,9 @@ final class ObtenirCommentaireIntTests extends TestCase
 		$mockCommentaireDAO
 			->shouldReceive("get_commentaire")
 			->with(3, ["créateur"])
-			->andReturn(new Commentaire("le 3er message", new User("Stefany"), 1615696276, 14));
+			->andReturn(
+				new Commentaire("le 3er message", new User(username: "Stefany", date_inscription: 0), 1615696276, 14),
+			);
 		$mockCommentaireDAO
 			->shouldReceive("get_tous_par_tentative")
 			->with("bob", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", 1615696276, [
@@ -80,7 +83,12 @@ final class ObtenirCommentaireIntTests extends TestCase
 	{
 		$résultat_observé = new ObtenirCommentaireInt();
 
-		$résultat_attendu = new Commentaire("le 3er message", new User("Stefany"), 1615696276, 14);
+		$résultat_attendu = new Commentaire(
+			"le 3er message",
+			new User(username: "Stefany", date_inscription: 0),
+			1615696276,
+			14,
+		);
 
 		$this->assertEquals($résultat_attendu, $résultat_observé->get_commentaire_par_id(3, ["créateur"]));
 	}
@@ -96,9 +104,9 @@ final class ObtenirCommentaireIntTests extends TestCase
 		$résultat_observé = new ObtenirCommentaireInt();
 
 		$tableauCommentaire = [
-			new Commentaire("le 1er message", new User("jdoe"), 1615696276, 14),
-			new Commentaire("le 2er message", new User("admin"), 1615696276, 12),
-			new Commentaire("le 3er message", new User("Stefany"), 1615696276, 14),
+			new Commentaire("le 1er message", new User(username: "jdoe", date_inscription: 0), 1615696276, 14),
+			new Commentaire("le 2er message", new User(username: "admin", date_inscription: 0), 1615696276, 12),
+			new Commentaire("le 3er message", new User(username: "Stefany", date_inscription: 0), 1615696276, 14),
 		];
 		$réponse_attendue = $tableauCommentaire;
 		$this->assertEquals(

@@ -20,18 +20,16 @@ $router->options("{all:.*}", [
 	},
 ]);
 
-$router->get("/", function () use ($router) {
-	return config("app.name") . " " . config("version.numéro") . "(" . config("version.commit_sha") . ")";
-});
-
 // Configuration serveur
-$router->get("/config", "ConfigCtl@get");
+$router->get("/", "ConfigCtl@get");
 
-// Authentification
-$router->post("/auth/", "LoginCtl@login");
-$router->post("/inscription/", "InscriptionCtl@inscription");
+// Inscription
+$router->put("/user", "UserCréationCtl@put");
 
-$router->group(["middleware" => "auth"], function () use ($router) {
+$router->group(["middleware" => ["auth", "étatNonInactif"]], function () use ($router) {
+	// Config pour un utilisateur authentifié
+	$router->post("/", "ConfigCtl@get");
+
 	// Ébauche
 	$router->get("/ebauche/{question_uri}/{langage}", "ÉbaucheCtl@get");
 
@@ -46,10 +44,15 @@ $router->group(["middleware" => "auth"], function () use ($router) {
 	$router->get("/test/{question_uri}/{numero:[[:digit:]]+}", "TestCtl@get");
 
 	// Résultat
-	$router->put("/resultat", "RésultatCtl@put");
+	$router->post("/question/{uri}/resultats", "RésultatCtl@post");
 });
 
-$router->group(["middleware" => ["auth", "validationPermissions"]], function () use ($router) {
+$router->group(["middleware" => ["auth", "étatNonInactif", "étatValidé"]], function () use ($router) {
+	// Token
+	$router->post("/user/{username}/tokens", "TokenCtl@post");
+});
+
+$router->group(["middleware" => ["auth", "étatNonInactif", "permissionsRessources"]], function () use ($router) {
 	// Avancement
 	$router->get("/avancement/{username}/{question_uri}", "AvancementCtl@get");
 	$router->get("/avancement/{username}/{chemin}/relationships/tentatives", "NotImplementedCtl@get");
@@ -90,24 +93,8 @@ $router->group(["middleware" => ["auth", "validationPermissions"]], function () 
 	);
 	$router->get("/tentative/{username}/{question_uri}/{timestamp:[[:digit:]]{10}}/resultats", "NotImplementedCtl@get");
 
-	// Token
-	$router->post("/token/{username}/", "TokenCtl@post");
-
 	// User
 	$router->get("/user/{username}", "UserCtl@get");
 	$router->post("/user/{username}", "UserCtl@post");
 	$router->get("/user/{username}/relationships/avancements", "NotImplementedCtl@get");
 });
-
-// Rétrocompatibilité
-// Permet à TentativeCtl de fournir un test unique
-// Désuet dans v3
-assert(
-	version_compare(getenv("APP_VERSION") ?: "3", "3", "<"),
-	"Les tests uniques via TentativeCtl doivent être retirés",
-);
-// Résultat
-$router->group(["middleware" => ["auth", "testUnique"]], function () use ($router) {
-	$router->post("/avancement/{username}/{question_uri}/tentatives", "TentativeCtl@post");
-});
-// Fin Désuet dans v3

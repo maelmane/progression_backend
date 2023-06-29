@@ -32,7 +32,7 @@ class ObtenirTentativeInt extends Interacteur
 				->get_tentative_dao()
 				->get_tentative($username, $question_uri, $date, $includes);
 		} catch (DAOException $e) {
-			throw new IntéracteurException($e);
+			throw new IntéracteurException($e, 503);
 		}
 		return $tentative;
 	}
@@ -46,7 +46,7 @@ class ObtenirTentativeInt extends Interacteur
 		try {
 			$tentative = $this->source_dao->get_tentative_dao()->get_dernière($username, $question_uri, $includes);
 		} catch (DAOException $e) {
-			throw new IntéracteurException($e);
+			throw new IntéracteurException($e, 503);
 		}
 
 		return $tentative;

@@ -1,19 +1,30 @@
 [
-    {
-        "feedback": "feedback",
-        "id": "0",
-        "résultat": false,
-        "sortie_erreur": "error",
-        "sortie_observée": "output",
-        "temps_exécution": 123
+  {
+    "id": "bebe123",
+    "liens": {
+      "self": "https://example.com/resultat/bebe123",
+      "tentative": "https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760"
     },
-    {
-        "feedback": "feedback 2",
-        "id": "1",
-        "résultat": true,
-        "sortie_erreur": "error 2",
-        "sortie_observée": "output 2",
-        "temps_exécution": 456
+    "objet": {
+      "feedback": "feedback",
+      "résultat": false,
+      "sortie_erreur": "error",
+      "sortie_observée": "output",
+      "temps_exécution": 123
     }
-	
+  },
+  {
+    "id": "cafe456",
+    "liens": {
+      "self": "https://example.com/resultat/cafe456",
+      "tentative": "https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760"
+    },
+    "objet": {
+      "feedback": "feedback 2",
+      "résultat": true,
+      "sortie_erreur": "error 2",
+      "sortie_observée": "output 2",
+      "temps_exécution": 456
+    }
+  }
 ]

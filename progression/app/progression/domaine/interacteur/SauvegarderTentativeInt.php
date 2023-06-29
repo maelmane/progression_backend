@@ -28,7 +28,7 @@ class SauvegarderTentativeInt extends Interacteur
 		try {
 			return $dao_tentative->save($username, $question_uri, $tentative);
 		} catch (DAOException $e) {
-			throw new IntéracteurException($e);
+			throw new IntéracteurException($e, 503);
 		}
 	}
 }

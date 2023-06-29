@@ -19,7 +19,11 @@
 namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use progression\domaine\entité\user\User;
+use progression\http\transformer\ConfigTransformer;
+use progression\http\transformer\dto\GénériqueDTO;
 
 class ConfigCtl extends Contrôleur
 {
@@ -28,9 +32,12 @@ class ConfigCtl extends Contrôleur
 		Log::debug("ConfigCtl.get");
 
 		$config = [
-			"AUTH" => [
-				"LDAP" => getenv("AUTH_LDAP") == "true",
-				"LOCAL" => getenv("AUTH_LOCAL") == "true",
+			"version" => config("app.name") . " " . config("version.numéro") . "(" . config("version.commit_sha") . ")",
+			"config" => [
+				"AUTH" => [
+					"LDAP" => getenv("AUTH_LDAP") == "true",
+					"LOCAL" => getenv("AUTH_LOCAL") == "true",
+				],
 			],
 		];
 
@@ -40,12 +47,63 @@ class ConfigCtl extends Contrôleur
 				"URL_MDP_REINIT" => getenv("LDAP_URL_MDP_REINIT"),
 			];
 
-			$config["LDAP"] = $config_ldap;
+			$config["config"]["LDAP"] = $config_ldap;
 		}
 
-		$réponse = $this->préparer_réponse($config);
+		$user = $request->user("api");
+
+		$réponse = $this->valider_et_préparer_réponse(["config" => $config, "user" => $user]);
 
 		Log::debug("ConfigCtl.get. Retour : ", [$réponse]);
+		return $réponse;
+	}
+
+	/**
+	 * @return array<string>
+	 */
+	public function get_liens(string|null $username): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+
+		$ldap = getenv("AUTH_LDAP") == "true";
+		$local = getenv("AUTH_LOCAL") == "true";
+
+		$liens = [
+			"self" => "$urlBase/",
+		];
+
+		if ($local || !$ldap) {
+			$liens["inscrire"] = "$urlBase/user/";
+		}
+
+		if ($username) {
+			$liens["user"] = "$urlBase/user/$username";
+		}
+
+		return $liens;
+	}
+
+	/**
+	 * @param array<mixed> $config
+	 */
+	private function valider_et_préparer_réponse(array $config): JsonResponse
+	{
+		Log::debug("ConfigCtl.valider_et_préparer_réponse. Params : ", [$config]);
+
+		if ($config) {
+			$dto = new GénériqueDTO(
+				id: "serveur",
+				objet: $config,
+				liens: ConfigCtl::get_liens($config["user"]?->username),
+			);
+			$réponse = $this->item($dto, new ConfigTransformer());
+		} else {
+			$réponse = null;
+		}
+
+		$réponse = $this->préparer_réponse($réponse);
+
+		Log::debug("ConfigCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
 		return $réponse;
 	}
 }

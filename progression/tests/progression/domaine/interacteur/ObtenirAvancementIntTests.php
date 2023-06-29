@@ -18,7 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Avancement, QuestionProg};
+use progression\domaine\entité\Avancement;
+use progression\domaine\entité\question\{QuestionProg, État};
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -38,7 +39,7 @@ final class ObtenirAvancementIntTests extends TestCase
 			->andReturn($question);
 
 		$avancement = new Avancement(titre: "Une question facile", niveau: "facile");
-		$avancement->etat = 1;
+		$avancement->etat = État::NONREUSSI;
 
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 
@@ -75,7 +76,7 @@ final class ObtenirAvancementIntTests extends TestCase
 		);
 
 		$résultat_attendu = new Avancement(titre: "Une question facile", niveau: "facile");
-		$résultat_attendu->etat = 1;
+		$résultat_attendu->etat = État::NONREUSSI;
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}

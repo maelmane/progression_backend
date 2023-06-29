@@ -18,16 +18,9 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{
-	Exécutable,
-	Avancement,
-	Question,
-	QuestionProg,
-	Résultat,
-	TentativeProg,
-	TestProg,
-	User,
-};
+use progression\domaine\entité\question\{Question, QuestionProg};
+use progression\domaine\entité\{Exécutable, Avancement, Résultat, TentativeProg, TestProg};
+use progression\domaine\entité\user\User;
 use progression\dao\DAOFactory;
 use progression\dao\tentative\TentativeProgDAO;
 use PHPUnit\Framework\TestCase;
@@ -48,7 +41,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		$mockUserDao
 			->allows()
 			->get_user("jdoe")
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// Mock TentativeDAO
 		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeProgDAO");

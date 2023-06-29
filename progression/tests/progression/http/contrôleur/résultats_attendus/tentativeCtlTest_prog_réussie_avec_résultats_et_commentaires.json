@@ -25,7 +25,7 @@
         "data": [
           {
             "type": "resultat",
-            "id": "0"
+            "id": "bebe123"
           }
         ]
       },
@@ -46,17 +46,17 @@
   "included": [
     {
       "type": "resultat",
-      "id": "0",
+      "id": "bebe123",
       "attributes": {
         "sortie_observée": "ok",
         "sortie_erreur": "",
         "résultat": true,
         "feedback": null,
-        "temps_exec": null,
         "temps_exécution": null
       },
       "links": {
-        "self": "https://example.com/resultat/0"
+          "self": "https://example.com/resultat/bebe123",
+		  "tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490"
       }
     },
     {

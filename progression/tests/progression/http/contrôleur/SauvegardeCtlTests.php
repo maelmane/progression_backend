@@ -19,7 +19,8 @@
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{Sauvegarde, User};
+use progression\domaine\entité\{Sauvegarde};
+use progression\domaine\entité\user\{User, Rôle, État};
 use Illuminate\Auth\GenericUser;
 
 final class SauvegardeCtlTests extends ContrôleurTestCase
@@ -30,9 +31,13 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser([
+			"username" => "jdoe",
+			"rôle" => Rôle::NORMAL,
+			"état" => État::ACTIF,
+		]);
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		// Sauvegarde
 		$sauvegarde = new Sauvegarde(1620150294, "print(\"Hello world!\")");
@@ -55,7 +60,7 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 		$mockUserDAO
 			->allows("get_user")
 			->with("jdoe", [])
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");

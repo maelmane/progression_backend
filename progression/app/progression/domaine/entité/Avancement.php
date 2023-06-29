@@ -18,9 +18,11 @@
 
 namespace progression\domaine\entité;
 
+use progression\domaine\entité\question\État;
+
 class Avancement
 {
-	public $etat;
+	public État $etat;
 	public $tentatives;
 	public $titre;
 	public $niveau;
@@ -38,9 +40,9 @@ class Avancement
 		$titre = "",
 		$niveau = "",
 		array $sauvegardes = [],
-		string|null $extra = ""
+		string|null $extra = "",
 	) {
-		$this->etat = Question::ETAT_DEBUT;
+		$this->etat = État::DEBUT;
 		$this->tentatives = $tentatives;
 		$this->titre = $titre;
 		$this->niveau = $niveau;
@@ -58,25 +60,25 @@ class Avancement
 			$this->date_modification = $tentative->date_soumission;
 		}
 		if ($tentative->réussi) {
-			$this->etat = Question::ETAT_REUSSI;
+			$this->etat = État::REUSSI;
 			if (!$this->date_réussite || $tentative->date_soumission < $this->date_réussite) {
 				$this->date_réussite = $tentative->date_soumission;
 			}
 		}
-		$this->tentatives[$i ?? count($this->tentatives)] = $tentative;
+		$this->tentatives[$tentative->date_soumission] = $tentative;
 	}
 
 	private function mettre_à_jour_dates_et_état()
 	{
 		$tentatives = $this->tentatives;
 
-		$this->etat = empty($this->tentatives) ? Question::ETAT_DEBUT : Question::ETAT_NONREUSSI;
+		$this->etat = empty($this->tentatives) ? État::DEBUT : État::NONREUSSI;
 		$this->date_modification = null;
 		$this->date_réussite = null;
 		$this->tentatives = [];
 
 		foreach ($tentatives as $i => $tentative) {
-			$this->ajouter_tentative($tentative, $i);
+			$this->ajouter_tentative($tentative);
 		}
 	}
 }

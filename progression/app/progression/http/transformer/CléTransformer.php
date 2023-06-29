@@ -18,24 +18,30 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\Portée;
+use progression\http\transformer\dto\GénériqueDTO;
 
 class CléTransformer extends BaseTransformer
 {
 	public $type = "cle";
 
-	public function transform(Clé $clé)
+	public function transform(GénériqueDTO $data_in)
 	{
+		$id = $data_in->id;
+		$clé = $data_in->objet;
+		$liens = $data_in->liens;
+
 		$data_out = [
-			"id" => "{$this->id}/{$clé->id}",
+			"id" => "$id",
 			"secret" => $clé->secret,
 			"création" => $clé->création,
 			"expiration" => $clé->expiration,
-			"portée" => $clé->portée,
-			"links" => (isset($clé->links) ? $clé->links : []) + [
-				"self" => "{$_ENV["APP_URL"]}cle/{$this->id}/{$clé->id}",
-				"user" => "{$_ENV["APP_URL"]}user/{$this->id}",
-			],
+			"portée" => match ($clé->portée) {
+				Portée::RÉVOQUÉE => "révoquée",
+				Portée::AUTH => "authentification",
+				default => "indéfini",
+			},
+			"links" => $liens,
 		];
 
 		return $data_out;

@@ -19,14 +19,18 @@
 namespace progression\http\transformer;
 
 use progression\util\Encodage;
+use progression\http\transformer\dto\QuestionDTO;
 
 class QuestionSysTransformer extends QuestionTransformer
 {
 	protected array $availableIncludes = ["tests"];
 
-	public function transform($question)
+	public function transform(QuestionDTO $data_in)
 	{
-		$data_out = array_merge(parent::transform($question), [
+		$id = $data_in->id;
+		$question = $data_in->objet;
+
+		$data_out = array_merge(parent::transform($data_in), [
 			"sous-type" => "questionSys",
 			"image" => $question->image ?? "",
 			"utilisateur" => $question->utilisateur ?? "",
@@ -36,16 +40,10 @@ class QuestionSysTransformer extends QuestionTransformer
 		return $data_out;
 	}
 
-	public function includeTests($question)
+	public function includeTests(QuestionDTO $data_in)
 	{
-		$id_parent = $question->id;
-		foreach ($question->tests as $i => $test) {
-			$test->id = $i;
-			$test->links = [
-				"question" => $_ENV["APP_URL"] . "question/{$id_parent}",
-			];
-		}
+		$id = $data_in->id;
 
-		return $this->collection($question->tests, new TestSysTransformer($id_parent), "test");
+		return $this->collection($data_in->tests, new TestSysTransformer(), "test");
 	}
 }

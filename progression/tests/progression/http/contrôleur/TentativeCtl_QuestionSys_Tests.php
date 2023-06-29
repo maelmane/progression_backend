@@ -20,9 +20,12 @@ use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
-use progression\domaine\entité\{Avancement, TestSys, Exécutable, Question, QuestionSys, TentativeSys, User};
+use progression\domaine\entité\{Avancement, TestSys, Exécutable, TentativeSys};
+use progression\domaine\entité\question\{Question, QuestionSys};
+use progression\domaine\entité\user\{User, Rôle, État};
 
 use Illuminate\Auth\GenericUser;
+use Carbon\Carbon;
 
 final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 {
@@ -36,10 +39,16 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$_ENV["AUTH_TYPE"] = "no";
-		$_ENV["APP_URL"] = "https://example.com/";
+		Carbon::setTestNow(Carbon::create(2022, 05, 27, 22, 24, 01));
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		putenv("AUTH_TYPE=no");
+		putenv("APP_URL=https://example.com");
+
+		$this->user = new GenericUser([
+			"username" => "jdoe",
+			"rôle" => Rôle::NORMAL,
+			"état" => État::ACTIF,
+		]);
 
 		// QuestionSys avec solution courte
 		$question_solution_courte_réussie = new QuestionSys(
@@ -92,25 +101,41 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 
 		// Tentatives
 		$this->tentative_solution_courte_non_réussie = new TentativeSys(
-			conteneur: ["id" => "leConteneurDeLancienneTentative", "ip" => "192.168.0.1", "port" => 12345],
+			conteneur: [
+				"id" => "leConteneurDeLancienneTentative",
+				"ip" => "192.168.0.1",
+				"port" => 12345,
+			],
 			réponse: "laRéponseDeLancienneTentative",
 			date_soumission: "1614374490",
 			réussi: false,
 		);
 		$this->tentative_solution_courte_réussie = new TentativeSys(
-			conteneur: ["id" => "leConteneurDeLancienneTentative2", "ip" => "192.168.0.1", "port" => 12345],
+			conteneur: [
+				"id" => "leConteneurDeLancienneTentative2",
+				"ip" => "192.168.0.1",
+				"port" => 12345,
+			],
 			réponse: "laRéponseDeLancienneTentative2",
 			date_soumission: "1614374491",
 			réussi: true,
 		);
 		$this->tentative_validée_non_réussie = new TentativeSys(
-			conteneur: ["id" => "leConteneurDeLancienneTentative", "ip" => "192.168.0.1", "port" => 12345],
+			conteneur: [
+				"id" => "leConteneurDeLancienneTentative",
+				"ip" => "192.168.0.1",
+				"port" => 12345,
+			],
 			réponse: null,
 			date_soumission: "1614374490",
 			réussi: false,
 		);
 		$this->tentative_validée_réussie = new TentativeSys(
-			conteneur: ["id" => "leConteneurDeLancienneTentative2", "ip" => "192.168.0.1", "port" => 12345],
+			conteneur: [
+				"id" => "leConteneurDeLancienneTentative2",
+				"ip" => "192.168.0.1",
+				"port" => 12345,
+			],
 			réponse: null,
 			date_soumission: "1614374491",
 			réussi: true,
@@ -232,7 +257,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$mockUserDAO
 			->allows("get_user")
 			->with("jdoe")
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");

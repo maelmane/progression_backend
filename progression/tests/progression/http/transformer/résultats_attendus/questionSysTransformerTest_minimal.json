@@ -4,14 +4,12 @@
 	"titre": "",
 	"objectif": "",
 	"description" : "",
-	"\u00e9nonc\u00e9": "",
+	"énoncé": "",
 	"auteur": "",
 	"licence": "",
 	"image": "",
 	"utilisateur": "",
 	"solution": "",
-	"links": {
-		"self": "https://example.com/question/id"
-	},
-	"sous-type": "questionSys"
+	"sous-type": "questionSys",
+	"links": []
 }

@@ -30,7 +30,7 @@ class TestSys extends Test
 		$utilisateur = null,
 		$feedback_pos = null,
 		$feedback_neg = null,
-		bool $caché = false
+		bool $caché = false,
 	) {
 		parent::__construct(
 			nom: $nom,

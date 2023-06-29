@@ -18,7 +18,8 @@
 
 namespace progression\dao\tentative;
 
-use progression\domaine\entité\{TentativeProg, Résultat, Commentaire, User};
+use progression\domaine\entité\{TentativeProg, Résultat, Commentaire};
+use progression\domaine\entité\user\{User, Rôle};
 use progression\TestCase;
 use progression\dao\{DAOException, DAOFactory};
 use progression\dao\EntitéDAO;
@@ -55,9 +56,9 @@ final class TentativeProgDAOTests extends TestCase
 
 	public function test_étant_donné_une_TentativeProg_non_réussie_lorsquon_récupère_la_tentative_en_incluant_les_commentaires_et_leur_créateur_on_obtient_une_tentative_de_type_prog_avec_ses_commentaires_et_leur_créateur()
 	{
-		$this->jdoe = new User("jdoe");
-		$this->admin = new User("admin", User::ROLE_ADMIN);
-		$this->stefany = new User("Stefany");
+		$this->jdoe = new User(username: "jdoe", date_inscription: 1600828609);
+		$this->admin = new User(username: "admin", date_inscription: 1580828611, rôle: Rôle::ADMIN);
+		$this->stefany = new User(username: "Stefany", date_inscription: 1610828610);
 
 		$commentaires = [];
 		$commentaires[1] = new Commentaire("le 1er message", $this->jdoe, 1615696277, 14);
@@ -145,10 +146,10 @@ final class TentativeProgDAOTests extends TestCase
 		$résultat_attendu = new TentativeProg("python", "testCode", 123456789, true, [], 2, 1234);
 
 		$résultat_attendue = new TentativeProg("python", "testCode", 123456789, true, [], 2, 1234);
-		$résultat_observé = (new TentativeDAO())->save("Stefany", "https://exemple.com", $tentative_test);
+		$résultat_observé = (new TentativeDAO())->save("stefany", "https://exemple.com", $tentative_test);
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 
-		$résultat_observé = (new TentativeDAO())->get_tentative("Stefany", "https://exemple.com", 123456789);
+		$résultat_observé = (new TentativeDAO())->get_tentative("stefany", "https://exemple.com", 123456789);
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 }

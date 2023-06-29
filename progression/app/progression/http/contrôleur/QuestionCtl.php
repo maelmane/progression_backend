@@ -20,9 +20,10 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use progression\domaine\entité\{QuestionProg, QuestionSys, QuestionBD};
+use progression\domaine\entité\question\{QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\interacteur\{ObtenirQuestionInt, IntéracteurException};
 use progression\http\transformer\{QuestionProgTransformer, QuestionSysTransformer};
+use progression\http\transformer\dto\{QuestionDTO, QuestionProgDTO};
 use progression\util\Encodage;
 use progression\dao\question\ChargeurException;
 
@@ -39,6 +40,19 @@ class QuestionCtl extends Contrôleur
 		Log::debug("QuestionCtl.get. Retour : ", [$réponse]);
 
 		return $réponse;
+	}
+
+	/**
+	 * @return array<string>
+	 */
+	public function get_liens(string $question_uri): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+
+		return [
+			"self" => "$urlBase/question/$question_uri",
+			"résultats" => "$urlBase/question/$question_uri/resultats",
+		];
 	}
 
 	private function obtenir_question($question_uri)
@@ -58,12 +72,13 @@ class QuestionCtl extends Contrôleur
 	{
 		Log::debug("QuestionCtl.valider_et_préparer_réponse. Params : ", [$question]);
 
-		$question->id = $uri;
 		if ($question instanceof QuestionProg) {
-			$réponse_array = $this->item($question, new QuestionProgTransformer());
+			$dto = new QuestionProgDTO(id: $uri, objet: $question, liens: QuestionCtl::get_liens($uri));
+			$réponse_array = $this->item($dto, new QuestionProgTransformer());
 			$réponse = $this->préparer_réponse($réponse_array);
 		} elseif ($question instanceof QuestionSys) {
-			$réponse_array = $this->item($question, new QuestionSysTransformer());
+			$dto = new QuestionDTO(id: $uri, objet: $question, liens: QuestionCtl::get_liens($uri));
+			$réponse_array = $this->item($dto, new QuestionSysTransformer());
 			$réponse = $this->préparer_réponse($réponse_array);
 		} elseif ($question instanceof QuestionBD) {
 			$réponse = $this->réponse_json(["erreur" => "QuestionBD pas encore implémentée"], 501);

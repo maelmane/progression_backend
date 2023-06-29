@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\{Clé, Portée};
 use progression\dao\DAOFactory;
 use progression\dao\DAOException;
 
@@ -30,14 +30,14 @@ class GénérerCléAuthentificationInt extends Interacteur
 			return null;
 		}
 
-		$dao = DAOFactory::getInstance()->get_clé_dao();
+		$dao = $this->source_dao->get_clé_dao();
 
 		if ($dao->get_clé($username, $nom)) {
 			return null;
 		}
 
 		$secret = bin2hex(random_bytes(20));
-		$clé = new Clé($secret, time(), $expiration, Clé::PORTEE_AUTH);
+		$clé = new Clé($secret, time(), $expiration, Portée::AUTH);
 
 		return $dao->save($username, $nom, $clé);
 	}

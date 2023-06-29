@@ -18,7 +18,7 @@
 
 namespace progression\dao\question;
 
-use progression\domaine\entité\QuestionProg;
+use progression\domaine\entité\question\QuestionProg;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -30,7 +30,7 @@ final class ChargeurQuestionHTTPTests extends TestCase
 	{
 		parent::setUpBeforeClass();
 
-		$_ENV["QUESTION_TAILLE_MAX"] = 1000;
+		putenv("QUESTION_TAILLE_MAX=1000");
 	}
 
 	public function setUp(): void

@@ -23,7 +23,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 use progression\http\transformer\RésultatTransformer;
-use progression\domaine\entité\{QuestionProg, Résultat, TestProg, TentativeProg};
+use progression\http\transformer\dto\GénériqueDTO;
+use progression\domaine\entité\question\QuestionProg;
+use progression\domaine\entité\{Résultat, Test, TestProg, TentativeProg};
 use progression\domaine\interacteur\{
 	ObtenirQuestionInt,
 	SoumettreTentativeProgInt,
@@ -38,11 +40,11 @@ use progression\dao\exécuteur\ExécutionException;
 
 class RésultatCtl extends Contrôleur
 {
-	public function put(Request $request): JsonResponse
+	public function post(Request $request, string $uri): JsonResponse
 	{
-		Log::debug("RésultatCtl.put. Params : ", [$request->all()]);
+		Log::debug("RésultatCtl.post. Params : ", [$request->all()]);
 
-		$validation = $this->valider_paramètres($request);
+		$validation = $this->valider_paramètres($request, $uri);
 		if ($validation->fails()) {
 			Log::notice(
 				"({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Paramètres invalides",
@@ -50,43 +52,58 @@ class RésultatCtl extends Contrôleur
 			return $this->réponse_json(["erreur" => $validation->errors()], 400);
 		}
 
-		$chemin = Encodage::base64_decode_url($request->question_uri);
+		$chemin = Encodage::base64_decode_url($uri);
 
 		$question = $this->récupérer_question($chemin);
 		if (!$question) {
-			$réponse = $this->réponse_json(["erreur" => "Err: 1002. La question " . $chemin . " n'existe pas."], 400);
+			$réponse = $this->réponse_json(["erreur" => "Err: 1002. La question " . $chemin . " n'existe pas."], 404);
 		} elseif (isset($request->index) && !array_key_exists($request->index, $question->tests)) {
 			$réponse = $this->réponse_json(["erreur" => "Err: 1003. L'indice de test n'existe pas."], 400);
 		} else {
 			$test = isset($request->index) ? $question->tests[$request->index] : $this->construire_test($request);
-			$résultat = $this->traiter_put_QuestionProg($request, $chemin, $question, $test);
+			$résultats = $this->traiter_post_QuestionProg($request, $chemin, $question, $test);
 
-			if (!$résultat) {
+			if (!$résultats || count($résultats) != 1) {
 				$réponse = $this->réponse_json(["erreur" => "Err: 1000. La tentative n'est pas traitable."], 400);
 			} else {
+				$hash = array_key_first($résultats);
+				$résultat = $résultats[$hash];
 				if ($test->caché) {
 					$résultat = $this->caviarder_résultat($résultat);
 				}
-				$réponse = $this->valider_et_préparer_réponse($résultat);
+				$réponse = $this->valider_et_préparer_réponse($résultat, $hash);
 			}
 		}
 
+		Log::debug("RésultatCtl.post. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
-	private function valider_paramètres(Request $request)
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $hash): array
 	{
-		$TAILLE_CODE_MAX = (int) $_ENV["TAILLE_CODE_MAX"];
+		$urlBase = Contrôleur::$urlBase;
+
+		return [
+			"self" => "{$urlBase}/resultat/{$hash}",
+		];
+	}
+
+	private function valider_paramètres(Request $request, string $uri)
+	{
+		$TAILLE_CODE_MAX = (int) getenv("TAILLE_CODE_MAX");
 
 		$validateur = Validator::make(
-			$request->all(),
+			[...$request->all(), "uri" => $uri],
 			[
-				"question_uri" => [
+				"uri" => [
 					"required",
 					function ($attribute, $value, $fail) {
 						$url = Encodage::base64_decode_url($value);
-						if (!$url || Validator::make(["question_uri" => $url], ["question_uri" => "url"])->fails()) {
-							$fail("Err: 1003. Le champ question_uri doit être un URL encodé en base64.");
+						if (!$url || Validator::make(["uri" => $url], ["uri" => "url"])->fails()) {
+							$fail("Err: 1003. Le champ uri doit être un URL encodé en base64.");
 						}
 					},
 				],
@@ -122,15 +139,13 @@ class RésultatCtl extends Contrôleur
 		);
 	}
 
-	private function valider_et_préparer_réponse(Résultat|null $résultat): JsonResponse
+	private function valider_et_préparer_réponse(Résultat $résultat, string $hash): JsonResponse
 	{
 		Log::debug("RésulangageltatCtl.valider_et_préparer_réponse. Params : ", [$résultat]);
 
-		if ($résultat) {
-			$réponse = $this->item($résultat, new RésultatTransformer());
-		} else {
-			$réponse = null;
-		}
+		$dto = new GénériqueDTO(id: "{$hash}", objet: $résultat, liens: RésultatCtl::get_liens($hash));
+
+		$réponse = $this->item($dto, new RésultatTransformer());
 
 		$réponse = $this->préparer_réponse($réponse);
 
@@ -138,12 +153,15 @@ class RésultatCtl extends Contrôleur
 		return $réponse;
 	}
 
-	private function traiter_put_QuestionProg(
+	/**
+	 * @return array<Résultat>
+	 */
+	private function traiter_post_QuestionProg(
 		Request $request,
 		string $chemin,
 		QuestionProg $question,
-		TestProg $test
-	): Résultat|null {
+		Test $test,
+	): array|null {
 		$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
 
 		$tentative_résultante = $this->soumettre_tentative($question, $test, $tentative);
@@ -151,17 +169,13 @@ class RésultatCtl extends Contrôleur
 			return null;
 		}
 
-		$hash = array_key_first($tentative_résultante->résultats);
-		$résultat = $tentative_résultante->résultats[$hash];
-		$résultat->id = $hash;
-
-		return $résultat;
+		return $tentative_résultante->résultats;
 	}
 
 	private function soumettre_tentative(
 		QuestionProg $question,
-		TestProg $test,
-		TentativeProg $tentative
+		Test $test,
+		TentativeProg $tentative,
 	): TentativeProg|null {
 		$intéracteur = new SoumettreTentativeProgInt();
 		return $intéracteur->soumettre_tentative($question, [$test], $tentative);

@@ -6,14 +6,15 @@
         "date_réussite": 1614965818,
         "niveau": "",
         "titre": "",
-        "état": 2,
+        "état": "réussi",
         "extra": ""
       },
       "id": "jdoe/dXJpX2E",
       "links": {
           "question": "https://example.com/question/dXJpX2E",
           "user": "https://example.com/user/jdoe",
-          "self": "https://example.com/avancement/jdoe/dXJpX2E"
+          "self": "https://example.com/avancement/jdoe/dXJpX2E",
+          "soumettre": "https://example.com/avancement/jdoe/dXJpX2E/tentatives"
       },
       "relationships": {
         "sauvegardes": {
@@ -53,15 +54,16 @@
         "date_réussite": null,
         "niveau": "",
         "titre": "",
-        "état": 0,
+        "état": "début",
         "extra": ""
       },
       "id": "jdoe/dXJpX2I",
       "links": {
           "question": "https://example.com/question/dXJpX2I",
           "user": "https://example.com/user/jdoe",
-          "self": "https://example.com/avancement/jdoe/dXJpX2I"
-      },
+          "self": "https://example.com/avancement/jdoe/dXJpX2I",
+          "soumettre": "https://example.com/avancement/jdoe/dXJpX2I/tentatives"
+	  },
       "relationships": {
         "sauvegardes": {
           "links": {

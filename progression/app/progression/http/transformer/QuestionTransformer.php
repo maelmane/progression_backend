@@ -18,16 +18,21 @@
 
 namespace progression\http\transformer;
 
+use progression\http\transformer\dto\QuestionDTO;
 use progression\util\Encodage;
 
 class QuestionTransformer extends BaseTransformer
 {
 	public $type = "question";
 
-	public function transform($question)
+	public function transform(QuestionDTO $data_in)
 	{
+		$id = $data_in->id;
+		$question = $data_in->objet;
+		$liens = $data_in->liens;
+
 		$data_out = [
-			"id" => $question->id,
+			"id" => $id,
 			"niveau" => $question->niveau ?? "",
 			"titre" => $question->titre ?? "",
 			"objectif" => $question->objectif ?? "",
@@ -35,9 +40,7 @@ class QuestionTransformer extends BaseTransformer
 			"énoncé" => $question->enonce ?? "",
 			"auteur" => $question->auteur ?? "",
 			"licence" => $question->licence ?? "",
-			"links" => [
-				"self" => $_ENV["APP_URL"] . "question/" . $question->id,
-			],
+			"links" => $liens,
 		];
 
 		return $data_out;

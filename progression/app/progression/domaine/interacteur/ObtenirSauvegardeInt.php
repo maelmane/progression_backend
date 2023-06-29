@@ -33,7 +33,7 @@ class ObtenirSauvegardeInt extends Interacteur
 				->get_sauvegarde_dao()
 				->get_sauvegarde($username, $question_uri, $langage, $includes);
 		} catch (DAOException $e) {
-			throw new IntéracteurException($e);
+			throw new IntéracteurException($e, 503);
 		}
 		return $sauvegarde;
 	}

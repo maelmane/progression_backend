@@ -1,18 +1,28 @@
 [
 	{
-		"secret": null,
-		"cr\u00e9ation": 1624593600,
-		"expiration": 1624680000,
-		"port\u00e9e": 1,
-		"id": "0",
-		"links": { "user": "https://example.com/user/bob" }
+		"id": "bob/0",
+        "objet": {
+			"secret": null,
+			"création": 1624593600,
+			"expiration": 1624680000,
+			"portée": 1
+		},
+        "liens": {
+            "self": "https://example.com/cle/bob/0",
+            "user": "https://example.com/user/bob"
+        }
 	},
 	{
-		"secret": null,
-		"cr\u00e9ation": 1624593602,
-		"expiration": 1624680002,
-		"port\u00e9e": 1,
-		"id": "1",
-		"links": { "user": "https://example.com/user/bob" }
+		"id": "bob/1",
+		"objet": {
+			"secret": null,
+			"création": 1624593602,
+			"expiration": 1624680002,
+			"portée": 1
+		},
+        "liens": {
+            "self": "https://example.com/cle/bob/1",
+            "user": "https://example.com/user/bob"
+        }
 	}
 ]

@@ -28,7 +28,7 @@ class EnregistrerSauvegardeInt extends Interacteur
 		try {
 			$resultat_sauvegarde = $dao_sauvegarde->save($username, $question_uri, $langage, $sauvegarde);
 		} catch (DAOException $e) {
-			throw new IntéracteurException($e);
+			throw new IntéracteurException($e, 503);
 		}
 		return $resultat_sauvegarde;
 	}

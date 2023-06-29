@@ -18,7 +18,8 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Avancement, Question, TentativeProg, Sauvegarde};
+use progression\domaine\entité\question\{Question, État};
+use progression\domaine\entité\{Avancement, TentativeProg, Sauvegarde};
 use progression\TestCase;
 
 final class AvancementDAOTests extends TestCase
@@ -42,7 +43,9 @@ final class AvancementDAOTests extends TestCase
 	public function test_étant_donné_un_avancement_existant_lorsquon_cherche_par_username_et_question_uri_incluant_les_tentatives_on_obtient_un_objet_avancement_correspondant_avec_ses_tentatives()
 	{
 		$résultat_attendu = new Avancement(
-			[1615696276 => new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276, false, [], 2, 3456)],
+			[
+				1615696276 => new TentativeProg("python", 'print("Tourlou le monde!")', 1615696276, false, [], 2, 3456),
+			],
 			titre: "Un titre",
 			niveau: "facile",
 		);
@@ -68,7 +71,7 @@ final class AvancementDAOTests extends TestCase
 			],
 		);
 		$résultat_attendu->date_modification = 1615696276;
-		$résultat_attendu->etat = 1;
+		$résultat_attendu->etat = État::NONREUSSI;
 
 		$résponse_observée = (new AvancementDAO())->get_avancement(
 			"bob",
@@ -104,17 +107,17 @@ final class AvancementDAOTests extends TestCase
 	{
 		$av0 = new Avancement(tentatives: [], titre: "Un titre", niveau: "facile");
 		$av0->date_modification = 1615696276;
-		$av0->etat = 1;
+		$av0->etat = État::NONREUSSI;
 
 		$av1 = new Avancement(tentatives: [], titre: "Un titre", niveau: "facile", sauvegardes: []);
 		$av1->date_modification = 1645739981;
 		$av1->date_réussite = 1645739959;
-		$av1->etat = 1;
+		$av1->etat = État::NONREUSSI;
 
 		$av2 = new Avancement(tentatives: [], titre: "Un titre 2", niveau: "facile", sauvegardes: []);
 		$av2->date_modification = 1645739991;
 		$av2->date_réussite = 1645739969;
-		$av2->etat = 2;
+		$av2->etat = État::REUSSI;
 
 		$résultat_attendu = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $av0,

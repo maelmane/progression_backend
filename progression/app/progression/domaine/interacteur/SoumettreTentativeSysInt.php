@@ -28,7 +28,7 @@ class SoumettreTentativeSysInt extends Interacteur
 		try {
 			$tentativeTraitée = $this->exécuter_validation($question, $tentative);
 		} catch (DAOException $e) {
-			throw new IntéracteurException($e);
+			throw new IntéracteurException($e, 503);
 		}
 		if ($question->solution) {
 			if ($this->vérifier_réponse_courte($question, $tentativeTraitée)) {

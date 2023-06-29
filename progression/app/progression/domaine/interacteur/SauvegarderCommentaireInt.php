@@ -34,7 +34,7 @@ class SauvegarderCommentaireInt extends Interacteur
 				->get_commentaire_dao()
 				->save($username, $question_uri, $date_soummision, $numéro, $commentaire);
 		} catch (DAOException $e) {
-			throw new IntéracteurException($e);
+			throw new IntéracteurException($e, 503);
 		}
 	}
 }

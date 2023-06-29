@@ -20,19 +20,13 @@ use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
-use progression\domaine\entité\{
-	Avancement,
-	TestProg,
-	Exécutable,
-	Question,
-	TentativeProg,
-	Commentaire,
-	QuestionProg,
-	Résultat,
-	User,
-};
+use progression\domaine\entité\question\{Question, QuestionProg};
+use progression\domaine\entité\{Avancement, TestProg, Exécutable, TentativeProg, Commentaire, Résultat};
+use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\question\ChargeurException;
+
 use Illuminate\Auth\GenericUser;
+use Carbon\Carbon;
 
 final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 {
@@ -46,10 +40,16 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$_ENV["AUTH_TYPE"] = "no";
-		$_ENV["APP_URL"] = "https://example.com/";
+		Carbon::setTestNow(Carbon::create(2022, 05, 27, 22, 24, 01));
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		putenv("AUTH_TYPE=no");
+		putenv("APP_URL=https://example.com");
+
+		$this->user = new GenericUser([
+			"username" => "jdoe",
+			"rôle" => Rôle::NORMAL,
+			"état" => État::ACTIF,
+		]);
 
 		// QuestionProg
 		//aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU
@@ -165,11 +165,13 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			code: "codeTest",
 			date_soumission: "1614374490",
 			réussi: true,
-			résultats: [new Résultat("ok", "", true)],
+			résultats: ["bebe123" => new Résultat("ok", "", true)],
 			tests_réussis: 2,
 			feedback: "feedbackTest",
 			temps_exécution: 5,
-			commentaires: [new Commentaire("message", new User("créateur"), 1614374490, 42)],
+			commentaires: [
+				new Commentaire("message", new User(username: "créateur", date_inscription: 0), 1614374490, 42),
+			],
 		);
 
 		// Tentative non réussie
@@ -295,7 +297,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$mockUserDAO
 			->allows("get_user")
 			->with("jdoe")
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -374,9 +376,6 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			titre: "Question réussie",
 			niveau: "Débutant",
 		);
-		$nouvel_avancement->etat = 2;
-		$nouvel_avancement->date_modification = 1653690241;
-		$nouvel_avancement->date_réussite = 1653690241;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
@@ -403,7 +402,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/tentatives?include=resultats",
-			["langage" => "réussi", "code" => "#+TODO\nprint(\"Hello world!\")"],
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -433,9 +435,6 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			titre: "Question réussie",
 			niveau: "Débutant",
 		);
-		$nouvel_avancement->etat = 2;
-		$nouvel_avancement->date_modification = 1653690241;
-		$nouvel_avancement->date_réussite = 1614374490;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
@@ -462,7 +461,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives?include=resultats",
-			["langage" => "réussi", "code" => "#+TODO\nprint(\"Hello world!\")"],
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -493,9 +495,6 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			titre: "Question non réussie",
 			niveau: "Débutant",
 		);
-		$nouvel_avancement->etat = 2;
-		$nouvel_avancement->date_modification = 1653690241;
-		$nouvel_avancement->date_réussite = 1653690241;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
@@ -520,7 +519,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives?include=resultats",
-			["langage" => "réussi", "code" => "#+TODO\nprint(\"Hello world!\")"],
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -551,8 +553,6 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			titre: "Question non réussie",
 			niveau: "Débutant",
 		);
-		$nouvel_avancement->etat = 1;
-		$nouvel_avancement->date_modification = 1653690241;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
@@ -577,7 +577,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives?include=resultats",
-			["langage" => "non_réussi", "code" => "#+TODO\nprint(\"Hello world!\")"],
+			[
+				"langage" => "non_réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -607,7 +610,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives",
-			["langage" => "erreur", "code" => "#+TODO\nprint(\"on ne se rendra pas à exécuter ceci\")"],
+			[
+				"langage" => "erreur",
+				"code" => "#+TODO\nprint(\"on ne se rendra pas à exécuter ceci\")",
+			],
 		);
 
 		$this->assertEquals(503, $résultat_obtenu->status());
@@ -619,7 +625,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives",
-			["langage" => "réussi", "code" => "print(\"Hello world!\")"],
+			[
+				"langage" => "réussi",
+				"code" => "print(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
@@ -645,7 +654,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives",
-			["langage" => "inconnu", "code" => "print(\"Hello world!\")"],
+			[
+				"langage" => "inconnu",
+				"code" => "print(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
@@ -654,7 +666,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 	public function test_étant_donné_une_tentative_ayant_du_code_dépassant_la_taille_maximale_de_caractères_on_obtient_une_erreur_400()
 	{
-		$_ENV["TAILLE_CODE_MAX"] = 23;
+		putenv("TAILLE_CODE_MAX=23");
 		$testCode = "#+TODO\n日本語でのテストです\n#-TODO"; //24 caractères UTF8
 
 		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
@@ -669,7 +681,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			],
 		);
 
-		$_ENV["TAILLE_CODE_MAX"] = 1000;
+		putenv("TAILLE_CODE_MAX=1000");
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
@@ -691,7 +703,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives",
-			["langage" => "réussi", "code" => "$testCode"],
+			[
+				"langage" => "réussi",
+				"code" => "$testCode",
+			],
 		);
 
 		$_ENV["TAILLE_CODE_MAX"] = 1000;

@@ -33,7 +33,7 @@ class Test
 		$feedback_pos = null,
 		$feedback_neg = null,
 		$feedback_err = null,
-		bool $caché = false
+		bool $caché = false,
 	) {
 		$this->nom = $nom;
 		$this->sortie_attendue = $sortie_attendue;

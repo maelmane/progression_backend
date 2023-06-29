@@ -20,7 +20,9 @@ use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
-use progression\domaine\entité\{TestProg, Exécutable, Question, QuestionProg, Résultat, User};
+use progression\domaine\entité\{TestProg, Exécutable, Résultat};
+use progression\domaine\entité\question\{Question, QuestionProg};
+use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\question\ChargeurException;
 use Illuminate\Auth\GenericUser;
 
@@ -32,10 +34,10 @@ final class RésultatCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$_ENV["APP_URL"] = "https://example.com/";
-		$_ENV["TAILLE_CODE_MAX"] = 1000;
+		putenv("APP_URL=https://example.com");
+		putenv("TAILLE_CODE_MAX=1000");
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL, "état" => État::ACTIF]);
 
 		// QuestionProg
 		//aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU
@@ -118,7 +120,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		$mockUserDAO
 			->allows("get_user")
 			->with("jdoe")
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -136,12 +138,19 @@ final class RésultatCtlTests extends ContrôleurTestCase
 	}
 	public function test_étant_donné_un_test_unique_lorsquil_est_soumis_on_obtient_le_résultat_réussi_pour_le_test_fourni()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
-			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
-			"langage" => "réussi",
-			"code" => "#+TODO\nprint(\"Hello world!\")",
-			"test" => ["nom" => "Bonjour", "entrée" => "bonjour", "sortie_attendue" => "Bonjour\nBonjour\nBonjour\n"],
-		]);
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/resultats",
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+				"test" => [
+					"nom" => "Bonjour",
+					"entrée" => "bonjour",
+					"sortie_attendue" => "Bonjour\nBonjour\nBonjour\n",
+				],
+			],
+		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
 
@@ -152,12 +161,15 @@ final class RésultatCtlTests extends ContrôleurTestCase
 	}
 	public function test_étant_donné_un_test_unique_comportant_un_numéro_de_test_lorsquil_est_soumis_on_obtient_le_résultat_réussi_pour_le_test_de_la_question()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
-			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
-			"langage" => "réussi",
-			"code" => "#+TODO\nprint(\"Hello world!\")",
-			"index" => 2,
-		]);
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/resultats",
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+				"index" => 2,
+			],
+		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
 
@@ -169,12 +181,15 @@ final class RésultatCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_test_unique_caché_lorsquil_est_soumis_on_obtient_le_résultat_caviardé()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
-			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
-			"langage" => "réussi",
-			"code" => "#+TODO\nprint(\"Hello world!\")",
-			"index" => 1,
-		]);
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/resultats",
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+				"index" => 1,
+			],
+		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
 
@@ -186,13 +201,16 @@ final class RésultatCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_test_unique_comportant_un_numéro_de_test_et_un_test_lorsquil_est_soumis_on_obtient_le_résultat_réussi_pour_le_test_de_la_question()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
-			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
-			"langage" => "réussi",
-			"code" => "#+TODO\nprint(\"Hello world!\")",
-			"index" => 2,
-			"test" => ["nom" => "Bonjour", "entrée" => "bonjour", "sortie_attendue" => "Salut\n"],
-		]);
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/resultats",
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+				"index" => 2,
+				"test" => ["nom" => "Bonjour", "entrée" => "bonjour", "sortie_attendue" => "Salut\n"],
+			],
+		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
 
@@ -204,11 +222,14 @@ final class RésultatCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_test_unique_sans_test_lorsquil_est_soumis_on_obtient_une_erreur_400()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
-			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
-			"langage" => "réussi",
-			"code" => "#+TODO\nprint(\"Hello world!\")",
-		]);
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/resultats",
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+			],
+		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
@@ -217,28 +238,16 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_un_test_unique_sans_uri_lorsquil_est_soumis_on_obtient_une_erreur_400()
-	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
-			"langage" => "réussi",
-			"code" => "#+TODO\nprint(\"Hello world!\")",
-			"test" => 1,
-		]);
-
-		$this->assertEquals(400, $résultat_obtenu->status());
-		$this->assertEquals(
-			'{"erreur":{"question_uri":["Err: 1004. Le champ question_uri est obligatoire."]}}',
-			$résultat_obtenu->getContent(),
-		);
-	}
-
 	public function test_étant_donné_un_test_unique_sans_langage_lorsquil_est_soumis_on_obtient_une_erreur_400()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
-			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
-			"code" => "#+TODO\nprint(\"Hello world!\")",
-			"test" => 1,
-		]);
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/resultats",
+			[
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+				"test" => 1,
+			],
+		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
@@ -249,11 +258,14 @@ final class RésultatCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_test_unique_sans_code_lorsquil_est_soumis_on_obtient_une_erreur_400()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
-			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
-			"langage" => "python",
-			"test" => 1,
-		]);
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/resultats",
+			[
+				"langage" => "python",
+				"test" => 1,
+			],
+		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
@@ -262,16 +274,19 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_un_test_unique_pour_une_question_inexistante_lorsquil_est_soumis_on_obtient_une_erreur_400()
+	public function test_étant_donné_un_test_unique_pour_une_question_inexistante_lorsquil_est_soumis_on_obtient_une_erreur_404()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
-			"question_uri" => "aHR0cHM6Ly9leGVtcGxlLmNvbS9xdWVzdGlvbl9pbnRyb3V2YWJsZS55bWw",
-			"langage" => "réussi",
-			"code" => "#+TODO\nprint(\"Hello world!\")",
-			"test" => 1,
-		]);
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/question/aHR0cHM6Ly9leGVtcGxlLmNvbS9xdWVzdGlvbl9pbnRyb3V2YWJsZS55bWw/resultats",
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+				"test" => 1,
+			],
+		);
 
-		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals(404, $résultat_obtenu->status());
 		$this->assertEquals(
 			'{"erreur":"Err: 1002. La question https:\/\/exemple.com\/question_introuvable.yml n\'existe pas."}',
 			$résultat_obtenu->getContent(),
@@ -280,12 +295,15 @@ final class RésultatCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_test_unique_avec_indice_de_test_inexistant_lorsquil_est_soumis_on_obtient_une_erreur_400()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
-			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
-			"langage" => "réussi",
-			"code" => "#+TODO\nprint(\"Hello world!\")",
-			"index" => 42,
-		]);
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/resultats",
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+				"index" => 42,
+			],
+		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Err: 1003. L\'indice de test n\'existe pas."}', $résultat_obtenu->getContent());
@@ -293,16 +311,19 @@ final class RésultatCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_test_unique_ayant_du_code_dépassant_la_taille_maximale_de_caractères_on_obtient_une_erreur_400()
 	{
-		$_ENV["TAILLE_CODE_MAX"] = 23;
+		putenv("TAILLE_CODE_MAX=23");
 		$testCode = "#+TODO\n日本語でのテストです\n#-TODO"; //24 caractères UTF8
 
-		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat/", [
-			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
-			"index" => 0,
-			"langage" => "réussi",
-			"code" => "$testCode",
-		]);
-		$_ENV["TAILLE_CODE_MAX"] = 1000;
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/resultats/",
+			[
+				"index" => 0,
+				"langage" => "réussi",
+				"code" => "$testCode",
+			],
+		);
+		putenv("TAILLE_CODE_MAX=1000");
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
@@ -313,28 +334,34 @@ final class RésultatCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_test_unique_ayant_exactement_la_taille_maximale_de_caractères_on_obtient_un_code_200()
 	{
-		$_ENV["TAILLE_CODE_MAX"] = 24;
+		putenv("TAILLE_CODE_MAX=24");
 		$testCode = "#+TODO\n日本語でのテストです\n#-TODO"; //24 caractères UTF8
 
-		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat", [
-			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
-			"index" => 0,
-			"langage" => "réussi",
-			"code" => "$testCode",
-		]);
-		$_ENV["TAILLE_CODE_MAX"] = 1000;
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/resultats",
+			[
+				"index" => 0,
+				"langage" => "réussi",
+				"code" => "$testCode",
+			],
+		);
+		putenv("TAILLE_CODE_MAX=1000");
 
 		$this->assertEquals(200, $résultat_obtenu->status());
 	}
 
 	public function test_étant_donné_un_test_unique_compilebox_inaccessible_lorsquon_appelle_post_on_obtient_Service_non_disponible()
 	{
-		$résultat_obtenu = $this->actingAs($this->user)->call("PUT", "/resultat/", [
-			"langage" => "erreur",
-			"code" => "#+TODO\nprint(\"on ne se rendra pas à exécuter ceci\")",
-			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
-			"index" => 0,
-		]);
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/resultats/",
+			[
+				"langage" => "erreur",
+				"code" => "#+TODO\nprint(\"on ne se rendra pas à exécuter ceci\")",
+				"index" => 0,
+			],
+		);
 
 		$this->assertEquals(503, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Err: 1005. Exécuteur non disponible."}', $résultat_obtenu->getContent());

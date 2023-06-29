@@ -21,14 +21,18 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Enum;
 use progression\http\transformer\UserTransformer;
+use progression\http\transformer\dto\UserDTO;
+use progression\domaine\entité\user\{User, État};
 use progression\domaine\entité\Avancement;
-use progression\domaine\interacteur\{ObtenirUserInt, SauvegarderPréférencesUtilisateurInt, IntéracteurException};
+use progression\domaine\interacteur\{ObtenirUserInt, IntéracteurException, ModifierUserInt, SauvegarderUtilisateurInt};
 use progression\util\Encodage;
+use DomainException;
 
 class UserCtl extends Contrôleur
 {
-	public function get(Request $request, $username = null)
+	public function get(Request $request, string $username): JsonResponse
 	{
 		Log::debug("UserCtl.get. Params : ", [$request->all(), $username]);
 
@@ -47,29 +51,64 @@ class UserCtl extends Contrôleur
 		$réponse = null;
 		$validation = $this->valider_paramètres($request);
 		if ($validation->fails()) {
-			$réponse = $this->réponse_json(["erreur" => $validation->errors()], 400);
-		} else {
-			$userInt = new SauvegarderPréférencesUtilisateurInt();
-			$user = $userInt->sauvegarder_préférences($username, $request->préférences ?? "");
-			$réponse = $this->valider_et_préparer_réponse($user);
+			return $this->réponse_json(["erreur" => $validation->errors()], 400);
 		}
+
+		$userInt = new ObtenirUserInt();
+		$user_existant = $userInt->get_user($username);
+
+		if ($user_existant) {
+			try {
+				$userInt = new ModifierUserInt();
+
+				if (array_key_exists("préférences", $request->input())) {
+					$user_existant = $userInt->modifier_préférences($user_existant, $request->préférences);
+				}
+				if (array_key_exists("état", $request->input())) {
+					$user_existant = $userInt->modifier_état($user_existant, État::from($request->état));
+				}
+			} catch (DomainException $e) {
+				Log::notice(
+					"({$request->ip()}) - {$request->method()} {$request->path()} (" .
+						__CLASS__ .
+						") Modification invalide",
+				);
+				return $this->réponse_json(["erreur" => $validation->errors()], 400);
+			}
+
+			$userInt = new SauvegarderUtilisateurInt();
+			$user_existant = $userInt->sauvegarder_user($username, $user_existant);
+		}
+
+		$réponse = $this->valider_et_préparer_réponse($user_existant);
 
 		Log::debug("UserCtl.post. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
-	private function obtenir_user($username)
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $username): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+		return [
+			"self" => "{$urlBase}/user/{$username}",
+			"avancements" => "{$urlBase}/user/{$username}/avancements",
+			"clés" => "{$urlBase}/user/{$username}/cles",
+			"tokens" => "{$urlBase}/user/{$username}/tokens",
+		];
+	}
+
+	private function obtenir_user(string $username): User|null
 	{
 		Log::debug("UserCtl.obtenir_user. Params : ", [$username]);
 
 		$userInt = new ObtenirUserInt();
-		$user = null;
 
-		if ($username != null && $username != "") {
-			$user = $userInt->get_user($username, $this->get_includes());
-			if ($user) {
-				$user->avancements = $this->réencoder_uris($user->avancements);
-			}
+		$user = $userInt->get_user(username: $username, includes: $this->get_includes());
+		if ($user) {
+			$user->avancements = $this->réencoder_uris($user->avancements);
 		}
 
 		Log::debug("UserCtl.obtenir_user. Retour : ", [$user]);
@@ -81,7 +120,8 @@ class UserCtl extends Contrôleur
 		$validateur = Validator::make(
 			$request->all(),
 			[
-				"préférences" => "string|json|between:0,65535",
+				"préférences" => "sometimes|string|json|between:0,65535",
+				"état" => ["sometimes", "integer", new Enum(État::class)],
 			],
 			[
 				"json" => "Err: 1003. Le champ :attribute doit être en format json.",
@@ -93,13 +133,16 @@ class UserCtl extends Contrôleur
 		return $validateur;
 	}
 
-	private function valider_et_préparer_réponse($user)
+	protected function valider_et_préparer_réponse($user)
 	{
 		Log::debug("UserCtl.valider_et_préparer_réponse. Params : ", [$user]);
 
 		if ($user) {
-			$user->id = $user->username;
-			$réponse = $this->item($user, new UserTransformer());
+			$id = $user->username;
+			$liens = self::get_liens($user->username);
+			$dto = new UserDTO(id: $id, objet: $user, liens: $liens);
+
+			$réponse = $this->item($dto, new UserTransformer());
 		} else {
 			$réponse = null;
 		}

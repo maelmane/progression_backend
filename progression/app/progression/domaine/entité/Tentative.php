@@ -35,7 +35,7 @@ class Tentative
 		$tests_réussis = 0,
 		$temps_exécution = null,
 		$feedback = null,
-		$commentaires = []
+		$commentaires = [],
 	) {
 		$this->date_soumission = $date_soumission;
 		$this->réussi = $réussi;

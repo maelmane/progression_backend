@@ -1,20 +1,24 @@
 [
 	{
-		"date_sauvegarde": 1620150294,
-		"code": "print(\"Hello world!\")",
-		"id": "python",
-		"links": {
-			"self": "https://example.com/sauvegarde/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
-			"avancement": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
-		}
+		"id": "jdoe/dW5fYXZhbmNlbWVudA/python",
+		"objet" : {
+			"date_sauvegarde": 1620150294,
+			"code": "print(\"Hello world!\")"
+		},
+        "liens": {
+            "avancement": "https://example.com/avancement/jdoe/dW5fYXZhbmNlbWVudA",
+            "self": "https://example.com/sauvegarde/jdoe/dW5fYXZhbmNlbWVudA/python"
+        }
 	},
 	{
-		"date_sauvegarde": 1620150375,
-		"code": "System.out.println(\"Hello world!\");",
-		"id": "java",
-		"links": {
-			"self": "https://example.com/sauvegarde/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/java",
-			"avancement": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
-		}
+		"id": "jdoe/dW5fYXZhbmNlbWVudA/java",
+		"objet": {
+			"date_sauvegarde": 1620150375,
+			"code": "System.out.println(\"Hello world!\");"
+		},
+        "liens": {
+            "avancement": "https://example.com/avancement/jdoe/dW5fYXZhbmNlbWVudA",
+            "self": "https://example.com/sauvegarde/jdoe/dW5fYXZhbmNlbWVudA/java"
+        }
 	}
 ]

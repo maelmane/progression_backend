@@ -18,7 +18,8 @@
 
 namespace progression\dao\question;
 
-use progression\domaine\entité\{Question, QuestionProg, QuestionSys, Exécutable, TestProg, TestSys};
+use progression\domaine\entité\question\{Question, QuestionProg, QuestionSys};
+use progression\domaine\entité\{Exécutable, TestProg, TestSys};
 use PHPUnit\Framework\TestCase;
 use Mockery;
 

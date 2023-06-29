@@ -20,15 +20,15 @@ namespace progression\http\transformer;
 
 use PHPUnit\Framework\TestCase;
 use progression\domaine\entité\Résultat;
+use progression\http\transformer\dto\GénériqueDTO;
 
 final class RésultatTransformerTests extends TestCase
 {
 	public function test_étant_donné_un_Résultat_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		$résultat = new Résultat("Bonjour\nBonjour\n", "", true, "Bon travail!", 15);
-		$résultat->id = "0";
 
 		$réponse_attendue = [
 			"id" => "0",
@@ -36,7 +36,6 @@ final class RésultatTransformerTests extends TestCase
 			"sortie_erreur" => "",
 			"résultat" => true,
 			"feedback" => "Bon travail!",
-			"temps_exec" => 15,
 			"temps_exécution" => 15,
 			"links" => [
 				"self" => "https://example.com/resultat/0",
@@ -44,7 +43,15 @@ final class RésultatTransformerTests extends TestCase
 		];
 
 		$résultatProgTransformer = new RésultatTransformer();
-		$résponse_observée = $résultatProgTransformer->transform($résultat);
+		$résponse_observée = $résultatProgTransformer->transform(
+			new GénériqueDTO(
+				id: "0",
+				objet: $résultat,
+				liens: [
+					"self" => "https://example.com/resultat/0",
+				],
+			),
+		);
 
 		$this->assertEquals($réponse_attendue, $résponse_observée);
 	}

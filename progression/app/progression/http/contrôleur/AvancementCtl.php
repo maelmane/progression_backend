@@ -21,10 +21,13 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Gate;
 use progression\domaine\interacteur\{ObtenirAvancementInt, SauvegarderAvancementInt, IntéracteurException};
 use progression\http\transformer\AvancementTransformer;
+use progression\http\transformer\dto\AvancementDTO;
 use progression\util\Encodage;
 use progression\domaine\entité\Avancement;
+use progression\domaine\entité\question\État;
 
 class AvancementCtl extends Contrôleur
 {
@@ -51,7 +54,7 @@ class AvancementCtl extends Contrôleur
 		} else {
 			$avancement = $this->construire_avancement($username, $request->question_uri, $request->avancement ?? []);
 
-			if ($request->avancement != null || $avancement->etat == 0) {
+			if ($request->avancement != null || $avancement->etat === État::DEBUT) {
 				$avancement_retourné = $this->sauvegarder_avancement($username, $request->question_uri, $avancement);
 				$réponse = $this->valider_et_préparer_réponse($avancement_retourné, $username, $request->question_uri);
 			} else {
@@ -65,13 +68,38 @@ class AvancementCtl extends Contrôleur
 		return $réponse;
 	}
 
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $username, string $question_uri): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+
+		$liens = [
+			"self" => "{$urlBase}/avancement/{$username}/{$question_uri}",
+			"user" => "{$urlBase}/user/{$username}",
+			"question" => "{$urlBase}/question/{$question_uri}",
+		];
+
+		if (Gate::allows("soumettre-tentative", $username)) {
+			$liens += ["soumettre" => "{$urlBase}/avancement/{$username}/{$question_uri}/tentatives"];
+		}
+
+		return $liens;
+	}
+
 	private function valider_et_préparer_réponse($avancement, $username, $question_uri)
 	{
 		Log::debug("AvancementCtl.valider_et_préparer_réponse. Params : ", [$avancement, $username, $question_uri]);
 
 		if ($avancement) {
-			$avancement->id = $question_uri;
-			$réponse = $this->item($avancement, new AvancementTransformer($username));
+			$dto = new AvancementDTO(
+				id: "{$username}/{$question_uri}",
+				objet: $avancement,
+				liens: AvancementCtl::get_liens($username, $question_uri),
+			);
+
+			$réponse = $this->item($dto, new AvancementTransformer());
 		} else {
 			$réponse = null;
 		}

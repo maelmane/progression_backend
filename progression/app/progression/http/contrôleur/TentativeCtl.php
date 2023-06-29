@@ -32,41 +32,36 @@ use progression\domaine\interacteur\{
 	SoumettreTentativeSysInt,
 	IntéracteurException,
 };
+use progression\http\transformer\dto\TentativeDTO;
 use progression\http\contrôleur\RésultatCtl;
-use progression\domaine\entité\{
-	Avancement,
-	Tentative,
-	TentativeProg,
-	TentativeSys,
-	TentativeBD,
-	Question,
-	QuestionProg,
-	QuestionSys,
-	TestProg,
-	Résultat,
-};
+use progression\domaine\entité\{Avancement, Tentative, TentativeProg, TentativeSys, TentativeBD, Résultat};
+use progression\domaine\entité\question\{Question, QuestionProg, QuestionSys, QuestionBD};
+use progression\domaine\entité\TestProg;
 use progression\domaine\interacteur\{SoumettreTentativeIntéracteurException};
 use progression\util\Encodage;
+use Carbon\Carbon;
 
 class TentativeCtl extends Contrôleur
 {
 	public function get(Request $request, string $username, string $question_uri, int $timestamp): JsonResponse
 	{
-		$réponse = null;
 		$tentative = $this->obtenir_tentative($username, $question_uri, $timestamp);
-		if ($tentative != null) {
-			$tentative->id = "$timestamp";
-		}
 
-		if ($tentative instanceof TentativeProg) {
-			$réponse = $this->item(
-				$tentative,
-				new TentativeProgTransformer("$username/" . (string) $request->question_uri),
+		$réponse = null;
+		if ($tentative) {
+			$dto = new TentativeDTO(
+				id: "{$username}/{$question_uri}/{$timestamp}",
+				objet: $tentative,
+				liens: TentativeCtl::get_liens("{$username}/{$question_uri}", $timestamp),
 			);
-		} elseif ($tentative instanceof TentativeSys) {
-			$réponse = $this->item($tentative, new TentativeSysTransformer("$username/{$request->question_uri}"));
-		} elseif ($tentative instanceof TentativeBD) {
-			$réponse = $this->item($tentative, new TentativeBDTransformer("$username/{$request->question_uri}"));
+
+			if ($tentative instanceof TentativeProg) {
+				$réponse = $this->item($dto, new TentativeProgTransformer());
+			} elseif ($tentative instanceof TentativeSys) {
+				$réponse = $this->item($dto, new TentativeSysTransformer());
+			} elseif ($tentative instanceof TentativeBD) {
+				$réponse = $this->item($dto, new TentativeBDTransformer());
+			}
 		}
 
 		return $this->préparer_réponse($réponse);
@@ -75,29 +70,6 @@ class TentativeCtl extends Contrôleur
 	public function post(Request $request, $username, $question_uri)
 	{
 		Log::debug("TentativeCtl.post. Params : ", [$request->all(), $username]);
-
-		// Rétrocompatibilité
-		// Utilise Résultat pour fournir un test unique
-		// Désuet dans v3
-		assert(
-			version_compare(getenv("APP_VERSION") ?: "3", "3", "<"),
-			"Les tests uniques via TentativeCtl doivent être retirés",
-		);
-
-		if (isset($request->test)) {
-			$request->merge(["question_uri" => $question_uri]);
-			$résultat = (new RésultatCtl())->put($request);
-
-			if ($résultat->status() >= 300) {
-				return $résultat;
-			}
-			$data = $résultat->getData();
-
-			$data->included = [$data->data];
-			$résultat->setData($data);
-			return $résultat;
-		}
-		// Fin Désuet dans v3
 
 		$chemin = Encodage::base64_decode_url($question_uri);
 
@@ -122,6 +94,19 @@ class TentativeCtl extends Contrôleur
 		return $réponse;
 	}
 
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $id, int $date_soumission): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+
+		return [
+			"self" => "{$urlBase}/tentative/{$id}/{$date_soumission}",
+			"avancement" => "{$urlBase}/avancement/{$id}",
+		];
+	}
+
 	private function obtenir_tentative(string $username, string $question_uri, int $timestamp): Tentative|null
 	{
 		Log::debug("TentativeCtl.obtenir_tentative. Params : ", [$username, $question_uri, $timestamp]);
@@ -139,29 +124,27 @@ class TentativeCtl extends Contrôleur
 	{
 		$tests = $question->tests;
 
-		$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
+		$timestamp = Carbon::now()->getTimestamp();
+		$tentative = new TentativeProg($request->langage, $request->code, $timestamp);
 
 		$tentative_résultante = $this->soumettre_tentative_prog($question, $tests, $tentative);
 		if (!$tentative_résultante) {
 			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
 
-		// Rétrocompatibilité
-		// Utilise Résultat pour fournir un test unique
-		// Désuet dans v3
-		assert(
-			version_compare(getenv("APP_VERSION") ?: "3", "3", "<"),
-			"Les tests uniques via TentativeCtl doivent être retirés",
-		);
-		if (empty($request->test)) {
-			$this->sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative_résultante);
-		}
-		// Fin désuet dans v3
+		$this->sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative_résultante);
 
 		$tentative_résultante = $this->caviarder_résultats_des_tests_cachés($tentative_résultante, $tests);
 
-		$tentative_résultante->id = $tentative->date_soumission;
-		$réponse = $this->item($tentative_résultante, new TentativeProgTransformer("$username/$request->question_uri"));
+		$question_uri = Encodage::base64_encode_url($chemin);
+
+		$dto = new TentativeDTO(
+			id: "{$username}/{$question_uri}/{$timestamp}",
+			objet: $tentative_résultante,
+			liens: TentativeCtl::get_liens("{$username}/{$question_uri}", $timestamp),
+		);
+
+		$réponse = $this->item($dto, new TentativeProgTransformer());
 
 		return $this->préparer_réponse($réponse);
 	}
@@ -170,7 +153,8 @@ class TentativeCtl extends Contrôleur
 	{
 		$conteneur = $request->conteneur ?? $this->récupérer_conteneur($username, $chemin);
 
-		$tentative = new TentativeSys(["id" => $conteneur], $request->réponse, (new \DateTime())->getTimestamp());
+		$timestamp = Carbon::now()->getTimestamp();
+		$tentative = new TentativeSys(["id" => $conteneur], $request->réponse, $timestamp);
 
 		$tentative_résultante = $this->soumettre_tentative_sys($question, $question->tests, $tentative);
 		if (!$tentative_résultante) {
@@ -179,15 +163,22 @@ class TentativeCtl extends Contrôleur
 
 		$this->sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative_résultante);
 
-		$tentative_résultante->id = $tentative->date_soumission;
-		$réponse = $this->item($tentative, new TentativeSysTransformer("$username/$request->question_uri"));
+		$question_uri = Encodage::base64_encode_url($chemin);
+
+		$dto = new TentativeDTO(
+			id: "{$username}/{$question_uri}/{$timestamp}",
+			objet: $tentative_résultante,
+			liens: TentativeCtl::get_liens("{$username}/{$question_uri}", $timestamp),
+		);
+
+		$réponse = $this->item($dto, new TentativeSysTransformer());
 
 		return $this->préparer_réponse($réponse);
 	}
 
 	private function valider_paramètres_prog($request)
 	{
-		$TAILLE_CODE_MAX = (int) $_ENV["TAILLE_CODE_MAX"];
+		$TAILLE_CODE_MAX = (int) getenv("TAILLE_CODE_MAX");
 
 		return Validator::make(
 			$request->all(),

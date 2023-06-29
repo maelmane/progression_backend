@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\Clé;
 use progression\dao\DAOException;
 
 class ObtenirCléInt extends Interacteur
@@ -32,7 +32,7 @@ class ObtenirCléInt extends Interacteur
 		try {
 			$clé = $this->source_dao->get_clé_dao()->get_clé($username, $numéro, $includes);
 		} catch (DAOException $e) {
-			throw new IntéracteurException($e);
+			throw new IntéracteurException($e, 503);
 		}
 
 		if ($clé) {

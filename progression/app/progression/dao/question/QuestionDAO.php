@@ -22,7 +22,7 @@ use DomainException;
 use RuntimeException;
 use Illuminate\Support\Facades\Log;
 use progression\dao\EntitéDAO;
-use progression\domaine\entité\{QuestionProg, QuestionSys};
+use progression\domaine\entité\question\{QuestionProg, QuestionSys};
 
 class QuestionDAO extends EntitéDAO
 {

@@ -62,7 +62,8 @@ services:
     env_file:
       - ${ENV_FILE:-.env}
       - VERSION
-    command: bash /var/www/progression/tests/exec_tests.sh
+    entrypoint: bash /var/www/progression/tests/exec_tests.sh
+    user: www-data
     networks:
       - progression_net
     depends_on:
@@ -71,13 +72,10 @@ services:
 
   lint:
     image: $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
-    volumes:
-      - "./progression/app/:/tmp/progression/app/"
-      - "./progression/tests/:/tmp/progression/tests/"
     restart: "no"
     networks:
       - progression_net
-    command: prettier --use-tabs --print-width 120 --php-version "7.4" -c /tmp/progression/**/*.php
+    command: prettier -c /var/www/progression/{app,tests}/**/*.php
 
   doc:
     image: $CI_REGISTRY/progression/publication:latest

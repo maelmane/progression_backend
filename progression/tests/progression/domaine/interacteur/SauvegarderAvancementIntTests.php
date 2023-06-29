@@ -18,7 +18,9 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{TentativeProg, Avancement, Question, QuestionProg, QuestionSys, User, TentativeSys};
+use progression\domaine\entité\question\{Question, QuestionProg};
+use progression\domaine\entité\{TentativeProg, Avancement, TentativeSys};
+use progression\domaine\entité\user\User;
 use progression\domaine\interacteur\SauvegarderAvancementInt;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
@@ -35,7 +37,7 @@ final class SauvegarderAvancementIntTests extends TestCase
 		$mockUserDAO
 			->allows()
 			->get_user("jdoe")
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO

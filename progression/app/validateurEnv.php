@@ -5,7 +5,7 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 if (file_exists(__DIR__ . ".env")) {
 	$dotenv->load();
 }
-$dotenv->required("APP_URL")->allowedRegexValues('(.*/$)');
+$dotenv->required("APP_URL")->allowedRegexValues('(.*$)');
 $dotenv->required("APP_NAME")->allowedRegexValues("(.*)");
 $dotenv->required("APP_TIMEZONE")->allowedValues(["UTC"]);
 

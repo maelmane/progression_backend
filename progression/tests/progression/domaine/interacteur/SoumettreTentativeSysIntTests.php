@@ -18,7 +18,9 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Question, QuestionSys, Résultat, TentativeSys, TestSys, User};
+use progression\domaine\entité\question\{Question, QuestionSys};
+use progression\domaine\entité\{Résultat, TentativeSys, TestSys};
+use progression\domaine\entité\user\User;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -42,7 +44,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 		$mockUserDao
 			->allows()
 			->get_user("jdoe")
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		//Tentatives avec conteneur
 		self::$tentative_correcte = new TentativeSys(["id" => "Conteneur de test correct"], null, 1615696286);
@@ -61,7 +63,11 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			->andReturn([
 				"temps_exécution" => 0.5,
 				"résultats" => [["output" => "Correcte", "time" => 0.1]],
-				"conteneur" => ["id" => "Conteneur de test correct", "ip" => "172.45.2.2", "port" => 45667],
+				"conteneur" => [
+					"id" => "Conteneur de test correct",
+					"ip" => "172.45.2.2",
+					"port" => 45667,
+				],
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
@@ -71,7 +77,11 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			->andReturn([
 				"temps_exécution" => 0.5,
 				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
-				"conteneur" => ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+				"conteneur" => [
+					"id" => "Conteneur de test incorrect",
+					"ip" => "172.45.2.2",
+					"port" => 45667,
+				],
 			]);
 
 		$mockExécuteur
@@ -83,7 +93,11 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			->andReturn([
 				"temps_exécution" => 0.5,
 				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
-				"conteneur" => ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+				"conteneur" => [
+					"id" => "Conteneur de test incorrect",
+					"ip" => "172.45.2.2",
+					"port" => 45667,
+				],
 			]);
 
 		$mockExécuteur
@@ -94,7 +108,11 @@ final class SoumettreTentativeSysIntTests extends TestCase
 			->andReturn([
 				"temps_exécution" => 0.5,
 				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
-				"conteneur" => ["id" => "Nouveau Conteneur", "ip" => "172.45.2.2", "port" => 45667],
+				"conteneur" => [
+					"id" => "Nouveau Conteneur",
+					"ip" => "172.45.2.2",
+					"port" => 45667,
+				],
 			]);
 
 		// Mock DAOFactory
@@ -147,7 +165,11 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	public function test_étant_donné_une_questionsys_avec_des_tests_lorsquon_soumet_une_tentative_correcte_on_obtient_une_tentative_réussie_avec_temps_dexécution_et_ses_résultats()
 	{
 		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Conteneur de test correct", "ip" => "172.45.2.2", "port" => 45667],
+			conteneur: [
+				"id" => "Conteneur de test correct",
+				"ip" => "172.45.2.2",
+				"port" => 45667,
+			],
 			date_soumission: 1615696286,
 			réussi: true,
 			tests_réussis: 1,
@@ -169,7 +191,11 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	public function test_étant_donné_une_questionsys_avec_des_tests_lorsquon_soumet_une_tentative_on_obtient_une_tentative_non_réussie_avec_temps_dexécution_et_ses_résultats()
 	{
 		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+			conteneur: [
+				"id" => "Conteneur de test incorrect",
+				"ip" => "172.45.2.2",
+				"port" => 45667,
+			],
 			date_soumission: 1615696286,
 			réussi: false,
 			tests_réussis: 0,
@@ -191,7 +217,11 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	public function test_étant_donné_une_questionsys_avec_solution_courte_lorsquon_soumet_une_réponse_correcte_on_obtient_une_tentative_réussie()
 	{
 		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+			conteneur: [
+				"id" => "Conteneur de test incorrect",
+				"ip" => "172.45.2.2",
+				"port" => 45667,
+			],
 			réponse: "Bonne réponse",
 			date_soumission: 1615696286,
 			réussi: true,
@@ -214,7 +244,11 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	public function test_étant_donné_une_questionsys_avec_solution_courte_lorsquon_soumet_une_réponse_incorrecte_on_obtient_une_tentative_non_réussie()
 	{
 		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+			conteneur: [
+				"id" => "Conteneur de test incorrect",
+				"ip" => "172.45.2.2",
+				"port" => 45667,
+			],
 
 			réponse: "Mauvaise réponse",
 			date_soumission: 1615696286,
@@ -238,7 +272,11 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	public function test_étant_donné_une_questionsys_avec_une_regex_comme_solution_courte_lorsquon_soumet_une_réponse_correcte_on_obtient_une_tentative_réussie()
 	{
 		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+			conteneur: [
+				"id" => "Conteneur de test incorrect",
+				"ip" => "172.45.2.2",
+				"port" => 45667,
+			],
 			réponse: "Bonne réponse",
 			date_soumission: 1615696286,
 			réussi: true,
@@ -261,7 +299,11 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	public function test_étant_donné_une_questionsys_et_une_tentativesys_sans_conteneur_lorsqu_on_appelle_soumettre_tentative_avec_des_tests_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats_et_lid_du_conteneur()
 	{
 		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Nouveau Conteneur", "ip" => "172.45.2.2", "port" => 45667],
+			conteneur: [
+				"id" => "Nouveau Conteneur",
+				"ip" => "172.45.2.2",
+				"port" => 45667,
+			],
 			réponse: "",
 			date_soumission: 1615696287,
 			réussi: false,

@@ -26,7 +26,9 @@ use progression\domaine\interacteur\{
 	ObtenirQuestionInt,
 	IntéracteurException,
 };
+use Illuminate\Support\Facades\Gate;
 use progression\http\transformer\AvancementTransformer;
+use progression\http\transformer\dto\AvancementDTO;
 use progression\util\Encodage;
 use progression\domaine\entité\Avancement;
 
@@ -51,11 +53,19 @@ class AvancementsCtl extends Contrôleur
 		if ($avancements === null) {
 			$réponse = null;
 		} else {
-			$réponse = [];
-			foreach ($avancements as $id => $avancement) {
-				$avancement->id = Encodage::base64_encode_url($id);
+			$dtos = [];
+			foreach ($avancements as $question_uri => $avancement) {
+				$uri_encodé = Encodage::base64_encode_url($question_uri);
+				array_push(
+					$dtos,
+					new AvancementDTO(
+						id: "{$username}/{$uri_encodé}",
+						objet: $avancement,
+						liens: AvancementCtl::get_liens($username, $uri_encodé),
+					),
+				);
 			}
-			$réponse = $this->collection($avancements, new AvancementTransformer($username));
+			$réponse = $this->collection($dtos, new AvancementTransformer());
 		}
 
 		$réponse = $this->préparer_réponse($réponse);

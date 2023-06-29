@@ -31,7 +31,7 @@ class ObtenirAvancementsInt extends Interacteur
 		try {
 			return $this->source_dao->get_avancement_dao()->get_tous($username, $includes);
 		} catch (DAOException $e) {
-			throw new IntéracteurException($e);
+			throw new IntéracteurException($e, 503);
 		}
 	}
 }

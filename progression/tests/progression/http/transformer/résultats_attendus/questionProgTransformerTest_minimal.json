@@ -4,11 +4,9 @@
 	"titre": "",
 	"objectif": "",
 	"description" : "",
-	"\u00e9nonc\u00e9": "",
+	"énoncé": "",
 	"auteur": "",
 	"licence": "",
-	"links": {
-		"self": "https://example.com/question/id"
-	},
-	"sous-type": "questionProg"
+	"sous-type": "questionProg",
+	"links": []
 }

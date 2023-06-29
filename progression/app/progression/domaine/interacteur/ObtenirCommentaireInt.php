@@ -19,7 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Commentaire;
-use progression\dao\{DAOFactory, DAOException};
+use progression\dao\DAOException;
 
 class ObtenirCommentaireInt extends Interacteur
 {
@@ -32,7 +32,7 @@ class ObtenirCommentaireInt extends Interacteur
 		try {
 			$commentaire = $this->source_dao->get_commentaire_dao()->get_commentaire($id, $includes);
 		} catch (DAOException $e) {
-			throw new IntéracteurException($e);
+			throw new IntéracteurException($e, 503);
 		}
 		return $commentaire;
 	}
@@ -48,7 +48,7 @@ class ObtenirCommentaireInt extends Interacteur
 				->get_commentaire_dao()
 				->get_tous_par_tentative($username, $question_uri, $date, $includes);
 		} catch (DAOException $e) {
-			throw new IntéracteurException($e);
+			throw new IntéracteurException($e, 503);
 		}
 		return $commentaires;
 	}
