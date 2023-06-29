@@ -19,6 +19,7 @@
 use progression\ContrôleurTestCase;
 use progression\domaine\entité\user\{État, Rôle};
 use Illuminate\Auth\GenericUser;
+use Illuminate\Support\Facades\Config;
 
 final class ConfigCtlTests extends ContrôleurTestCase
 {
@@ -27,6 +28,7 @@ final class ConfigCtlTests extends ContrôleurTestCase
 		parent::setUp();
 
 		putenv("APP_URL=https://example.com");
+		Config::set("version.numéro", "3.0.0");
 	}
 
 	// GET

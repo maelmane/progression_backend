@@ -6,6 +6,9 @@ RUN composer install -d /var/www/
 
 FROM php:apache-buster as production
 
+# Corrige un bogue au moment de l'envoi de courriels
+RUN echo "tcp     6       TCP             # transmission control protocol" > /etc/protocols
+
 # Mise a jour de la liste de package
 RUN apt update && apt upgrade -y && apt autoclean
 RUN apt update && apt install -y default-libmysqlclient-dev default-mysql-client python3-yaml libldap2-dev libyaml-dev libzip-dev python3 python3-pip && apt autoclean php8-dom
@@ -57,8 +60,10 @@ WORKDIR /var/www/
 COPY --chown=www-data:www-data progression progression/
 COPY --from=composer --chown=www-data:www-data /var/www/vendor/ progression/vendor/
 
-RUN mkdir -p progression/app/storage
+RUN mkdir -p progression/app/storage/framework/{sessions,views,cache}
+RUN chmod -R 775 progression/app/storage/
 RUN chown www-data:www-data progression/ progression/app/storage
+RUN chown www-data:www-data -R progression/app/storage
 
 RUN chmod +x progression/app/entrypoint.sh
 CMD [ "bash", "progression/app/entrypoint.sh" ]
