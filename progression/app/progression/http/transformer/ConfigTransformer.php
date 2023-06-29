@@ -17,23 +17,25 @@
  */
 
 namespace progression\http\transformer;
+use progression\http\transformer\dto\GénériqueDTO;
 
 class ConfigTransformer extends BaseTransformer
 {
 	public string $type = "config";
 
 	/**
-	 * @param array<mixed> $config
 	 * @return array<mixed>
 	 */
-	public function transform(array $config): array
+	public function transform(GénériqueDTO $data_in): array
 	{
+		$id = $data_in->id;
+		$config = $data_in->objet["config"];
+		$user = $data_in->objet["user"];
+		$liens = $data_in->liens;
+
 		$data_out = $config + [
-			"id" => $config["id"],
-			"links" => [
-				"self" => "{$this->urlBase}/",
-				"inscrire" => "{$this->urlBase}/user/",
-			],
+			"id" => $id,
+			"links" => $liens,
 		];
 
 		return $data_out;

@@ -26,7 +26,7 @@ final class AvancementTests extends TestCase
 	public function test_étant_donné_un_Avancement_instancié_avec_tous_ses_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_identiques()
 	{
 		$résultat_obtenu = new Avancement([new TentativeProg("python", "test", 654321)], "Titre", "niveau", [
-			new Sauvegarde("python", "test"),
+			"python" => new Sauvegarde("python", "test"),
 		]);
 
 		$this->assertEquals(État::NONREUSSI, $résultat_obtenu->etat);
@@ -34,8 +34,8 @@ final class AvancementTests extends TestCase
 		$this->assertEquals("niveau", $résultat_obtenu->niveau);
 		$this->assertEquals(654321, $résultat_obtenu->date_modification);
 		$this->assertNull($résultat_obtenu->date_réussite);
-		$this->assertEquals([new TentativeProg("python", "test", 654321)], $résultat_obtenu->tentatives);
-		$this->assertEquals([new Sauvegarde("python", "test")], $résultat_obtenu->sauvegardes);
+		$this->assertEquals([654321 => new TentativeProg("python", "test", 654321)], $résultat_obtenu->tentatives);
+		$this->assertEquals(["python" => new Sauvegarde("python", "test")], $résultat_obtenu->sauvegardes);
 	}
 
 	public function test_étant_donné_une_avancement_sans_tentatives_lorsquon_récupère_lavancement_on_obtient_les_valeurs_par_défaut()

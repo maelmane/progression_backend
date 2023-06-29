@@ -18,9 +18,12 @@
 
 namespace progression\http\transformer;
 
+use progression\domaine\entité\Avancement;
 use progression\domaine\entité\user\{User, État, Rôle};
 use progression\domaine\entité\clé\{Clé, Portée};
+use progression\http\transformer\dto\UserDTO;
 use PHPUnit\Framework\TestCase;
+use Illuminate\Support\Facades\Gate;
 
 final class UserTransformerTests extends TestCase
 {
@@ -35,7 +38,6 @@ final class UserTransformerTests extends TestCase
 			rôle: Rôle::NORMAL,
 			préférences: "les rouges",
 		);
-		$user->id = "bob";
 
 		$résultat = [
 			"id" => "bob",
@@ -51,7 +53,12 @@ final class UserTransformerTests extends TestCase
 		];
 
 		$userTransformer = new UserTransformer();
-		$this->assertEquals($résultat, $userTransformer->transform($user));
+		$this->assertEquals(
+			$résultat,
+			$userTransformer->transform(
+				new UserDTO(id: "bob", objet: $user, liens: ["self" => "https://example.com/user/bob"]),
+			),
+		);
 	}
 
 	public function test_étant_donné_un_user_avec_ses_clés_lorsquon_inclut_les_clés_on_reçoit_un_tableau_de_clés()
@@ -63,7 +70,7 @@ final class UserTransformerTests extends TestCase
 		];
 
 		$userTransformer = new UserTransformer();
-		$résultats_obtenus = $userTransformer->includeCles($user);
+		$résultats_obtenus = $userTransformer->includeCles(new UserDTO(id: "bob", objet: $user, liens: []));
 
 		$clés = [];
 		foreach ($résultats_obtenus->getData() as $résultat) {
@@ -71,6 +78,32 @@ final class UserTransformerTests extends TestCase
 		}
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/userTransformerTest_inclusion_clés.json",
+			json_encode($clés),
+		);
+	}
+
+	public function test_étant_donné_un_user_avec_des_avancement_lorsquon_inclut_les_avancement_on_reçoit_un_tableau_davancements()
+	{
+		$user = new User(username: "bob", date_inscription: 0);
+		$user->clés = [
+			new Clé(null, 1624593600, 1624680000, Portée::AUTH),
+			new Clé(null, 1624593602, 1624680002, Portée::AUTH),
+		];
+		$user->avancements = [new Avancement(titre: "test 1"), new Avancement(titre: "test 2")];
+
+		Gate::shouldReceive("allows")
+			->with("soumettre-tentative", "bob")
+			->andReturn(true);
+
+		$userTransformer = new UserTransformer();
+		$résultats_obtenus = $userTransformer->includeAvancements(new UserDTO(id: "bob", objet: $user, liens: []));
+
+		$clés = [];
+		foreach ($résultats_obtenus->getData() as $résultat) {
+			$clés[] = $résultat;
+		}
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/userTransformerTest_inclusion_avancements.json",
 			json_encode($clés),
 		);
 	}

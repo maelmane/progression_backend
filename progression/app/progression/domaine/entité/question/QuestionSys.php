@@ -23,7 +23,6 @@ class QuestionSys extends Question
 	public $image;
 	public $utilisateur;
 	public $solution;
-	public $tests;
 
 	public function __construct(
 		$niveau = null,
@@ -51,12 +50,12 @@ class QuestionSys extends Question
 			$feedback_pos,
 			$feedback_neg,
 			$feedback_err,
+			$tests,
 			$description,
 		);
 
 		$this->image = $image;
 		$this->utilisateur = $utilisateur;
 		$this->solution = $solution;
-		$this->tests = $tests;
 	}
 }

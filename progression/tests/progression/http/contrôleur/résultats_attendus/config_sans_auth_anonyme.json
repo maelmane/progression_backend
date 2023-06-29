@@ -1,0 +1,19 @@
+{
+  "data": {
+    "type": "config",
+    "id": "serveur",
+    "attributes": {
+      "config": {
+        "AUTH": {
+          "LDAP": false,
+          "LOCAL": false
+        }
+      },
+      "version": "Progression 3.0.0()"
+    },
+    "links": {
+      "self": "https://example.com/",
+      "inscrire": "https://example.com/user/"
+    }
+  }
+}

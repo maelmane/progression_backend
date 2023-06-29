@@ -4,14 +4,17 @@
     "id": "jdoe",
     "attributes": {
       "username": "jdoe",
-      "date_inscription":1600828609,
+      "date_inscription": 1600828609,
       "courriel": null,
       "état": "inactif",
-		"rôle": "normal",
-		"préférences": "{\"app\": {\"pref1\": 3, \"pref2\": 4}}"
+      "rôle": "normal",
+      "préférences": "{\"app\": {\"pref1\": 3, \"pref2\": 4}}"
     },
     "links": {
-      "self": "https://example.com/user/jdoe"
+      "self": "https://example.com/user/jdoe",
+      "tokens": "https://example.com/user/jdoe/tokens",
+      "avancements": "https://example.com/user/jdoe/avancements",
+      "clés": "https://example.com/user/jdoe/cles"
     },
     "relationships": {
       "avancements": {
@@ -24,12 +27,6 @@
         "links": {
           "self": "https://example.com/user/jdoe/relationships/cles",
           "related": "https://example.com/user/jdoe/cles"
-        }
-      },
-      "tokens": {
-        "links": {
-          "related": "https://example.com/user/jdoe/tokens",
-          "self": "https://example.com/user/jdoe/relationships/tokens"
         }
       }
     }

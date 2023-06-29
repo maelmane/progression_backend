@@ -21,7 +21,6 @@ namespace progression\domaine\entité\question;
 class QuestionProg extends Question
 {
 	public $exécutables = [];
-	public $tests = [];
 
 	public function __construct(
 		$niveau = null,
@@ -47,9 +46,9 @@ class QuestionProg extends Question
 			$feedback_pos,
 			$feedback_neg,
 			$feedback_err,
+			$tests,
 			$description,
 		);
 		$this->exécutables = $exécutables;
-		$this->tests = $tests;
 	}
 }

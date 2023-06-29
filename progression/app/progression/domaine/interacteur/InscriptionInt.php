@@ -116,25 +116,28 @@ class InscriptionInt extends Interacteur
 
 	private function envoyer_courriel_de_validation(User $user): void
 	{
-		$ressources = [
-			"data" => [
-				"url_user" => getenv("APP_URL") . "/user/" . $user->username,
-				"user" => [
-					"username" => $user->username,
-					"courriel" => $user->courriel,
-					"rôle" => $user->rôle,
-				],
+		$data = [
+			"url_user" => getenv("APP_URL") . "/user/" . $user->username,
+			"user" => [
+				"username" => $user->username,
+				"courriel" => $user->courriel,
+				"rôle" => $user->rôle,
 			],
-			"permissions" => [
-				"user" => [
-					"url" => "^user/" . $user->username . "$",
-					"method" => "^POST$",
-				],
+		];
+		$ressources = [
+			"user" => [
+				"url" => "^user/" . $user->username . "$",
+				"method" => "^POST$",
 			],
 		];
 
 		$expirationToken = Carbon::now()->addMinutes((int) getenv("JWT_EXPIRATION"))->timestamp;
-		$token = GénérateurDeToken::get_instance()->générer_token($user->username, $expirationToken, $ressources);
+		$token = GénérateurDeToken::get_instance()->générer_token(
+			$user->username,
+			$expirationToken,
+			$ressources,
+			$data,
+		);
 		$this->source_dao->get_expéditeur()->envoyer_validation_courriel($user, $token);
 	}
 }

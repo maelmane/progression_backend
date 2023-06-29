@@ -7,9 +7,6 @@
 	"énoncé": "",
 	"auteur": "",
 	"licence": "",
-	"links": {
-		"self": "https://example.com/question/id",
-		"résultats": "https://example.com/question/id/resultats"
-	},
-	"sous-type": "questionProg"
+	"sous-type": "questionProg",
+	"links": []
 }

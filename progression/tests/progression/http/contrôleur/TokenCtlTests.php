@@ -63,7 +63,7 @@ final class TokenCtlTests extends ContrôleurTestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/user/utilisateur_lambda/tokens", [
 			"data" => [
-				"ressources" => "ressources",
+				"ressources" => ["ressources" => ["url" => "test", "method" => "POST"]],
 				"expiration" => 0,
 			],
 		]);
@@ -80,7 +80,7 @@ final class TokenCtlTests extends ContrôleurTestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/user/utilisateur_lambda/tokens", [
 			"data" => [
-				"ressources" => "ressources",
+				"ressources" => ["ressources" => ["url" => "test", "method" => "POST"]],
 				"expiration" => 1685831340,
 			],
 		]);
@@ -113,7 +113,7 @@ final class TokenCtlTests extends ContrôleurTestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/user/utilisateur_lambda/tokens", [
 			"data" => [
-				"ressources" => "ressources",
+				"ressources" => ["test" => ["url" => "ressources", "method" => "POST"]],
 			],
 		]);
 		$résultat_observé = $résultat_obtenu;
@@ -129,7 +129,7 @@ final class TokenCtlTests extends ContrôleurTestCase
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/user/utilisateur_lambda/tokens", [
 			"data" => [
-				"ressources" => "",
+				"ressources" => [],
 			],
 		]);
 		$résultat_observé = $résultat_obtenu;

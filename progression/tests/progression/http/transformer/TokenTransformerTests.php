@@ -19,6 +19,7 @@
 namespace progression\http\transformer;
 
 use PHPUnit\Framework\TestCase;
+use progression\http\transformer\dto\GénériqueDTO;
 
 final class TokenTransformerTests extends TestCase
 {
@@ -37,7 +38,13 @@ final class TokenTransformerTests extends TestCase
 			"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InV0aWxpc2F0ZXVyX2xhbWJkYSIsImN1cnJlbnQiOjk5MDQ0NjQwMCwiZXhwaXJlZCI6MTY4NTgzMTM0MCwicmVzc291cmNlcyI6InJlc3NvdXJjZXMiLCJ2ZXJzaW9uIjoiMS4yLjMifQ.NR4TnTAp-LXZZDGM8EWhSFFQpSda19nULaca9hGcGXI";
 
 		$tokenTransformer = new TokenTransformer("utilisateur_lambda");
-		$résultats_obtenus = $tokenTransformer->transform($token);
+		$résultats_obtenus = $tokenTransformer->transform(
+			new GénériqueDTO(
+				id: "utilisateur_lambda/NR4TnTAp-LXZZDGM8EWhSFFQpSda19nULaca9hGcGXI",
+				objet: $token,
+				liens: [],
+			),
+		);
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/token_ressources_avec_expiration.json",
 			json_encode($résultats_obtenus),

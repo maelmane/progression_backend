@@ -9,7 +9,7 @@ DELIMITER &&
 
 		  START TRANSACTION;
 
-		  ALTER TABLE user ADD COLUMN `date_inscription` INT NULL;
+		  ALTER TABLE user ADD COLUMN `date_inscription` INT NOT NULL DEFAULT 0;
 		  
 		  UPDATE `version` SET `version` = 11;
 		  COMMIT;

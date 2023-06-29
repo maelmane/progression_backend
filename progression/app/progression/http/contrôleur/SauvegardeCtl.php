@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use progression\domaine\interacteur\{ObtenirSauvegardeInt, EnregistrerSauvegardeInt, IntéracteurException};
 use progression\http\transformer\SauvegardeTransformer;
+use progression\http\transformer\dto\GénériqueDTO;
 use progression\util\Encodage;
 use progression\domaine\entité\Sauvegarde;
 
@@ -63,6 +64,19 @@ class SauvegardeCtl extends Contrôleur
 		return $réponse;
 	}
 
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $id, string $langage): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+
+		return [
+			"self" => "{$urlBase}/sauvegarde/{$id}/{$langage}",
+			"avancement" => "{$urlBase}/avancement/{$id}",
+		];
+	}
+
 	private function obtenir_sauvegarde($username, $question_uri, $langage)
 	{
 		Log::debug("SauvegardeCtl.obtenir_sauvegarde. Params : ", [$username, $question_uri, $langage]);
@@ -80,15 +94,19 @@ class SauvegardeCtl extends Contrôleur
 	{
 		Log::debug("SauvegardeCtl.valider_et_préparer_réponse. Params : ", [$username, $question_uri, $langage]);
 
-		$sauvegarde_array = null;
-
 		if ($sauvegarde != null) {
-			$sauvegarde->id = $langage;
-			$sauvegarde_array = $this->item($sauvegarde, new SauvegardeTransformer("$username/$question_uri"));
+			$dto = new GénériqueDTO(
+				id: "$username/$question_uri/$langage",
+				objet: $sauvegarde,
+				liens: SauvegardeCtl::get_liens("$username/$question_uri", $langage),
+			);
+
+			$réponse = $this->item($dto, new SauvegardeTransformer());
+		} else {
+			$réponse = null;
 		}
 
-		$réponse = $this->préparer_réponse($sauvegarde_array);
-
+		$réponse = $this->préparer_réponse($réponse);
 		Log::debug("SauvegardeCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
 		return $réponse;
 	}

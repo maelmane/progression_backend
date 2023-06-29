@@ -18,6 +18,7 @@
 
 namespace progression\http\transformer;
 
+use progression\http\transformer\dto\GénériqueDTO;
 use Firebase\JWT\JWT;
 
 class TokenTransformer extends BaseTransformer
@@ -27,13 +28,16 @@ class TokenTransformer extends BaseTransformer
 	/**
 	 * @return array<mixed>
 	 */
-	public function transform(string $token): array
+	public function transform(GénériqueDTO $data_in): array
 	{
+		$id = $data_in->id;
+		$token = $data_in->objet;
+		$liens = $data_in->liens;
+
 		$tokenDécodé = JWT::decode($token, getenv("JWT_SECRET"), ["HS256"]);
 
 		return [
-			/* @phpstan-ignore-next-line */
-			"id" => "{$this->id}/{$tokenDécodé->current}",
+			"id" => $id,
 			/* @phpstan-ignore-next-line */
 			"username" => $tokenDécodé->username,
 			/* @phpstan-ignore-next-line */
@@ -43,11 +47,7 @@ class TokenTransformer extends BaseTransformer
 			"jwt" => $token,
 			/* @phpstan-ignore-next-line */
 			"version" => $tokenDécodé->version,
-			"links" => [
-				/* @phpstan-ignore-next-line */
-				"self" => "{$this->urlBase}/token/{$this->id}/{$tokenDécodé->current}",
-				"user" => "{$this->urlBase}/user/{$this->id}",
-			],
+			"links" => $liens,
 		];
 	}
 }

@@ -21,17 +21,23 @@ namespace progression\http\transformer;
 use progression\domaine\entité\user\{User, État, Rôle};
 use progression\util\Encodage;
 use League\Fractal\Resource\Collection;
+use progression\http\contrôleur\AvancementCtl;
+use progression\http\transformer\dto\UserDTO;
 
 class UserTransformer extends BaseTransformer
 {
 	public $type = "user";
 
-	protected array $availableIncludes = ["avancements", "cles", "tokens"];
+	protected array $availableIncludes = ["avancements", "cles"];
 
-	public function transform(User $user)
+	public function transform(UserDTO $data_in)
 	{
+		$id = $data_in->id;
+		$user = $data_in->objet;
+		$liens = $data_in->liens;
+
 		$data = [
-			"id" => $user->id,
+			"id" => $id,
 			"courriel" => $user->courriel,
 			"username" => $user->username,
 			"date_inscription" => $user->date_inscription,
@@ -39,52 +45,31 @@ class UserTransformer extends BaseTransformer
 				État::INACTIF => "inactif",
 				État::ACTIF => "actif",
 				État::ATTENTE_DE_VALIDATION => "en_attente_de_validation",
+				default => "indéfini",
 			},
 			"rôle" => match ($user->rôle) {
 				Rôle::NORMAL => "normal",
 				Rôle::ADMIN => "admin",
+				default => "indéfini",
 			},
 			"préférences" => $user->préférences,
-			"links" => (isset($user->links) ? $user->links : []) + [
-				"self" => "{$this->urlBase}/user/{$user->id}",
-			],
+			"links" => $liens,
 		];
 
 		return $data;
 	}
 
-	public function includeAvancements(User $user): Collection
+	public function includeAvancements(UserDTO $data_in): Collection
 	{
-		$id_parent = $user->username;
+		$user = $data_in->objet;
 
-		foreach ($user->avancements as $uri => $avancement) {
-			$avancement->id = Encodage::base64_encode_url($uri);
-			$avancement->links = [
-				"user" => $this->urlBase . "/user/{$id_parent}",
-			];
-		}
-
-		return $this->collection($user->avancements, new AvancementTransformer($id_parent), "avancement");
+		return $this->collection($data_in->avancements, new AvancementTransformer(), "avancement");
 	}
 
-	public function includeCles(User $user): Collection
+	public function includeCles(UserDTO $data_in): Collection
 	{
-		$id_parent = $user->username;
+		$user = $data_in->objet;
 
-		foreach ($user->clés as $nom => $clé) {
-			$clé->links = [
-				"user" => $this->urlBase . "/user/{$id_parent}",
-			];
-		}
-
-		return $this->collection($user->clés, new CléTransformer($id_parent), "cle");
-	}
-
-	public function includeTokens(User $user): Collection
-	{
-		$id_parent = $user->username;
-
-		//On n'enverra jamais les tokens
-		return $this->collection([], new TokenTransformer($id_parent), "token");
+		return $this->collection($data_in->clés, new CléTransformer(), "cle");
 	}
 }

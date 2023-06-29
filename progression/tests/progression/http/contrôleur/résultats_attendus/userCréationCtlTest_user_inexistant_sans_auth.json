@@ -4,34 +4,31 @@
     "id": "Marcel",
     "attributes": {
       "username": "Marcel",
-      "date_inscription": 1610810612,		
+      "date_inscription": 1610810612,
       "courriel": null,
       "état": "actif",
       "rôle": "normal",
-      "préférences": ""
+      "préférences": "{préférences par défaut}"
     },
     "links": {
-      "self": "https:\/\/example.com\/user\/Marcel"
+      "self": "https://example.com/user/Marcel",
+      "tokens": "https://example.com/user/Marcel/tokens",
+      "avancements": "https://example.com/user/Marcel/avancements",
+      "clés": "https://example.com/user/Marcel/cles"
     },
     "relationships": {
       "avancements": {
         "links": {
-          "self": "https:\/\/example.com\/user\/Marcel\/relationships\/avancements",
-          "related": "https:\/\/example.com\/user\/Marcel\/avancements"
+          "self": "https://example.com/user/Marcel/relationships/avancements",
+          "related": "https://example.com/user/Marcel/avancements"
         }
       },
       "cles": {
         "links": {
-          "self": "https:\/\/example.com\/user\/Marcel\/relationships\/cles",
-          "related": "https:\/\/example.com\/user\/Marcel\/cles"
+          "self": "https://example.com/user/Marcel/relationships/cles",
+          "related": "https://example.com/user/Marcel/cles"
         }
-      },
-      "tokens": {
-        "links": {
-          "related": "https://example.com/user/Marcel/tokens",
-          "self": "https://example.com/user/Marcel/relationships/tokens"
-        }
-      }	
+      }
     }
   }
 }

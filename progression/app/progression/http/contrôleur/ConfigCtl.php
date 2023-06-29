@@ -21,7 +21,9 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use progression\domaine\entité\user\User;
 use progression\http\transformer\ConfigTransformer;
+use progression\http\transformer\dto\GénériqueDTO;
 
 class ConfigCtl extends Contrôleur
 {
@@ -48,10 +50,37 @@ class ConfigCtl extends Contrôleur
 			$config["config"]["LDAP"] = $config_ldap;
 		}
 
-		$réponse = $this->valider_et_préparer_réponse($config);
+		$user = $request->user("api");
+
+		$réponse = $this->valider_et_préparer_réponse(["config" => $config, "user" => $user]);
 
 		Log::debug("ConfigCtl.get. Retour : ", [$réponse]);
 		return $réponse;
+	}
+
+	/**
+	 * @return array<string>
+	 */
+	public function get_liens(string|null $username): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+
+		$ldap = getenv("AUTH_LDAP") == "true";
+		$local = getenv("AUTH_LOCAL") == "true";
+
+		$liens = [
+			"self" => "$urlBase/",
+		];
+
+		if ($local || !$ldap) {
+			$liens["inscrire"] = "$urlBase/user/";
+		}
+
+		if ($username) {
+			$liens["user"] = "$urlBase/user/$username";
+		}
+
+		return $liens;
 	}
 
 	/**
@@ -62,8 +91,12 @@ class ConfigCtl extends Contrôleur
 		Log::debug("ConfigCtl.valider_et_préparer_réponse. Params : ", [$config]);
 
 		if ($config) {
-			$config["id"] = "serveur";
-			$réponse = $this->item($config, new ConfigTransformer());
+			$dto = new GénériqueDTO(
+				id: "serveur",
+				objet: $config,
+				liens: ConfigCtl::get_liens($config["user"]?->username),
+			);
+			$réponse = $this->item($dto, new ConfigTransformer());
 		} else {
 			$réponse = null;
 		}

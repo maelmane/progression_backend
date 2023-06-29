@@ -108,6 +108,15 @@ username/nom
 |             |        | 1=Authentification | La clé peut être utilisée pour authentifier l’utilisateur |
 |-------------+--------+--------------------+-----------------------------------------------------------|
 
+** Config
+
+Configuration du serveur
+
+| Nom     | Type | Valeurs | Description                    |
+|---------+------+---------+--------------------------------|
+| config  | dict |         | Dictionnaire de configurations |
+| version | str  |         | Version actuelle du serveur    |
+
 ** Commentaire
 
 Un message sur une tentative écrit par un utilisateur.

@@ -21,6 +21,8 @@ namespace progression\http\transformer;
 use progression\domaine\entité\{Avancement, TentativeProg, TentativeSys};
 use progression\domaine\entité\question\État;
 
+use progression\http\transformer\dto\AvancementDTO;
+
 class AvancementTransformer extends BaseTransformer
 {
 	public $type = "avancement";
@@ -28,72 +30,64 @@ class AvancementTransformer extends BaseTransformer
 	protected array $availableIncludes = ["tentatives", "sauvegardes"];
 	protected array $availableParams = ["fields"];
 
-	public function transform(Avancement $avancement)
+	public function transform(AvancementDTO $data_in)
 	{
+		$id = $data_in->id;
+		$avancement = $data_in->objet;
+		$avancement = (fn($avancement): Avancement => $avancement)($avancement);
+		$liens = $data_in->liens;
+
 		$data_out = [
-			"id" => "{$this->id}/{$avancement->id}",
+			"id" => $id,
 			"état" => match ($avancement->etat) {
 				État::DEBUT => "début",
 				État::NONREUSSI => "non_réussi",
 				État::REUSSI => "réussi",
+				default => "indéfini",
 			},
 			"titre" => $avancement->titre,
 			"niveau" => $avancement->niveau,
 			"date_modification" => $avancement->date_modification,
 			"date_réussite" => $avancement->date_réussite,
 			"extra" => $avancement->extra,
-			"links" => (isset($avancement->links) ? $avancement->links : []) + [
-				"self" => "{$this->urlBase}/avancement/{$this->id}/{$avancement->id}",
-				"user" => "{$this->urlBase}/user/{$this->id}",
-				"question" => "{$this->urlBase}/question/{$avancement->id}",
-			],
+			"links" => $liens,
 		];
 
 		return $data_out;
 	}
 
-	public function includeTentatives($avancement, $params = null)
+	public function includeTentatives(AvancementDTO $data_in, $params = null)
 	{
+		$id = $data_in->id;
+		$avancement = $data_in->objet;
+
 		$params = $this->validerParams($params);
+
 		$tentatives = $avancement->tentatives;
-
-		$id_parent = "{$this->id}/{$avancement->id}";
-
 		foreach ($tentatives as $date_soumission => $tentative) {
-			$tentative->links = [
-				"self" => "{$this->urlBase}/tentative/{$id_parent}/{$date_soumission}",
-				"avancement" => "{$this->urlBase}/avancement/{$id_parent}",
-			];
-
 			if ($params && array_key_exists("fields", $params)) {
 				$tentative = $this->sélectionnerChamps($tentative, $params["fields"]);
 			}
 		}
 
 		if (empty($tentatives)) {
-			return $this->collection([], new TentativeTransformer($id_parent), "tentative");
+			return $this->collection([], new TentativeTransformer(), "tentative");
 		} else {
 			if ($tentatives[array_key_first($tentatives)] instanceof TentativeProg) {
-				return $this->collection($tentatives, new TentativeProgTransformer($id_parent), "tentative");
+				return $this->collection($data_in->tentatives, new TentativeProgTransformer(), "tentative");
 			} elseif ($tentatives[array_key_first($tentatives)] instanceof TentativeSys) {
-				return $this->collection($tentatives, new TentativeSysTransformer($id_parent), "tentative");
+				return $this->collection($data_in->tentatives, new TentativeSysTransformer(), "tentative");
 			} else {
-				return $this->collection($tentatives, new TentativeTransformer($id_parent), "tentative");
+				return $this->collection($data_in->tentatives, new TentativeTransformer(), "tentative");
 			}
 		}
 	}
 
-	public function includeSauvegardes($avancement)
+	public function includeSauvegardes(AvancementDTO $data_in)
 	{
-		$id_parent = "{$this->id}/{$avancement->id}";
+		$id = $data_in->id;
+		$avancement = $data_in->objet;
 
-		foreach ($avancement->sauvegardes as $langage => $sauvegarde) {
-			$sauvegarde->links = [
-				"self" => "{$this->urlBase}/sauvegarde/{$id_parent}/{$langage}",
-				"avancement" => "{$this->urlBase}/avancement/{$id_parent}",
-			];
-		}
-
-		return $this->collection($avancement->sauvegardes, new SauvegardeTransformer($id_parent), "sauvegarde");
+		return $this->collection($data_in->sauvegardes, new SauvegardeTransformer(), "sauvegarde");
 	}
 }

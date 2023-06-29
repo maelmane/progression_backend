@@ -27,7 +27,7 @@ use progression\domaine\interacteur\InscriptionInt;
 use progression\domaine\entité\user\{User, État, Rôle};
 use progression\http\transformer\UserTransformer;
 
-class UserCréationCtl extends Contrôleur
+class UserCréationCtl extends UserCtl
 {
 	public function put(Request $request): JsonResponse
 	{
@@ -119,24 +119,6 @@ class UserCréationCtl extends Contrôleur
 		Log::debug("UserCréationCtl.effectuer_inscription_sans_mdp. Retour : ", [$user]);
 
 		return $user;
-	}
-
-	private function valider_et_préparer_réponse(User|null $user): JsonResponse
-	{
-		Log::debug("UserCtl.valider_et_préparer_réponse. Params : ", [$user]);
-
-		if ($user) {
-			$user->id = $user->username;
-			$réponse = $this->item($user, new UserTransformer());
-		} else {
-			$réponse = null;
-		}
-
-		$réponse = $this->préparer_réponse($réponse);
-
-		Log::debug("UserCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
-
-		return $réponse;
 	}
 
 	private function valider_paramètres_inscription_locale(Request $request): MessageBag|null

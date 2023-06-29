@@ -10,9 +10,6 @@
 	"image": "",
 	"utilisateur": "",
 	"solution": "",
-	"links": {
-		"self": "https://example.com/question/id",
-		"résultats": "https://example.com/question/id/resultats"
-	},
-	"sous-type": "questionSys"
+	"sous-type": "questionSys",
+	"links": []
 }

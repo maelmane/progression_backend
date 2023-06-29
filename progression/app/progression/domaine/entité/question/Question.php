@@ -17,6 +17,7 @@
  */
 
 namespace progression\domaine\entité\question;
+use progression\domaine\entité\Test;
 
 class Question
 {
@@ -30,9 +31,14 @@ class Question
 	public string|null $feedback_pos = null;
 	public string|null $feedback_neg = null;
 	public string|null $feedback_err = null;
+	/**
+	 * @var array<Test> $tests
+	 */
+	public array $tests = [];
 
 	/**
 	 * @param string|array<mixed>|null $enonce
+	 * @param array<Test> $tests
 	 */
 	public function __construct(
 		$niveau = null,
@@ -44,6 +50,7 @@ class Question
 		string $feedback_pos = null,
 		string $feedback_neg = null,
 		string $feedback_err = null,
+		$tests = [],
 		string|null $description = null,
 	) {
 		$this->niveau = $niveau;
@@ -55,6 +62,7 @@ class Question
 		$this->feedback_pos = $feedback_pos;
 		$this->feedback_neg = $feedback_neg;
 		$this->feedback_err = $feedback_err;
+		$this->tests = $tests;
 		$this->description = $description;
 	}
 }

@@ -27,6 +27,7 @@ use progression\domaine\interacteur\{ObtenirCléInt, GénérerCléAuthentificati
 use progression\dao\DAOException;
 
 use progression\http\transformer\CléTransformer;
+use progression\http\transformer\dto\GénériqueDTO;
 
 class CléCtl extends Contrôleur
 {
@@ -63,6 +64,19 @@ class CléCtl extends Contrôleur
 		return $réponse;
 	}
 
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $username, string $id): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+
+		return [
+			"self" => "{$urlBase}/cle/{$username}/{$id}",
+			"user" => "{$urlBase}/user/{$username}",
+		];
+	}
+
 	private function obtenir_clé($username, $nom)
 	{
 		Log::debug("CléCtl.obtenir_clé. Params : ", [$username, $nom]);
@@ -79,8 +93,8 @@ class CléCtl extends Contrôleur
 		Log::debug("CléCtl.obtenir_clé. Params : ", [$clé, $username, $nom]);
 
 		if ($clé) {
-			$clé->id = $nom;
-			$réponse_array = $this->item($clé, new CléTransformer($username));
+			$dto = new GénériqueDTO(id: "$username/$nom", objet: $clé, liens: CléCtl::get_liens($username, $nom));
+			$réponse_array = $this->item($dto, new CléTransformer());
 		} else {
 			$réponse_array = null;
 		}

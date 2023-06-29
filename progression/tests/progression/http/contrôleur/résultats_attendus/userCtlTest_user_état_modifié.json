@@ -7,11 +7,14 @@
       "date_inscription": 1600828609,
       "courriel": null,
       "état": "actif",
-		  "rôle": "normal",
-		  "préférences": ""
+      "rôle": "normal",
+      "préférences": ""
     },
     "links": {
-      "self": "https://example.com/user/jane"
+      "self": "https://example.com/user/jane",
+      "tokens": "https://example.com/user/jane/tokens",
+      "avancements": "https://example.com/user/jane/avancements",
+      "clés": "https://example.com/user/jane/cles"
     },
     "relationships": {
       "avancements": {
@@ -24,12 +27,6 @@
         "links": {
           "self": "https://example.com/user/jane/relationships/cles",
           "related": "https://example.com/user/jane/cles"
-        }
-      },
-      "tokens": {
-        "links": {
-          "related": "https://example.com/user/jane/tokens",
-          "self": "https://example.com/user/jane/relationships/tokens"
         }
       }
     }

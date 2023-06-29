@@ -19,24 +19,25 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\Commentaire;
+use progression\http\transformer\dto\GénériqueDTO;
 
 class CommentaireTransformer extends BaseTransformer
 {
 	public $type = "commentaire";
 
-	public function transform(Commentaire $commentaire)
+	public function transform(GénériqueDTO $data_in)
 	{
+		$id = $data_in->id;
+		$commentaire = $data_in->objet;
+		$liens = $data_in->liens;
+
 		$data_out = [
-			"id" => "{$this->id}/{$commentaire->id}",
+			"id" => "{$id}",
 			"message" => $commentaire->message,
 			"créateur" => $commentaire->créateur->username,
 			"date" => $commentaire->date,
 			"numéro_ligne" => $commentaire->numéro_ligne,
-			"links" => (isset($commentaire->links) ? $commentaire->links : []) + [
-				"tentative" => "{$this->urlBase}/tentative/{$this->id}",
-				"auteur" => "{$this->urlBase}/user/{$commentaire->créateur->username}",
-				"self" => "{$this->urlBase}/commentaire/{$this->id}/{$commentaire->id}",
-			],
+			"links" => $liens,
 		];
 
 		return $data_out;

@@ -31,8 +31,10 @@ use League\Fractal\TransformerAbstract;
 
 class Contrôleur extends BaseController
 {
+	//JsonApiSerializer ajoute un slash à l'URL de base, on s'assure d'enlèver le slash ultime
+	public static string $urlBase = "";
+
 	protected Manager $manager;
-	protected string $urlBase;
 
 	protected function réponse_json($réponse, $code)
 	{
@@ -58,11 +60,7 @@ class Contrôleur extends BaseController
 		$this->manager = new Manager();
 
 		// On redéfinit le Serializer pour avoir des liens «relationship» personnalisés
-
-		//JsonApiSerializer ajoute un slash à l'URL de base, on s'assure d'enlèver le slash ultime
-		$this->urlBase = preg_replace("/\/+$/", "", getenv("APP_URL") ?: "") ?? "";
-		//$manager->setSerializer(new JsonApiSerializer($this->urlBase));
-		$this->manager->setSerializer(new JsonApiSerializer($this->urlBase));
+		$this->manager->setSerializer(new JsonApiSerializer(Contrôleur::$urlBase));
 		if (!empty($request->query("include"))) {
 			$this->manager->parseIncludes($request->query("include"));
 		}
@@ -112,3 +110,6 @@ class Contrôleur extends BaseController
 		}
 	}
 }
+
+//Initialise urlBase
+Contrôleur::$urlBase = preg_replace("/\/+$/", "", getenv("APP_URL") ?: "") ?? "";

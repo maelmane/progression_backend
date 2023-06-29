@@ -4,14 +4,17 @@
     "id": "jdoe",
     "attributes": {
       "username": "jdoe",
-      "date_inscription":1600828609,
+      "date_inscription": 1600828609,
       "courriel": null,
       "état": "inactif",
       "rôle": "normal",
       "préférences": "{\"app\": {\"pref1\": 1, \"pref2\": 2}}"
     },
     "links": {
-      "self": "https://example.com/user/jdoe"
+      "self": "https://example.com/user/jdoe",
+      "tokens": "https://example.com/user/jdoe/tokens",
+      "avancements": "https://example.com/user/jdoe/avancements",
+      "clés": "https://example.com/user/jdoe/cles"
     },
     "relationships": {
       "avancements": {
@@ -35,12 +38,6 @@
           "self": "https://example.com/user/jdoe/relationships/cles",
           "related": "https://example.com/user/jdoe/cles"
         }
-      },
-      "tokens": {
-        "links": {
-          "related": "https://example.com/user/jdoe/tokens",
-          "self": "https://example.com/user/jdoe/relationships/tokens"
-        }
       }
     }
   },
@@ -49,7 +46,7 @@
       "type": "avancement",
       "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
       "attributes": {
-        "état" : "début",
+        "état": "début",
         "titre": "",
         "niveau": "",
         "date_modification": null,
@@ -58,6 +55,7 @@
       },
       "links": {
         "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+        "soumettre": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives",
         "question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
         "user": "https://example.com/user/jdoe"
       },
@@ -84,11 +82,12 @@
         "niveau": "",
         "titre": "",
         "extra": "",
-        "état" : "début"
+        "état": "début"
       },
       "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
       "links": {
         "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
+        "soumettre": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24/tentatives",
         "question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfYXV0cmVfZm9uY3Rpb24",
         "user": "https://example.com/user/jdoe"
       },

@@ -44,12 +44,21 @@ class GénérateurDeToken
 		GénérateurDeToken::$instance = $générateur;
 	}
 
-	function générer_token($username, $expiration = 0, $ressources = ["tout" => ["url" => ".*", "method" => ".*"]])
-	{
+	/**
+	 * @param array<mixed> $ressources
+	 * @param array<mixed> $data
+	 */
+	function générer_token(
+		string $username,
+		int $expiration = 0,
+		array $ressources = ["tout" => ["url" => ".*", "method" => ".*"]],
+		array $data = [],
+	): string {
 		$payload = [
 			"username" => $username,
 			"current" => Carbon::now()->timestamp,
 			"expired" => $expiration,
+			"data" => $data,
 			"ressources" => $ressources,
 			"version" => getenv("APP_VERSION"),
 		];

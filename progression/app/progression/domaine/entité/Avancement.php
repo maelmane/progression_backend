@@ -65,7 +65,7 @@ class Avancement
 				$this->date_réussite = $tentative->date_soumission;
 			}
 		}
-		$this->tentatives[$i ?? count($this->tentatives)] = $tentative;
+		$this->tentatives[$tentative->date_soumission] = $tentative;
 	}
 
 	private function mettre_à_jour_dates_et_état()
@@ -78,7 +78,7 @@ class Avancement
 		$this->tentatives = [];
 
 		foreach ($tentatives as $i => $tentative) {
-			$this->ajouter_tentative($tentative, $i);
+			$this->ajouter_tentative($tentative);
 		}
 	}
 }

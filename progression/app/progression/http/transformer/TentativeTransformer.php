@@ -20,6 +20,7 @@ namespace progression\http\transformer;
 
 use League\Fractal\Resource\Collection;
 use progression\domaine\entité\Tentative;
+use progression\http\transformer\dto\TentativeDTO;
 
 class TentativeTransformer extends BaseTransformer
 {
@@ -29,47 +30,37 @@ class TentativeTransformer extends BaseTransformer
 	/**
 	 * @return array<mixed>
 	 */
-	public function transform(Tentative $tentative): array
+	public function transform(TentativeDTO $data_in): array
 	{
+		$id = $data_in->id;
+		$tentative = $data_in->objet;
+		$liens = $data_in->liens;
+
 		$data_out = [
-			"id" => "{$this->id}/{$tentative->id}",
+			"id" => $id,
 			"date_soumission" => $tentative->date_soumission,
 			"feedback" => $tentative->feedback,
 			"réussi" => $tentative->réussi,
 			"temps_exécution" => $tentative->temps_exécution,
-			"links" => (isset($tentative->links) ? $tentative->links : []) + [
-				"avancement" => "{$this->urlBase}/avancement/{$this->id}",
-				"self" => "{$this->urlBase}/tentative/{$this->id}/{$tentative->id}",
-			],
+			"links" => $liens,
 		];
 
 		return $data_out;
 	}
 
-	public function includeCommentaires(Tentative $tentative): Collection
+	public function includeCommentaires(TentativeDTO $data_in): Collection
 	{
-		$commentaires = $tentative->commentaires;
+		$id = $data_in->id;
+		$tentative = $data_in->objet;
 
-		$id_parent = "{$this->id}/{$tentative->id}";
-
-		foreach ($commentaires as $numéro => $commentaire) {
-			$commentaire->links = [
-				"tentative" => "{$this->urlBase}/tentative/{$id_parent}",
-			];
-		}
-		return $this->collection($commentaires, new CommentaireTransformer($id_parent), "commentaire");
+		return $this->collection($data_in->commentaires, new CommentaireTransformer(), "commentaire");
 	}
 
-	public function includeResultats(Tentative $tentative): Collection
+	public function includeResultats(TentativeDTO $data_in): Collection
 	{
-		$id_parent = "{$this->id}/{$tentative->id}";
+		$id = $data_in->id;
+		$tentative = $data_in->objet;
 
-		foreach ($tentative->résultats as $i => $résultat) {
-			$résultat->links = [
-				"tentative" => "{$this->urlBase}/tentative/{$id_parent}",
-			];
-		}
-
-		return $this->collection($tentative->résultats, new RésultatTransformer($id_parent), "resultat");
+		return $this->collection($data_in->résultats, new RésultatTransformer(), "resultat");
 	}
 }

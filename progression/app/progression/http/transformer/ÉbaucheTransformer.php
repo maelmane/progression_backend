@@ -18,22 +18,23 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\Exécutable;
+use progression\http\transformer\dto\GénériqueDTO;
 
 class ÉbaucheTransformer extends BaseTransformer
 {
 	public $type = "ebauche";
 
-	public function transform(Exécutable $ébauche)
+	public function transform(GénériqueDTO $data_in)
 	{
+		$id = $data_in->id;
+		$ébauche = $data_in->objet;
+		$liens = $data_in->liens;
+
 		$data_out = [
-			"id" => "{$this->id}/{$ébauche->id}",
+			"id" => "{$id}",
 			"langage" => $ébauche->lang,
 			"code" => $ébauche->code,
-			"links" => (isset($ébauche->links) ? $ébauche->links : []) + [
-				"question" => "{$this->urlBase}/question/{$this->id}",
-				"self" => "{$this->urlBase}/ebauche/{$this->id}/{$ébauche->id}",
-			],
+			"links" => $liens,
 		];
 
 		return $data_out;
