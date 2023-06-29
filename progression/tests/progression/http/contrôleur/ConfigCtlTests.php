@@ -20,17 +20,24 @@ use progression\ContrôleurTestCase;
 
 final class ConfigCtlTests extends ContrôleurTestCase
 {
+	public function setUp(): void
+	{
+		parent::setUp();
+
+		putenv("APP_URL=https://example.com");
+	}
+
 	// GET
 	public function test_config_simple_sans_authentification()
 	{
 		putenv("AUTH_LOCAL=false");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->call("GET", "/config/");
+		$résultat_observé = $this->call("GET", "/");
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertJsonStringEqualsJsonString(
-			'{"AUTH":{"LDAP":false,"LOCAL":false}}',
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/config_sans_auth.json",
 			$résultat_observé->getContent(),
 		);
 	}
@@ -40,11 +47,11 @@ final class ConfigCtlTests extends ContrôleurTestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->call("GET", "/config/");
+		$résultat_observé = $this->call("GET", "/");
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertJsonStringEqualsJsonString(
-			'{"AUTH":{"LDAP":false,"LOCAL":true}}',
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/config_locale.json",
 			$résultat_observé->getContent(),
 		);
 	}
@@ -56,11 +63,11 @@ final class ConfigCtlTests extends ContrôleurTestCase
 		putenv("LDAP_DOMAINE=exemple.com");
 		putenv("LDAP_URL_MDP_REINIT=http://portail.exemple.com");
 
-		$résultat_observé = $this->call("GET", "/config/");
+		$résultat_observé = $this->call("GET", "/");
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertJsonStringEqualsJsonString(
-			'{"AUTH":{"LDAP":true,"LOCAL":true},"LDAP":{"DOMAINE":"exemple.com", "URL_MDP_REINIT":"http://portail.exemple.com"}}',
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/config_ldap.json",
 			$résultat_observé->getContent(),
 		);
 	}

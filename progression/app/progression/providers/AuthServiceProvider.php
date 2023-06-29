@@ -18,10 +18,14 @@
 
 namespace progression\providers;
 
+use Illuminate\Auth\Access\Response;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Validator as ValidatorImpl;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
-use progression\domaine\interacteur\ObtenirUserInt;
+use progression\domaine\interacteur\{ObtenirUserInt, LoginInt};
 use progression\domaine\entité\user\{User, État, Rôle};
 use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
@@ -53,11 +57,20 @@ class AuthServiceProvider extends ServiceProvider
 		// auth est définit dans bootstrap/app.php
 		// @phpstan-ignore-next-line
 		$this->app["auth"]->viaRequest("api", function ($request) {
-			$tokenEncodé = trim(str_ireplace("bearer", "", $request->header("Authorization")));
-			$tokenDécodé = $this->décoderToken($tokenEncodé, $request);
-			if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
+			// Fournit le User passé aux Gates à fins d'authentification et d'autorisation
+			if (stripos($request->header("Authorization"), "bearer") === 0) {
+				$tokenEncodé = trim(str_ireplace("bearer", "", $request->header("Authorization")));
+				$tokenDécodé = $this->décoderToken($tokenEncodé, $request);
+				if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
+					$obtenirUserInteracteur = new ObtenirUserInt();
+					return $obtenirUserInteracteur->get_user($tokenDécodé["username"]);
+				}
+			}
+
+			$identifiant = $request->input("identifiant");
+			if ($identifiant) {
 				$obtenirUserInteracteur = new ObtenirUserInt();
-				return $obtenirUserInteracteur->get_user($tokenDécodé["username"]);
+				return $obtenirUserInteracteur->get_user($identifiant);
 			}
 
 			return null;
@@ -70,8 +83,7 @@ class AuthServiceProvider extends ServiceProvider
 				is_array($tokenDécodé) &&
 				array_key_exists("ressources", $tokenDécodé) &&
 				is_array($tokenDécodé["ressources"]) &&
-				array_key_exists("permissions", $tokenDécodé["ressources"]) &&
-				$this->vérifierRessourceAutorisée($tokenDécodé["ressources"]["permissions"] ?: null, $request) &&
+				$this->vérifierRessourceAutorisée($tokenDécodé["ressources"] ?: null, $request) &&
 				mb_strtolower($user->username) == mb_strtolower($request->username)
 			) {
 				return true;
@@ -80,18 +92,55 @@ class AuthServiceProvider extends ServiceProvider
 			return false;
 		});
 
+		Gate::define("authentification_mdp", function ($user, $request) {
+			// Valide l'authentification par mot de passe ou clé
+			$validateur = $this->valider_paramètres($request);
+
+			if ($validateur->fails()) {
+				return Response::deny($validateur->errors());
+			}
+
+			$identifiant = $request->input("identifiant");
+			$key_name = $request->input("key_name");
+			$key_secret = $request->input("key_secret");
+			$password = $request->input("password");
+			$domaine = $request->input("domaine");
+
+			$loginInt = new LoginInt();
+
+			if ($key_name) {
+				$user = $loginInt->effectuer_login_par_clé($identifiant, $key_name, $key_secret);
+			} else {
+				$user = $loginInt->effectuer_login_par_identifiant($identifiant, $password, $domaine);
+			}
+			if ($user == null) {
+				return Response::deny();
+			} else {
+				return Response::allow();
+			}
+		});
+
+		Gate::define("authentification_token", function ($user, $request) {
+			// Authentification par token
+			$tokenEncodé = trim(str_ireplace("bearer", "", $request->header("Authorization")));
+			$tokenDécodé = $this->décoderToken($tokenEncodé, $request);
+			if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
+				$obtenirUserInteracteur = new ObtenirUserInt();
+				return $obtenirUserInteracteur->get_user($tokenDécodé["username"]) !== null;
+			}
+			return null;
+		});
+
 		Gate::define("acces-ressource", function ($user, $request) {
 			$tokenRessource = $request->input("tkres");
 			$tokenRessourceDécodé = $this->décoderToken($tokenRessource, $request);
-
 			if (
 				is_array($tokenRessourceDécodé) &&
 				array_key_exists("ressources", $tokenRessourceDécodé) &&
 				is_array($tokenRessourceDécodé["ressources"]) &&
-				array_key_exists("permissions", $tokenRessourceDécodé["ressources"]) &&
 				mb_strtolower($request->username) == mb_strtolower($tokenRessourceDécodé["username"]) &&
 				$this->vérifierExpirationToken($tokenRessourceDécodé) &&
-				$this->vérifierRessourceAutorisée($tokenRessourceDécodé["ressources"]["permissions"] ?: null, $request)
+				$this->vérifierRessourceAutorisée($tokenRessourceDécodé["ressources"] ?: null, $request)
 			) {
 				return true;
 			}
@@ -156,5 +205,47 @@ class AuthServiceProvider extends ServiceProvider
 			}
 		}
 		return false;
+	}
+
+	private function valider_paramètres(Request $request): ValidatorImpl
+	{
+		$validateur = Validator::make(
+			$request->all(),
+			[
+				"identifiant" => "required|string|between:2,64",
+				"key_secret" => "required_with:key_name",
+				"key_name" => "alpha_dash:ascii",
+			],
+			[
+				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
+				"identifiant.regex" => "L'identifiant doit être un nom d'utilisateur ou un courriel valide.",
+				"password.required_without" =>
+					"Err: 1004. Le champ password est obligatoire lorsque key_name n'est pas présent.",
+				"key_secret.required_with" =>
+					"Err: 1004. Le champ key_secret est obligatoire lorsque key_name est présent.",
+				"key_secret.required" => "Err: 1004. Le champ key_secret est obligatoire lorsque key_name est présent",
+				"key_name.alpha_dash" => "Err: 1003. Le champ key_name doit être alphanumérique 'a-Z0-9-_'",
+			],
+		)
+			->sometimes("password", "required_without:key_name", function ($input) {
+				$auth_local = getenv("AUTH_LOCAL") !== "false";
+				$auth_ldap = getenv("AUTH_LDAP") === "true";
+
+				return $auth_local || $auth_ldap;
+			})
+			->sometimes("identifiant", "regex:/^\w{2,64}$/u", function ($input) {
+				$auth_local = getenv("AUTH_LOCAL") !== "false";
+				$auth_ldap = getenv("AUTH_LDAP") === "true";
+
+				return isset($input->key_name) || (!$auth_local && !$auth_ldap);
+			})
+			->sometimes("identifiant", ["regex:/^\w{2,64}$|^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/u"], function ($input) {
+				$auth_local = getenv("AUTH_LOCAL") !== "false";
+				$auth_ldap = getenv("AUTH_LDAP") === "true";
+
+				return !isset($input->key_name) && ($auth_local || $auth_ldap);
+			});
+
+		return $validateur;
 	}
 }

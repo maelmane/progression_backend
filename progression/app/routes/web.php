@@ -20,18 +20,11 @@ $router->options("{all:.*}", [
 	},
 ]);
 
-$router->get("/", function () use ($router) {
-	return config("app.name") . " " . config("version.numéro") . "(" . config("version.commit_sha") . ")";
-});
-
 // Configuration serveur
-$router->get("/config", "ConfigCtl@get");
+$router->get("/", "ConfigCtl@get");
 
 // Inscription
 $router->put("/user", "UserCréationCtl@put");
-
-// Authentification
-$router->post("/auth", "LoginCtl@login");
 
 $router->group(["middleware" => ["auth", "étatNonInactif"]], function () use ($router) {
 	// Ébauche
@@ -49,6 +42,11 @@ $router->group(["middleware" => ["auth", "étatNonInactif"]], function () use ($
 
 	// Résultat
 	$router->post("/question/{uri}/resultats", "RésultatCtl@post");
+});
+
+$router->group(["middleware" => ["auth", "étatNonInactif", "étatValidé"]], function () use ($router) {
+	// Token
+	$router->post("/user/{username}/tokens", "TokenCtl@post");
 });
 
 $router->group(["middleware" => ["auth", "étatNonInactif", "permissionsRessources"]], function () use ($router) {
@@ -91,9 +89,6 @@ $router->group(["middleware" => ["auth", "étatNonInactif", "permissionsRessourc
 		"NotImplementedCtl@get",
 	);
 	$router->get("/tentative/{username}/{question_uri}/{timestamp:[[:digit:]]{10}}/resultats", "NotImplementedCtl@get");
-
-	// Token
-	$router->post("/user/{username}/tokens", "TokenCtl@post");
 
 	// User
 	$router->get("/user/{username}", "UserCtl@get");

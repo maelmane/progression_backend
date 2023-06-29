@@ -31,7 +31,7 @@ class TestProg extends Test
 		$feedback_pos = null,
 		$feedback_neg = null,
 		$feedback_err = null,
-		bool $caché = false
+		bool $caché = false,
 	) {
 		parent::__construct(
 			nom: $nom,
