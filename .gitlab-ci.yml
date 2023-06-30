@@ -288,6 +288,8 @@ pages_dev:
   - "! grep -c nil public/dev/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
+  when:
+    manual
   artifacts:
     paths:
     - public
@@ -307,6 +309,8 @@ pages_master:
   only:
     - dev
     - master
+  when:
+    manual
   artifacts:
     paths:
     - public
@@ -325,3 +329,6 @@ pages:
   only:
     - dev
     - master
+  when:
+    manual
+     
