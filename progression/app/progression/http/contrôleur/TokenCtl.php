@@ -37,19 +37,31 @@ class TokenCtl extends Contrôleur
 		if ($validateur->stopOnFirstFailure()->fails()) {
 			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} else {
-			$data = $request->input("data");
-			$ressources = $data["ressources"];
-			$expiration = $data["expiration"];
+			$data_in = $request->input("data");
+			$ressources = $data_in["ressources"];
+			$expiration = $data_in["expiration"];
+			$data = $data_in["data"] ?? [];
 
-			$token = GénérateurDeToken::get_instance()->générer_token(
+			$token_envoyé = GénérateurDeToken::get_instance()->générer_token(
 				username: $username,
 				expiration: $expiration,
 				ressources: $ressources ?? ["tout" => ["url" => ".*", "method" => ".*"]],
+				data: $data,
 			);
-			$signature = explode(".", $token)[2];
+			$signature = explode(".", $token_envoyé)[2];
 			$réponse = $this->préparer_réponse(
 				$this->item(
-					new GénériqueDTO(id: $signature, objet: $token, liens: TokenCtl::get_liens($username, $signature)),
+					new GénériqueDTO(
+						id: $signature,
+						objet: (object) [
+							"username" => $username,
+							"data" => $data,
+							"ressources" => $ressources,
+							"expiration" => $expiration,
+							"jwt" => $token_envoyé,
+						],
+						liens: TokenCtl::get_liens($username, $signature),
+					),
 					new TokenTransformer(),
 				),
 			);
