@@ -41,7 +41,13 @@ final class TokenTransformerTests extends TestCase
 		$résultats_obtenus = $tokenTransformer->transform(
 			new GénériqueDTO(
 				id: "utilisateur_lambda/NR4TnTAp-LXZZDGM8EWhSFFQpSda19nULaca9hGcGXI",
-				objet: $token,
+				objet: (object) [
+					"username" => "utilisateur_lambda",
+					"ressources" => "ressources",
+					"data" => [],
+					"expiration" => 1685831340,
+					"jwt" => $token,
+				],
 				liens: [],
 			),
 		);
