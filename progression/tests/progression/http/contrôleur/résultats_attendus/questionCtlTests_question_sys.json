@@ -10,7 +10,7 @@
 			"énoncé": "Il faut que l'étudiant trouve les commandes justes pour octroyer toutes les permissions à l'utilisateur krusty.",
 			"auteur": "Albert Einstein",
 			"licence": "poétique",
-			"sous-type": "questionSys",
+			"sous_type": "questionSys",
 			"image": "l'image",
 			"utilisateur": "utilisateur",
 			"solution": "laSolution"

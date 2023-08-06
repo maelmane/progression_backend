@@ -6,7 +6,7 @@
 			"date_soumission": 1653690241,
 			"feedback": "Encore un effort!",
 			"réussi": false,
-			"sous-type": "tentativeProg",
+			"sous_type": "tentativeProg",
 			"langage": "non_réussi",
 			"code": "#+TODO\nprint(\"Hello world!\")",
 			"tests_réussis": 0,

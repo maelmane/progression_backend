@@ -50,7 +50,7 @@
         "feedback": null,
         "réussi": false,
         "temps_exécution": null,
-        "sous-type": "tentativeProg",
+        "sous_type": "tentativeProg",
         "langage": "python",
         "code": "print('42')",
         "tests_réussis": 0
@@ -82,7 +82,7 @@
         "feedback": null,
         "réussi": false,
         "temps_exécution": null,
-        "sous-type": "tentativeProg",
+        "sous_type": "tentativeProg",
         "langage": "java",
         "code": "System.out.print(\"42\")",
         "tests_réussis": 0
@@ -114,7 +114,7 @@
         "feedback": null,
         "réussi": false,
         "temps_exécution": null,
-        "sous-type": "tentativeProg",
+        "sous_type": "tentativeProg",
         "langage": "python",
         "code": "print('43')",
         "tests_réussis": 0
@@ -146,7 +146,7 @@
         "feedback": null,
         "réussi": false,
         "temps_exécution": null,
-        "sous-type": "tentativeProg",
+        "sous_type": "tentativeProg",
         "langage": "java",
         "code": "System.out.print(\"43\")",
         "tests_réussis": 0

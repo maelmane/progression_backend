@@ -35,7 +35,7 @@ final class TentativeProgTransformerTests extends TestCase
 		$résultat = [
 			"id" => "roger/uri/id",
 			"date_soumission" => null,
-			"sous-type" => "tentativeProg",
+			"sous_type" => "tentativeProg",
 			"réussi" => false,
 			"tests_réussis" => 0,
 			"feedback" => "",
@@ -86,7 +86,7 @@ final class TentativeProgTransformerTests extends TestCase
 			"id" =>
 				"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
 			"date_soumission" => 1614711760,
-			"sous-type" => "tentativeProg",
+			"sous_type" => "tentativeProg",
 			"réussi" => false,
 			"tests_réussis" => 2,
 			"feedback" => "feedBackTest",

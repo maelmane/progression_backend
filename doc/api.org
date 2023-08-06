@@ -177,7 +177,7 @@ Question
 | énoncé      | str ou liste de dict |              |
 | auteur      | str                  |              |
 | licence     | str                  |              |
-| sous-type   | str                  | questionProg |
+| sous_type   | str                  | questionProg |
 |             |                      | questionSys  |
 |             |                      | questionBD   |
 

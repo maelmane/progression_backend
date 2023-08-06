@@ -7,7 +7,7 @@
       "feedback": "feedbackTest",
       "réussi": true,
       "temps_exécution": 5,
-      "sous-type": "tentativeProg",
+      "sous_type": "tentativeProg",
       "langage": "réussi",
       "code": "codeTest",
       "tests_réussis": 2

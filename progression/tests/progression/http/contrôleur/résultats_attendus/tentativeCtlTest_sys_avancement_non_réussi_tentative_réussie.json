@@ -6,7 +6,7 @@
 			"date_soumission": 1653690241,
 			"feedback": "Bon travail!",
 			"réussi": true,
-			"sous-type": "tentativeSys",
+			"sous_type": "tentativeSys",
             "conteneur": {
 				"id": "leConteneurDeLaNouvelleTentative",
 				"ip": "172.45.2.2",
