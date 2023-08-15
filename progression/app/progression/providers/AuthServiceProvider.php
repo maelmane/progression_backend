@@ -31,6 +31,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
 use UnexpectedValueException;
 use DomainException;
+use Carbon\Carbon;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -70,7 +71,7 @@ class AuthServiceProvider extends ServiceProvider
 			$identifiant = $request->input("identifiant");
 			if ($identifiant) {
 				$obtenirUserInteracteur = new ObtenirUserInt();
-				return $obtenirUserInteracteur->get_user($identifiant);
+				return $obtenirUserInteracteur->get_user($identifiant) ?? new User($identifiant, Carbon::now()->getTimestamp());;
 			}
 
 			return null;
