@@ -4,10 +4,7 @@ COPY docker/composer.json /var/www/
 
 RUN composer install -d /var/www/
 
-FROM php:apache-buster as production
-
-# Corrige un bogue au moment de l'envoi de courriels
-RUN echo "tcp     6       TCP             # transmission control protocol" > /etc/protocols
+FROM php:apache-bookworm as production
 
 # Mise a jour de la liste de package
 RUN apt update && apt upgrade -y && apt autoclean
@@ -16,7 +13,7 @@ RUN apt update && apt install -y default-libmysqlclient-dev default-mysql-client
 # Installation des beautifiers pour la standardisation du code soumis
 RUN apt install -y black
 RUN apt install -y clang-format
-RUN pip3 install beautysh
+RUN pip3 install --break-system-packages beautysh
 
 # beautifier JS et TS
 RUN apt install -y npm
@@ -24,11 +21,11 @@ RUN npm --global install prettier @prettier/plugin-php standard typescript ts-st
 RUN touch /tmp/tsconfig.eslint.json
 
 # ktlint beautifier kotlin
-RUN apt install -y openjdk-11-jre
+RUN apt install -y openjdk-17-jre
 RUN curl -sSL --output /usr/local/bin/ktlint https://github.com/pinterest/ktlint/releases/download/0.46.1/ktlint && chmod a+x /usr/local/bin/ktlint
 
 # Installation du validateur
-RUN pip3 install progression_qc==0.5.0
+RUN pip3 install --break-system-packages progression_qc==0.5.0
 
 # Ajout d'extensions PHP
 RUN docker-php-ext-install -j$(nproc) mysqli ldap zip pdo pdo_mysql
