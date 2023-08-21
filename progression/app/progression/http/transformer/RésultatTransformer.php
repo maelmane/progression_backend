@@ -33,8 +33,8 @@ class RésultatTransformer extends BaseTransformer
 
 		$data = [
 			"id" => $id,
-			"sortie_observée" => $résultat->sortie_observée,
-			"sortie_erreur" => $résultat->sortie_erreur,
+			"sortie_observée" => $résultat->sortie_observée ?? "",
+			"sortie_erreur" => $résultat->sortie_erreur ?? "",
 			"résultat" => $résultat->résultat,
 			"feedback" => $résultat->feedback,
 			"temps_exécution" => $résultat->temps_exécution,

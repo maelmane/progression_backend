@@ -3,8 +3,8 @@
 		"attributes": {
 			"feedback": "C'est pas ça :(",
 			"résultat": false,
-			"sortie_erreur": null,
-			"sortie_observée": null,
+			"sortie_erreur": "",
+			"sortie_observée": "",
 			"temps_exécution": 30
 		},
 		"id": "abcdef0123456789",

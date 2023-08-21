@@ -61,8 +61,8 @@
 			"type": "resultat",
 			"id": "cafe456",
 			"attributes": {
-				"sortie_observée": null,
-				"sortie_erreur": null,
+				"sortie_observée": "",
+				"sortie_erreur": "",
 				"résultat": false,
 				"feedback": "C'est pas ça :(",
 				"temps_exécution": 30
