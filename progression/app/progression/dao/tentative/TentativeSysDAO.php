@@ -25,7 +25,7 @@ use Illuminate\Database\QueryException;
 
 class TentativeSysDAO extends TentativeDAO
 {
-	public function get_toutes($username, $question_uri, mixed $includes = [])
+	public function get_toutes(string $username, string $question_uri, mixed $includes = []): array
 	{
 		try {
 			return $this->construire(
@@ -42,8 +42,12 @@ class TentativeSysDAO extends TentativeDAO
 		}
 	}
 
-	public function get_tentative($username, $question_uri, $date_soumission, mixed $includes = [])
-	{
+	public function get_tentative(
+		string $username,
+		string $question_uri,
+		int $date_soumission,
+		mixed $includes = [],
+	): TentativeSys|null {
 		try {
 			$tentative = TentativeSysMdl::select("reponse_sys.*")
 				->join("avancement", "reponse_sys.avancement_id", "=", "avancement.id")
@@ -59,7 +63,7 @@ class TentativeSysDAO extends TentativeDAO
 		}
 	}
 
-	public function get_dernière($username, $question_uri, mixed $includes = [])
+	public function get_dernière(string $username, string $question_uri, mixed $includes = []): TentativeSys|null
 	{
 		try {
 			$tentative = TentativeSysMdl::select("reponse_sys.*")
@@ -70,13 +74,13 @@ class TentativeSysDAO extends TentativeDAO
 				->orderBy("date_soumission", "desc")
 				->first();
 
-			return $tentative ? $this->construire([$tentative], $includes)[0] : null;
+			return $tentative ? $this->construire([$tentative], $includes)[$tentative["date_soumission"]] : null;
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}
 
-	public function save($username, $question_uri, $tentative)
+	public function save(string $username, string $question_uri, TentativeSys $tentative): TentativeSys|null
 	{
 		try {
 			$avancement = AvancementMdl::select("avancement.id")
@@ -91,7 +95,7 @@ class TentativeSysDAO extends TentativeDAO
 			}
 
 			$objet = [
-				"conteneur" => $tentative->conteneur["id"],
+				"conteneur" => $tentative->conteneur_id,
 				"reponse" => $tentative->réponse,
 				"date_soumission" => $tentative->date_soumission,
 				"reussi" => $tentative->réussi,
@@ -122,11 +126,8 @@ class TentativeSysDAO extends TentativeDAO
 		$tentatives = [];
 		foreach ($data as $item) {
 			$tentative = new TentativeSys(
-				conteneur: [
-					"id" => $item["conteneur"],
-					"ip" => null,
-					"port" => null,
-				],
+				conteneur_id: $item["conteneur"],
+				url_terminal: null,
 				réponse: $item["reponse"],
 				date_soumission: $item["date_soumission"],
 				réussi: $item["reussi"],

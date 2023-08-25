@@ -23,7 +23,7 @@ use progression\dao\exécuteur\ExécutionException;
 
 class SoumettreTentativeProgInt extends Interacteur
 {
-	public function soumettre_tentative($question, $tests, $tentative): TentativeProg|null
+	public function soumettre_tentative($question, $tentative, $tests): TentativeProg|null
 	{
 		$exécutable = null;
 

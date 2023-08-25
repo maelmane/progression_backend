@@ -23,11 +23,12 @@ class QuestionSys extends Question
 	public $image;
 	public $utilisateur;
 	public $solution;
+	public string|null $init;
 
 	public function __construct(
 		$niveau = null,
 		$titre = null,
-		string|null $objectif = null,
+		string $objectif = null,
 		$enonce = null,
 		$auteur = null,
 		$licence = null,
@@ -36,9 +37,10 @@ class QuestionSys extends Question
 		string $feedback_err = null,
 		$image = null,
 		$utilisateur = null,
+		string $init = null,
 		$solution = null,
 		$tests = [],
-		string|null $description = null,
+		string $description = null,
 	) {
 		parent::__construct(
 			$niveau,
@@ -57,5 +59,6 @@ class QuestionSys extends Question
 		$this->image = $image;
 		$this->utilisateur = $utilisateur;
 		$this->solution = $solution;
+		$this->init = $init;
 	}
 }

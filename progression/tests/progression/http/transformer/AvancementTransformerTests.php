@@ -173,7 +173,7 @@ final class AvancementTransformerTests extends TestCase
 					"codeTestPython",
 					1614711760,
 					false,
-					[new Résultat("test 1"), new Résultat("test 2")],
+					[new Résultat("test 1"), new Résultat("test 2", code_retour: 1)],
 					2,
 					324775,
 					"feedbackTest Python",

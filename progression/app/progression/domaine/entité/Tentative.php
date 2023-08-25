@@ -20,16 +20,16 @@ namespace progression\domaine\entité;
 
 class Tentative
 {
-	public $date_soumission;
+	public int $date_soumission;
 	public $réussi;
 	public $feedback;
-	public $temps_exécution;
+	public int|null $temps_exécution;
 	public $commentaires;
 	public $tests_réussis;
 	public $résultats;
 
 	public function __construct(
-		$date_soumission = null,
+		$date_soumission = 0,
 		$réussi = false,
 		$résultats = [],
 		$tests_réussis = 0,

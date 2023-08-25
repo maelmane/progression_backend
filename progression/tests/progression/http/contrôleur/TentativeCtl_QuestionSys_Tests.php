@@ -101,41 +101,29 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 
 		// Tentatives
 		$this->tentative_solution_courte_non_réussie = new TentativeSys(
-			conteneur: [
-				"id" => "leConteneurDeLancienneTentative",
-				"ip" => "192.168.0.1",
-				"port" => 12345,
-			],
+			conteneur_id: "leConteneurDeLancienneTentative",
+			url_terminal: "https://tty.com/abcde",
 			réponse: "laRéponseDeLancienneTentative",
 			date_soumission: "1614374490",
 			réussi: false,
 		);
 		$this->tentative_solution_courte_réussie = new TentativeSys(
-			conteneur: [
-				"id" => "leConteneurDeLancienneTentative2",
-				"ip" => "192.168.0.1",
-				"port" => 12345,
-			],
+			conteneur_id: "leConteneurDeLancienneTentative2",
+			url_terminal: "https://tty.com/abcde",
 			réponse: "laRéponseDeLancienneTentative2",
 			date_soumission: "1614374491",
 			réussi: true,
 		);
 		$this->tentative_validée_non_réussie = new TentativeSys(
-			conteneur: [
-				"id" => "leConteneurDeLancienneTentative",
-				"ip" => "192.168.0.1",
-				"port" => 12345,
-			],
+			conteneur_id: "leConteneurDeLancienneTentative",
+			url_terminal: "https://tty.com/abcde",
 			réponse: null,
 			date_soumission: "1614374490",
 			réussi: false,
 		);
 		$this->tentative_validée_réussie = new TentativeSys(
-			conteneur: [
-				"id" => "leConteneurDeLancienneTentative2",
-				"ip" => "192.168.0.1",
-				"port" => 12345,
-			],
+			conteneur_id: "leConteneurDeLancienneTentative2",
+			url_terminal: "https://tty.com/abcde",
 			réponse: null,
 			date_soumission: "1614374491",
 			réussi: true,
@@ -180,37 +168,6 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			->shouldReceive("get_dernière")
 			->with("jdoe", "https://depot.com/question_validée_réussie", [])
 			->andReturn($this->tentative_validée_réussie);
-
-		// Exécuteur
-		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
-		$mockExécuteur
-			->shouldReceive("exécuter_sys")
-			->withArgs(function ($question, $tentative) {
-				return $tentative->réponse == "Mauvaise réponse";
-			})
-			->andReturn([
-				"temps_exécution" => 0.5,
-				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
-				"conteneur" => [
-					"id" => "leConteneurDeLaNouvelleTentative",
-					"ip" => "172.45.2.2",
-					"port" => 45667,
-				],
-			]);
-		$mockExécuteur
-			->shouldReceive("exécuter_sys")
-			->withArgs(function ($question, $tentative) {
-				return $tentative->réponse == "Bonne réponse";
-			})
-			->andReturn([
-				"temps_exécution" => 0.65,
-				"résultats" => [["output" => "Correcte", "time" => 0.2]],
-				"conteneur" => [
-					"id" => "leConteneurDeLaNouvelleTentative",
-					"ip" => "172.45.2.2",
-					"port" => 45668,
-				],
-			]);
 
 		//Avancement
 		$this->avancement_solution_courte_non_réussie = new Avancement(
@@ -265,7 +222,9 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);
 		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
 		$mockDAOFactory->shouldReceive("get_tentative_dao")->andReturn($mockTentativeDAO);
-		$mockDAOFactory->shouldReceive("get_exécuteur")->andReturn($mockExécuteur);
+		$mockDAOFactory
+			->shouldReceive("get_tentative_sys_dao")
+			->andReturn(Mockery::mock("progression\\dao\\tentative\TentativeSysDAO"));
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);
@@ -273,12 +232,21 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_avancement_non_réussi_pour_une_QuestionSys_à_solution_courte_lorsquon_soumet_la_bonne_réponse_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeSys_réussie()
 	{
+		// Exécuteur
+		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
+		$mockExécuteur->shouldReceive("exécuter_sys")->andReturn([
+			"temps_exécution" => 0.65,
+			"résultats" => [],
+			"conteneur_id" => "leConteneurDeLaNouvelleTentative",
+			"url_terminal" => "https://tty.com/abcde",
+		]);
+		DAOFactory::getInstance()
+			->shouldReceive("get_exécuteur")
+			->andReturn($mockExécuteur);
+
 		$nouvelle_tentative = new TentativeSys(
-			conteneur: [
-				"id" => "leConteneurDeLaNouvelleTentative",
-				"ip" => "172.45.2.2",
-				"port" => 45668,
-			],
+			conteneur_id: "leConteneurDeLaNouvelleTentative",
+			url_terminal: "https://tty.com/abcde",
 			réponse: "Bonne réponse",
 			date_soumission: 1653690241,
 			réussi: true,
@@ -287,7 +255,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			temps_exécution: 0,
 		);
 
-		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
+		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_sys_dao();
 		$mockTentativeDAO
 			->shouldReceive("save")
 			->withArgs(function ($user, $uri, $t) use ($nouvelle_tentative) {
@@ -310,9 +278,10 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
 			->shouldReceive("save")
-			->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
+			->withArgs(function ($user, $uri, $type, $av) use ($nouvel_avancement) {
 				return $user == "jdoe" &&
 					$uri == "https://depot.com/question_solution_courte_non_réussie" &&
+					$type == "sys" &&
 					$av == $nouvel_avancement;
 			})
 			->andReturn($nouvel_avancement);
@@ -333,12 +302,21 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_avancement_non_réussi_pour_une_QuestionSys_à_solution_courte_lorsquon_soumet_la_mauvaise_réponse_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeSys_échouée()
 	{
+		// Exécuteur
+		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
+		$mockExécuteur->shouldReceive("exécuter_sys")->andReturn([
+			"temps_exécution" => 0.5,
+			"résultats" => [],
+			"conteneur_id" => "leConteneurDeLaNouvelleTentative",
+			"url_terminal" => "https://tty.com/abcde",
+		]);
+		DAOFactory::getInstance()
+			->shouldReceive("get_exécuteur")
+			->andReturn($mockExécuteur);
+
 		$nouvelle_tentative = new TentativeSys(
-			conteneur: [
-				"id" => "leConteneurDeLaNouvelleTentative",
-				"ip" => "172.45.2.2",
-				"port" => 45667,
-			],
+			conteneur_id: "leConteneurDeLaNouvelleTentative",
+			url_terminal: "https://tty.com/abcde",
 			réponse: "Mauvaise réponse",
 			date_soumission: 1653690241,
 			réussi: false,
@@ -347,7 +325,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			temps_exécution: 0,
 		);
 
-		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
+		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_sys_dao();
 		$mockTentativeDAO
 			->shouldReceive("save")
 			->withArgs(function ($user, $uri, $t) use ($nouvelle_tentative) {
@@ -370,9 +348,10 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
 			->shouldReceive("save")
-			->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
+			->withArgs(function ($user, $uri, $type, $av) use ($nouvel_avancement) {
 				return $user == "jdoe" &&
 					$uri == "https://depot.com/question_solution_courte_non_réussie" &&
+					$type == "sys" &&
 					$av == $nouvel_avancement;
 			})
 			->andReturn($nouvel_avancement);

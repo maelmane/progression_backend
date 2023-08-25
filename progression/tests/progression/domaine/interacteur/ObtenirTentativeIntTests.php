@@ -62,19 +62,16 @@ final class ObtenirTentativeIntTests extends TestCase
 			->with("jdoe", "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions", [])
 			->andReturn(
 				new TentativeSys(
-					(object) [
-						"id" => "conteneurTest2",
-						"ip" => "192.168.0.2",
-						"port" => 12345,
-					],
-					"reponseTest2",
-					3456,
-					true,
-					[],
-					2,
-					100,
-					"Bravo!",
-					[],
+					conteneur_id: "conteneurTest2",
+					url_terminal: "https://tty.com/abcde",
+					réponse: "reponseTest2",
+					date_soumission: 3456,
+					réussi: true,
+					résultats: [],
+					tests_réussis: 2,
+					temps_exécution: 100,
+					feedback: "Bravo!",
+					commentaires: [],
 				),
 			);
 
@@ -132,6 +129,6 @@ final class ObtenirTentativeIntTests extends TestCase
 			"https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
 		);
 
-		$this->assertEquals($résultat_obtenu->conteneur->id, "conteneurTest2");
+		$this->assertEquals($résultat_obtenu->conteneur_id, "conteneurTest2");
 	}
 }

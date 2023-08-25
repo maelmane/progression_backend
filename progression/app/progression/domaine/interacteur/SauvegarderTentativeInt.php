@@ -19,14 +19,22 @@
 namespace progression\domaine\interacteur;
 
 use progression\dao\DAOException;
+use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
 
 class SauvegarderTentativeInt extends Interacteur
 {
 	public function sauvegarder($username, $question_uri, $tentative)
 	{
-		$dao_tentative = $this->source_dao->get_tentative_dao();
 		try {
-			return $dao_tentative->save($username, $question_uri, $tentative);
+			if ($tentative instanceof TentativeProg) {
+				return $this->source_dao->get_tentative_prog_dao()->save($username, $question_uri, $tentative);
+			} elseif ($tentative instanceof TentativeSys) {
+				return $this->source_dao->get_tentative_sys_dao()->save($username, $question_uri, $tentative);
+			} elseif ($tentative instanceof TentativeBD) {
+				return $this->source_dao->get_tentative_bd_dao()->save($username, $question_uri, $tentative);
+			} else {
+				return null;
+			}
 		} catch (DAOException $e) {
 			throw new IntéracteurException($e, 503);
 		}

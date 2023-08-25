@@ -18,13 +18,25 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Résultat;
+use progression\domaine\entité\{Résultat, TestSys};
 
 class ExécuterSysInt extends Interacteur
 {
-	public function exécuter($question, $tentative)
+	/**
+	 * @param array<TestSys> $tests
+	 */
+	public function exécuter($question, $tentative, array $tests, int|null $test_index)
 	{
-		$comp_resp = $this->source_dao->get_exécuteur()->exécuter_sys($question, $tentative);
+		$comp_resp = $this->source_dao
+			->get_exécuteur()
+			->exécuter_sys(
+				$question->utilisateur,
+				$question->image,
+				$tentative->conteneur_id,
+				$question->init,
+				$tests,
+				$test_index,
+			);
 		if (!$comp_resp) {
 			return null;
 		}
@@ -34,15 +46,19 @@ class ExécuterSysInt extends Interacteur
 		$réponse["temps_exécution"] = intval($comp_resp["temps_exécution"] * 1000);
 
 		foreach ($comp_resp["résultats"] as $résultat) {
-			$résultats[] = new Résultat($résultat["output"], null, false, null, intval($résultat["time"] * 1000));
+			$résultats[] = new Résultat(
+				sortie_observée: $résultat["output"] ?? null,
+				sortie_erreur: $résultat["errors"] ?? null,
+				résultat: false,
+				feedback: null,
+				temps_exécution: intval($résultat["time"] * 1000),
+				code_retour: $résultat["code"],
+			);
 		}
 
 		$réponse["résultats"] = $résultats;
-		$réponse["conteneur"] = [
-			"id" => $comp_resp["conteneur"]["id"],
-			"ip" => $comp_resp["conteneur"]["ip"],
-			"port" => $comp_resp["conteneur"]["port"],
-		];
+		$réponse["conteneur_id"] = $comp_resp["conteneur_id"];
+		$réponse["url_terminal"] = $comp_resp["url_terminal"];
 
 		return $réponse;
 	}

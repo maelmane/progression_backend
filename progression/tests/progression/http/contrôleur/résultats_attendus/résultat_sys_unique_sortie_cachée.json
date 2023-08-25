@@ -1,0 +1,16 @@
+{
+    "data": {
+        "attributes": {
+            "feedback": "C'est ça!",
+            "résultat": true,
+            "sortie_erreur": "",
+            "sortie_observée": "",
+            "temps_exécution": 30
+        },
+        "id": "3",
+        "links": {
+            "self": "https://example.com/resultat/3"
+        },
+        "type": "resultat"
+    }
+}

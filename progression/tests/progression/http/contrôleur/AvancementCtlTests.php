@@ -101,8 +101,8 @@ final class AvancementCtlTests extends ContrôleurTestCase
 
 		$avancement_réussi_avec_tentatives_et_sauvegardes = new Avancement(
 			tentatives: [
-				1614965817 => new TentativeProg("python", "codeTest 1", 1614965817, true, [], 2, "feedbackTest"),
-				1614965818 => new TentativeProg("python", "codeTest 2", 1614965818, true, [], 2, "feedbackTest"),
+				1614965817 => new TentativeProg("python", "codeTest 1", 1614965817, true, [], 2, 120, "feedbackTest"),
+				1614965818 => new TentativeProg("python", "codeTest 2", 1614965818, true, [], 2, 150, "feedbackTest"),
 			],
 			titre: "Titre",
 			niveau: "facile",
@@ -316,9 +316,10 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		$mockAvancementDAO
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($user, $uri, $avancement) use ($nouvel_avancement) {
+			->withArgs(function ($user, $uri, $type, $avancement) use ($nouvel_avancement) {
 				return $user == "jdoe" &&
 					$uri == "https://depot.com/roger/questions_prog/nouvelle_question_defaut" &&
+					$type == "prog" &&
 					$avancement == $nouvel_avancement;
 			})
 			->andReturn($nouvel_avancement);
@@ -342,9 +343,10 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		$mockAvancementDAO
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($user, $uri, $avancement) use ($nouvel_avancement) {
+			->withArgs(function ($user, $uri, $type, $avancement) use ($nouvel_avancement) {
 				return $user == "jdoe" &&
 					$uri == "https://depot.com/roger/questions_prog/nouvelle_question" &&
+					$type == "prog" &&
 					$avancement == $nouvel_avancement;
 			})
 			->andReturn($nouvel_avancement);
@@ -400,9 +402,10 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		$mockAvancementDAO
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($user, $uri, $avancement) use ($avancement_sauvegardé) {
+			->withArgs(function ($user, $uri, $type, $avancement) use ($avancement_sauvegardé) {
 				return $user == "jdoe" &&
 					$uri == "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" &&
+					$type == "prog" &&
 					$avancement == $avancement_sauvegardé;
 			})
 			->andReturn($avancement_sauvegardé);

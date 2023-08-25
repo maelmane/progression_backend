@@ -103,12 +103,13 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->get_avancement_dao()
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($username, $question_uri, $avancement) use ($avancement_sauvegardé) {
+			->withArgs(function ($username, $question_uri, $type, $avancement) use ($avancement_sauvegardé) {
 				return $username == "jdoe" &&
 					$question_uri == "file:///prog1/les_fonctions/appeler_une_fonction/info.yml" &&
+					$type == "prog" &&
 					$avancement == $avancement_sauvegardé;
 			})
-			->andReturnArg(2);
+			->andReturnArg(3);
 
 		$interacteur = new SauvegarderAvancementInt();
 		$résultat_observé = $interacteur->sauvegarder(
@@ -151,12 +152,13 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->get_avancement_dao()
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($username, $question_uri, $avancement) use ($avancement_sauvegardé) {
+			->withArgs(function ($username, $question_uri, $type, $avancement) use ($avancement_sauvegardé) {
 				return $username == "jdoe" &&
 					$question_uri == "file:///prog1/les_fonctions/appeler_une_fonction/info.yml" &&
+					$type == "prog" &&
 					$avancement == $avancement_sauvegardé;
 			})
-			->andReturnArg(2);
+			->andReturnArg(3);
 
 		$interacteur = new SauvegarderAvancementInt();
 		$résultat_observé = $interacteur->sauvegarder(
@@ -183,12 +185,13 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->get_avancement_dao()
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($username, $question_uri, $avancement) use ($avancement_sauvegardé) {
+			->withArgs(function ($username, $question_uri, $type, $avancement) use ($avancement_sauvegardé) {
 				return $username == "jdoe" &&
 					$question_uri == "file:///une_question_modifiée/info.yml" &&
+					$type == "prog" &&
 					$avancement == $avancement_sauvegardé;
 			})
-			->andReturnArg(2);
+			->andReturnArg(3);
 
 		$interacteur = new SauvegarderAvancementInt();
 		$résultat_observé = $interacteur->sauvegarder(

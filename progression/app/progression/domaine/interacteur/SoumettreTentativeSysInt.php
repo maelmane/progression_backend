@@ -18,15 +18,15 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Avancement, Question};
+use progression\domaine\entité\{Avancement, Question, TestSys};
 use progression\dao\DAOException;
 
 class SoumettreTentativeSysInt extends Interacteur
 {
-	public function soumettre_tentative($question, $tests, $tentative)
+	public function soumettre_tentative($question, $tentative, $tests, int|null $test_index = null)
 	{
 		try {
-			$tentativeTraitée = $this->exécuter_validation($question, $tentative);
+			$tentativeTraitée = $this->exécuter_validation($question, $tentative, $tests, $test_index);
 		} catch (DAOException $e) {
 			throw new IntéracteurException($e, 503);
 		}
@@ -43,7 +43,7 @@ class SoumettreTentativeSysInt extends Interacteur
 			$tentativeTraitée->temps_exécution = 0;
 		}
 
-		if (!empty($tests)) {
+		if ($tests) {
 			$rétroactions["feedback_pos"] = $question->feedback_pos;
 			$rétroactions["feedback_neg"] = $question->feedback_neg;
 			$tentativeTraitée = $this->traiter_tentative_sys($tentativeTraitée, $rétroactions, $tests);
@@ -66,10 +66,14 @@ class SoumettreTentativeSysInt extends Interacteur
 		return $valide;
 	}
 
-	private function exécuter_validation($question, $tentative)
+	/**
+	 * @param array<TestSys> $tests
+	 */
+	private function exécuter_validation($question, $tentative, array $tests, int|null $test_index)
 	{
-		$résultats = $this->exécuter_sys($question, $tentative);
-		$tentative->conteneur = $résultats["conteneur"];
+		$résultats = $this->exécuter_sys($question, $tentative, $tests, $test_index);
+		$tentative->conteneur_id = $résultats["conteneur_id"];
+		$tentative->url_terminal = $résultats["url_terminal"];
 		if (!$question->solution) {
 			$tentative->temps_exécution = $résultats["temps_exécution"];
 			$tentative->résultats = $résultats["résultats"];
@@ -78,9 +82,12 @@ class SoumettreTentativeSysInt extends Interacteur
 		return $tentative;
 	}
 
-	private function exécuter_sys($question, $tentative)
+	/**
+	 * @param array<TestSys> $tests
+	 */
+	private function exécuter_sys($question, $tentative, array $tests, int|null $test_index)
 	{
-		return (new ExécuterSysInt())->exécuter($question, $tentative);
+		return (new ExécuterSysInt())->exécuter($question, $tentative, $tests, $test_index);
 	}
 
 	private function traiter_tentative_sys($tentative, $rétroactions, $tests)

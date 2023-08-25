@@ -38,7 +38,7 @@ class TentativeProgTransformer extends BaseTransformer
 
 		$data_out = (new TentativeTransformer())->transform($data_in);
 		$data_out = array_merge($data_out, [
-			"sous-type" => "tentativeProg",
+			"sous_type" => "tentativeProg",
 			"langage" => $tentative->langage,
 			"code" => $tentative->code,
 			"tests_réussis" => $tentative->tests_réussis,

@@ -27,8 +27,9 @@ class TentativeProgDAO extends TentativeDAO
 {
 	/**
 	 * @param mixed $includes
+	 * @return array<TentativeProg>
 	 */
-	public function get_toutes($username, $question_uri, mixed $includes = [])
+	public function get_toutes($username, $question_uri, mixed $includes = []): array
 	{
 		try {
 			return $this->construire(
@@ -49,8 +50,12 @@ class TentativeProgDAO extends TentativeDAO
 	/**
 	 * @param mixed $includes
 	 */
-	public function get_tentative($username, $question_uri, $date_soumission, mixed $includes = [])
-	{
+	public function get_tentative(
+		string $username,
+		string $question_uri,
+		int $date_soumission,
+		mixed $includes = [],
+	): TentativeProg|null {
 		try {
 			$tentative = TentativeProgMdl::select("reponse_prog.*")
 				->with(in_array("commentaires", $includes) ? ["commentaires"] : [])
@@ -67,7 +72,24 @@ class TentativeProgDAO extends TentativeDAO
 		}
 	}
 
-	public function save($username, $question_uri, $tentative)
+	public function get_dernière(string $username, string $question_uri, mixed $includes = []): TentativeProg|null
+	{
+		try {
+			$tentative = TentativeProgMdl::select("reponse_prog.*")
+				->join("avancement", "reponse_prog.avancement_id", "=", "avancement.id")
+				->join("user", "avancement.user_id", "=", "user.id")
+				->where("user.username", $username)
+				->where("avancement.question_uri", $question_uri)
+				->orderBy("date_soumission", "desc")
+				->first();
+
+			return $tentative ? $this->construire([$tentative], $includes)[0] : null;
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+
+	public function save(string $username, string $question_uri, TentativeProg $tentative): TentativeProg|null
 	{
 		try {
 			$avancement = AvancementMdl::select("avancement.id")

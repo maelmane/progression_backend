@@ -3,11 +3,11 @@
     "type": "tentative",
     "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490",
     "attributes": {
-      "date_soumission": "1614374490",
+      "date_soumission": 1614374490,
       "feedback": "feedbackTest",
       "réussi": true,
       "temps_exécution": 5,
-      "sous-type": "tentativeProg",
+      "sous_type": "tentativeProg",
       "langage": "réussi",
       "code": "codeTest",
       "tests_réussis": 2
@@ -21,13 +21,7 @@
         "links": {
           "self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490/relationships/resultats",
           "related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490/resultats"
-        },
-        "data": [
-          {
-            "type": "resultat",
-            "id": "bebe123"
-          }
-        ]
+        }
       },
       "commentaires": {
         "links": {
@@ -44,21 +38,6 @@
     }
   },
   "included": [
-    {
-      "type": "resultat",
-      "id": "bebe123",
-      "attributes": {
-        "sortie_observée": "ok",
-        "sortie_erreur": "",
-        "résultat": true,
-        "feedback": null,
-        "temps_exécution": null
-      },
-      "links": {
-          "self": "https://example.com/resultat/bebe123",
-		  "tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490"
-      }
-    },
     {
       "type": "commentaire",
       "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490/0",

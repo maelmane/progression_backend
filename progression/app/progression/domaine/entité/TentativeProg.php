@@ -26,7 +26,7 @@ class TentativeProg extends Tentative
 	public function __construct(
 		$langage,
 		$code,
-		$date_soumission = null,
+		$date_soumission = 0,
 		$réussi = false,
 		$résultats = [],
 		$tests_réussis = 0,

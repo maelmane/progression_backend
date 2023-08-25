@@ -177,7 +177,7 @@ Question
 | énoncé      | str ou liste de dict |              |
 | auteur      | str                  |              |
 | licence     | str                  |              |
-| sous-type   | str                  | questionProg |
+| sous_type   | str                  | questionProg |
 |             |                      | questionSys  |
 |             |                      | questionBD   |
 
@@ -208,17 +208,17 @@ Une question spécifiquement de type système
 Le résultat d'un test pour une solution proposée.
 
 *** Identifiant :
-username/question_uri/date_soumission/numéro
+username/question_uri/hash
 
 *** Propriétés:
 
-| Nom             | Type | Valeurs                 |
-|-----------------+------+-------------------------|
-| sortie_observée | str  |                         |
-| sortie_erreur   | str  |                         |
-| résultat        | bool |                         |
-| feedback        | str  |                         |
-| temps_exécution | int  | temps d'exécution en ms |
+| Nom             | Type | Valeurs                                                                                                    |
+|-----------------+------+------------------------------------------------------------------------------------------------------------|
+| sortie_observée | str  | Sortie standard du Test                                                                                    |
+| sortie_erreur   | str  | Sortie d'erreur du Test                                                                                    |
+| résultat        | bool | Vrai si le Test a été validé avec un code de retour de 0 et une sortie observée égale à la sortie attendue |
+| feedback        | str  | Rétroaction pour ce résultat de test                                                                       |
+| temps_exécution | int  | temps d'exécution en ms                                                                                    |
 
 ** Sauvegarde automatique
 

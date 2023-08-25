@@ -171,8 +171,8 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		$interacteur = new SoumettreTentativeProgInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
 			self::$question,
-			self::$question->tests,
 			self::$tentativeSoumiseIncorrecte,
+			self::$question->tests,
 		);
 
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);
