@@ -22,6 +22,7 @@ class Résultat
 {
 	public $sortie_observée;
 	public $sortie_erreur;
+	public int $code_retour;
 	public $résultat;
 	public $feedback;
 	public $temps_exécution;
@@ -32,11 +33,13 @@ class Résultat
 		$résultat = false,
 		$feedback = null,
 		$temps_exécution = null,
+		int $code_retour = 0,
 	) {
 		$this->résultat = $résultat;
 		$this->feedback = $feedback;
 		$this->sortie_observée = $sortie_observée;
 		$this->sortie_erreur = $sortie_erreur;
+		$this->code_retour = $code_retour;
 		$this->temps_exécution = $temps_exécution;
 	}
 }

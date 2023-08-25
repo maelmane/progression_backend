@@ -29,16 +29,16 @@ final class TentativeProgTransformerTests extends TestCase
 	{
 		putenv("APP_URL=https://example.com");
 
-		$tentative = new TentativeProg("python", "codeTest");
+		$tentative = new TentativeProg("python", "codeTest", 1614711760);
 
 		$tentativeTransformer = new TentativeProgTransformer("roger/uri");
 		$résultat = [
 			"id" => "roger/uri/id",
-			"date_soumission" => null,
-			"sous-type" => "tentativeProg",
+			"date_soumission" => 1614711760,
+			"sous_type" => "tentativeProg",
 			"réussi" => false,
 			"tests_réussis" => 0,
-			"feedback" => "",
+			"feedback" => null,
 			"langage" => "python",
 			"code" => "codeTest",
 			"temps_exécution" => null,
@@ -86,7 +86,7 @@ final class TentativeProgTransformerTests extends TestCase
 			"id" =>
 				"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
 			"date_soumission" => 1614711760,
-			"sous-type" => "tentativeProg",
+			"sous_type" => "tentativeProg",
 			"réussi" => false,
 			"tests_réussis" => 2,
 			"feedback" => "feedBackTest",
@@ -128,8 +128,20 @@ final class TentativeProgTransformerTests extends TestCase
 			1614711760,
 			false,
 			[
-				"bebe123" => new Résultat("output", "error", false, "feedback", 123),
-				"cafe456" => new Résultat("output 2", "error 2", true, "feedback 2", 456),
+				"bebe123" => new Résultat(
+					sortie_observée: "output",
+					sortie_erreur: "error",
+					résultat: false,
+					feedback: "feedback",
+					temps_exécution: 123,
+				),
+				"cafe456" => new Résultat(
+					sortie_observée: "output 2",
+					sortie_erreur: "error 2",
+					résultat: true,
+					feedback: "feedback 2",
+					temps_exécution: 456,
+				),
 			],
 			2,
 			34567,

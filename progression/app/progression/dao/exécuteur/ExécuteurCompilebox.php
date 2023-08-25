@@ -18,6 +18,9 @@
 
 namespace progression\dao\exécuteur;
 
+use progression\domaine\entité\Exécutable;
+use progression\domaine\entité\{TestProg, TestSys};
+
 class ExécuteurCompilebox extends Exécuteur
 {
 	const langages = [
@@ -42,7 +45,13 @@ class ExécuteurCompilebox extends Exécuteur
 		"c#" => 18,
 	];
 
-	public function exécuter_prog($exécutable, $tests)
+	/**
+	 * @param Exécutable $exécutable
+	 * @param array<TestProg> $tests
+	 *
+	 * @return array<mixed> Un tableau de "résultats"=>array<id, Résultat> et "temps_exécution"=>int
+	 */
+	public function exécuter_prog(Exécutable $exécutable, array $tests): array
 	{
 		$tests_out = [];
 		foreach ($tests as $test) {
@@ -65,11 +74,26 @@ class ExécuteurCompilebox extends Exécuteur
 		];
 
 		$réponse = $this->envoyer_requête($data_rc);
-		return $this->préparer_résultats($réponse);
+		return $this->préparer_résultats_prog($réponse);
 	}
 
-	public function exécuter_sys($utilisateur, $image, $conteneur, $tests)
-	{
+	/**
+	 * @param string $utilisateur
+	 * @param string $image
+	 * @param string $conteneur_id
+	 * @param string $init
+	 * @param array<TestSys> $tests
+	 *
+	 * @return array<mixed> Un tableau de "résultats"=>array<id, Résultat> et "temps_exécution"=>int
+	 */
+	public function exécuter_sys(
+		string $utilisateur,
+		string $image,
+		string|null $conteneur_id,
+		string $init,
+		array $tests,
+		int|null $test_index, //Inutilisé pour le moment
+	): array {
 		$tests_out = [];
 		foreach ($tests as $test) {
 			$tests_out[] = ["stdin" => $test->validation];
@@ -78,13 +102,15 @@ class ExécuteurCompilebox extends Exécuteur
 		$data_rc = [
 			"language" => self::langages["sshd"],
 			"user" => $utilisateur,
-			"parameters" => $conteneur,
+			"parameters" => $conteneur_id ?? "",
 			"params_conteneur" => "-e SIAB_SERVICE=/:" . $utilisateur . ":" . $utilisateur . ":HOME:SHELL",
+			"code" => $init,
 			"tests" => $tests_out,
 			"vm_name" => $image,
 		];
 
-		return $this->préparer_résultats($this->envoyer_requête($data_rc));
+		$réponse = $this->envoyer_requête($data_rc);
+		return $this->préparer_résultats_sys($réponse);
 	}
 
 	private function envoyer_requête($data_rc)
@@ -107,7 +133,11 @@ class ExécuteurCompilebox extends Exécuteur
 			return $comp_resp ? json_decode(str_replace("\r", "", $comp_resp), true) : false;
 		} catch (\ErrorException $e) {
 			if (isset($http_response_header)) {
-				if ($http_response_header[0] == "HTTP/1.1 400 Bad Request") {
+				if (
+					is_array($http_response_header) &&
+					count($http_response_header) > 0 &&
+					$http_response_header[0] == "HTTP/1.1 400 Bad Request"
+				) {
 					throw new ExécutionException("Requête intraitable par Compilebox", 400, $e);
 				} else {
 					throw new ExécutionException($e->getMessage(), $e->getCode(), $e);
@@ -122,11 +152,25 @@ class ExécuteurCompilebox extends Exécuteur
 	 * @param array<mixed> $résultats
 	 * @return array<mixed>
 	 */
-	private function préparer_résultats(array $résultats): array
+	private function préparer_résultats_prog(array $résultats): array
 	{
 		return [
 			"résultats" => $résultats["résultats"],
 			"temps_exécution" => $résultats["temps_exec"],
+		];
+	}
+
+	/**
+	 * @param array<mixed> $résultats
+	 * @return array<mixed>
+	 */
+	private function préparer_résultats_sys(array $résultats): array
+	{
+		return [
+			"résultats" => $résultats["résultats"],
+			"conteneur_id" => $résultats["conteneur"]["id"],
+			"url_terminal" => $résultats["conteneur"]["path"],
+			"temps_exécution" => 0,
 		];
 	}
 }

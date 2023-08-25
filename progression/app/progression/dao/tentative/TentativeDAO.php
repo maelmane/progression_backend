@@ -30,8 +30,9 @@ class TentativeDAO extends EntitéDAO
 
 	/**
 	 * @param mixed $includes
+	 * @return array<Tentative>
 	 */
-	public function get_toutes($username, $question_uri, mixed $includes = [])
+	public function get_toutes(string $username, string $question_uri, mixed $includes = []): array
 	{
 		$type = $this->get_type($username, $question_uri);
 
@@ -49,8 +50,12 @@ class TentativeDAO extends EntitéDAO
 	/**
 	 * @param mixed $includes
 	 */
-	public function get_tentative($username, $question_uri, $date, mixed $includes = [])
-	{
+	public function get_tentative(
+		string $username,
+		string $question_uri,
+		int $date,
+		mixed $includes = [],
+	): Tentative|null {
 		$type = $this->get_type($username, $question_uri);
 
 		if ($type == Type::PROG) {
@@ -64,14 +69,16 @@ class TentativeDAO extends EntitéDAO
 		}
 	}
 
-	public function save($username, $question_uri, $objet)
+	public function get_dernière(string $username, string $question_uri, mixed $includes = []): Tentative|null
 	{
-		if ($objet instanceof TentativeProg) {
-			return $this->source->get_tentative_prog_dao()->save($username, $question_uri, $objet);
-		} elseif ($objet instanceof TentativeSys) {
-			return $this->source->get_tentative_sys_dao()->save($username, $question_uri, $objet);
-		} elseif ($objet instanceof TentativeBD) {
-			return $this->source->get_tentative_bd_dao()->save($username, $question_uri, $objet);
+		$type = $this->get_type($username, $question_uri);
+
+		if ($type == Type::PROG) {
+			return $this->source->get_tentative_prog_dao()->get_dernière($username, $question_uri, $includes);
+		} elseif ($type == Type::SYS) {
+			return $this->source->get_tentative_sys_dao()->get_dernière($username, $question_uri, $includes);
+		} elseif ($type == Type::BD) {
+			return $this->source->get_tentative_bd_dao()->get_dernière($username, $question_uri, $includes);
 		} else {
 			return null;
 		}

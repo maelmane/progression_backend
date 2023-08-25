@@ -38,8 +38,9 @@ class TentativeSysTransformer extends BaseTransformer
 
 		$data_out = (new TentativeTransformer())->transform($data_in);
 		$data_out = array_merge($data_out, [
-			"sous-type" => "tentativeSys",
-			"conteneur" => $tentative->conteneur,
+			"sous_type" => "tentativeSys",
+			"conteneur_id" => $tentative->conteneur_id,
+			"url_terminal" => $tentative->url_terminal,
 			"réponse" => $tentative->réponse,
 			"tests_réussis" => $tentative->tests_réussis,
 		]);

@@ -31,7 +31,8 @@ final class TentativeSysTests extends TestCase
 		$commentaires = ["commentaire1", "commentaire2"];
 
 		$tentativeSysTest = new TentativeSys(
-			conteneur: "conteneurTest",
+			conteneur_id: "conteneurTest",
+			url_terminal: "https://tty.com/abcde",
 			réponse: "reponseTest",
 			date_soumission: 3456,
 			réussi: true,
@@ -42,7 +43,8 @@ final class TentativeSysTests extends TestCase
 			commentaires: $commentaires,
 		);
 
-		$this->assertEquals("conteneurTest", $tentativeSysTest->conteneur);
+		$this->assertEquals("conteneurTest", $tentativeSysTest->conteneur_id);
+		$this->assertEquals("https://tty.com/abcde", $tentativeSysTest->url_terminal);
 		$this->assertEquals("reponseTest", $tentativeSysTest->réponse);
 		$this->assertEquals(3456, $tentativeSysTest->date_soumission);
 		$this->assertTrue($tentativeSysTest->réussi);

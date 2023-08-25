@@ -51,26 +51,6 @@ parameters:
 			path: /var/www/progression/app/progression/dao/AvancementDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:save\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/AvancementDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:save\\(\\) has parameter \\$avancement with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/AvancementDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:save\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/AvancementDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:save\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/AvancementDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\CléDAO\\:\\:construire\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/dao/CléDAO.php
@@ -566,46 +546,6 @@ parameters:
 			path: /var/www/progression/app/progression/dao/exécuteur/ExécuteurCompilebox.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_prog\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_prog\\(\\) has parameter \\$exécutable with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_prog\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has parameter \\$conteneur with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has parameter \\$image with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has parameter \\$utilisateur with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\exécuteur\\\\Standardiseur\\:\\:standardiser\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/dao/exécuteur/Standardiseur.php
@@ -971,41 +911,6 @@ parameters:
 			path: /var/www/progression/app/progression/dao/question/QuestionDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_tentative\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_tentative\\(\\) has parameter \\$date with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_tentative\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_toutes\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_toutes\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_toutes\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_type\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/dao/tentative/TentativeDAO.php
@@ -1017,26 +922,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_type\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:save\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:save\\(\\) has parameter \\$objet with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:save\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:save\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/dao/tentative/TentativeDAO.php
 
@@ -1056,57 +941,12 @@ parameters:
 			path: /var/www/progression/app/progression/dao/tentative/TentativeProgDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_tentative\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_tentative\\(\\) has parameter \\$date_soumission with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_tentative\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_toutes\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_toutes\\(\\) has parameter \\$question_uri with no type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/dao/tentative/TentativeProgDAO.php
 
 		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_toutes\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:save\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:save\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:save\\(\\) has parameter \\$tentative with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:save\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/dao/tentative/TentativeProgDAO.php
 
@@ -1122,76 +962,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:construire\\(\\) has parameter \\$includes with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_dernière\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_dernière\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_dernière\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_tentative\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_tentative\\(\\) has parameter \\$date_soumission with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_tentative\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_toutes\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_toutes\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_toutes\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:save\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:save\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:save\\(\\) has parameter \\$tentative with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:save\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/dao/tentative/TentativeSysDAO.php
 
@@ -1431,11 +1201,6 @@ parameters:
 			path: /var/www/progression/app/progression/domaine/entité/Tentative.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Tentative\\:\\:\\$date_soumission has no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/domaine/entité/Tentative.php
-
-		-
 			message: "#^Property progression\\\\domaine\\\\entité\\\\Tentative\\:\\:\\$feedback has no type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/domaine/entité/Tentative.php
@@ -1447,11 +1212,6 @@ parameters:
 
 		-
 			message: "#^Property progression\\\\domaine\\\\entité\\\\Tentative\\:\\:\\$réussi has no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/domaine/entité/Tentative.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Tentative\\:\\:\\$temps_exécution has no type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/domaine/entité/Tentative.php
 
@@ -1561,11 +1321,6 @@ parameters:
 			path: /var/www/progression/app/progression/domaine/entité/TentativeSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\TentativeSys\\:\\:__construct\\(\\) has parameter \\$conteneur with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/domaine/entité/TentativeSys.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\TentativeSys\\:\\:__construct\\(\\) has parameter \\$date_soumission with no type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/domaine/entité/TentativeSys.php
@@ -1597,11 +1352,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\TentativeSys\\:\\:__construct\\(\\) has parameter \\$tests_réussis with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/domaine/entité/TentativeSys.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\TentativeSys\\:\\:\\$conteneur has no type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/domaine/entité/TentativeSys.php
 
@@ -2891,7 +2641,12 @@ parameters:
 			path: /var/www/progression/app/progression/http/contrôleur/QuestionCtl.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\RésultatCtl\\:\\:valider_paramètres\\(\\) has no return type specified\\.$#"
+			message: "#^Method progression\\\\http\\\\contrôleur\\\\RésultatCtl\\:\\:valider_paramètres_prog\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: /var/www/progression/app/progression/http/contrôleur/RésultatCtl.php
+
+		-
+			message: "#^Method progression\\\\http\\\\contrôleur\\\\RésultatCtl\\:\\:valider_paramètres_sys\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/http/contrôleur/RésultatCtl.php
 
@@ -3031,21 +2786,6 @@ parameters:
 			path: /var/www/progression/app/progression/http/contrôleur/TentativeCtl.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:récupérer_conteneur\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:récupérer_conteneur\\(\\) has parameter \\$chemin with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:récupérer_conteneur\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/http/contrôleur/TentativeCtl.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:récupérer_question\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/http/contrôleur/TentativeCtl.php
@@ -3077,31 +2817,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:sauvegarder_tentative_et_avancement\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative\\(\\) has parameter \\$intéracteur with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative\\(\\) has parameter \\$question with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative\\(\\) has parameter \\$tentative with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative\\(\\) has parameter \\$tests with no type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/http/contrôleur/TentativeCtl.php
 

@@ -122,12 +122,14 @@ class TentativeCtl extends Contrôleur
 
 	private function traiter_post_QuestionProg(Request $request, $username, $chemin, $question)
 	{
+		Log::debug("TentativeCtl.traiter_post_QuestionProg. Params : ", [$request->all(), $username]);
+
 		$tests = $question->tests;
 
 		$timestamp = Carbon::now()->getTimestamp();
 		$tentative = new TentativeProg($request->langage, $request->code, $timestamp);
 
-		$tentative_résultante = $this->soumettre_tentative_prog($question, $tests, $tentative);
+		$tentative_résultante = $this->soumettre_tentative_prog($question, $tentative, $tests);
 		if (!$tentative_résultante) {
 			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
@@ -146,17 +148,25 @@ class TentativeCtl extends Contrôleur
 
 		$réponse = $this->item($dto, new TentativeProgTransformer());
 
+		Log::debug("TentativeCtl.traiter_post_QuestionProg. Retour : ", [$réponse]);
+
 		return $this->préparer_réponse($réponse);
 	}
 
 	private function traiter_post_QuestionSys(Request $request, $username, $chemin, $question)
 	{
-		$conteneur = $request->conteneur ?? $this->récupérer_conteneur($username, $chemin);
+		Log::debug("TentativeCtl.traiter_post_QuestionSys. Params : ", [$request->all(), $username]);
+
+		$conteneur_id = $request->conteneur_id ?? $this->récupérer_conteneur_id($username, $chemin);
 
 		$timestamp = Carbon::now()->getTimestamp();
-		$tentative = new TentativeSys(["id" => $conteneur], $request->réponse, $timestamp);
+		$tentative = new TentativeSys(
+			conteneur_id: $conteneur_id,
+			réponse: $request->réponse,
+			date_soumission: $timestamp,
+		);
 
-		$tentative_résultante = $this->soumettre_tentative_sys($question, $question->tests, $tentative);
+		$tentative_résultante = $this->soumettre_tentative_sys($question, $tentative, $question->tests);
 		if (!$tentative_résultante) {
 			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
@@ -172,6 +182,8 @@ class TentativeCtl extends Contrôleur
 		);
 
 		$réponse = $this->item($dto, new TentativeSysTransformer());
+
+		Log::debug("TentativeCtl.traiter_post_QuestionSys. Retour : ", [$réponse]);
 
 		return $this->préparer_réponse($réponse);
 	}
@@ -216,18 +228,13 @@ class TentativeCtl extends Contrôleur
 		return $test;
 	}
 
-	private function soumettre_tentative_prog($question, $tests, $tentative)
+	private function soumettre_tentative_prog($question, $tentative, $tests)
 	{
-		return $this->soumettre_tentative($question, $tests, $tentative, new SoumettreTentativeProgInt());
+		return (new SoumettreTentativeProgInt())->soumettre_tentative($question, $tentative, $tests);
 	}
-	private function soumettre_tentative_sys($question, $tests, $tentative)
+	private function soumettre_tentative_sys($question, $tentative, $tests)
 	{
-		return $this->soumettre_tentative($question, $tests, $tentative, new SoumettreTentativeSysInt());
-	}
-
-	private function soumettre_tentative($question, $tests, $tentative, $intéracteur)
-	{
-		return $intéracteur->soumettre_tentative($question, $tests, $tentative);
+		return (new SoumettreTentativeSysInt())->soumettre_tentative($question, $tentative, $tests);
 	}
 
 	private function sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative)
@@ -270,10 +277,15 @@ class TentativeCtl extends Contrôleur
 		return $résultat;
 	}
 
-	private function récupérer_conteneur($username, $chemin)
+	private function récupérer_conteneur_id(string $username, string $chemin): string
 	{
+		Log::debug("TentativeCtl.récupérer_conteneur_id. Params : ", [$username, $chemin]);
+
 		$obtenirTentativeInt = new ObtenirTentativeInt();
 		$tentative_récupérée = $obtenirTentativeInt->get_dernière($username, $chemin);
-		return $tentative_récupérée ? $tentative_récupérée->conteneur : null;
+		$conteneur_id = $tentative_récupérée?->conteneur_id ?? "";
+
+		Log::debug("TentativeCtl.récupérer_conteneur_id. Retour : ", [$conteneur_id]);
+		return $conteneur_id;
 	}
 }

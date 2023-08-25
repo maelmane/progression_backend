@@ -19,7 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{Avancement, Tentative};
-use progression\domaine\entité\question\Question;
+use progression\domaine\entité\question\{Question, QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\entité\user\User;
 use progression\dao\DAOException;
 
@@ -44,11 +44,21 @@ class SauvegarderAvancementInt extends Interacteur
 		$avancement->titre = $question->titre;
 		$avancement->niveau = $question->niveau;
 
+		if ($question instanceof QuestionProg) {
+			$type = "prog";
+		} elseif ($question instanceof QuestionSys) {
+			$type = "sys";
+		} elseif ($question instanceof QuestionBD) {
+			$type = "bd";
+		} else {
+			$type = "inconnu";
+		}
+
 		try {
 			$dao_avancement = $this->source_dao->get_avancement_dao();
 		} catch (DAOException $e) {
 			throw new IntéracteurException($e, 503);
 		}
-		return $dao_avancement->save($username, $question_uri, $avancement);
+		return $dao_avancement->save($username, $question_uri, $type, $avancement);
 	}
 }

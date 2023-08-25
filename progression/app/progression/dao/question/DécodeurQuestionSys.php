@@ -40,6 +40,7 @@ class DécodeurQuestionSys extends DécodeurQuestion
 		$question->utilisateur = $infos_question["utilisateur"];
 		$question->image = $infos_question["image"];
 		$question->solution = $infos_question["solution"] ?? null;
+		$question->init = $infos_question["init"] ?? null;
 
 		return $question;
 	}

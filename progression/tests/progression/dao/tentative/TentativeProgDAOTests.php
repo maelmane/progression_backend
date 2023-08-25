@@ -146,10 +146,10 @@ final class TentativeProgDAOTests extends TestCase
 		$résultat_attendu = new TentativeProg("python", "testCode", 123456789, true, [], 2, 1234);
 
 		$résultat_attendue = new TentativeProg("python", "testCode", 123456789, true, [], 2, 1234);
-		$résultat_observé = (new TentativeDAO())->save("stefany", "https://exemple.com", $tentative_test);
+		$résultat_observé = (new TentativeProgDAO())->save("stefany", "https://exemple.com", $tentative_test);
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 
-		$résultat_observé = (new TentativeDAO())->get_tentative("stefany", "https://exemple.com", 123456789);
+		$résultat_observé = (new TentativeProgDAO())->get_tentative("stefany", "https://exemple.com", 123456789);
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 }

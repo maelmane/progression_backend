@@ -1,0 +1,17 @@
+{
+    "data": {
+        "attributes": {
+            "feedback": null,
+            "résultat": false,
+            "sortie_erreur": "",
+            "sortie_observée": "Mauvaise sortie\n",
+            "temps_exécution": 30
+        },
+        "id": "abcdef0123456789",
+        "links": {
+            "self": "https://example.com/resultat/abcdef0123456789"
+        },
+        "type": "resultat"
+    }
+}
+

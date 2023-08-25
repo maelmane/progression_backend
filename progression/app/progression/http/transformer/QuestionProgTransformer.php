@@ -28,7 +28,7 @@ class QuestionProgTransformer extends QuestionTransformer
 	public function transform(QuestionDTO $question)
 	{
 		$data_out = array_merge(parent::transform($question), [
-			"sous-type" => "questionProg",
+			"sous_type" => "questionProg",
 		]);
 
 		return $data_out;

@@ -156,6 +156,7 @@ final class AvancementDAOTests extends TestCase
 		$résponse_observée = (new AvancementDAO())->save(
 			"bob",
 			"https://depot.com/roger/une_nouvelle_question",
+			"prog",
 			$nouvel_avancement,
 		);
 
@@ -183,6 +184,7 @@ final class AvancementDAOTests extends TestCase
 		$résponse_observée = (new AvancementDAO())->save(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+			"prog",
 			$résultat_attendu,
 		);
 

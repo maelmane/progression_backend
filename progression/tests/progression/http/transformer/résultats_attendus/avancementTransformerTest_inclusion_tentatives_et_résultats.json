@@ -1,131 +1,139 @@
 [
-  {
-    "id": "jdoe/dW5fYXZhbmNlbWVudA/1614711760",
-    "objet": {
-      "langage": "python",
-      "code": "codeTestPython",
-      "tests_réussis": 2,
-      "résultats": [
-        {
-          "feedback": null,
-          "résultat": false,
-          "sortie_erreur": "",
-          "sortie_observée": "test 1",
-          "temps_exécution": null
-        },
-        {
-          "feedback": null,
-          "résultat": false,
-          "sortie_erreur": "",
-          "sortie_observée": "test 2",
-          "temps_exécution": null
-        }
-      ],
-      "commentaires": [],
-      "date_soumission": 1614711760,
-      "réussi": false,
-      "temps_exécution": 324775,
-      "feedback": "feedbackTest Python"
-    },
-    "liens": {
-      "avancement": "https://example.com/avancement/jdoe/dW5fYXZhbmNlbWVudA",
-      "self": "https://example.com/tentative/jdoe/dW5fYXZhbmNlbWVudA/1614711760"
-    },
-    "commentaires": [],
-    "résultats": [
-      {
-        "id": 0,
-        "liens": {
-          "self": "https://example.com/resultat/0",
-          "tentative": "https://example.com/tentative/jdoe/dW5fYXZhbmNlbWVudA/1614711760"
-        },
-        "objet": {
-          "feedback": null,
-          "résultat": false,
-          "sortie_erreur": "",
-          "sortie_observée": "test 1",
-          "temps_exécution": null
-        }
-      },
-      {
-        "id": 1,
-        "liens": {
-          "self": "https://example.com/resultat/1",
-          "tentative": "https://example.com/tentative/jdoe/dW5fYXZhbmNlbWVudA/1614711760"
-        },
-        "objet": {
-          "feedback": null,
-          "résultat": false,
-          "sortie_erreur": "",
-          "sortie_observée": "test 2",
-          "temps_exécution": null
-        }
-      }
-    ]
-  },
-  {
-    "id": "jdoe/dW5fYXZhbmNlbWVudA/1614711761",
-    "objet": {
-      "langage": "java",
-      "code": "codeTestJava",
-      "tests_réussis": 2,
-      "résultats": [
-        {
-          "feedback": null,
-          "résultat": false,
-          "sortie_erreur": "",
-          "sortie_observée": "test 3",
-          "temps_exécution": null
-        },
-        {
-          "feedback": null,
-          "résultat": false,
-          "sortie_erreur": "",
-          "sortie_observée": "test 4",
-          "temps_exécution": null
-        }
-      ],
-      "commentaires": [],
-      "date_soumission": 1614711761,
-      "réussi": true,
-      "temps_exécution": 3245,
-      "feedback": "feedbackTest Java"
-    },
-    "liens": {
-      "avancement": "https://example.com/avancement/jdoe/dW5fYXZhbmNlbWVudA",
-      "self": "https://example.com/tentative/jdoe/dW5fYXZhbmNlbWVudA/1614711761"
-    },
-    "commentaires": [],
-    "résultats": [
-      {
-        "id": 0,
-        "liens": {
-          "self": "https://example.com/resultat/0",
-          "tentative": "https://example.com/tentative/jdoe/dW5fYXZhbmNlbWVudA/1614711761"
-        },
-        "objet": {
-          "feedback": null,
-          "résultat": false,
-          "sortie_erreur": "",
-          "sortie_observée": "test 3",
-          "temps_exécution": null
-        }
-      },
-      {
-        "id": 1,
-        "liens": {
-          "self": "https://example.com/resultat/1",
-          "tentative": "https://example.com/tentative/jdoe/dW5fYXZhbmNlbWVudA/1614711761"
-        },
-        "objet": {
-          "feedback": null,
-          "résultat": false,
-          "sortie_erreur": "",
-          "sortie_observée": "test 4",
-          "temps_exécution": null
-        }
-      }
-    ]
-  }
+	{
+		"id": "jdoe/dW5fYXZhbmNlbWVudA/1614711760",
+		"objet": {
+			"langage": "python",
+			"code": "codeTestPython",
+			"tests_réussis": 2,
+			"résultats": [
+				{
+					"feedback": null,
+					"résultat": false,
+					"sortie_erreur": "",
+					"sortie_observée": "test 1",
+					"temps_exécution": null,
+					"code_retour": 0
+				},
+				{
+					"feedback": null,
+					"résultat": false,
+					"sortie_erreur": "",
+					"sortie_observée": "test 2",
+					"temps_exécution": null,
+					"code_retour": 1
+				}
+			],
+			"commentaires": [],
+			"date_soumission": 1614711760,
+			"réussi": false,
+			"temps_exécution": 324775,
+			"feedback": "feedbackTest Python"
+		},
+		"liens": {
+			"avancement": "https://example.com/avancement/jdoe/dW5fYXZhbmNlbWVudA",
+			"self": "https://example.com/tentative/jdoe/dW5fYXZhbmNlbWVudA/1614711760"
+		},
+		"commentaires": [],
+		"résultats": [
+			{
+				"id": 0,
+				"liens": {
+					"self": "https://example.com/resultat/0",
+					"tentative": "https://example.com/tentative/jdoe/dW5fYXZhbmNlbWVudA/1614711760"
+				},
+				"objet": {
+					"feedback": null,
+					"résultat": false,
+					"sortie_erreur": "",
+					"sortie_observée": "test 1",
+					"temps_exécution": null,
+					"code_retour": 0
+				}
+			},
+			{
+				"id": 1,
+				"liens": {
+					"self": "https://example.com/resultat/1",
+					"tentative": "https://example.com/tentative/jdoe/dW5fYXZhbmNlbWVudA/1614711760"
+				},
+				"objet": {
+					"feedback": null,
+					"résultat": false,
+					"sortie_erreur": "",
+					"sortie_observée": "test 2",
+					"temps_exécution": null,
+					"code_retour": 1
+				}
+			}
+		]
+	},
+	{
+		"id": "jdoe/dW5fYXZhbmNlbWVudA/1614711761",
+		"objet": {
+			"langage": "java",
+			"code": "codeTestJava",
+			"tests_réussis": 2,
+			"résultats": [
+				{
+					"feedback": null,
+					"résultat": false,
+					"sortie_erreur": "",
+					"sortie_observée": "test 3",
+					"temps_exécution": null,
+					"code_retour": 0
+				},
+				{
+					"feedback": null,
+					"résultat": false,
+					"sortie_erreur": "",
+					"sortie_observée": "test 4",
+					"temps_exécution": null,
+					"code_retour": 0
+				}
+			],
+			"commentaires": [],
+			"date_soumission": 1614711761,
+			"réussi": true,
+			"temps_exécution": 3245,
+			"feedback": "feedbackTest Java"
+		},
+		"liens": {
+			"avancement": "https://example.com/avancement/jdoe/dW5fYXZhbmNlbWVudA",
+			"self": "https://example.com/tentative/jdoe/dW5fYXZhbmNlbWVudA/1614711761"
+		},
+		"commentaires": [],
+		"résultats": [
+			{
+				"id": 0,
+				"liens": {
+					"self": "https://example.com/resultat/0",
+					"tentative": "https://example.com/tentative/jdoe/dW5fYXZhbmNlbWVudA/1614711761"
+				},
+				"objet": {
+					"feedback": null,
+					"résultat": false,
+					"sortie_erreur": "",
+					"sortie_observée": "test 3",
+					"temps_exécution": null,
+					"code_retour": 0
+				}
+			},
+			{
+				"id": 1,
+				"liens": {
+					"self": "https://example.com/resultat/1",
+					"tentative": "https://example.com/tentative/jdoe/dW5fYXZhbmNlbWVudA/1614711761"
+				},
+				"objet": {
+					"feedback": null,
+					"résultat": false,
+					"sortie_erreur": "",
+					"sortie_observée": "test 4",
+					"temps_exécution": null,
+					"code_retour": 0
+				}
+			}
+		]
+	}
 ]
 

@@ -33,12 +33,12 @@ final class TraiterTentativeProgIntTests extends TestCase
 		$rétroactions["feedback_pos"] = "Bravo!";
 		$rétroactions["feedback_neg"] = "Non!";
 
-		$tentative = new TentativeProg("python", "testCode", null, false, [], 2, 100);
+		$tentative = new TentativeProg("python", "testCode", 1692201035, false, [], 2, 100);
 		$tentative->résultats = [new Résultat("ok\n", ""), new Résultat("ok\nok\nok\nok\nok\n", "")];
 		$résultat_attendu = new TentativeProg(
 			"python",
 			"testCode",
-			null,
+			1692201035,
 			true,
 			[
 				new Résultat("ok\n", "", true, "Test 0 passé"),
@@ -63,12 +63,12 @@ final class TraiterTentativeProgIntTests extends TestCase
 		$rétroactions["feedback_pos"] = "Bravo!";
 		$rétroactions["feedback_neg"] = "Non!";
 
-		$tentative = new TentativeProg("python", "testCode", null, false, [], 2, 100);
+		$tentative = new TentativeProg("python", "testCode", 1692201035, false, [], 2, 100);
 		$tentative->résultats = [new Résultat("1\n", ""), new Résultat("5\n", "")];
 		$résultat_attendu = new TentativeProg(
 			"python",
 			"testCode",
-			null,
+			1692201035,
 			false,
 			[new Résultat("1\n", "", false, "Test 0 échoué"), new Résultat("5\n", "", false, "Test 1 échoué")],
 			0,
@@ -98,7 +98,7 @@ final class TraiterTentativeProgIntTests extends TestCase
 		$rétroactions["feedback_pos"] = "Bravo!";
 		$rétroactions["feedback_neg"] = "As-tu essayé de ne pas faire ça?";
 
-		$tentative = new TentativeProg("python", "testCode", null, false, [], 1, 100);
+		$tentative = new TentativeProg("python", "testCode", 1692201035, false, [], 1, 100);
 		$tentative->résultats = [
 			new Résultat("ok\n", ""),
 			new Résultat("ok\nok\nok\n", ""),
@@ -108,7 +108,7 @@ final class TraiterTentativeProgIntTests extends TestCase
 		$résultat_attendu = new TentativeProg(
 			"python",
 			"testCode",
-			null,
+			1692201035,
 			false,
 			[
 				new Résultat("ok\n", "", true, "Test 0 passé"),
@@ -148,13 +148,13 @@ final class TraiterTentativeProgIntTests extends TestCase
 		$rétroactions["feedback_neg"] = "As-tu essayé de ne pas faire ça?";
 		$rétroactions["feedback_err"] = "Revise la syntaxe de ton code";
 
-		$tentative = new TentativeProg("python", "testCode", null, false, [], 1, 100);
+		$tentative = new TentativeProg("python", "testCode", 1692201035, false, [], 1, 100);
 		$tentative->résultats = [new Résultat("ok\n", ""), new Résultat("", "testErreur")];
 
 		$résultat_attendu = new TentativeProg(
 			"python",
 			"testCode",
-			null,
+			1692201035,
 			false,
 			[new Résultat("ok\n", "", true, "Test 0 passé"), new Résultat("", "testErreur", false, "Erreur!")],
 			1,
@@ -177,16 +177,18 @@ final class TraiterTentativeProgIntTests extends TestCase
 		$rétroactions["feedback_neg"] = "As-tu essayé de ne pas faire ça?";
 		$rétroactions["feedback_err"] = null;
 
-		$tentative = new TentativeProg("python", "testCode");
-		$tentative->résultats = [new Résultat("ok\n", ""), new Résultat("", "testErreur")];
+		$résultats = [new Résultat("ok\n", ""), new Résultat("", "testErreur")];
+		$tentative = new TentativeProg("python", "testCode", 1692201035, true, $résultats, 0, 120);
 
 		$résultat_attendu = new TentativeProg(
 			"python",
 			"testCode",
-			null,
+			1692201035,
 			false,
 			[new Résultat("ok\n", "", true, "Test 0 passé"), new Résultat("", "testErreur", false, null)],
 			1,
+			120,
+			feedback: null,
 		);
 
 		$résultat_observé = (new TraiterTentativeProgInt(null))->traiter_résultats($tentative, $rétroactions, $tests);

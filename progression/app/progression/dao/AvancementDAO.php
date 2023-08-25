@@ -58,7 +58,7 @@ class AvancementDAO extends EntitéDAO
 		}
 	}
 
-	public function save($username, $question_uri, $avancement)
+	public function save(string $username, string $question_uri, string $type, Avancement $avancement): Avancement|null
 	{
 		try {
 			$user = UserMdl::query()
@@ -69,9 +69,12 @@ class AvancementDAO extends EntitéDAO
 				return null;
 			}
 
+			$première_tentative = reset($avancement->tentatives);
+
 			$objet = [];
 			$objet["état"] = $avancement->etat;
 			$objet["question_uri"] = $question_uri;
+			$objet["type"] = $type;
 			$objet["titre"] = $avancement->titre;
 			$objet["niveau"] = $avancement->niveau;
 			$objet["date_modification"] = $avancement->date_modification;

@@ -23,10 +23,9 @@ use progression\dao\exécuteur\ExécutionException;
 use progression\domaine\entité\{TestProg, Exécutable, Résultat};
 use progression\domaine\entité\question\{Question, QuestionProg};
 use progression\domaine\entité\user\{User, Rôle, État};
-use progression\dao\question\ChargeurException;
 use Illuminate\Auth\GenericUser;
 
-final class RésultatCtlTests extends ContrôleurTestCase
+final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 {
 	public $user;
 
@@ -52,6 +51,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 				"réussi" => new Exécutable("#+TODO\nprint(\"Hello world!\")", "réussi"),
 				"non_réussi" => new Exécutable("//+TODO\nSystem.out.println(\"Hello world!\")", "non_réussi"),
 				"erreur" => new Exécutable("//+TODO\nSystem.out.println(\"Hello world!\")", "erreur"),
+				"pas d'exécuteur" => new Exécutable("//+TODO\nSystem.out.println(\"Hello world!\")", "erreur"),
 			],
 			// TestsProg
 			tests: [
@@ -111,7 +111,29 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		$mockExécuteur
 			->shouldReceive("exécuter_prog")
 			->withArgs(function ($exec, $test) {
+				return $exec->lang == "non_réussi";
+			})
+			->andReturn([
+				"temps_exécution" => 0.552,
+				"résultats" => [
+					"abcdef0123456789" => ["output" => "Mauvaise sortie\n", "errors" => "", "time" => 0.03],
+				],
+			]);
+		$mockExécuteur
+			->shouldReceive("exécuter_prog")
+			->withArgs(function ($exec, $test) {
 				return $exec->lang == "erreur";
+			})
+			->andReturn([
+				"temps_exécution" => 0.552,
+				"résultats" => [
+					"abcdef0123456789" => ["output" => "", "errors" => "Erreur!", "time" => 0.03],
+				],
+			]);
+		$mockExécuteur
+			->shouldReceive("exécuter_prog")
+			->withArgs(function ($exec, $test) {
+				return $exec->lang == "pas d'exécuteur";
 			})
 			->andThrow(new ExécutionException("Err: 1005. Exécuteur non disponible.", 503));
 
@@ -136,6 +158,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		Mockery::close();
 		DAOFactory::setInstance(null);
 	}
+
 	public function test_étant_donné_un_test_unique_lorsquil_est_soumis_on_obtient_le_résultat_réussi_pour_le_test_fourni()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
@@ -159,6 +182,55 @@ final class RésultatCtlTests extends ContrôleurTestCase
 			$résultat_obtenu->getContent(),
 		);
 	}
+
+	public function test_étant_donné_un_test_unique_raté_lorsquil_est_soumis_on_obtient_le_résultat_non_réussi_pour_le_test_fourni()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/resultats",
+			[
+				"langage" => "non_réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+				"test" => [
+					"nom" => "Bonjour",
+					"entrée" => "bonjour",
+					"sortie_attendue" => "Bonjour\nBonjour\nBonjour\n",
+				],
+			],
+		);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+
+		$this->assertJsonStringEqualsJsonString(
+			file_get_contents(__DIR__ . "/résultats_attendus/résultat_prog_unique_soumis_avec_test_non_réussi.json"),
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_test_unique_erroné_lorsquil_est_soumis_on_obtient_le_résultat_avec_erreur_pour_le_test_fourni()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/resultats",
+			[
+				"langage" => "erreur",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+				"test" => [
+					"nom" => "Bonjour",
+					"entrée" => "bonjour",
+					"sortie_attendue" => "Bonjour\nBonjour\nBonjour\n",
+				],
+			],
+		);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+
+		$this->assertJsonStringEqualsJsonString(
+			file_get_contents(__DIR__ . "/résultats_attendus/résultat_prog_unique_soumis_avec_test_erreur.json"),
+			$résultat_obtenu->getContent(),
+		);
+	}
+
 	public function test_étant_donné_un_test_unique_comportant_un_numéro_de_test_lorsquil_est_soumis_on_obtient_le_résultat_réussi_pour_le_test_de_la_question()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
@@ -199,7 +271,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_un_test_unique_comportant_un_numéro_de_test_et_un_test_lorsquil_est_soumis_on_obtient_le_résultat_réussi_pour_le_test_de_la_question()
+	public function test_étant_donné_un_test_unique_comportant_un_numéro_de_test_et_un_test_lorsquil_est_soumis_on_obtient_le_résultat_réussi_pour_le_test_reçu()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
@@ -207,8 +279,12 @@ final class RésultatCtlTests extends ContrôleurTestCase
 			[
 				"langage" => "réussi",
 				"code" => "#+TODO\nprint(\"Hello world!\")",
-				"index" => 2,
-				"test" => ["nom" => "Bonjour", "entrée" => "bonjour", "sortie_attendue" => "Salut\n"],
+				"index" => 0,
+				"test" => [
+					"nom" => "Bonjour",
+					"entrée" => "bonjour",
+					"sortie_attendue" => "Bonjour\nBonjour\nBonjour\n",
+				],
 			],
 		);
 
@@ -357,7 +433,7 @@ final class RésultatCtlTests extends ContrôleurTestCase
 			"POST",
 			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/resultats/",
 			[
-				"langage" => "erreur",
+				"langage" => "pas d'exécuteur",
 				"code" => "#+TODO\nprint(\"on ne se rendra pas à exécuter ceci\")",
 				"index" => 0,
 			],

@@ -29,17 +29,18 @@ final class TentativeSysTransformerTests extends TestCase
 	{
 		putenv("APP_URL=https://example.com");
 
-		$tentative = new TentativeSys("conteneurDeLaTentative", "oui");
+		$tentative = new TentativeSys("conteneurDeLaTentative", "https://tty.com/abcde", "oui", 1614711760);
 
 		$tentativeTransformer = new TentativeSysTransformer("roger/uri");
 		$résultat = [
 			"id" => "roger/uri/id",
-			"date_soumission" => null,
-			"sous-type" => "tentativeSys",
+			"date_soumission" => 1614711760,
+			"sous_type" => "tentativeSys",
 			"réussi" => false,
 			"tests_réussis" => 0,
-			"feedback" => "",
-			"conteneur" => "conteneurDeLaTentative",
+			"feedback" => null,
+			"conteneur_id" => "conteneurDeLaTentative",
+			"url_terminal" => "https://tty.com/abcde",
 			"réponse" => "oui",
 			"temps_exécution" => null,
 			"links" => [
@@ -69,6 +70,7 @@ final class TentativeSysTransformerTests extends TestCase
 
 		$tentative = new TentativeSys(
 			"conteneurDeLaTentative",
+			"https://tty.com/abcde",
 			"oui",
 			1614711760,
 			false,
@@ -86,11 +88,12 @@ final class TentativeSysTransformerTests extends TestCase
 			"id" =>
 				"roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760",
 			"date_soumission" => 1614711760,
-			"sous-type" => "tentativeSys",
+			"sous_type" => "tentativeSys",
 			"réussi" => false,
 			"tests_réussis" => 2,
 			"feedback" => "feedBackTest",
-			"conteneur" => "conteneurDeLaTentative",
+			"conteneur_id" => "conteneurDeLaTentative",
+			"url_terminal" => "https://tty.com/abcde",
 			"réponse" => "oui",
 			"temps_exécution" => 34567,
 			"links" => [
@@ -124,10 +127,28 @@ final class TentativeSysTransformerTests extends TestCase
 
 		$tentative = new TentativeSys(
 			"conteneurDeLaTentative",
+			"https://tty.com/abcde",
 			"oui",
 			1614711760,
 			false,
-			[new Résultat("output", "", false, "feedback", 123), new Résultat("output 2", "", true, "feedback 2", 456)],
+			[
+				new Résultat(
+					sortie_observée: "output",
+					sortie_erreur: "",
+					résultat: false,
+					feedback: "feedback",
+					temps_exécution: 123,
+					code_retour: 1,
+				),
+				new Résultat(
+					sortie_observée: "output 2",
+					sortie_erreur: "",
+					résultat: true,
+					feedback: "feedback 2",
+					temps_exécution: 456,
+					code_retour: 0,
+				),
+			],
 			2,
 			34567,
 			"feedBackTest",
@@ -163,6 +184,7 @@ final class TentativeSysTransformerTests extends TestCase
 
 		$tentative = new TentativeSys(
 			"conteneurDeLaTentative",
+			"https://tty.com/abcde",
 			"oui",
 			1614711760,
 			false,

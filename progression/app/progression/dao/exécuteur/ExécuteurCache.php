@@ -47,6 +47,27 @@ class ExécuteurCache extends Exécuteur
 
 		return $résultats;
 	}
+
+	/**
+	 * @param string $utilisateur
+	 * @param string $image
+	 * @param string $conteneur_id
+	 * @param string $init
+	 * @param array<TestProg> $tests
+	 *
+	 * @return array<mixed> Un tableau de "résultats"=>array<id, Résultat> et "temps_exécution"=>int
+	 */
+	public function exécuter_sys(
+		string $utilisateur,
+		string $image,
+		string $conteneur_id,
+		string $init,
+		array $tests,
+		int|null $test_index,
+	): array {
+		return $this->_exécuteur->exécuter_sys($utilisateur, $image, $conteneur_id, $init, $tests, $test_index);
+	}
+
 	/**
 	 * @param array<TestProg> $tests
 	 *
@@ -82,7 +103,7 @@ class ExécuteurCache extends Exécuteur
 			}
 		}
 
-		// Remplit le tableau $résultats avec les Résultats de tests non présants dans la cache
+		// Remplit le tableau $résultats avec les Résultats de tests non présents dans la cache
 		$temps_exécution = $this->exécuter_tests_manquants($tests_à_exécuter, $exécutable, $résultats);
 		return ["résultats" => $résultats, "temps_exécution" => $temps_exécution];
 	}

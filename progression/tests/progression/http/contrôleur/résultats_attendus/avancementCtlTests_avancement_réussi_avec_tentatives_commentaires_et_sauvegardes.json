@@ -105,7 +105,7 @@
         "feedback": "feedbackTest",
         "langage": "python",
         "réussi": true,
-        "sous-type": "tentativeProg",
+        "sous_type": "tentativeProg",
         "temps_exécution": null,
         "tests_réussis": 2
       },
@@ -147,7 +147,7 @@
         "feedback": "feedbackTest",
         "langage": "python",
         "réussi": true,
-        "sous-type": "tentativeProg",
+        "sous_type": "tentativeProg",
         "temps_exécution": null,
         "tests_réussis": 2
       },
