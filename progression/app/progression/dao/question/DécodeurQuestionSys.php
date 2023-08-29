@@ -48,10 +48,10 @@ class DécodeurQuestionSys extends DécodeurQuestion
 	protected static function load_tests($infos_question)
 	{
 		$tests = [];
-		foreach ($infos_question["tests"] as $i => $test) {
+		foreach ($infos_question["tests"] as $test) {
 			$tests[] = new TestSys(
-				$test["nom"] ?? "#" . ($i + 1),
-				$test["sortie"],
+				$test["nom"] ?? "",
+				$test["sortie"] ?? "",
 				$test["validation"],
 				$test["utilisateur"] ?? null,
 				$test["feedback_pos"] ?? null,

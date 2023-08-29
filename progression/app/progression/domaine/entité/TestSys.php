@@ -24,8 +24,8 @@ class TestSys extends Test
 	public $utilisateur;
 
 	public function __construct(
-		$nom,
-		$sortie_attendue,
+		$nom = "",
+		$sortie_attendue = "",
 		$validation = null,
 		$utilisateur = null,
 		$feedback_pos = null,

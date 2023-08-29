@@ -37,14 +37,14 @@ final class TestTests extends TestCase
 		$this->assertEquals($feedback_neg_attendu, $résultat_obtenu->feedback_neg);
 	}
 
-	public function test_étant_donné_un_Test_instancié_avec_ses_paramètres_null_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_nulles()
+	public function test_étant_donné_un_Test_instancié_sans_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_par_défaut()
 	{
-		$feedback_pos_attendu = null;
-		$feedback_neg_attendu = null;
+		$résultat_obtenu = new Test();
 
-		$résultat_obtenu = new Test("testNom", "testSortie");
+		$this->assertEquals("", $résultat_obtenu->nom);
+		$this->assertEquals("", $résultat_obtenu->sortie_attendue);
 
-		$this->assertEquals($feedback_pos_attendu, $résultat_obtenu->feedback_pos);
-		$this->assertEquals($feedback_neg_attendu, $résultat_obtenu->feedback_neg);
+		$this->assertNull($résultat_obtenu->feedback_pos);
+		$this->assertNull($résultat_obtenu->feedback_neg);
 	}
 }
