@@ -48,14 +48,11 @@ final class TestSysTests extends TestCase
 		$this->assertEquals($feedback_neg_attendu, $résultat_obtenu->feedback_neg);
 	}
 
-	public function test_étant_donné_un_TestSys_instancié_avec_ses_paramètres_null_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_nulles()
+	public function test_étant_donné_un_TestSys_instancié_sans_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_par_défaut()
 	{
-		$validation_attendu = null;
-		$utilisateur_attendu = null;
+		$résultat_obtenu = new TestSys();
 
-		$résultat_obtenu = new TestSys("testNom", "testSortie");
-
-		$this->assertEquals($validation_attendu, $résultat_obtenu->validation);
-		$this->assertEquals($utilisateur_attendu, $résultat_obtenu->utilisateur);
+		$this->assertNull($résultat_obtenu->validation);
+		$this->assertNull($résultat_obtenu->utilisateur);
 	}
 }

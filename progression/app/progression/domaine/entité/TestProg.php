@@ -24,8 +24,8 @@ class TestProg extends Test
 	public $params;
 
 	public function __construct(
-		$nom,
-		$sortie_attendue,
+		$nom = "",
+		$sortie_attendue = "",
 		$entrée = "",
 		$params = "",
 		$feedback_pos = null,

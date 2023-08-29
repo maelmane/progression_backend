@@ -5,8 +5,6 @@ type: prog
 }
 
 tests: [
-  {
-    sortie: ""
-  }
+  {}
 ]
 

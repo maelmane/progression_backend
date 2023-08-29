@@ -36,6 +36,18 @@ final class QuestionDAOTests extends TestCase
 		ChargeurFactory::set_instance(null);
 	}
 
+	public function test_étant_donné_un_fichier_de_question_minimal_lorsquon_charge_la_question_on_obtien_les_valeurs_par_défaut()
+	{
+		$résultat_attendu = new QuestionProg(
+			tests: [new TestProg()],
+			exécutables: ["python" => new Exécutable("", "python")],
+		);
+
+		$résultat_obtenu = (new QuestionDAO())->get_question("file://" . __DIR__ . "/démo/défauts/info.yml");
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
 	public function test_étant_donné_un_fichier_de_question_valide_lorsquon_charge_la_question_on_obtient_un_objet_Question_correspondant()
 	{
 		$résultat_attendu = new QuestionProg(

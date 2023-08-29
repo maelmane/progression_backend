@@ -71,7 +71,8 @@ class AuthServiceProvider extends ServiceProvider
 			$identifiant = $request->input("identifiant");
 			if ($identifiant) {
 				$obtenirUserInteracteur = new ObtenirUserInt();
-				return $obtenirUserInteracteur->get_user($identifiant) ?? new User($identifiant, Carbon::now()->getTimestamp());;
+				return $obtenirUserInteracteur->get_user($identifiant) ??
+					new User($identifiant, Carbon::now()->getTimestamp());
 			}
 
 			return null;
