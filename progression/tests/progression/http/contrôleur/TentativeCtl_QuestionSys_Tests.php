@@ -20,7 +20,7 @@ use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
-use progression\domaine\entité\{Avancement, TestSys, Exécutable, TentativeSys};
+use progression\domaine\entité\{Avancement, TestSys, Exécutable, TentativeSys, Résultat};
 use progression\domaine\entité\question\{Question, QuestionSys};
 use progression\domaine\entité\user\{User, Rôle, État};
 
@@ -366,6 +366,68 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/tentativeCtlTest_sys_avancement_non_réussi_tentative_non_réussie.json",
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_une_question_sys_lorsquon_soumet_une_tentative_sans_id_de_conteneur_le_conteneur_est_détruit_et_réitinialisé_et_on_obtient_son_id()
+	{
+		// Exécuteur
+		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
+		$mockExécuteur
+			->shouldReceive("terminer")
+			->once()
+			->andReturn([
+				"temps_exécution" => 0.5,
+				"résultats" => [["output" => "", "errors" => "", "time" => 0, "code" => 1]],
+				"conteneur_id" => "",
+				"url_terminal" => "",
+			]);
+
+		$mockExécuteur->shouldReceive("exécuter_sys")->andReturn([
+			"temps_exécution" => 0.5,
+			"résultats" => [["output" => "", "errors" => "", "time" => 0, "code" => 1]],
+			"conteneur_id" => "leConteneurDeLaNouvelleTentative",
+			"url_terminal" => "https://tty.com/abcde",
+		]);
+
+		$nouvelle_tentative = new TentativeSys(
+			conteneur_id: "leConteneurDeLaNouvelleTentative",
+			url_terminal: "https://tty.com/abcde",
+			date_soumission: 1653690241,
+			réussi: false,
+			tests_réussis: 0,
+			résultats: [new Résultat()],
+			feedback: "Encore un effort!",
+			temps_exécution: 0,
+		);
+
+		$nouvel_avancement = new Avancement(
+			tentatives: [$nouvelle_tentative],
+			titre: "Question validée",
+			niveau: "Débutant",
+		);
+
+		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_sys_dao();
+		$mockTentativeDAO->shouldReceive("save")->andReturn($nouvelle_tentative);
+
+		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
+		$mockAvancementDAO->shouldReceive("save")->andReturn($nouvel_avancement);
+
+		DAOFactory::getInstance()
+			->shouldReceive("get_exécuteur")
+			->andReturn($mockExécuteur);
+
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fdmFsaWTDqWVfcsOpdXNzaWU/tentatives?include=resultats",
+			["conteneur_id" => ""],
+		);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/tentativeCtlTest_sys_conteneur_réinitialisé.json",
 			$résultat_obtenu->getContent(),
 		);
 	}

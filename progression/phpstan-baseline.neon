@@ -2036,11 +2036,6 @@ parameters:
 			path: /var/www/progression/app/progression/domaine/interacteur/PréparerProgInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\RéinitialiserConteneurInt\\:\\:get_data_rc\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/domaine/interacteur/RéinitialiserConteneurInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderCommentaireInt\\:\\:sauvegarder_commentaire\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/domaine/interacteur/SauvegarderCommentaireInt.php

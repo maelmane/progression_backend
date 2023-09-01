@@ -83,7 +83,7 @@ class TentativeProgDAO extends TentativeDAO
 				->orderBy("date_soumission", "desc")
 				->first();
 
-			return $tentative ? $this->construire([$tentative], $includes)[0] : null;
+			return $tentative ? $this->construire([$tentative], $includes)[$tentative["date_soumission"]] : null;
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}

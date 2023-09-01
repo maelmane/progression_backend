@@ -31,6 +31,7 @@ use progression\domaine\interacteur\{
 	SoumettreTentativeProgInt,
 	SoumettreTentativeSysInt,
 	IntéracteurException,
+	TerminerConteneurSysInt,
 };
 use progression\http\transformer\dto\TentativeDTO;
 use progression\http\contrôleur\RésultatCtl;
@@ -157,7 +158,12 @@ class TentativeCtl extends Contrôleur
 	{
 		Log::debug("TentativeCtl.traiter_post_QuestionSys. Params : ", [$request->all(), $username]);
 
-		$conteneur_id = $request->conteneur_id ?? $this->récupérer_conteneur_id($username, $chemin);
+		if (!$question->solution && !$request->conteneur_id) {
+			$this->détruire_conteneur_courant($username, $chemin);
+			$conteneur_id = "";
+		} else {
+			$conteneur_id = $request->conteneur_id;
+		}
 
 		$timestamp = Carbon::now()->getTimestamp();
 		$tentative = new TentativeSys(
@@ -228,10 +234,22 @@ class TentativeCtl extends Contrôleur
 		return $test;
 	}
 
+	/**
+	 * @return array<mixed>
+	 */
+	private function détruire_conteneur_courant(string $username, string $chemin): array
+	{
+		Log::debug("TentativeCtl.détruire_conteneur_courant. Params ${username} ${chemin}");
+		$conteneur_id = $this->récupérer_conteneur_id($username, $chemin);
+
+		return (new TerminerConteneurSysInt())->terminer($conteneur_id);
+	}
+
 	private function soumettre_tentative_prog($question, $tentative, $tests)
 	{
 		return (new SoumettreTentativeProgInt())->soumettre_tentative($question, $tentative, $tests);
 	}
+
 	private function soumettre_tentative_sys($question, $tentative, $tests)
 	{
 		return (new SoumettreTentativeSysInt())->soumettre_tentative($question, $tentative, $tests);
