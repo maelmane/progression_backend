@@ -71,9 +71,22 @@ final class TentativeSysDAOTests extends TestCase
 		$résultat_attendue = [
 			1615696300 => new TentativeSys("leConteneur", null, "laRéponse", 1615696300, false, [], 0, 0),
 			1615696301 => new TentativeSys("leConteneur2", null, "laRéponse2", 1615696301, true, [], 1, 0),
+			1615696299 => new TentativeSys("leConteneur3", null, "laRéponse3", 1615696299, true, [], 1, 0),
 		];
 
 		$résultat_observé = (new TentativeDAO())->get_toutes(
+			"jdoe",
+			"https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
+		);
+
+		$this->assertEquals($résultat_attendue, $résultat_observé);
+	}
+
+	public function test_étant_donné_une_TentativeSys_lorsquon_récupère_la_dernière_tentative_on_obtient_la_tentative_la_plus_récente()
+	{
+		$résultat_attendue = new TentativeSys("leConteneur2", null, "laRéponse2", 1615696301, true, [], 1, 0);
+
+		$résultat_observé = (new TentativeDAO())->get_dernière(
 			"jdoe",
 			"https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
 		);

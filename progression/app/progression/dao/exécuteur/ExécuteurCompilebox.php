@@ -103,7 +103,6 @@ class ExécuteurCompilebox extends Exécuteur
 			"language" => self::langages["sshd"],
 			"user" => $utilisateur,
 			"parameters" => $conteneur_id ?? "",
-			"params_conteneur" => "-e SIAB_SERVICE=/:" . $utilisateur . ":" . $utilisateur . ":HOME:SHELL",
 			"code" => $init,
 			"tests" => $tests_out,
 			"vm_name" => $image,
@@ -111,6 +110,21 @@ class ExécuteurCompilebox extends Exécuteur
 
 		$réponse = $this->envoyer_requête($data_rc);
 		return $this->préparer_résultats_sys($réponse);
+	}
+
+	/**
+	 * @return array<mixed>
+	 */
+	public function terminer(string $conteneur_id): array
+	{
+		$data_rc = [
+			"language" => self::langages["sshd"],
+			"parameters" => $conteneur_id,
+			"code" => "reset",
+		];
+
+		$réponse = $this->envoyer_requête($data_rc);
+		return $réponse;
 	}
 
 	private function envoyer_requête($data_rc)

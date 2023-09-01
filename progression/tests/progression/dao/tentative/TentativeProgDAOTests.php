@@ -130,6 +130,26 @@ final class TentativeProgDAOTests extends TestCase
 		$this->assertEquals($résultat_attendue, $résultat_observé);
 	}
 
+	public function test_étant_donné_une_TentativeProg_lorsquon_récupère_la_dernière_tentatives_on_obtient_la_tentative_la_plus_récente()
+	{
+		$résultat_attendue = new TentativeProg(
+			"python",
+			"print(\"Allo tout le monde!\")",
+			1615696296,
+			true,
+			[],
+			4,
+			345633,
+		);
+
+		$résultat_observé = (new TentativeDAO())->get_dernière(
+			"bob",
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction",
+		);
+
+		$this->assertEquals($résultat_attendue, $résultat_observé);
+	}
+
 	public function test_étant_donné_une_TentativeProg_lorsquon_sauvegarde_la_tentative_on_obtient_une_nouvelle_insertion_dans_la_table_reponse_prog()
 	{
 		$tentative_test = new TentativeProg(
