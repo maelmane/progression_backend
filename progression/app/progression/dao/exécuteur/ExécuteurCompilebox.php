@@ -90,9 +90,10 @@ class ExécuteurCompilebox extends Exécuteur
 		string $utilisateur,
 		string $image,
 		string|null $conteneur_id,
-		string $init,
+		string|null $init,
 		array $tests,
 		int|null $test_index, //Inutilisé pour le moment
+		string|null $commande,
 	): array {
 		$tests_out = [];
 		foreach ($tests as $test) {
@@ -106,6 +107,7 @@ class ExécuteurCompilebox extends Exécuteur
 			"code" => $init,
 			"tests" => $tests_out,
 			"vm_name" => $image,
+			"user_cmd" => $commande,
 		];
 
 		$réponse = $this->envoyer_requête($data_rc);
