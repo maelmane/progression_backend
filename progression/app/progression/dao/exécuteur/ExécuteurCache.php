@@ -61,11 +61,28 @@ class ExécuteurCache extends Exécuteur
 		string $utilisateur,
 		string $image,
 		string $conteneur_id,
-		string $init,
+		string|null $init,
 		array $tests,
 		int|null $test_index,
+		string|null $commande,
 	): array {
-		return $this->_exécuteur->exécuter_sys($utilisateur, $image, $conteneur_id, $init, $tests, $test_index);
+		return $this->_exécuteur->exécuter_sys(
+			$utilisateur,
+			$image,
+			$conteneur_id,
+			$init,
+			$tests,
+			$test_index,
+			$commande,
+		);
+	}
+
+	/**
+	 * @return array<mixed>
+	 */
+	public function terminer(string $conteneur_id): array
+	{
+		return $this->_exécuteur->terminer($conteneur_id);
 	}
 
 	/**

@@ -24,6 +24,7 @@ class QuestionSys extends Question
 	public $utilisateur;
 	public $solution;
 	public string|null $init;
+	public string|null $commande;
 
 	public function __construct(
 		$niveau = null,
@@ -41,6 +42,7 @@ class QuestionSys extends Question
 		$solution = null,
 		$tests = [],
 		string $description = null,
+		string|null $commande = null,
 	) {
 		parent::__construct(
 			$niveau,
@@ -60,5 +62,6 @@ class QuestionSys extends Question
 		$this->utilisateur = $utilisateur;
 		$this->solution = $solution;
 		$this->init = $init;
+		$this->commande = $commande;
 	}
 }

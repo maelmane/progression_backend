@@ -100,7 +100,7 @@ final class RésultatCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->with(Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), 0)
+			->with(Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), 0, Mockery::Any())
 			->andReturn([
 				"temps_exécution" => 0.551,
 				"résultats" => [
@@ -114,7 +114,7 @@ final class RésultatCtl_QuestionSys_Tests extends ContrôleurTestCase
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->with(Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), 1)
+			->with(Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), 1, Mockery::Any())
 			->andReturn([
 				"temps_exécution" => 0.551,
 				"résultats" => [
@@ -133,7 +133,7 @@ final class RésultatCtl_QuestionSys_Tests extends ContrôleurTestCase
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->with(Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), 2)
+			->with(Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), 2, Mockery::Any())
 			->andReturn([
 				"temps_exécution" => 0.551,
 				"résultats" => [
@@ -152,7 +152,7 @@ final class RésultatCtl_QuestionSys_Tests extends ContrôleurTestCase
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->with(Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), 3)
+			->with(Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any(), 3, Mockery::Any())
 			->andReturn([
 				"temps_exécution" => 0.551,
 				"résultats" => [

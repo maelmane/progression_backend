@@ -62,6 +62,7 @@ final class ExécuterSysIntTests extends TestCase
 				Mockery::Any(),
 				Mockery::Any(),
 				Mockery::Any(),
+				Mockery::Any(),
 			)
 			->andReturn([
 				"temps_exécution" => 0.124,
@@ -79,6 +80,7 @@ final class ExécuterSysIntTests extends TestCase
 				Mockery::Any(),
 				Mockery::Any(),
 				Mockery::Any(),
+				Mockery::Any(),
 			)
 			->andReturn([
 				"temps_exécution" => 0.124,
@@ -89,7 +91,7 @@ final class ExécuterSysIntTests extends TestCase
 
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->with(Mockery::Any(), Mockery::Any(), null, Mockery::Any(), Mockery::Any(), Mockery::Any())
+			->with(Mockery::Any(), Mockery::Any(), null, Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any())
 			->andReturn([
 				"temps_exécution" => 0.124,
 				"résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.2, "code" => 0]],

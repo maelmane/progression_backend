@@ -36,6 +36,7 @@ class ExécuterSysInt extends Interacteur
 				$question->init,
 				$tests,
 				$test_index,
+				$question->commande,
 			);
 		if (!$comp_resp) {
 			return null;

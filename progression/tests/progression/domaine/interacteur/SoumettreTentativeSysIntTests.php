@@ -54,6 +54,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 				Mockery::Any(),
 				Mockery::Any(),
 				Mockery::Any(),
+				Mockery::Any(),
 			)
 			->andReturn([
 				"temps_exécution" => 0.5,
@@ -67,6 +68,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 				Mockery::Any(),
 				Mockery::Any(),
 				"Conteneur de test incorrect",
+				Mockery::Any(),
 				Mockery::Any(),
 				Mockery::Any(),
 				Mockery::Any(),
@@ -87,6 +89,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 				Mockery::Any(),
 				Mockery::Any(),
 				Mockery::Any(),
+				Mockery::Any(),
 			)
 			->andReturn([
 				"temps_exécution" => 0.5,
@@ -97,7 +100,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->with(Mockery::Any(), Mockery::Any(), null, Mockery::Any(), Mockery::Any(), Mockery::Any())
+			->with(Mockery::Any(), Mockery::Any(), null, Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any())
 			->andReturn([
 				"temps_exécution" => 0.5,
 				"résultats" => [["output" => "Incorrecte", "time" => 0.1, "code" => 1]],

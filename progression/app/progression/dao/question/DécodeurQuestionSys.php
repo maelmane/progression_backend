@@ -37,10 +37,11 @@ class DécodeurQuestionSys extends DécodeurQuestion
 
 	protected static function load_infos_sys($question, $infos_question)
 	{
-		$question->utilisateur = $infos_question["utilisateur"];
+		$question->utilisateur = $infos_question["utilisateur"] ?? null;
 		$question->image = $infos_question["image"];
 		$question->solution = $infos_question["solution"] ?? null;
 		$question->init = $infos_question["init"] ?? null;
+		$question->commande = $infos_question["commande"] ?? null;
 
 		return $question;
 	}
