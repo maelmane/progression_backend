@@ -86,14 +86,6 @@ class ExécuteurCache extends Exécuteur
 	}
 
 	/**
-	 * @return array<mixed>
-	 */
-	public function terminer(string $conteneur_id): array
-	{
-		return $this->_exécuteur->terminer($conteneur_id);
-	}
-
-	/**
 	 * @param array<TestProg> $tests
 	 *
 	 * @return array<mixed> Un tableau de "résultats"=>array<id, Résultat> et "temps_exécution"=>int
