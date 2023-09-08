@@ -87,7 +87,7 @@ class ExécuteurCompilebox extends Exécuteur
 	 * @return array<mixed> Un tableau de "résultats"=>array<id, Résultat> et "temps_exécution"=>int
 	 */
 	public function exécuter_sys(
-		string $utilisateur,
+		string|null $utilisateur,
 		string $image,
 		string|null $conteneur_id,
 		string|null $init,
@@ -102,7 +102,7 @@ class ExécuteurCompilebox extends Exécuteur
 
 		$data_rc = [
 			"language" => self::langages["sshd"],
-			"user" => $utilisateur,
+			"user" => $utilisateur ?? "",
 			"parameters" => $conteneur_id ?? "",
 			"code" => $init,
 			"tests" => $tests_out,
