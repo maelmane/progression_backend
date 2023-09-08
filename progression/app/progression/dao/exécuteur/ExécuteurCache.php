@@ -58,9 +58,9 @@ class ExécuteurCache extends Exécuteur
 	 * @return array<mixed> Un tableau de "résultats"=>array<id, Résultat> et "temps_exécution"=>int
 	 */
 	public function exécuter_sys(
-		string $utilisateur,
+		string|null $utilisateur,
 		string $image,
-		string $conteneur_id,
+		string|null $conteneur_id,
 		string|null $init,
 		array $tests,
 		int|null $test_index,
