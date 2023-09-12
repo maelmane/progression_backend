@@ -242,7 +242,9 @@ class TentativeCtl extends Contrôleur
 		Log::debug("TentativeCtl.détruire_conteneur_courant. Params ${username} ${chemin}");
 		$conteneur_id = $this->récupérer_conteneur_id($username, $chemin);
 
-		return (new TerminerConteneurSysInt())->terminer($conteneur_id);
+		$réponse = (new TerminerConteneurSysInt())->terminer($conteneur_id);
+		Log::debug("TentativeCtl.détruire_conteneur_courant. Retour", [$réponse]);
+		return $réponse;
 	}
 
 	private function soumettre_tentative_prog($question, $tentative, $tests)
