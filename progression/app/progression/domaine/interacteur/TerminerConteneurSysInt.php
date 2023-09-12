@@ -18,6 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
+use progression\dao\exécuteur\ExécutionException;
+
 class TerminerConteneurSysInt extends Interacteur
 {
 	/**
@@ -25,6 +27,10 @@ class TerminerConteneurSysInt extends Interacteur
 	 */
 	public function terminer(string $conteneur_id): array
 	{
-		return $this->source_dao->get_exécuteur()->terminer($conteneur_id);
+		try {
+			return $this->source_dao->get_exécuteur()->terminer($conteneur_id);
+		} catch (ExécutionException $e) {
+			throw new IntéracteurException($e, 503);
+		}
 	}
 }

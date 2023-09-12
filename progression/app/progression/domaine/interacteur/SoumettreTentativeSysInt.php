@@ -20,6 +20,7 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{Avancement, Question, TestSys};
 use progression\dao\DAOException;
+use progression\dao\exécuteur\ExécutionException;
 
 class SoumettreTentativeSysInt extends Interacteur
 {
@@ -29,6 +30,8 @@ class SoumettreTentativeSysInt extends Interacteur
 			$tentativeTraitée = $this->exécuter_validation($question, $tentative, $tests, $test_index);
 		} catch (DAOException $e) {
 			throw new IntéracteurException($e, 503);
+		} catch (ExécutionException $e) {
+			throw new IntéracteurException($e->getMessage(), 400);
 		}
 		if ($question->solution) {
 			if ($this->vérifier_réponse_courte($question, $tentativeTraitée)) {
