@@ -57,7 +57,9 @@ WORKDIR /var/www/
 COPY --chown=www-data:www-data progression progression/
 COPY --from=composer --chown=www-data:www-data /var/www/vendor/ progression/vendor/
 
-RUN mkdir -p progression/app/storage/framework/{sessions,views,cache}
+RUN mkdir -p progression/app/storage/framework/sessions
+RUN mkdir -p progression/app/storage/framework/views
+RUN mkdir -p progression/app/storage/framework/cache
 RUN chmod -R 775 progression/app/storage/
 RUN chown www-data:www-data progression/ progression/app/storage
 RUN chown www-data:www-data -R progression/app/storage
