@@ -38,7 +38,7 @@ class ExécuteurCompilebox extends Exécuteur
 		"bash" => 11,
 		"perl" => 12,
 		"sshd" => 13,
-		"mysql" => 14,
+		"SQL" => 14,
 		"powershell" => 15,
 		"typescript" => 16,
 		"kotlin" => 17,
@@ -51,7 +51,7 @@ class ExécuteurCompilebox extends Exécuteur
 	 *
 	 * @return array<mixed> Un tableau de "résultats"=>array<id, Résultat> et "temps_exécution"=>int
 	 */
-	public function exécuter_prog(Exécutable $exécutable, array $tests): array
+	public function exécuter_prog(Exécutable $exécutable, array $tests, string $image = null): array
 	{
 		$tests_out = [];
 		foreach ($tests as $test) {
@@ -70,7 +70,7 @@ class ExécuteurCompilebox extends Exécuteur
 			"code" => $exécutable->code,
 			"parameters" => "",
 			"tests" => $tests_out,
-			"vm_name" => getenv("COMPILEBOX_IMAGE_EXECUTEUR"),
+			"vm_name" => $image ?? getenv("COMPILEBOX_IMAGE_EXECUTEUR"),
 		];
 
 		$réponse = $this->envoyer_requête($data_rc);
