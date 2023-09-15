@@ -21,6 +21,7 @@ use progression\domaine\entité\Test;
 
 class Question
 {
+	public string|null $image = null;
 	public $niveau = null;
 	public $titre = null;
 	public string|null $description = null;
@@ -52,6 +53,7 @@ class Question
 		string $feedback_err = null,
 		$tests = [],
 		string|null $description = null,
+		string|null $image = null,
 	) {
 		$this->niveau = $niveau;
 		$this->titre = $titre;
@@ -64,5 +66,6 @@ class Question
 		$this->feedback_err = $feedback_err;
 		$this->tests = $tests;
 		$this->description = $description;
+		$this->image = $image;
 	}
 }

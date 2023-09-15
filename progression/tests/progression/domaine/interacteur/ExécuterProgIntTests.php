@@ -44,6 +44,7 @@ final class ExécuterProgIntTests extends TestCase
 				Mockery::on(function ($param) {
 					return $param == [new Test("premier test", "ok\n", "1")];
 				}),
+				null,
 			)
 			->andReturn([
 				"temps_exécution" => 0.234,
@@ -61,6 +62,7 @@ final class ExécuterProgIntTests extends TestCase
 						new Test("deuxième test", "ok\nok\n", "2"),
 					];
 				}),
+				null,
 			)
 			->andReturn([
 				"temps_exécution" => 0.124,
@@ -79,6 +81,7 @@ final class ExécuterProgIntTests extends TestCase
 				Mockery::on(function ($param) {
 					return $param == [new Test("premier test", "ok\n", "1")];
 				}),
+				null,
 			)
 			->andReturn([
 				"temps_exécution" => 0.567,

@@ -39,11 +39,11 @@ class ExécuteurCache extends Exécuteur
 	 *
 	 * @return array<mixed> Un tableau de "résultats"=>array<id, Résultat> et "temps_exécution"=>int
 	 */
-	public function exécuter_prog($exécutable, $tests)
+	public function exécuter_prog($exécutable, $tests, string $image = null)
 	{
 		$code_standardisé = $this->standardiser_code($exécutable->code, $exécutable->lang) ?? $exécutable->code;
 
-		$résultats = $this->obtenir_résultats($code_standardisé, $exécutable, $tests);
+		$résultats = $this->obtenir_résultats($code_standardisé, $exécutable, $tests, $image);
 
 		return $résultats;
 	}
@@ -91,8 +91,12 @@ class ExécuteurCache extends Exécuteur
 	 * @return array<mixed> Un tableau de "résultats"=>array<id, Résultat> et "temps_exécution"=>int
 	 */
 
-	private function obtenir_résultats(string $code_standardisé, Exécutable $exécutable, array $tests): array
-	{
+	private function obtenir_résultats(
+		string $code_standardisé,
+		Exécutable $exécutable,
+		array $tests,
+		string $image = null,
+	): array {
 		$résultats = [];
 		$tests_à_exécuter = [];
 		foreach ($tests as $test) {
@@ -121,7 +125,7 @@ class ExécuteurCache extends Exécuteur
 		}
 
 		// Remplit le tableau $résultats avec les Résultats de tests non présents dans la cache
-		$temps_exécution = $this->exécuter_tests_manquants($tests_à_exécuter, $exécutable, $résultats);
+		$temps_exécution = $this->exécuter_tests_manquants($tests_à_exécuter, $exécutable, $résultats, $image);
 		return ["résultats" => $résultats, "temps_exécution" => $temps_exécution];
 	}
 
@@ -131,14 +135,18 @@ class ExécuteurCache extends Exécuteur
 	 *
 	 * @return int le temps d'exécution des tests manquants
 	 */
-	private function exécuter_tests_manquants(array $tests_à_exécuter, Exécutable $exécutable, array &$résultats): int
-	{
+	private function exécuter_tests_manquants(
+		array $tests_à_exécuter,
+		Exécutable $exécutable,
+		array &$résultats,
+		string $image = null,
+	): int {
 		if ($tests_à_exécuter) {
-			$résultats_exécution = $this->exécuter_tests($exécutable, $tests_à_exécuter);
+			$résultats_exécution = $this->exécuter_tests($exécutable, $tests_à_exécuter, $image);
 			foreach ($résultats_exécution["résultats"] as $hash => $résultat) {
 				$résultats[$hash] = $résultat;
 			}
-			return $résultats_exécution["temps_exécution"];
+			return $résultats_exécution["temps_exécution"] ?? 0;
 		} else {
 			return 0;
 		}
@@ -151,9 +159,9 @@ class ExécuteurCache extends Exécuteur
 	 *
 	 * @return array<mixed> Un tableau de "résultats"=>array<id, Résultat> et "temps_exécution"=>int
 	 */
-	private function exécuter_tests(Exécutable $exécutable, array $tests): array
+	private function exécuter_tests(Exécutable $exécutable, array $tests, string $image = null): array
 	{
-		$exécution = $this->_exécuteur->exécuter_prog($exécutable, $tests);
+		$exécution = $this->_exécuteur->exécuter_prog($exécutable, $tests, $image);
 
 		$réponses = $exécution["résultats"];
 

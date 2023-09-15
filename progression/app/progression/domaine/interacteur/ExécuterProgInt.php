@@ -22,9 +22,9 @@ use progression\domaine\entité\Résultat;
 
 class ExécuterProgInt extends Interacteur
 {
-	public function exécuter($exécutable, $tests)
+	public function exécuter($exécutable, $tests, string $image = null)
 	{
-		$comp_resp = $this->source_dao->get_exécuteur()->exécuter_prog($exécutable, $tests);
+		$comp_resp = $this->source_dao->get_exécuteur()->exécuter_prog($exécutable, $tests, $image);
 
 		if (!$comp_resp) {
 			return null;

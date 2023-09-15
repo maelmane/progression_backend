@@ -35,7 +35,7 @@ class SoumettreTentativeProgInt extends Interacteur
 		}
 
 		try {
-			$résultats = $this->exécuter_prog($exécutable, $tests);
+			$résultats = $this->exécuter_prog($exécutable, $tests, $question->image);
 		} catch (ExécutionException $e) {
 			throw new IntéracteurException($e, 503);
 		}
@@ -52,9 +52,9 @@ class SoumettreTentativeProgInt extends Interacteur
 		return null;
 	}
 
-	private function exécuter_prog($exécutable, $testsQuestion)
+	private function exécuter_prog($exécutable, $testsQuestion, string $image = null)
 	{
-		return (new ExécuterProgInt())->exécuter($exécutable, $testsQuestion);
+		return (new ExécuterProgInt())->exécuter($exécutable, $testsQuestion, $image);
 	}
 
 	private function traiterTentativeProg($tentative, $rétroactions, $tests)

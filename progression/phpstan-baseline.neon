@@ -1611,11 +1611,6 @@ parameters:
 			path: /var/www/progression/app/progression/domaine/entité/question/QuestionSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$image with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/domaine/entité/question/QuestionSys.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/domaine/entité/question/QuestionSys.php
@@ -1637,11 +1632,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$utilisateur with no type specified\\.$#"
-			count: 1
-			path: /var/www/progression/app/progression/domaine/entité/question/QuestionSys.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:\\$image has no type specified\\.$#"
 			count: 1
 			path: /var/www/progression/app/progression/domaine/entité/question/QuestionSys.php
 

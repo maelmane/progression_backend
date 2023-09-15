@@ -20,7 +20,6 @@ namespace progression\domaine\entité\question;
 
 class QuestionSys extends Question
 {
-	public $image;
 	public $utilisateur;
 	public $solution;
 	public string|null $init;
@@ -36,7 +35,7 @@ class QuestionSys extends Question
 		string $feedback_pos = null,
 		string $feedback_neg = null,
 		string $feedback_err = null,
-		$image = null,
+		string|null $image = null,
 		$utilisateur = null,
 		string $init = null,
 		$solution = null,
@@ -56,9 +55,9 @@ class QuestionSys extends Question
 			$feedback_err,
 			$tests,
 			$description,
+			$image,
 		);
 
-		$this->image = $image;
 		$this->utilisateur = $utilisateur;
 		$this->solution = $solution;
 		$this->init = $init;

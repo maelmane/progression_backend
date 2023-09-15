@@ -35,6 +35,7 @@ class QuestionProg extends Question
 		$exécutables = [],
 		$tests = [],
 		string|null $description = null,
+		string|null $image = null,
 	) {
 		parent::__construct(
 			$niveau,
@@ -48,6 +49,7 @@ class QuestionProg extends Question
 			$feedback_err,
 			$tests,
 			$description,
+			$image,
 		);
 		$this->exécutables = $exécutables;
 	}

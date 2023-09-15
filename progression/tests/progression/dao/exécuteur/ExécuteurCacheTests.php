@@ -32,7 +32,7 @@ final class ExécuteurCacheTests extends TestCase
 		$this->mock_exécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$this->mock_exécuteur
 			->shouldReceive("exécuter_prog")
-			->withArgs(function ($exécutable, $tests) {
+			->withArgs(function ($exécutable, $tests, $image) {
 				return $exécutable->code == "nouveau code";
 			})
 			->andReturn(["temps_exécution" => 12345, "résultats" => [["output" => "sortie exécutée", "errors" => ""]]]);
