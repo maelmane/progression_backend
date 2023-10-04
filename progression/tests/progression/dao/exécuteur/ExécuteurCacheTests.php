@@ -36,11 +36,24 @@ final class ExécuteurCacheTests extends TestCase
 				return $exécutable->code == "nouveau code";
 			})
 			->andReturn(["temps_exécution" => 12345, "résultats" => [["output" => "sortie exécutée", "errors" => ""]]]);
+		$this->mock_exécuteur
+			->shouldReceive("exécuter_prog")
+			->withArgs(function ($exécutable, $tests, $image) {
+				return $exécutable->code == "code erronné";
+			})
+			->andReturn([
+				"temps_exécution" => 23456,
+				"résultats" => [["output" => "sortie standard", "errors" => "sortie d'erreur"]],
+			]);
 		$this->mock_standardiseur = Mockery::mock("progression\\dao\\exécuteur\\Standardiseur");
 		$this->mock_standardiseur
 			->shouldReceive("standardiser")
 			->with("nouveau code", "python")
 			->andReturn("code standardisé");
+		$this->mock_standardiseur
+			->shouldReceive("standardiser")
+			->with("code erronné", "python")
+			->andReturn("code erronné");
 		$this->mock_standardiseur
 			->shouldReceive("standardiser")
 			->with("nouveau   code", "python")
@@ -79,6 +92,38 @@ final class ExécuteurCacheTests extends TestCase
 			[
 				"temps_exécution" => 12345,
 				"résultats" => ["e8032dd801819a71571c41b3c87f529a" => ["output" => "sortie exécutée", "errors" => ""]],
+			],
+			$résultat,
+		);
+	}
+
+	public function test_étant_donné_un_code_causant_une_erreur_lorsquon_exécute_le_même_code_avec_le_même_langage_les_mêmes_entrées_et_paramètres_on_obtient_le_code_exécuté()
+	{
+		$exécutable = new Exécutable("code erronné", "python");
+		$test = [new TestProg("test", "sortie", "entrée", "param")];
+
+		Cache::shouldReceive("has")
+			->once()
+			->with("a5b8b89d37358d402b88c7be76e187e2")
+			->andReturn(false);
+
+		Cache::shouldNotReceive("get");
+		Cache::shouldNotReceive("put");
+
+		$résultat = (new ExécuteurCache($this->mock_exécuteur, $this->mock_standardiseur))->exécuter_prog(
+			$exécutable,
+			$test,
+		);
+
+		$this->assertEquals(
+			[
+				"temps_exécution" => 23456,
+				"résultats" => [
+					"a5b8b89d37358d402b88c7be76e187e2" => [
+						"output" => "sortie standard",
+						"errors" => "sortie d'erreur",
+					],
+				],
 			],
 			$résultat,
 		);
