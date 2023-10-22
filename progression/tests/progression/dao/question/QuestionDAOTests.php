@@ -138,6 +138,10 @@ final class QuestionDAOTests extends TestCase
 					"sortie" => "-rwx rwx rwx",
 					"validation" => "ls –l test.txt",
 					"utilisateur" => "matt",
+					"rétroactions" => [
+						"positive" => "Bien joué!",
+						"négative" => "Encore un effort! Toutes les permissions ne sont pas octroyées",
+					],
 				],
 			],
 		]);
@@ -160,6 +164,8 @@ final class QuestionDAOTests extends TestCase
 		];
 		$résultat_attendu->tests[0]->validation = "ls –l test.txt";
 		$résultat_attendu->tests[0]->utilisateur = "matt";
+		$résultat_attendu->tests[0]->feedback_pos = "Bien joué!";
+		$résultat_attendu->tests[0]->feedback_neg = "Encore un effort! Toutes les permissions ne sont pas octroyées";
 
 		$résultat_obtenu = (new QuestionDAO())->get_question(
 			"file://" . __DIR__ . "/démo/permissions_sys/permissions/info.yml",

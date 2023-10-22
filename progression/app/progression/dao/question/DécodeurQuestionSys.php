@@ -55,8 +55,8 @@ class DécodeurQuestionSys extends DécodeurQuestion
 				$test["sortie"] ?? "",
 				$test["validation"],
 				$test["utilisateur"] ?? null,
-				$test["feedback_pos"] ?? null,
-				$test["feedback_neg"] ?? null,
+				$test["rétroactions"]["positive"] ?? null,
+				$test["rétroactions"]["négative"] ?? null,
 			);
 		}
 
