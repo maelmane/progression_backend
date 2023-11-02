@@ -346,19 +346,23 @@ Un token JWT donnant accès à une ou plusieurs ressources. Une date d'expiratio
 
 *** Propriétés :
 
-| Nom        | Type | Valeurs                                |
-|------------+------+----------------------------------------|
-| username   | str  | l'utilisateur propriétaire du token    |
-| création   | int  | timestamp à la création                |
-| expiration | int  | timestamp d'expiration                 |
-| data       | str  | données incluses dans le token         |
-| ressources | str  | ressources permises par le token       |
-| jwt        | str  | token jwt signé                        |
-| version    | int  | version de l'api ayant généré le token |
+| Nom        | Type | Valeurs                                                                          |
+|------------+------+----------------------------------------------------------------------------------|
+| username   | str  | l'utilisateur propriétaire du token                                              |
+| création   | int  | timestamp à la création                                                          |
+| expiration | int  | timestamp d'expiration ou "+n" ou n est le nombre de secondes avant l'expiration |
+| data       | str  | données incluses dans le token                                                   |
+| ressources | str  | ressources permises par le token                                                 |
+| jwt        | str  | token jwt signé                                                                  |
+| version    | int  | version de l'api ayant généré le token                                           |
 
 **** Data
 
 data contient un objet peuplé de n'importes quelles données utiles au destinataire du token.
+
+**** Expiration
+
+Lorsqu'on soumet un nouveau token, l'expiration peut être exprimée de façon absolue, sous forme de timestamp en secondes depuis 1/1/1970 (ex.: 1685831340) ou de façon relative en nombre de secondes après la création du token (ex.: "+300")
 
 ***** Exemple :
 

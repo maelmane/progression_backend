@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use progression\http\transformer\TokenTransformer;
 use progression\http\transformer\dto\GénériqueDTO;
+use Carbon\Carbon;
 
 class TokenCtl extends Contrôleur
 {
@@ -39,7 +40,10 @@ class TokenCtl extends Contrôleur
 		} else {
 			$data_in = $request->input("data");
 			$ressources = $data_in["ressources"];
-			$expiration = $data_in["expiration"];
+			$expiration =
+				gettype($data_in["expiration"]) == "string"
+					? $this->calculer_expiration($data_in["expiration"])
+					: $data_in["expiration"];
 			$data = $data_in["data"] ?? [];
 
 			$token_envoyé = GénérateurDeToken::get_instance()->générer_token(
@@ -95,14 +99,24 @@ class TokenCtl extends Contrôleur
 				"data.ressources" => "required",
 				"data.ressources.*.url" => "required|string",
 				"data.ressources.*.method" => "required|string",
-				"data.expiration" => "required|integer",
+				"data.expiration" => ["required", "regex:/^\+*[0-9]+$/"],
 			],
 			[
 				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
-				"data.expiration.integer" => "Err: 1003. Le champ expiration doit être un nombre entier.",
+				"data.expiration.regex" =>
+					"Err: 1003. Le champ data.expiration doit représenter une date relative ou absolue.",
 			],
 		);
 
 		return $validateur;
+	}
+
+	private function calculer_expiration(string $expiration): int
+	{
+		if ("$expiration"[0] == "+") {
+			return intval(Carbon::now()->timestamp) + intval(substr($expiration, 1));
+		} else {
+			return intval($expiration);
+		}
 	}
 }

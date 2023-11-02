@@ -77,7 +77,7 @@ final class TokenCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_un_token_qui_donne_accès_à_un_date_dexpiration_lorsquon_effectue_un_post_on_obtient_un_token_avec_expiration()
+	public function test_étant_donné_un_token_qui_donne_accès_à_une_date_dexpiration_spécifique_lorsquon_effectue_un_post_on_obtient_un_token_avec_cette_expiration()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/user/utilisateur_lambda/tokens", [
 			"data" => [
@@ -90,7 +90,43 @@ final class TokenCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(200, $résultat_obtenu->status());
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/token_ressources_avec_expiration.json",
+			__DIR__ . "/résultats_attendus/token_ressources_avec_expiration_spécifique.json",
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_token_qui_donne_accès_à_un_date_dexpiration_relative_de_300s_lorsquon_effectue_un_post_on_obtient_un_token_avec_expiration_plus_tard_de_300s()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/user/utilisateur_lambda/tokens", [
+			"data" => [
+				"data" => ["données" => "une autre donnée"],
+				"ressources" => ["ressources_test" => ["url" => "test", "method" => "POST"]],
+				"expiration" => "+300",
+			],
+		]);
+		$résultat_observé = $résultat_obtenu;
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/token_ressources_avec_expiration_relative.json",
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_token_qui_donne_accès_à_un_date_dexpiration_invalide_lorsquon_effectue_un_post_on_obtient_une_erreur_400()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/user/utilisateur_lambda/tokens", [
+			"data" => [
+				"data" => ["données" => "une autre donnée"],
+				"ressources" => ["ressources_test" => ["url" => "test", "method" => "POST"]],
+				"expiration" => "demain",
+			],
+		]);
+		$résultat_observé = $résultat_obtenu;
+
+		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals(
+			'{"erreur":{"data.expiration":["Err: 1003. Le champ data.expiration doit représenter une date relative ou absolue."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
