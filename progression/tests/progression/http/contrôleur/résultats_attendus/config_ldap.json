@@ -16,7 +16,7 @@
       "version": "Progression 3.0.0()"
     },
     "links": {
-      "inscrire": "https://example.com/user/",
+      "inscrire": "https://example.com/users",
       "self": "https://example.com/"
     }
   }

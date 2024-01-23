@@ -18,13 +18,13 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Avancement, Question, TestSys};
+use progression\domaine\entité\{Avancement, Question, TestSys, TentativeSys};
 use progression\dao\DAOException;
 use progression\dao\exécuteur\ExécutionException;
 
 class SoumettreTentativeSysInt extends Interacteur
 {
-	public function soumettre_tentative($question, $tentative, $tests, int|null $test_index = null)
+	public function soumettre_tentative($question, $tentative, $tests, int|null $test_index = null): TentativeSys
 	{
 		try {
 			$tentativeTraitée = $this->exécuter_validation($question, $tentative, $tests, $test_index);

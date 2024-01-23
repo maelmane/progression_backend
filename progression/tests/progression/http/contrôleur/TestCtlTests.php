@@ -23,7 +23,7 @@ use progression\domaine\entité\question\{Question, QuestionProg, QuestionSys, T
 use progression\domaine\entité\{TestSys, TestProg};
 use progression\domaine\entité\user\{User, Rôle, État};
 
-use Illuminate\Auth\GenericUser;
+use progression\UserAuthentifiable;
 
 final class TestCtlTests extends ContrôleurTestCase
 {
@@ -32,11 +32,12 @@ final class TestCtlTests extends ContrôleurTestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		$this->user = new GenericUser([
-			"username" => "bob",
-			"rôle" => Rôle::NORMAL,
-			"état" => État::ACTIF,
-		]);
+		$this->user = new UserAuthentifiable(
+			username: "bob",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
 
 		putenv("APP_URL=https://example.com");
 

@@ -113,12 +113,11 @@ final class ObtenirTentativeIntTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
-	public function test_étant_donné_une_tentative_inexistante_lorsque_cherchée_on_obtient_null()
+	public function test_étant_donné_une_tentative_inexistante_lorsque_cherchée_on_obtient_une_exception()
 	{
 		$interacteur = new ObtenirTentativeInt();
-		$résultat_obtenu = $interacteur->get_tentative("patate", "une_question_inexistante", 1614711760);
 
-		$this->assertNull($résultat_obtenu);
+		$this->assertNull($interacteur->get_tentative("patate", "une_question_inexistante", 1614711760));
 	}
 
 	public function test_étant_donné_un_numéro_de_conteneur_inexistant_on_récupère_lid_du_conteneur_de_la_dernière_tentative()

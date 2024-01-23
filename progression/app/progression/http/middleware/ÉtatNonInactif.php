@@ -31,8 +31,8 @@ class ÉtatNonInactif
 			return $next($request);
 		} else {
 			return response()->json(
-				["erreur" => "Opération interdite."],
-				403,
+				["erreur" => "Accès interdit."],
+				401,
 				[
 					"ContentType" => "application/vnd.api+json",
 					"Charset" => "utf8",

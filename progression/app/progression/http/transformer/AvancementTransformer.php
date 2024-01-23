@@ -39,7 +39,7 @@ class AvancementTransformer extends BaseTransformer
 
 		$data_out = [
 			"id" => $id,
-			"état" => match ($avancement->etat) {
+			"état" => match ($avancement->état) {
 				État::DEBUT => "début",
 				État::NONREUSSI => "non_réussi",
 				État::REUSSI => "réussi",

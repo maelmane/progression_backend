@@ -21,9 +21,10 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
-use progression\domaine\entité\user\User;
+use Illuminate\Support\Facades\Gate;
 use progression\http\transformer\ConfigTransformer;
 use progression\http\transformer\dto\GénériqueDTO;
+use progression\domaine\entité\user\User;
 
 class ConfigCtl extends Contrôleur
 {
@@ -61,7 +62,7 @@ class ConfigCtl extends Contrôleur
 	/**
 	 * @return array<string>
 	 */
-	public function get_liens(string|null $username): array
+	public function get_liens(User|false $user): array
 	{
 		$urlBase = Contrôleur::$urlBase;
 
@@ -72,12 +73,13 @@ class ConfigCtl extends Contrôleur
 			"self" => "$urlBase/",
 		];
 
-		if ($local || !$ldap) {
-			$liens["inscrire"] = "$urlBase/user/";
+		if (!$user && ($local || !$ldap)) {
+			$liens["inscrire"] = "$urlBase/users";
 		}
 
-		if ($username) {
-			$liens["user"] = "$urlBase/user/$username";
+		if ($user) {
+			$liens["user"] = "$urlBase/user/{$user->username}";
+			$liens["tokens"] = "$urlBase/user/{$user->username}/tokens";
 		}
 
 		return $liens;
@@ -91,11 +93,7 @@ class ConfigCtl extends Contrôleur
 		Log::debug("ConfigCtl.valider_et_préparer_réponse. Params : ", [$config]);
 
 		if ($config) {
-			$dto = new GénériqueDTO(
-				id: "serveur",
-				objet: $config,
-				liens: ConfigCtl::get_liens($config["user"]?->username),
-			);
+			$dto = new GénériqueDTO(id: "serveur", objet: $config, liens: ConfigCtl::get_liens($config["user"]));
 			$réponse = $this->item($dto, new ConfigTransformer());
 		} else {
 			$réponse = null;

@@ -64,16 +64,17 @@ final class ObtenirSauvegardeIntTests extends TestCase
 		DAOFactory::setInstance(null);
 	}
 
-	public function test_étant_donné_le_username_dun_utilisateur_inexistant_lorsquon_appelle_get_sauvegarde_on_obtient_un_objet_null()
+	public function test_étant_donné_le_username_dun_utilisateur_inexistant_lorsquon_appelle_get_sauvegarde_on_obtient_un_objet_une_exception()
 	{
 		$interacteur = new ObtenirSauvegardeInt();
-		$résultat_obtenu = $interacteur->get_sauvegarde(
-			"Marcel",
-			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			"python",
-		);
 
-		$this->assertNull($résultat_obtenu);
+		$this->assertNull(
+			$interacteur->get_sauvegarde(
+				"Marcel",
+				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+				"python",
+			),
+		);
 	}
 
 	public function test_étant_donné_luri_dune_question_existante_un_username_existant_et_le_bon_langage_lorsquon_appelle_get_sauvegarde_on_obtient_un_objet_sauvegarde_correspondant()

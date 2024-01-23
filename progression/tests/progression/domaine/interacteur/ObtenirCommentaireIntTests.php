@@ -99,6 +99,7 @@ final class ObtenirCommentaireIntTests extends TestCase
 
 		$this->assertNull($commentaireAttendu->get_commentaire_par_id(9999999));
 	}
+
 	public function test_étant_donné_des_commentaires_existants_lorsquon_les_recherche_par_tentative_en_incluant_les_créateurs_on_obtient_une_liste_de_commentaires_correspondante()
 	{
 		$résultat_observé = new ObtenirCommentaireInt();

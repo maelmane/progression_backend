@@ -46,7 +46,6 @@ class CommentaireCtl extends Contrôleur
 			$commentaire = $commentaireInt->sauvegarder_commentaire(
 				$username,
 				$question_uriDécodé,
-				$timestamp,
 				null,
 				new Commentaire(
 					$request->message,
@@ -56,15 +55,15 @@ class CommentaireCtl extends Contrôleur
 				),
 			);
 
-			if (count($commentaire) > 0) {
-				$numéro = array_key_first($commentaire);
+			if (count($commentaire) == 1) {
+				$id = array_key_first($commentaire);
 
 				$réponse = $this->valider_et_préparer_réponse(
-					$numéro !== null ? $commentaire[$numéro] : null,
+					$commentaire[$id],
 					$username,
 					$question_uri,
 					$timestamp,
-					$numéro,
+					$id,
 				);
 			}
 		}
@@ -97,8 +96,8 @@ class CommentaireCtl extends Contrôleur
 				"numéro_ligne" => ["required", "integer"],
 			],
 			[
-				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
-				"integer" => "Err: 1003. Le champ :attribute doit être un entier.",
+				"required" => "Le champ :attribute est obligatoire.",
+				"integer" => "Le champ :attribute doit être un entier.",
 			],
 		);
 	}

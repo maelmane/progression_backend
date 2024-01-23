@@ -20,25 +20,31 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\{Avancement, Tentative};
 use progression\domaine\entité\question\{Question, QuestionProg, QuestionSys, QuestionBD};
-use progression\domaine\entité\user\User;
 use progression\dao\DAOException;
+use progression\dao\question\ChargeurException;
+use progression\domaine\interacteur\IntégritéException;
 
 class SauvegarderAvancementInt extends Interacteur
 {
+	/**
+	 * @return array<Avancement>
+	 */
 	public function sauvegarder(
 		string $username,
 		string $question_uri,
 		Avancement $avancement,
 		Question $question = null,
-	): Avancement|null {
+	): array {
 		try {
 			$question = $question ?? $this->source_dao->get_question_dao()->get_question($question_uri);
+		} catch (ChargeurException $e) {
+			throw new RessourceInvalideException($e);
 		} catch (DAOException $e) {
 			throw new IntéracteurException($e, 503);
 		}
 
 		if (!$question) {
-			return null;
+			throw new IntégritéException("Impossible de sauvegarder la ressource; la question n'existe pas.");
 		}
 
 		$avancement->titre = $question->titre;
@@ -59,6 +65,8 @@ class SauvegarderAvancementInt extends Interacteur
 		} catch (DAOException $e) {
 			throw new IntéracteurException($e, 503);
 		}
-		return $dao_avancement->save($username, $question_uri, $type, $avancement);
+		$avancements_sauvegardés = $dao_avancement->save($username, $question_uri, $type, $avancement);
+
+		return $avancements_sauvegardés;
 	}
 }

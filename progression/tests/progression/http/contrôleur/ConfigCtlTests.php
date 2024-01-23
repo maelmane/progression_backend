@@ -18,7 +18,7 @@
 
 use progression\ContrôleurTestCase;
 use progression\domaine\entité\user\{État, Rôle};
-use Illuminate\Auth\GenericUser;
+use progression\UserAuthentifiable;
 use Illuminate\Support\Facades\Config;
 
 final class ConfigCtlTests extends ContrôleurTestCase
@@ -32,6 +32,7 @@ final class ConfigCtlTests extends ContrôleurTestCase
 	}
 
 	// GET
+	// Utilisateur sans authentification
 	public function test_config_simple_sans_authentification()
 	{
 		putenv("AUTH_LOCAL=false");
@@ -46,6 +47,7 @@ final class ConfigCtlTests extends ContrôleurTestCase
 		);
 	}
 
+	// Utilisateur avec authentification locale
 	public function test_config_simple_avec_authentification_locale_utilisateur_anonyme()
 	{
 		putenv("AUTH_LOCAL=true");
@@ -65,7 +67,7 @@ final class ConfigCtlTests extends ContrôleurTestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL, "état" => État::ACTIF]);
+		$user = new UserAuthentifiable(username: "jdoe", date_inscription: 0, rôle: Rôle::NORMAL, état: État::ACTIF);
 
 		$résultat_observé = $this->actingAs($user)->call("GET", "/");
 
@@ -76,6 +78,19 @@ final class ConfigCtlTests extends ContrôleurTestCase
 		);
 	}
 
+	public function test_config_simple_avec_authentification_locale_utilisateur_inactif()
+	{
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
+
+		$user = new UserAuthentifiable(username: "jdoe", date_inscription: 0, rôle: Rôle::NORMAL, état: État::INACTIF);
+
+		$résultat_observé = $this->actingAs($user)->call("GET", "/");
+
+		$this->assertEquals(401, $résultat_observé->status());
+	}
+
+	# Utilisateur LDAP
 	public function test_config_simple_avec_LDAP_utilisateur_anonyme()
 	{
 		putenv("AUTH_LOCAL=false");
@@ -115,7 +130,7 @@ final class ConfigCtlTests extends ContrôleurTestCase
 		putenv("LDAP_DOMAINE=exemple.com");
 		putenv("LDAP_URL_MDP_REINIT=http://portail.exemple.com");
 
-		$user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL, "état" => État::ACTIF]);
+		$user = new UserAuthentifiable(username: "jdoe", date_inscription: 0, rôle: Rôle::NORMAL, état: État::ACTIF);
 
 		$résultat_observé = $this->actingAs($user)->call("GET", "/");
 

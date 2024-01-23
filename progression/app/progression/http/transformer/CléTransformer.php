@@ -36,11 +36,7 @@ class CléTransformer extends BaseTransformer
 			"secret" => $clé->secret,
 			"création" => $clé->création,
 			"expiration" => $clé->expiration,
-			"portée" => match ($clé->portée) {
-				Portée::RÉVOQUÉE => "révoquée",
-				Portée::AUTH => "authentification",
-				default => "indéfini",
-			},
+			"portée" => $clé->portée->value,
 			"links" => $liens,
 		];
 

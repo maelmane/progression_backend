@@ -112,7 +112,7 @@ final class TentativeSysDAOTests extends TestCase
 
 		$résultat_observé = (new TentativeSysDAO())->save("jdoe", "https://exemple2.com", $tentative_test);
 
-		$this->assertEquals($résultat_attendu, $résultat_observé);
+		$this->assertEquals([1615696400 => $résultat_attendu], $résultat_observé);
 
 		$résultat_observé = (new TentativeSysDAO())->get_tentative("jdoe", "https://exemple2.com", 1615696400);
 		$this->assertEquals($résultat_attendu, $résultat_observé);

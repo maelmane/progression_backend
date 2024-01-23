@@ -18,6 +18,7 @@
 
 namespace progression\domaine\interacteur;
 use progression\dao\DAOException;
+use progression\domaine\entité\Tentative;
 
 class ObtenirTentativeInt extends Interacteur
 {
@@ -25,7 +26,7 @@ class ObtenirTentativeInt extends Interacteur
 	 * @param mixed $includes
 	 * liste de sous-objets à inclure; true pour inclure tous les niveaux.
 	 */
-	function get_tentative($username, $question_uri, $date, mixed $includes = [])
+	function get_tentative($username, $question_uri, $date, mixed $includes = []): Tentative|null
 	{
 		try {
 			$tentative = $this->source_dao
@@ -34,6 +35,7 @@ class ObtenirTentativeInt extends Interacteur
 		} catch (DAOException $e) {
 			throw new IntéracteurException($e, 503);
 		}
+
 		return $tentative;
 	}
 
@@ -41,7 +43,7 @@ class ObtenirTentativeInt extends Interacteur
 	 * @param mixed $includes
 	 * liste de sous-objets à inclure; true pour inclure tous les niveaux.
 	 */
-	function get_dernière($username, $question_uri, mixed $includes = [])
+	function get_dernière($username, $question_uri, mixed $includes = []): Tentative|null
 	{
 		try {
 			$tentative = $this->source_dao->get_tentative_dao()->get_dernière($username, $question_uri, $includes);

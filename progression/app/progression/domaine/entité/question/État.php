@@ -18,10 +18,10 @@
 
 namespace progression\domaine\entité\question;
 
-enum État: int
+enum État: string
 {
-	case DEBUT = 0;
-	case NONREUSSI = 1;
-	case REUSSI = 2;
+	case DEBUT = "début";
+	case NONREUSSI = "non-réussi";
+	case REUSSI = "réussi";
 }
 ?>

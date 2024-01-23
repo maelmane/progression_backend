@@ -4,7 +4,7 @@
     "objet": {
       "date_modification": null,
       "date_réussite": null,
-      "etat": 0,
+      "état": "début",
       "extra": "",
       "niveau": "",
       "sauvegardes": [],
@@ -25,7 +25,7 @@
     "objet": {
       "date_modification": null,
       "date_réussite": null,
-      "etat": 0,
+      "état": "début",
       "extra": "",
       "niveau": "",
       "sauvegardes": [],

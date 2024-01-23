@@ -35,7 +35,7 @@ class AvancementDTO extends GénériqueDTO
 	/**
 	 * @param array<string> $liens
 	 */
-	public function __construct(string $id, mixed $objet, array $liens)
+	public function __construct(string $id, Avancement $objet, array $liens)
 	{
 		parent::__construct($id, $objet, $liens);
 

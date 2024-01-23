@@ -19,21 +19,25 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\clé\{Clé, Portée};
-use progression\dao\DAOFactory;
-use progression\dao\DAOException;
 
 class GénérerCléAuthentificationInt extends Interacteur
 {
-	public function générer_clé($username, $nom, $expiration = 0)
+	/**
+	 * @return array<Clé>
+	 */
+	public function générer_clé($username, $nom, $expiration = 0): array
 	{
-		if (!$nom || !$username) {
-			return null;
+		if (empty($nom)) {
+			throw new RessourceInvalideException("Le nom ne peut être vide");
+		}
+		if (empty($username)) {
+			throw new RessourceInvalideException("Le nom d'utilisateur ne peut être vide");
 		}
 
 		$dao = $this->source_dao->get_clé_dao();
 
 		if ($dao->get_clé($username, $nom)) {
-			return null;
+			throw new DuplicatException("Une clé avec le même nom existe déjà");
 		}
 
 		$secret = bin2hex(random_bytes(20));

@@ -57,7 +57,12 @@ class CléCtl extends Contrôleur
 		} else {
 			$cléInt = new GénérerCléAuthentificationInt();
 			$clé = $cléInt->générer_clé($username, $request->nom, $request->expiration ?? 0);
-			$réponse = $this->valider_et_préparer_réponse($clé, $username, $request->nom);
+			if ($clé) {
+				$id = array_key_first($clé);
+				$réponse = $this->valider_et_préparer_réponse($clé[$id], $username, $id);
+			} else {
+				$réponse = $this->préparer_réponse(null);
+			}
 		}
 
 		Log::debug("CléCtl.post. Retour : ", [$réponse]);
@@ -117,16 +122,16 @@ class CléCtl extends Contrôleur
 					"integer",
 					function ($attribute, $value, $fail) {
 						if ($value > 0 && $value < time()) {
-							$fail("Err: 1003. Expiration ne peut être dans le passé.");
+							$fail("Expiration ne peut être dans le passé.");
 						}
 					},
 				],
 			],
 			[
-				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
-				"nom.alpha_dash" => "Err: 1003. Le champ key_name doit être alphanumérique \'a-Z0-9-_\'",
-				"expiration.numeric" => "Err: 1003. Expiration doit être un nombre.",
-				"expiration.integer" => "Err: 1003. Expiration doit être un entier.",
+				"required" => "Le champ :attribute est obligatoire.",
+				"nom.alpha_dash" => "Le champ key_name doit être alphanumérique \'a-Z0-9-_\'",
+				"expiration.numeric" => "Expiration doit être un nombre.",
+				"expiration.integer" => "Expiration doit être un entier.",
 			],
 		);
 

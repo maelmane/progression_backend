@@ -21,10 +21,11 @@ namespace progression\dao;
 use Illuminate\Database\QueryException;
 use progression\domaine\entité\Commentaire;
 use progression\dao\models\{TentativeProgMdl, CommentaireMdl, UserMdl};
+use progression\domaine\interacteur\IntégritéException;
 
 class CommentaireDAO extends EntitéDAO
 {
-	public function get_commentaire($id, $includes = [])
+	public function get_commentaire($id, $includes = []): Commentaire|null
 	{
 		try {
 			$commentaire = CommentaireMdl::select("commentaire.*")
@@ -32,13 +33,16 @@ class CommentaireDAO extends EntitéDAO
 				->where("id", $id)
 				->first();
 
-			return $commentaire ? $this->construire([$commentaire], $includes)[$id] : null;
+			return self::premier_élément($this->construire([$commentaire], $includes));
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}
 
-	public function get_tous_par_tentative($username, $question_uri, $date_soumission, $includes = [])
+	/**
+	 * @return array<Commentaire>
+	 */
+	public function get_tous_par_tentative($username, $question_uri, $date_soumission, $includes = []): array
 	{
 		try {
 			return $this->construire(
@@ -58,50 +62,55 @@ class CommentaireDAO extends EntitéDAO
 		}
 	}
 
-	public function save($username, $question_uri, $date_soumission, $numéro, $commentaire)
+	/**
+	 * @return array<Commentaire>
+	 */
+	public function save($username, $question_uri, $numéro, $commentaire): array
 	{
 		try {
-			$tentative = TentativeProgMdl::select("reponse_prog.id")
-				->from("reponse_prog")
-				->join("avancement", "reponse_prog.avancement_id", "=", "avancement.id")
+			$tentative = TentativeProgMdl::join("avancement", "reponse_prog.avancement_id", "=", "avancement.id")
 				->join("user", "avancement.user_id", "=", "user.id")
 				->where("user.username", $username)
 				->where("avancement.question_uri", $question_uri)
 				->first();
 
 			if (!$tentative) {
-				return null;
+				throw new IntégritéException("Impossible de sauvegarder la ressource; le parent n'existe pas.");
 			}
 
-			$créateur = UserMdl::select("user.id")
-				->from("user")
-				->where("user.username", $commentaire->créateur->username)
-				->first();
-
+			$créateur = UserMdl::where("username", $commentaire->créateur->username)->first();
 			if (!$créateur) {
-				return null;
+				throw new IntégritéException("Impossible de sauvegarder la ressource; le parent n'existe pas.");
 			}
 
 			$objet = [
-				"tentative_id" => $tentative["id"],
-				"créateur_id" => $créateur["id"],
+				"tentative_id" => $tentative->id,
+				"créateur_id" => $créateur->id,
 				"message" => $commentaire->message,
 				"date" => $commentaire->date,
 				"numéro_ligne" => $commentaire->numéro_ligne,
 			];
-			return $this->construire([CommentaireMdl::updateOrCreate(["id" => $numéro], $objet)])[$numéro];
+			return $this->construire([CommentaireMdl::updateOrCreate(["id" => $numéro], $objet)]);
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}
 
-	public static function construire($data, $includes = [])
+	/**
+	 * @return array<Commentaire>
+	 */
+	public static function construire($data, $includes = []): array
 	{
 		$commentaires = [];
-		foreach ($data as $i => $item) {
+		foreach ($data as $item) {
+			if ($item == null) {
+				continue;
+			}
 			$id = $item["id"];
 			$créateur = in_array("créateur", $includes)
-				? UserDAO::construire([$item["créateur"]], parent::filtrer_niveaux($includes, "commentaires"))[0]
+				? self::premier_élément(
+					UserDAO::construire([$item["créateur"]], self::filtrer_niveaux($includes, "commentaires")),
+				)
 				: null;
 			$commentaire = new Commentaire(
 				message: $item["message"],

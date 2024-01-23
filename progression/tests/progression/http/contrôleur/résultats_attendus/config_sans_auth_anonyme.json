@@ -13,7 +13,7 @@
     },
     "links": {
       "self": "https://example.com/",
-      "inscrire": "https://example.com/user/"
+      "inscrire": "https://example.com/users"
     }
   }
 }

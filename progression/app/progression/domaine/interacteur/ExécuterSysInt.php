@@ -18,14 +18,16 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Résultat, TestSys};
+use progression\domaine\entité\{Résultat, TestSys, TentativeSys};
+use progression\domaine\entité\question\QuestionSys;
 
 class ExécuterSysInt extends Interacteur
 {
 	/**
 	 * @param array<TestSys> $tests
+	 * @return array<mixed>
 	 */
-	public function exécuter($question, $tentative, array $tests, int|null $test_index)
+	public function exécuter(QuestionSys $question, TentativeSys $tentative, array $tests, int|null $test_index): array
 	{
 		$comp_resp = $this->source_dao
 			->get_exécuteur()
@@ -38,11 +40,9 @@ class ExécuterSysInt extends Interacteur
 				$test_index,
 				$question->commande,
 			);
-		if (!$comp_resp) {
-			return null;
-		}
+
 		$réponse = [];
-		$résultats = null;
+		$résultats = [];
 
 		$réponse["temps_exécution"] = intval($comp_resp["temps_exécution"] * 1000);
 

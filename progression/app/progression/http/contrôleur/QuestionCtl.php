@@ -71,8 +71,9 @@ class QuestionCtl extends Contrôleur
 	private function valider_et_préparer_réponse($question, $uri)
 	{
 		Log::debug("QuestionCtl.valider_et_préparer_réponse. Params : ", [$question]);
-
-		if ($question instanceof QuestionProg) {
+		if ($question === null) {
+			$réponse = $this->préparer_réponse(null);
+		} elseif ($question instanceof QuestionProg) {
 			$dto = new QuestionProgDTO(id: $uri, objet: $question, liens: QuestionCtl::get_liens($uri));
 			$réponse_array = $this->item($dto, new QuestionProgTransformer());
 			$réponse = $this->préparer_réponse($réponse_array);

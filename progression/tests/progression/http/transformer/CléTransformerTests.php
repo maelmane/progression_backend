@@ -42,7 +42,7 @@ final class CléTransformerTests extends TestCase
 			"secret" => "1234",
 			"création" => "2021-06-25 00:00:00",
 			"expiration" => "2021-06-26 00:00:00",
-			"portée" => "authentification",
+			"portée" => "auth",
 			"links" => [
 				"self" => "https://example.com/cle/jdoe/clé%20de%20test",
 				"user" => "https://example.com/user/jdoe",

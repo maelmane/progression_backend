@@ -36,6 +36,11 @@ final class QuestionDAOTests extends TestCase
 		ChargeurFactory::set_instance(null);
 	}
 
+	public function test_étant_donné_un_uri_de_question_inexistant_lorqsuon_la_charge_on_obtient_null()
+	{
+		$this->assertNull((new QuestionDAO())->get_question("file://inexistant.yml"));
+	}
+
 	public function test_étant_donné_un_fichier_de_question_minimal_lorsquon_charge_la_question_on_obtien_les_valeurs_par_défaut()
 	{
 		$résultat_attendu = new QuestionProg(

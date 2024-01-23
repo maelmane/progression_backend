@@ -21,7 +21,7 @@ use progression\ContrôleurTestCase;
 use progression\dao\DAOFactory;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\user\{User, Rôle, État};
-use Illuminate\Auth\GenericUser;
+use progression\UserAuthentifiable;
 use Carbon\Carbon;
 
 final class TokenCtlTests extends ContrôleurTestCase
@@ -36,11 +36,12 @@ final class TokenCtlTests extends ContrôleurTestCase
 		putenv("APP_VERSION=1.2.3");
 		putenv("JWT_SECRET=secret");
 
-		$this->user = new GenericUser([
-			"username" => "utilisateur_lambda",
-			"rôle" => Rôle::NORMAL,
-			"état" => État::ACTIF,
-		]);
+		$this->user = new UserAuthentifiable(
+			username: "utilisateur_lambda",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
 
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
@@ -126,7 +127,7 @@ final class TokenCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
-			'{"erreur":{"data.expiration":["Err: 1003. Le champ data.expiration doit représenter une date relative ou absolue."]}}',
+			'{"erreur":{"data.expiration":["Le champ data.expiration doit représenter une date relative ou absolue."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
@@ -142,7 +143,7 @@ final class TokenCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
-			'{"erreur":{"data.ressources":["Err: 1004. Le champ data.ressources est obligatoire."]}}',
+			'{"erreur":{"data.ressources":["Le champ data.ressources est obligatoire."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
@@ -158,7 +159,7 @@ final class TokenCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
-			'{"erreur":{"data.expiration":["Err: 1004. Le champ data.expiration est obligatoire."]}}',
+			'{"erreur":{"data.expiration":["Le champ data.expiration est obligatoire."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
@@ -174,7 +175,7 @@ final class TokenCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
-			'{"erreur":{"data.ressources":["Err: 1004. Le champ data.ressources est obligatoire."]}}',
+			'{"erreur":{"data.ressources":["Le champ data.ressources est obligatoire."]}}',
 			$résultat_observé->getContent(),
 		);
 	}

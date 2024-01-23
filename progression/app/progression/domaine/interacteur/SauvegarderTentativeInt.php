@@ -19,11 +19,14 @@
 namespace progression\domaine\interacteur;
 
 use progression\dao\DAOException;
-use progression\domaine\entité\{TentativeProg, TentativeSys, TentativeBD};
+use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, TentativeBD};
 
 class SauvegarderTentativeInt extends Interacteur
 {
-	public function sauvegarder($username, $question_uri, $tentative)
+	/**
+	 * @return array<Tentative>
+	 */
+	public function sauvegarder(string $username, string $question_uri, Tentative $tentative): array
 	{
 		try {
 			if ($tentative instanceof TentativeProg) {
@@ -33,7 +36,7 @@ class SauvegarderTentativeInt extends Interacteur
 			} elseif ($tentative instanceof TentativeBD) {
 				return $this->source_dao->get_tentative_bd_dao()->save($username, $question_uri, $tentative);
 			} else {
-				return null;
+				throw new IntéracteurException("Type de tentative inconnu", 500);
 			}
 		} catch (DAOException $e) {
 			throw new IntéracteurException($e, 503);

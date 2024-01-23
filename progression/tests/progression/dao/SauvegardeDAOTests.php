@@ -91,7 +91,7 @@ final class SauvegardeDAOTests extends TestCase
 			"nouveau_langage",
 			new Sauvegarde(1620150294, "print(\"Hello world!\")"),
 		);
-		$this->assertEquals($résultat_attendu, $résponse_observée1);
+		$this->assertEquals(["nouveau_langage" => $résultat_attendu], $résponse_observée1);
 
 		$résponse_observée2 = (new SauvegardeDAO())->get_sauvegarde(
 			"bob",
@@ -112,7 +112,7 @@ final class SauvegardeDAOTests extends TestCase
 			"python",
 			new Sauvegarde(1620150294, "print(\"Nouveau code!\")"),
 		);
-		$this->assertEquals($résultat_attendu, $résponse_observée1);
+		$this->assertEquals(["python" => $résultat_attendu], $résponse_observée1);
 
 		$résponse_observée2 = (new SauvegardeDAO())->get_sauvegarde(
 			"bob",

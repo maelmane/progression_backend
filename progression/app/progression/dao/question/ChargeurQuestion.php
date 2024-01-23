@@ -18,7 +18,7 @@
 
 namespace progression\dao\question;
 
-use RuntimeException;
+use BadMethodCallException;
 
 class ChargeurQuestion extends Chargeur
 {
@@ -31,7 +31,7 @@ class ChargeurQuestion extends Chargeur
 		} elseif ($scheme == "https") {
 			$sortie = $this->source->get_chargeur_question_http()->récupérer_question($uri);
 		} else {
-			throw new RuntimeException("Schéma d'URI invalide");
+			throw new BadMethodCallException("Schéma d'URI invalide");
 		}
 
 		$sortie["uri"] = $uri;

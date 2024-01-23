@@ -27,21 +27,23 @@ class ObtenirCommentaireInt extends Interacteur
 	 * @param mixed $includes
 	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
 	 */
-	public function get_commentaire_par_id($id, mixed $includes = [])
+	public function get_commentaire_par_id($id, mixed $includes = []): Commentaire|null
 	{
 		try {
 			$commentaire = $this->source_dao->get_commentaire_dao()->get_commentaire($id, $includes);
 		} catch (DAOException $e) {
 			throw new IntéracteurException($e, 503);
 		}
+
 		return $commentaire;
 	}
 
 	/**
 	 * @param mixed $includes
 	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
+	 * @return array<Commentaire>
 	 */
-	public function get_tous_par_tentative($username, $question_uri, $date, mixed $includes = [])
+	public function get_tous_par_tentative($username, $question_uri, $date, mixed $includes = []): array
 	{
 		try {
 			$commentaires = $this->source_dao

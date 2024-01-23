@@ -23,7 +23,7 @@ use progression\dao\exécuteur\ExécutionException;
 use progression\domaine\entité\{TestProg, Exécutable, Résultat};
 use progression\domaine\entité\question\{Question, QuestionProg};
 use progression\domaine\entité\user\{User, Rôle, État};
-use Illuminate\Auth\GenericUser;
+use progression\UserAuthentifiable;
 
 final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 {
@@ -36,7 +36,12 @@ final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 		putenv("APP_URL=https://example.com");
 		putenv("TAILLE_CODE_MAX=1000");
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL, "état" => État::ACTIF]);
+		$this->user = new UserAuthentifiable(
+			username: "jdoe",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
 
 		// QuestionProg
 		//aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU
@@ -135,7 +140,7 @@ final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->withArgs(function ($exec, $test) {
 				return $exec->lang == "pas d'exécuteur";
 			})
-			->andThrow(new ExécutionException("Err: 1005. Exécuteur non disponible.", 503));
+			->andThrow(new ExécutionException("Exécuteur non disponible.", 503));
 
 		// User
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -309,7 +314,7 @@ final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
-			'{"erreur":{"test":["Err: 1004. Le champ test est obligatoire lorsque index n\'est pas présent."]}}',
+			'{"erreur":{"test":["Le champ test est obligatoire lorsque index n\'est pas présent."]}}',
 			$résultat_obtenu->getContent(),
 		);
 	}
@@ -327,7 +332,7 @@ final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
-			'{"erreur":{"langage":["Err: 1004. Le champ langage est obligatoire."]}}',
+			'{"erreur":{"langage":["Le champ langage est obligatoire."]}}',
 			$résultat_obtenu->getContent(),
 		);
 	}
@@ -344,10 +349,7 @@ final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
-		$this->assertEquals(
-			'{"erreur":{"code":["Err: 1004. Le champ code est obligatoire."]}}',
-			$résultat_obtenu->getContent(),
-		);
+		$this->assertEquals('{"erreur":{"code":["Le champ code est obligatoire."]}}', $résultat_obtenu->getContent());
 	}
 
 	public function test_étant_donné_un_test_unique_pour_une_question_inexistante_lorsquil_est_soumis_on_obtient_une_erreur_404()
@@ -364,7 +366,7 @@ final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 		$this->assertEquals(404, $résultat_obtenu->status());
 		$this->assertEquals(
-			'{"erreur":"Err: 1002. La question https:\/\/exemple.com\/question_introuvable.yml n\'existe pas."}',
+			'{"erreur":"La question https:\/\/exemple.com\/question_introuvable.yml n\'existe pas."}',
 			$résultat_obtenu->getContent(),
 		);
 	}
@@ -382,7 +384,7 @@ final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":"Err: 1003. L\'indice de test n\'existe pas."}', $résultat_obtenu->getContent());
+		$this->assertEquals('{"erreur":"L\'indice de test n\'existe pas."}', $résultat_obtenu->getContent());
 	}
 
 	public function test_étant_donné_un_test_unique_ayant_du_code_dépassant_la_taille_maximale_de_caractères_on_obtient_une_erreur_400()
@@ -403,7 +405,7 @@ final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
-			'{"erreur":{"code":["Err: 1002. Le code soumis 24 > 23 caractères."]}}',
+			'{"erreur":{"code":["Le code soumis 24 > 23 caractères."]}}',
 			$résultat_obtenu->getContent(),
 		);
 	}
@@ -440,6 +442,6 @@ final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 		);
 
 		$this->assertEquals(503, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":"Err: 1005. Exécuteur non disponible."}', $résultat_obtenu->getContent());
+		$this->assertEquals('{"erreur":"Exécuteur non disponible."}', $résultat_obtenu->getContent());
 	}
 }

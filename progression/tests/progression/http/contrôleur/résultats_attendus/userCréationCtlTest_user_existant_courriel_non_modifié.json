@@ -1,0 +1,34 @@
+{
+  "data": {
+    "type": "user",
+    "id": "bob",
+    "attributes": {
+      "username": "bob",
+      "date_inscription": 1600828609,
+      "courriel": "bob@progressionmail.com",
+      "état": "actif",
+      "rôle": "normal",
+      "préférences": ""
+    },
+    "links": {
+      "self": "https://example.com/user/bob",
+      "tokens": "https://example.com/user/bob/tokens",
+      "avancements": "https://example.com/user/bob/avancements",
+      "clés": "https://example.com/user/bob/cles"
+    },
+    "relationships": {
+      "avancements": {
+        "links": {
+          "self": "https://example.com/user/bob/relationships/avancements",
+          "related": "https://example.com/user/bob/avancements"
+        }
+      },
+      "cles": {
+        "links": {
+          "self": "https://example.com/user/bob/relationships/cles",
+          "related": "https://example.com/user/bob/cles"
+        }
+      }
+    }
+  }
+}

@@ -27,7 +27,7 @@ class ObtenirCléInt extends Interacteur
 	 * @param mixed $includes
 	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
 	 */
-	public function get_clé($username, $numéro, mixed $includes = [])
+	public function get_clé($username, $numéro, mixed $includes = []): Clé|null
 	{
 		try {
 			$clé = $this->source_dao->get_clé_dao()->get_clé($username, $numéro, $includes);
@@ -35,7 +35,7 @@ class ObtenirCléInt extends Interacteur
 			throw new IntéracteurException($e, 503);
 		}
 
-		if ($clé) {
+		if ($clé != null) {
 			//Caviarde le secret
 			$clé->secret = null;
 		}

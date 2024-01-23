@@ -18,8 +18,8 @@
 
 namespace progression\domaine\entité\clé;
 
-enum Portée: int
+enum Portée: string
 {
-	case RÉVOQUÉE = 0;
-	case AUTH = 1;
+	case RÉVOQUÉE = "révoquée";
+	case AUTH = "auth";
 }

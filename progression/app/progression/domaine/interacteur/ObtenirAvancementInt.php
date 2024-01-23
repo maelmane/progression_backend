@@ -27,7 +27,7 @@ class ObtenirAvancementInt extends Interacteur
 	 * @param mixed $includes
 	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
 	 */
-	function get_avancement($username, $question_uri, mixed $includes = [])
+	function get_avancement($username, $question_uri, mixed $includes = []): Avancement|null
 	{
 		try {
 			$avancement = $this->source_dao->get_avancement_dao()->get_avancement($username, $question_uri, $includes);
