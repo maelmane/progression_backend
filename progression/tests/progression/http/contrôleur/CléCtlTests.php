@@ -21,7 +21,7 @@ use progression\ContrôleurTestCase;
 use progression\dao\DAOFactory;
 use progression\domaine\entité\clé\{Clé, Portée};
 use progression\domaine\entité\user\{User, Rôle, État};
-use Illuminate\Auth\GenericUser;
+use progression\UserAuthentifiable;
 
 final class CléCtlTests extends ContrôleurTestCase
 {
@@ -33,16 +33,18 @@ final class CléCtlTests extends ContrôleurTestCase
 
 		putenv("APP_URL=https://example.com");
 
-		$this->user = new GenericUser([
-			"username" => "jdoe",
-			"rôle" => Rôle::NORMAL,
-			"état" => État::ACTIF,
-		]);
-		$this->admin = new GenericUser([
-			"username" => "admin",
-			"rôle" => Rôle::ADMIN,
-			"état" => État::ACTIF,
-		]);
+		$this->user = new UserAuthentifiable(
+			username: "jdoe",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
+		$this->admin = new UserAuthentifiable(
+			username: "admin",
+			date_inscription: 0,
+			rôle: Rôle::ADMIN,
+			état: État::ACTIF,
+		);
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -72,7 +74,9 @@ final class CléCtlTests extends ContrôleurTestCase
 		$mockCléDAO
 			->shouldReceive("save")
 			->withArgs(["jdoe", "nouvelle_cle", Mockery::Any()])
-			->andReturnArg(2);
+			->andReturnUsing(function ($u, $n, $o) {
+				return ["nouvelle_cle" => $o];
+			});
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -102,7 +106,7 @@ final class CléCtlTests extends ContrôleurTestCase
                    "secret": null,
                    "création": 1625709495,
                    "expiration": 1625713000,
-                   "portée": "authentification"
+                   "portée": "auth"
                  },
                  "links": {
                    "self": "https://example.com/cle/jdoe/cle de test",
@@ -136,7 +140,7 @@ final class CléCtlTests extends ContrôleurTestCase
                    "secret": null,
                    "création": 1625709495,
                    "expiration": 1625713000,
-                   "portée": "authentification"
+                   "portée": "auth"
                  },
                  "links": {
                    "self": "https://example.com/cle/jdoe/cle de test",
@@ -158,7 +162,7 @@ final class CléCtlTests extends ContrôleurTestCase
 
 		$this->assertNotNull($clé_sauvegardée->secret);
 		$this->assertEquals(0, $clé_sauvegardée->expiration);
-		$this->assertEquals("authentification", $clé_sauvegardée->portée);
+		$this->assertEquals("auth", $clé_sauvegardée->portée);
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_0_on_obtient_une_clé_avec_un_secret_généré_aléatoirement_sans_expiration()
@@ -173,7 +177,7 @@ final class CléCtlTests extends ContrôleurTestCase
 
 		$this->assertNotNull($clé_sauvegardée->secret);
 		$this->assertEquals(0, $clé_sauvegardée->expiration);
-		$this->assertEquals("authentification", $clé_sauvegardée->portée);
+		$this->assertEquals("auth", $clé_sauvegardée->portée);
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_on_obtient_une_clé_avec_un_secret_généré_aléatoirement_avec_expiration()
@@ -189,7 +193,7 @@ final class CléCtlTests extends ContrôleurTestCase
 
 		$this->assertNotNull($clé_sauvegardée->secret);
 		$this->assertEquals($expiration, $clé_sauvegardée->expiration);
-		$this->assertEquals("authentification", $clé_sauvegardée->portée);
+		$this->assertEquals("auth", $clé_sauvegardée->portée);
 	}
 
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_avec_expiration_passée_on_obtient_une_erreur_400()
@@ -202,7 +206,7 @@ final class CléCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
-			'{"erreur":{"expiration":["Err: 1003. Expiration ne peut être dans le passé."]}}',
+			'{"erreur":{"expiration":["Expiration ne peut être dans le passé."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
@@ -217,7 +221,7 @@ final class CléCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
-			'{"erreur":{"expiration":["Err: 1003. Expiration doit être un entier."]}}',
+			'{"erreur":{"expiration":["Expiration doit être un entier."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
@@ -232,7 +236,7 @@ final class CléCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
-			'{"erreur":{"expiration":["Err: 1003. Expiration doit être un nombre."]}}',
+			'{"erreur":{"expiration":["Expiration doit être un nombre."]}}',
 			$résultat_observé->getContent(),
 		);
 	}

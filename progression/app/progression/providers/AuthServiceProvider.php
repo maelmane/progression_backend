@@ -18,20 +18,18 @@
 
 namespace progression\providers;
 
-use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Validator as ValidatorImpl;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
-use progression\domaine\interacteur\{ObtenirUserInt, LoginInt};
+use progression\domaine\interacteur\{ObtenirUserInt, LoginInt, AccèsInterditException, ParamètreInvalideException};
 use progression\domaine\entité\user\{User, État, Rôle};
 use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
 use UnexpectedValueException;
 use DomainException;
-use Carbon\Carbon;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -48,7 +46,7 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 		Gate::before(function ($user, $ability) {
-			if ($user->rôle == Rôle::ADMIN) {
+			if ($user && $user->rôle == Rôle::ADMIN) {
 				return true;
 			}
 		});
@@ -57,30 +55,30 @@ class AuthServiceProvider extends ServiceProvider
 		// Cause : "Cannot access offset 'auth' on Illuminate\Contracts\Foundation\Application."
 		// auth est définit dans bootstrap/app.php
 		// @phpstan-ignore-next-line
-		$this->app["auth"]->viaRequest("api", function ($request) {
+		$this->app["auth"]->viaRequest("api", function (Request $request): User|null|false {
 			// Fournit le User passé aux Gates à fins d'authentification et d'autorisation
-			if (stripos($request->header("Authorization"), "bearer") === 0) {
-				$tokenEncodé = trim(str_ireplace("bearer", "", $request->header("Authorization")));
-				$tokenDécodé = $this->décoderToken($tokenEncodé, $request);
-				if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
-					$obtenirUserInteracteur = new ObtenirUserInt();
-					return $obtenirUserInteracteur->get_user($tokenDécodé["username"]);
-				}
+			// Retourne un User authentifié ou null.
+			// Retourne false si aucun indentifiant n'est reçu.
+			$creds = $this->extraireCreds($request);
+			if ($creds === false) {
+				return false;
 			}
 
-			$identifiant = $request->input("identifiant");
-			if ($identifiant) {
-				$obtenirUserInteracteur = new ObtenirUserInt();
-				return $obtenirUserInteracteur->get_user($identifiant) ??
-					new User($identifiant, Carbon::now()->getTimestamp());
+			$validateur = $this->valider_paramètres($creds);
+			if ($validateur->fails()) {
+				throw new ParamètreInvalideException($validateur->errors());
 			}
 
-			return null;
+			if (array_key_exists("token", $creds)) {
+				return $this->authentifier_par_token($creds);
+			} else {
+				return $this->authentifier_par_mdp($creds);
+			}
 		});
 
 		Gate::define("acces-utilisateur", function ($user, $request) {
 			$token = trim(str_ireplace("bearer", "", $request->header("Authorization")));
-			$tokenDécodé = $this->décoderToken($token, $request);
+			$tokenDécodé = $this->décoderToken($token);
 			if (
 				is_array($tokenDécodé) &&
 				array_key_exists("ressources", $tokenDécodé) &&
@@ -94,48 +92,9 @@ class AuthServiceProvider extends ServiceProvider
 			return false;
 		});
 
-		Gate::define("authentification_mdp", function ($user, $request) {
-			// Valide l'authentification par mot de passe ou clé
-			$validateur = $this->valider_paramètres($request);
-
-			if ($validateur->fails()) {
-				return Response::deny($validateur->errors());
-			}
-
-			$identifiant = $request->input("identifiant");
-			$key_name = $request->input("key_name");
-			$key_secret = $request->input("key_secret");
-			$password = $request->input("password");
-			$domaine = $request->input("domaine");
-
-			$loginInt = new LoginInt();
-
-			if ($key_name) {
-				$user = $loginInt->effectuer_login_par_clé($identifiant, $key_name, $key_secret);
-			} else {
-				$user = $loginInt->effectuer_login_par_identifiant($identifiant, $password, $domaine);
-			}
-			if ($user == null) {
-				return Response::deny();
-			} else {
-				return Response::allow();
-			}
-		});
-
-		Gate::define("authentification_token", function ($user, $request) {
-			// Authentification par token
-			$tokenEncodé = trim(str_ireplace("bearer", "", $request->header("Authorization")));
-			$tokenDécodé = $this->décoderToken($tokenEncodé, $request);
-			if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
-				$obtenirUserInteracteur = new ObtenirUserInt();
-				return $obtenirUserInteracteur->get_user($tokenDécodé["username"]) !== null;
-			}
-			return null;
-		});
-
 		Gate::define("acces-ressource", function ($user, $request) {
 			$tokenRessource = $request->input("tkres");
-			$tokenRessourceDécodé = $this->décoderToken($tokenRessource, $request);
+			$tokenRessourceDécodé = $this->décoderToken($tokenRessource);
 			if (
 				is_array($tokenRessourceDécodé) &&
 				array_key_exists("ressources", $tokenRessourceDécodé) &&
@@ -151,19 +110,80 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 		Gate::define("utilisateur-non-inactif", function ($user, $request) {
-			return $user->état != État::INACTIF;
+			return $user && $this->vérifier_état_user($user);
 		});
 
 		Gate::define("utilisateur-validé", function ($user, $request) {
-			return $user->état != État::ATTENTE_DE_VALIDATION;
+			return $user && $user->état != État::ATTENTE_DE_VALIDATION;
 		});
 
 		Gate::define("soumettre-tentative", function ($user, $username) {
-			return mb_strtolower($user->username) == mb_strtolower($username);
+			return $user && mb_strtolower($user->username) == mb_strtolower($username);
+		});
+
+		Gate::define("modifier-rôle-user-admin", function ($user) {
+			return $user && $user->rôle == Rôle::ADMIN;
+		});
+		Gate::define("modifier-état-user-inactif", function ($user) {
+			return $user && $user->rôle == Rôle::ADMIN;
 		});
 	}
 
-	private function décoderToken($tokenEncodé, $request)
+	/**
+	 * @param array<string, string|null> $creds
+	 */
+	private function authentifier_par_mdp(array $creds): User|null
+	{
+		// Valide l'authentification par mot de passe ou clé
+		$identifiant = $creds["identifiant"];
+		if (empty($identifiant)) {
+			return null;
+		}
+
+		$loginInt = new LoginInt();
+
+		if (array_key_exists("key_name", $creds)) {
+			$key_name = $creds["key_name"];
+			$key_secret = $creds["key_secret"];
+			$user = $loginInt->effectuer_login_par_clé($identifiant, $key_name, $key_secret);
+		} else {
+			$password = $creds["password"];
+			$domaine = $creds["domaine"];
+			$user = $loginInt->effectuer_login_par_identifiant($identifiant, $password, $domaine);
+		}
+
+		return $user;
+	}
+
+	/**
+	 * @param array<string, string|null> $creds
+	 */
+	private function authentifier_par_token(array $creds): User|null
+	{
+		// Authentification par token
+		$identifiant = $creds["identifiant"];
+		if (empty($identifiant)) {
+			return null;
+		}
+
+		$tokenEncodé = $creds["token"];
+		if (empty($tokenEncodé)) {
+			return null;
+		}
+
+		$tokenDécodé = $this->décoderToken($tokenEncodé);
+
+		if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
+			$obtenirUserInteracteur = new ObtenirUserInt();
+			return $obtenirUserInteracteur->get_user($identifiant);
+		}
+		return null;
+	}
+
+	/**
+	 * @return array<mixed>|null
+	 */
+	private function décoderToken(string $tokenEncodé): array|null
 	{
 		try {
 			//JWT::decode fournit une stdClass, le moyen le plus simple de transformer en array
@@ -171,21 +191,78 @@ class AuthServiceProvider extends ServiceProvider
 			// @phpstan-ignore-next-line
 			return json_decode(json_encode(JWT::decode($tokenEncodé, getenv("JWT_SECRET"), ["HS256"])), true);
 		} catch (UnexpectedValueException | SignatureInvalidException | DomainException $e) {
-			Log::notice(
-				"(" .
-					$request->ip() .
-					") - " .
-					$request->method() .
-					" " .
-					$request->path() .
-					"(" .
-					__CLASS__ .
-					")" .
-					" " .
-					$e->getMessage(),
-			);
+			Log::notice("Token invalide ${tokenEncodé}");
 			return null;
 		}
+	}
+
+	/**
+      @return array<string, string|null>|false
+     */
+	private function extraireCreds(Request $request): array|false
+	{
+		$authorization = strval(
+			is_array($request->header("Authorization"))
+				? $request->header("Authorization")[0]
+				: $request->header("Authorization"),
+		);
+
+		if (!empty($authorization)) {
+			if (stripos($authorization, "bearer") === 0) {
+				$tokenEncodé = trim(str_ireplace("bearer", "", $authorization));
+				$tokenDécodé = $this->décoderToken($tokenEncodé);
+				if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
+					return ["identifiant" => $tokenDécodé["username"], "token" => $tokenEncodé];
+				} else {
+					throw new AccèsInterditException("Token invalide ou expiré");
+				}
+			} elseif (stripos($authorization, "basic") === 0) {
+				$creds = $this->décoderCreds_basic($authorization);
+				return $creds;
+			} elseif (stripos($authorization, "key") === 0) {
+				$creds = $this->décoderCreds_key($authorization);
+				return $creds;
+			} else {
+				throw new ParamètreInvalideException("Type d'authentification invalide.");
+			}
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @return array<string, string|null>
+	 */
+	private function décoderCreds_basic(string $creds_header): array
+	{
+		$creds_encodés = trim(str_ireplace("basic", "", $creds_header));
+		$creds_décodés = base64_decode($creds_encodés);
+
+		$creds_array = preg_split("/:/", $creds_décodés);
+
+		return [
+			"identifiant" => $creds_array[0] ?? null,
+			"password" => $creds_array[1] ?? null,
+			"domaine" => $creds_array[2] ?? null,
+		];
+	}
+
+	/**
+	 * @return array<string, string|null>
+	 */
+	private function décoderCreds_key(string $creds_header): array
+	{
+		$creds_encodés = trim(str_ireplace("key", "", $creds_header));
+		$creds_décodés = base64_decode($creds_encodés);
+
+		$creds_array = [];
+
+		$creds_array = preg_split("/:/", $creds_décodés);
+		return [
+			"identifiant" => $creds_array[0] ?? null,
+			"key_name" => $creds_array[1] ?? null,
+			"key_secret" => $creds_array[2] ?? null,
+		];
 	}
 
 	private function vérifierExpirationToken($token)
@@ -213,27 +290,34 @@ class AuthServiceProvider extends ServiceProvider
 		return false;
 	}
 
-	private function valider_paramètres(Request $request): ValidatorImpl
+	private function vérifier_état_user(User $user): bool
+	{
+		return $user->état !== État::INACTIF;
+	}
+
+	/**
+	 * @param array<string, string|null> $creds
+	 */
+	private function valider_paramètres(array $creds): ValidatorImpl
 	{
 		$validateur = Validator::make(
-			$request->all(),
+			$creds,
 			[
 				"identifiant" => "required|string|between:2,64",
 				"key_secret" => "required_with:key_name",
 				"key_name" => "alpha_dash:ascii",
 			],
 			[
-				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
+				"required" => "Le champ :attribute est obligatoire.",
 				"identifiant.regex" => "L'identifiant doit être un nom d'utilisateur ou un courriel valide.",
-				"password.required_without" =>
-					"Err: 1004. Le champ password est obligatoire lorsque key_name n'est pas présent.",
-				"key_secret.required_with" =>
-					"Err: 1004. Le champ key_secret est obligatoire lorsque key_name est présent.",
-				"key_secret.required" => "Err: 1004. Le champ key_secret est obligatoire lorsque key_name est présent",
-				"key_name.alpha_dash" => "Err: 1003. Le champ key_name doit être alphanumérique 'a-Z0-9-_'",
+				"password.required_without_all" =>
+					"Le champ password est obligatoire lorsque key_name ou token ne sont pas présents.",
+				"key_secret.required_with" => "Le champ key_secret est obligatoire lorsque key_name est présent.",
+				"key_secret.required" => "Le champ key_secret est obligatoire lorsque key_name est présent",
+				"key_name.alpha_dash" => "Le champ key_name doit être alphanumérique 'a-Z0-9-_'",
 			],
 		)
-			->sometimes("password", "required_without:key_name", function ($input) {
+			->sometimes("password", "required_without_all:key_name,token", function ($input) {
 				$auth_local = getenv("AUTH_LOCAL") !== "false";
 				$auth_ldap = getenv("AUTH_LDAP") === "true";
 

@@ -43,7 +43,7 @@ class ExécuteurCompilebox extends Exécuteur
 		"typescript" => 16,
 		"kotlin" => 17,
 		"c#" => 18,
-        "rust" => 19,
+		"rust" => 19,
 	];
 
 	/**

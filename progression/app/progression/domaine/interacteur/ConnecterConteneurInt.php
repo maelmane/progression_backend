@@ -73,7 +73,7 @@ class ConnecterConteneurInt extends Interacteur
 
 	protected function get_data_rc()
 	{
-		if ($this->avancement->etat == État::DEBUT) {
+		if ($this->avancement->état == État::DEBUT) {
 			$data_rc = $this->get_data_nouveau_conteneur();
 		} else {
 			$data_rc = $this->get_data_conteneur();

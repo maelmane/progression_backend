@@ -13,7 +13,7 @@
     },
     "links": {
       "self": "https://example.com/",
-      "inscrire": "https://example.com/user/",
+      "tokens": "https://example.com/user/jdoe/tokens",
       "user": "https://example.com/user/jdoe"
     }
   }

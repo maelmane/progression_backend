@@ -51,21 +51,19 @@ final class SauvegarderCommentaireTests extends TestCase
 		DAOFactory::getInstance()
 			->get_commentaire_dao()
 			->shouldReceive("save")
-			->withArgs(function ($user, $uri, $date, $numéro, $commentaire) {
+			->withArgs(function ($user, $uri, $numéro, $commentaire) {
 				return $user == "jdoe" &&
 					$uri == "prog1/les_fonctions_01/appeler_une_fonction_paramétrée" &&
-					$date == 1614711760 &&
 					$numéro == 99 &&
 					$commentaire == new Commentaire("le 99iem message", "mock", 1615696276, 14);
 			})
-			->andReturn($commentaireAttendu);
+			->andReturn([0 => $commentaireAttendu]);
 
 		$this->assertEquals(
-			$commentaireAttendu,
+			[0 => $commentaireAttendu],
 			$commentaireInt->sauvegarder_commentaire(
 				"jdoe",
 				"prog1/les_fonctions_01/appeler_une_fonction_paramétrée",
-				1614711760,
 				99,
 				$commentaireAttendu,
 			),

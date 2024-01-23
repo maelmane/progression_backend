@@ -93,15 +93,10 @@ final class ChargeurQuestionFichierTests extends TestCase
 		}
 	}
 
-	public function test_étant_donné_un_uri_de_fichier_non_existant_lorsquon_charge_la_question_on_obtient_une_ChargeurException()
+	public function test_étant_donné_un_uri_de_fichier_non_existant_lorsquon_charge_la_question_on_obtient_null()
 	{
 		$uri = "file://" . __DIR__ . "/démo/inexistant/info.yml";
 
-		try {
-			$résultat_obtenu = (new ChargeurQuestionFichier())->récupérer_question($uri);
-			$this->fail();
-		} catch (ChargeurException $résultat_obtenu) {
-			$this->assertEquals("Le fichier {$uri} ne peut pas être chargé.", $résultat_obtenu->getMessage());
-		}
+		$this->assertNull((new ChargeurQuestionFichier())->récupérer_question($uri));
 	}
 }

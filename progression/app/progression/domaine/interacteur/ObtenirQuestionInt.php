@@ -20,7 +20,7 @@ namespace progression\domaine\interacteur;
 
 use progression\dao\DAOException;
 use progression\dao\question\ChargeurException;
-use DomainException, LengthException, RuntimeException;
+use DomainException, LengthException, BadMethodCallException;
 
 class ObtenirQuestionInt extends Interacteur
 {
@@ -28,14 +28,12 @@ class ObtenirQuestionInt extends Interacteur
 	{
 		try {
 			return $this->source_dao->get_question_dao()->get_question($question_id);
+		} catch (BadMethodCallException $e) {
+			throw new ParamètreInvalideException($e);
 		} catch (DAOException $e) {
-			throw new IntéracteurException($e, 400);
-		} catch (LengthException $e) {
-			throw new IntéracteurException($e, 413);
-		} catch (RuntimeException $e) {
-			throw new IntéracteurException($e, 502);
-		} catch (DomainException | ChargeurException $e) {
-			throw new IntéracteurException($e, 400);
+			throw new IntéracteurException($e, 503);
+		} catch (LengthException | DomainException | ChargeurException $e) {
+			throw new RessourceInvalideException($e);
 		}
 	}
 }

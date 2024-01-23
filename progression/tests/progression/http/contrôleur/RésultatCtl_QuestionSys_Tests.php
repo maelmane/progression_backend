@@ -24,7 +24,7 @@ use progression\domaine\entité\{TestSys, Résultat, TentativeSys};
 use progression\domaine\entité\question\{Question, QuestionSys};
 use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\question\ChargeurException;
-use Illuminate\Auth\GenericUser;
+use progression\UserAuthentifiable;
 
 final class RésultatCtl_QuestionSys_Tests extends ContrôleurTestCase
 {
@@ -35,7 +35,12 @@ final class RésultatCtl_QuestionSys_Tests extends ContrôleurTestCase
 		putenv("APP_URL=https://example.com");
 		putenv("TAILLE_CODE_MAX=1000");
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => Rôle::NORMAL, "état" => État::ACTIF]);
+		$this->user = new UserAuthentifiable(
+			username: "jdoe",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
 
 		// QuestionProg
 		//aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fZGVfc2FsdXRhdGlvbnM

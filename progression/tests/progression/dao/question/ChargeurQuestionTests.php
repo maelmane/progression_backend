@@ -18,7 +18,7 @@
 
 namespace progression\dao\question;
 
-use RuntimeException;
+use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -73,7 +73,7 @@ final class ChargeurQuestionTests extends TestCase
 			$résultat_obtenu = (new ChargeurQuestion())->récupérer_question("invalide://test_de_http");
 
 			$this->fail();
-		} catch (RuntimeException $e) {
+		} catch (BadMethodCallException $e) {
 			$this->assertEquals("Schéma d'URI invalide", $e->getMessage());
 		}
 	}

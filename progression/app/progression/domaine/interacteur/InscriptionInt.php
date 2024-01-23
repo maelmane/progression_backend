@@ -19,87 +19,109 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\user\{User, État, Rôle};
-use progression\http\transformer\UserTransformer;
-use progression\http\contrôleur\GénérateurDeToken;
+use progression\dao\mail\EnvoiDeCourrielException;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class InscriptionInt extends Interacteur
 {
+	/**
+	 * @return array<User>
+	 */
 	public function effectuer_inscription_locale(
 		string $username,
 		string $courriel,
 		string|null $password,
 		Rôle $rôle = Rôle::NORMAL,
-	): User|null {
+	): array {
 		$dao = $this->source_dao->get_user_dao();
 		$user = $dao->get_user($username);
-		if (!$user && $password) {
-			$user_créé = $this->effectuer_inscription_avec_mdp($username, $courriel, $password, $rôle);
 
-			if ($user_créé && $user_créé->rôle != Rôle::ADMIN) {
-				$this->envoyer_courriel_de_validation($user_créé);
+		if (!$user) {
+			if (!$password) {
+				throw new RessourceInvalideException("Le mot de passe ne peut pas être laissé vide");
+			} else {
+				$user_inscrit = $this->effectuer_inscription_avec_mdp($username, $courriel, $password, $rôle);
+				$user_créé = self::premier_élément($user_inscrit);
+
+				if ($user_créé && $user_créé->rôle != Rôle::ADMIN) {
+					$this->envoyer_courriel_de_validation($user_créé);
+				}
+
+				return $user_inscrit;
 			}
-
-			return $user_créé;
-		} elseif ($user && !$password) {
-			return $this->effectuer_renvoi_de_courriel($user) ? $user : null;
+		} else {
+			if (!$password) {
+				$this->effectuer_renvoi_de_courriel($user);
+				return [$user->username => $user];
+			} else {
+				throw new DuplicatException("Un utilisateur du même nom existe déjà.");
+			}
 		}
-
-		return null;
 	}
 
-	private function effectuer_renvoi_de_courriel(User $user): bool
+	private function effectuer_renvoi_de_courriel(User $user): void
 	{
-		if ($user->état == État::ATTENTE_DE_VALIDATION) {
-			$this->envoyer_courriel_de_validation($user);
-			return true;
+		if ($user->état != État::ATTENTE_DE_VALIDATION) {
+			throw new PermissionException("L'état de l'utilisateur ne permet pas cette opération");
 		}
-		return false;
+
+		$this->envoyer_courriel_de_validation($user);
 	}
 
+	/**
+	 * @return array<User>
+	 */
 	public function effectuer_inscription_sans_mdp(
 		string $username,
 		string $courriel = null,
 		Rôle $rôle = Rôle::NORMAL,
-	): User|null {
+	): array {
 		$dao = $this->source_dao->get_user_dao();
-		return $dao->get_user($username) ??
-			$dao->save(
-				new User(
-					username: $username,
-					date_inscription: Carbon::now()->getTimestamp(),
-					courriel: $courriel,
-					rôle: $rôle,
-					état: État::ACTIF,
-					préférences: getenv("PREFERENCES_DEFAUT") ?: "",
-				),
-			);
+		$user = $dao->get_user($username);
+		if ($user) {
+			return [$username => $user];
+		}
+
+		$user = $dao->save(
+			$username,
+			new User(
+				username: $username,
+				date_inscription: Carbon::now()->getTimestamp(),
+				courriel: $courriel,
+				rôle: $rôle,
+				état: État::ACTIF,
+				préférences: getenv("PREFERENCES_DEFAUT") ?: "",
+			),
+		);
+		return $user;
 	}
 
+	/**
+	 * @return array<User>
+	 */
 	private function effectuer_inscription_avec_mdp(
 		string $username,
 		string $courriel,
 		string $password,
 		Rôle $rôle,
-	): User|null {
+	): array {
 		$dao = $this->source_dao->get_user_dao();
 		if ($dao->trouver(courriel: $courriel)) {
-			return null;
+			throw new DuplicatException("Le courriel est déjà utilisé.");
 		}
 
-		$user = $this->créer_etsauvegarder_user($username, $courriel, $password, $rôle);
-
-		return $user;
+		return $this->créer_et_sauvegarder_user($username, $courriel, $password, $rôle);
 	}
 
-	private function créer_etsauvegarder_user(
-		string $username,
-		string $courriel,
-		string $password,
-		Rôle $rôle,
-	): User|null {
+	/**
+	 * @return array<User>
+	 */
+	private function créer_et_sauvegarder_user(string $username, string $courriel, string $password, Rôle $rôle): array
+	{
 		$dao = $this->source_dao->get_user_dao();
 		$user = $dao->save(
+			$username,
 			new User(
 				username: $username,
 				date_inscription: Carbon::now()->getTimestamp(),
@@ -109,35 +131,20 @@ class InscriptionInt extends Interacteur
 				préférences: getenv("PREFERENCES_DEFAUT") ?: "",
 			),
 		);
-		$dao->set_password($user, $password);
+
+		$dao->set_password(self::premier_élément($user), $password);
 
 		return $user;
 	}
 
 	private function envoyer_courriel_de_validation(User $user): void
 	{
-		$data = [
-			"url_user" => getenv("APP_URL") . "/user/" . $user->username,
-			"user" => [
-				"username" => $user->username,
-				"courriel" => $user->courriel,
-				"rôle" => $user->rôle,
-			],
-		];
-		$ressources = [
-			"user" => [
-				"url" => "^user/" . $user->username . "$",
-				"method" => "^POST$",
-			],
-		];
-
-		$expirationToken = Carbon::now()->addMinutes((int) getenv("JWT_EXPIRATION"))->timestamp;
-		$token = GénérateurDeToken::get_instance()->générer_token(
-			$user->username,
-			$expirationToken,
-			$ressources,
-			$data,
-		);
-		$this->source_dao->get_expéditeur()->envoyer_validation_courriel($user, $token);
+		try {
+			$this->source_dao->get_expéditeur()->envoyer_courriel_de_validation($user);
+		} catch (EnvoiDeCourrielException $e) {
+			Log::notice("Échec de l'envoi du courriel à " . $user->courriel);
+			Log::notice($e->getMessage());
+			Log::debug($e);
+		}
 	}
 }

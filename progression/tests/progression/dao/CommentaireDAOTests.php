@@ -21,6 +21,7 @@ namespace progression\dao;
 use progression\domaine\entité\Commentaire;
 use progression\domaine\entité\user\{User, Rôle};
 use progression\TestCase;
+use progression\domaine\interacteur\IntégritéException;
 
 final class CommentaireDAOTests extends TestCase
 {
@@ -107,13 +108,12 @@ final class CommentaireDAOTests extends TestCase
 		$réponse_observée = $dao->save(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			1615696276,
 			4,
 			new Commentaire("le 4ième message", $this->jdoe, 1615696276, 11),
 		);
 
 		//Vérifie le Commentaire retourné
-		$this->assertEquals($réponse_attendue, $réponse_observée);
+		$this->assertEquals([4 => $réponse_attendue], $réponse_observée);
 
 		//Vérifie le Commentaire stoqué dans la BD
 		$réponse_observée = (new CommentaireDAO())->get_commentaire(4);
@@ -128,16 +128,30 @@ final class CommentaireDAOTests extends TestCase
 		$réponse_observée = $dao->save(
 			"bob",
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
-			1615696277,
 			1,
 			new Commentaire("le 1er message modifie", $this->jdoe, 1615696255, 17),
 		);
 
 		//Vérifie le Commentaire retourné
-		$this->assertEquals($réponse_attendue, $réponse_observée);
+		$this->assertEquals([1 => $réponse_attendue], $réponse_observée);
 
 		//Vérifie le Commentaire stoqué dans la BD
 		$réponse_observée = (new CommentaireDAO())->get_commentaire(1);
 		$this->assertEquals($réponse_attendue, $réponse_observée);
+	}
+
+	public function test_étant_donné_un_commentaire_inexistant_par_un_créateur_inexistant_lorsquon_le_sauvegarde_on_obtient_une_exception()
+	{
+		$this->personne = new User(username: "personne", date_inscription: 0);
+
+		$dao = new CommentaireDAO();
+
+		$this->expectException(IntégritéException::class);
+		$dao->save(
+			"bob",
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction",
+			1,
+			new Commentaire("le 1er message modifie", $this->personne, 1615696255, 17),
+		);
 	}
 }

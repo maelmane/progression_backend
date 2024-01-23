@@ -19,14 +19,16 @@
 namespace progression\domaine\interacteur;
 
 use progression\dao\DAOException;
+use progression\domaine\entité\Avancement;
 
 class ObtenirAvancementsInt extends Interacteur
 {
 	/**
 	 * @param mixed $includes
 	 * liste de sous-objets à inclure; true pour inclure tous les niveaux.
+	 * @return array<Avancement>
 	 */
-	function get_avancements($username, mixed $includes = [])
+	function get_avancements($username, mixed $includes = []): array
 	{
 		try {
 			return $this->source_dao->get_avancement_dao()->get_tous($username, $includes);

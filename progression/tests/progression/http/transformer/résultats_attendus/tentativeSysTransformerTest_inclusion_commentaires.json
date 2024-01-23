@@ -14,9 +14,9 @@
         "courriel": null,
         "date_inscription": 0,
         "préférences": "",
-        "rôle": 0,
+        "rôle": "normal",
         "username": "jdoe",
-        "état": 0
+        "état": "inactif"
       },
       "date": 123456,
       "message": "Message",
@@ -37,9 +37,9 @@
         "courriel": null,
         "date_inscription": 0,
         "préférences": "",
-        "rôle": 0,
+        "rôle": "normal",
         "username": "bob",
-        "état": 0
+        "état": "inactif"
       },
       "date": 654321,
       "message": "Message 2",

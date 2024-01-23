@@ -23,10 +23,13 @@ use progression\dao\DAOException;
 
 class SauvegarderUtilisateurInt extends Interacteur
 {
-	public function sauvegarder_user(string $username, User $user_modifié): User|null
+	/**
+	 * @return array<User>
+	 */
+	public function sauvegarder_user(string $username, User $user_modifié): array
 	{
 		try {
-			return $this->source_dao->get_user_dao()->save($user_modifié);
+			return $this->source_dao->get_user_dao()->save($username, $user_modifié);
 		} catch (DAOException $e) {
 			throw new IntéracteurException($e, 503);
 		}

@@ -19,13 +19,14 @@
 namespace progression\domaine\interacteur;
 
 use LDAP\Result;
-use progression\domaine\entité\clé\{Clé, Portée};
+use Illuminate\Support\Facades\Log;
+use progression\domaine\entité\clé\Portée;
 use progression\domaine\entité\user\{User, Rôle};
 use progression\dao\{UserDAO, DAOException};
 
 class LoginInt extends Interacteur
 {
-	public function effectuer_login_par_clé($username, $nom_clé, $secret)
+	public function effectuer_login_par_clé($username, $nom_clé, $secret): User|null
 	{
 		$dao = $this->source_dao->get_clé_dao();
 
@@ -78,13 +79,14 @@ class LoginInt extends Interacteur
 	{
 		$user = null;
 
-		$obtenirUserInt = new ObtenirUserInt();
+		$user_dao = $this->source_dao->get_user_dao();
+
 		$user =
 			strpos($identifiant, "@") === false
-				? $obtenirUserInt->get_user($identifiant)
-				: $obtenirUserInt->trouver(courriel: $identifiant);
+				? $user_dao->get_user($identifiant)
+				: $user_dao->trouver(courriel: $identifiant);
 		try {
-			if (!$user || !$this->source_dao->get_user_dao()->vérifier_password($user, $password)) {
+			if (!$user || !$user_dao->vérifier_password($user, $password)) {
 				return null;
 			}
 		} catch (DAOException $e) {
@@ -118,7 +120,7 @@ class LoginInt extends Interacteur
 	}
 
 	/**
-	 * @return array<mixed>
+	 * @return array<mixed>|null
 	 */
 	private function get_user_ldap(string $identifiant, string $password, string $domaine): array|null
 	{
@@ -145,7 +147,7 @@ class LoginInt extends Interacteur
 
 		if (!$bind) {
 			ldap_get_option($ldap, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
-			syslog(LOG_ERR, "Erreur de connexion à LDAP : $extended_error");
+			Log::error("Erreur de connexion à LDAP : $extended_error");
 			throw new IntéracteurException("Impossible de se connecter au serveur d'authentification", 503);
 		}
 
@@ -184,8 +186,9 @@ class LoginInt extends Interacteur
 		return $user[0]["mail"][0] ?? null;
 	}
 
-	private function login_sans_authentification(string $username, string $courriel = null): User|null
+	private function login_sans_authentification(string $username, string $courriel = null): User
 	{
-		return (new InscriptionInt())->effectuer_inscription_sans_mdp($username, $courriel, Rôle::NORMAL);
+		$user = (new InscriptionInt())->effectuer_inscription_sans_mdp($username, $courriel, Rôle::NORMAL);
+		return self::premier_élément($user);
 	}
 }

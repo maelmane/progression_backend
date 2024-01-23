@@ -71,7 +71,7 @@ final class AvancementDAOTests extends TestCase
 			],
 		);
 		$résultat_attendu->date_modification = 1615696276;
-		$résultat_attendu->etat = État::NONREUSSI;
+		$résultat_attendu->état = État::NONREUSSI;
 
 		$résponse_observée = (new AvancementDAO())->get_avancement(
 			"bob",
@@ -107,17 +107,17 @@ final class AvancementDAOTests extends TestCase
 	{
 		$av0 = new Avancement(tentatives: [], titre: "Un titre", niveau: "facile");
 		$av0->date_modification = 1615696276;
-		$av0->etat = État::NONREUSSI;
+		$av0->état = État::NONREUSSI;
 
 		$av1 = new Avancement(tentatives: [], titre: "Un titre", niveau: "facile", sauvegardes: []);
 		$av1->date_modification = 1645739981;
 		$av1->date_réussite = 1645739959;
-		$av1->etat = État::NONREUSSI;
+		$av1->état = État::NONREUSSI;
 
 		$av2 = new Avancement(tentatives: [], titre: "Un titre 2", niveau: "facile", sauvegardes: []);
 		$av2->date_modification = 1645739991;
 		$av2->date_réussite = 1645739969;
-		$av2->etat = État::REUSSI;
+		$av2->état = État::REUSSI;
 
 		$résultat_attendu = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $av0,
@@ -160,7 +160,10 @@ final class AvancementDAOTests extends TestCase
 			$nouvel_avancement,
 		);
 
-		$this->assertEquals($nouvel_avancement, $résponse_observée);
+		$this->assertEquals(
+			["https://depot.com/roger/une_nouvelle_question" => $nouvel_avancement],
+			$résponse_observée,
+		);
 
 		// L'avancement a été sauvegardé
 		$résponse_observée = (new AvancementDAO())->get_avancement(
@@ -188,7 +191,10 @@ final class AvancementDAOTests extends TestCase
 			$résultat_attendu,
 		);
 
-		$this->assertEquals($résultat_attendu, $résponse_observée);
+		$this->assertEquals(
+			["https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $résultat_attendu],
+			$résponse_observée,
+		);
 
 		// L'avancement a été sauvegardé
 		$résponse_observée = (new AvancementDAO())->get_avancement(

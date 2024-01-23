@@ -22,6 +22,7 @@ use Illuminate\Database\QueryException;
 use progression\dao\{DAOException, CommentaireDAO};
 use progression\domaine\entité\TentativeProg;
 use progression\dao\models\{TentativeProgMdl, AvancementMdl};
+use progression\domaine\interacteur\IntégritéException;
 
 class TentativeProgDAO extends TentativeDAO
 {
@@ -66,7 +67,7 @@ class TentativeProgDAO extends TentativeDAO
 				->where("date_soumission", $date_soumission)
 				->first();
 
-			return $tentative ? $this->construire([$tentative], $includes)[$date_soumission] : null;
+			return self::premier_élément($this->construire([$tentative], $includes));
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -89,7 +90,10 @@ class TentativeProgDAO extends TentativeDAO
 		}
 	}
 
-	public function save(string $username, string $question_uri, TentativeProg $tentative): TentativeProg|null
+	/**
+	 * @return array<TentativeProg>
+	 */
+	public function save(string $username, string $question_uri, TentativeProg $tentative): array
 	{
 		try {
 			$avancement = AvancementMdl::select("avancement.id")
@@ -100,7 +104,7 @@ class TentativeProgDAO extends TentativeDAO
 				->first();
 
 			if (!$avancement) {
-				return null;
+				throw new IntégritéException("Impossible de sauvegarder la ressource; le parent n'existe pas.");
 			}
 
 			$objet = [
@@ -120,7 +124,7 @@ class TentativeProgDAO extends TentativeDAO
 					],
 					$objet,
 				),
-			])[$tentative->date_soumission];
+			]);
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -128,12 +132,11 @@ class TentativeProgDAO extends TentativeDAO
 
 	public static function construire($data, $includes = [])
 	{
-		if ($data == null) {
-			return [];
-		}
-
 		$tentatives = [];
 		foreach ($data as $item) {
+			if ($item == null) {
+				continue;
+			}
 			$tentative = new TentativeProg(
 				langage: $item["langage"],
 				code: $item["code"],

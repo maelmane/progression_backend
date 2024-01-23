@@ -19,6 +19,7 @@
 namespace progression;
 
 use progression\TestCase;
+use Illuminate\Support\Facades\Gate;
 
 class ContrôleurTestCase extends TestCase
 {
@@ -26,19 +27,19 @@ class ContrôleurTestCase extends TestCase
 	{
 		parent::setUp();
 
-		\Gate::define("authentification_mdp", function () {
+		Gate::define("authentification_mdp", function () {
 			return true;
 		});
 
-		\Gate::define("authentification_token", function () {
+		Gate::define("authentification_token", function () {
 			return true;
 		});
 
-		\Gate::define("acces-ressource", function () {
+		Gate::define("acces-ressource", function () {
 			return true;
 		});
 
-		\Gate::define("acces-utilisateur", function () {
+		Gate::define("acces-utilisateur", function () {
 			return true;
 		});
 	}

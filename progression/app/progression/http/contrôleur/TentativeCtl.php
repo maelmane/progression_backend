@@ -30,15 +30,12 @@ use progression\domaine\interacteur\{
 	SauvegarderTentativeInt,
 	SoumettreTentativeProgInt,
 	SoumettreTentativeSysInt,
-	IntéracteurException,
 	TerminerConteneurSysInt,
 };
 use progression\http\transformer\dto\TentativeDTO;
-use progression\http\contrôleur\RésultatCtl;
 use progression\domaine\entité\{Avancement, Tentative, TentativeProg, TentativeSys, TentativeBD, Résultat};
 use progression\domaine\entité\question\{Question, QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\entité\TestProg;
-use progression\domaine\interacteur\{SoumettreTentativeIntéracteurException};
 use progression\util\Encodage;
 use Carbon\Carbon;
 
@@ -74,21 +71,24 @@ class TentativeCtl extends Contrôleur
 
 		$chemin = Encodage::base64_decode_url($question_uri);
 
-		$réponse = null;
-
 		$question = $this->récupérer_question($chemin);
 
-		if ($question instanceof QuestionProg) {
-			$validation = $this->valider_paramètres_prog($request);
-			if ($validation->fails()) {
-				return $this->réponse_json(["erreur" => $validation->errors()], 400);
+		if ($question instanceof Question) {
+			if ($question instanceof QuestionProg) {
+				$validation = $this->valider_paramètres_prog($request);
+				if ($validation->fails()) {
+					$réponse = $this->réponse_json(["erreur" => $validation->errors()], 400);
+				} else {
+					$réponse = $this->traiter_post_QuestionProg($request, $username, $chemin, $question);
+				}
+			} elseif ($question instanceof QuestionSys) {
+				$réponse = $this->traiter_post_QuestionSys($request, $username, $chemin, $question);
+			} else {
+				Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
+				$réponse = $this->réponse_json(["erreur" => "Question de type non implémentée."], 501);
 			}
-			$réponse = $this->traiter_post_QuestionProg($request, $username, $chemin, $question);
-		} elseif ($question instanceof QuestionSys) {
-			$réponse = $this->traiter_post_QuestionSys($request, $username, $chemin, $question);
 		} else {
-			Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			return $this->réponse_json(["erreur" => "Question de type non implémentée."], 501);
+			$réponse = $this->réponse_json(["erreur" => "Question inexistante."], 400);
 		}
 
 		Log::debug("TentativeCtl.post. Retour : ", [$réponse]);
@@ -139,12 +139,13 @@ class TentativeCtl extends Contrôleur
 
 		$tentative_résultante = $this->caviarder_résultats_des_tests_cachés($tentative_résultante, $tests);
 
+		$id = $tentative_résultante->date_soumission;
 		$question_uri = Encodage::base64_encode_url($chemin);
 
 		$dto = new TentativeDTO(
-			id: "{$username}/{$question_uri}/{$timestamp}",
+			id: "{$username}/{$question_uri}/{$id}",
 			objet: $tentative_résultante,
-			liens: TentativeCtl::get_liens("{$username}/{$question_uri}", $timestamp),
+			liens: TentativeCtl::get_liens("{$username}/{$question_uri}", $id),
 		);
 
 		$réponse = $this->item($dto, new TentativeProgTransformer());
@@ -176,15 +177,16 @@ class TentativeCtl extends Contrôleur
 		if (!$tentative_résultante) {
 			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
+		$id = $tentative_résultante->date_soumission;
 
 		$this->sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative_résultante);
 
 		$question_uri = Encodage::base64_encode_url($chemin);
 
 		$dto = new TentativeDTO(
-			id: "{$username}/{$question_uri}/{$timestamp}",
+			id: "{$username}/{$question_uri}/{$id}",
 			objet: $tentative_résultante,
-			liens: TentativeCtl::get_liens("{$username}/{$question_uri}", $timestamp),
+			liens: TentativeCtl::get_liens("{$username}/{$question_uri}", $id),
 		);
 
 		$réponse = $this->item($dto, new TentativeSysTransformer());
@@ -205,9 +207,9 @@ class TentativeCtl extends Contrôleur
 				"code" => "required|string|between:0,$TAILLE_CODE_MAX",
 			],
 			[
-				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
-				"string" => "Err: 1003. Le champ :attribute doit être une chaîne de caractères.",
-				"code.between" => "Err: 1002. Le code soumis " . mb_strlen($request->code) . " > :max caractères.",
+				"required" => "Le champ :attribute est obligatoire.",
+				"string" => "Le champ :attribute doit être une chaîne de caractères.",
+				"code.between" => "Le code soumis " . mb_strlen($request->code) . " > :max caractères.",
 			],
 		);
 	}
@@ -303,6 +305,10 @@ class TentativeCtl extends Contrôleur
 
 		$obtenirTentativeInt = new ObtenirTentativeInt();
 		$tentative_récupérée = $obtenirTentativeInt->get_dernière($username, $chemin);
+		if (!$tentative_récupérée instanceof TentativeSys) {
+			return "";
+		}
+
 		$conteneur_id = $tentative_récupérée?->conteneur_id ?? "";
 
 		Log::debug("TentativeCtl.récupérer_conteneur_id. Retour : ", [$conteneur_id]);

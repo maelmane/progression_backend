@@ -19,7 +19,7 @@
 namespace progression\dao\question;
 
 use DomainException;
-use RuntimeException;
+use BadMethodCallException;
 use Illuminate\Support\Facades\Log;
 use progression\dao\EntitéDAO;
 use progression\domaine\entité\question\{QuestionProg, QuestionSys};
@@ -39,11 +39,11 @@ class QuestionDAO extends EntitéDAO
 				->get_chargeur_question_http()
 				->récupérer_question($uri);
 		} else {
-			throw new RuntimeException("Schéma d'URI invalide");
+			throw new BadMethodCallException("Schéma d'URI invalide");
 		}
 
 		if ($infos_question === null) {
-			throw new DomainException("Le fichier ne peut pas être décodé. Erreur inconnue.");
+			return null;
 		}
 
 		$type = $infos_question["type"] ?? ($type = "prog");
@@ -51,8 +51,6 @@ class QuestionDAO extends EntitéDAO
 			return DécodeurQuestionProg::load(new QuestionProg(), $infos_question);
 		} elseif ($type == "sys") {
 			return DécodeurQuestionSys::load(new QuestionSys(), $infos_question);
-		} elseif ($type == "bd") {
-			throw new RuntimeException("Question de type BD non implémenté");
 		} else {
 			throw new DomainException("Le fichier ne peut pas être décodé. Type inconnu");
 		}

@@ -109,7 +109,7 @@ final class SauvegarderAvancementIntTests extends TestCase
 					$type == "prog" &&
 					$avancement == $avancement_sauvegardé;
 			})
-			->andReturnArg(3);
+			->andReturn(["file:///prog1/les_fonctions/appeler_une_fonction/info.yml" => $avancement_sauvegardé]);
 
 		$interacteur = new SauvegarderAvancementInt();
 		$résultat_observé = $interacteur->sauvegarder(
@@ -118,26 +118,26 @@ final class SauvegarderAvancementIntTests extends TestCase
 			new Avancement(titre: "Appeler une fonction", niveau: "facile", extra: "Infos extras"),
 		);
 
-		$résultat_attendu = new Avancement(titre: "Appeler une fonction", niveau: "facile", extra: "Infos extras");
+		$résultat_attendu = ["file:///prog1/les_fonctions/appeler_une_fonction/info.yml" => $avancement_sauvegardé];
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
-		$this->assertEquals([], $résultat_observé->tentatives);
 	}
 
-	public function test_étant_donné_une_question_inexistante_lorsquon_sauvegarde_un_avancement_on_obtient_null()
+	public function test_étant_donné_une_question_inexistante_lorsquon_sauvegarde_un_avancement_on_obtient_une_exception()
 	{
 		DAOFactory::getInstance()
 			->get_avancement_dao()
 			->shouldNotReceive("save");
 
 		$interacteur = new SauvegarderAvancementInt();
-		$résultat_observé = $interacteur->sauvegarder(
+
+		$this->expectException(IntégritéException::class);
+
+		$interacteur->sauvegarder(
 			"jdoe",
 			"file:///question_inexistante/info.yml",
 			new Avancement(titre: "Appeler une fonction", niveau: "facile", extra: "Infos extras"),
 		);
-
-		$this->assertNull($résultat_observé);
 	}
 	public function test_étant_donné_un_avancement_existant_lorsquon_sauvegarde_l_avancement_modifié_il_est_sauvegardé_et_retourné_mutatis_mutandis()
 	{
@@ -158,7 +158,7 @@ final class SauvegarderAvancementIntTests extends TestCase
 					$type == "prog" &&
 					$avancement == $avancement_sauvegardé;
 			})
-			->andReturnArg(3);
+			->andReturn(["file:///prog1/les_fonctions/appeler_une_fonction/info.yml" => $avancement_sauvegardé]);
 
 		$interacteur = new SauvegarderAvancementInt();
 		$résultat_observé = $interacteur->sauvegarder(
@@ -167,10 +167,9 @@ final class SauvegarderAvancementIntTests extends TestCase
 			$avancement_modifié,
 		);
 
-		$résultat_attendu = $avancement_sauvegardé;
+		$résultat_attendu = ["file:///prog1/les_fonctions/appeler_une_fonction/info.yml" => $avancement_sauvegardé];
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
-		$this->assertEquals([], $résultat_observé->tentatives);
 	}
 	public function test_étant_donné_un_avancement_existant_et_une_question_modifiée_lorsquon_sauvegarde_l_avancement_modifié_il_est_sauvegardé_et_retourné_mutatis_mutandis()
 	{
@@ -191,7 +190,7 @@ final class SauvegarderAvancementIntTests extends TestCase
 					$type == "prog" &&
 					$avancement == $avancement_sauvegardé;
 			})
-			->andReturnArg(3);
+			->andReturn(["file:///une_question_modifiée/info.yml" => $avancement_sauvegardé]);
 
 		$interacteur = new SauvegarderAvancementInt();
 		$résultat_observé = $interacteur->sauvegarder(
@@ -200,9 +199,8 @@ final class SauvegarderAvancementIntTests extends TestCase
 			$avancement_modifié,
 		);
 
-		$résultat_attendu = $avancement_sauvegardé;
+		$résultat_attendu = ["file:///une_question_modifiée/info.yml" => $avancement_sauvegardé];
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
-		$this->assertEquals([], $résultat_observé->tentatives);
 	}
 }

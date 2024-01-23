@@ -64,17 +64,17 @@ class RésultatCtl extends Contrôleur
 		}
 
 		if (!$question) {
-			$réponse = $this->réponse_json(["erreur" => "Err: 1002. La question " . $chemin . " n'existe pas."], 404);
+			$réponse = $this->réponse_json(["erreur" => "La question " . $chemin . " n'existe pas."], 404);
 		} elseif (isset($request->index) && !array_key_exists($request->index, $question->tests)) {
-			$réponse = $this->réponse_json(["erreur" => "Err: 1003. L'indice de test n'existe pas."], 400);
+			$réponse = $this->réponse_json(["erreur" => "L'indice de test n'existe pas."], 400);
 		} else {
 			$résultat = $this->traiter_post_Question($request, $chemin, $question);
 
 			if (!$résultat) {
-				$réponse = $this->réponse_json(["erreur" => "Err: 1000. La tentative n'est pas traitable."], 400);
+				$réponse = $this->réponse_json(["erreur" => "La tentative n'est pas traitable."], 400);
 			} else {
-				$hash = array_key_first($résultat);
-				$réponse = $this->valider_et_préparer_réponse($résultat[$hash], $hash);
+				$id = array_key_first($résultat);
+				$réponse = $this->valider_et_préparer_réponse($résultat[$id], $id);
 			}
 		}
 
@@ -105,7 +105,7 @@ class RésultatCtl extends Contrôleur
 					function ($attribute, $value, $fail) {
 						$url = Encodage::base64_decode_url($value);
 						if (!$url || Validator::make(["uri" => $url], ["uri" => "url"])->fails()) {
-							$fail("Err: 1003. Le champ uri doit être un URL encodé en base64.");
+							$fail("Le champ uri doit être un URL encodé en base64.");
 						}
 					},
 				],
@@ -115,11 +115,10 @@ class RésultatCtl extends Contrôleur
 				"index" => "integer",
 			],
 			[
-				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
-				"code.between" =>
-					"Err: 1002. Le code soumis " . mb_strlen($request->code) . " > $TAILLE_CODE_MAX caractères.",
-				"question_uri.required" => "Err: 1004. Le champ question_uri est obligatoire.",
-				"test.required_without" => "Err: 1004. Le champ test est obligatoire lorsque index n'est pas présent.",
+				"required" => "Le champ :attribute est obligatoire.",
+				"code.between" => "Le code soumis " . mb_strlen($request->code) . " > $TAILLE_CODE_MAX caractères.",
+				"question_uri.required" => "Le champ question_uri est obligatoire.",
+				"test.required_without" => "Le champ test est obligatoire lorsque index n'est pas présent.",
 			],
 		);
 
@@ -134,8 +133,8 @@ class RésultatCtl extends Contrôleur
 				"index" => "required|integer",
 			],
 			[
-				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
-				"index.integer" => "Err: 1003. Le champ index doit être un entier.",
+				"required" => "Le champ :attribute est obligatoire.",
+				"index.integer" => "Le champ index doit être un entier.",
 			],
 		);
 
@@ -222,16 +221,20 @@ class RésultatCtl extends Contrôleur
 		/* @phpstan-ignore-next-line */
 		$utilisateur_courant = auth()->user()->username;
 		$dernière_tentative = (new ObtenirTentativeInt())->get_dernière($utilisateur_courant, $chemin);
+		if (!$dernière_tentative instanceof TentativeSys) {
+			return null;
+		}
+
 		$tentative = new TentativeSys(
 			date_soumission: (new \DateTime())->getTimestamp(),
-			conteneur_id: $dernière_tentative?->conteneur_id,
+			conteneur_id: $dernière_tentative->conteneur_id,
 		);
 
 		$test_index = $request->index;
 
 		$tentative_résultante = $this->soumettre_tentative_sys($question, $tentative, $test_index);
 
-		if (!$tentative_résultante || count($tentative_résultante->résultats) <= $test_index) {
+		if (count($tentative_résultante->résultats) <= $test_index) {
 			return null;
 		}
 
@@ -255,7 +258,7 @@ class RésultatCtl extends Contrôleur
 		QuestionSys $question,
 		TentativeSys $tentative,
 		int|null $test_index,
-	): TentativeSys|null {
+	): TentativeSys {
 		$intéracteur = new SoumettreTentativeSysInt();
 		return $intéracteur->soumettre_tentative($question, $tentative, $question->tests, $test_index);
 	}

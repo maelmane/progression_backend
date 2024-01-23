@@ -73,6 +73,10 @@ $app->routeMiddleware([
 ]);
 
 $app->routeMiddleware([
+	"auth_optionnelle" => progression\http\middleware\AuthenticateOpt::class,
+]);
+
+$app->routeMiddleware([
 	"permissionsRessources" => progression\http\middleware\PermissionsRessources::class,
 ]);
 

@@ -21,6 +21,8 @@ namespace progression\dao\mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use progression\domaine\entité\user\User;
+use progression\http\contrôleur\GénérateurDeToken;
+use Carbon\Carbon;
 
 class MailUser
 {
@@ -36,17 +38,36 @@ class MailUser
 
 class Expéditeur
 {
-	function envoyer_validation_courriel(User $user, string $token): void
+	function envoyer_courriel_de_validation(User $user): void
 	{
+		$data = [
+			"url_user" => getenv("APP_URL") . "/user/" . $user->username,
+			"user" => [
+				"username" => $user->username,
+				"courriel" => $user->courriel,
+				"rôle" => $user->rôle,
+			],
+		];
+		$ressources = [
+			"user" => [
+				"url" => "^user/" . $user->username . "$",
+				"method" => "^PATCH$",
+			],
+		];
+
+		$expirationToken = Carbon::now()->addMinutes((int) getenv("JWT_EXPIRATION"))->timestamp;
+		$token = GénérateurDeToken::get_instance()->générer_token(
+			$user->username,
+			$expirationToken,
+			$ressources,
+			$data,
+		);
+
 		try {
 			Mail::to(new MailUser($user))->send(new ValidationCourrielMail($user, $token));
 			Log::notice("(" . __CLASS__ . ") Courriel de validation envoyé à {$user->courriel} :");
-		} catch (\Swift_TransportException $e) {
-			Log::notice("(" . __CLASS__ . ") Erreur d'envoi du courriel à {$user->courriel} :" . $e->getMessage());
-		} catch (\Swift_RfcComplianceException $e) {
-			Log::error("(" . __CLASS__ . ") Erreur d'envoi du courriel à {$user->courriel} :" . $e->getMessage());
-		} catch (\Exception $e) {
-			Log::error("(" . __CLASS__ . ") Erreur d'envoi du courriel à {$user->courriel} :" . $e->getMessage());
+		} catch (\Swift_TransportException | \Swift_RfcComplianceException $e) {
+			throw new EnvoiDeCourrielException($e);
 		}
 	}
 }

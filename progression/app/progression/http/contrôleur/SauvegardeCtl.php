@@ -52,12 +52,8 @@ class SauvegardeCtl extends Contrôleur
 			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} else {
 			$résultat_sauvegarde = $this->sauvegarder_sauvegarde($request, $username, $question_uri);
-			$réponse = $this->valider_et_préparer_réponse(
-				$résultat_sauvegarde,
-				$username,
-				$question_uri,
-				$request->langage,
-			);
+			$id = array_key_first($résultat_sauvegarde);
+			$réponse = $this->valider_et_préparer_réponse($résultat_sauvegarde[$id], $username, $question_uri, $id);
 		}
 
 		Log::debug("SauvegardeCtl.post. Retour : ", [$réponse]);
@@ -134,7 +130,7 @@ class SauvegardeCtl extends Contrôleur
 				"code" => "required",
 			],
 			[
-				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
+				"required" => "Le champ :attribute est obligatoire.",
 			],
 		);
 	}

@@ -19,6 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\dao\DAOException;
+use progression\domaine\entité\Sauvegarde;
 
 class ObtenirSauvegardeInt extends Interacteur
 {
@@ -26,7 +27,7 @@ class ObtenirSauvegardeInt extends Interacteur
 	 * @param mixed $includes
 	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
 	 */
-	function get_sauvegarde($username, $question_uri, $langage, mixed $includes = [])
+	function get_sauvegarde($username, $question_uri, $langage, mixed $includes = []): Sauvegarde|null
 	{
 		try {
 			$sauvegarde = $this->source_dao
@@ -35,6 +36,7 @@ class ObtenirSauvegardeInt extends Interacteur
 		} catch (DAOException $e) {
 			throw new IntéracteurException($e, 503);
 		}
+
 		return $sauvegarde;
 	}
 }

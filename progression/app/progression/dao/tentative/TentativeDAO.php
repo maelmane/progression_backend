@@ -26,8 +26,6 @@ use progression\domaine\entité\{Tentative, TentativeProg, TentativeSys, Tentati
 
 class TentativeDAO extends EntitéDAO
 {
-	const TYPES = ["eval" => 0, "sys" => 1, "bd" => 2, "prog" => 3];
-
 	/**
 	 * @param mixed $includes
 	 * @return array<Tentative>
@@ -93,7 +91,7 @@ class TentativeDAO extends EntitéDAO
 					[$question_uri, $username],
 				)[0]->type ?? null;
 
-			return array_key_exists($type, self::TYPES) ? Type::from(self::TYPES[$type]) : null;
+			return Type::tryFrom($type);
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}

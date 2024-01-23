@@ -17,7 +17,8 @@
     },
     "links": {
       "self": "https://example.com/",
-      "user": "https://example.com/user/jdoe"
+      "user": "https://example.com/user/jdoe",
+      "tokens": "https://example.com/user/jdoe/tokens"
     }
   }
 }

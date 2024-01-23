@@ -102,9 +102,8 @@ class TokenCtl extends Contrôleur
 				"data.expiration" => ["required", "regex:/^\+*[0-9]+$/"],
 			],
 			[
-				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
-				"data.expiration.regex" =>
-					"Err: 1003. Le champ data.expiration doit représenter une date relative ou absolue.",
+				"required" => "Le champ :attribute est obligatoire.",
+				"data.expiration.regex" => "Le champ data.expiration doit représenter une date relative ou absolue.",
 			],
 		);
 

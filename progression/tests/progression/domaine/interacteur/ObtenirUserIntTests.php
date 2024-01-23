@@ -87,11 +87,10 @@ final class ObtenirUserIntTests extends TestCase
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
-	public function test_étant_donné_un_utilisateur_Banane_inexistant_lorsquon_le_cherche_par_username_on_obtient_null()
+	public function test_étant_donné_un_utilisateur_Banane_inexistant_lorsquon_le_cherche_par_username_on_obtient_une_exception()
 	{
 		$interacteur = new ObtenirUserInt();
-		$résultat_obtenu = $interacteur->get_user("Banane");
 
-		$this->assertNull($résultat_obtenu);
+		$this->assertNull($interacteur->get_user("Banane"));
 	}
 }

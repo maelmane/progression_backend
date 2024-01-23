@@ -20,8 +20,8 @@ use progression\TestCase;
 
 use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\DAOFactory;
-use Illuminate\Auth\GenericUser;
 use progression\http\contrôleur\GénérateurDeToken;
+use progression\UserAuthentifiable;
 
 final class PermissionsRessourcesTests extends TestCase
 {
@@ -35,11 +35,12 @@ final class PermissionsRessourcesTests extends TestCase
 		putenv("AUTH_TYPE=ldap");
 		putenv("APP_URL=https://example.com/");
 
-		$this->user = new GenericUser([
-			"username" => "bob",
-			"rôle" => Rôle::NORMAL,
-			"état" => État::ACTIF,
-		]);
+		$this->user = new UserAuthentifiable(
+			username: "bob",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
 		$token = GénérateurDeToken::get_instance()->générer_token("bob");
 		$this->headers = ["HTTP_Authorization" => "Bearer " . $token];
 
@@ -100,11 +101,7 @@ final class PermissionsRessourcesTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_admin_connecté_lorsquon_demande_une_ressource_pour_l_utilisateur_existant_bob_on_obtient_son_profil()
 	{
-		$admin = new GenericUser([
-			"username" => "admin",
-			"rôle" => Rôle::ADMIN,
-			"état" => État::ACTIF,
-		]);
+		$admin = new UserAuthentifiable(username: "admin", date_inscription: 0, rôle: Rôle::ADMIN, état: État::ACTIF);
 		$résultat_obtenu = $this->actingAs($admin)->call("GET", "/user/bob");
 
 		$this->assertJsonStringEqualsJsonFile(

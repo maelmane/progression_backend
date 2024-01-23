@@ -31,6 +31,7 @@ class ObtenirUserInt extends Interacteur
 	{
 		$dao = $this->source_dao->get_user_dao();
 		$user = $dao->get_user(username: $username, includes: $includes);
+
 		return $user;
 	}
 
@@ -43,9 +44,10 @@ class ObtenirUserInt extends Interacteur
 		try {
 			$dao = $this->source_dao->get_user_dao();
 			$user = $dao->trouver(username: $username, courriel: $courriel, includes: $includes);
-			return $user;
 		} catch (DAOException $e) {
 			throw new IntéracteurException($e, 503);
 		}
+
+		return $user;
 	}
 }

@@ -21,7 +21,7 @@ namespace progression\domaine\interacteur;
 use progression\dao\DAOFactory;
 use progression\domaine\entité\clé\{Clé, Portée};
 use progression\domaine\entité\user\User;
-use PHPUnit\Framework\TestCase;
+use progression\TestCase;
 use Mockery;
 
 final class LoginIntTests extends TestCase
@@ -37,7 +37,7 @@ final class LoginIntTests extends TestCase
 			->andReturn(new User(username: "bob", date_inscription: 0));
 		$mockUserDAO
 			->allows()
-			->trouver(null, "bob@progressionmail.com", Mockery::Any())
+			->trouver(null, "bob@progressionmail.com")
 			->andReturn(new User(username: "bob", date_inscription: 0, courriel: "bob@progressionmail.com"));
 		$mockUserDAO
 			->allows()
@@ -53,7 +53,7 @@ final class LoginIntTests extends TestCase
 			->vérifier_password(Mockery::Any(), Mockery::Any())
 			->andReturn(false);
 
-		$mockUserDAO->shouldReceive("save")->andReturn(new User(username: "Banane", date_inscription: 0));
+		$mockUserDAO->shouldReceive("save")->andReturn(["Banane" => new User(username: "Banane", date_inscription: 0)]);
 		$mockUserDAO->shouldReceive("set_password")->withArgs(function ($user, $password) {
 			return $user->username == "Banane" && $password == "password";
 		});

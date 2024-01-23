@@ -22,62 +22,28 @@ use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 
 class Authenticate
 {
-	protected $auth;
-
-	public function __construct(Auth $auth)
-	{
-		$this->auth = $auth;
-	}
-
 	public function handle(Request $request, Closure $next): JsonResponse
 	{
-		if (
-			$request->header("Authorization") !== null &&
-			is_string($request->header("Authorization")) &&
-			stripos($request->header("Authorization"), "bearer") === 0
-		) {
-			return $this->authentifier_par_token($request, $next);
-		} else {
-			return $this->authentifier_par_mdp($request, $next);
+		if (!Gate::allows("utilisateur-non-inactif", $request)) {
+			return $this->réponse_json(["erreur" => "Accès interdit."], 401);
 		}
+		return $next($request);
 	}
 
-	private function authentifier_par_token(Request $request, Closure $next): JsonResponse
+	private function réponse_json(mixed $réponse, int $code): JsonResponse
 	{
-		if (Gate::allows("authentification_token", $request)) {
-			return $next($request);
-		} else {
-			Log::warning(
-				"(" . $request->ip() . ") - " . $request->method() . " " . $request->path() . "(" . __CLASS__ . ")",
-			);
-			return response()->json(["erreur" => "Accès interdit."], 401, [
+		return response()->json(
+			$réponse,
+			$code,
+			[
 				"Content-Type" => "application/vnd.api+json",
 				"Charset" => "utf-8",
-			]);
-		}
-	}
-
-	private function authentifier_par_mdp(Request $request, Closure $next): JsonResponse
-	{
-		$réponse = Gate::inspect("authentification_mdp", $request);
-		if ($réponse->allowed()) {
-			return $next($request);
-		} else {
-			if ($réponse->message() == null) {
-				return response()->json(["erreur" => "Accès interdit."], 401, [
-					"Content-Type" => "application/vnd.api+json",
-					"Charset" => "utf-8",
-				]);
-			}
-			return response()->json(["erreur" => $réponse->message()], 400, [
-				"Content-Type" => "application/vnd.api+json",
-				"Charset" => "utf-8",
-			]);
-		}
+			],
+			JSON_UNESCAPED_UNICODE,
+		);
 	}
 }

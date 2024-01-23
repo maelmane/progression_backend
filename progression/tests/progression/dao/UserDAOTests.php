@@ -35,15 +35,15 @@ final class UserDAOTests extends TestCase
 		$avancement1 = new Avancement([], "Un titre", "facile");
 		$avancement1->date_modification = 1615696276;
 		$avancement1->date_réussite = null;
-		$avancement1->etat = État::NONREUSSI;
+		$avancement1->état = État::NONREUSSI;
 		$avancement2 = new Avancement([], "Un titre", "facile");
 		$avancement2->date_modification = 1645739981;
 		$avancement2->date_réussite = 1645739959;
-		$avancement2->etat = État::NONREUSSI;
+		$avancement2->état = État::NONREUSSI;
 		$avancement3 = new Avancement([], "Un titre 2", "facile");
 		$avancement3->date_modification = 1645739991;
 		$avancement3->date_réussite = 1645739969;
-		$avancement3->etat = État::REUSSI;
+		$avancement3->état = État::REUSSI;
 
 		$this->bob = new User(username: "bob", date_inscription: 1590828610, courriel: "bob@progressionmail.com");
 		$this->bob->avancements = [
@@ -202,8 +202,8 @@ final class UserDAOTests extends TestCase
 		$réponse_attendue = new User(username: "gaston", date_inscription: 0);
 		$user_test = new User(username: "gaston", date_inscription: 0);
 
-		$réponse_observée = (new UserDAO())->save($user_test);
-		$this->assertEquals($réponse_attendue, $réponse_observée);
+		$réponse_observée = (new UserDAO())->save("gaston", $user_test);
+		$this->assertEquals(["gaston" => $réponse_attendue], $réponse_observée);
 
 		$réponse_observée = (new UserDAO())->get_user("gaston");
 		$this->assertEquals($réponse_attendue, $réponse_observée);
@@ -226,8 +226,8 @@ final class UserDAOTests extends TestCase
 		$user_test = (new UserDAO())->get_user("bob");
 		$user_test->rôle = Rôle::ADMIN;
 
-		$réponse_observée = (new UserDAO())->save($user_test);
-		$this->assertEquals($réponse_attendue, $réponse_observée);
+		$réponse_observée = (new UserDAO())->save("bob", $user_test);
+		$this->assertEquals(["bob" => $réponse_attendue], $réponse_observée);
 
 		$réponse_observée = (new UserDAO())->get_user("bob");
 		$this->assertEquals($réponse_attendue, $réponse_observée);

@@ -22,7 +22,7 @@ use progression\domaine\entité\question\{Question, QuestionProg, Type};
 use progression\domaine\entité\Exécutable;
 use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\DAOFactory;
-use Illuminate\Auth\GenericUser;
+use progression\UserAuthentifiable;
 
 final class ÉbaucheCtlTests extends ContrôleurTestCase
 {
@@ -34,11 +34,12 @@ final class ÉbaucheCtlTests extends ContrôleurTestCase
 
 		putenv("APP_URL=https://example.com");
 
-		$this->user = new GenericUser([
-			"username" => "bob",
-			"rôle" => Rôle::NORMAL,
-			"état" => État::ACTIF,
-		]);
+		$this->user = new UserAuthentifiable(
+			username: "bob",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
 
 		// Question
 		$question = new QuestionProg();

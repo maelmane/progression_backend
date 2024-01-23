@@ -18,12 +18,13 @@
 
 use progression\TestCase;
 
+use Illuminate\Support\Facades\Config;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\question\QuestionProg;
 use progression\domaine\entité\clé\{Clé, Portée};
 use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\DAOFactory;
-use Illuminate\Auth\GenericUser;
+use progression\UserAuthentifiable;
 use Carbon\Carbon;
 
 final class AuthenticateTests extends TestCase
@@ -34,11 +35,26 @@ final class AuthenticateTests extends TestCase
 	{
 		parent::setUp();
 
-		$this->user = new GenericUser([
-			"username" => "bob",
-			"rôle" => Rôle::NORMAL,
-			"état" => État::ACTIF,
-		]);
+		Config::set("version.numéro", "3.0.0");
+
+		$this->user = new UserAuthentifiable(
+			username: "bob",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
+		$this->user_inactif = new UserAuthentifiable(
+			username: "roger",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::INACTIF,
+		);
+		$this->user_en_attente = new UserAuthentifiable(
+			username: "roger",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ATTENTE_DE_VALIDATION,
+		);
 
 		putenv("APP_URL=https://example.com/");
 		putenv("JWT_SECRET=secret");
@@ -59,12 +75,16 @@ final class AuthenticateTests extends TestCase
 			->andReturn(new User(username: "bob", date_inscription: 0, état: État::ACTIF));
 		$mockUserDAO
 			->shouldReceive("trouver")
+			->with(null, "bob@progressionmail.com")
+			->andReturn(new User(username: "bob", date_inscription: 0, état: État::ACTIF));
+		$mockUserDAO
+			->shouldReceive("trouver")
 			->with(null, "bob@progressionmail.com", [])
 			->andReturn(new User(username: "bob", date_inscription: 0, état: État::ACTIF));
 		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("roger")
-			->andReturn(new User(username: "roger", date_inscription: 0, état: État::INACTIF));
+			->shouldReceive("trouver")
+			->with(null, Mockery::Any(), [])
+			->andReturn(null);
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("marcel")
@@ -73,12 +93,12 @@ final class AuthenticateTests extends TestCase
 
 		$mockUserDAO
 			->shouldReceive("vérifier_password")
-			->with(Mockery::Any(), "incorrect")
-			->andReturn(false);
-		$mockUserDAO
-			->shouldReceive("vérifier_password")
 			->with(Mockery::Any(), "m0tD3P4ZZE")
 			->andReturn(true);
+		$mockUserDAO
+			->shouldReceive("vérifier_password")
+			->with(Mockery::Any(), Mockery::Any())
+			->andReturn(false);
 
 		// CléDAO
 		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
@@ -120,12 +140,12 @@ final class AuthenticateTests extends TestCase
 	//	putenv("AUTH_LOCAL=false");
 	//	putenv("AUTH_LDAP=true");
 	//
-	//	$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
+	//	$résultat_observé = $this->call("GET", "/user/bob", [
 	//		"identifiant" => "bob",
 	//		"password" => "m0tD3P4ZZE",
 	//	]);
 	//
-	//    $this->assertEquals(200, $résultat_observé->status());
+	//    $this->assertResponseStatus(200);
 	//	$this->assertJsonStringEqualsJsonString('{"Token":"token valide"}', $token = $résultat_observé->getContent());
 	//}
 	//
@@ -134,12 +154,12 @@ final class AuthenticateTests extends TestCase
 	//	putenv("AUTH_LOCAL=false");
 	//	putenv("AUTH_LDAP=true");
 	//
-	//	$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
+	//	$résultat_observé = $this->call("GET", "/user/bob", [
 	//		"identifiant" => "bob@progressionmail.com",
 	//		"password" => "m0tD3P4ZZE",
 	//	]);
 	//
-	//	$this->assertEquals(200, $résultat_observé->status());
+	//	$this->assertResponseStatus(200);
 	//	$this->assertJsonStringEqualsJsonString('{"Token":"token valide"}', $token = $résultat_observé->getContent());
 	//}
 
@@ -148,12 +168,16 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=false");
 		putenv("AUTH_LDAP=true");
 
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "Marcel",
-			"password" => "m0tD3P4ZZE",
-		]);
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode("Marcel:m0tD3P4ZZE")],
+		);
 
-		$this->assertEquals(401, $résultat_observé->status());
+		$this->assertResponseStatus(401);
 		$this->assertJsonStringEqualsJsonString('{"erreur":"Accès interdit."}', $résultat_observé->content());
 	}
 
@@ -162,12 +186,16 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=false");
 		putenv("AUTH_LDAP=true");
 
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "Marcel@test@ici.com",
-			"password" => "password",
-		]);
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode("Marcel@test@ici.com:password")],
+		);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertResponseStatus(400);
 		$this->assertJsonStringEqualsJsonString(
 			'{"erreur":{"identifiant":["L\'identifiant doit être un nom d\'utilisateur ou un courriel valide."]}}',
 			$résultat_observé->getContent(),
@@ -175,20 +203,46 @@ final class AuthenticateTests extends TestCase
 	}
 
 	#  Aucune AUTH
-	public function test_étant_donné_un_utilisateur_existant_et_sans_authentification_lorsquon_effectue_une_requête_avec_identifiant_on_obtient_la_ressource()
+	public function test_étant_donné_un_utilisateur_existant_et_sans_authentification_lorsquon_effectue_une_requête_avec_identifiant_sans_mdp_on_obtient_la_ressource()
 	{
 		putenv("AUTH_LOCAL=false");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->actingAs($this->user)->call(
+		$résultat_observé = $this->call(
 			"GET",
 			"/question/cXVlc3Rpb25fZGVfdGVzdA", // question_de_test
+			[],
+			[],
+			[],
 			[
-				"identifiant" => "bob",
+				"HTTP_Authorization" => "basic " . base64_encode("bob"),
 			],
 		);
 
-		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertResponseStatus(200);
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/ressource_question_de_test.json",
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_et_sans_authentification_lorsquon_effectue_une_requête_avec_identifiant_et_mdp_vide_on_obtient_la_ressource()
+	{
+		putenv("AUTH_LOCAL=false");
+		putenv("AUTH_LDAP=false");
+
+		$résultat_observé = $this->call(
+			"GET",
+			"/question/cXVlc3Rpb25fZGVfdGVzdA", // question_de_test
+			[],
+			[],
+			[],
+			[
+				"HTTP_Authorization" => "basic " . base64_encode("bob:"),
+			],
+		);
+
+		$this->assertResponseStatus(200);
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/ressource_question_de_test.json",
 			$résultat_observé->getContent(),
@@ -200,12 +254,15 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=false");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "marcel@ici.com",
-			"password" => "password",
-		]);
-
-		$this->assertEquals(400, $résultat_observé->status());
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode("marcel@ici.com:")],
+		);
+		$this->assertResponseStatus(400);
 		$this->assertJsonStringEqualsJsonString(
 			'{"erreur":{"identifiant":["L\'identifiant doit être un nom d\'utilisateur ou un courriel valide."]}}',
 			$résultat_observé->getContent(),
@@ -218,16 +275,16 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->actingAs($this->user)->call(
+		$résultat_observé = $this->call(
 			"GET",
 			"/question/cXVlc3Rpb25fZGVfdGVzdA", // question_de_test
-			[
-				"identifiant" => "bob",
-				"password" => "m0tD3P4ZZE",
-			],
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode("bob:m0tD3P4ZZE")],
 		);
 
-		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertResponseStatus(200);
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/ressource_question_de_test.json",
 			$résultat_observé->getContent(),
@@ -239,16 +296,17 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->actingAs($this->user)->call(
+		$résultat_observé = $this->call(
 			"GET",
 			"/question/cXVlc3Rpb25fZGVfdGVzdA", // question_de_test
-			[
-				"identifiant" => "bob@progressionmail.com",
-				"password" => "m0tD3P4ZZE",
-			],
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode("bob@progressionmail.com:m0tD3P4ZZE")],
 		);
 
-		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertResponseStatus(200);
+
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/ressource_question_de_test.json",
 			$résultat_observé->getContent(),
@@ -260,23 +318,60 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "roger",
-			"password" => "m0tD3P4ZZE",
-		]);
-		$this->assertEquals(401, $résultat_observé->status());
+		$this->call(
+			"GET",
+			"/user/roger",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode("roger:m0tD3P4ZZE")],
+		);
+		$this->assertResponseStatus(401);
 	}
 
-	public function test_étant_donné_un_utilisateur_en_attente_de_validation_avec_authentification_lorsquon_effectue_une_requête_mdp_correct_on_obtient_une_erreur_401()
+	public function test_étant_donné_un_utilisateur_actif_avec_authentification_lorsquon_effectue_une_requête_sur_une_ressource_non_protégée_on_obtient_la_ressource_et_un_code_200()
 	{
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "marcel",
-			"password" => "m0tD3P4ZZE",
-		]);
-		$this->assertEquals(401, $résultat_observé->status());
+		$résultat_observé = $this->call(
+			"GET",
+			"/",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode("bob:m0tD3P4ZZE")],
+		);
+		$this->assertResponseStatus(200);
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/config_locale_authentifié.json",
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_effectue_une_requête_sur_une_ressource_non_protégée_on_obtient_une_erreur_401()
+	{
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
+
+		$this->call("GET", "/", [], [], [], ["HTTP_Authorization" => "basic " . base64_encode("inexistant:jesaispas")]);
+		$this->assertResponseStatus(401);
+	}
+
+	public function test_étant_donné_un_utilisateur_en_attente_de_validation_avec_authentification_lorsquon_effectue_une_requête_mdp_correct_on_obtient_une_erreur_403()
+	{
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
+
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/marcel",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode("marcel:m0tD3P4ZZE")],
+		);
+		$this->assertResponseStatus(403);
 	}
 
 	public function test_étant_donné_un_utilisateur_inexistant_avec_authentification_lorsquon_effectue_une_requête_avec_identifiant_on_obtient_une_erreur_401()
@@ -284,12 +379,16 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "Zozo",
-			"password" => "m0tD3P4ZZE",
-		]);
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode("zozo:m0tD3P4ZZE")],
+		);
 
-		$this->assertEquals(401, $résultat_observé->status());
+		$this->assertResponseStatus(401);
 		$this->assertJsonStringEqualsJsonString('{"erreur":"Accès interdit."}', $résultat_observé->content());
 	}
 
@@ -298,12 +397,16 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "bob",
-			"password" => "incorrect",
-		]);
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode("bob:incorrect")],
+		);
 
-		$this->assertEquals(401, $résultat_observé->status());
+		$this->assertResponseStatus(401);
 		$this->assertJsonStringEqualsJsonString('{"erreur":"Accès interdit."}', $résultat_observé->content());
 	}
 
@@ -314,12 +417,16 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "",
-			"password" => "m0tD3P4ZZE",
-		]);
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode(":m0tD3P4ZZE")],
+		);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertResponseStatus(400);
 	}
 
 	public function test_étant_donné_une_authentificaton_locale_lorsquon_effectue_une_requête_un_nom_dutilisateur_invalide_on_obtient_une_erreur_400()
@@ -327,12 +434,16 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "bo bo",
-			"password" => "m0tD3P4ZZE",
-		]);
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode("bo b:m0tD3P4ZZE")],
+		);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertResponseStatus(400);
 	}
 
 	public function test_étant_donné_une_authentificaton_locale_lorsquon_effectue_une_requête_sans_nom_dutlisateur_on_obtient_une_erreur_400()
@@ -340,11 +451,16 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"password" => "m0tD3P4ZZE",
-		]);
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode(":m0tD3P4ZZE")],
+		);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertResponseStatus(400);
 	}
 
 	public function test_étant_donné_une_authentification_locale_lorsquon_effectue_une_requête_sans_mot_de_passe_on_obtient_une_erreur_400()
@@ -352,9 +468,16 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", ["identifiant" => ""]);
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode("bob")],
+		);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertResponseStatus(400);
 	}
 
 	public function test_étant_donné_une_authentification_locale_lorsquon_effectue_une_requête_avec_mot_de_passe_vide_on_obtient_une_erreur_400()
@@ -362,28 +485,31 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "bob",
-			"password" => "",
-		]);
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode("bob:")],
+		);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertResponseStatus(400);
 	}
 
 	# Authentification par clé
 	public function test_étant_donné_un_utilisateur_existant_et_une_clé_dauthentification_valide_effectue_une_requête_on_obtient_la_ressource()
 	{
-		$résultat_observé = $this->actingAs($this->user)->call(
+		$résultat_observé = $this->call(
 			"GET",
 			"/question/cXVlc3Rpb25fZGVfdGVzdA", // question_de_test
-			[
-				"identifiant" => "bob",
-				"key_name" => "cleValide01",
-				"key_secret" => "secret",
-			],
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "Key " . base64_encode("bob:cleValide01:secret")],
 		);
 
-		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertResponseStatus(200);
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/ressource_question_de_test.json",
 			$résultat_observé->getContent(),
@@ -392,98 +518,109 @@ final class AuthenticateTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_existant_et_une_clé_dauthentification_valide_effectue_une_requête_avec_un_identifiant_invalide_on_obtient_une_erreur_400()
 	{
-		$résultat_observé = $this->actingAs($this->user)
-			->actingAs($this->user)
-			->call("GET", "/user/bob", [
-				"identifiant" => "bob@progressionmail.com",
-				"key_name" => "cleValide01",
-				"key_secret" => "secret",
-			]);
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "Key " . base64_encode("bobprogressionmail.com:cleValide01:secret")],
+		);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertResponseStatus(400);
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_et_une_clé_dauthentification_invalide_effectue_une_requête_on_obtient_une_erreur_401()
 	{
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "bob",
-			"key_name" => "cleInvalide00",
-			"key_secret" => "secret",
-		]);
-
-		$this->assertEquals(401, $résultat_observé->status());
-		$this->assertJsonStringEqualsJsonString('{"erreur":"Accès interdit."}', $résultat_observé->content());
-	}
-
-	public function test_étant_donné_un_utilisateur_existant_effectue_une_requête_avec_une_clé_vide_on_obtient_une_erreur_400()
-	{
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "bob",
-			"key_name" => "",
-			"key_secret" => "secret",
-		]);
-
-		$this->assertEquals(400, $résultat_observé->status());
-		$this->assertJsonStringEqualsJsonString(
-			'{"erreur":{"password":["Err: 1004. Le champ password est obligatoire lorsque key_name n\'est pas présent."]}}',
-			$résultat_observé->content(),
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "Key " . base64_encode("bob:cleInvalide00:secret")],
 		);
+
+		$this->assertResponseStatus(401);
+		$this->assertJsonStringEqualsJsonString('{"erreur":"Accès interdit."}', $résultat_observé->content());
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_effectue_une_requête_avec_une_clé_au_nom_invalide_on_obtient_une_erreur_400()
 	{
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "bob",
-			"key_name" => "tata toto",
-			"key_secret" => "secret",
-		]);
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			[
+				"HTTP_Authorization" => "Key " . base64_encode("bob:tata toto:secret"),
+			],
+		);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertResponseStatus(400);
 		$this->assertJsonStringEqualsJsonString(
-			'{"erreur":{"key_name":["Err: 1003. Le champ key_name doit être alphanumérique \'a-Z0-9-_\'"]}}',
+			'{"erreur":{"key_name":["Le champ key_name doit être alphanumérique \'a-Z0-9-_\'"]}}',
 			$résultat_observé->content(),
 		);
 	}
 
-	public function test_étant_donné_un_utilisateur_existant_effectue_une_requête_sans_clé_on_obtient_une_erreur_400()
+	public function test_étant_donné_un_utilisateur_existant_effectue_une_requête_sans_non_de_clé_on_obtient_une_erreur_400()
 	{
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "bob",
-			"key_secret" => "secret",
-		]);
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			[
+				"HTTP_Authorization" => "Key " . base64_encode("bob::secret"),
+			],
+		);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertResponseStatus(400);
 		$this->assertJsonStringEqualsJsonString(
-			'{"erreur":{"password":["Err: 1004. Le champ password est obligatoire lorsque key_name n\'est pas présent."]}}',
+			'{"erreur":{"password":["Le champ password est obligatoire lorsque key_name ou token ne sont pas présents."]}}',
 			$résultat_observé->content(),
 		);
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_effectue_une_requête_avec_un_secret_vide_on_obtient_une_erreur_400()
 	{
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "bob",
-			"key_name" => "cleValide01",
-			"key_secret" => "",
-		]);
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			[
+				"HTTP_Authorization" => "Key " . base64_encode("bob:cleValide01:"),
+			],
+		);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertResponseStatus(400);
 		$this->assertJsonStringEqualsJsonString(
-			'{"erreur":{"key_secret":["Err: 1004. Le champ key_secret est obligatoire lorsque key_name est présent."]}}',
+			'{"erreur":{"key_secret":["Le champ key_secret est obligatoire lorsque key_name est présent."]}}',
 			$résultat_observé->content(),
 		);
 	}
 
 	public function test_étant_donné_un_utilisateur_existant_effectue_une_requête_sans_secret_on_obtient_une_erreur_400()
 	{
-		$résultat_observé = $this->actingAs($this->user)->call("GET", "/user/bob", [
-			"identifiant" => "bob",
-			"key_name" => "cleValide01",
-		]);
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			[
+				"HTTP_Authorization" => "Key " . base64_encode("bob:cleValide01"),
+			],
+		);
 
-		$this->assertEquals(400, $résultat_observé->status());
+		$this->assertResponseStatus(400);
 		$this->assertJsonStringEqualsJsonString(
-			'{"erreur":{"key_secret":["Err: 1004. Le champ key_secret est obligatoire lorsque key_name est présent."]}}',
+			'{"erreur":{"key_secret":["Le champ key_secret est obligatoire lorsque key_name est présent."]}}',
 			$résultat_observé->content(),
 		);
 	}

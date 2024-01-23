@@ -9,7 +9,7 @@ class Cors
 	{
 		return $next($request)
 			->header("Access-Control-Allow-Origin", getenv("HTTP_ORIGIN") ?: $_SERVER["HTTP_ORIGIN"])
-			->header("Access-Control-Allow-Methods", "PUT, POST, DELETE")
+			->header("Access-Control-Allow-Methods", "DELETE, PATCH, POST, PUT")
 			->header("Access-Control-Allow-Headers", "Accept,Content-Type,Authorization,X-CSRF-TOKEN")
 			->header("Access-Control-Allow-Credentials", "true");
 	}

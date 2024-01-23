@@ -26,7 +26,6 @@ use progression\domaine\interacteur\{
 	ObtenirQuestionInt,
 	IntéracteurException,
 };
-use Illuminate\Support\Facades\Gate;
 use progression\http\transformer\AvancementTransformer;
 use progression\http\transformer\dto\AvancementDTO;
 use progression\util\Encodage;

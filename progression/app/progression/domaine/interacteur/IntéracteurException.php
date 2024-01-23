@@ -30,11 +30,8 @@ class IntéracteurException extends Exception
 			$this->previous = $e;
 			$this->message = $e->getMessage();
 			$this->code = $code ?? $e->getCode();
-		} elseif (is_string($e)) {
-			$this->message = $e;
-			$this->code = $code;
 		} else {
-			$this->message = $e->toString();
+			$this->message = $e;
 			$this->code = $code;
 		}
 

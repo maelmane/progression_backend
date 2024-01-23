@@ -23,7 +23,7 @@ use progression\domaine\entité\{Exécutable, TestProg};
 use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\DAOFactory;
 use progression\dao\question\ChargeurException;
-use Illuminate\Auth\GenericUser;
+use progression\UserAuthentifiable;
 
 final class QuestionProgCtlTests extends ContrôleurTestCase
 {
@@ -35,11 +35,12 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 
 		putenv("APP_URL=https://example.com");
 
-		$this->user = new GenericUser([
-			"username" => "bob",
-			"rôle" => Rôle::NORMAL,
-			"état" => État::ACTIF,
-		]);
+		$this->user = new UserAuthentifiable(
+			username: "bob",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
 
 		// Question
 		$question = new QuestionProg(
@@ -87,7 +88,7 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 		$mockQuestionDAO
 			->shouldReceive("get_question")
 			->with(Mockery::any())
-			->andThrow(new ChargeurException("Question inexistante."));
+			->andReturn(null);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -129,24 +130,26 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_le_chemin_dune_question_inexistante_lorsquon_appelle_get_on_obtient_une_erreur_400()
+	public function test_étant_donné_le_chemin_dune_question_inexistante_lorsquon_appelle_get_on_obtient_une_erreur_404()
 	{
+		//https://depot.com/roger/questions_prog/fonctions01/appeler_une
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
 			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmV",
 		);
 
-		$this->assertEquals(400, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":"Question inexistante."}', $résultat_obtenu->getContent());
+		$this->assertEquals(404, $résultat_obtenu->status());
+		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_obtenu->getContent());
 	}
-	public function test_étant_donné_le_chemin_dune_question_invalide_lorsquon_appelle_get_on_obtient_une_erreur_400()
+	public function test_étant_donné_le_chemin_dune_question_invalide_lorsquon_appelle_get_on_obtient_une_erreur_422()
 	{
+		//https://depot.com/roger/questions_invalide
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
 			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX2ludmFsaWRl",
 		);
 
-		$this->assertEquals(400, $résultat_obtenu->status());
+		$this->assertEquals(422, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Question invalide."}', $résultat_obtenu->getContent());
 	}
 }

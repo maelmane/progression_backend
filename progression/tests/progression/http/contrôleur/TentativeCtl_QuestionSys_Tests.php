@@ -24,7 +24,7 @@ use progression\domaine\entité\{Avancement, TestSys, Exécutable, TentativeSys,
 use progression\domaine\entité\question\{Question, QuestionSys};
 use progression\domaine\entité\user\{User, Rôle, État};
 
-use Illuminate\Auth\GenericUser;
+use progression\UserAuthentifiable;
 use Carbon\Carbon;
 
 final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
@@ -44,11 +44,12 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		putenv("AUTH_TYPE=no");
 		putenv("APP_URL=https://example.com");
 
-		$this->user = new GenericUser([
-			"username" => "jdoe",
-			"rôle" => Rôle::NORMAL,
-			"état" => État::ACTIF,
-		]);
+		$this->user = new UserAuthentifiable(
+			username: "jdoe",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
 
 		// QuestionSys avec solution courte
 		$question_solution_courte_réussie = new QuestionSys(
@@ -267,7 +268,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 					$uri == "https://depot.com/question_solution_courte_non_réussie" &&
 					$t == $nouvelle_tentative;
 			})
-			->andReturn($nouvelle_tentative);
+			->andReturn([1653690241 => $nouvelle_tentative]);
 
 		$nouvel_avancement = new Avancement(
 			tentatives: [$this->tentative_solution_courte_non_réussie, $nouvelle_tentative],
@@ -284,7 +285,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 					$type == "sys" &&
 					$av == $nouvel_avancement;
 			})
-			->andReturn($nouvel_avancement);
+			->andReturn(["https://depot.com/question_solution_courte_non_réussie" => $nouvel_avancement]);
 
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
@@ -337,7 +338,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 					$uri == "https://depot.com/question_solution_courte_non_réussie" &&
 					$t == $nouvelle_tentative;
 			})
-			->andReturn($nouvelle_tentative);
+			->andReturn([1653690241 => $nouvelle_tentative]);
 
 		$nouvel_avancement = new Avancement(
 			tentatives: [$this->tentative_solution_courte_non_réussie, $nouvelle_tentative],
@@ -354,7 +355,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 					$type == "sys" &&
 					$av == $nouvel_avancement;
 			})
-			->andReturn($nouvel_avancement);
+			->andReturn(["https://depot.com/question_solution_courte_non_réussie" => $nouvel_avancement]);
 
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
@@ -409,10 +410,12 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		);
 
 		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_sys_dao();
-		$mockTentativeDAO->shouldReceive("save")->andReturn($nouvelle_tentative);
+		$mockTentativeDAO->shouldReceive("save")->andReturn([1653690241 => $nouvelle_tentative]);
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
-		$mockAvancementDAO->shouldReceive("save")->andReturn($nouvel_avancement);
+		$mockAvancementDAO
+			->shouldReceive("save")
+			->andReturn(["https://depot.com/question_validée_réussie" => $nouvel_avancement]);
 
 		DAOFactory::getInstance()
 			->shouldReceive("get_exécuteur")

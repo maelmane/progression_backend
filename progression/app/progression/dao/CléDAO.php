@@ -20,12 +20,13 @@ namespace progression\dao;
 
 use DB;
 use Illuminate\Database\QueryException;
-use progression\domaine\entité\clé\{Clé, Portée};
+use progression\domaine\entité\clé\Clé;
 use progression\dao\models\{CléMdl, UserMdl};
+use progression\domaine\interacteur\IntégritéException;
 
 class CléDAO extends EntitéDAO
 {
-	public function get_clé($username, $nom, $includes = [])
+	public function get_clé($username, $nom, $includes = []): Clé|null
 	{
 		try {
 			$clé = CléMdl::select("cle.*")
@@ -34,13 +35,16 @@ class CléDAO extends EntitéDAO
 				->where("nom", $nom)
 				->first();
 
-			return $clé ? $this->construire([$clé], $includes)[$nom] : null;
+			return self::premier_élément($this->construire([$clé], $includes));
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}
 
-	public function get_toutes($username, $includes = [])
+	/**
+	 * @return array<Clé>
+	 */
+	public function get_toutes($username, $includes = []): array
 	{
 		try {
 			return $this->construire(
@@ -55,7 +59,10 @@ class CléDAO extends EntitéDAO
 		}
 	}
 
-	public function save($username, $nom, $clé)
+	/**
+	 * @return array<Clé>
+	 */
+	public function save($username, $nom, $clé): array
 	{
 		try {
 			$user = UserMdl::select("user.id")
@@ -64,7 +71,7 @@ class CléDAO extends EntitéDAO
 				->first();
 
 			if (!$user) {
-				return null;
+				throw new IntégritéException("Impossible de sauvegarder la ressource; le parent n'existe pas.");
 			}
 
 			$secret_hashé = hash("sha256", $clé->secret);
@@ -74,7 +81,7 @@ class CléDAO extends EntitéDAO
 				"hash" => $secret_hashé,
 				"creation" => $clé->création,
 				"expiration" => $clé->expiration,
-				"portee" => $clé->portée->value,
+				"portée" => $clé->portée,
 			];
 			$clé_créée = $this->construire([CléMdl::create($objet)])[$nom];
 
@@ -82,7 +89,7 @@ class CléDAO extends EntitéDAO
 			// On retourne la clé avec son secret en clair UNIQUEMENT ici.
 			$clé_créée->secret = $clé->secret;
 
-			return $clé_créée;
+			return [$nom => $clé_créée];
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -106,8 +113,11 @@ class CléDAO extends EntitéDAO
 	{
 		$clés = [];
 		foreach ($data as $item) {
+			if ($item == null) {
+				continue;
+			}
 			$nom = $item["nom"];
-			$clés[$nom] = new Clé(null, $item["creation"], $item["expiration"], Portée::cases()[$item["portee"]]);
+			$clés[$nom] = new Clé(null, $item["creation"], $item["expiration"], $item["portée"]);
 		}
 		return $clés;
 	}

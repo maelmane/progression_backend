@@ -50,7 +50,7 @@ final class EnregistrerSauvegardeIntTests extends TestCase
 					$lang == "python" &&
 					$s == $sauvegarde;
 			})
-			->andReturn($sauvegarde);
+			->andReturn(["python" => $sauvegarde]);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -64,7 +64,7 @@ final class EnregistrerSauvegardeIntTests extends TestCase
 			"python",
 			$sauvegarde,
 		);
-		$résultat_attendu = new Sauvegarde(1620150294, "print(\"Hello world!\")");
+		$résultat_attendu = ["python" => new Sauvegarde(1620150294, "print(\"Hello world!\")")];
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 }

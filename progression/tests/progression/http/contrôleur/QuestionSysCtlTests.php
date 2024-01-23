@@ -22,7 +22,7 @@ use progression\domaine\entité\TestSys;
 use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\DAOFactory;
 use progression\dao\question\ChargeurException;
-use Illuminate\Auth\GenericUser;
+use progression\UserAuthentifiable;
 
 final class QuestionSysCtlTests extends ContrôleurTestCase
 {
@@ -31,11 +31,12 @@ final class QuestionSysCtlTests extends ContrôleurTestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		$this->user = new GenericUser([
-			"username" => "jdoe",
-			"rôle" => Rôle::NORMAL,
-			"état" => État::ACTIF,
-		]);
+		$this->user = new UserAuthentifiable(
+			username: "jdoe",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
 
 		//QuestionSys avec solution sans pregmatch
 		$questionSys = new QuestionSys();

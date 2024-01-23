@@ -20,6 +20,7 @@ namespace progression\dao;
 
 use progression\domaine\entité\clé\{Clé, Portée};
 use progression\TestCase;
+use progression\domaine\interacteur\IntégritéException;
 
 final class CléDAOTests extends TestCase
 {
@@ -76,7 +77,7 @@ final class CléDAOTests extends TestCase
 
 		$dao = new CléDAO();
 		$résultat_obtenu = $dao->save("bob", "nouvelle clé", $clé);
-		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+		$this->assertEquals(["nouvelle clé" => $résultat_attendu], $résultat_obtenu);
 	}
 
 	public function test_étant_donné_une_clé_inexistante_lorsquon_la_sauvegarde_on_la_retrouve_dans_la_bd_sans_son_secret()
