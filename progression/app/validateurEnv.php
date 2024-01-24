@@ -29,4 +29,3 @@ $dotenv->required("COMPILEBOX_IMAGE_EXECUTEUR")->allowedRegexValues("(.*)");
 
 $dotenv->ifpresent("MAIL_MAILER")->allowedValues(["smtp", "log", "no"]);
 $dotenv->ifpresent("MAIL_PORT")->isInteger();
-
