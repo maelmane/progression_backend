@@ -60,8 +60,10 @@ class ModifierUserInt extends Interacteur
 		}
 
 		$user->courriel = $courriel;
-		$user->état = État::ATTENTE_DE_VALIDATION;
-		$this->envoyer_courriel_de_validation($user);
+		if (Gate::allows("valider-le-courriel", $user->rôle)) {
+			$user->état = État::ATTENTE_DE_VALIDATION;
+			$this->envoyer_courriel_de_validation($user);
+		}
 
 		return $user;
 	}

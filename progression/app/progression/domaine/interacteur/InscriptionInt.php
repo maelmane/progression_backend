@@ -21,6 +21,7 @@ namespace progression\domaine\interacteur;
 use progression\domaine\entité\user\{User, État, Rôle};
 use progression\dao\mail\EnvoiDeCourrielException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Gate;
 use Carbon\Carbon;
 
 class InscriptionInt extends Interacteur
@@ -44,7 +45,7 @@ class InscriptionInt extends Interacteur
 				$user_inscrit = $this->effectuer_inscription_avec_mdp($username, $courriel, $password, $rôle);
 				$user_créé = self::premier_élément($user_inscrit);
 
-				if ($user_créé && $user_créé->rôle != Rôle::ADMIN) {
+				if ($user_créé && Gate::allows("valider-le-courriel", $user_créé->rôle)) {
 					$this->envoyer_courriel_de_validation($user_créé);
 				}
 
@@ -127,7 +128,7 @@ class InscriptionInt extends Interacteur
 				date_inscription: Carbon::now()->getTimestamp(),
 				courriel: $courriel,
 				rôle: $rôle,
-				état: $rôle == Rôle::ADMIN ? État::ACTIF : État::ATTENTE_DE_VALIDATION,
+				état: Gate::allows("valider-le-courriel", $rôle) ? État::ATTENTE_DE_VALIDATION : État::ACTIF,
 				préférences: getenv("PREFERENCES_DEFAUT") ?: "",
 			),
 		);

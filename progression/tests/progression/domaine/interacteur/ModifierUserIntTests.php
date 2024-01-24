@@ -24,8 +24,6 @@ use progression\TestCase;
 use progression\UserAuthentifiable;
 use Mockery;
 
-use Illuminate\Support\Facades\Gate;
-
 final class ModifierUserIntTests extends TestCase
 {
 	public $user;
@@ -33,6 +31,8 @@ final class ModifierUserIntTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
+
+		putenv("MAIL_MAILER=log");
 
 		$this->user = new UserAuthentifiable(
 			username: "jdoe",
@@ -125,6 +125,32 @@ final class ModifierUserIntTests extends TestCase
 				courriel: "autre@test.com",
 				état: État::ATTENTE_DE_VALIDATION,
 			),
+			$user_modifié,
+		);
+	}
+
+	public function test_étant_donné_un_utilisateur_sans_validation_de_courriel_lorsquon_modifie_son_courriel_on_obtient_le_même_utilisateur_avec_courriel_modifié_et_état_inactif()
+	{
+		putenv("MAIL_MAILER=no");
+
+		$user_test = new User(username: "bob", date_inscription: 0, courriel: "bob@test.com");
+
+		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
+		$mockUserDAO
+			->shouldReceive("trouver")
+			->with(null, "autre@test.com")
+			->andReturn(null);
+		DAOFactory::getInstance()
+			->get_expéditeur()
+			->shouldNotReceive("envoyer_courriel_de_validation");
+
+		$this->actingAs($this->user);
+
+		$interacteur = new ModifierUserInt();
+		$user_modifié = $interacteur->modifier_courriel($user_test, "autre@test.com");
+
+		$this->assertEquals(
+			new User(username: "bob", date_inscription: 0, courriel: "autre@test.com", état: État::INACTIF),
 			$user_modifié,
 		);
 	}
