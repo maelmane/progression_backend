@@ -20,7 +20,7 @@ namespace progression\domaine\interacteur;
 
 use progression\dao\DAOFactory;
 use progression\domaine\entité\user\{User, État, Rôle};
-use PHPUnit\Framework\TestCase;
+use progression\TestCase;
 use Carbon\Carbon;
 use Mockery;
 
@@ -36,6 +36,7 @@ final class InscriptionIntTests extends TestCase
 		putenv("JWT_SECRET=secret-test");
 		putenv("JWT_EXPIRATION=15");
 		putenv("APP_VERSION=2.0.0");
+		putenv("MAIL_MAILER=log");
 
 		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDao
@@ -159,6 +160,57 @@ final class InscriptionIntTests extends TestCase
 				"roger" => new User(
 					"roger",
 					courriel: null,
+					date_inscription: 990446400,
+					préférences: "",
+					état: État::ACTIF,
+				),
+			],
+			$user,
+		);
+	}
+
+	public function test_étant_donné_un_utilisateur_non_existant_et_un_type_dauthentification_local_sans_validation_de_courriel_lorsquon_effectue_linscription_il_est_sauvegardé_et_on_reçoit_le_nouveau_User_actif()
+	{
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
+		putenv("MAIL_MAILER=no");
+
+		Carbon::setTestNow(Carbon::create(2001, 5, 21, 12));
+
+		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
+		$mockUserDao
+			->shouldReceive("get_user")
+			->with("roger")
+			->andReturn(null, new User(username: "roger", date_inscription: 990446400));
+		$mockUserDao
+			->shouldReceive("trouver")
+			->with(null, "roger@progressionmail.com")
+			->andReturn(null);
+		$mockUserDao
+			->shouldReceive("save")
+			->withArgs(function ($username, $user) {
+				return $username == "roger" && $user->username == "roger" && $user->état == État::ACTIF;
+			})
+			->once()
+			->andReturnUsing(function ($username, $user) {
+				return [$username => $user];
+			});
+		$mockUserDao
+			->shouldReceive("set_password")
+			->once()
+			->withArgs(function ($user, $password) {
+				return $user->username == "roger" && $password == "password";
+			});
+		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
+		$mockExpéditeurDao->shouldNotReceive("envoyer_courriel_de_validation");
+
+		$user = (new InscriptionInt())->effectuer_inscription_locale("roger", "roger@progressionmail.com", "password");
+
+		$this->assertEquals(
+			[
+				"roger" => new User(
+					"roger",
+					courriel: "roger@progressionmail.com",
 					date_inscription: 990446400,
 					préférences: "",
 					état: État::ACTIF,

@@ -124,8 +124,13 @@ class AuthServiceProvider extends ServiceProvider
 		Gate::define("modifier-rôle-user-admin", function ($user) {
 			return $user && $user->rôle == Rôle::ADMIN;
 		});
+
 		Gate::define("modifier-état-user-inactif", function ($user) {
 			return $user && $user->rôle == Rôle::ADMIN;
+		});
+
+		Gate::define("valider-le-courriel", function ($user, $rôle_user_cible) {
+			return !($rôle_user_cible == Rôle::ADMIN || getenv("MAIL_MAILER") == "no");
 		});
 	}
 
