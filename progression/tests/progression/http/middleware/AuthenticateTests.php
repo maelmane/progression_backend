@@ -39,7 +39,7 @@ final class AuthenticateTests extends TestCase
 
 		$this->user = new UserAuthentifiable(
 			username: "bob",
-			date_inscription: 0,
+			date_inscription: 1590828610,
 			rôle: Rôle::NORMAL,
 			état: État::ACTIF,
 		);
@@ -50,7 +50,7 @@ final class AuthenticateTests extends TestCase
 			état: État::INACTIF,
 		);
 		$this->user_en_attente = new UserAuthentifiable(
-			username: "roger",
+			username: "marcel",
 			date_inscription: 0,
 			rôle: Rôle::NORMAL,
 			état: État::ATTENTE_DE_VALIDATION,
@@ -68,11 +68,11 @@ final class AuthenticateTests extends TestCase
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob")
-			->andReturn(new User(username: "bob", date_inscription: 0, état: État::ACTIF));
+			->andReturn(new User(username: "bob", date_inscription: 1590828610, état: État::ACTIF));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("bob", [])
-			->andReturn(new User(username: "bob", date_inscription: 0, état: État::ACTIF));
+			->andReturn(new User(username: "bob", date_inscription: 1590828610, état: État::ACTIF));
 		$mockUserDAO
 			->shouldReceive("trouver")
 			->with(null, "bob@progressionmail.com")
@@ -89,7 +89,22 @@ final class AuthenticateTests extends TestCase
 			->shouldReceive("get_user")
 			->with("marcel")
 			->andReturn(new User(username: "marcel", date_inscription: 0, état: État::ATTENTE_DE_VALIDATION));
-		$mockUserDAO->shouldReceive("get_user")->andReturn(null);
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("marcel", [])
+			->andReturn(new User(username: "marcel", date_inscription: 0, état: État::ATTENTE_DE_VALIDATION));
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("roger")
+			->andReturn(new User(username: "roger", date_inscription: 0, état: État::INACTIF));
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("roger", [])
+			->andReturn(new User(username: "roger", date_inscription: 0, état: État::INACTIF));
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("zozo")
+			->andReturn(null);
 
 		$mockUserDAO
 			->shouldReceive("vérifier_password")
@@ -174,7 +189,7 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "basic " . base64_encode("Marcel:m0tD3P4ZZE")],
+			["HTTP_Authorization" => "basic " . base64_encode("zozo:m0tD3P4ZZE")],
 		);
 
 		$this->assertResponseStatus(401);
@@ -260,7 +275,7 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "basic " . base64_encode("marcel@ici.com:")],
+			["HTTP_Authorization" => "basic " . base64_encode("zozo@ici.com:")],
 		);
 		$this->assertResponseStatus(400);
 		$this->assertJsonStringEqualsJsonString(
@@ -313,6 +328,27 @@ final class AuthenticateTests extends TestCase
 		);
 	}
 
+	public function test_étant_donné_un_utilisateur_actif_et_une_authentification_par_identifiant_et_mdp_lorsquon_requiert_une_ressource_protégée_on_obtient_la_ressource()
+	{
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
+
+		$résultat_observé = $this->call(
+			"GET",
+			"/user/bob",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "basic " . base64_encode("bob:m0tD3P4ZZE")],
+		);
+
+		$this->assertResponseStatus(200);
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/profil_bob.json",
+			$résultat_observé->getContent(),
+		);
+	}
+
 	public function test_étant_donné_un_utilisateur_inactif_avec_authentification_lorsquon_effectue_une_requête_mdp_correct_on_obtient_une_erreur_401()
 	{
 		putenv("AUTH_LOCAL=true");
@@ -354,7 +390,7 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$this->call("GET", "/", [], [], [], ["HTTP_Authorization" => "basic " . base64_encode("inexistant:jesaispas")]);
+		$this->call("GET", "/", [], [], [], ["HTTP_Authorization" => "basic " . base64_encode("zozo:jesaispas")]);
 		$this->assertResponseStatus(401);
 	}
 

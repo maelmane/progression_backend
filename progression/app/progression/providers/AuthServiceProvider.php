@@ -77,16 +77,32 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 		Gate::define("acces-utilisateur", function ($user, $request) {
-			$token = trim(str_ireplace("bearer", "", $request->header("Authorization")));
-			$tokenDécodé = $this->décoderToken($token);
-			if (
-				is_array($tokenDécodé) &&
-				array_key_exists("ressources", $tokenDécodé) &&
-				is_array($tokenDécodé["ressources"]) &&
-				$this->vérifierRessourceAutorisée($tokenDécodé["ressources"] ?: null, $request) &&
-				mb_strtolower($user->username) == mb_strtolower($request->username)
-			) {
-				return true;
+			$creds = $this->extraireCreds($request);
+			if ($creds === false || empty($creds["identifiant"])) {
+				return false;
+			}
+
+			if (array_key_exists("token", $creds)) {
+				$token = $creds["token"];
+				if (empty($token)) {
+					return false;
+				}
+
+				$tokenDécodé = $this->décoderToken($token);
+				if (
+					is_array($tokenDécodé) &&
+					array_key_exists("ressources", $tokenDécodé) &&
+					is_array($tokenDécodé["ressources"]) &&
+					$this->vérifierRessourceAutorisée($tokenDécodé["ressources"] ?: null, $request) &&
+					mb_strtolower($user->username) == mb_strtolower($request->username)
+				) {
+					return true;
+				}
+			} elseif (array_key_exists("key_name", $creds)) {
+				return false; // TODO https://git.dti.crosemont.quebec/progression/progression_backend/-/issues/217
+			} elseif (array_key_exists("password", $creds)) {
+				return mb_strtolower($creds["identifiant"]) == mb_strtolower($request->username) &&
+					$this->vérifier_état_user_actif($user);
 			}
 
 			return false;
@@ -110,7 +126,7 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 		Gate::define("utilisateur-non-inactif", function ($user, $request) {
-			return $user && $this->vérifier_état_user($user);
+			return $user && $this->vérifier_état_user_non_inactif($user);
 		});
 
 		Gate::define("utilisateur-validé", function ($user, $request) {
@@ -202,8 +218,12 @@ class AuthServiceProvider extends ServiceProvider
 	}
 
 	/**
-      @return array<string, string|null>|false
-     */
+	 * @return array<string, string|null>|false Un tableau d'identifiants ou false si aucune entête d'authentification n'existe
+	 *
+	 * Si Authorization est de type Bearer, retourne : identifiant et token
+	 * Si Authorization est de type Basic, retourne : identifiant, password et domaine
+	 * Si Authorization est de type Key, retourne : identifiant, key_name et key_secret
+	 */
 	private function extraireCreds(Request $request): array|false
 	{
 		$authorization = strval(
@@ -212,26 +232,26 @@ class AuthServiceProvider extends ServiceProvider
 				: $request->header("Authorization"),
 		);
 
-		if (!empty($authorization)) {
-			if (stripos($authorization, "bearer") === 0) {
-				$tokenEncodé = trim(str_ireplace("bearer", "", $authorization));
-				$tokenDécodé = $this->décoderToken($tokenEncodé);
-				if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
-					return ["identifiant" => $tokenDécodé["username"], "token" => $tokenEncodé];
-				} else {
-					throw new AccèsInterditException("Token invalide ou expiré");
-				}
-			} elseif (stripos($authorization, "basic") === 0) {
-				$creds = $this->décoderCreds_basic($authorization);
-				return $creds;
-			} elseif (stripos($authorization, "key") === 0) {
-				$creds = $this->décoderCreds_key($authorization);
-				return $creds;
-			} else {
-				throw new ParamètreInvalideException("Type d'authentification invalide.");
-			}
-		} else {
+		if (empty($authorization)) {
 			return false;
+		}
+
+		if (stripos($authorization, "bearer") === 0) {
+			$tokenEncodé = trim(str_ireplace("bearer", "", $authorization));
+			$tokenDécodé = $this->décoderToken($tokenEncodé);
+			if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
+				return ["identifiant" => $tokenDécodé["username"], "token" => $tokenEncodé];
+			} else {
+				throw new AccèsInterditException("Token invalide ou expiré");
+			}
+		} elseif (stripos($authorization, "basic") === 0) {
+			$creds = $this->décoderCreds_basic($authorization);
+			return $creds;
+		} elseif (stripos($authorization, "key") === 0) {
+			$creds = $this->décoderCreds_key($authorization);
+			return $creds;
+		} else {
+			throw new ParamètreInvalideException("Type d'authentification invalide.");
 		}
 	}
 
@@ -295,9 +315,14 @@ class AuthServiceProvider extends ServiceProvider
 		return false;
 	}
 
-	private function vérifier_état_user(User $user): bool
+	private function vérifier_état_user_non_inactif(User $user): bool
 	{
 		return $user->état !== État::INACTIF;
+	}
+
+	private function vérifier_état_user_actif(User $user): bool
+	{
+		return $user->état === État::ACTIF;
 	}
 
 	/**

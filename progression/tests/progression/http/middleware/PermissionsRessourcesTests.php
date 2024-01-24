@@ -49,15 +49,15 @@ final class PermissionsRessourcesTests extends TestCase
 		$mockUserDAO
 			->allows()
 			->get_user("bob", [])
-			->andReturn(new User(username: "bob", date_inscription: 1590828610));
+			->andReturn(new User(username: "bob", date_inscription: 1590828610, état: État::ACTIF));
 		$mockUserDAO
 			->allows()
 			->get_user("Bob", [])
-			->andReturn(new User(username: "bob", date_inscription: 1590828610));
+			->andReturn(new User(username: "bob", date_inscription: 1590828610, état: État::ACTIF));
 		$mockUserDAO
 			->allows()
 			->get_user("jdoe", [])
-			->andReturn(new User(username: "jdoe", date_inscription: 1590828610));
+			->andReturn(new User(username: "jdoe", date_inscription: 1590828610, état: État::ACTIF));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
