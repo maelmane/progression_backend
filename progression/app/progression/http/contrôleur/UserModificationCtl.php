@@ -30,7 +30,7 @@ use progression\domaine\interacteur\PermissionException;
 use progression\domaine\interacteur\{ObtenirUserInt, IntéracteurException, ModifierUserInt, SauvegarderUtilisateurInt};
 use DomainException;
 
-class UserModificationCtl extends Contrôleur
+class UserModificationCtl extends UserCtl
 {
 	public function patch(Request $request, string $username): JsonResponse
 	{
@@ -47,9 +47,9 @@ class UserModificationCtl extends Contrôleur
 			$user = $this->obtenir_user($username);
 			if ($user) {
 				$user = $this->modifier_user($username, $user, $request);
-				$réponse = $this->valider_et_préparer_réponse($user);
+				$réponse = $this->valider_et_préparer_réponse($user, $user->username);
 			} else {
-				$réponse = $this->valider_et_préparer_réponse(null);
+				$réponse = $this->valider_et_préparer_réponse(null, null);
 			}
 		} catch (DomainException $e) {
 			Log::notice(
@@ -65,26 +65,6 @@ class UserModificationCtl extends Contrôleur
 
 		Log::debug("UserModificationCtl.patch. Retour : ", [$réponse]);
 		return $réponse;
-	}
-
-	/**
-	 * @return array<string>
-	 */
-	public static function get_liens(string $username): array
-	{
-		$urlBase = Contrôleur::$urlBase;
-		return [
-			"self" => "{$urlBase}/user/{$username}",
-			"avancements" => "{$urlBase}/user/{$username}/avancements",
-			"clés" => "{$urlBase}/user/{$username}/cles",
-			"tokens" => "{$urlBase}/user/{$username}/tokens",
-		];
-	}
-
-	private function obtenir_user(string $username): User|null
-	{
-		$userInt = new ObtenirUserInt();
-		return $userInt->get_user($username);
 	}
 
 	private function modifier_user(string $username, User $user, Request $request): User
@@ -149,26 +129,5 @@ class UserModificationCtl extends Contrôleur
 		);
 
 		return $validateur;
-	}
-
-	protected function valider_et_préparer_réponse(User|null $user): JsonResponse
-	{
-		Log::debug("UserModificationCtl.valider_et_préparer_réponse. Params : ", [$user]);
-
-		if ($user) {
-			$id = $user->username;
-			$liens = self::get_liens($user->username);
-			$dto = new UserDTO(id: $id, objet: $user, liens: $liens);
-
-			$réponse = $this->item($dto, new UserTransformer());
-		} else {
-			$réponse = null;
-		}
-
-		$réponse = $this->préparer_réponse($réponse);
-
-		Log::debug("UserModificationCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
-
-		return $réponse;
 	}
 }
