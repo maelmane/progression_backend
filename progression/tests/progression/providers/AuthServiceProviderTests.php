@@ -21,6 +21,7 @@ use progression\TestCase;
 use progression\dao\DAOFactory;
 use progression\http\contrôleur\GénérateurDeToken;
 use progression\domaine\entité\user\{User, État, Rôle};
+use progression\domaine\entité\clé\{Clé, Portée};
 use progression\UserAuthentifiable;
 use Firebase\JWT\JWT;
 
@@ -206,8 +207,22 @@ final class AuthServiceProviderTests extends TestCase
 			return [$username => $user];
 		});
 
+		// CléDAO
+		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
+		$mockCléDAO
+			->shouldReceive("get_clé")
+			->with("utilisateur_actif_normal", "cleValide01")
+			->andReturn(new Clé(null, (new \DateTime())->getTimestamp(), 0, Portée::AUTH));
+		$mockCléDAO
+			->shouldReceive("vérifier")
+			->with("utilisateur_actif_normal", "cleValide01", "secret")
+			->andReturn(true);
+		$mockCléDAO->shouldReceive("get_clé")->andReturn(null);
+		$mockCléDAO->shouldReceive("vérifier")->andReturn(false);
+
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
+		$mockDAOFactory->shouldReceive("get_clé_dao")->andReturn($mockCléDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 
@@ -748,6 +763,35 @@ final class AuthServiceProviderTests extends TestCase
 			[],
 			[],
 			["HTTP_Authorization" => "Bearer " . $tokenRessource],
+		);
+
+		$this->assertResponseStatus(200);
+	}
+
+	//Authentification par clé
+	public function test_étant_donné_un_utilisateur_existant_et_une_clé_dauthentification_valide_fournie_par_entête_lorsquon_effectue_une_requête_on_obtient_la_ressource()
+	{
+		$this->call(
+			"GET",
+			"/",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "Key " . base64_encode("utilisateur_actif_normal:cleValide01:secret")],
+		);
+
+		$this->assertResponseStatus(200);
+	}
+
+	public function test_étant_donné_un_utilisateur_existant_et_une_clé_dauthentification_valide_fournie_par_cookie_lorsquon_effectue_une_requête_on_obtient_la_ressource()
+	{
+		$this->call(
+			"GET",
+			"/",
+			[],
+			["authKey_secret" => "secret"],
+			[],
+			["HTTP_Authorization" => "Key " . base64_encode("utilisateur_actif_normal:cleValide01")],
 		);
 
 		$this->assertResponseStatus(200);
