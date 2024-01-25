@@ -22,10 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-use progression\domaine\entité\clé\Clé;
-use progression\domaine\interacteur\{ObtenirCléInt, GénérerCléAuthentificationInt, IntéracteurException};
-use progression\dao\DAOException;
-
+use progression\domaine\interacteur\{ObtenirCléInt, GénérerCléAuthentificationInt};
 use progression\http\transformer\CléTransformer;
 use progression\http\transformer\dto\GénériqueDTO;
 
@@ -60,6 +57,13 @@ class CléCtl extends Contrôleur
 			if ($clé) {
 				$id = array_key_first($clé);
 				$réponse = $this->valider_et_préparer_réponse($clé[$id], $username, $id);
+				$réponse->cookie(
+					$this->créerCookieSécure(
+						nom: "authKey_secret",
+						valeur: $clé[$id]->secret,
+						âge_max: intval(getenv("AUTHKEY_TTL") ?: 2592000),
+					),
+				);
 			} else {
 				$réponse = $this->préparer_réponse(null);
 			}

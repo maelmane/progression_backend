@@ -18,16 +18,16 @@
 
 namespace progression\http\contrôleur;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use League\Fractal\Manager;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\JsonApiSerializer;
-use League\Fractal\TransformerAbstract;
+
+use Symfony\Component\HttpFoundation\Cookie;
+use Carbon\Carbon;
 
 class Contrôleur extends BaseController
 {
@@ -96,6 +96,21 @@ class Contrôleur extends BaseController
 		$item = $this->manager->createData($resource)->toArray();
 
 		return $item;
+	}
+
+	protected function créerCookieSécure(string $nom, string $valeur, int $âge_max = 3600): Cookie
+	{
+		return Cookie::create(
+			$nom,
+			$valeur,
+			Carbon::now()->getTimestamp() + $âge_max,
+			null,
+			null,
+			null,
+			true,
+			false,
+			"strict",
+		);
 	}
 
 	protected function préparer_réponse($réponse, $code = 200)

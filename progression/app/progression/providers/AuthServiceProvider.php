@@ -218,6 +218,10 @@ class AuthServiceProvider extends ServiceProvider
 	}
 
 	/**
+	 * Extrait les identifiants de connexion à partir de l'entête Authorization.
+	 *
+	 * Si des secrets sont fournis, ils sont d'abord récupérés de l'entête et, à défaut, d'un cookie.
+	 *
 	 * @return array<string, string|null>|false Un tableau d'identifiants ou false si aucune entête d'authentification n'existe
 	 *
 	 * Si Authorization est de type Bearer, retourne : identifiant et token
@@ -237,21 +241,29 @@ class AuthServiceProvider extends ServiceProvider
 		}
 
 		if (stripos($authorization, "bearer") === 0) {
-			$tokenEncodé = trim(str_ireplace("bearer", "", $authorization));
-			$tokenDécodé = $this->décoderToken($tokenEncodé);
-			if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
-				return ["identifiant" => $tokenDécodé["username"], "token" => $tokenEncodé];
-			} else {
-				throw new AccèsInterditException("Token invalide ou expiré");
-			}
+			$creds = $this->décoderCreds_token($authorization);
 		} elseif (stripos($authorization, "basic") === 0) {
 			$creds = $this->décoderCreds_basic($authorization);
-			return $creds;
 		} elseif (stripos($authorization, "key") === 0) {
 			$creds = $this->décoderCreds_key($authorization);
-			return $creds;
+			$creds["key_secret"] = $creds["key_secret"] ?? $this->extraireCookie($request, "authKey_secret");
 		} else {
 			throw new ParamètreInvalideException("Type d'authentification invalide.");
+		}
+		return $creds;
+	}
+
+	/**
+	 * @return array<string, string>
+	 */
+	private function décoderCreds_token(string $creds_header): array
+	{
+		$tokenEncodé = trim(str_ireplace("bearer", "", $creds_header));
+		$tokenDécodé = $this->décoderToken($tokenEncodé);
+		if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
+			return ["identifiant" => $tokenDécodé["username"], "token" => $tokenEncodé];
+		} else {
+			throw new AccèsInterditException("Token invalide ou expiré");
 		}
 	}
 
@@ -288,6 +300,17 @@ class AuthServiceProvider extends ServiceProvider
 			"key_name" => $creds_array[1] ?? null,
 			"key_secret" => $creds_array[2] ?? null,
 		];
+	}
+
+	private function extraireCookie(Request $request, string $nom): string|null
+	{
+		$cookie = $request->cookie($nom);
+		if (is_array($cookie)) {
+			return strval($cookie[0]);
+		} elseif (is_string($cookie)) {
+			return $cookie;
+		}
+		return null;
 	}
 
 	private function vérifierExpirationToken($token)
