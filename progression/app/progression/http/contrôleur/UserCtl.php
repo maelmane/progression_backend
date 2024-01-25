@@ -56,7 +56,7 @@ class UserCtl extends Contrôleur
 		];
 	}
 
-	private function obtenir_user(string $username): User|null
+	protected function obtenir_user(string $username): User|null
 	{
 		Log::debug("UserCtl.obtenir_user. Params : ", [$username]);
 
