@@ -21,12 +21,19 @@ Trois méthodes permettent l'authentification pour n'importe quelle requête :
 
 1. Identifiant et mot de passe
 
+   Dans l'entête ~Authorization~, méthode ~Basic~, les paramètres suivants séparés par des deux-points (:) et encodés en base64
+
    | Paramètre   | Description                   | Type | Défaut |
    |-------------+-------------------------------+------+--------|
    | identifiant | Nom d'utilisateur ou courriel | str  |        |
    | password    | Mot de passe                  | str  |        |
+   | domaine     | Domaine LDAP                  | str  | ""     |
+
+   Exemple : ~Authorization: Basic Ym9iOnBhc3N3b3JkOmV4ZW1wbGUuY29t~
    
 2. Identifiant et clé d'accès
+
+   Dans l'entête ~Authorization~, méthode ~Key~, les paramètres suivants séparés par des deux-points (:) et encodés en base64
 
    | Paramètre   | Description                   | Type | Défaut |
    |-------------+-------------------------------+------+--------|
@@ -34,13 +41,13 @@ Trois méthodes permettent l'authentification pour n'importe quelle requête :
    | key_name    | Identifiant de la clé         | Clé  |        |
    | key_secret  | Secret correspondant à la clé | str  |        |
 
-   La clé nommée par ~key_name~ doit exister avec la portée «auth».
+   La clé nommée par ~key_name~ doit exister avec la portée «auth». Le secret peut alternativement être passé via cookie sécurisé.
 
 3. Token JWT
 
    Dans l'entête ~Authorization~, un [[*Token][Token]] «au porteur» :
 
-   ~Authorization: bearer <token JWT>~
+   ~Authorization: Bearer <token JWT>~
 
 
 * Autorisation
@@ -346,15 +353,16 @@ Un token JWT donnant accès à une ou plusieurs ressources. Une date d'expiratio
 
 *** Propriétés :
 
-| Nom        | Type | Valeurs                                                                          |
-|------------+------+----------------------------------------------------------------------------------|
-| username   | str  | l'utilisateur propriétaire du token                                              |
-| création   | int  | timestamp à la création                                                          |
-| expiration | int  | timestamp d'expiration ou "+n" ou n est le nombre de secondes avant l'expiration |
-| data       | str  | données incluses dans le token                                                   |
-| ressources | str  | ressources permises par le token                                                 |
-| jwt        | str  | token jwt signé                                                                  |
-| version    | int  | version de l'api ayant généré le token                                           |
+| Nom         | Type | Valeurs                                                                                 |
+|-------------+------+-----------------------------------------------------------------------------------------|
+| username    | str  | l'utilisateur propriétaire du token                                                     |
+| création    | int  | timestamp à la création                                                                 |
+| expiration  | int  | timestamp d'expiration ou "+n" ou n est le nombre de secondes avant l'expiration        |
+| data        | str  | données incluses dans le token                                                          |
+| ressources  | str  | ressources permises par le token                                                        |
+| jwt         | str  | token jwt signé                                                                         |
+| fingerprint | str  | empreinte (sha256) du contexte aléatoire du token fourni via un cookie sécurisé.        |
+| version     | int  | version de l'api ayant généré le token                                                  |
 
 **** Data
 

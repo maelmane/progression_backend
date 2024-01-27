@@ -19,7 +19,7 @@ along with Progression.  If not, see <https://www.gnu.org/licenses/>.
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\http\contrôleur\GénérateurDeToken;
+use progression\http\contrôleur\GénérateurAléatoire;
 use progression\domaine\entité\user\{User, Rôle, État};
 use progression\UserAuthentifiable;
 use Carbon\Carbon;
@@ -52,12 +52,19 @@ final class TokenCtlTests extends ContrôleurTestCase
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 		DAOFactory::setInstance($mockDAOFactory);
+
+		$générateur = Mockery::mock("progression\\http\\contrôleur\\GénérateurAléatoire");
+		$générateur
+			->shouldReceive("générer_chaîne_aléatoire")
+			->with(64)
+			->andReturn("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+		GénérateurAléatoire::set_instance($générateur);
 	}
 
 	public function tearDown(): void
 	{
 		Mockery::close();
-		GénérateurDeToken::set_instance(null);
+		GénérateurAléatoire::set_instance(null);
 	}
 
 	public function test_étant_donné_un_token_qui_donne_accès_à_une_ressource_lorsquon_effectue_un_post_on_obtient_un_token_avec_les_ressources_voulues_sans_expiration()
@@ -176,6 +183,76 @@ final class TokenCtlTests extends ContrôleurTestCase
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
 			'{"erreur":{"data.ressources":["Le champ data.ressources est obligatoire."]}}',
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_token_sans_fingerprint_lorsquon_effectue_un_post_on_obtient_un_token_sans_fingerprint()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "/user/utilisateur_lambda/tokens", [
+			"data" => [
+				"data" => ["données" => "une donnée"],
+				"ressources" => ["ressources" => ["url" => "test", "method" => "POST"]],
+				"expiration" => 0,
+				"fingerprint" => false,
+			],
+		]);
+		$résultat_observé = $résultat_obtenu;
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/token_ressources.json",
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_contexte_lorsquon_génère_un_token_avec_expiration_spécifique_on_reçoit_le_hash_du_contexte_et_un_cookie_sécure_expirant_en_même_temps()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "user/utilisateur_lambda/tokens", [
+			"data" => [
+				"data" => ["données" => "une autre donnée"],
+				"ressources" => ["ressources_test" => ["url" => "test", "method" => "POST"]],
+				"fingerprint" => true,
+				"expiration" => 1685831340,
+			],
+		]);
+		$résultat_observé = $résultat_obtenu;
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+
+		$this->assertEquals(
+			"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+			$résultat_obtenu->headers->getCookies()[0]->getValue(),
+		);
+		$this->assertEquals("contexte_token", $résultat_obtenu->headers->getCookies()[0]->getName());
+		$this->assertEquals(1685831340, $résultat_obtenu->headers->getCookies()[0]->getExpiresTime());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/token_avec_contexte_expiration_spécifique.json",
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_contexte_lorsquon_génère_un_token_avec_expiration_relatif_on_reçoit_le_hash_du_contexte_et_un_cookie_sécure_expirant_en_même_temps()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call("POST", "user/utilisateur_lambda/tokens", [
+			"data" => [
+				"data" => ["données" => "une autre donnée"],
+				"ressources" => ["ressources_test" => ["url" => "test", "method" => "POST"]],
+				"fingerprint" => true,
+				"expiration" => "+300",
+			],
+		]);
+		$résultat_observé = $résultat_obtenu;
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+
+		$this->assertEquals(
+			"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+			$résultat_obtenu->headers->getCookies()[0]->getValue(),
+		);
+		$this->assertEquals(990446700, $résultat_obtenu->headers->getCookies()[0]->getExpiresTime());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/token_avec_contexte_expiration_relative.json",
 			$résultat_observé->getContent(),
 		);
 	}

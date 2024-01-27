@@ -1,0 +1,27 @@
+{
+  "data": {
+    "type": "token",
+    "id": "g44iSijAbe6t8RtQh_O5WbT6tE9A2IxNbEpJgbfbkFg",
+    "attributes": {
+      "username": "utilisateur_lambda",
+      "création": 990446400,
+      "expiration": 990446700,
+	    "fingerprint": "7ce100971f64e7001e8fe5a51973ecdfe1ced42befe7ee8d5fd6219506b5393c",
+      "data": {
+        "données": "une autre donnée"
+      },
+      "ressources": {
+        "ressources_test": {
+          "url": "test",
+          "method": "POST"
+        }
+      },
+      "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InV0aWxpc2F0ZXVyX2xhbWJkYSIsImN1cnJlbnQiOjk5MDQ0NjQwMCwiZXhwaXJlZCI6OTkwNDQ2NzAwLCJkYXRhIjp7ImRvbm5cdTAwZTllcyI6InVuZSBhdXRyZSBkb25uXHUwMGU5ZSJ9LCJyZXNzb3VyY2VzIjp7InJlc3NvdXJjZXNfdGVzdCI6eyJ1cmwiOiJ0ZXN0IiwibWV0aG9kIjoiUE9TVCJ9fSwidmVyc2lvbiI6IjEuMi4zIiwiZmluZ2VycHJpbnQiOiI3Y2UxMDA5NzFmNjRlNzAwMWU4ZmU1YTUxOTczZWNkZmUxY2VkNDJiZWZlN2VlOGQ1ZmQ2MjE5NTA2YjUzOTNjIn0.g44iSijAbe6t8RtQh_O5WbT6tE9A2IxNbEpJgbfbkFg",
+      "version": "1.2.3"
+    },
+    "links": {
+      "self": "https://example.com/token/g44iSijAbe6t8RtQh_O5WbT6tE9A2IxNbEpJgbfbkFg",
+      "user": "https://example.com/user/utilisateur_lambda"
+    }
+  }
+}

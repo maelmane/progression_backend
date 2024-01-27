@@ -53,6 +53,7 @@ class GénérateurDeToken
 		int $expiration = 0,
 		array $ressources = ["tout" => ["url" => ".*", "method" => ".*"]],
 		array $data = [],
+		string $fingerprint = null,
 	): string {
 		$payload = [
 			"username" => $username,
@@ -62,6 +63,10 @@ class GénérateurDeToken
 			"ressources" => $ressources,
 			"version" => getenv("APP_VERSION"),
 		];
+
+		if ($fingerprint) {
+			$payload["fingerprint"] = $fingerprint;
+		}
 
 		$secret = getenv("JWT_SECRET");
 		if (!$secret) {

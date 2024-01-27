@@ -98,12 +98,16 @@ class Contrôleur extends BaseController
 		return $item;
 	}
 
-	protected function créerCookieSécure(string $nom, string $valeur, int $âge_max = 3600): Cookie
-	{
+	protected function créerCookieSécure(
+		string $nom,
+		string $valeur,
+		int $expiration = null,
+		int $âge_max = 3600,
+	): Cookie {
 		return Cookie::create(
 			$nom,
 			$valeur,
-			Carbon::now()->getTimestamp() + $âge_max,
+			$expiration ?? Carbon::now()->getTimestamp() + $âge_max,
 			null,
 			null,
 			null,

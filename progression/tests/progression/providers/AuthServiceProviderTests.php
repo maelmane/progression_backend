@@ -33,6 +33,7 @@ final class AuthServiceProviderTests extends TestCase
 	public $tokenUtilisateurActifNormal;
 	public $tokenUtilisateurInactifNormal;
 	public $tokenUtilisateurEnAttenteNormal;
+	public $tokenAvecFingerprint;
 
 	public function setUp(): void
 	{
@@ -59,12 +60,7 @@ final class AuthServiceProviderTests extends TestCase
 			rôle: Rôle::NORMAL,
 			état: État::ATTENTE_DE_VALIDATION,
 		);
-		$this->utilisateurMalveillant = new UserAuthentifiable(
-			username: "utilisateur_malveillant",
-			date_inscription: 0,
-			rôle: Rôle::NORMAL,
-			état: État::ACTIF,
-		);
+
 		$this->tokenUtilisateurActifNormal = GénérateurDeToken::get_instance()->générer_token(
 			"utilisateur_actif_normal",
 		);
@@ -75,6 +71,11 @@ final class AuthServiceProviderTests extends TestCase
 			"utilisateur_en_attente_normal",
 			0,
 			["user_en_attente" => ["url" => "/user/utilisateur_en_attente_normal/", "method" => "^POST$"]],
+		);
+
+		$this->tokenAvecFingerprint = GénérateurDeToken::get_instance()->générer_token(
+			username: "utilisateur_actif_normal",
+			fingerprint: "7ce100971f64e7001e8fe5a51973ecdfe1ced42befe7ee8d5fd6219506b5393c",
 		);
 
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
@@ -229,6 +230,7 @@ final class AuthServiceProviderTests extends TestCase
 	public function tearDown(): void
 	{
 		Mockery::close();
+		GénérateurDeToken::set_instance(null);
 	}
 
 	// Authentification par token
@@ -766,6 +768,49 @@ final class AuthServiceProviderTests extends TestCase
 		);
 
 		$this->assertResponseStatus(200);
+	}
+
+	//Authentification par token avec fingerprint
+	public function test_étant_donné_un_token_avec_fingerprint_lorsquon_effectue_une_requête_avec_le_cookie_correspondant_on_obtient_la_ressource()
+	{
+		$this->call(
+			"GET",
+			"/user/utilisateur_actif_normal",
+			[],
+			["contexte_token" => "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"],
+			[],
+			["HTTP_Authorization" => "Bearer " . $this->tokenAvecFingerprint],
+		);
+
+		$this->assertResponseStatus(200);
+	}
+
+	public function test_étant_donné_un_token_avec_fingerprint_lorsquon_effectue_une_requête_sans_le_cookie_correspondant_on_obtient_une_erreur_401()
+	{
+		$this->call(
+			"GET",
+			"/user/utilisateur_actif_normal",
+			[],
+			[],
+			[],
+			["HTTP_Authorization" => "Bearer " . $this->tokenAvecFingerprint],
+		);
+
+		$this->assertResponseStatus(401);
+	}
+
+	public function test_étant_donné_un_token_avec_fingerprint_lorsquon_effectue_une_requête_avec_un_cookie_invalide_on_obtient_une_erreur_401()
+	{
+		$this->call(
+			"GET",
+			"/user/utilisateur_actif_normal",
+			[],
+			["contexte_token" => "contexte invalide"],
+			[],
+			["HTTP_Authorization" => "Bearer " . $this->tokenAvecFingerprint],
+		);
+
+		$this->assertResponseStatus(401);
 	}
 
 	//Authentification par clé

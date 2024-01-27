@@ -46,12 +46,21 @@ class TokenCtl extends Contrôleur
 					: $data_in["expiration"];
 			$data = $data_in["data"] ?? [];
 
+			$contexte = null;
+			$fingerprint = null;
+			if (isset($data_in["fingerprint"]) && $data_in["fingerprint"]) {
+				$contexte = $this->getContexteAléatoire();
+				$fingerprint = hash("sha256", $contexte);
+			}
+
 			$token_envoyé = GénérateurDeToken::get_instance()->générer_token(
 				username: $username,
 				expiration: $expiration,
 				ressources: $ressources ?? ["tout" => ["url" => ".*", "method" => ".*"]],
 				data: $data,
+				fingerprint: $fingerprint,
 			);
+
 			$signature = explode(".", $token_envoyé)[2];
 			$réponse = $this->préparer_réponse(
 				$this->item(
@@ -62,6 +71,7 @@ class TokenCtl extends Contrôleur
 							"data" => $data,
 							"ressources" => $ressources,
 							"expiration" => $expiration,
+							"fingerprint" => $fingerprint,
 							"jwt" => $token_envoyé,
 						],
 						liens: TokenCtl::get_liens($username, $signature),
@@ -69,6 +79,11 @@ class TokenCtl extends Contrôleur
 					new TokenTransformer(),
 				),
 			);
+			if ($contexte) {
+				$réponse->cookie(
+					$this->créerCookieSécure(nom: "contexte_token", valeur: $contexte, expiration: $expiration),
+				);
+			}
 		}
 
 		Log::debug("TokenCtl.post. Réponse : ", [$réponse]);
@@ -100,10 +115,12 @@ class TokenCtl extends Contrôleur
 				"data.ressources.*.url" => "required|string",
 				"data.ressources.*.method" => "required|string",
 				"data.expiration" => ["required", "regex:/^\+*[0-9]+$/"],
+				"fingerprint" => "boolean",
 			],
 			[
 				"required" => "Le champ :attribute est obligatoire.",
 				"data.expiration.regex" => "Le champ data.expiration doit représenter une date relative ou absolue.",
+				"fingerprint" => "Le champ fingerprint doit être un booléen.",
 			],
 		);
 
@@ -117,5 +134,10 @@ class TokenCtl extends Contrôleur
 		} else {
 			return intval($expiration);
 		}
+	}
+
+	private function getContexteAléatoire(): string
+	{
+		return GénérateurAléatoire::get_instance()->générer_chaîne_aléatoire(64);
 	}
 }
