@@ -36,7 +36,7 @@ class TokenTransformer extends BaseTransformer
 
 		$tokenDécodé = JWT::decode($token->jwt, getenv("JWT_SECRET"), ["HS256"]);
 
-		return [
+		$data_out = [
 			"id" => $id,
 			"username" => $token->username,
 			/* @phpstan-ignore-next-line */
@@ -49,5 +49,11 @@ class TokenTransformer extends BaseTransformer
 			"version" => $tokenDécodé->version,
 			"links" => $liens,
 		];
+
+		if (isset($token->fingerprint)) {
+			$data_out["fingerprint"] = $token->fingerprint;
+		}
+
+		return $data_out;
 	}
 }

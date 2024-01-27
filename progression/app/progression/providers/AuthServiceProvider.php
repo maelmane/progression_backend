@@ -70,7 +70,9 @@ class AuthServiceProvider extends ServiceProvider
 			}
 
 			if (array_key_exists("token", $creds)) {
-				return $this->authentifier_par_token($creds);
+				$contexte = $this->extraireCookie($request, "contexte_token");
+				$fingerprint = $contexte ? hash("sha256", $contexte) : null;
+				return $this->authentifier_par_token($creds, $fingerprint);
 			} else {
 				return $this->authentifier_par_mdp($creds);
 			}
@@ -179,7 +181,7 @@ class AuthServiceProvider extends ServiceProvider
 	/**
 	 * @param array<string, string|null> $creds
 	 */
-	private function authentifier_par_token(array $creds): User|null
+	private function authentifier_par_token(array $creds, string|null $fingerprint): User|null
 	{
 		// Authentification par token
 		$identifiant = $creds["identifiant"];
@@ -193,8 +195,11 @@ class AuthServiceProvider extends ServiceProvider
 		}
 
 		$tokenDécodé = $this->décoderToken($tokenEncodé);
-
-		if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
+		if (
+			$tokenDécodé &&
+			$this->vérifierExpirationToken($tokenDécodé) &&
+			(!isset($tokenDécodé["fingerprint"]) || $tokenDécodé["fingerprint"] === $fingerprint)
+		) {
 			$obtenirUserInteracteur = new ObtenirUserInt();
 			return $obtenirUserInteracteur->get_user($identifiant);
 		}
