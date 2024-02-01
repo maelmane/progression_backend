@@ -21,4 +21,21 @@ use Exception;
 
 class ExécutionException extends Exception
 {
+  public Exception $previous;
+
+	public function __construct(mixed $e, int $code = null)
+	{
+		if ($e instanceof Exception) {
+			$this->previous = $e;
+			$this->message = $e->getMessage();
+			$this->code = $code ?? $e->getCode();
+		} else {
+			$this->message = $e;
+			$this->code = $code;
+		}
+
+		if (!$this->code) {
+			$this->code = 500;
+		}
+	}
 }
