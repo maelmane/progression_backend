@@ -19,6 +19,7 @@
 namespace progression\dao\exécuteur;
 
 use progression\domaine\entité\Exécutable;
+use Illuminate\Support\Facades\Log;
 use progression\domaine\entité\{TestProg, TestSys};
 
 class ExécuteurCompilebox extends Exécuteur
