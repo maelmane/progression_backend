@@ -159,7 +159,7 @@ class ExécuteurCompilebox extends Exécuteur
 					Log::error($e->getMessage());
 					throw new ExécutionException("Requête intraitable par Compilebox", 400);
 				} else {
-					throw new ExécutionException($e->getMessage(), $e->getCode());
+					throw new ExécutionException("Erreur inconnue.", 500);
 				}
 			} else {
 				Log::error($e->getMessage());
