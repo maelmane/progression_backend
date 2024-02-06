@@ -80,14 +80,8 @@ final class UserCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_user")
 			->with("jdoe", ["avancements", "avancements.tentatives"])
 			->andReturn($user_et_avancements_et_tentatives);
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("jdoe", [])
-			->andReturn($user);
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("roger", [])
-			->andReturn(null);
+		$mockUserDAO->shouldReceive("get_user")->with("jdoe", [])->andReturn($user);
+		$mockUserDAO->shouldReceive("get_user")->with("roger", [])->andReturn(null);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");

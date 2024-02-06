@@ -52,16 +52,12 @@ final class UserDAOTests extends TestCase
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction2" => $avancement3,
 		];
 
-		app("db")
-			->connection()
-			->beginTransaction();
+		app("db")->connection()->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
-		app("db")
-			->connection()
-			->rollBack();
+		app("db")->connection()->rollBack();
 		parent::tearDown();
 	}
 

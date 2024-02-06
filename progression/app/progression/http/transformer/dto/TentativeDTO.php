@@ -46,7 +46,9 @@ class TentativeDTO extends GénériqueDTO
 				new GénériqueDTO(
 					id: $hash,
 					objet: $résultat,
-					liens: RésultatCtl::get_liens($hash) + ["tentative" => "{$this->urlBase}/tentative/{$id}"],
+					liens: RésultatCtl::get_liens($hash) + [
+						"tentative" => "{$this->urlBase}/tentative/{$id}",
+					],
 				),
 			);
 		}

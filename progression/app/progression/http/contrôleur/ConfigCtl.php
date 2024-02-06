@@ -53,7 +53,10 @@ class ConfigCtl extends Contrôleur
 
 		$user = $request->user("api");
 
-		$réponse = $this->valider_et_préparer_réponse(["config" => $config, "user" => $user]);
+		$réponse = $this->valider_et_préparer_réponse([
+			"config" => $config,
+			"user" => $user,
+		]);
 
 		Log::debug("ConfigCtl.get. Retour : ", [$réponse]);
 		return $réponse;

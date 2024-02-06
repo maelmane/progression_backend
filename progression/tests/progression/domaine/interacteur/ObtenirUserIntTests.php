@@ -46,10 +46,7 @@ final class ObtenirUserIntTests extends TestCase
 		$mockUserDao->shouldReceive("get_user")->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_user_dao()
-			->andReturn($mockUserDao);
+		$mockDAOFactory->allows()->get_user_dao()->andReturn($mockUserDao);
 
 		DAOFactory::setInstance($mockDAOFactory);
 	}

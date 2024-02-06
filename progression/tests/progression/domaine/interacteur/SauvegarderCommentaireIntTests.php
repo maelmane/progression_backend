@@ -32,10 +32,7 @@ final class SauvegarderCommentaireTests extends TestCase
 		$mockCommentaireDAO = Mockery::mock("progression\\dao\\CommentaireDAO");
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_commentaire_dao()
-			->andReturn($mockCommentaireDAO);
+		$mockDAOFactory->allows()->get_commentaire_dao()->andReturn($mockCommentaireDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);
 	}

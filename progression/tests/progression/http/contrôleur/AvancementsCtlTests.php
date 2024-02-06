@@ -37,10 +37,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_user")
 			->with("jdoe")
 			->andReturn(new User(username: "jdoe", date_inscription: 0));
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("bob")
-			->andReturn(new User(username: "bob", date_inscription: 0));
+		$mockUserDAO->shouldReceive("get_user")->with("bob")->andReturn(new User(username: "bob", date_inscription: 0));
 
 		// Avancement
 		$avancements = [
@@ -151,10 +148,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 		];
 
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
-		$mockAvancementDAO
-			->shouldReceive("get_tous")
-			->with("jdoe", [])
-			->andReturn($avancements);
+		$mockAvancementDAO->shouldReceive("get_tous")->with("jdoe", [])->andReturn($avancements);
 		$mockAvancementDAO
 			->shouldReceive("get_tous")
 			->with("jdoe", ["tentatives"])
@@ -167,10 +161,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_tous")
 			->with("jdoe", ["tentatives", "tentatives.commentaires", "sauvegardes"])
 			->andReturn($avancements_tentatives_commentaires_et_sauvegardes);
-		$mockAvancementDAO
-			->shouldReceive("get_tous")
-			->with("bob", [])
-			->andReturn([]);
+		$mockAvancementDAO->shouldReceive("get_tous")->with("bob", [])->andReturn([]);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");

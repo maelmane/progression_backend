@@ -72,7 +72,9 @@ final class TentativeProgTransformerTests extends TestCase
 			"codeTest",
 			1614711760,
 			false,
-			["bebe123" => new Résultat("output", "error", false, "feedback", 123)],
+			[
+				"bebe123" => new Résultat("output", "error", false, "feedback", 123),
+			],
 			2,
 			34567,
 			"feedBackTest",

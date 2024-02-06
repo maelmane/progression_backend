@@ -52,10 +52,7 @@ final class ModifierUserIntTests extends TestCase
 		DAOFactory::setInstance($mockDAOFactory);
 
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
-		$mockDAOFactory
-			->allows()
-			->get_user_dao()
-			->andReturn($mockUserDAO);
+		$mockDAOFactory->allows()->get_user_dao()->andReturn($mockUserDAO);
 
 		$mockExpéditeurDao = Mockery::mock("progression\\dao\\mail\\Expéditeur");
 		$mockDAOFactory->shouldReceive("get_expéditeur")->andReturn($mockExpéditeurDao);
@@ -103,10 +100,7 @@ final class ModifierUserIntTests extends TestCase
 		$user_test = new User(username: "bob", date_inscription: 0, courriel: "bob@test.com");
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
-		$mockUserDAO
-			->shouldReceive("trouver")
-			->with(null, "autre@test.com")
-			->andReturn(null);
+		$mockUserDAO->shouldReceive("trouver")->with(null, "autre@test.com")->andReturn(null);
 		DAOFactory::getInstance()
 			->get_expéditeur()
 			->shouldReceive("envoyer_courriel_de_validation")
@@ -136,13 +130,8 @@ final class ModifierUserIntTests extends TestCase
 		$user_test = new User(username: "bob", date_inscription: 0, courriel: "bob@test.com");
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
-		$mockUserDAO
-			->shouldReceive("trouver")
-			->with(null, "autre@test.com")
-			->andReturn(null);
-		DAOFactory::getInstance()
-			->get_expéditeur()
-			->shouldNotReceive("envoyer_courriel_de_validation");
+		$mockUserDAO->shouldReceive("trouver")->with(null, "autre@test.com")->andReturn(null);
+		DAOFactory::getInstance()->get_expéditeur()->shouldNotReceive("envoyer_courriel_de_validation");
 
 		$this->actingAs($this->user);
 
@@ -165,9 +154,7 @@ final class ModifierUserIntTests extends TestCase
 			->with(null, "autre@test.com")
 			->andReturn(new User(username: "Autre", date_inscription: 0, courriel: "autre@test.com"));
 
-		DAOFactory::getInstance()
-			->get_expéditeur()
-			->shouldNotReceive("envoyer_courriel_de_validation");
+		DAOFactory::getInstance()->get_expéditeur()->shouldNotReceive("envoyer_courriel_de_validation");
 
 		$this->actingAs($this->user);
 
@@ -302,10 +289,7 @@ final class ModifierUserIntTests extends TestCase
 		$user_test = new User(username: "bob", date_inscription: 0, état: État::ACTIF);
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
-		$mockUserDAO
-			->shouldReceive("set_password")
-			->with($user_test, "qwerty123!")
-			->once();
+		$mockUserDAO->shouldReceive("set_password")->with($user_test, "qwerty123!")->once();
 
 		$this->actingAs($this->user);
 

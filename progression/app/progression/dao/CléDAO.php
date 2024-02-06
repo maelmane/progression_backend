@@ -65,10 +65,7 @@ class CléDAO extends EntitéDAO
 	public function save($username, $nom, $clé): array
 	{
 		try {
-			$user = UserMdl::select("user.id")
-				->from("user")
-				->where("user.username", $username)
-				->first();
+			$user = UserMdl::select("user.id")->from("user")->where("user.username", $username)->first();
 
 			if (!$user) {
 				throw new IntégritéException("Impossible de sauvegarder la ressource; le parent n'existe pas.");

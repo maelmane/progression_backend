@@ -62,10 +62,7 @@ final class UserModificationCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_user")
 			->with("jdoe", [])
 			->andReturn($this->jdoe);
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("roger", [])
-			->andReturn(null);
+		$mockUserDAO->shouldReceive("get_user")->with("roger", [])->andReturn(null);
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("nouveau", [])
@@ -137,7 +134,9 @@ final class UserModificationCtlTests extends ContrôleurTestCase
 			->withArgs(function ($username, $user) {
 				return $username == "jane" && $user->username == "jane" && $user->état == État::ACTIF;
 			})
-			->andReturn(["jane" => new User(username: "jane", date_inscription: 1600828609, état: État::ACTIF)]);
+			->andReturn([
+				"jane" => new User(username: "jane", date_inscription: 1600828609, état: État::ACTIF),
+			]);
 
 		$résultatObtenu = $this->actingAs($this->user)->call("PATCH", "/user/jane", [
 			"état" => "actif",
@@ -203,10 +202,7 @@ final class UserModificationCtlTests extends ContrôleurTestCase
 		$mockExpéditeurDao->shouldReceive("envoyer_courriel_de_validation")->once();
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
-		$mockUserDAO
-			->shouldReceive("trouver")
-			->with(null, "nouveau@gmail.com")
-			->andReturn(null);
+		$mockUserDAO->shouldReceive("trouver")->with(null, "nouveau@gmail.com")->andReturn(null);
 
 		$mockUserDAO
 			->shouldReceive("save")
@@ -272,14 +268,8 @@ final class UserModificationCtlTests extends ContrôleurTestCase
 		$mockExpéditeurDao->shouldNotReceive("envoyer_courriel_de_validation");
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("bob", [])
-			->andReturn($bob);
-		$mockUserDAO
-			->shouldReceive("trouver")
-			->with(null, "bob@progressionmail.com")
-			->andReturn($bob);
+		$mockUserDAO->shouldReceive("get_user")->with("bob", [])->andReturn($bob);
+		$mockUserDAO->shouldReceive("trouver")->with(null, "bob@progressionmail.com")->andReturn($bob);
 
 		$mockUserDAO->shouldNotReceive("save");
 
@@ -297,11 +287,11 @@ final class UserModificationCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_patch_des_préférences_invalides_elles_ne_sont_pas_sauvegardées_et_on_obtient_une_erreur_400()
 	{
-		DAOFactory::getInstance()
-			->get_user_dao()
-			->shouldNotReceive("save");
+		DAOFactory::getInstance()->get_user_dao()->shouldNotReceive("save");
 
-		$résultat_observé = $this->actingAs($this->user)->call("PATCH", "/user/jdoe", ["préférences" => "test"]);
+		$résultat_observé = $this->actingAs($this->user)->call("PATCH", "/user/jdoe", [
+			"préférences" => "test",
+		]);
 
 		$this->assertResponseStatus(400);
 		$this->assertEquals(
@@ -312,20 +302,18 @@ final class UserModificationCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_existant_lorsquon_patch_un_état_invalide_il_n_est_pas_sauvegardé_et_on_obtient_une_erreur_400()
 	{
-		DAOFactory::getInstance()
-			->get_user_dao()
-			->shouldNotReceive("save");
+		DAOFactory::getInstance()->get_user_dao()->shouldNotReceive("save");
 
-		$résultat_observé = $this->actingAs($this->user)->call("PATCH", "/user/jdoe", ["état" => "abc"]);
+		$résultat_observé = $this->actingAs($this->user)->call("PATCH", "/user/jdoe", [
+			"état" => "abc",
+		]);
 
 		$this->assertResponseStatus(400);
 	}
 
 	public function test_étant_donné_un_utilisateur_inexistant_lorsquon_patch_des_préférences_elles_ne_sont_pas_sauvegardées_et_on_obtient_une_erreur_404()
 	{
-		DAOFactory::getInstance()
-			->get_user_dao()
-			->shouldNotReceive("save");
+		DAOFactory::getInstance()->get_user_dao()->shouldNotReceive("save");
 
 		$this->actingAs($this->user)->call("PATCH", "/user/roger", [
 			"préférences" => "{\"test\": 42}",
@@ -336,9 +324,7 @@ final class UserModificationCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_inexistant_lorsquon_patch_un_état_il_n_est_pas_sauvegardé_et_on_obtient_une_erreur_404()
 	{
-		DAOFactory::getInstance()
-			->get_user_dao()
-			->shouldNotReceive("save");
+		DAOFactory::getInstance()->get_user_dao()->shouldNotReceive("save");
 
 		$this->actingAs($this->user)->call("PATCH", "/user/roger", [
 			"état" => "actif",
@@ -379,9 +365,7 @@ final class UserModificationCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_inactif_lorsqu_un_admin_patch_un_état_invalide_on_obtient_une_erreur_400()
 	{
-		DAOFactory::getInstance()
-			->get_user_dao()
-			->shouldNotReceive("save");
+		DAOFactory::getInstance()->get_user_dao()->shouldNotReceive("save");
 
 		$résultat_observé = $this->actingAs($this->admin)->call("PATCH", "/user/jdoe", [
 			"état" => "n'importe quoi",
@@ -392,9 +376,7 @@ final class UserModificationCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_normal_lorsquon_patch_un_rôle_admin_on_obtient_une_erreur_403()
 	{
-		DAOFactory::getInstance()
-			->get_user_dao()
-			->shouldNotReceive("save");
+		DAOFactory::getInstance()->get_user_dao()->shouldNotReceive("save");
 
 		$this->actingAs($this->user)->call("PATCH", "/user/jdoe", [
 			"rôle" => "admin",
@@ -405,9 +387,7 @@ final class UserModificationCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_normal_lorsquon_patch_un_rôle_invalide_on_obtient_une_erreur_400()
 	{
-		DAOFactory::getInstance()
-			->get_user_dao()
-			->shouldNotReceive("save");
+		DAOFactory::getInstance()->get_user_dao()->shouldNotReceive("save");
 
 		$this->actingAs($this->user)->call("PATCH", "/user/jdoe", [
 			"rôle" => "n'importe quoi",
@@ -418,9 +398,7 @@ final class UserModificationCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_normal_lorsquon_patch_un_état_inactif_on_obtient_une_erreur_403()
 	{
-		DAOFactory::getInstance()
-			->get_user_dao()
-			->shouldNotReceive("save");
+		DAOFactory::getInstance()->get_user_dao()->shouldNotReceive("save");
 
 		$this->actingAs($this->user)->call("PATCH", "/user/jdoe", [
 			"état" => "inactif",

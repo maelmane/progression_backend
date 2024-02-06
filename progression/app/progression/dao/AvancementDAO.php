@@ -69,9 +69,7 @@ class AvancementDAO extends EntitéDAO
 	public function save(string $username, string $question_uri, string $type, Avancement $avancement): array
 	{
 		try {
-			$user = UserMdl::query()
-				->where("username", $username)
-				->first();
+			$user = UserMdl::query()->where("username", $username)->first();
 
 			if (!$user) {
 				throw new IntégritéException("Impossible de sauvegarder la ressource; le parent n'existe pas.");

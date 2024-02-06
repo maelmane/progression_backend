@@ -27,16 +27,12 @@ final class AvancementDAOTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		app("db")
-			->connection()
-			->beginTransaction();
+		app("db")->connection()->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
-		app("db")
-			->connection()
-			->rollBack();
+		app("db")->connection()->rollBack();
 		parent::tearDown();
 	}
 
@@ -161,7 +157,9 @@ final class AvancementDAOTests extends TestCase
 		);
 
 		$this->assertEquals(
-			["https://depot.com/roger/une_nouvelle_question" => $nouvel_avancement],
+			[
+				"https://depot.com/roger/une_nouvelle_question" => $nouvel_avancement,
+			],
 			$résponse_observée,
 		);
 
@@ -192,7 +190,9 @@ final class AvancementDAOTests extends TestCase
 		);
 
 		$this->assertEquals(
-			["https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $résultat_attendu],
+			[
+				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $résultat_attendu,
+			],
 			$résponse_observée,
 		);
 

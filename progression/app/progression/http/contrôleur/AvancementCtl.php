@@ -88,7 +88,9 @@ class AvancementCtl extends Contrôleur
 		];
 
 		if (Gate::allows("soumettre-tentative", $username)) {
-			$liens += ["soumettre" => "{$urlBase}/avancement/{$username}/{$question_uri}/tentatives"];
+			$liens += [
+				"soumettre" => "{$urlBase}/avancement/{$username}/{$question_uri}/tentatives",
+			];
 		}
 
 		return $liens;

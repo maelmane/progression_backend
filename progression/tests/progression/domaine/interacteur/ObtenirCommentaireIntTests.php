@@ -57,10 +57,7 @@ final class ObtenirCommentaireIntTests extends TestCase
 		$mockCommentaireDAO->shouldReceive("get_commentaire")->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_commentaire_dao()
-			->andReturn($mockCommentaireDAO);
+		$mockDAOFactory->allows()->get_commentaire_dao()->andReturn($mockCommentaireDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 

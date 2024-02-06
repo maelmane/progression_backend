@@ -38,10 +38,7 @@ final class SoumettreTentativeSysIntTests extends TestCase
 
 		//Mock User
 		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
-		$mockUserDao
-			->allows()
-			->get_user("jdoe")
-			->andReturn(new User(username: "jdoe", date_inscription: 0));
+		$mockUserDao->allows()->get_user("jdoe")->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// Mock exécuteur
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");

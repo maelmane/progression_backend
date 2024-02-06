@@ -51,7 +51,10 @@ class Handler extends ExceptionHandler
 	 */
 	public function render($request, Throwable $exception)
 	{
-		Log::error("Exception.", ["exception" => $exception, "code" => $exception->getCode()]);
+		Log::error("Exception.", [
+			"exception" => $exception,
+			"code" => $exception->getCode(),
+		]);
 		$message = $exception->getMessage();
 		$objet = json_decode($exception->getMessage());
 

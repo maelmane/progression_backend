@@ -110,7 +110,11 @@ final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->andReturn([
 				"temps_exécution" => 0.551,
 				"résultats" => [
-					"abcdef0123456789" => ["output" => "Bonjour\nBonjour\nBonjour\n", "errors" => "", "time" => 0.03],
+					"abcdef0123456789" => [
+						"output" => "Bonjour\nBonjour\nBonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
 				],
 			]);
 		$mockExécuteur
@@ -121,7 +125,11 @@ final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->andReturn([
 				"temps_exécution" => 0.552,
 				"résultats" => [
-					"abcdef0123456789" => ["output" => "Mauvaise sortie\n", "errors" => "", "time" => 0.03],
+					"abcdef0123456789" => [
+						"output" => "Mauvaise sortie\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
 				],
 			]);
 		$mockExécuteur
@@ -132,7 +140,11 @@ final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->andReturn([
 				"temps_exécution" => 0.552,
 				"résultats" => [
-					"abcdef0123456789" => ["output" => "", "errors" => "Erreur!", "time" => 0.03],
+					"abcdef0123456789" => [
+						"output" => "",
+						"errors" => "Erreur!",
+						"time" => 0.03,
+					],
 				],
 			]);
 		$mockExécuteur
@@ -144,10 +156,7 @@ final class RésultatCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 		// User
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
-		$mockUserDAO
-			->allows("get_user")
-			->with("jdoe")
-			->andReturn(new User(username: "jdoe", date_inscription: 0));
+		$mockUserDAO->allows("get_user")->with("jdoe")->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");

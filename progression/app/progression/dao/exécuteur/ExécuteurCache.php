@@ -126,7 +126,10 @@ class ExécuteurCache extends Exécuteur
 
 		// Remplit le tableau $résultats avec les Résultats de tests non présents dans la cache
 		$temps_exécution = $this->exécuter_tests_manquants($tests_à_exécuter, $exécutable, $résultats, $image);
-		return ["résultats" => $résultats, "temps_exécution" => $temps_exécution];
+		return [
+			"résultats" => $résultats,
+			"temps_exécution" => $temps_exécution,
+		];
 	}
 
 	/**

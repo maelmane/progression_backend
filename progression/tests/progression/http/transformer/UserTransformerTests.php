@@ -91,9 +91,7 @@ final class UserTransformerTests extends TestCase
 		];
 		$user->avancements = [new Avancement(titre: "test 1"), new Avancement(titre: "test 2")];
 
-		Gate::shouldReceive("allows")
-			->with("soumettre-tentative", "bob")
-			->andReturn(true);
+		Gate::shouldReceive("allows")->with("soumettre-tentative", "bob")->andReturn(true);
 
 		$userTransformer = new UserTransformer();
 		$résultats_obtenus = $userTransformer->includeAvancements(new UserDTO(id: "bob", objet: $user, liens: []));

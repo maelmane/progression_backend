@@ -58,10 +58,7 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 
 		// User
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
-		$mockUserDAO
-			->allows("get_user")
-			->with("jdoe", [])
-			->andReturn(new User(username: "jdoe", date_inscription: 0));
+		$mockUserDAO->allows("get_user")->with("jdoe", [])->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");

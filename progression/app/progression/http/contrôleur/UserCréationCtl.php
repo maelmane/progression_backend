@@ -38,7 +38,14 @@ class UserCréationCtl extends UserCtl
 		if ($username) {
 			$réponse = $this->créer_user($request, $username);
 		} else {
-			$réponse = $this->réponse_json(["erreur" => ["username" => ["Le champ username est obligatoire."]]], 400);
+			$réponse = $this->réponse_json(
+				[
+					"erreur" => [
+						"username" => ["Le champ username est obligatoire."],
+					],
+				],
+				400,
+			);
 		}
 
 		Log::debug("UserCréationCtl.post. Retour : ", [$réponse]);

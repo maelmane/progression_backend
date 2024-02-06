@@ -56,7 +56,9 @@ class TokenCtl extends Contrôleur
 			$token_envoyé = GénérateurDeToken::get_instance()->générer_token(
 				username: $username,
 				expiration: $expiration,
-				ressources: $ressources ?? ["tout" => ["url" => ".*", "method" => ".*"]],
+				ressources: $ressources ?? [
+					"tout" => ["url" => ".*", "method" => ".*"],
+				],
 				data: $data,
 				fingerprint: $fingerprint,
 			);
