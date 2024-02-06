@@ -27,16 +27,12 @@ final class CléDAOTests extends TestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		app("db")
-			->connection()
-			->beginTransaction();
+		app("db")->connection()->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
-		app("db")
-			->connection()
-			->rollBack();
+		app("db")->connection()->rollBack();
 		parent::tearDown();
 	}
 

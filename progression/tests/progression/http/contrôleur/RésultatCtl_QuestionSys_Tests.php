@@ -109,10 +109,30 @@ final class RésultatCtl_QuestionSys_Tests extends ContrôleurTestCase
 			->andReturn([
 				"temps_exécution" => 0.551,
 				"résultats" => [
-					"abcdef0123456789" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03, "code" => 0],
-					"sans importance 0" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03, "code" => 0],
-					"sans importance 1" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03, "code" => 0],
-					"sans importance 2" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03, "code" => 0],
+					"abcdef0123456789" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+						"code" => 0,
+					],
+					"sans importance 0" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+						"code" => 0,
+					],
+					"sans importance 1" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+						"code" => 0,
+					],
+					"sans importance 2" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+						"code" => 0,
+					],
 				],
 				"conteneur_id" => "cafebaba01234",
 				"url_terminal" => "http://ttyshare.com/abcde",
@@ -123,15 +143,30 @@ final class RésultatCtl_QuestionSys_Tests extends ContrôleurTestCase
 			->andReturn([
 				"temps_exécution" => 0.551,
 				"résultats" => [
-					"sans importance 0" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03, "code" => 0],
+					"sans importance 0" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+						"code" => 0,
+					],
 					"abcdef0123456789" => [
 						"output" => "Bonjour\nBonjour\n",
 						"errors" => "",
 						"time" => 0.03,
 						"code" => 1,
 					],
-					"sans importance 1" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03, "code" => 0],
-					"sans importance 2" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03, "code" => 0],
+					"sans importance 1" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+						"code" => 0,
+					],
+					"sans importance 2" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+						"code" => 0,
+					],
 				],
 				"conteneur_id" => "cafebaba01234",
 				"url_terminal" => "http://ttyshare.com/abcde",
@@ -142,15 +177,30 @@ final class RésultatCtl_QuestionSys_Tests extends ContrôleurTestCase
 			->andReturn([
 				"temps_exécution" => 0.551,
 				"résultats" => [
-					"sans importance 0" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03, "code" => 0],
-					"sans importance 1" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03, "code" => 0],
+					"sans importance 0" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+						"code" => 0,
+					],
+					"sans importance 1" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+						"code" => 0,
+					],
 					"abcdef0123456789" => [
 						"output" => "Mauvaise sortie\n",
 						"errors" => "",
 						"time" => 0.03,
 						"code" => 0,
 					],
-					"sans importance 2" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03, "code" => 0],
+					"sans importance 2" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+						"code" => 0,
+					],
 				],
 				"conteneur_id" => "cafebaba01234",
 				"url_terminal" => "http://ttyshare.com/abcde",
@@ -161,10 +211,30 @@ final class RésultatCtl_QuestionSys_Tests extends ContrôleurTestCase
 			->andReturn([
 				"temps_exécution" => 0.551,
 				"résultats" => [
-					"sans importance 0" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03, "code" => 0],
-					"sans importance 1" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03, "code" => 0],
-					"sans importance 2" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03, "code" => 0],
-					"abcdef0123456789" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03, "code" => 0],
+					"sans importance 0" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+						"code" => 0,
+					],
+					"sans importance 1" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+						"code" => 0,
+					],
+					"sans importance 2" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+						"code" => 0,
+					],
+					"abcdef0123456789" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+						"code" => 0,
+					],
 				],
 				"conteneur_id" => "cafebaba01234",
 				"url_terminal" => "http://ttyshare.com/abcde",
@@ -172,10 +242,7 @@ final class RésultatCtl_QuestionSys_Tests extends ContrôleurTestCase
 
 		// User
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
-		$mockUserDAO
-			->allows("get_user")
-			->with("jdoe")
-			->andReturn(new User(username: "jdoe", date_inscription: 0));
+		$mockUserDAO->allows("get_user")->with("jdoe")->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");

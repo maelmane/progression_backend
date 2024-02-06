@@ -37,16 +37,12 @@ final class CommentaireDAOTests extends TestCase
 		$this->admin = new User(username: "admin", date_inscription: 1580828611, rôle: Rôle::ADMIN);
 		$this->stefany = new User(username: "Stefany", date_inscription: 1610828610);
 
-		app("db")
-			->connection()
-			->beginTransaction();
+		app("db")->connection()->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
-		app("db")
-			->connection()
-			->rollBack();
+		app("db")->connection()->rollBack();
 		parent::tearDown();
 	}
 

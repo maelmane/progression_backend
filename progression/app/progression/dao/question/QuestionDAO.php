@@ -35,9 +35,7 @@ class QuestionDAO extends EntitéDAO
 				->get_chargeur_question_fichier()
 				->récupérer_question($uri);
 		} elseif ($scheme == "https") {
-			$infos_question = ChargeurFactory::get_instance()
-				->get_chargeur_question_http()
-				->récupérer_question($uri);
+			$infos_question = ChargeurFactory::get_instance()->get_chargeur_question_http()->récupérer_question($uri);
 		} else {
 			throw new BadMethodCallException("Schéma d'URI invalide");
 		}

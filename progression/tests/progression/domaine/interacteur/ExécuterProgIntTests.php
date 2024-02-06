@@ -89,10 +89,7 @@ final class ExécuterProgIntTests extends TestCase
 			]);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_exécuteur()
-			->andReturn($mockExécuteur);
+		$mockDAOFactory->allows()->get_exécuteur()->andReturn($mockExécuteur);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 

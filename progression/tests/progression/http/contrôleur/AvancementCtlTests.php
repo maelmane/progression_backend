@@ -52,10 +52,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_user")
 			->with("roger")
 			->andReturn(new User(username: "roger", date_inscription: 0, rôle: Rôle::NORMAL, état: UserÉtat::ACTIF));
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("Marcel")
-			->andReturn(null);
+		$mockUserDAO->shouldReceive("get_user")->with("Marcel")->andReturn(null);
 
 		// Question Appeler une fonction
 		$question = new QuestionProg();
@@ -328,7 +325,9 @@ final class AvancementCtlTests extends ContrôleurTestCase
 					$type == "prog" &&
 					$avancement == $nouvel_avancement;
 			})
-			->andReturn(["https://depot.com/roger/questions_prog/nouvelle_question_defaut" => $nouvel_avancement]);
+			->andReturn([
+				"https://depot.com/roger/questions_prog/nouvelle_question_defaut" => $nouvel_avancement,
+			]);
 
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb25fZGVmYXV0",
@@ -355,7 +354,9 @@ final class AvancementCtlTests extends ContrôleurTestCase
 					$type == "prog" &&
 					$avancement == $nouvel_avancement;
 			})
-			->andReturn(["https://depot.com/roger/questions_prog/nouvelle_question" => $nouvel_avancement]);
+			->andReturn([
+				"https://depot.com/roger/questions_prog/nouvelle_question" => $nouvel_avancement,
+			]);
 
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",

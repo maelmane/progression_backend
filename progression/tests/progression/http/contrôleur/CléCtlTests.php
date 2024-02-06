@@ -52,10 +52,7 @@ final class CléCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_user")
 			->with("jdoe")
 			->andReturn(new User(username: "jdoe", date_inscription: 0));
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("bob")
-			->andReturn(new User(username: "bob", date_inscription: 0));
+		$mockUserDAO->shouldReceive("get_user")->with("bob")->andReturn(new User(username: "bob", date_inscription: 0));
 
 		//CléDAO
 		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
@@ -63,14 +60,8 @@ final class CléCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_clé")
 			->with("jdoe", "cle de test", [])
 			->andReturn(new Clé(1234, 1625709495, 1625713000, Portée::AUTH));
-		$mockCléDAO
-			->shouldReceive("get_clé")
-			->with("jdoe", "cle inexistante", [])
-			->andReturn(null);
-		$mockCléDAO
-			->shouldReceive("get_clé")
-			->with("jdoe", "nouvelle_cle")
-			->andReturn(null);
+		$mockCléDAO->shouldReceive("get_clé")->with("jdoe", "cle inexistante", [])->andReturn(null);
+		$mockCléDAO->shouldReceive("get_clé")->with("jdoe", "nouvelle_cle")->andReturn(null);
 		$mockCléDAO
 			->shouldReceive("save")
 			->withArgs(["jdoe", "nouvelle_cle", Mockery::Any()])
@@ -155,7 +146,9 @@ final class CléCtlTests extends ContrôleurTestCase
 	// POST
 	public function test_étant_donné_un_utilisateur_normal_connecté_lorsquil_requiert_une_clé_dauthentification_on_obtient_une_clé_avec_un_secret_généré_aléatoirement_sans_expiration()
 	{
-		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", ["nom" => "nouvelle_cle"]);
+		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/cles", [
+			"nom" => "nouvelle_cle",
+		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
 		$clé_sauvegardée = json_decode($résultat_observé->getContent())->data->attributes;

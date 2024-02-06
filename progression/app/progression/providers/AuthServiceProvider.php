@@ -266,7 +266,10 @@ class AuthServiceProvider extends ServiceProvider
 		$tokenEncodé = trim(str_ireplace("bearer", "", $creds_header));
 		$tokenDécodé = $this->décoderToken($tokenEncodé);
 		if ($tokenDécodé && $this->vérifierExpirationToken($tokenDécodé)) {
-			return ["identifiant" => $tokenDécodé["username"], "token" => $tokenEncodé];
+			return [
+				"identifiant" => $tokenDécodé["username"],
+				"token" => $tokenEncodé,
+			];
 		} else {
 			throw new AccèsInterditException("Token invalide ou expiré");
 		}

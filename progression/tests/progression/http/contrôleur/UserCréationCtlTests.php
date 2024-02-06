@@ -69,18 +69,9 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 					état: État::ATTENTE_DE_VALIDATION,
 				),
 			);
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("Marcel")
-			->andReturn(null);
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("Marcel2")
-			->andReturn(null);
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("johnny")
-			->andReturn(null);
+		$mockUserDAO->shouldReceive("get_user")->with("Marcel")->andReturn(null);
+		$mockUserDAO->shouldReceive("get_user")->with("Marcel2")->andReturn(null);
+		$mockUserDAO->shouldReceive("get_user")->with("johnny")->andReturn(null);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -88,10 +79,7 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 		DAOFactory::setInstance($mockDAOFactory);
 
 		$mockExpéditeurDao = Mockery::mock("progression\\dao\\mail\Expéditeur");
-		$mockDAOFactory
-			->allows()
-			->get_expéditeur()
-			->andReturn($mockExpéditeurDao);
+		$mockDAOFactory->allows()->get_expéditeur()->andReturn($mockExpéditeurDao);
 	}
 
 	public function tearDown(): void
@@ -104,7 +92,9 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=false");
 
-		$résultat_observé = $this->call("PUT", "/user/bob", ["username" => "bob"]);
+		$résultat_observé = $this->call("PUT", "/user/bob", [
+			"username" => "bob",
+		]);
 
 		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
 		$mockExpéditeurDao->shouldNotReceive("envoyer_courriel_de_validation");
@@ -120,7 +110,9 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=false");
 
-		$résultat_observé = $this->call("PUT", "/user/bob", ["username" => "autre_nom"]);
+		$résultat_observé = $this->call("PUT", "/user/bob", [
+			"username" => "autre_nom",
+		]);
 
 		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
 		$mockExpéditeurDao->shouldNotReceive("envoyer_courriel_de_validation");
@@ -132,7 +124,9 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 	{
 		putenv("AUTH_LOCAL=false");
 
-		$résultat_observé = $this->call("PUT", "/user/roger", ["username" => "autre_nom"]);
+		$résultat_observé = $this->call("PUT", "/user/roger", [
+			"username" => "autre_nom",
+		]);
 
 		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
 		$mockExpéditeurDao->shouldNotReceive("envoyer_courriel_de_validation");
@@ -160,7 +154,9 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
 		$mockExpéditeurDao->shouldNotReceive("envoyer_courriel_de_validation");
 
-		$résultat_observé = $this->call("PUT", "/user/Marcel", ["username" => "Marcel"]);
+		$résultat_observé = $this->call("PUT", "/user/Marcel", [
+			"username" => "Marcel",
+		]);
 
 		$this->assertEquals(200, $résultat_observé->status());
 		$this->assertJsonStringEqualsJsonFile(
@@ -241,10 +237,7 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 		Carbon::setTestNow(Carbon::create(2021, 01, 16, 15, 23, 32));
 
 		$mockUserDAO = DAOFactory::getInstance()->get_user_dao();
-		$mockUserDAO
-			->shouldReceive("trouver")
-			->with(Mockery::any(), "marcel2@gmail.com")
-			->andReturn(null);
+		$mockUserDAO->shouldReceive("trouver")->with(Mockery::any(), "marcel2@gmail.com")->andReturn(null);
 		$mockUserDAO
 			->shouldReceive("save")
 			->once()
@@ -514,7 +507,10 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 		$mockExpéditeurDao = DAOFactory::getInstance()->get_expéditeur();
 		$mockExpéditeurDao->shouldNotReceive("envoyer_courriel_de_validation");
 
-		$résultat_observé = $this->call("PUT", "/user/Marcel", ["username" => "Marcel", "password" => "Test1234"]);
+		$résultat_observé = $this->call("PUT", "/user/Marcel", [
+			"username" => "Marcel",
+			"password" => "Test1234",
+		]);
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(

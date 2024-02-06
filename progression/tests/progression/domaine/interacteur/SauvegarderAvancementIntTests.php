@@ -34,10 +34,7 @@ final class SauvegarderAvancementIntTests extends TestCase
 		parent::setUp();
 
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
-		$mockUserDAO
-			->allows()
-			->get_user("jdoe")
-			->andReturn(new User(username: "jdoe", date_inscription: 0));
+		$mockUserDAO->allows()->get_user("jdoe")->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
 		$mockAvancementDAO
@@ -70,24 +67,12 @@ final class SauvegarderAvancementIntTests extends TestCase
 			->shouldReceive("get_question")
 			->with("file:///une_question_modifiée/info.yml")
 			->andReturn($question_modifiée);
-		$mockQuestionDao
-			->shouldReceive("get_question")
-			->with(Mockery::Any())
-			->andReturn(null);
+		$mockQuestionDao->shouldReceive("get_question")->with(Mockery::Any())->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_question_dao()
-			->andReturn($mockQuestionDao);
-		$mockDAOFactory
-			->allows()
-			->get_user_dao()
-			->andReturn($mockUserDAO);
-		$mockDAOFactory
-			->allows()
-			->get_avancement_dao()
-			->andReturn($mockAvancementDAO);
+		$mockDAOFactory->allows()->get_question_dao()->andReturn($mockQuestionDao);
+		$mockDAOFactory->allows()->get_user_dao()->andReturn($mockUserDAO);
+		$mockDAOFactory->allows()->get_avancement_dao()->andReturn($mockAvancementDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 	public function tearDown(): void
@@ -109,7 +94,9 @@ final class SauvegarderAvancementIntTests extends TestCase
 					$type == "prog" &&
 					$avancement == $avancement_sauvegardé;
 			})
-			->andReturn(["file:///prog1/les_fonctions/appeler_une_fonction/info.yml" => $avancement_sauvegardé]);
+			->andReturn([
+				"file:///prog1/les_fonctions/appeler_une_fonction/info.yml" => $avancement_sauvegardé,
+			]);
 
 		$interacteur = new SauvegarderAvancementInt();
 		$résultat_observé = $interacteur->sauvegarder(
@@ -118,16 +105,16 @@ final class SauvegarderAvancementIntTests extends TestCase
 			new Avancement(titre: "Appeler une fonction", niveau: "facile", extra: "Infos extras"),
 		);
 
-		$résultat_attendu = ["file:///prog1/les_fonctions/appeler_une_fonction/info.yml" => $avancement_sauvegardé];
+		$résultat_attendu = [
+			"file:///prog1/les_fonctions/appeler_une_fonction/info.yml" => $avancement_sauvegardé,
+		];
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 
 	public function test_étant_donné_une_question_inexistante_lorsquon_sauvegarde_un_avancement_on_obtient_une_exception()
 	{
-		DAOFactory::getInstance()
-			->get_avancement_dao()
-			->shouldNotReceive("save");
+		DAOFactory::getInstance()->get_avancement_dao()->shouldNotReceive("save");
 
 		$interacteur = new SauvegarderAvancementInt();
 
@@ -158,7 +145,9 @@ final class SauvegarderAvancementIntTests extends TestCase
 					$type == "prog" &&
 					$avancement == $avancement_sauvegardé;
 			})
-			->andReturn(["file:///prog1/les_fonctions/appeler_une_fonction/info.yml" => $avancement_sauvegardé]);
+			->andReturn([
+				"file:///prog1/les_fonctions/appeler_une_fonction/info.yml" => $avancement_sauvegardé,
+			]);
 
 		$interacteur = new SauvegarderAvancementInt();
 		$résultat_observé = $interacteur->sauvegarder(
@@ -167,7 +156,9 @@ final class SauvegarderAvancementIntTests extends TestCase
 			$avancement_modifié,
 		);
 
-		$résultat_attendu = ["file:///prog1/les_fonctions/appeler_une_fonction/info.yml" => $avancement_sauvegardé];
+		$résultat_attendu = [
+			"file:///prog1/les_fonctions/appeler_une_fonction/info.yml" => $avancement_sauvegardé,
+		];
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
@@ -190,7 +181,9 @@ final class SauvegarderAvancementIntTests extends TestCase
 					$type == "prog" &&
 					$avancement == $avancement_sauvegardé;
 			})
-			->andReturn(["file:///une_question_modifiée/info.yml" => $avancement_sauvegardé]);
+			->andReturn([
+				"file:///une_question_modifiée/info.yml" => $avancement_sauvegardé,
+			]);
 
 		$interacteur = new SauvegarderAvancementInt();
 		$résultat_observé = $interacteur->sauvegarder(
@@ -199,7 +192,9 @@ final class SauvegarderAvancementIntTests extends TestCase
 			$avancement_modifié,
 		);
 
-		$résultat_attendu = ["file:///une_question_modifiée/info.yml" => $avancement_sauvegardé];
+		$résultat_attendu = [
+			"file:///une_question_modifiée/info.yml" => $avancement_sauvegardé,
+		];
 
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}

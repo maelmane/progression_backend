@@ -78,14 +78,8 @@ final class InscriptionIntTests extends TestCase
 		);
 
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
-		$mockUserDao
-			->shouldReceive("get_user")
-			->with("roger")
-			->andReturn(null, $roger);
-		$mockUserDao
-			->shouldReceive("trouver")
-			->with(Mockery::any(), "roger@gmail.com")
-			->andReturn(null);
+		$mockUserDao->shouldReceive("get_user")->with("roger")->andReturn(null, $roger);
+		$mockUserDao->shouldReceive("trouver")->with(Mockery::any(), "roger@gmail.com")->andReturn(null);
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($username, $user) {
@@ -182,10 +176,7 @@ final class InscriptionIntTests extends TestCase
 			->shouldReceive("get_user")
 			->with("roger")
 			->andReturn(null, new User(username: "roger", date_inscription: 990446400));
-		$mockUserDao
-			->shouldReceive("trouver")
-			->with(null, "roger@progressionmail.com")
-			->andReturn(null);
+		$mockUserDao->shouldReceive("trouver")->with(null, "roger@progressionmail.com")->andReturn(null);
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($username, $user) {
@@ -276,10 +267,7 @@ final class InscriptionIntTests extends TestCase
 					préférences: "préférences par défaut",
 				),
 			);
-		$mockUserDao
-			->shouldReceive("trouver")
-			->with(Mockery::any(), "roger@testmail.com")
-			->andReturn(null);
+		$mockUserDao->shouldReceive("trouver")->with(Mockery::any(), "roger@testmail.com")->andReturn(null);
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($username, $user) {
@@ -346,7 +334,9 @@ final class InscriptionIntTests extends TestCase
 		$user = (new InscriptionInt())->effectuer_inscription_sans_mdp("roger");
 
 		$this->assertEquals(
-			["roger" => new User("roger", date_inscription: 990446400, préférences: "", état: État::ACTIF)],
+			[
+				"roger" => new User("roger", date_inscription: 990446400, préférences: "", état: État::ACTIF),
+			],
 			$user,
 		);
 	}
@@ -389,10 +379,7 @@ final class InscriptionIntTests extends TestCase
 					rôle: Rôle::ADMIN,
 				),
 			);
-		$mockUserDao
-			->shouldReceive("trouver")
-			->with(Mockery::any(), "admin@gmail.com")
-			->andReturn(null);
+		$mockUserDao->shouldReceive("trouver")->with(Mockery::any(), "admin@gmail.com")->andReturn(null);
 		$mockUserDao
 			->shouldReceive("save")
 			->withArgs(function ($username, $user) {

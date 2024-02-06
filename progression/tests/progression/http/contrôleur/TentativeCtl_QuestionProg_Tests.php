@@ -142,10 +142,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->shouldReceive("get_question")
 			->with("https://depot.com/nouvelle_question")
 			->andReturn($question_réussie);
-		$mockQuestionDAO
-			->shouldReceive("get_question")
-			->with(Mockery::Any())
-			->andReturn(null);
+		$mockQuestionDAO->shouldReceive("get_question")->with(Mockery::Any())->andReturn(null);
 
 		// Tentative
 		// Tentative réussie
@@ -221,8 +218,16 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->andReturn([
 				"temps_exécution" => 0.551,
 				"résultats" => [
-					"bebe123" => ["output" => "Bonjour\n", "errors" => "", "time" => 0.03],
-					"cafe456" => ["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03],
+					"bebe123" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
+					"cafe456" => [
+						"output" => "Bonjour\nBonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
 				],
 			]);
 		$mockExécuteur
@@ -232,7 +237,13 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			})
 			->andReturn([
 				"temps_exécution" => 0.551,
-				"résultats" => ["bebe456" => ["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03]],
+				"résultats" => [
+					"bebe456" => [
+						"output" => "Bonjour\nBonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
+				],
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_prog")
@@ -242,8 +253,16 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->andReturn([
 				"temps_exécution" => 0.44,
 				"résultats" => [
-					"bebe123" => ["output" => "Allo\n", "errors" => "", "time" => 0.03],
-					"cafe456" => ["output" => "Allo\nAllo\n", "errors" => "", "time" => 0.03],
+					"bebe123" => [
+						"output" => "Allo\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
+					"cafe456" => [
+						"output" => "Allo\nAllo\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
 				],
 			]);
 		$mockExécuteur
@@ -253,7 +272,13 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			})
 			->andReturn([
 				"temps_exécution" => 0.44,
-				"résultats" => ["cafe123" => ["output" => "Allo\nAllo\n", "errors" => "", "time" => 0.03]],
+				"résultats" => [
+					"cafe123" => [
+						"output" => "Allo\nAllo\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
+				],
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_prog")
@@ -263,8 +288,16 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->andReturn([
 				"temps_exécution" => 0.44,
 				"résultats" => [
-					"bebe123" => ["output" => "Allo\n", "errors" => "", "time" => 0.03],
-					"cafe456" => ["output" => "", "errors" => "Erreur!", "time" => 0.03],
+					"bebe123" => [
+						"output" => "Allo\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
+					"cafe456" => [
+						"output" => "",
+						"errors" => "Erreur!",
+						"time" => 0.03,
+					],
 				],
 			]);
 		$mockExécuteur
@@ -306,10 +339,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 		// User
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
-		$mockUserDAO
-			->allows("get_user")
-			->with("jdoe")
-			->andReturn(new User(username: "jdoe", date_inscription: 0));
+		$mockUserDAO->allows("get_user")->with("jdoe")->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -402,7 +432,9 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 					$type == "prog" &&
 					$av == $nouvel_avancement;
 			})
-			->andReturn(["https://depot.com/nouvelle_question" => $nouvel_avancement]);
+			->andReturn([
+				"https://depot.com/nouvelle_question" => $nouvel_avancement,
+			]);
 
 		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_prog_dao();
 		$mockTentativeDAO
@@ -464,7 +496,9 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 					$type == "prog" &&
 					$av == $nouvel_avancement;
 			})
-			->andReturn(["https://depot.com/question_réussie" => $nouvel_avancement]);
+			->andReturn([
+				"https://depot.com/question_réussie" => $nouvel_avancement,
+			]);
 
 		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_prog_dao();
 		$mockTentativeDAO
@@ -526,7 +560,9 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 					$type == "prog" &&
 					$av == $nouvel_avancement;
 			})
-			->andReturn(["https://depot.com/question_non_réussie" => $nouvel_avancement]);
+			->andReturn([
+				"https://depot.com/question_non_réussie" => $nouvel_avancement,
+			]);
 
 		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_prog_dao();
 		$mockTentativeDAO
@@ -587,7 +623,9 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 					$type == "prog" &&
 					$av == $nouvel_avancement;
 			})
-			->andReturn(["https://depot.com/question_non_réussie" => $nouvel_avancement]);
+			->andReturn([
+				"https://depot.com/question_non_réussie" => $nouvel_avancement,
+			]);
 
 		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_prog_dao();
 		$mockTentativeDAO
@@ -648,7 +686,9 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 					$type == "prog" &&
 					$av == $nouvel_avancement;
 			})
-			->andReturn(["https://depot.com/question_non_réussie" => $nouvel_avancement]);
+			->andReturn([
+				"https://depot.com/question_non_réussie" => $nouvel_avancement,
+			]);
 
 		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_prog_dao();
 		$mockTentativeDAO

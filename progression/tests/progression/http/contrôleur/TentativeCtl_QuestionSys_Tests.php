@@ -212,10 +212,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 
 		// User
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
-		$mockUserDAO
-			->allows("get_user")
-			->with("jdoe")
-			->andReturn(new User(username: "jdoe", date_inscription: 0));
+		$mockUserDAO->allows("get_user")->with("jdoe")->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -241,9 +238,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			"conteneur_id" => "leConteneurDeLaNouvelleTentative",
 			"url_terminal" => "https://tty.com/abcde",
 		]);
-		DAOFactory::getInstance()
-			->shouldReceive("get_exécuteur")
-			->andReturn($mockExécuteur);
+		DAOFactory::getInstance()->shouldReceive("get_exécuteur")->andReturn($mockExécuteur);
 
 		$nouvelle_tentative = new TentativeSys(
 			conteneur_id: "leConteneurDeLaNouvelleTentative",
@@ -285,7 +280,9 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 					$type == "sys" &&
 					$av == $nouvel_avancement;
 			})
-			->andReturn(["https://depot.com/question_solution_courte_non_réussie" => $nouvel_avancement]);
+			->andReturn([
+				"https://depot.com/question_solution_courte_non_réussie" => $nouvel_avancement,
+			]);
 
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
@@ -311,9 +308,7 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 			"conteneur_id" => "leConteneurDeLaNouvelleTentative",
 			"url_terminal" => "https://tty.com/abcde",
 		]);
-		DAOFactory::getInstance()
-			->shouldReceive("get_exécuteur")
-			->andReturn($mockExécuteur);
+		DAOFactory::getInstance()->shouldReceive("get_exécuteur")->andReturn($mockExécuteur);
 
 		$nouvelle_tentative = new TentativeSys(
 			conteneur_id: "leConteneurDeLaNouvelleTentative",
@@ -355,7 +350,9 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 					$type == "sys" &&
 					$av == $nouvel_avancement;
 			})
-			->andReturn(["https://depot.com/question_solution_courte_non_réussie" => $nouvel_avancement]);
+			->andReturn([
+				"https://depot.com/question_solution_courte_non_réussie" => $nouvel_avancement,
+			]);
 
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
@@ -413,13 +410,11 @@ final class TentativeCtl_QuestionSys_Tests extends ContrôleurTestCase
 		$mockTentativeDAO->shouldReceive("save")->andReturn([1653690241 => $nouvelle_tentative]);
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
-		$mockAvancementDAO
-			->shouldReceive("save")
-			->andReturn(["https://depot.com/question_validée_réussie" => $nouvel_avancement]);
+		$mockAvancementDAO->shouldReceive("save")->andReturn([
+			"https://depot.com/question_validée_réussie" => $nouvel_avancement,
+		]);
 
-		DAOFactory::getInstance()
-			->shouldReceive("get_exécuteur")
-			->andReturn($mockExécuteur);
+		DAOFactory::getInstance()->shouldReceive("get_exécuteur")->andReturn($mockExécuteur);
 
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",

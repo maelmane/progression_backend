@@ -76,14 +76,8 @@ final class ObtenirTentativeIntTests extends TestCase
 			);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_tentative_dao()
-			->andReturn($mockTentativeDAO);
-		$mockDAOFactory
-			->allows()
-			->get_commentaire_dao()
-			->andReturn($mockCommentaireDAO);
+		$mockDAOFactory->allows()->get_tentative_dao()->andReturn($mockTentativeDAO);
+		$mockDAOFactory->allows()->get_commentaire_dao()->andReturn($mockCommentaireDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);
 	}

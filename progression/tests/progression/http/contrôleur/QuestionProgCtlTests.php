@@ -85,10 +85,7 @@ final class QuestionProgCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_question")
 			->with("https://depot.com/roger/questions_invalide")
 			->andThrow(new ChargeurException("Question invalide."));
-		$mockQuestionDAO
-			->shouldReceive("get_question")
-			->with(Mockery::any())
-			->andReturn(null);
+		$mockQuestionDAO->shouldReceive("get_question")->with(Mockery::any())->andReturn(null);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");

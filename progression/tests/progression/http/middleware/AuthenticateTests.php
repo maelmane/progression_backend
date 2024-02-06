@@ -81,10 +81,7 @@ final class AuthenticateTests extends TestCase
 			->shouldReceive("trouver")
 			->with(null, "bob@progressionmail.com", [])
 			->andReturn(new User(username: "bob", date_inscription: 0, état: État::ACTIF));
-		$mockUserDAO
-			->shouldReceive("trouver")
-			->with(null, Mockery::Any(), [])
-			->andReturn(null);
+		$mockUserDAO->shouldReceive("trouver")->with(null, Mockery::Any(), [])->andReturn(null);
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("marcel")
@@ -101,19 +98,10 @@ final class AuthenticateTests extends TestCase
 			->shouldReceive("get_user")
 			->with("roger", [])
 			->andReturn(new User(username: "roger", date_inscription: 0, état: État::INACTIF));
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("zozo")
-			->andReturn(null);
+		$mockUserDAO->shouldReceive("get_user")->with("zozo")->andReturn(null);
 
-		$mockUserDAO
-			->shouldReceive("vérifier_password")
-			->with(Mockery::Any(), "m0tD3P4ZZE")
-			->andReturn(true);
-		$mockUserDAO
-			->shouldReceive("vérifier_password")
-			->with(Mockery::Any(), Mockery::Any())
-			->andReturn(false);
+		$mockUserDAO->shouldReceive("vérifier_password")->with(Mockery::Any(), "m0tD3P4ZZE")->andReturn(true);
+		$mockUserDAO->shouldReceive("vérifier_password")->with(Mockery::Any(), Mockery::Any())->andReturn(false);
 
 		// CléDAO
 		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
@@ -121,18 +109,12 @@ final class AuthenticateTests extends TestCase
 			->shouldReceive("get_clé")
 			->with("bob", "cleValide01")
 			->andReturn(new Clé(null, (new \DateTime())->getTimestamp(), 0, Portée::AUTH));
-		$mockCléDAO
-			->shouldReceive("vérifier")
-			->with("bob", "cleValide01", "secret")
-			->andReturn(true);
+		$mockCléDAO->shouldReceive("vérifier")->with("bob", "cleValide01", "secret")->andReturn(true);
 		$mockCléDAO->shouldReceive("get_clé")->andReturn(null);
 		$mockCléDAO->shouldReceive("vérifier")->andReturn(false);
 
 		$mockQuestionDAO = Mockery::mock("progression\\dao\\QuestionDAO");
-		$mockQuestionDAO
-			->shouldReceive("get_question")
-			->with("question_de_test")
-			->andReturn(new QuestionProg());
+		$mockQuestionDAO->shouldReceive("get_question")->with("question_de_test")->andReturn(new QuestionProg());
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -189,7 +171,9 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "basic " . base64_encode("zozo:m0tD3P4ZZE")],
+			[
+				"HTTP_Authorization" => "basic " . base64_encode("zozo:m0tD3P4ZZE"),
+			],
 		);
 
 		$this->assertResponseStatus(401);
@@ -207,7 +191,9 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "basic " . base64_encode("Marcel@test@ici.com:password")],
+			[
+				"HTTP_Authorization" => "basic " . base64_encode("Marcel@test@ici.com:password"),
+			],
 		);
 
 		$this->assertResponseStatus(400);
@@ -296,7 +282,9 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "basic " . base64_encode("bob:m0tD3P4ZZE")],
+			[
+				"HTTP_Authorization" => "basic " . base64_encode("bob:m0tD3P4ZZE"),
+			],
 		);
 
 		$this->assertResponseStatus(200);
@@ -317,7 +305,9 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "basic " . base64_encode("bob@progressionmail.com:m0tD3P4ZZE")],
+			[
+				"HTTP_Authorization" => "basic " . base64_encode("bob@progressionmail.com:m0tD3P4ZZE"),
+			],
 		);
 
 		$this->assertResponseStatus(200);
@@ -339,7 +329,9 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "basic " . base64_encode("bob:m0tD3P4ZZE")],
+			[
+				"HTTP_Authorization" => "basic " . base64_encode("bob:m0tD3P4ZZE"),
+			],
 		);
 
 		$this->assertResponseStatus(200);
@@ -360,7 +352,9 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "basic " . base64_encode("roger:m0tD3P4ZZE")],
+			[
+				"HTTP_Authorization" => "basic " . base64_encode("roger:m0tD3P4ZZE"),
+			],
 		);
 		$this->assertResponseStatus(401);
 	}
@@ -376,7 +370,9 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "basic " . base64_encode("bob:m0tD3P4ZZE")],
+			[
+				"HTTP_Authorization" => "basic " . base64_encode("bob:m0tD3P4ZZE"),
+			],
 		);
 		$this->assertResponseStatus(200);
 		$this->assertJsonStringEqualsJsonFile(
@@ -390,7 +386,16 @@ final class AuthenticateTests extends TestCase
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$this->call("GET", "/", [], [], [], ["HTTP_Authorization" => "basic " . base64_encode("zozo:jesaispas")]);
+		$this->call(
+			"GET",
+			"/",
+			[],
+			[],
+			[],
+			[
+				"HTTP_Authorization" => "basic " . base64_encode("zozo:jesaispas"),
+			],
+		);
 		$this->assertResponseStatus(401);
 	}
 
@@ -405,7 +410,9 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "basic " . base64_encode("marcel:m0tD3P4ZZE")],
+			[
+				"HTTP_Authorization" => "basic " . base64_encode("marcel:m0tD3P4ZZE"),
+			],
 		);
 		$this->assertResponseStatus(403);
 	}
@@ -421,7 +428,9 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "basic " . base64_encode("zozo:m0tD3P4ZZE")],
+			[
+				"HTTP_Authorization" => "basic " . base64_encode("zozo:m0tD3P4ZZE"),
+			],
 		);
 
 		$this->assertResponseStatus(401);
@@ -476,7 +485,9 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "basic " . base64_encode("bo b:m0tD3P4ZZE")],
+			[
+				"HTTP_Authorization" => "basic " . base64_encode("bo b:m0tD3P4ZZE"),
+			],
 		);
 
 		$this->assertResponseStatus(400);
@@ -542,7 +553,9 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "Key " . base64_encode("bob:cleValide01:secret")],
+			[
+				"HTTP_Authorization" => "Key " . base64_encode("bob:cleValide01:secret"),
+			],
 		);
 
 		$this->assertResponseStatus(200);
@@ -560,7 +573,9 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "Key " . base64_encode("bobprogressionmail.com:cleValide01:secret")],
+			[
+				"HTTP_Authorization" => "Key " . base64_encode("bobprogressionmail.com:cleValide01:secret"),
+			],
 		);
 
 		$this->assertResponseStatus(400);
@@ -574,7 +589,9 @@ final class AuthenticateTests extends TestCase
 			[],
 			[],
 			[],
-			["HTTP_Authorization" => "Key " . base64_encode("bob:cleInvalide00:secret")],
+			[
+				"HTTP_Authorization" => "Key " . base64_encode("bob:cleInvalide00:secret"),
+			],
 		);
 
 		$this->assertResponseStatus(401);

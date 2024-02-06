@@ -66,7 +66,14 @@ final class ExécuterSysIntTests extends TestCase
 			)
 			->andReturn([
 				"temps_exécution" => 0.124,
-				"résultats" => [["output" => "", "errors" => "", "time" => 0.2, "code" => 0]],
+				"résultats" => [
+					[
+						"output" => "",
+						"errors" => "",
+						"time" => 0.2,
+						"code" => 0,
+					],
+				],
 				"conteneur_id" => "conteneurTestCompileBox",
 				"url_terminal" => "https://tty.com/abcde",
 			]);
@@ -84,7 +91,14 @@ final class ExécuterSysIntTests extends TestCase
 			)
 			->andReturn([
 				"temps_exécution" => 0.124,
-				"résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.2, "code" => 0]],
+				"résultats" => [
+					[
+						"output" => "ok\n",
+						"errors" => "",
+						"time" => 0.2,
+						"code" => 0,
+					],
+				],
 				"conteneur_id" => "ConteneurEnvoyéParTentative",
 				"url_terminal" => "https://tty.com/abcde",
 			]);
@@ -94,16 +108,20 @@ final class ExécuterSysIntTests extends TestCase
 			->with(Mockery::Any(), Mockery::Any(), null, Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any())
 			->andReturn([
 				"temps_exécution" => 0.124,
-				"résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.2, "code" => 0]],
+				"résultats" => [
+					[
+						"output" => "ok\n",
+						"errors" => "",
+						"time" => 0.2,
+						"code" => 0,
+					],
+				],
 				"conteneur_id" => "NouveauConteneur",
 				"url_terminal" => "https://tty.com/abcde",
 			]);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_exécuteur()
-			->andReturn($mockExécuteur);
+		$mockDAOFactory->allows()->get_exécuteur()->andReturn($mockExécuteur);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 

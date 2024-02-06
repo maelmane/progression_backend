@@ -50,14 +50,8 @@ final class ObtenirAvancementIntTests extends TestCase
 		$mockAvancementDAO->shouldReceive("get_avancement")->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_avancement_dao()
-			->andReturn($mockAvancementDAO);
-		$mockDAOFactory
-			->allows()
-			->get_question_dao()
-			->andReturn($mockQuestionDao);
+		$mockDAOFactory->allows()->get_avancement_dao()->andReturn($mockAvancementDAO);
+		$mockDAOFactory->allows()->get_question_dao()->andReturn($mockQuestionDao);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 

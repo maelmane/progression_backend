@@ -64,7 +64,9 @@ final class EnregistrerSauvegardeIntTests extends TestCase
 			"python",
 			$sauvegarde,
 		);
-		$résultat_attendu = ["python" => new Sauvegarde(1620150294, "print(\"Hello world!\")")];
+		$résultat_attendu = [
+			"python" => new Sauvegarde(1620150294, "print(\"Hello world!\")"),
+		];
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 }
