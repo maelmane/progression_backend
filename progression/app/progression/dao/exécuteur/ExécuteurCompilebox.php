@@ -19,6 +19,7 @@
 namespace progression\dao\exécuteur;
 
 use progression\domaine\entité\Exécutable;
+use Illuminate\Support\Facades\Log;
 use progression\domaine\entité\{TestProg, TestSys};
 
 class ExécuteurCompilebox extends Exécuteur
@@ -155,12 +156,14 @@ class ExécuteurCompilebox extends Exécuteur
 					count($http_response_header) > 0 &&
 					$http_response_header[0] == "HTTP/1.1 400 Bad Request"
 				) {
-					throw new ExécutionException("Requête intraitable par Compilebox", 400, $e);
+					throw new ExécutionException("Requête intraitable par Compilebox", 400);
 				} else {
-					throw new ExécutionException($e->getMessage(), $e->getCode(), $e);
+					Log::error($e->getMessage());
+					throw new ExécutionException("Erreur inconnue.", 500);
 				}
 			} else {
-				throw new ExécutionException("Compilebox non disponible", 503, $e);
+				Log::error($e->getMessage());
+				throw new ExécutionException("Compilebox non disponible", 503);
 			}
 		}
 	}
