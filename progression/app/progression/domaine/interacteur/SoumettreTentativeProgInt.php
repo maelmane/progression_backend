@@ -37,7 +37,7 @@ class SoumettreTentativeProgInt extends Interacteur
 		try {
 			$résultats = $this->exécuter_prog($exécutable, $tests, $question->image);
 		} catch (ExécutionException $e) {
-			throw new IntéracteurException($e, 503);
+			throw new IntéracteurException($e, $e->getCode());
 		}
 		if ($résultats) {
 			$tentative->temps_exécution = $résultats["temps_exécution"];
