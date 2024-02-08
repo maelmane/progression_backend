@@ -117,7 +117,7 @@ final class ModifierUserIntTests extends TestCase
 				username: "bob",
 				date_inscription: 0,
 				courriel: "autre@test.com",
-				état: État::ATTENTE_DE_VALIDATION,
+				état: État::EN_ATTENTE_DE_VALIDATION,
 			),
 			$user_modifié,
 		);
@@ -182,7 +182,7 @@ final class ModifierUserIntTests extends TestCase
 	{
 		$this->actingAs($this->user);
 
-		$user_test = new User(username: "bob", date_inscription: 0, état: État::ATTENTE_DE_VALIDATION);
+		$user_test = new User(username: "bob", date_inscription: 0, état: État::EN_ATTENTE_DE_VALIDATION);
 
 		$interacteur = new ModifierUserInt();
 		$user_modifié = $interacteur->modifier_état($user_test, État::ACTIF);
@@ -195,7 +195,7 @@ final class ModifierUserIntTests extends TestCase
 	{
 		$this->actingAs($this->user);
 
-		$user_test = new User(username: "bob", date_inscription: 0, état: État::ATTENTE_DE_VALIDATION);
+		$user_test = new User(username: "bob", date_inscription: 0, état: État::EN_ATTENTE_DE_VALIDATION);
 
 		$interacteur = new ModifierUserInt();
 		$this->expectException(PermissionException::class);
@@ -220,7 +220,7 @@ final class ModifierUserIntTests extends TestCase
 	{
 		$this->actingAs($this->admin);
 
-		$user_test = new User(username: "bob", date_inscription: 0, état: État::ATTENTE_DE_VALIDATION);
+		$user_test = new User(username: "bob", date_inscription: 0, état: État::EN_ATTENTE_DE_VALIDATION);
 
 		$interacteur = new ModifierUserInt();
 		$user_modifié = $interacteur->modifier_état($user_test, État::INACTIF);
@@ -237,14 +237,14 @@ final class ModifierUserIntTests extends TestCase
 
 		$interacteur = new ModifierUserInt();
 
-		$user_modifié = $interacteur->modifier_état($user_test, État::ATTENTE_DE_VALIDATION);
+		$user_modifié = $interacteur->modifier_état($user_test, État::EN_ATTENTE_DE_VALIDATION);
 
 		$this->assertEquals(
-			new User(username: "bob", date_inscription: 0, état: État::ATTENTE_DE_VALIDATION),
+			new User(username: "bob", date_inscription: 0, état: État::EN_ATTENTE_DE_VALIDATION),
 			$user_test,
 		);
 		$this->assertEquals(
-			new User(username: "bob", date_inscription: 0, état: État::ATTENTE_DE_VALIDATION),
+			new User(username: "bob", date_inscription: 0, état: État::EN_ATTENTE_DE_VALIDATION),
 			$user_modifié,
 		);
 	}

@@ -44,7 +44,7 @@ class UserTransformer extends BaseTransformer
 			"état" => match ($user->état) {
 				État::INACTIF => "inactif",
 				État::ACTIF => "actif",
-				État::ATTENTE_DE_VALIDATION => "en_attente_de_validation",
+				État::EN_ATTENTE_DE_VALIDATION => "en_attente_de_validation",
 				default => "indéfini",
 			},
 			"rôle" => match ($user->rôle) {

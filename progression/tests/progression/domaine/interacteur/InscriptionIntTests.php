@@ -74,7 +74,7 @@ final class InscriptionIntTests extends TestCase
 			username: "roger",
 			date_inscription: 990446400,
 			courriel: "roger@gmail.com",
-			état: État::ATTENTE_DE_VALIDATION,
+			état: État::EN_ATTENTE_DE_VALIDATION,
 		);
 
 		$mockUserDao = DAOFactory::getInstance()->get_user_dao();
@@ -86,7 +86,7 @@ final class InscriptionIntTests extends TestCase
 				return $user->username == "roger" &&
 					$username == "roger" &&
 					$user->rôle == Rôle::NORMAL &&
-					$user->état == État::ATTENTE_DE_VALIDATION;
+					$user->état == État::EN_ATTENTE_DE_VALIDATION;
 			})
 			->once()
 			->andReturn(["roger" => $roger]);
@@ -114,7 +114,7 @@ final class InscriptionIntTests extends TestCase
 					username: "roger",
 					date_inscription: 990446400,
 					courriel: "roger@gmail.com",
-					état: État::ATTENTE_DE_VALIDATION,
+					état: État::EN_ATTENTE_DE_VALIDATION,
 				),
 			],
 			$user,
@@ -302,7 +302,7 @@ final class InscriptionIntTests extends TestCase
 					"roger",
 					courriel: "roger@testmail.com",
 					date_inscription: 990446400,
-					état: État::ATTENTE_DE_VALIDATION,
+					état: État::EN_ATTENTE_DE_VALIDATION,
 					préférences: "préférences par défaut",
 				),
 			],

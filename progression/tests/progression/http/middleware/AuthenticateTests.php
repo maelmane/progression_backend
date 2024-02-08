@@ -53,7 +53,7 @@ final class AuthenticateTests extends TestCase
 			username: "marcel",
 			date_inscription: 0,
 			rôle: Rôle::NORMAL,
-			état: État::ATTENTE_DE_VALIDATION,
+			état: État::EN_ATTENTE_DE_VALIDATION,
 		);
 
 		putenv("APP_URL=https://example.com/");
@@ -85,11 +85,11 @@ final class AuthenticateTests extends TestCase
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("marcel")
-			->andReturn(new User(username: "marcel", date_inscription: 0, état: État::ATTENTE_DE_VALIDATION));
+			->andReturn(new User(username: "marcel", date_inscription: 0, état: État::EN_ATTENTE_DE_VALIDATION));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("marcel", [])
-			->andReturn(new User(username: "marcel", date_inscription: 0, état: État::ATTENTE_DE_VALIDATION));
+			->andReturn(new User(username: "marcel", date_inscription: 0, état: État::EN_ATTENTE_DE_VALIDATION));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("roger")

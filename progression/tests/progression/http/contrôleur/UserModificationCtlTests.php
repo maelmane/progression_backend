@@ -71,7 +71,7 @@ final class UserModificationCtlTests extends ContrôleurTestCase
 					username: "nouveau",
 					courriel: "nouveau@progressionmail.com",
 					date_inscription: 1600828609,
-					état: ÉTAT::ATTENTE_DE_VALIDATION,
+					état: ÉTAT::EN_ATTENTE_DE_VALIDATION,
 				),
 			);
 
@@ -126,7 +126,7 @@ final class UserModificationCtlTests extends ContrôleurTestCase
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("jane", [])
-			->andReturn(new User(username: "jane", date_inscription: 1600828609, état: État::ATTENTE_DE_VALIDATION));
+			->andReturn(new User(username: "jane", date_inscription: 1600828609, état: État::EN_ATTENTE_DE_VALIDATION));
 
 		$mockUserDAO
 			->shouldReceive("save")
@@ -211,14 +211,14 @@ final class UserModificationCtlTests extends ContrôleurTestCase
 				return $username == "jdoe" &&
 					$user->username == "jdoe" &&
 					$user->rôle == Rôle::NORMAL &&
-					$user->état == État::ATTENTE_DE_VALIDATION;
+					$user->état == État::EN_ATTENTE_DE_VALIDATION;
 			})
 			->andReturn([
 				"jdoe" => new User(
 					username: "jdoe",
 					courriel: "nouveau@gmail.com",
 					date_inscription: 1600828609,
-					état: État::ATTENTE_DE_VALIDATION,
+					état: État::EN_ATTENTE_DE_VALIDATION,
 				),
 			]);
 
