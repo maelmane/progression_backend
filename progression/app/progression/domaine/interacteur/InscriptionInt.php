@@ -63,7 +63,7 @@ class InscriptionInt extends Interacteur
 
 	private function effectuer_renvoi_de_courriel(User $user): void
 	{
-		if ($user->état != État::ATTENTE_DE_VALIDATION) {
+		if ($user->état != État::EN_ATTENTE_DE_VALIDATION) {
 			throw new PermissionException("L'état de l'utilisateur ne permet pas cette opération");
 		}
 
@@ -128,7 +128,7 @@ class InscriptionInt extends Interacteur
 				date_inscription: Carbon::now()->getTimestamp(),
 				courriel: $courriel,
 				rôle: $rôle,
-				état: Gate::allows("valider-le-courriel", $rôle) ? État::ATTENTE_DE_VALIDATION : État::ACTIF,
+				état: Gate::allows("valider-le-courriel", $rôle) ? État::EN_ATTENTE_DE_VALIDATION : État::ACTIF,
 				préférences: getenv("PREFERENCES_DEFAUT") ?: "",
 			),
 		);

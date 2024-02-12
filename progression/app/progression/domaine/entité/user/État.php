@@ -22,7 +22,7 @@ enum État: string
 {
 	case INACTIF = "inactif";
 	case ACTIF = "actif";
-	case ATTENTE_DE_VALIDATION = "en_attente_de_validation";
+	case EN_ATTENTE_DE_VALIDATION = "en_attente_de_validation";
 }
 
 ?>

@@ -132,7 +132,7 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 		Gate::define("utilisateur-validé", function ($user, $request) {
-			return $user && $user->état != État::ATTENTE_DE_VALIDATION;
+			return $user && $user->état != État::EN_ATTENTE_DE_VALIDATION;
 		});
 
 		Gate::define("soumettre-tentative", function ($user, $username) {

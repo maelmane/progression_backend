@@ -58,7 +58,7 @@ final class AuthServiceProviderTests extends TestCase
 			username: "utilisateur_en_attente_normal",
 			date_inscription: 0,
 			rôle: Rôle::NORMAL,
-			état: État::ATTENTE_DE_VALIDATION,
+			état: État::EN_ATTENTE_DE_VALIDATION,
 		);
 
 		$this->tokenUtilisateurActifNormal = GénérateurDeToken::get_instance()->générer_token(
@@ -135,7 +135,7 @@ final class AuthServiceProviderTests extends TestCase
 				new User(
 					username: "utilisateur_en_attente_normal",
 					date_inscription: 0,
-					état: État::ATTENTE_DE_VALIDATION,
+					état: État::EN_ATTENTE_DE_VALIDATION,
 					rôle: Rôle::NORMAL,
 				),
 			);
@@ -146,7 +146,7 @@ final class AuthServiceProviderTests extends TestCase
 				new User(
 					username: "utilisateur_en_attente_normal",
 					date_inscription: 0,
-					état: État::ATTENTE_DE_VALIDATION,
+					état: État::EN_ATTENTE_DE_VALIDATION,
 					rôle: Rôle::NORMAL,
 				),
 			);

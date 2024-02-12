@@ -66,7 +66,7 @@ final class UserCréationCtlTests extends ContrôleurTestCase
 					username: "nouveau",
 					date_inscription: 1610828612,
 					courriel: "nouveau@mail.com",
-					état: État::ATTENTE_DE_VALIDATION,
+					état: État::EN_ATTENTE_DE_VALIDATION,
 				),
 			);
 		$mockUserDAO->shouldReceive("get_user")->with("Marcel")->andReturn(null);
