@@ -18,7 +18,7 @@
 
 namespace progression\domaine\entité;
 
-//use InvalidArgumentException;
+use InvalidArgumentException;
 
 class Profil
 {
@@ -53,4 +53,5 @@ class Profil
 		$this->listAccomplissements = $listAccomplissements;
         $this->lienGitLab = $lienGitLab;
 	}
+    // À Confirmer
 }
