@@ -22,19 +22,16 @@ use InvalidArgumentException;
 
 class Profil
 {
-    public string $courriel;
     public string $nomComplet;
     public string $prenom;
     public string $nom;
 	//Attributs à vérifier : username, biographie, listeConnaissance, listeAccomplissement, lienGitlab
 
     public function __construct(
-        string $courriel = "",
         string $nomComplet = "",
         string $prenom = "",
         string $nom = ""
     ) {
-        $this->courriel = $courriel;
         $this->nomComplet = $nomComplet;
         $this->prenom = $prenom;
         $this->nom = $nom;
