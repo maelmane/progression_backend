@@ -1,8 +1,7 @@
 <?php
+namespace progression\dao;
 
-require_once 'progression_backend/progression/app/progression/domaine/entité/user/Profil.php';  // Chemin vers l'entité Profil
-
-use progression\domaine\entité\Profil;
+use progression\domaine\entité\user\Profil;
 
 $profil1 = new Profil(
     "john.doe@gmail.com",
@@ -41,4 +40,5 @@ $profil5 = new Profil(
 
 
 $profils = [$profil1, $profil2, $profil3, $profil4, $profil5];
+echo $profils;
 return $profils;
