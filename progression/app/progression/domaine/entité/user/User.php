@@ -41,7 +41,7 @@ class User
 		$avancements = [],
 		$clés = [],
 		string $préférences = "",
-		Profil $profil
+		Profil $profil = null
 	) {
 		$this->username = $username;
 		$this->courriel = $courriel;

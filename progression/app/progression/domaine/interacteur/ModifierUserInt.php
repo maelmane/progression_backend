@@ -75,6 +75,13 @@ class ModifierUserInt extends Interacteur
 		return $user;
 	}
 
+	public function modifier_profil(User $user, Profil $profil): User
+	{
+		$user->profil = $profil;
+
+		return $user;
+	}
+
 	public function modifier_password(User $user, string $password): User
 	{
 		$dao = $this->source_dao->get_user_dao();
