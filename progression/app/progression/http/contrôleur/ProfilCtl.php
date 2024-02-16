@@ -38,5 +38,29 @@ class ProfilCtl extends Contrôleur
 		return $réponse;
 	}
 
-  // À Confirmer	
+  // get_liens() ?
+
+  protected function obtenir_user(string $username): User|null
+	{
+		Log::debug("profilCtl.obtenir_profil. Params : ", [$user]); // à valider
+
+		$profilInt = new ObtenirProfilInt();
+
+		$profil = $profilInt->get_profil(username: $username);
+
+		Log::debug("ProfilCtl.obtenir_profil. Retour : ", [$profil]);
+		return $profil;
+	}
+
+  private function valider_et_préparer_réponse($user, $id)
+	{
+
+    //valider à faire
+
+    $réponse = $this->préparer_réponse($réponse);
+
+    Log::debug("ProfilCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
+
+		return $réponse;
+	}
 }
