@@ -30,6 +30,7 @@ class User
 	public $clés;
 	public string $préférences;
 	public int $date_inscription;
+	public Profil $profil;
 
 	public function __construct(
 		string $username,
@@ -40,6 +41,7 @@ class User
 		$avancements = [],
 		$clés = [],
 		string $préférences = "",
+		Profil $profil
 	) {
 		$this->username = $username;
 		$this->courriel = $courriel;
@@ -49,5 +51,6 @@ class User
 		$this->clés = $clés;
 		$this->préférences = $préférences;
 		$this->date_inscription = $date_inscription;
+		$this->profil = $profil;
 	}
 }
