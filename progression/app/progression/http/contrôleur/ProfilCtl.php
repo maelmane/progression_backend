@@ -34,28 +34,44 @@ class ProfilCtl extends Contrôleur
 	{
 		Log::debug("ProfilCtl.get. Params : ", [$request->all(), $username]);
 
-		$réponse = null;
+    $réponse = null;
+    $profil = $this->obtenir_profil($username);
+		$réponse = $this->valider_et_préparer_réponse($profil);
+
+    Log::debug("UserCtl.get. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
   // get_liens() ?
 
-  protected function obtenir_user(string $username): User|null
+  protected function obtenir_profil(string $username): Profil|null
 	{
-		Log::debug("profilCtl.obtenir_profil. Params : ", [$user]); // à valider
+		Log::debug("profilCtl.obtenir_profil. Params : ", [$username]);
 
 		$profilInt = new ObtenirProfilInt();
 
 		$profil = $profilInt->get_profil(username: $username);
 
-		Log::debug("ProfilCtl.obtenir_profil. Retour : ", [$profil]);
+    Log::debug("ProfilCtl.obtenir_profil. Retour : ", [$profil]);
 		return $profil;
 	}
 
   private function valider_et_préparer_réponse($user, $id)
 	{
 
-    //valider à faire
+    Log::debug("ProfilCtl.valider_et_préparer_réponse. Params : ", [$user]);
+
+		if ($user) {
+			$liens = self::get_liens($user->username);
+			$dto = new UserDTO(id: $id, objet: $user, liens: $liens);
+
+			$réponse = $this->item($dto, new UserTransformer());
+		} else {
+			$réponse = null;
+		}
+
+
+
 
     $réponse = $this->préparer_réponse($réponse);
 
