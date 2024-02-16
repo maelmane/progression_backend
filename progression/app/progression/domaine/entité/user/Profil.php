@@ -22,10 +22,10 @@ use InvalidArgumentException;
 
 class Profil
 {
-    private string $courriel;
-    private string $nomComplet;
-    private string $prenom;
-    private string $nom;
+    public string $courriel;
+    public string $nomComplet;
+    public string $prenom;
+    public string $nom;
 	//Attributs à vérifier : username, biographie, listeConnaissance, listeAccomplissement, lienGitlab
 
     public function __construct(
@@ -40,43 +40,5 @@ class Profil
         $this->nom = $nom;
     }
 
-    public function getCourriel(): string
-    {
-        return $this->courriel;
-    }
 
-    public function setCourriel(string $courriel): void
-    {
-        $this->courriel = $courriel;
-    }
-
-    public function getNomComplet(): string
-    {
-        return $this->nomComplet;
-    }
-
-    public function setNomComplet(string $nomComplet): void
-    {
-        $this->nomComplet = $nomComplet;
-    }
-
-    public function getPrenom(): string
-    {
-        return $this->prenom;
-    }
-
-    public function setPrenom(string $prenom): void
-    {
-        $this->prenom = $prenom;
-    }
-
-    public function getNom(): string
-    {
-        return $this->nom;
-    }
-
-    public function setNom(string $nom): void
-    {
-        $this->nom = $nom;
-    }
 }
