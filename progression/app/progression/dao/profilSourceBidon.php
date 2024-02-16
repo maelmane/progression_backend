@@ -35,5 +35,4 @@ $profil5 = new Profil(
 
 
 $profils = [$profil1, $profil2, $profil3, $profil4, $profil5];
-echo $profils;
 return $profils;
