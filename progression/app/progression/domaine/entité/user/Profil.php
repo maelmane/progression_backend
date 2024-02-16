@@ -22,36 +22,20 @@ use InvalidArgumentException;
 
 class Profil
 {
-	//public string $username;
 	public string $courriel;
 	public string $nomComplet;
     public string $prenom;
     public string $nom;
-	//public string $biographie;
-	//public $listeConaissances;
-	//public $listAccomplissements;
-    //public string $lienGitLab;
 
 	public function __construct(
-		//string $username,
 		string $courriel = "",
         string $nomComplet = "",
         string $prenom = "",
         string $nom = ""
-        //string $biographie = "",
-		//$listeConaissances = [],
-		//$listAccomplissements = [],
-		//string $lienGitLab = ""
 	) {
-		//$this->username = $username;
 		$this->courriel = $courriel;
 		$this->nomComplet = $nomComplet;
 		$this->prenom = $prenom;
 		$this->nom = $nom;
-		//$this->biographie = $biographie;
-		//$this->listeConaissances = $préfélisteConaissancesrences;
-		//$this->listAccomplissements = $listAccomplissements;
-        //$this->lienGitLab = $lienGitLab;
 	}
-    // À Confirmer
 }
