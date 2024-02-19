@@ -18,17 +18,24 @@
 
 namespace progression\domaine\interacteur;
 
+use progression\dao\DAOException;
+use progression\domaine\entité\Sauvegarde;
+
 class ObtenirSauvegardeInt extends Interacteur
 {
 	/**
 	 * @param mixed $includes
 	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
 	 */
-	function get_sauvegarde($username, $question_uri, $langage, mixed $includes = [])
+	function get_sauvegarde($username, $question_uri, $langage, mixed $includes = []): Sauvegarde|null
 	{
-		$sauvegarde = $this->source_dao
-			->get_sauvegarde_dao()
-			->get_sauvegarde($username, $question_uri, $langage, $includes);
+		try {
+			$sauvegarde = $this->source_dao
+				->get_sauvegarde_dao()
+				->get_sauvegarde($username, $question_uri, $langage, $includes);
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e, 503);
+		}
 
 		return $sauvegarde;
 	}

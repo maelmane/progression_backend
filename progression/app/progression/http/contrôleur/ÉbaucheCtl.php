@@ -18,12 +18,12 @@
 
 namespace progression\http\contrôleur;
 
-use progression\domaine\interacteur\ObtenirQuestionInt;
+use progression\domaine\interacteur\{ObtenirQuestionInt, IntéracteurException};
 use progression\http\transformer\ÉbaucheTransformer;
+use progression\http\transformer\dto\GénériqueDTO;
 use progression\util\Encodage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use DomainException, LengthException, RuntimeException;
 
 class ÉbaucheCtl extends Contrôleur
 {
@@ -31,56 +31,48 @@ class ÉbaucheCtl extends Contrôleur
 	{
 		Log::debug("ÉbaucheCtl.get. Params : ", [$request->all(), $question_uri, $langage]);
 
-		try {
-			$question = $this->obtenir_question($question_uri);
-			$réponse = $this->valider_et_préparer_réponse($question, $question_uri, $langage);
-		} catch (LengthException $erreur) {
-			Log::warning("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			$réponse = $this->réponse_json(["message" => "Limite de volume dépassé."], 509);
-		} catch (RuntimeException $erreur) {
-			Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			$réponse = $this->réponse_json(["message" => "Ressource indisponible sur le serveur distant."], 502);
-		} catch (DomainException $erreur) {
-			Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-			$réponse = $this->réponse_json(["message" => "Requête intraitable."], 400);
-		}
+		$réponse = null;
+		$question = $this->obtenir_question($question_uri);
+		$réponse = $this->valider_et_préparer_réponse($question, $question_uri, $langage);
 
 		Log::debug("ÉbaucheCtl.get. Retour : ", [$réponse]);
 
 		return $réponse;
 	}
 
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $question_uri, string $lang): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+
+		return [
+			"self" => "{$urlBase}/ebauche/{$question_uri}/{$lang}",
+			"question" => "{$urlBase}/question/{$question_uri}",
+		];
+	}
+
 	private function valider_et_préparer_réponse($question, $question_uri, $langage)
 	{
 		Log::debug("ÉbaucheCtl.valider_et_préparer_réponse. Params : ", [$question, $question_uri, $langage]);
-		$ébauche_array = null;
+		$réponse = null;
 
-		if ($question != null) {
-			$ébauche = $this->préparer_ébauche($question, $question_uri, $langage);
-			$ébauche_array = $this->item($ébauche, new ÉbaucheTransformer($question_uri));
+		if ($question != null && array_key_exists($langage, $question->exécutables)) {
+			$ébauche = $question->exécutables[$langage];
+			$dto = new GénériqueDTO(
+				id: "{$question_uri}/{$langage}",
+				objet: $ébauche,
+				liens: ÉbaucheCtl::get_liens($question_uri, $langage),
+			);
+
+			$réponse = $this->item($dto, new ÉbaucheTransformer());
 		}
 
-		$réponse = $this->préparer_réponse($ébauche_array);
+		$réponse = $this->préparer_réponse($réponse);
 
 		Log::debug("ÉbaucheCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
 		return $réponse;
-	}
-
-	private function préparer_ébauche($question, $question_uri, $langage)
-	{
-		Log::debug("ÉbaucheCtl.préparer_ébauche. Params : ", [$question, $question_uri, $langage]);
-
-		$ébauche = null;
-		if (array_key_exists($langage, $question->exécutables)) {
-			$ébauche = $question->exécutables[$langage];
-			$ébauche->id = $ébauche->lang;
-			$ébauche->links = [
-				"question" => $_ENV["APP_URL"] . "question/" . $question_uri,
-			];
-		}
-
-		Log::debug("ÉbaucheCtl.préparer_ébauche. Retour : ", [$ébauche]);
-		return $ébauche;
 	}
 
 	private function obtenir_question($question_uri)

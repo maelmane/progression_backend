@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Question;
+use progression\domaine\entité\question\Question;
 
 class TraiterTentativeSysInt extends Interacteur
 {
@@ -49,6 +49,6 @@ class TraiterTentativeSysInt extends Interacteur
 
 	private function vérifier_solution($résultat, $solution)
 	{
-		return $résultat->sortie_observée == $solution;
+		return $résultat->code_retour === 0 && $résultat->sortie_observée == $solution;
 	}
 }

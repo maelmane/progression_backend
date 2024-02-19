@@ -20,89 +20,66 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use progression\http\transformer\UserTransformer;
+use progression\http\transformer\dto\UserDTO;
+use progression\domaine\entité\user\{User, État};
 use progression\domaine\entité\Avancement;
 use progression\domaine\interacteur\ObtenirUserInt;
-use progression\domaine\interacteur\SauvegarderPréférencesUtilisateurInt;
 use progression\util\Encodage;
+use DomainException;
 
 class UserCtl extends Contrôleur
 {
-	public function get(Request $request, $username = null)
+	public function get(Request $request, string $username): JsonResponse
 	{
 		Log::debug("UserCtl.get. Params : ", [$request->all(), $username]);
 
+		$réponse = null;
 		$user = $this->obtenir_user($username);
+		$réponse = $this->valider_et_préparer_réponse($user, $user?->username);
 
-		$réponse = $this->valider_et_préparer_réponse($user);
 		Log::debug("UserCtl.get. Retour : ", [$réponse]);
 		return $réponse;
 	}
 
-	public function post(Request $request, string $username): JsonResponse
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $username): array
 	{
-		Log::debug("UserCtl.post. Params : ", [$request->all(), $username]);
-		$validation = $this->valider_paramètres($request);
-
-		if ($validation->fails()) {
-			Log::notice(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Paramètres invalides",
-			);
-			return $this->réponse_json(["erreur" => $validation->errors()], 400);
-		}
-
-		$userInt = new SauvegarderPréférencesUtilisateurInt();
-		$user = $userInt->sauvegarder_préférences($username, $request->préférences ?? "");
-
-		$réponse = $this->valider_et_préparer_réponse($user);
-
-		Log::debug("UserCtl.post. Retour : ", [$réponse]);
-		return $réponse;
+		$urlBase = Contrôleur::$urlBase;
+		return [
+			"self" => "{$urlBase}/user/{$username}",
+			"avancements" => "{$urlBase}/user/{$username}/avancements",
+			"clés" => "{$urlBase}/user/{$username}/cles",
+			"tokens" => "{$urlBase}/user/{$username}/tokens",
+		];
 	}
 
-	private function obtenir_user($username)
+	protected function obtenir_user(string $username): User|null
 	{
 		Log::debug("UserCtl.obtenir_user. Params : ", [$username]);
 
 		$userInt = new ObtenirUserInt();
-		$user = null;
 
-		if ($username != null && $username != "") {
-			$user = $userInt->get_user($username, $this->get_includes());
-			if ($user) {
-				$user->avancements = $this->réencoder_uris($user->avancements);
-			}
+		$user = $userInt->get_user(username: $username, includes: $this->get_includes());
+		if ($user) {
+			$user->avancements = $this->réencoder_uris($user->avancements);
 		}
 
 		Log::debug("UserCtl.obtenir_user. Retour : ", [$user]);
 		return $user;
 	}
 
-	private function valider_paramètres(Request $request)
-	{
-		$validateur = Validator::make(
-			$request->all(),
-			[
-				"préférences" => "string|json|between:0,65535",
-			],
-			[
-				"json" => "Err: 1003. Le champ :attribute doit être en format json.",
-				"paramètres.between" =>
-					"Err: 1002. Le champ :attribute " . mb_strlen($request->paramètres) . " > :max caractères.",
-			],
-		);
-
-		return $validateur;
-	}
-
-	private function valider_et_préparer_réponse($user)
+	protected function valider_et_préparer_réponse($user, $id)
 	{
 		Log::debug("UserCtl.valider_et_préparer_réponse. Params : ", [$user]);
 
 		if ($user) {
-			$user->id = $user->username;
-			$réponse = $this->item($user, new UserTransformer());
+			$liens = self::get_liens($user->username);
+			$dto = new UserDTO(id: $id, objet: $user, liens: $liens);
+
+			$réponse = $this->item($dto, new UserTransformer());
 		} else {
 			$réponse = null;
 		}

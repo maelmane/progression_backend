@@ -30,14 +30,14 @@ use progression\domaine\interacteur\{
 	SauvegarderTentativeInt,
 	SoumettreTentativeProgInt,
 	SoumettreTentativeSysInt,
+	TerminerConteneurSysInt,
 };
-use progression\domaine\entité\{Avancement, Tentative, TentativeProg, TentativeSys, TentativeBD};
-use progression\domaine\entité\{Question, QuestionProg, QuestionSys, QuestionBD};
+use progression\http\transformer\dto\TentativeDTO;
+use progression\domaine\entité\{Avancement, Tentative, TentativeProg, TentativeSys, TentativeBD, Résultat};
+use progression\domaine\entité\question\{Question, QuestionProg, QuestionSys, QuestionBD};
 use progression\domaine\entité\TestProg;
-use progression\dao\exécuteur\ExécutionException;
-use progression\dao\question\ChargeurException;
 use progression\util\Encodage;
-use DomainException, LengthException, RuntimeException;
+use Carbon\Carbon;
 
 class TentativeCtl extends Contrôleur
 {
@@ -45,21 +45,21 @@ class TentativeCtl extends Contrôleur
 	{
 		$tentative = $this->obtenir_tentative($username, $question_uri, $timestamp);
 
-		if ($tentative != null) {
-			$tentative->id = "$timestamp";
-		}
-
 		$réponse = null;
-
-		if ($tentative instanceof TentativeProg) {
-			$réponse = $this->item(
-				$tentative,
-				new TentativeProgTransformer("$username/" . (string) $request->question_uri),
+		if ($tentative) {
+			$dto = new TentativeDTO(
+				id: "{$username}/{$question_uri}/{$timestamp}",
+				objet: $tentative,
+				liens: TentativeCtl::get_liens("{$username}/{$question_uri}", $timestamp),
 			);
-		} elseif ($tentative instanceof TentativeSys) {
-			$réponse = $this->item($tentative, new TentativeSysTransformer("$username/{$request->question_uri}"));
-		} elseif ($tentative instanceof TentativeBD) {
-			$réponse = $this->item($tentative, new TentativeBDTransformer("$username/{$request->question_uri}"));
+
+			if ($tentative instanceof TentativeProg) {
+				$réponse = $this->item($dto, new TentativeProgTransformer());
+			} elseif ($tentative instanceof TentativeSys) {
+				$réponse = $this->item($dto, new TentativeSysTransformer());
+			} elseif ($tentative instanceof TentativeBD) {
+				$réponse = $this->item($dto, new TentativeBDTransformer());
+			}
 		}
 
 		return $this->préparer_réponse($réponse);
@@ -71,40 +71,41 @@ class TentativeCtl extends Contrôleur
 
 		$chemin = Encodage::base64_decode_url($question_uri);
 
-		try {
-			$question = $this->récupérer_question($chemin);
+		$question = $this->récupérer_question($chemin);
 
+		if ($question instanceof Question) {
 			if ($question instanceof QuestionProg) {
 				$validation = $this->valider_paramètres_prog($request);
 				if ($validation->fails()) {
-					Log::notice(
-						"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-							__CLASS__ .
-							") Paramètres invalides",
-					);
-					return $this->réponse_json(["erreur" => $validation->errors()], 400);
+					$réponse = $this->réponse_json(["erreur" => $validation->errors()], 400);
+				} else {
+					$réponse = $this->traiter_post_QuestionProg($request, $username, $chemin, $question);
 				}
-				$réponse = $this->traiter_post_QuestionProg($request, $username, $chemin, $question);
 			} elseif ($question instanceof QuestionSys) {
 				$réponse = $this->traiter_post_QuestionSys($request, $username, $chemin, $question);
 			} else {
 				Log::notice("({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ")");
-				return $this->réponse_json(["erreur" => "Question de type non implémentée."], 501);
+				$réponse = $this->réponse_json(["erreur" => "Question de type non implémentée."], 501);
 			}
-		} catch (ContrôleurException $erreur) {
-			Log::notice(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" .
-					__CLASS__ .
-					")
-				{$erreur->getMessage()}",
-			);
-
-			return $this->réponse_json(["erreur" => $erreur->getMessage()], $erreur->getCode());
+		} else {
+			$réponse = $this->réponse_json(["erreur" => "Question inexistante."], 400);
 		}
 
 		Log::debug("TentativeCtl.post. Retour : ", [$réponse]);
-
 		return $réponse;
+	}
+
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $id, int $date_soumission): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+
+		return [
+			"self" => "{$urlBase}/tentative/{$id}/{$date_soumission}",
+			"avancement" => "{$urlBase}/avancement/{$id}",
+		];
 	}
 
 	private function obtenir_tentative(string $username, string $question_uri, int $timestamp): Tentative|null
@@ -122,58 +123,82 @@ class TentativeCtl extends Contrôleur
 
 	private function traiter_post_QuestionProg(Request $request, $username, $chemin, $question)
 	{
-		$tests = !empty($request->test)
-			? [
-				$this->construire_test(
-					isset($request->index)
-						? $question->tests[$request->index]
-						: new TestProg($request->test["nom"] ?? "", ""),
-					$request->test["entrée"] ?? null,
-					$request->test["params"] ?? null,
-					$request->test["sortie_attendue"] ?? null,
-				),
-			]
-			: $question->tests;
+		Log::debug("TentativeCtl.traiter_post_QuestionProg. Params : ", [$request->all(), $username]);
 
-		$tentative = new TentativeProg($request->langage, $request->code, (new \DateTime())->getTimestamp());
+		$tests = $question->tests;
 
-		$tentative_résultante = $this->soumettre_tentative_prog($username, $question, $tests, $tentative);
-		if (!$tentative_résultante) {
-			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
-		}
+		$timestamp = Carbon::now()->getTimestamp();
+		$tentative = new TentativeProg($request->langage, $request->code, $timestamp);
 
-		if (empty($request->test)) {
-			$this->sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative_résultante);
-		}
-
-		$tentative_résultante->id = $tentative->date_soumission;
-		$réponse = $this->item($tentative_résultante, new TentativeProgTransformer("$username/$request->question_uri"));
-
-		return $this->préparer_réponse($réponse);
-	}
-
-	private function traiter_post_QuestionSys(Request $request, $username, $chemin, $question)
-	{
-		$conteneur = $request->conteneur ?? $this->récupérer_conteneur($username, $chemin);
-
-		$tentative = new TentativeSys(["id" => $conteneur], $request->réponse, (new \DateTime())->getTimestamp());
-
-		$tentative_résultante = $this->soumettre_tentative_sys($username, $question, $question->tests, $tentative);
+		$tentative_résultante = $this->soumettre_tentative_prog($question, $tentative, $tests);
 		if (!$tentative_résultante) {
 			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
 		}
 
 		$this->sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative_résultante);
 
-		$tentative_résultante->id = $tentative->date_soumission;
-		$réponse = $this->item($tentative, new TentativeSysTransformer("$username/$request->question_uri"));
+		$tentative_résultante = $this->caviarder_résultats_des_tests_cachés($tentative_résultante, $tests);
+
+		$id = $tentative_résultante->date_soumission;
+		$question_uri = Encodage::base64_encode_url($chemin);
+
+		$dto = new TentativeDTO(
+			id: "{$username}/{$question_uri}/{$id}",
+			objet: $tentative_résultante,
+			liens: TentativeCtl::get_liens("{$username}/{$question_uri}", $id),
+		);
+
+		$réponse = $this->item($dto, new TentativeProgTransformer());
+
+		Log::debug("TentativeCtl.traiter_post_QuestionProg. Retour : ", [$réponse]);
+
+		return $this->préparer_réponse($réponse);
+	}
+
+	private function traiter_post_QuestionSys(Request $request, $username, $chemin, $question)
+	{
+		Log::debug("TentativeCtl.traiter_post_QuestionSys. Params : ", [$request->all(), $username]);
+
+		if (!$question->solution && !$request->conteneur_id) {
+			$this->détruire_conteneur_courant($username, $chemin);
+			$conteneur_id = "";
+		} else {
+			$conteneur_id = $request->conteneur_id;
+		}
+
+		$timestamp = Carbon::now()->getTimestamp();
+		$tentative = new TentativeSys(
+			conteneur_id: $conteneur_id,
+			réponse: $request->réponse,
+			date_soumission: $timestamp,
+		);
+
+		$tentative_résultante = $this->soumettre_tentative_sys($question, $tentative, $question->tests);
+		if (!$tentative_résultante) {
+			return $this->réponse_json(["erreur" => "Tentative intraitable."], 400);
+		}
+		$id = $tentative_résultante->date_soumission;
+
+		$this->sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative_résultante);
+
+		$question_uri = Encodage::base64_encode_url($chemin);
+
+		$dto = new TentativeDTO(
+			id: "{$username}/{$question_uri}/{$id}",
+			objet: $tentative_résultante,
+			liens: TentativeCtl::get_liens("{$username}/{$question_uri}", $id),
+		);
+
+		$réponse = $this->item($dto, new TentativeSysTransformer());
+
+		Log::debug("TentativeCtl.traiter_post_QuestionSys. Retour : ", [$réponse]);
 
 		return $this->préparer_réponse($réponse);
 	}
 
 	private function valider_paramètres_prog($request)
 	{
-		$TAILLE_CODE_MAX = (int) $_ENV["TAILLE_CODE_MAX"];
+		$TAILLE_CODE_MAX = (int) getenv("TAILLE_CODE_MAX");
 
 		return Validator::make(
 			$request->all(),
@@ -182,9 +207,9 @@ class TentativeCtl extends Contrôleur
 				"code" => "required|string|between:0,$TAILLE_CODE_MAX",
 			],
 			[
-				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
-				"string" => "Err: 1003. Le champ :attribute doit être une chaîne de caractères.",
-				"code.between" => "Err: 1002. Le code soumis " . mb_strlen($request->code) . " > :max caractères.",
+				"required" => "Le champ :attribute est obligatoire.",
+				"string" => "Le champ :attribute doit être une chaîne de caractères.",
+				"code.between" => "Le code soumis " . mb_strlen($request->code) . " > :max caractères.",
 			],
 		);
 	}
@@ -193,15 +218,7 @@ class TentativeCtl extends Contrôleur
 	{
 		$questionInt = new ObtenirQuestionInt();
 
-		try {
-			return $questionInt->get_question($chemin);
-		} catch (RuntimeException $erreur) {
-			throw new ContrôleurException($erreur->getMessage(), 502);
-		} catch (DomainException $erreur) {
-			throw new ContrôleurException($erreur->getMessage(), 400);
-		} catch (ChargeurException $erreur) {
-			throw new ContrôleurException($erreur->getMessage(), 400);
-		}
+		return $questionInt->get_question($chemin);
 	}
 
 	private function construire_test($test, string|null $entrée, string|null $params, string|null $sortie_attendue)
@@ -219,35 +236,27 @@ class TentativeCtl extends Contrôleur
 		return $test;
 	}
 
-	private function soumettre_tentative_prog($username, $question, $tests, $tentative)
+	/**
+	 * @return array<mixed>
+	 */
+	private function détruire_conteneur_courant(string $username, string $chemin): array
 	{
-		return $this->soumettre_tentative($username, $question, $tests, $tentative, new SoumettreTentativeProgInt());
-	}
-	private function soumettre_tentative_sys($username, $question, $tests, $tentative)
-	{
-		return $this->soumettre_tentative($username, $question, $tests, $tentative, new SoumettreTentativeSysInt());
+		Log::debug("TentativeCtl.détruire_conteneur_courant. Params ${username} ${chemin}");
+		$conteneur_id = $this->récupérer_conteneur_id($username, $chemin);
+
+		$réponse = (new TerminerConteneurSysInt())->terminer($conteneur_id);
+		Log::debug("TentativeCtl.détruire_conteneur_courant. Retour", [$réponse]);
+		return $réponse;
 	}
 
-	private function soumettre_tentative($username, $question, $tests, $tentative, $intéracteur)
+	private function soumettre_tentative_prog($question, $tentative, $tests)
 	{
-		try {
-			$résultat = $intéracteur->soumettre_tentative($username, $question, $tests, $tentative);
-		} catch (ExécutionException $e) {
-			if ($e->getCode() >= 500) {
-				Log::error($e->getMessage());
-				if ($e->getPrevious()) {
-					Log::error($e->getPrevious()->getMessage());
-				}
-				throw new ContrôleurException("Service non disponible.", 503);
-			} else {
-				throw new ContrôleurException($e->getMessage(), $e->getCode());
-			}
-		}
+		return (new SoumettreTentativeProgInt())->soumettre_tentative($question, $tentative, $tests);
+	}
 
-		if ($tentative == null) {
-			throw new ContrôleurException("Requête intraitable.", 400);
-		}
-		return $résultat;
+	private function soumettre_tentative_sys($question, $tentative, $tests)
+	{
+		return (new SoumettreTentativeSysInt())->soumettre_tentative($question, $tentative, $tests);
 	}
 
 	private function sauvegarder_tentative_et_avancement($username, $chemin, $question, $tentative)
@@ -266,10 +275,43 @@ class TentativeCtl extends Contrôleur
 		$avancementInt->sauvegarder($username, $chemin, $avancement, $question);
 	}
 
-	private function récupérer_conteneur($username, $chemin)
+	/**
+	 * @param array<TestProg> $tests
+	 */
+	private function caviarder_résultats_des_tests_cachés(TentativeProg $tentative, array $tests): TentativeProg
 	{
+		foreach ($tests as $i => $test) {
+			$hash = array_keys($tentative->résultats)[$i];
+
+			if ($tests[$i]->caché) {
+				$this->caviarder_résultat($tentative->résultats[$hash]);
+			}
+		}
+
+		return $tentative;
+	}
+
+	private function caviarder_résultat(Résultat $résultat): Résultat
+	{
+		$résultat->sortie_observée = null;
+		$résultat->sortie_erreur = null;
+
+		return $résultat;
+	}
+
+	private function récupérer_conteneur_id(string $username, string $chemin): string
+	{
+		Log::debug("TentativeCtl.récupérer_conteneur_id. Params : ", [$username, $chemin]);
+
 		$obtenirTentativeInt = new ObtenirTentativeInt();
 		$tentative_récupérée = $obtenirTentativeInt->get_dernière($username, $chemin);
-		return $tentative_récupérée ? $tentative_récupérée->conteneur : null;
+		if (!$tentative_récupérée instanceof TentativeSys) {
+			return "";
+		}
+
+		$conteneur_id = $tentative_récupérée?->conteneur_id ?? "";
+
+		Log::debug("TentativeCtl.récupérer_conteneur_id. Retour : ", [$conteneur_id]);
+		return $conteneur_id;
 	}
 }

@@ -18,35 +18,43 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Avancement, Question};
+use progression\domaine\entité\{Avancement, Question, TentativeProg};
+use progression\dao\exécuteur\ExécutionException;
 
 class SoumettreTentativeProgInt extends Interacteur
 {
-	public function soumettre_tentative($username, $question, $tests, $tentative)
+	public function soumettre_tentative($question, $tentative, $tests): TentativeProg|null
 	{
 		$exécutable = null;
 
 		$préparerProgInt = new PréparerProgInt();
 		$exécutable = $préparerProgInt->préparer_exécutable($question, $tentative);
 
-		if ($exécutable) {
-			$résultats = $this->exécuter_prog($exécutable, $tests);
-			if ($résultats) {
-				$tentative->temps_exécution = $résultats["temps_exécution"];
-				$tentative->résultats = $résultats["résultats"];
-				$rétroactions["feedback_pos"] = $question->feedback_pos;
-				$rétroactions["feedback_neg"] = $question->feedback_neg;
-				$rétroactions["feedback_err"] = $question->feedback_err;
-				$tentativeTraitée = $this->traiterTentativeProg($tentative, $rétroactions, $tests);
-				return $tentativeTraitée;
-			}
+		if (!$exécutable) {
+			return null;
 		}
+
+		try {
+			$résultats = $this->exécuter_prog($exécutable, $tests, $question->image);
+		} catch (ExécutionException $e) {
+			throw new IntéracteurException($e, $e->getCode());
+		}
+		if ($résultats) {
+			$tentative->temps_exécution = $résultats["temps_exécution"];
+			$tentative->résultats = $résultats["résultats"];
+			$rétroactions["feedback_pos"] = $question->feedback_pos;
+			$rétroactions["feedback_neg"] = $question->feedback_neg;
+			$rétroactions["feedback_err"] = $question->feedback_err;
+			$tentativeTraitée = $this->traiterTentativeProg($tentative, $rétroactions, $tests);
+			return $tentativeTraitée;
+		}
+
 		return null;
 	}
 
-	private function exécuter_prog($exécutable, $testsQuestion)
+	private function exécuter_prog($exécutable, $testsQuestion, string $image = null)
 	{
-		return (new ExécuterProgInt())->exécuter($exécutable, $testsQuestion);
+		return (new ExécuterProgInt())->exécuter($exécutable, $testsQuestion, $image);
 	}
 
 	private function traiterTentativeProg($tentative, $rétroactions, $tests)

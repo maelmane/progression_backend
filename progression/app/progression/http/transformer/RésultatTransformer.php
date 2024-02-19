@@ -19,24 +19,26 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\Résultat;
+use progression\http\transformer\dto\GénériqueDTO;
 
 class RésultatTransformer extends BaseTransformer
 {
 	public $type = "resultat";
 
-	public function transform(Résultat $réponse)
+	public function transform(GénériqueDTO $data_in)
 	{
+		$id = $data_in->id;
+		$résultat = $data_in->objet;
+		$liens = $data_in->liens;
+
 		$data = [
-			"id" => "{$this->id}/{$réponse->id}",
-			"sortie_observée" => $réponse->sortie_observée,
-			"sortie_erreur" => $réponse->sortie_erreur,
-			"résultat" => $réponse->résultat,
-			"feedback" => $réponse->feedback,
-			"temps_exec" => $réponse->temps_exécution,
-			"links" => (isset($réponse->links) ? $réponse->links : []) + [
-				"tentative" => "{$_ENV["APP_URL"]}tentative/{$this->id}",
-				"self" => "{$_ENV["APP_URL"]}resultat/{$this->id}/{$réponse->id}",
-			],
+			"id" => $id,
+			"sortie_observée" => $résultat->sortie_observée ?? "",
+			"sortie_erreur" => $résultat->sortie_erreur ?? "",
+			"résultat" => $résultat->résultat,
+			"feedback" => $résultat->feedback,
+			"temps_exécution" => $résultat->temps_exécution,
+			"links" => $liens,
 		];
 
 		return $data;

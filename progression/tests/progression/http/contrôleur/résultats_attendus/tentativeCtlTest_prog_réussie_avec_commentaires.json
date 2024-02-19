@@ -1,0 +1,57 @@
+{
+  "data": {
+    "type": "tentative",
+    "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490",
+    "attributes": {
+      "date_soumission": 1614374490,
+      "feedback": "feedbackTest",
+      "réussi": true,
+      "temps_exécution": 5,
+      "sous_type": "tentativeProg",
+      "langage": "réussi",
+      "code": "codeTest",
+      "tests_réussis": 2
+    },
+    "links": {
+		"avancement": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU",
+		"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490"
+    },
+    "relationships": {
+      "resultats": {
+        "links": {
+          "self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490/relationships/resultats",
+          "related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490/resultats"
+        }
+      },
+      "commentaires": {
+        "links": {
+          "self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490/relationships/commentaires",
+          "related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490/commentaires"
+        },
+        "data": [
+          {
+            "type": "commentaire",
+            "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490/0"
+          }
+        ]
+      }
+    }
+  },
+  "included": [
+    {
+      "type": "commentaire",
+      "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490/0",
+      "attributes": {
+        "message": "message",
+        "créateur": "créateur",
+        "date": 1614374490,
+        "numéro_ligne": 42
+      },
+      "links": {
+          "self": "https://example.com/commentaire/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490/0",
+          "auteur": "https://example.com/user/créateur",
+          "tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490"
+      }
+    }
+  ]
+}

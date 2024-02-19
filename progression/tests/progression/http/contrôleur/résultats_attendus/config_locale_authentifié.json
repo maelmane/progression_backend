@@ -1,0 +1,20 @@
+{
+  "data": {
+    "type": "config",
+    "id": "serveur",
+    "attributes": {
+      "config": {
+        "AUTH": {
+          "LDAP": false,
+          "LOCAL": true
+        }
+      },
+      "version": "Progression 3.0.0()"
+    },
+    "links": {
+      "self": "https://example.com/",
+      "tokens": "https://example.com/user/jdoe/tokens",
+      "user": "https://example.com/user/jdoe"
+    }
+  }
+}

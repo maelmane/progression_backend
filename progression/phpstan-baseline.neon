@@ -16,11 +16,6 @@ parameters:
 			path: app/progression/dao/AvancementDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:get_avancement\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/AvancementDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:get_avancement\\(\\) has parameter \\$includes with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/AvancementDAO.php
@@ -36,37 +31,12 @@ parameters:
 			path: app/progression/dao/AvancementDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:get_tous\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/AvancementDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:get_tous\\(\\) has parameter \\$includes with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/AvancementDAO.php
 
 		-
 			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:get_tous\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/AvancementDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:save\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/AvancementDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:save\\(\\) has parameter \\$avancement with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/AvancementDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:save\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/AvancementDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\AvancementDAO\\:\\:save\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/AvancementDAO.php
 
@@ -86,11 +56,6 @@ parameters:
 			path: app/progression/dao/CléDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\CléDAO\\:\\:get_clé\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/CléDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\CléDAO\\:\\:get_clé\\(\\) has parameter \\$includes with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/CléDAO.php
@@ -106,22 +71,12 @@ parameters:
 			path: app/progression/dao/CléDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\CléDAO\\:\\:get_toutes\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/CléDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\CléDAO\\:\\:get_toutes\\(\\) has parameter \\$includes with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/CléDAO.php
 
 		-
 			message: "#^Method progression\\\\dao\\\\CléDAO\\:\\:get_toutes\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/CléDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\CléDAO\\:\\:save\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/dao/CléDAO.php
 
@@ -161,11 +116,6 @@ parameters:
 			path: app/progression/dao/CléDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:construire\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/CommentaireDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:construire\\(\\) has parameter \\$data with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/CommentaireDAO.php
@@ -176,22 +126,12 @@ parameters:
 			path: app/progression/dao/CommentaireDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:get_commentaire\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/CommentaireDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:get_commentaire\\(\\) has parameter \\$id with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/CommentaireDAO.php
 
 		-
 			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:get_commentaire\\(\\) has parameter \\$includes with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/CommentaireDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:get_tous_par_tentative\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/dao/CommentaireDAO.php
 
@@ -216,17 +156,7 @@ parameters:
 			path: app/progression/dao/CommentaireDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:save\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/CommentaireDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:save\\(\\) has parameter \\$commentaire with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/CommentaireDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\CommentaireDAO\\:\\:save\\(\\) has parameter \\$date_soumission with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/CommentaireDAO.php
 
@@ -341,11 +271,6 @@ parameters:
 			path: app/progression/dao/SauvegardeDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\SauvegardeDAO\\:\\:get_sauvegarde\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/SauvegardeDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\SauvegardeDAO\\:\\:get_sauvegarde\\(\\) has parameter \\$includes with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/SauvegardeDAO.php
@@ -366,11 +291,6 @@ parameters:
 			path: app/progression/dao/SauvegardeDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\SauvegardeDAO\\:\\:get_toutes\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/SauvegardeDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\SauvegardeDAO\\:\\:get_toutes\\(\\) has parameter \\$includes with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/SauvegardeDAO.php
@@ -382,11 +302,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\dao\\\\SauvegardeDAO\\:\\:get_toutes\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/SauvegardeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\SauvegardeDAO\\:\\:save\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/dao/SauvegardeDAO.php
 
@@ -422,31 +337,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\dao\\\\UserDAO\\:\\:construire\\(\\) has parameter \\$includes with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/UserDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\UserDAO\\:\\:get_user\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/UserDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\UserDAO\\:\\:get_user\\(\\) has parameter \\$includes with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/UserDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\UserDAO\\:\\:get_user\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/UserDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\UserDAO\\:\\:save\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/UserDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\UserDAO\\:\\:save\\(\\) has parameter \\$user with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/UserDAO.php
 
@@ -521,21 +411,6 @@ parameters:
 			path: app/progression/dao/exécuteur/ExécuteurCache.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCache\\:\\:exécuter_prog\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCache.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCache\\:\\:exécuter_prog\\(\\) has parameter \\$exécutable with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCache.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCache\\:\\:exécuter_prog\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCache.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCache\\:\\:obtenir_de_la_cache\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/dao/exécuteur/ExécuteurCache.php
@@ -596,46 +471,6 @@ parameters:
 			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_prog\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_prog\\(\\) has parameter \\$exécutable with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_prog\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has parameter \\$conteneur with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has parameter \\$image with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\exécuteur\\\\ExécuteurCompilebox\\:\\:exécuter_sys\\(\\) has parameter \\$utilisateur with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/exécuteur/ExécuteurCompilebox.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\exécuteur\\\\Standardiseur\\:\\:standardiser\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/dao/exécuteur/Standardiseur.php
@@ -649,6 +484,21 @@ parameters:
 			message: "#^Method progression\\\\dao\\\\exécuteur\\\\Standardiseur\\:\\:standardiser\\(\\) has parameter \\$lang with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/exécuteur/Standardiseur.php
+
+		-
+			message: "#^Property progression\\\\dao\\\\models\\\\AvancementMdl\\:\\:\\$appends type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: app/progression/dao/models/AvancementMdl.php
+
+		-
+			message: "#^Property progression\\\\dao\\\\models\\\\CléMdl\\:\\:\\$appends type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: app/progression/dao/models/CléMdl.php
+
+		-
+			message: "#^Property progression\\\\dao\\\\models\\\\UserMdl\\:\\:\\$appends type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: app/progression/dao/models/UserMdl.php
 
 		-
 			message: "#^Method progression\\\\dao\\\\question\\\\Chargeur\\:\\:__construct\\(\\) has parameter \\$source with no type specified\\.$#"
@@ -986,41 +836,6 @@ parameters:
 			path: app/progression/dao/question/QuestionDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_tentative\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_tentative\\(\\) has parameter \\$date with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_tentative\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_toutes\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_toutes\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_toutes\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_type\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/dao/tentative/TentativeDAO.php
@@ -1032,26 +847,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:get_type\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:save\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:save\\(\\) has parameter \\$objet with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:save\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeDAO\\:\\:save\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/tentative/TentativeDAO.php
 
@@ -1071,57 +866,12 @@ parameters:
 			path: app/progression/dao/tentative/TentativeProgDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_tentative\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_tentative\\(\\) has parameter \\$date_soumission with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_tentative\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_toutes\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_toutes\\(\\) has parameter \\$question_uri with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/tentative/TentativeProgDAO.php
 
 		-
 			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:get_toutes\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:save\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:save\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:save\\(\\) has parameter \\$tentative with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeProgDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeProgDAO\\:\\:save\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/dao/tentative/TentativeProgDAO.php
 
@@ -1141,76 +891,6 @@ parameters:
 			path: app/progression/dao/tentative/TentativeSysDAO.php
 
 		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_dernière\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_dernière\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_dernière\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_tentative\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_tentative\\(\\) has parameter \\$date_soumission with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_tentative\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_toutes\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_toutes\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:get_toutes\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:save\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:save\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:save\\(\\) has parameter \\$tentative with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
-			message: "#^Method progression\\\\dao\\\\tentative\\\\TentativeSysDAO\\:\\:save\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/dao/tentative/TentativeSysDAO.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\Avancement\\:\\:__construct\\(\\) has parameter \\$niveau with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/Avancement.php
@@ -1222,11 +902,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\Avancement\\:\\:ajouter_tentative\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Avancement.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Avancement\\:\\:ajouter_tentative\\(\\) has parameter \\$i with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/Avancement.php
 
@@ -1251,11 +926,6 @@ parameters:
 			path: app/progression/domaine/entité/Avancement.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Avancement\\:\\:\\$etat has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Avancement.php
-
-		-
 			message: "#^Property progression\\\\domaine\\\\entité\\\\Avancement\\:\\:\\$niveau has no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/Avancement.php
@@ -1274,91 +944,6 @@ parameters:
 			message: "#^Property progression\\\\domaine\\\\entité\\\\Avancement\\:\\:\\$titre has no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/Avancement.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:__construct\\(\\) has parameter \\$création with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Clé.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:__construct\\(\\) has parameter \\$expiration with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Clé.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:__construct\\(\\) has parameter \\$portée with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Clé.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:__construct\\(\\) has parameter \\$secret with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Clé.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Clé\\:\\:est_valide\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Clé.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Clé\\:\\:\\$création has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Clé.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Clé\\:\\:\\$expiration has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Clé.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Clé\\:\\:\\$portée has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Clé.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Clé\\:\\:\\$secret has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Clé.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Commentaire\\:\\:__construct\\(\\) has parameter \\$créateur with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Commentaire.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Commentaire\\:\\:__construct\\(\\) has parameter \\$date with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Commentaire.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Commentaire\\:\\:__construct\\(\\) has parameter \\$message with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Commentaire.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Commentaire\\:\\:__construct\\(\\) has parameter \\$numéro_ligne with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Commentaire.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Commentaire\\:\\:\\$créateur has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Commentaire.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Commentaire\\:\\:\\$date has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Commentaire.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Commentaire\\:\\:\\$message has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Commentaire.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Commentaire\\:\\:\\$numéro_ligne has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Commentaire.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\Exécutable\\:\\:__construct\\(\\) has parameter \\$code with no type specified\\.$#"
@@ -1384,226 +969,6 @@ parameters:
 			message: "#^Property progression\\\\domaine\\\\entité\\\\Exécutable\\:\\:\\$params has no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/Exécutable.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$auteur with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$feedback_err with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$feedback_neg with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$feedback_pos with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$niveau with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\Question\\:\\:__construct\\(\\) has parameter \\$titre with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$auteur has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$enonce has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$feedback_err has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$feedback_neg has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$feedback_pos has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$licence has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$niveau has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Question\\:\\:\\$titre has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Question.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$auteur with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$exécutables with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$feedback_err with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$feedback_neg with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$feedback_pos with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$niveau with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$titre with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:\\$exécutables has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\QuestionProg\\:\\:\\$tests has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionProg.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$auteur with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$enonce with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$feedback_err with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$feedback_neg with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$feedback_pos with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$image with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$niveau with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$solution with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$titre with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$utilisateur with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:\\$image has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:\\$solution has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:\\$tests has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\QuestionSys\\:\\:\\$utilisateur has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/QuestionSys.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\Résultat\\:\\:__construct\\(\\) has parameter \\$feedback with no type specified\\.$#"
@@ -1716,11 +1081,6 @@ parameters:
 			path: app/progression/domaine/entité/Tentative.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Tentative\\:\\:\\$date_soumission has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Tentative.php
-
-		-
 			message: "#^Property progression\\\\domaine\\\\entité\\\\Tentative\\:\\:\\$feedback has no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/Tentative.php
@@ -1732,11 +1092,6 @@ parameters:
 
 		-
 			message: "#^Property progression\\\\domaine\\\\entité\\\\Tentative\\:\\:\\$réussi has no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/Tentative.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\Tentative\\:\\:\\$temps_exécution has no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/Tentative.php
 
@@ -1846,11 +1201,6 @@ parameters:
 			path: app/progression/domaine/entité/TentativeSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\TentativeSys\\:\\:__construct\\(\\) has parameter \\$conteneur with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/TentativeSys.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\TentativeSys\\:\\:__construct\\(\\) has parameter \\$date_soumission with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/TentativeSys.php
@@ -1882,11 +1232,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\domaine\\\\entité\\\\TentativeSys\\:\\:__construct\\(\\) has parameter \\$tests_réussis with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/entité/TentativeSys.php
-
-		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\TentativeSys\\:\\:\\$conteneur has no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/entité/TentativeSys.php
 
@@ -2031,44 +1376,174 @@ parameters:
 			path: app/progression/domaine/entité/TestSys.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\User\\:\\:__construct\\(\\) has parameter \\$avancements with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:__construct\\(\\) has parameter \\$création with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\User\\:\\:__construct\\(\\) has parameter \\$clés with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:__construct\\(\\) has parameter \\$expiration with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\User\\:\\:__construct\\(\\) has parameter \\$rôle with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:__construct\\(\\) has parameter \\$secret with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\entité\\\\User\\:\\:__construct\\(\\) has parameter \\$username with no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:est_valide\\(\\) has no return type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\User\\:\\:\\$avancements has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:\\$création has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\User\\:\\:\\$clés has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:\\$expiration has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\User\\:\\:\\$rôle has no type specified\\.$#"
+			message: "#^Property progression\\\\domaine\\\\entité\\\\clé\\\\Clé\\:\\:\\$secret has no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/clé/Clé.php
 
 		-
-			message: "#^Property progression\\\\domaine\\\\entité\\\\User\\:\\:\\$username has no type specified\\.$#"
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$auteur with no type specified\\.$#"
 			count: 1
-			path: app/progression/domaine/entité/User.php
+			path: app/progression/domaine/entité/question/Question.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/Question.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$niveau with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/Question.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:__construct\\(\\) has parameter \\$titre with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/Question.php
+
+		-
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$auteur has no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/Question.php
+
+		-
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$enonce has no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/Question.php
+
+		-
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$licence has no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/Question.php
+
+		-
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$niveau has no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/Question.php
+
+		-
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\Question\\:\\:\\$titre has no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/Question.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$auteur with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/QuestionProg.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$exécutables with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/QuestionProg.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/QuestionProg.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$niveau with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/QuestionProg.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:__construct\\(\\) has parameter \\$titre with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/QuestionProg.php
+
+		-
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\QuestionProg\\:\\:\\$exécutables has no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/QuestionProg.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$auteur with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/QuestionSys.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$licence with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/QuestionSys.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$niveau with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/QuestionSys.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$solution with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/QuestionSys.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$titre with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/QuestionSys.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:__construct\\(\\) has parameter \\$utilisateur with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/QuestionSys.php
+
+		-
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:\\$solution has no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/QuestionSys.php
+
+		-
+			message: "#^Property progression\\\\domaine\\\\entité\\\\question\\\\QuestionSys\\:\\:\\$utilisateur has no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/question/QuestionSys.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\user\\\\User\\:\\:__construct\\(\\) has parameter \\$avancements with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/user/User.php
+
+		-
+			message: "#^Method progression\\\\domaine\\\\entité\\\\user\\\\User\\:\\:__construct\\(\\) has parameter \\$clés with no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/user/User.php
+
+		-
+			message: "#^Property progression\\\\domaine\\\\entité\\\\user\\\\User\\:\\:\\$avancements has no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/user/User.php
+
+		-
+			message: "#^Property progression\\\\domaine\\\\entité\\\\user\\\\User\\:\\:\\$clés has no type specified\\.$#"
+			count: 1
+			path: app/progression/domaine/entité/user/User.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ConnecterConteneurInt\\:\\:connexion_conteneur\\(\\) has no return type specified\\.$#"
@@ -2131,21 +1606,6 @@ parameters:
 			path: app/progression/domaine/interacteur/ConnecterConteneurInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\CréerUserInt\\:\\:créer_user\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/CréerUserInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\CréerUserInt\\:\\:créer_user\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/CréerUserInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\EnregistrerSauvegardeInt\\:\\:enregistrer\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/EnregistrerSauvegardeInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\EnregistrerSauvegardeInt\\:\\:enregistrer\\(\\) has parameter \\$langage with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/EnregistrerSauvegardeInt.php
@@ -2166,41 +1626,6 @@ parameters:
 			path: app/progression/domaine/interacteur/EnregistrerSauvegardeInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ExécuterProgInt\\:\\:exécuter\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ExécuterProgInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ExécuterProgInt\\:\\:exécuter\\(\\) has parameter \\$exécutable with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ExécuterProgInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ExécuterProgInt\\:\\:exécuter\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ExécuterProgInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ExécuterSysInt\\:\\:exécuter\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ExécuterSysInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ExécuterSysInt\\:\\:exécuter\\(\\) has parameter \\$question with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ExécuterSysInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ExécuterSysInt\\:\\:exécuter\\(\\) has parameter \\$tentative with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ExécuterSysInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\GénérerCléAuthentificationInt\\:\\:générer_clé\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/GénérerCléAuthentificationInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\GénérerCléAuthentificationInt\\:\\:générer_clé\\(\\) has parameter \\$expiration with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/GénérerCléAuthentificationInt.php
@@ -2216,61 +1641,6 @@ parameters:
 			path: app/progression/domaine/interacteur/GénérerCléAuthentificationInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription\\(\\) has parameter \\$password with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription\\(\\) has parameter \\$role with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_avec_mdp\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_avec_mdp\\(\\) has parameter \\$password with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_avec_mdp\\(\\) has parameter \\$role with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_avec_mdp\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_sans_mdp\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_sans_mdp\\(\\) has parameter \\$role with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\InscriptionInt\\:\\:effectuer_inscription_sans_mdp\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/InscriptionInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\Interacteur\\:\\:__construct\\(\\) has parameter \\$sourceDAO with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/Interacteur.php
@@ -2279,11 +1649,6 @@ parameters:
 			message: "#^Property progression\\\\domaine\\\\interacteur\\\\Interacteur\\:\\:\\$source_dao has no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/Interacteur.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:effectuer_login_par_clé\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:effectuer_login_par_clé\\(\\) has parameter \\$nom_clé with no type specified\\.$#"
@@ -2301,91 +1666,6 @@ parameters:
 			path: app/progression/domaine/interacteur/LoginInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:effectuer_login_par_identifiant\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:effectuer_login_par_identifiant\\(\\) has parameter \\$domaine with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:effectuer_login_par_identifiant\\(\\) has parameter \\$password with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:effectuer_login_par_identifiant\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:get_username_ldap\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:get_username_ldap\\(\\) has parameter \\$domaine with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:get_username_ldap\\(\\) has parameter \\$password with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:get_username_ldap\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_ldap\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_ldap\\(\\) has parameter \\$domaine with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_ldap\\(\\) has parameter \\$password with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_ldap\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_local\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_local\\(\\) has parameter \\$password with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_local\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_sans_authentification\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:login_sans_authentification\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:vérifier_champ_valide\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/LoginInt.php
@@ -2394,11 +1674,6 @@ parameters:
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\LoginInt\\:\\:vérifier_champ_valide\\(\\) has parameter \\$champ with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/LoginInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirAvancementInt\\:\\:get_avancement\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ObtenirAvancementInt.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirAvancementInt\\:\\:get_avancement\\(\\) has parameter \\$question_uri with no type specified\\.$#"
@@ -2411,19 +1686,9 @@ parameters:
 			path: app/progression/domaine/interacteur/ObtenirAvancementInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirAvancementsInt\\:\\:get_avancements\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ObtenirAvancementsInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirAvancementsInt\\:\\:get_avancements\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/ObtenirAvancementsInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirCléInt\\:\\:get_clé\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ObtenirCléInt.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirCléInt\\:\\:get_clé\\(\\) has parameter \\$numéro with no type specified\\.$#"
@@ -2436,17 +1701,7 @@ parameters:
 			path: app/progression/domaine/interacteur/ObtenirCléInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirCommentaireInt\\:\\:get_commentaire_par_id\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ObtenirCommentaireInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirCommentaireInt\\:\\:get_commentaire_par_id\\(\\) has parameter \\$id with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ObtenirCommentaireInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirCommentaireInt\\:\\:get_tous_par_tentative\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/ObtenirCommentaireInt.php
 
@@ -2476,11 +1731,6 @@ parameters:
 			path: app/progression/domaine/interacteur/ObtenirQuestionInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirSauvegardeInt\\:\\:get_sauvegarde\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ObtenirSauvegardeInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirSauvegardeInt\\:\\:get_sauvegarde\\(\\) has parameter \\$langage with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/ObtenirSauvegardeInt.php
@@ -2496,22 +1746,12 @@ parameters:
 			path: app/progression/domaine/interacteur/ObtenirSauvegardeInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirTentativeInt\\:\\:get_dernière\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ObtenirTentativeInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirTentativeInt\\:\\:get_dernière\\(\\) has parameter \\$question_uri with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/ObtenirTentativeInt.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirTentativeInt\\:\\:get_dernière\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ObtenirTentativeInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirTentativeInt\\:\\:get_tentative\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/ObtenirTentativeInt.php
 
@@ -2529,16 +1769,6 @@ parameters:
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirTentativeInt\\:\\:get_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/ObtenirTentativeInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirUserInt\\:\\:get_user\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ObtenirUserInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\ObtenirUserInt\\:\\:get_user\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/ObtenirUserInt.php
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\PatenaudeCitationInt\\:\\:get_citation\\(\\) has no return type specified\\.$#"
@@ -2591,61 +1821,6 @@ parameters:
 			path: app/progression/domaine/interacteur/PréparerProgInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\RéinitialiserConteneurInt\\:\\:get_data_rc\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/RéinitialiserConteneurInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderCommentaireInt\\:\\:sauvegarder_commentaire\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SauvegarderCommentaireInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderCommentaireInt\\:\\:sauvegarder_commentaire\\(\\) has parameter \\$commentaire with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SauvegarderCommentaireInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderCommentaireInt\\:\\:sauvegarder_commentaire\\(\\) has parameter \\$date_soummision with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SauvegarderCommentaireInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderCommentaireInt\\:\\:sauvegarder_commentaire\\(\\) has parameter \\$numéro with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SauvegarderCommentaireInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderCommentaireInt\\:\\:sauvegarder_commentaire\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SauvegarderCommentaireInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderCommentaireInt\\:\\:sauvegarder_commentaire\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SauvegarderCommentaireInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderTentativeInt\\:\\:sauvegarder\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SauvegarderTentativeInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderTentativeInt\\:\\:sauvegarder\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SauvegarderTentativeInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderTentativeInt\\:\\:sauvegarder\\(\\) has parameter \\$tentative with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SauvegarderTentativeInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SauvegarderTentativeInt\\:\\:sauvegarder\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SauvegarderTentativeInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeProgInt\\:\\:exécuter_prog\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php
@@ -2661,11 +1836,6 @@ parameters:
 			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeProgInt\\:\\:soumettre_tentative\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeProgInt\\:\\:soumettre_tentative\\(\\) has parameter \\$question with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php
@@ -2677,11 +1847,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeProgInt\\:\\:soumettre_tentative\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeProgInt\\:\\:soumettre_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/SoumettreTentativeProgInt.php
 
@@ -2736,11 +1901,6 @@ parameters:
 			path: app/progression/domaine/interacteur/SoumettreTentativeSysInt.php
 
 		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeSysInt\\:\\:soumettre_tentative\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SoumettreTentativeSysInt.php
-
-		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeSysInt\\:\\:soumettre_tentative\\(\\) has parameter \\$question with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/SoumettreTentativeSysInt.php
@@ -2752,11 +1912,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeSysInt\\:\\:soumettre_tentative\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: app/progression/domaine/interacteur/SoumettreTentativeSysInt.php
-
-		-
-			message: "#^Method progression\\\\domaine\\\\interacteur\\\\SoumettreTentativeSysInt\\:\\:soumettre_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/domaine/interacteur/SoumettreTentativeSysInt.php
 
@@ -3061,11 +2216,6 @@ parameters:
 			path: app/progression/http/contrôleur/CléCtl.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\CommentaireCtl\\:\\:post\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/CommentaireCtl.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\CommentaireCtl\\:\\:post\\(\\) has parameter \\$question_uri with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/CommentaireCtl.php
@@ -3166,119 +2316,9 @@ parameters:
 			path: app/progression/http/contrôleur/GénérateurDeToken.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\GénérateurDeToken\\:\\:générer_token\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/GénérateurDeToken.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\GénérateurDeToken\\:\\:générer_token\\(\\) has parameter \\$expiration with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/GénérateurDeToken.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\GénérateurDeToken\\:\\:générer_token\\(\\) has parameter \\$ressources with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/GénérateurDeToken.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\GénérateurDeToken\\:\\:générer_token\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/GénérateurDeToken.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\GénérateurDeToken\\:\\:set_instance\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/GénérateurDeToken.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:effectuer_inscription\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:effectuer_inscription\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:inscription\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:valider_et_préparer_réponse\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$user with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:valider_paramètres\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\InscriptionCtl\\:\\:valider_paramètres\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/InscriptionCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:effectuer_login\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:effectuer_login\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:générer_token\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:générer_token\\(\\) has parameter \\$user with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:login\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:valider_et_préparer_réponse\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$user with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:valider_paramètres\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\LoginCtl\\:\\:valider_paramètres\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/LoginCtl.php
 
 		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\NotImplementedCtl\\:\\:get\\(\\) has no return type specified\\.$#"
@@ -3324,6 +2364,16 @@ parameters:
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\QuestionCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$uri with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/QuestionCtl.php
+
+		-
+			message: "#^Method progression\\\\http\\\\contrôleur\\\\RésultatCtl\\:\\:valider_paramètres_prog\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: app/progression/http/contrôleur/RésultatCtl.php
+
+		-
+			message: "#^Method progression\\\\http\\\\contrôleur\\\\RésultatCtl\\:\\:valider_paramètres_sys\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: app/progression/http/contrôleur/RésultatCtl.php
 
 		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\SauvegardeCtl\\:\\:get\\(\\) has no return type specified\\.$#"
@@ -3461,21 +2511,6 @@ parameters:
 			path: app/progression/http/contrôleur/TentativeCtl.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:récupérer_conteneur\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:récupérer_conteneur\\(\\) has parameter \\$chemin with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:récupérer_conteneur\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:récupérer_question\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/TentativeCtl.php
@@ -3511,36 +2546,6 @@ parameters:
 			path: app/progression/http/contrôleur/TentativeCtl.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative\\(\\) has parameter \\$intéracteur with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative\\(\\) has parameter \\$question with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative\\(\\) has parameter \\$tentative with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative_prog\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/TentativeCtl.php
@@ -3561,11 +2566,6 @@ parameters:
 			path: app/progression/http/contrôleur/TentativeCtl.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative_prog\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative_sys\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/TentativeCtl.php
@@ -3582,11 +2582,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative_sys\\(\\) has parameter \\$tests with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TentativeCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TentativeCtl\\:\\:soumettre_tentative_sys\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/TentativeCtl.php
 
@@ -3671,69 +2666,9 @@ parameters:
 			path: app/progression/http/contrôleur/TestCtl.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TestCtl\\:\\:préparer_test\\(\\) has parameter \\$numero with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TestCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TestCtl\\:\\:préparer_test\\(\\) has parameter \\$question with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TestCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TestCtl\\:\\:préparer_test\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TestCtl.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\TestCtl\\:\\:valider_et_préparer_réponse\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/TestCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TestCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$numero with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TestCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TestCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$question with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TestCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TestCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TestCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TokenCtl\\:\\:post\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TokenCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\TokenCtl\\:\\:post\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/TokenCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:get\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/UserCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:get\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/UserCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:obtenir_user\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/UserCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:obtenir_user\\(\\) has parameter \\$username with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/UserCtl.php
 
 		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:valider_et_préparer_réponse\\(\\) has no return type specified\\.$#"
@@ -3741,12 +2676,12 @@ parameters:
 			path: app/progression/http/contrôleur/UserCtl.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$user with no type specified\\.$#"
+			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$id with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/UserCtl.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:valider_paramètres\\(\\) has no return type specified\\.$#"
+			message: "#^Method progression\\\\http\\\\contrôleur\\\\UserCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$user with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/UserCtl.php
 
@@ -3776,26 +2711,6 @@ parameters:
 			path: app/progression/http/contrôleur/ÉbaucheCtl.php
 
 		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\ÉbaucheCtl\\:\\:préparer_ébauche\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/ÉbaucheCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\ÉbaucheCtl\\:\\:préparer_ébauche\\(\\) has parameter \\$langage with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/ÉbaucheCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\ÉbaucheCtl\\:\\:préparer_ébauche\\(\\) has parameter \\$question with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/ÉbaucheCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\contrôleur\\\\ÉbaucheCtl\\:\\:préparer_ébauche\\(\\) has parameter \\$question_uri with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/contrôleur/ÉbaucheCtl.php
-
-		-
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\ÉbaucheCtl\\:\\:valider_et_préparer_réponse\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/ÉbaucheCtl.php
@@ -3814,26 +2729,6 @@ parameters:
 			message: "#^Method progression\\\\http\\\\contrôleur\\\\ÉbaucheCtl\\:\\:valider_et_préparer_réponse\\(\\) has parameter \\$question_uri with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/contrôleur/ÉbaucheCtl.php
-
-		-
-			message: "#^Method progression\\\\http\\\\middleware\\\\Authenticate\\:\\:handle\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/middleware/Authenticate.php
-
-		-
-			message: "#^Method progression\\\\http\\\\middleware\\\\Authenticate\\:\\:handle\\(\\) has parameter \\$guard with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/middleware/Authenticate.php
-
-		-
-			message: "#^Method progression\\\\http\\\\middleware\\\\Authenticate\\:\\:handle\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/middleware/Authenticate.php
-
-		-
-			message: "#^Property progression\\\\http\\\\middleware\\\\Authenticate\\:\\:\\$auth has no type specified\\.$#"
-			count: 1
-			path: app/progression/http/middleware/Authenticate.php
 
 		-
 			message: "#^Method progression\\\\http\\\\middleware\\\\Bypass\\:\\:handle\\(\\) has no return type specified\\.$#"
@@ -3856,32 +2751,12 @@ parameters:
 			path: app/progression/http/middleware/Cors.php
 
 		-
-			message: "#^Method progression\\\\http\\\\middleware\\\\ValidationPermissions\\:\\:handle\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/middleware/ValidationPermissions.php
-
-		-
-			message: "#^Method progression\\\\http\\\\middleware\\\\ValidationPermissions\\:\\:handle\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/middleware/ValidationPermissions.php
-
-		-
 			message: "#^Method progression\\\\http\\\\transformer\\\\AvancementTransformer\\:\\:includeSauvegardes\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/transformer/AvancementTransformer.php
 
 		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\AvancementTransformer\\:\\:includeSauvegardes\\(\\) has parameter \\$avancement with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/AvancementTransformer.php
-
-		-
 			message: "#^Method progression\\\\http\\\\transformer\\\\AvancementTransformer\\:\\:includeTentatives\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/AvancementTransformer.php
-
-		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\AvancementTransformer\\:\\:includeTentatives\\(\\) has parameter \\$avancement with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/transformer/AvancementTransformer.php
 
@@ -3909,11 +2784,6 @@ parameters:
 			message: "#^Property progression\\\\http\\\\transformer\\\\AvancementTransformer\\:\\:\\$type has no type specified\\.$#"
 			count: 1
 			path: app/progression/http/transformer/AvancementTransformer.php
-
-		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\BaseTransformer\\:\\:__construct\\(\\) has parameter \\$id with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/BaseTransformer.php
 
 		-
 			message: "#^Method progression\\\\http\\\\transformer\\\\BaseTransformer\\:\\:sélectionnerChamps\\(\\) has no return type specified\\.$#"
@@ -3981,27 +2851,12 @@ parameters:
 			path: app/progression/http/transformer/QuestionProgTransformer.php
 
 		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\QuestionProgTransformer\\:\\:includeEbauches\\(\\) has parameter \\$question with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/QuestionProgTransformer.php
-
-		-
 			message: "#^Method progression\\\\http\\\\transformer\\\\QuestionProgTransformer\\:\\:includeTests\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/transformer/QuestionProgTransformer.php
 
 		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\QuestionProgTransformer\\:\\:includeTests\\(\\) has parameter \\$question with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/QuestionProgTransformer.php
-
-		-
 			message: "#^Method progression\\\\http\\\\transformer\\\\QuestionProgTransformer\\:\\:transform\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/QuestionProgTransformer.php
-
-		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\QuestionProgTransformer\\:\\:transform\\(\\) has parameter \\$question with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/transformer/QuestionProgTransformer.php
 
@@ -4016,17 +2871,7 @@ parameters:
 			path: app/progression/http/transformer/QuestionSysTransformer.php
 
 		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\QuestionSysTransformer\\:\\:includeTests\\(\\) has parameter \\$question with no type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/QuestionSysTransformer.php
-
-		-
 			message: "#^Method progression\\\\http\\\\transformer\\\\QuestionSysTransformer\\:\\:transform\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/QuestionSysTransformer.php
-
-		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\QuestionSysTransformer\\:\\:transform\\(\\) has parameter \\$question with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/transformer/QuestionSysTransformer.php
 
@@ -4037,11 +2882,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\http\\\\transformer\\\\QuestionTransformer\\:\\:transform\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/QuestionTransformer.php
-
-		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\QuestionTransformer\\:\\:transform\\(\\) has parameter \\$question with no type specified\\.$#"
 			count: 1
 			path: app/progression/http/transformer/QuestionTransformer.php
 
@@ -4131,16 +2971,6 @@ parameters:
 			path: app/progression/http/transformer/TestTransformer.php
 
 		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\UserTransformer\\:\\:includeAvancements\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/UserTransformer.php
-
-		-
-			message: "#^Method progression\\\\http\\\\transformer\\\\UserTransformer\\:\\:includeCles\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/http/transformer/UserTransformer.php
-
-		-
 			message: "#^Method progression\\\\http\\\\transformer\\\\UserTransformer\\:\\:transform\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/progression/http/transformer/UserTransformer.php
@@ -4167,21 +2997,6 @@ parameters:
 
 		-
 			message: "#^Method progression\\\\providers\\\\AuthServiceProvider\\:\\:boot\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/providers/AuthServiceProvider.php
-
-		-
-			message: "#^Method progression\\\\providers\\\\AuthServiceProvider\\:\\:décoderToken\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/progression/providers/AuthServiceProvider.php
-
-		-
-			message: "#^Method progression\\\\providers\\\\AuthServiceProvider\\:\\:décoderToken\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: app/progression/providers/AuthServiceProvider.php
-
-		-
-			message: "#^Method progression\\\\providers\\\\AuthServiceProvider\\:\\:décoderToken\\(\\) has parameter \\$tokenEncodé with no type specified\\.$#"
 			count: 1
 			path: app/progression/providers/AuthServiceProvider.php
 

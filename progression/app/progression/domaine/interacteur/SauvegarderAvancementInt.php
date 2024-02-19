@@ -18,26 +18,55 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Avancement, Question, Tentative, User};
+use progression\domaine\entité\{Avancement, Tentative};
+use progression\domaine\entité\question\{Question, QuestionProg, QuestionSys, QuestionBD};
+use progression\dao\DAOException;
+use progression\dao\question\ChargeurException;
+use progression\domaine\interacteur\IntégritéException;
 
 class SauvegarderAvancementInt extends Interacteur
 {
+	/**
+	 * @return array<Avancement>
+	 */
 	public function sauvegarder(
 		string $username,
 		string $question_uri,
 		Avancement $avancement,
-		Question $question = null
-	): Avancement|null {
-		$question = $question ?? $this->source_dao->get_question_dao()->get_question($question_uri);
+		Question $question = null,
+	): array {
+		try {
+			$question = $question ?? $this->source_dao->get_question_dao()->get_question($question_uri);
+		} catch (ChargeurException $e) {
+			throw new RessourceInvalideException($e);
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e, 503);
+		}
 
 		if (!$question) {
-			return null;
+			throw new IntégritéException("Impossible de sauvegarder la ressource; la question n'existe pas.");
 		}
 
 		$avancement->titre = $question->titre;
 		$avancement->niveau = $question->niveau;
 
-		$dao_avancement = $this->source_dao->get_avancement_dao();
-		return $dao_avancement->save($username, $question_uri, $avancement);
+		if ($question instanceof QuestionProg) {
+			$type = "prog";
+		} elseif ($question instanceof QuestionSys) {
+			$type = "sys";
+		} elseif ($question instanceof QuestionBD) {
+			$type = "bd";
+		} else {
+			$type = "inconnu";
+		}
+
+		try {
+			$dao_avancement = $this->source_dao->get_avancement_dao();
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e, 503);
+		}
+		$avancements_sauvegardés = $dao_avancement->save($username, $question_uri, $type, $avancement);
+
+		return $avancements_sauvegardés;
 	}
 }

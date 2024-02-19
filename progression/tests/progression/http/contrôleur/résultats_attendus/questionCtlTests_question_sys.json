@@ -10,13 +10,14 @@
 			"énoncé": "Il faut que l'étudiant trouve les commandes justes pour octroyer toutes les permissions à l'utilisateur krusty.",
 			"auteur": "Albert Einstein",
 			"licence": "poétique",
-			"sous-type": "questionSys",
+			"sous_type": "questionSys",
 			"image": "l'image",
 			"utilisateur": "utilisateur",
 			"solution": "laSolution"
 		},
 		"links": {
-			"self": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy"
+			"self": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy",
+			"résultats": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy/resultats"
 		},
 		"relationships": {
 			"tests": {
@@ -42,7 +43,7 @@
             "attributes": {
                 "nom": "test 1",
                 "sortie_attendue": "vrai",
-				"sortie_cachée": false,
+				"caché": false,
                 "utilisateur": "bob",
                 "validation": "[ -z vrai ]"
             },
@@ -57,7 +58,7 @@
             "attributes": {
                 "nom": "test 2",
                 "sortie_attendue": "faux",
-				"sortie_cachée": false,
+				"caché": false,
                 "utilisateur": "roger",
                 "validation": "[ -z faux ]"
             },

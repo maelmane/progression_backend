@@ -20,19 +20,21 @@ namespace progression\domaine\entité;
 
 class TentativeSys extends Tentative
 {
-	public $conteneur;
+	public string|null $conteneur_id;
+	public string|null $url_terminal;
 	public $réponse;
 
 	public function __construct(
-		$conteneur = null,
+		string $conteneur_id = null,
+		string $url_terminal = null,
 		$réponse = null,
-		$date_soumission = null,
+		$date_soumission = 0,
 		$réussi = false,
 		$résultats = [],
 		$tests_réussis = 0,
 		$temps_exécution = null,
 		$feedback = null,
-		$commentaires = []
+		$commentaires = [],
 	) {
 		parent::__construct(
 			$date_soumission,
@@ -43,7 +45,8 @@ class TentativeSys extends Tentative
 			$feedback,
 			$commentaires,
 		);
-		$this->conteneur = $conteneur;
+		$this->conteneur_id = $conteneur_id;
+		$this->url_terminal = $url_terminal;
 		$this->réponse = $réponse;
 	}
 }

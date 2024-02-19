@@ -22,7 +22,7 @@ use progression\domaine\entité\Exécutable;
 
 // Matche le contenu de toutes les zones TODO
 
-define("REGEX_MATCH_TODOS", "/(?s:(?<=\+TODO)(.*?))(?=-TODO|\Z)/");
+define("REGEX_MATCH_TODOS", "/(?s:(?<=\+TODO)(.*?))(?=-TODO|\z)/");
 //                            ^              ^     ^        ^
 //                            |              |     |        └  ou la fin du document
 //                            |              |     └ jusqu'à une balise -TODO

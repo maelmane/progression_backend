@@ -19,8 +19,9 @@
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{Commentaire, User};
-use Illuminate\Auth\GenericUser;
+use progression\domaine\entité\Commentaire;
+use progression\domaine\entité\user\{User, Rôle, État};
+use progression\UserAuthentifiable;
 
 final class CommentaireCtlTests extends ContrôleurTestCase
 {
@@ -30,12 +31,24 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new UserAuthentifiable(
+			username: "jdoe",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		$this->admin = new UserAuthentifiable(
+			username: "admin",
+			date_inscription: 0,
+			rôle: Rôle::ADMIN,
+			état: État::ACTIF,
+		);
+
+		putenv("APP_URL=https://example.com");
 
 		// Commentaire
-		$commentaire = new Commentaire("Bon travail", $this->user, 1615696276, 5);
+		$commentaire = new Commentaire("Bon travail", new User(username: "oteur", date_inscription: 0), 1615696276, 5);
 
 		$mockCommentaireDAO = Mockery::mock("progression\\dao\\CommentaireDAO");
 
@@ -44,10 +57,16 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 			->with("jdoe", "prog1/les_fonctions_01/appeler_une_fonction_paramétrée", 1614374490)
 			->andReturn($commentaire);
 
-		$mockCommentaireDAO->shouldReceive("save")->andReturn([$commentaire]);
+		// User
+		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
+		$mockUserDAO
+			->shouldReceive("get_user")
+			->with("jdoe", [])
+			->andReturn($this->user);
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_commentaire_dao")->andReturn($mockCommentaireDAO);
+		$mockDAOFactory->shouldReceive("get_user_dao")->andReturn($mockUserDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);
 	}
@@ -60,10 +79,19 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_le_username_dun_utilisateur_le_chemin_dune_question_et_le_timestamp_lorsquon_appelle_post_on_obtient_le_commentaire_avec_ses_relations_sous_forme_json()
 	{
+		$commentaire = new Commentaire("Bon travail", new User(username: "jdoe", date_inscription: 0), 1615696276, 5);
+		DAOFactory::getInstance()
+			->get_commentaire_dao()
+			->shouldReceive("save")
+			->andReturn([0 => $commentaire]);
+
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/commentaires",
-			["message" => "Bon travail", "créateur" => "oteur", "numéro_ligne" => 5],
+			[
+				"message" => "Bon travail",
+				"numéro_ligne" => 5,
+			],
 		);
 		$this->assertEquals(200, $résultat_obtenu->status());
 
@@ -78,11 +106,11 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/commentaires",
-			["créateur" => "oteur", "numéro_ligne" => 5],
+			["numéro_ligne" => 5],
 		);
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
-			'{"erreur":{"message":["Err: 1004. Le champ message est obligatoire."]}}',
+			'{"erreur":{"message":["Le champ message est obligatoire."]}}',
 			$résultat_obtenu->getContent(),
 		);
 	}
@@ -92,11 +120,78 @@ final class CommentaireCtlTests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/commentaires",
-			["message" => "Bon travail", "créateur" => "oteur", "numéro_ligne" => "numero non entier"],
+			[
+				"message" => "Bon travail",
+				"numéro_ligne" => "numero non entier",
+			],
 		);
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
-			'{"erreur":{"numéro_ligne":["Err: 1003. Le champ numéro ligne doit être un entier."]}}',
+			'{"erreur":{"numéro_ligne":["Le champ numéro ligne doit être un entier."]}}',
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_commentaire_incluant_un_créateur_lorsquon_l_ajoute_à_une_tentative_il_est_sauvegardé_et_on_obtient_le_commentaire()
+	{
+		$commentaire = new Commentaire("Bon travail", new User(username: "jdoe", date_inscription: 0), 1615696276, 5);
+
+		DAOFactory::getInstance()
+			->get_commentaire_dao()
+			->shouldReceive("save")
+			->andReturn([0 => $commentaire]);
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/commentaires",
+			[
+				"message" => "Bon travail",
+				"créateur" => "jdoe",
+				"numéro_ligne" => "3",
+			],
+		);
+		$this->assertEquals(200, $résultat_obtenu->status());
+
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/commentaireCtlTest_1.json",
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_donné_un_commentaire_d_un_autre_créateur_lorsquon_l_ajoute_à_une_tentative_on_obtient_une_erreur_403()
+	{
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/commentaires",
+			[
+				"message" => "Bon travail",
+				"créateur" => "bob",
+				"numéro_ligne" => "3",
+			],
+		);
+		$this->assertEquals(403, $résultat_obtenu->status());
+	}
+
+	public function test_étant_donné_un_commentaire_d_un_autre_créateur_lorsquun_admin_l_ajoute_à_une_tentative_il_est_sauvegardé_et_on_obtient_le_commentaire()
+	{
+		$commentaire = new Commentaire("Bon travail", new User(username: "jdoe", date_inscription: 0), 1615696276, 5);
+
+		DAOFactory::getInstance()
+			->get_commentaire_dao()
+			->shouldReceive("save")
+			->andReturn([0 => $commentaire]);
+		$résultat_obtenu = $this->actingAs($this->admin)->call(
+			"POST",
+			"/tentative/jdoe/cHJvZzEvbGVzX2ZvbmN0aW9uc18wMS9hcHBlbGVyX3VuZV9mb25jdGlvbl9wYXJhbcOpdHLDqWU/1614374490/commentaires",
+			[
+				"message" => "Bon travail",
+				"créateur" => "jdoe",
+				"numéro_ligne" => "3",
+			],
+		);
+		$this->assertEquals(200, $résultat_obtenu->status());
+
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/commentaireCtlTest_1.json",
 			$résultat_obtenu->getContent(),
 		);
 	}

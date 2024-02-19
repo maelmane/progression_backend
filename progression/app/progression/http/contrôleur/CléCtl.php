@@ -21,9 +21,10 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use progression\domaine\entité\Clé;
+
 use progression\domaine\interacteur\{ObtenirCléInt, GénérerCléAuthentificationInt};
 use progression\http\transformer\CléTransformer;
+use progression\http\transformer\dto\GénériqueDTO;
 
 class CléCtl extends Contrôleur
 {
@@ -33,6 +34,7 @@ class CléCtl extends Contrôleur
 
 		$nom_décodé = urldecode($nom);
 
+		$réponse = null;
 		$clé = $this->obtenir_clé($username, $nom_décodé);
 		$réponse = $this->valider_et_préparer_réponse($clé, $username, $nom_décodé);
 
@@ -46,17 +48,42 @@ class CléCtl extends Contrôleur
 
 		$validateur = $this->valider_paramètres($request);
 
+		$réponse = null;
 		if ($validateur->fails()) {
 			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} else {
 			$cléInt = new GénérerCléAuthentificationInt();
 			$clé = $cléInt->générer_clé($username, $request->nom, $request->expiration ?? 0);
-
-			$réponse = $this->valider_et_préparer_réponse($clé, $username, $request->nom);
+			if ($clé) {
+				$id = array_key_first($clé);
+				$réponse = $this->valider_et_préparer_réponse($clé[$id], $username, $id);
+				$réponse->cookie(
+					$this->créerCookieSécure(
+						nom: "authKey_secret",
+						valeur: $clé[$id]->secret,
+						âge_max: intval(getenv("AUTHKEY_TTL") ?: 2592000),
+					),
+				);
+			} else {
+				$réponse = $this->préparer_réponse(null);
+			}
 		}
 
 		Log::debug("CléCtl.post. Retour : ", [$réponse]);
 		return $réponse;
+	}
+
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $username, string $id): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+
+		return [
+			"self" => "{$urlBase}/cle/{$username}/{$id}",
+			"user" => "{$urlBase}/user/{$username}",
+		];
 	}
 
 	private function obtenir_clé($username, $nom)
@@ -75,8 +102,8 @@ class CléCtl extends Contrôleur
 		Log::debug("CléCtl.obtenir_clé. Params : ", [$clé, $username, $nom]);
 
 		if ($clé) {
-			$clé->id = $nom;
-			$réponse_array = $this->item($clé, new CléTransformer($username));
+			$dto = new GénériqueDTO(id: "$username/$nom", objet: $clé, liens: CléCtl::get_liens($username, $nom));
+			$réponse_array = $this->item($dto, new CléTransformer());
 		} else {
 			$réponse_array = null;
 		}
@@ -99,16 +126,16 @@ class CléCtl extends Contrôleur
 					"integer",
 					function ($attribute, $value, $fail) {
 						if ($value > 0 && $value < time()) {
-							$fail("Err: 1003. Expiration ne peut être dans le passé.");
+							$fail("Expiration ne peut être dans le passé.");
 						}
 					},
 				],
 			],
 			[
-				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
-				"nom.alpha_dash" => "Err: 1003. Le champ key_name doit être alphanumérique \'a-Z0-9-_\'",
-				"expiration.numeric" => "Err: 1003. Expiration doit être un nombre.",
-				"expiration.integer" => "Err: 1003. Expiration doit être un entier.",
+				"required" => "Le champ :attribute est obligatoire.",
+				"nom.alpha_dash" => "Le champ key_name doit être alphanumérique \'a-Z0-9-_\'",
+				"expiration.numeric" => "Expiration doit être un nombre.",
+				"expiration.integer" => "Expiration doit être un entier.",
 			],
 		);
 

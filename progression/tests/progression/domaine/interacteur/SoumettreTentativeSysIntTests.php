@@ -18,7 +18,9 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Question, QuestionSys, Résultat, TentativeSys, TestSys, User};
+use progression\domaine\entité\question\{Question, QuestionSys};
+use progression\domaine\entité\{Résultat, TentativeSys, TestSys};
+use progression\domaine\entité\user\User;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -29,9 +31,6 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	protected static $question_de_test;
 	protected static $question_réponse_courte;
 	protected static $question_réponse_courte_avec_regex;
-	protected static $tentative_correcte;
-	protected static $tentative_incorrecte;
-	protected static $tentative_soumise_sans_conteneur;
 
 	public function setUp(): void
 	{
@@ -39,62 +38,71 @@ final class SoumettreTentativeSysIntTests extends TestCase
 
 		//Mock User
 		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
-		$mockUserDao
-			->allows()
-			->get_user("jdoe")
-			->andReturn(new User("jdoe"));
-
-		//Tentatives avec conteneur
-		self::$tentative_correcte = new TentativeSys(["id" => "Conteneur de test correct"], null, 1615696286);
-		self::$tentative_incorrecte = new TentativeSys(["id" => "Conteneur de test incorrect"], null, 1615696286);
-
-		//Tentative sans conteneur
-		self::$tentative_soumise_sans_conteneur = new TentativeSys(["id" => null], "", 1615696287);
+		$mockUserDao->allows()->get_user("jdoe")->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// Mock exécuteur
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->withArgs(function ($question, $tentative) {
-				return $question == self::$question_de_test && $tentative == self::$tentative_correcte;
-			})
+			->with(
+				Mockery::Any(),
+				Mockery::Any(),
+				"Conteneur de test correct",
+				Mockery::Any(),
+				Mockery::Any(),
+				Mockery::Any(),
+				Mockery::Any(),
+			)
 			->andReturn([
-				"temps_exec" => 0.5,
-				"résultats" => [["output" => "Correcte", "time" => 0.1]],
-				"conteneur" => ["id" => "Conteneur de test correct", "ip" => "172.45.2.2", "port" => 45667],
+				"temps_exécution" => 0.5,
+				"résultats" => [["output" => "Correcte", "time" => 0.1, "code" => 0]],
+				"conteneur_id" => "Conteneur de test correct",
+				"url_terminal" => "https://tty.com/abcde",
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->withArgs(function ($question, $tentative) {
-				return $question == self::$question_de_test && $tentative == self::$tentative_incorrecte;
-			})
+			->with(
+				Mockery::Any(),
+				Mockery::Any(),
+				"Conteneur de test incorrect",
+				Mockery::Any(),
+				Mockery::Any(),
+				Mockery::Any(),
+				Mockery::Any(),
+			)
 			->andReturn([
-				"temps_exec" => 0.5,
-				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
-				"conteneur" => ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+				"temps_exécution" => 0.5,
+				"résultats" => [["output" => "Incorrecte", "time" => 0.1, "code" => 1]],
+				"conteneur_id" => "Conteneur de test incorrect",
+				"url_terminal" => "https://tty.com/abcde",
 			]);
 
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->withArgs(function ($question, $tentative) {
-				return $question == self::$question_réponse_courte ||
-					$question == self::$question_réponse_courte_avec_regex;
-			})
+			->with(
+				Mockery::Any(),
+				Mockery::Any(),
+				"Conteneur de test incorrect réponse courte",
+				Mockery::Any(),
+				Mockery::Any(),
+				Mockery::Any(),
+				Mockery::Any(),
+			)
 			->andReturn([
-				"temps_exec" => 0.5,
-				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
-				"conteneur" => ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+				"temps_exécution" => 0.5,
+				"résultats" => [["output" => "Incorrecte", "time" => 0.1, "code" => 1]],
+				"conteneur_id" => "Conteneur de test incorrect réponse courte",
+				"url_terminal" => "https://tty.com/abcde",
 			]);
 
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->withArgs(function ($question, $tentative) {
-				return $question == self::$question_de_test && !$tentative->conteneur["id"];
-			})
+			->with(Mockery::Any(), Mockery::Any(), null, Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any())
 			->andReturn([
-				"temps_exec" => 0.5,
-				"résultats" => [["output" => "Incorrecte", "time" => 0.1]],
-				"conteneur" => ["id" => "Nouveau Conteneur", "ip" => "172.45.2.2", "port" => 45667],
+				"temps_exécution" => 0.5,
+				"résultats" => [["output" => "Incorrecte", "time" => 0.1, "code" => 1]],
+				"conteneur_id" => "Nouveau Conteneur",
+				"url_terminal" => "https://tty.com/abcde",
 			]);
 
 		// Mock DAOFactory
@@ -147,21 +155,31 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	public function test_étant_donné_une_questionsys_avec_des_tests_lorsquon_soumet_une_tentative_correcte_on_obtient_une_tentative_réussie_avec_temps_dexécution_et_ses_résultats()
 	{
 		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Conteneur de test correct", "ip" => "172.45.2.2", "port" => 45667],
+			conteneur_id: "Conteneur de test correct",
+			url_terminal: "https://tty.com/abcde",
 			date_soumission: 1615696286,
 			réussi: true,
 			tests_réussis: 1,
 			temps_exécution: 500,
 			feedback: "feedbackGénéralPositif",
-			résultats: [new Résultat("Correcte", null, true, "feedbackPositif", 100)],
+			résultats: [
+				new Résultat(
+					sortie_observée: "Correcte",
+					sortie_erreur: "",
+					résultat: true,
+					feedback: "feedbackPositif",
+					temps_exécution: 100,
+					code_retour: 0,
+				),
+			],
 		);
 
 		$interacteur = new SoumettreTentativeSysInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
 			self::$question_de_test,
+			new TentativeSys(conteneur_id: "Conteneur de test correct", réponse: null, date_soumission: 1615696286),
 			self::$question_de_test->tests,
-			new TentativeSys(["id" => "Conteneur de test correct"], null, 1615696286),
+			null,
 		);
 
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);
@@ -170,21 +188,31 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	public function test_étant_donné_une_questionsys_avec_des_tests_lorsquon_soumet_une_tentative_on_obtient_une_tentative_non_réussie_avec_temps_dexécution_et_ses_résultats()
 	{
 		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+			conteneur_id: "Conteneur de test incorrect",
+			url_terminal: "https://tty.com/abcde",
 			date_soumission: 1615696286,
 			réussi: false,
 			tests_réussis: 0,
 			temps_exécution: 500,
 			feedback: "feedbackGénéralNégatif",
-			résultats: [new Résultat("Incorrecte", "", false, "feedbackNégatif", 100)],
+			résultats: [
+				new Résultat(
+					sortie_observée: "Incorrecte",
+					sortie_erreur: "",
+					résultat: false,
+					feedback: "feedbackNégatif",
+					temps_exécution: 100,
+					code_retour: 1,
+				),
+			],
 		);
 
 		$interacteur = new SoumettreTentativeSysInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
 			self::$question_de_test,
+			new TentativeSys(conteneur_id: "Conteneur de test incorrect", réponse: null, date_soumission: 1615696286),
 			self::$question_de_test->tests,
-			new TentativeSys(["id" => "Conteneur de test incorrect"], null, 1615696286),
+			null,
 		);
 
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);
@@ -193,7 +221,8 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	public function test_étant_donné_une_questionsys_avec_solution_courte_lorsquon_soumet_une_réponse_correcte_on_obtient_une_tentative_réussie()
 	{
 		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+			conteneur_id: "Conteneur de test incorrect réponse courte",
+			url_terminal: "https://tty.com/abcde",
 			réponse: "Bonne réponse",
 			date_soumission: 1615696286,
 			réussi: true,
@@ -205,10 +234,14 @@ final class SoumettreTentativeSysIntTests extends TestCase
 
 		$interacteur = new SoumettreTentativeSysInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
 			self::$question_réponse_courte,
+			new TentativeSys(
+				conteneur_id: "Conteneur de test incorrect réponse courte",
+				réponse: "Bonne réponse",
+				date_soumission: 1615696286,
+			),
+			[],
 			null,
-			new TentativeSys(["id" => "Conteneur de test incorrect"], "Bonne réponse", 1615696286),
 		);
 
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);
@@ -217,7 +250,8 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	public function test_étant_donné_une_questionsys_avec_solution_courte_lorsquon_soumet_une_réponse_incorrecte_on_obtient_une_tentative_non_réussie()
 	{
 		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+			conteneur_id: "Conteneur de test incorrect",
+			url_terminal: "https://tty.com/abcde",
 
 			réponse: "Mauvaise réponse",
 			date_soumission: 1615696286,
@@ -230,10 +264,14 @@ final class SoumettreTentativeSysIntTests extends TestCase
 
 		$interacteur = new SoumettreTentativeSysInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
 			self::$question_réponse_courte,
+			new TentativeSys(
+				conteneur_id: "Conteneur de test incorrect",
+				réponse: "Mauvaise réponse",
+				date_soumission: 1615696286,
+			),
+			[],
 			null,
-			new TentativeSys(["id" => "Conteneur de test incorrect"], "Mauvaise réponse", 1615696286),
 		);
 
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);
@@ -242,7 +280,8 @@ final class SoumettreTentativeSysIntTests extends TestCase
 	public function test_étant_donné_une_questionsys_avec_une_regex_comme_solution_courte_lorsquon_soumet_une_réponse_correcte_on_obtient_une_tentative_réussie()
 	{
 		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Conteneur de test incorrect", "ip" => "172.45.2.2", "port" => 45667],
+			conteneur_id: "Conteneur de test incorrect",
+			url_terminal: "https://tty.com/abcde",
 			réponse: "Bonne réponse",
 			date_soumission: 1615696286,
 			réussi: true,
@@ -254,10 +293,14 @@ final class SoumettreTentativeSysIntTests extends TestCase
 
 		$interacteur = new SoumettreTentativeSysInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
 			self::$question_réponse_courte_avec_regex,
+			new TentativeSys(
+				conteneur_id: "Conteneur de test incorrect",
+				réponse: "Bonne réponse",
+				date_soumission: 1615696286,
+			),
+			[],
 			null,
-			new TentativeSys(["id" => "Conteneur de test incorrect"], "Bonne réponse", 1615696286),
 		);
 
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);
@@ -265,23 +308,40 @@ final class SoumettreTentativeSysIntTests extends TestCase
 
 	public function test_étant_donné_une_questionsys_et_une_tentativesys_sans_conteneur_lorsqu_on_appelle_soumettre_tentative_avec_des_tests_on_obtient_un_objet_tentative_comportant_les_tests_réussis_et_les_résultats_et_lid_du_conteneur()
 	{
+		//Tentative sans conteneur
+		$tentative_soumise_sans_conteneur = new TentativeSys(
+			conteneur_id: "",
+			url_terminal: "https://tty.com/abcde",
+			réponse: "",
+			date_soumission: 1615696287,
+		);
+
 		$tentative_attendue = new TentativeSys(
-			conteneur: ["id" => "Nouveau Conteneur", "ip" => "172.45.2.2", "port" => 45667],
+			conteneur_id: "Nouveau Conteneur",
+			url_terminal: "https://tty.com/abcde",
 			réponse: "",
 			date_soumission: 1615696287,
 			réussi: false,
 			tests_réussis: 0,
 			temps_exécution: 500,
 			feedback: "feedbackGénéralNégatif",
-			résultats: [new Résultat("Incorrecte", "", false, "feedbackNégatif", 100)],
+			résultats: [
+				new Résultat(
+					sortie_observée: "Incorrecte",
+					sortie_erreur: "",
+					résultat: false,
+					feedback: "feedbackNégatif",
+					temps_exécution: 100,
+					code_retour: 1,
+				),
+			],
 		);
 
 		$interacteur = new SoumettreTentativeSysInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
 			self::$question_de_test,
+			$tentative_soumise_sans_conteneur,
 			self::$question_de_test->tests,
-			self::$tentative_soumise_sans_conteneur,
 		);
 
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);

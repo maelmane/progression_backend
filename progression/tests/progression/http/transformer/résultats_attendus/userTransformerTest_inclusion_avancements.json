@@ -1,0 +1,44 @@
+[
+  {
+    "id": "bob/0",
+    "objet": {
+      "date_modification": null,
+      "date_réussite": null,
+      "état": "début",
+      "extra": "",
+      "niveau": "",
+      "sauvegardes": [],
+      "tentatives": [],
+      "titre": "test 1"
+    },
+    "liens": {
+      "question": "https://example.com/question/0",
+      "self": "https://example.com/avancement/bob/0",
+      "soumettre": "https://example.com/avancement/bob/0/tentatives",
+      "user": "https://example.com/user/bob"
+    },
+    "sauvegardes": [],
+    "tentatives": []
+  },
+  {
+    "id": "bob/1",
+    "objet": {
+      "date_modification": null,
+      "date_réussite": null,
+      "état": "début",
+      "extra": "",
+      "niveau": "",
+      "sauvegardes": [],
+      "tentatives": [],
+      "titre": "test 2"
+    },
+    "liens": {
+      "question": "https://example.com/question/1",
+      "self": "https://example.com/avancement/bob/1",
+      "soumettre": "https://example.com/avancement/bob/1/tentatives",
+      "user": "https://example.com/user/bob"
+    },
+    "sauvegardes": [],
+    "tentatives": []
+  }
+]

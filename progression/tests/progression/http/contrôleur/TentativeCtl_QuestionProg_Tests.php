@@ -20,19 +20,13 @@ use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
 use progression\dao\exécuteur\ExécutionException;
-use progression\domaine\entité\{
-	Avancement,
-	TestProg,
-	Exécutable,
-	Question,
-	TentativeProg,
-	Commentaire,
-	QuestionProg,
-	Résultat,
-	User,
-};
+use progression\domaine\entité\question\{Question, QuestionProg};
+use progression\domaine\entité\{Avancement, TestProg, Exécutable, TentativeProg, Commentaire, Résultat};
+use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\question\ChargeurException;
-use Illuminate\Auth\GenericUser;
+
+use progression\UserAuthentifiable;
+use Carbon\Carbon;
 
 final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 {
@@ -46,10 +40,17 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$_ENV["AUTH_TYPE"] = "no";
-		$_ENV["APP_URL"] = "https://example.com/";
+		Carbon::setTestNow(Carbon::create(2022, 05, 27, 22, 24, 01));
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		putenv("AUTH_TYPE=no");
+		putenv("APP_URL=https://example.com");
+
+		$this->user = new UserAuthentifiable(
+			username: "jdoe",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
 
 		// QuestionProg
 		//aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU
@@ -66,8 +67,26 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			],
 			// TestsProg
 			tests: [
-				new TestProg("1 salutations", "Bonjour\n", "1", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
-				new TestProg("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
+				new TestProg(
+					nom: "1 salutation",
+					sortie_attendue: "Bonjour\n",
+					entrée: "1",
+					params: "",
+					feedback_pos: "C'est ça!",
+					feedback_neg: "C'est pas ça :(",
+					feedback_err: "arrrg!",
+					caché: false,
+				),
+				new TestProg(
+					nom: "2 salutations",
+					sortie_attendue: "Bonjour\nBonjour\n",
+					entrée: "2",
+					params: "",
+					feedback_pos: "C'est ça!",
+					feedback_neg: "C'est pas ça :(",
+					feedback_err: "arrrg!",
+					caché: true,
+				),
 			],
 		);
 
@@ -83,11 +102,30 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				"réussi" => new Exécutable("#+TODO\nprint(\"Hello world!\")", "réussi"),
 				"non_réussi" => new Exécutable("//+TODO\nSystem.out.println(\"Hello world!\")", "non_réussi"),
 				"erreur" => new Exécutable("//+TODO\nSystem.out.println(\"Hello world!\")", "erreur"),
+				"pas d'exécuteur" => new Exécutable("//+TODO\nSystem.out.println(\"Hello world!\")", "erreur"),
 			],
 			// TestsProg
 			tests: [
-				new TestProg("1 salutation", "Bonjour\n", "1", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
-				new TestProg("2 salutations", "Bonjour\nBonjour\n", "2", "", "C'est ça!", "C'est pas ça :(", "arrrg!"),
+				new TestProg(
+					nom: "1 salutation",
+					sortie_attendue: "Bonjour\n",
+					entrée: "1",
+					params: "",
+					feedback_pos: "C'est ça!",
+					feedback_neg: "C'est pas ça :(",
+					feedback_err: "arrrg!",
+					caché: false,
+				),
+				new TestProg(
+					nom: "2 salutations",
+					sortie_attendue: "Bonjour\nBonjour\n",
+					entrée: "2",
+					params: "",
+					feedback_pos: "C'est ça!",
+					feedback_neg: "C'est pas ça :(",
+					feedback_err: "arrrg!",
+					caché: true,
+				),
 			],
 		);
 
@@ -104,10 +142,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			->shouldReceive("get_question")
 			->with("https://depot.com/nouvelle_question")
 			->andReturn($question_réussie);
-		$mockQuestionDAO
-			->shouldReceive("get_question")
-			->with(Mockery::Any())
-			->andThrow(new ChargeurException("Impossible de récupérer la question"));
+		$mockQuestionDAO->shouldReceive("get_question")->with(Mockery::Any())->andReturn(null);
 
 		// Tentative
 		// Tentative réussie
@@ -124,16 +159,18 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			commentaires: [],
 		);
 
-		$this->tentative_réussie_avec_résultats_et_commentaires = new TentativeProg(
+		$this->tentative_réussie_avec_commentaires = new TentativeProg(
 			langage: "réussi",
 			code: "codeTest",
 			date_soumission: "1614374490",
 			réussi: true,
-			résultats: [new Résultat("ok", "", true)],
+			résultats: [],
 			tests_réussis: 2,
 			feedback: "feedbackTest",
 			temps_exécution: 5,
-			commentaires: [new Commentaire("message", new User("créateur"), 1614374490, 42)],
+			commentaires: [
+				new Commentaire("message", new User(username: "créateur", date_inscription: 0), 1614374490, 42),
+			],
 		);
 
 		// Tentative non réussie
@@ -148,25 +185,28 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			temps_exécution: 5,
 		);
 
-		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeDAO");
+		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeProgDAO");
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
 			->with("jdoe", "https://depot.com/question_réussie", "1614374490", [])
 			->andReturn($this->tentative_réussie);
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
-			->with("jdoe", "https://depot.com/question_réussie", "1614374490", ["resultats", "commentaires"])
-			->andReturn($this->tentative_réussie_avec_résultats_et_commentaires);
+			->with("jdoe", "https://depot.com/question_réussie", "1614374490", ["commentaires"])
+			->andReturn($this->tentative_réussie_avec_commentaires);
 		$mockTentativeDAO
 			->shouldReceive("get_tentative")
 			->with("jdoe", "https://depot.com/question_non_réussie", "1614374490", [])
 			->andReturn($this->tentative_non_réussie);
 		$mockTentativeDAO->shouldReceive("get_tentative")->andReturn(null);
 
-		//$mockTentativeDAO->shouldReceive("save")->andReturnArg(2);
-
 		// Commentaire
-		$commentaire = new Commentaire(99, "le 99iem message", "mock", 1615696276, 14);
+		$commentaire = new Commentaire(
+			"le 99iem message",
+			new User(username: "créateur", date_inscription: 0),
+			1615696276,
+			14,
+		);
 		$mockCommentaireDAO = Mockery::mock("progression\\dao\\CommentaireDAO");
 		$mockCommentaireDAO
 			->shouldReceive("get_commentaires_par_tentative")
@@ -181,10 +221,18 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				return $exec->lang == "réussi" && count($test) == 2;
 			})
 			->andReturn([
-				"temps_exec" => 0.551,
+				"temps_exécution" => 0.551,
 				"résultats" => [
-					["output" => "Bonjour\n", "errors" => "", "time" => 0.03],
-					["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03],
+					"bebe123" => [
+						"output" => "Bonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
+					"cafe456" => [
+						"output" => "Bonjour\nBonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
 				],
 			]);
 		$mockExécuteur
@@ -193,8 +241,14 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				return $exec->lang == "réussi" && count($test) == 1;
 			})
 			->andReturn([
-				"temps_exec" => 0.551,
-				"résultats" => [["output" => "Bonjour\nBonjour\n", "errors" => "", "time" => 0.03]],
+				"temps_exécution" => 0.551,
+				"résultats" => [
+					"bebe456" => [
+						"output" => "Bonjour\nBonjour\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
+				],
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_prog")
@@ -202,10 +256,18 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				return $exec->lang == "non_réussi" && count($test) == 2;
 			})
 			->andReturn([
-				"temps_exec" => 0.44,
+				"temps_exécution" => 0.44,
 				"résultats" => [
-					["output" => "Allo\n", "errors" => "", "time" => 0.03],
-					["output" => "Allo\nAllo\n", "errors" => "", "time" => 0.03],
+					"bebe123" => [
+						"output" => "Allo\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
+					"cafe456" => [
+						"output" => "Allo\nAllo\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
 				],
 			]);
 		$mockExécuteur
@@ -214,15 +276,41 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				return $exec->lang == "non_réussi" && count($test) == 1;
 			})
 			->andReturn([
-				"temps_exec" => 0.44,
-				"résultats" => [["output" => "Allo\nAllo\n", "errors" => "", "time" => 0.03]],
+				"temps_exécution" => 0.44,
+				"résultats" => [
+					"cafe123" => [
+						"output" => "Allo\nAllo\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
+				],
 			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_prog")
 			->withArgs(function ($exec, $test) {
-				return $exec->lang == "erreur";
+				return $exec->lang == "erreur" && count($test) == 2;
 			})
-			->andThrow(new ExécutionException("Erreur test://TentativeCtlTests.php", 503));
+			->andReturn([
+				"temps_exécution" => 0.44,
+				"résultats" => [
+					"bebe123" => [
+						"output" => "Allo\n",
+						"errors" => "",
+						"time" => 0.03,
+					],
+					"cafe456" => [
+						"output" => "",
+						"errors" => "Erreur!",
+						"time" => 0.03,
+					],
+				],
+			]);
+		$mockExécuteur
+			->shouldReceive("exécuter_prog")
+			->withArgs(function ($exec, $test) {
+				return $exec->lang == "pas d'exécuteur";
+			})
+			->andThrow(new ExécutionException("Exécuteur non disponible.", 503));
 
 		//Avancement
 
@@ -256,14 +344,14 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 		// User
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
-		$mockUserDAO
-			->allows("get_user")
-			->with("jdoe")
-			->andReturn(new User("jdoe"));
+		$mockUserDAO->allows("get_user")->with("jdoe")->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
 		$mockDAOFactory->shouldReceive("get_tentative_dao")->andReturn($mockTentativeDAO);
+		$mockDAOFactory
+			->shouldReceive("get_tentative_prog_dao")
+			->andReturn(Mockery::mock("progression\\dao\\tentative\\TentativeProgDAO"));
 		$mockDAOFactory->shouldReceive("get_commentaire_dao")->andReturn($mockCommentaireDAO);
 		$mockDAOFactory->shouldReceive("get_avancement_dao")->andReturn($mockAvancementDAO);
 		$mockDAOFactory->shouldReceive("get_question_dao")->andReturn($mockQuestionDAO);
@@ -293,16 +381,16 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_donné_une_tentative_existante_lorsquon_appelle_get_en_incluant_les_résultats_et_commentaires_on_obtient_la_TentativeProg_et_ses_résultats_et_commentaires_sous_forme_json()
+	public function test_étant_donné_une_tentative_existante_lorsquon_appelle_get_en_incluant_les_commentaires_on_obtient_la_TentativeProg_et_ses_commentaires_sous_forme_json()
 	{
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
-			"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490?include=resultats,commentaires",
+			"/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490?include=commentaires",
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_réussie_avec_résultats_et_commentaires.json",
+			__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_réussie_avec_commentaires.json",
 			$résultat_obtenu->getContent(),
 		);
 	}
@@ -328,8 +416,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			tests_réussis: 2,
 			temps_exécution: 551,
 			résultats: [
-				new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
-				new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
+				"bebe123" => new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
+				"cafe456" => new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
 			],
 			feedback: "Bon travail!",
 		);
@@ -338,20 +426,22 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			titre: "Question réussie",
 			niveau: "Débutant",
 		);
-		$nouvel_avancement->etat = 2;
-		$nouvel_avancement->date_modification = 1653690241;
-		$nouvel_avancement->date_réussite = 1653690241;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
-				return $user == "jdoe" && $uri == "https://depot.com/nouvelle_question" && $av == $nouvel_avancement;
+			->withArgs(function ($user, $uri, $type, $av) use ($nouvel_avancement) {
+				return $user == "jdoe" &&
+					$uri == "https://depot.com/nouvelle_question" &&
+					$type == "prog" &&
+					$av == $nouvel_avancement;
 			})
-			->andReturn($nouvel_avancement);
+			->andReturn([
+				"https://depot.com/nouvelle_question" => $nouvel_avancement,
+			]);
 
-		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
+		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_prog_dao();
 		$mockTentativeDAO
 			->shouldReceive("save")
 			->once()
@@ -362,12 +452,15 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				$t->date_soumission = $nouvelle_tentative->date_soumission;
 				return $user == "jdoe" && $uri == "https://depot.com/nouvelle_question" && $t == $nouvelle_tentative;
 			})
-			->andReturn($nouvelle_tentative);
+			->andReturn([1653690241 => $nouvelle_tentative]);
 
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/tentatives?include=resultats",
-			["langage" => "réussi", "code" => "#+TODO\nprint(\"Hello world!\")"],
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -387,8 +480,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			tests_réussis: 2,
 			temps_exécution: 551,
 			résultats: [
-				new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
-				new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
+				"bebe123" => new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
+				"cafe456" => new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
 			],
 			feedback: "Bon travail!",
 		);
@@ -397,20 +490,22 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			titre: "Question réussie",
 			niveau: "Débutant",
 		);
-		$nouvel_avancement->etat = 2;
-		$nouvel_avancement->date_modification = 1653690241;
-		$nouvel_avancement->date_réussite = 1614374490;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
-				return $user == "jdoe" && $uri == "https://depot.com/question_réussie" && $av == $nouvel_avancement;
+			->withArgs(function ($user, $uri, $type, $av) use ($nouvel_avancement) {
+				return $user == "jdoe" &&
+					$uri == "https://depot.com/question_réussie" &&
+					$type == "prog" &&
+					$av == $nouvel_avancement;
 			})
-			->andReturn($nouvel_avancement);
+			->andReturn([
+				"https://depot.com/question_réussie" => $nouvel_avancement,
+			]);
 
-		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
+		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_prog_dao();
 		$mockTentativeDAO
 			->shouldReceive("save")
 			->once()
@@ -421,12 +516,15 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				$t->date_soumission = $nouvelle_tentative->date_soumission;
 				return $user == "jdoe" && $uri == "https://depot.com/question_réussie" && $t == $nouvelle_tentative;
 			})
-			->andReturn($nouvelle_tentative);
+			->andReturn([1653690241 => $nouvelle_tentative]);
 
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives?include=resultats",
-			["langage" => "réussi", "code" => "#+TODO\nprint(\"Hello world!\")"],
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -446,8 +544,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			tests_réussis: 2,
 			temps_exécution: 551,
 			résultats: [
-				new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
-				new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
+				"bebe123" => new Résultat("Bonjour\n", "", true, "C'est ça!", 30),
+				"cafe456" => new Résultat("Bonjour\nBonjour\n", "", true, "C'est ça!", 30),
 			],
 			feedback: "Bon travail!",
 		);
@@ -457,19 +555,21 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			titre: "Question non réussie",
 			niveau: "Débutant",
 		);
-		$nouvel_avancement->etat = 2;
-		$nouvel_avancement->date_modification = 1653690241;
-		$nouvel_avancement->date_réussite = 1653690241;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
 			->shouldReceive("save")
-			->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
-				return $user == "jdoe" && $uri == "https://depot.com/question_non_réussie" && $av == $nouvel_avancement;
+			->withArgs(function ($user, $uri, $type, $av) use ($nouvel_avancement) {
+				return $user == "jdoe" &&
+					$uri == "https://depot.com/question_non_réussie" &&
+					$type == "prog" &&
+					$av == $nouvel_avancement;
 			})
-			->andReturn($nouvel_avancement);
+			->andReturn([
+				"https://depot.com/question_non_réussie" => $nouvel_avancement,
+			]);
 
-		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
+		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_prog_dao();
 		$mockTentativeDAO
 			->shouldReceive("save")
 			->withArgs(function ($user, $uri, $t) use ($nouvelle_tentative) {
@@ -479,12 +579,15 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				$t->date_soumission = $nouvelle_tentative->date_soumission;
 				return $user == "jdoe" && $uri == "https://depot.com/question_non_réussie" && $t == $nouvelle_tentative;
 			})
-			->andReturn($nouvelle_tentative);
+			->andReturn([1653690241 => $nouvelle_tentative]);
 
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives?include=resultats",
-			["langage" => "réussi", "code" => "#+TODO\nprint(\"Hello world!\")"],
+			[
+				"langage" => "réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
@@ -504,8 +607,8 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			tests_réussis: 0,
 			temps_exécution: 440,
 			résultats: [
-				new Résultat("Allo\n", "", false, "C'est pas ça :(", 30),
-				new Résultat("Allo\nAllo\n", "", false, "C'est pas ça :(", 30),
+				"bebe123" => new Résultat("Allo\n", "", false, "C'est pas ça :(", 30),
+				"cafe456" => new Résultat("Allo\nAllo\n", "", false, "C'est pas ça :(", 30),
 			],
 			feedback: "Encore un effort!",
 		);
@@ -515,18 +618,21 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			titre: "Question non réussie",
 			niveau: "Débutant",
 		);
-		$nouvel_avancement->etat = 1;
-		$nouvel_avancement->date_modification = 1653690241;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
 			->shouldReceive("save")
-			->withArgs(function ($user, $uri, $av) use ($nouvel_avancement) {
-				return $user == "jdoe" && $uri == "https://depot.com/question_non_réussie" && $av == $nouvel_avancement;
+			->withArgs(function ($user, $uri, $type, $av) use ($nouvel_avancement) {
+				return $user == "jdoe" &&
+					$uri == "https://depot.com/question_non_réussie" &&
+					$type == "prog" &&
+					$av == $nouvel_avancement;
 			})
-			->andReturn($nouvel_avancement);
+			->andReturn([
+				"https://depot.com/question_non_réussie" => $nouvel_avancement,
+			]);
 
-		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
+		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_prog_dao();
 		$mockTentativeDAO
 			->shouldReceive("save")
 			->withArgs(function ($user, $uri, $t) use ($nouvelle_tentative) {
@@ -536,17 +642,83 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 				$t->date_soumission = $nouvelle_tentative->date_soumission;
 				return $user == "jdoe" && $uri == "https://depot.com/question_non_réussie" && $t == $nouvelle_tentative;
 			})
-			->andReturn($nouvelle_tentative);
+			->andReturn([1653690241 => $nouvelle_tentative]);
 
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives?include=resultats",
-			["langage" => "non_réussi", "code" => "#+TODO\nprint(\"Hello world!\")"],
+			[
+				"langage" => "non_réussi",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(200, $résultat_obtenu->status());
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_avancement_non_réussi_tentative_non_réussie.json",
+			$résultat_obtenu->getContent(),
+		);
+	}
+
+	public function test_étant_un_avancement_non_réussi_et_une_tentative_erronée_lorsquon_appelle_post_lavancement_et_la_tentative_sont_sauvegardés_et_on_obtient_la_TentativeProg_avec_erreurs()
+	{
+		$nouvelle_tentative = new TentativeProg(
+			langage: "erreur",
+			code: "#+TODO\nprint(\"Hello world!\")",
+			date_soumission: 1653690241,
+			réussi: false,
+			tests_réussis: 0,
+			temps_exécution: 440,
+			résultats: [
+				"bebe123" => new Résultat("Allo\n", "", false, "C'est pas ça :(", 30),
+				"cafe456" => new Résultat("", "Erreur!", false, "arrrg!", 30),
+			],
+			feedback: "oups!",
+		);
+
+		$nouvel_avancement = new Avancement(
+			tentatives: [$this->tentative_non_réussie, $nouvelle_tentative],
+			titre: "Question non réussie",
+			niveau: "Débutant",
+		);
+
+		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
+		$mockAvancementDAO
+			->shouldReceive("save")
+			->withArgs(function ($user, $uri, $type, $av) use ($nouvel_avancement) {
+				return $user == "jdoe" &&
+					$uri == "https://depot.com/question_non_réussie" &&
+					$type == "prog" &&
+					$av == $nouvel_avancement;
+			})
+			->andReturn([
+				"https://depot.com/question_non_réussie" => $nouvel_avancement,
+			]);
+
+		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_prog_dao();
+		$mockTentativeDAO
+			->shouldReceive("save")
+			->withArgs(function ($user, $uri, $t) use ($nouvelle_tentative) {
+				if ($t->date_soumission - time() > 1) {
+					throw "Temps d'exécution >1s {$t->date_soumission}";
+				}
+				$t->date_soumission = $nouvelle_tentative->date_soumission;
+				return $user == "jdoe" && $uri == "https://depot.com/question_non_réussie" && $t == $nouvelle_tentative;
+			})
+			->andReturn([1653690241 => $nouvelle_tentative]);
+
+		$résultat_obtenu = $this->actingAs($this->user)->call(
+			"POST",
+			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives?include=resultats",
+			[
+				"langage" => "erreur",
+				"code" => "#+TODO\nprint(\"Hello world!\")",
+			],
+		);
+
+		$this->assertEquals(200, $résultat_obtenu->status());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_avancement_non_réussi_tentative_erreur.json",
 			$résultat_obtenu->getContent(),
 		);
 	}
@@ -560,10 +732,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
-		$this->assertEquals(
-			'{"erreur":{"code":["Err: 1004. Le champ code est obligatoire."]}}',
-			$résultat_obtenu->getContent(),
-		);
+		$this->assertEquals('{"erreur":{"code":["Le champ code est obligatoire."]}}', $résultat_obtenu->getContent());
 	}
 
 	public function test_étant_donné_un_url_de_compilebox_inaccessible_lorsquon_appelle_post_on_obtient_Service_non_disponible()
@@ -571,11 +740,14 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives",
-			["langage" => "erreur", "code" => "#+TODO\nprint(\"on ne se rendra pas à exécuter ceci\")"],
+			[
+				"langage" => "pas d'exécuteur",
+				"code" => "#+TODO\nprint(\"on ne se rendra pas à exécuter ceci\")",
+			],
 		);
 
 		$this->assertEquals(503, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":"Service non disponible."}', $résultat_obtenu->getContent());
+		$this->assertEquals('{"erreur":"Exécuteur non disponible."}', $résultat_obtenu->getContent());
 	}
 
 	public function test_étant_donné_une_tentative_avec_un_code_sans_TODO_lorsquelle_est_soumise_on_obtient_Tentative_intraitable()
@@ -583,102 +755,14 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives",
-			["langage" => "réussi", "code" => "print(\"Hello world!\")"],
+			[
+				"langage" => "réussi",
+				"code" => "print(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals('{"erreur":"Tentative intraitable."}', $résultat_obtenu->getContent());
-	}
-
-	public function test_étant_donné_une_tentative_avec_un_test_unique_comportant_une_sortie_attendue_lorsquelle_est_soumise_lavancement_et_la_tentative_on_obtient_la_TentativeProg_réussie()
-	{
-		$résultat_obtenu = $this->actingAs($this->user)->call(
-			"POST",
-			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives?include=resultats",
-			[
-				"langage" => "réussi",
-				"code" => "#+TODO\nprint(\"Hello world!\")",
-				"test" => ["nom" => "Bonjour", "entrée" => "bonjour", "sortie_attendue" => "Bonjour\nBonjour\n"],
-			],
-		);
-
-		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
-		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertLessThanOrEqual(1, $heure_tentative - time());
-
-		$this->assertJsonStringEqualsJsonString(
-			sprintf(
-				file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_test_unique.json"),
-				$heure_tentative,
-			),
-			$résultat_obtenu->getContent(),
-		);
-	}
-
-	public function test_étant_donné_un_avancement_non_réussi_et_une_tentative_avec_un_test_unique_lorsquelle_est_soumise_lavancement_et_la_tentative_ne_sont_pas_sauvegardés_et_obtient_la_TentativeProg_réussie()
-	{
-		$résultat_obtenu = $this->actingAs($this->user)->call(
-			"POST",
-			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives?include=resultats",
-			[
-				"langage" => "réussi",
-				"code" => "#+TODO\nprint(\"Hello world!\")",
-				"test" => ["nom" => "Bonjour", "entrée" => "bonjour"],
-				"index" => 1,
-			],
-		);
-
-		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
-
-		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
-		$mockTentativeDAO->shouldNotReceive("save")->withAnyArgs();
-
-		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
-		$mockAvancementDAO->shouldNotReceive("save")->withAnyArgs();
-
-		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertLessThanOrEqual(1, $heure_tentative - time());
-
-		$this->assertJsonStringEqualsJsonString(
-			sprintf(
-				file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_test_unique_réussie.json"),
-				$heure_tentative,
-			),
-			$résultat_obtenu->getContent(),
-		);
-	}
-
-	public function test_étant_donné_un_avancement_non_réussi_et_une_tentative_avec_un_test_unique_lorsquelle_est_soumise_lavancement_et_la_tentative_ne_sont_pas_sauvegardés_et_obtient_la_TentativeProg_non_réussie()
-	{
-		$résultat_obtenu = $this->actingAs($this->user)->call(
-			"POST",
-			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives?include=resultats",
-			[
-				"langage" => "non_réussi",
-				"code" => "#+TODO\nprint(\"Hello world!\")",
-				"test" => ["nom" => "Bonjour", "entrée" => "bonjour"],
-				"index" => 1,
-			],
-		);
-
-		$heure_tentative = json_decode($résultat_obtenu->getContent())->data->attributes->date_soumission;
-
-		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
-		$mockTentativeDAO->shouldNotReceive("save")->withAnyArgs();
-
-		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
-		$mockAvancementDAO->shouldNotReceive("save")->withAnyArgs();
-
-		$this->assertEquals(200, $résultat_obtenu->status());
-		$this->assertLessThanOrEqual(1, $heure_tentative - time());
-
-		$this->assertJsonStringEqualsJsonString(
-			sprintf(
-				file_get_contents(__DIR__ . "/résultats_attendus/tentativeCtlTest_prog_test_unique_non_réussie.json"),
-				$heure_tentative,
-			),
-			$résultat_obtenu->getContent(),
-		);
 	}
 
 	public function test_étant_donné_une_tentative_avec_une_question_inexistante_lorsquelle_est_soumise_on_obtient_Tentative_intraitable()
@@ -689,7 +773,7 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		]);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
-		$this->assertEquals('{"erreur":"Impossible de récupérer la question"}', $résultat_obtenu->getContent());
+		$this->assertEquals('{"erreur":"Question inexistante."}', $résultat_obtenu->getContent());
 	}
 
 	public function test_étant_donné_une_tentative_avec_un_langage_inconnu_lorsquelle_est_soumise_on_obtient_Tentative_intraitable()
@@ -697,7 +781,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/tentatives",
-			["langage" => "inconnu", "code" => "print(\"Hello world!\")"],
+			[
+				"langage" => "inconnu",
+				"code" => "print(\"Hello world!\")",
+			],
 		);
 
 		$this->assertEquals(400, $résultat_obtenu->status());
@@ -706,10 +793,10 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 
 	public function test_étant_donné_une_tentative_ayant_du_code_dépassant_la_taille_maximale_de_caractères_on_obtient_une_erreur_400()
 	{
-		$_ENV["TAILLE_CODE_MAX"] = 23;
+		putenv("TAILLE_CODE_MAX=23");
 		$testCode = "#+TODO\n日本語でのテストです\n#-TODO"; //24 caractères UTF8
 
-		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
+		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_prog_dao();
 		$mockTentativeDAO->shouldNotReceive("save")->withAnyArgs();
 
 		$résultat_obtenu = $this->actingAs($this->user)->call(
@@ -721,9 +808,11 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 			],
 		);
 
+		putenv("TAILLE_CODE_MAX=1000");
+
 		$this->assertEquals(400, $résultat_obtenu->status());
 		$this->assertEquals(
-			'{"erreur":{"code":["Err: 1002. Le code soumis 24 > 23 caractères."]}}',
+			'{"erreur":{"code":["Le code soumis 24 > 23 caractères."]}}',
 			$résultat_obtenu->getContent(),
 		);
 	}
@@ -733,16 +822,25 @@ final class TentativeCtl_QuestionProg_Tests extends ContrôleurTestCase
 		$_ENV["TAILLE_CODE_MAX"] = 24;
 		$testCode = "#+TODO\n日本語でのテストです\n#-TODO"; //24 caractères UTF8
 
-		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_dao();
-		$mockTentativeDAO->shouldReceive("save")->andReturnArg(2);
+		$mockTentativeDAO = DAOFactory::getInstance()->get_tentative_prog_dao();
+		$mockTentativeDAO->shouldReceive("save")->andReturnUsing(function ($u, $uri, $t) {
+			return [$t->date_soumission => $t];
+		});
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
-		$mockAvancementDAO->shouldReceive("save")->andReturnArg(2);
+		$mockAvancementDAO->shouldReceive("save")->andReturnUsing(function ($u, $q, $type, $a) {
+			return [$q => $a];
+		});
 
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"POST",
 			"/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/tentatives",
-			["langage" => "réussi", "code" => "$testCode"],
+			[
+				"langage" => "réussi",
+				"code" => "$testCode",
+			],
 		);
+
+		$_ENV["TAILLE_CODE_MAX"] = 1000;
 
 		$this->assertEquals(200, $résultat_obtenu->status());
 	}

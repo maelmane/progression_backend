@@ -27,7 +27,9 @@ class ChargeurQuestionHTTP extends Chargeur
 		$entêtes = array_change_key_case($this->source->get_chargeur_http()->get_entêtes($uri));
 
 		$code = self::get_entête($entêtes, "0");
-		self::vérifier_code_http($code);
+		if (!self::vérifier_code_http($code)) {
+			return null;
+		}
 
 		$taille = self::get_entête($entêtes, "content-length");
 		self::vérifier_taille($taille);
@@ -69,16 +71,14 @@ class ChargeurQuestionHTTP extends Chargeur
 		throw new RuntimeException("L'entête $clé est de type " . gettype($content_type));
 	}
 
-	private function vérifier_code_http(string $code): void
+	private function vérifier_code_http(string $code): bool
 	{
-		if (explode(" ", $code)[1] == "404") {
-			throw new RuntimeException("Fichier introuvable.");
-		}
+		return explode(" ", $code)[1] == "200";
 	}
 
 	private function vérifier_taille($taille)
 	{
-		$taille_max = $_ENV["QUESTION_TAILLE_MAX"];
+		$taille_max = getenv("QUESTION_TAILLE_MAX");
 
 		if (!$taille) {
 			throw new ChargeurException("Fichier de taille inconnue. On ne le chargera pas.");

@@ -30,6 +30,6 @@ spl_autoload_register(function ($class_name) {
 	if (file_exists($class)) {
 		require $class;
 	} else {
-		throw new MissingException("Impossible de charger " . $class);
+		require_once __DIR__ . "/vendor/composer/autoload_real.php";
 	}
 });

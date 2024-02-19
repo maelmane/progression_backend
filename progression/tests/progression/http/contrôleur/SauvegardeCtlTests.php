@@ -19,8 +19,9 @@
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{Sauvegarde, User};
-use Illuminate\Auth\GenericUser;
+use progression\domaine\entité\{Sauvegarde};
+use progression\domaine\entité\user\{User, Rôle, État};
+use progression\UserAuthentifiable;
 
 final class SauvegardeCtlTests extends ContrôleurTestCase
 {
@@ -30,9 +31,14 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new UserAuthentifiable(
+			username: "jdoe",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		// Sauvegarde
 		$sauvegarde = new Sauvegarde(1620150294, "print(\"Hello world!\")");
@@ -48,14 +54,11 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_sauvegarde")
 			->with("jdoe", "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction", "java", [])
 			->andReturn(null);
-		$mockSauvegardeDAO->shouldReceive("save")->andReturn($sauvegarde);
+		$mockSauvegardeDAO->shouldReceive("save")->andReturn(["python" => $sauvegarde]);
 
 		// User
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
-		$mockUserDAO
-			->allows("get_user")
-			->with("jdoe", [])
-			->andReturn(new User("jdoe"));
+		$mockUserDAO->allows("get_user")->with("jdoe", [])->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -107,7 +110,7 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 
 		$this->assertEquals(400, $résultat_observé->status());
 		$this->assertEquals(
-			'{"erreur":{"langage":["Err: 1004. Le champ langage est obligatoire."]}}',
+			'{"erreur":{"langage":["Le champ langage est obligatoire."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
@@ -123,10 +126,7 @@ final class SauvegardeCtlTests extends ContrôleurTestCase
 		);
 
 		$this->assertEquals(400, $résultat_observé->status());
-		$this->assertEquals(
-			'{"erreur":{"code":["Err: 1004. Le champ code est obligatoire."]}}',
-			$résultat_observé->getContent(),
-		);
+		$this->assertEquals('{"erreur":{"code":["Le champ code est obligatoire."]}}', $résultat_observé->getContent());
 	}
 
 	public function test_étant_donné_un_username_luri_dune_question_un_code_et_un_langage_lorsquon_appelle_post_on_obtient_une_sauvegarde()

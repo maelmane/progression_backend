@@ -19,24 +19,24 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\TestProg;
+use progression\http\transformer\dto\GénériqueDTO;
 use PHPUnit\Framework\TestCase;
 
 final class TestProgTransformerTests extends TestCase
 {
 	public function test_étant_donné_un_test_instanciée_avec_des_valeurs_minimales_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		$test = new TestProg("Somme de deux nombres", "42");
-		$test->id = "0";
 
 		$résultat_attendu = [
-			"id" => "uri/0",
+			"id" => "jdoe/uri/0",
 			"nom" => "Somme de deux nombres",
 			"entrée" => "",
 			"params" => "",
 			"sortie_attendue" => "42",
-			"sortie_cachée" => false,
+			"caché" => false,
 			"links" => [
 				"question" => "https://example.com/question/uri",
 				"self" => "https://example.com/test/uri/0",
@@ -44,26 +44,34 @@ final class TestProgTransformerTests extends TestCase
 		];
 
 		$testTransformer = new TestProgTransformer("uri");
-		$résultat_obtenu = $testTransformer->transform($test);
+		$résultat_obtenu = $testTransformer->transform(
+			new GénériqueDTO(
+				id: "jdoe/uri/0",
+				objet: $test,
+				liens: [
+					"question" => "https://example.com/question/uri",
+					"self" => "https://example.com/test/uri/0",
+				],
+			),
+		);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
 	public function test_étant_donné_un_test_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		$test = new TestProg("Somme de deux nombres", "42", "21\n21\n", "-h");
-		$test->numéro = 0;
-		$test->id = "0";
 
 		$résultat_attendu = [
-			"id" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+			"id" =>
+				"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
 			"nom" => "Somme de deux nombres",
 			"entrée" => "21\n21\n",
 			"params" => "-h",
 			"sortie_attendue" => "42",
-			"sortie_cachée" => false,
+			"caché" => false,
 			"links" => [
 				"question" =>
 					"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
@@ -75,7 +83,65 @@ final class TestProgTransformerTests extends TestCase
 		$testTransformer = new TestProgTransformer(
 			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 		);
-		$résultat_obtenu = $testTransformer->transform($test);
+		$résultat_obtenu = $testTransformer->transform(
+			new GénériqueDTO(
+				id: "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+				objet: $test,
+				liens: [
+					"question" =>
+						"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+					"self" =>
+						"https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+				],
+			),
+		);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
+	public function test_étant_donné_un_test_caché_lorsquon_récupère_son_transformer_on_obtient_des_entrées_params_et_sorties_nulls()
+	{
+		$_ENV["APP_URL"] = "https://example.com/";
+
+		$test = new TestProg(
+			nom: "Somme de deux nombres",
+			sortie_attendue: "42",
+			entrée: "21\n21\n",
+			params: "-h",
+			caché: true,
+		);
+
+		$résultat_attendu = [
+			"id" =>
+				"jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+			"nom" => "Somme de deux nombres",
+			"entrée" => null,
+			"params" => null,
+			"sortie_attendue" => null,
+			"caché" => true,
+			"links" => [
+				"question" =>
+					"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+				"self" =>
+					"https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+			],
+		];
+
+		$testTransformer = new TestProgTransformer(
+			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+		);
+		$résultat_obtenu = $testTransformer->transform(
+			new GénériqueDTO(
+				id: "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+				objet: $test,
+				liens: [
+					"question" =>
+						"https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+					"self" =>
+						"https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+				],
+			),
+		);
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}

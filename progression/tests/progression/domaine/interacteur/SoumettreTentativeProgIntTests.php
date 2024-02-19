@@ -18,16 +18,9 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{
-	Exécutable,
-	Avancement,
-	Question,
-	QuestionProg,
-	Résultat,
-	TentativeProg,
-	TestProg,
-	User,
-};
+use progression\domaine\entité\question\{Question, QuestionProg};
+use progression\domaine\entité\{Exécutable, Avancement, Résultat, TentativeProg, TestProg};
+use progression\domaine\entité\user\User;
 use progression\dao\DAOFactory;
 use progression\dao\tentative\TentativeProgDAO;
 use PHPUnit\Framework\TestCase;
@@ -45,10 +38,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 
 		//Mock User
 		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
-		$mockUserDao
-			->allows()
-			->get_user("jdoe")
-			->andReturn(new User("jdoe"));
+		$mockUserDao->allows()->get_user("jdoe")->andReturn(new User(username: "jdoe", date_inscription: 0));
 
 		// Mock TentativeDAO
 		$mockTentativeDAO = Mockery::mock("progression\\dao\\tentative\\TentativeProgDAO");
@@ -91,7 +81,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 				return $exécutable->lang == "python";
 			})
 			->andReturn([
-				"temps_exec" => 0.122,
+				"temps_exécution" => 0.122,
 				"résultats" => [["output" => "sortieTest", "errors" => "", "time" => 0.1]],
 			]);
 		$mockExécuteur
@@ -100,7 +90,7 @@ final class SoumettreTentativeProgIntTests extends TestCase
 				return $exécutable->lang == "java";
 			})
 			->andReturn([
-				"temps_exec" => 0.122,
+				"temps_exécution" => 0.122,
 				"résultats" => [["output" => "Incorrecte", "errors" => "", "time" => 0.1]],
 			]);
 
@@ -115,7 +105,6 @@ final class SoumettreTentativeProgIntTests extends TestCase
 		self::$question = new QuestionProg();
 		self::$question->titre = "Bonsoir";
 		self::$question->niveau = "facile";
-		self::$question->uri = "https://example.com/question";
 		self::$question->tests = [
 			new TestProg(
 				nom: "nomTest",
@@ -178,10 +167,9 @@ final class SoumettreTentativeProgIntTests extends TestCase
 
 		$interacteur = new SoumettreTentativeProgInt();
 		$tentative_obtenue = $interacteur->soumettre_tentative(
-			"jdoe",
 			self::$question,
-			self::$question->tests,
 			self::$tentativeSoumiseIncorrecte,
+			self::$question->tests,
 		);
 
 		$this->assertEquals($tentative_attendue, $tentative_obtenue);

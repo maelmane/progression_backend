@@ -18,7 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{TestSys, Résultat, QuestionSys, TentativeSys};
+use progression\domaine\entité\question\QuestionSys;
+use progression\domaine\entité\{TestSys, Résultat, TentativeSys};
 use progression\dao\exécuteur\Exécuteur;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
@@ -31,14 +32,13 @@ final class ExécuterSysIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$_ENV["COMPILEBOX_URL"] = "file://" . __DIR__ . "/ExécuterSysIntTests_fichiers/test_exec_question_sys";
+		putenv("COMPILEBOX_URL=file://" . __DIR__ . "/ExécuterSysIntTests_fichiers/test_exec_question_sys");
 		$_SERVER["REMOTE_ADDR"] = "";
 		$_SERVER["PHP_SELF"] = "";
 
 		self::$questionTest = new QuestionSys();
 		self::$questionTest->titre = "Bonsoir";
 		self::$questionTest->niveau = "facile";
-		self::$questionTest->uri = "https://example.com/question";
 		self::$questionTest->feedback_neg = "feedbackGénéralNégatif";
 		self::$questionTest->feedback_pos = "feedbackGénéralPositif";
 		self::$questionTest->tests = [
@@ -55,32 +55,73 @@ final class ExécuterSysIntTests extends TestCase
 		$mockExécuteur = Mockery::mock("progression\\dao\\exécuteur\\Exécuteur");
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->withArgs(function ($question, $tentative) {
-				return $question == self::$questionTest && $tentative == new TentativeSys("", "", 1615696286);
-			})
+			->with(
+				Mockery::Any(),
+				Mockery::Any(),
+				"conteneurTestCompileBox",
+				Mockery::Any(),
+				Mockery::Any(),
+				Mockery::Any(),
+				Mockery::Any(),
+			)
 			->andReturn([
-				"temps_exec" => 0.124,
-				"résultats" => [["output" => "", "errors" => "", "time" => 0.2]],
-				"conteneur" => ["id" => "conteneurTestCompileBox", "ip" => "172.45.2.2", "port" => 45667],
+				"temps_exécution" => 0.124,
+				"résultats" => [
+					[
+						"output" => "",
+						"errors" => "",
+						"time" => 0.2,
+						"code" => 0,
+					],
+				],
+				"conteneur_id" => "conteneurTestCompileBox",
+				"url_terminal" => "https://tty.com/abcde",
 			]);
 
 		$mockExécuteur
 			->shouldReceive("exécuter_sys")
-			->withArgs(function ($question, $tentative) {
-				return $question == self::$questionTest &&
-					$tentative == new TentativeSys("ConteneurEnvoyéParTentative", "", 1615696286);
-			})
+			->with(
+				Mockery::Any(),
+				Mockery::Any(),
+				"ConteneurEnvoyéParTentative",
+				Mockery::Any(),
+				Mockery::Any(),
+				Mockery::Any(),
+				Mockery::Any(),
+			)
 			->andReturn([
-				"temps_exec" => 0.124,
-				"résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.2]],
-				"conteneur" => ["id" => "ConteneurEnvoyéParTentative", "ip" => "172.45.2.2", "port" => 45667],
+				"temps_exécution" => 0.124,
+				"résultats" => [
+					[
+						"output" => "ok\n",
+						"errors" => "",
+						"time" => 0.2,
+						"code" => 0,
+					],
+				],
+				"conteneur_id" => "ConteneurEnvoyéParTentative",
+				"url_terminal" => "https://tty.com/abcde",
+			]);
+
+		$mockExécuteur
+			->shouldReceive("exécuter_sys")
+			->with(Mockery::Any(), Mockery::Any(), null, Mockery::Any(), Mockery::Any(), Mockery::Any(), Mockery::Any())
+			->andReturn([
+				"temps_exécution" => 0.124,
+				"résultats" => [
+					[
+						"output" => "ok\n",
+						"errors" => "",
+						"time" => 0.2,
+						"code" => 0,
+					],
+				],
+				"conteneur_id" => "NouveauConteneur",
+				"url_terminal" => "https://tty.com/abcde",
 			]);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_exécuteur()
-			->andReturn($mockExécuteur);
+		$mockDAOFactory->allows()->get_exécuteur()->andReturn($mockExécuteur);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 
@@ -92,14 +133,11 @@ final class ExécuterSysIntTests extends TestCase
 
 	public function test_étant_donné_une_question_avec_une_tentative_sans_conteneur_on_recoit_lid_du_conteneur_de_compile_box()
 	{
-		$résultat_attendu = ["id" => "conteneurTestCompileBox", "ip" => "172.45.2.2", "port" => 45667];
-
 		$exécuter_sys_int = new ExécuterSysInt();
 
 		$question = new QuestionSys();
 		$question->titre = "Bonsoir";
 		$question->niveau = "facile";
-		$question->uri = "https://example.com/question";
 		$question->feedback_neg = "feedbackGénéralNégatif";
 		$question->feedback_pos = "feedbackGénéralPositif";
 		$question->tests = [
@@ -113,23 +151,22 @@ final class ExécuterSysIntTests extends TestCase
 			),
 		];
 
-		$tentative = new TentativeSys("", "", 1615696286);
+		$tentative = new TentativeSys("", "https://tty.com/abcde", 1615696286);
 
-		$résultat_observé = $exécuter_sys_int->exécuter($question, $tentative);
+		$résultat_observé = $exécuter_sys_int->exécuter($question, $tentative, $question->tests, null);
 
-		$this->assertEquals($résultat_attendu, $résultat_observé["conteneur"]);
+		$this->assertEquals("NouveauConteneur", $résultat_observé["conteneur_id"]);
 	}
 
 	public function test_étant_donné_une_question_avec_une_tentative_avec_conteneur_on_recoit_lid_de_la_tentative_le_bon_temps_dexécution_et_le_bon_résultat()
 	{
-		$conteneur_attendu = ["id" => "ConteneurEnvoyéParTentative", "ip" => "172.45.2.2", "port" => 45667];
+		$conteneur_id_attendu = "ConteneurEnvoyéParTentative";
 
 		$exécuter_sys_int = new ExécuterSysInt();
 
 		$question = new QuestionSys();
 		$question->titre = "Bonsoir";
 		$question->niveau = "facile";
-		$question->uri = "https://example.com/question";
 		$question->feedback_neg = "feedbackGénéralNégatif";
 		$question->feedback_pos = "feedbackGénéralPositif";
 		$question->tests = [
@@ -147,9 +184,9 @@ final class ExécuterSysIntTests extends TestCase
 
 		$tentative = new TentativeSys("ConteneurEnvoyéParTentative", "", 1615696286);
 
-		$résultat_observé = $exécuter_sys_int->exécuter($question, $tentative);
+		$résultat_observé = $exécuter_sys_int->exécuter($question, $tentative, $question->tests, null);
 
-		$this->assertEquals($conteneur_attendu, $résultat_observé["conteneur"]);
+		$this->assertEquals($conteneur_id_attendu, $résultat_observé["conteneur_id"]);
 		$this->assertEquals(124, $résultat_observé["temps_exécution"]);
 		$this->assertEquals([$résultat_attendu], $résultat_observé["résultats"]);
 	}

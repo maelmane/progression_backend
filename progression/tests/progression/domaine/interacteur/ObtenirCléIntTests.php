@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\{Clé, Portée};
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -29,23 +29,14 @@ final class ObtenirCléIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$clé = new Clé(1234, "2021-06-25 00:00:00", "2021-06-26 00:00:00", Clé::PORTEE_AUTH);
+		$clé = new Clé(1234, "2021-06-25 00:00:00", "2021-06-26 00:00:00", Portée::AUTH);
 
 		$mockCléDAO = Mockery::mock("progression\\dao\\CléDAO");
-		$mockCléDAO
-			->shouldReceive("get_clé")
-			->with("jdoe", 1234, [])
-			->andReturn($clé);
-		$mockCléDAO
-			->shouldReceive("get_clé")
-			->with("jdoe", 9999, [])
-			->andReturn(null);
+		$mockCléDAO->shouldReceive("get_clé")->with("jdoe", 1234, [])->andReturn($clé);
+		$mockCléDAO->shouldReceive("get_clé")->with("jdoe", 9999, [])->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_clé_dao()
-			->andReturn($mockCléDAO);
+		$mockDAOFactory->allows()->get_clé_dao()->andReturn($mockCléDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 
@@ -60,7 +51,7 @@ final class ObtenirCléIntTests extends TestCase
 		$int = new ObtenirCléInt();
 
 		$this->assertEquals(
-			new Clé(null, "2021-06-25 00:00:00", "2021-06-26 00:00:00", 1),
+			new Clé(null, "2021-06-25 00:00:00", "2021-06-26 00:00:00", Portée::AUTH),
 			$int->get_clé("jdoe", 1234),
 		);
 	}

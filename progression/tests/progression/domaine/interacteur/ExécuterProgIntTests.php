@@ -30,7 +30,7 @@ final class ExécuterProgIntTests extends TestCase
 	{
 		parent::setUp();
 
-		$_ENV["COMPILEBOX_URL"] = "file://" . __DIR__ . "/ExécuterProgIntTests_fichiers/test_exec_prog_int_python";
+		putenv("COMPILEBOX_URL=file://" . __DIR__ . "/ExécuterProgIntTests_fichiers/test_exec_prog_int_python");
 		$_SERVER["REMOTE_ADDR"] = "";
 		$_SERVER["PHP_SELF"] = "";
 
@@ -44,8 +44,12 @@ final class ExécuterProgIntTests extends TestCase
 				Mockery::on(function ($param) {
 					return $param == [new Test("premier test", "ok\n", "1")];
 				}),
+				null,
 			)
-			->andReturn(["temps_exec" => 0.234, "résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.6]]]);
+			->andReturn([
+				"temps_exécution" => 0.234,
+				"résultats" => [["output" => "ok\n", "errors" => "", "time" => 0.6]],
+			]);
 		$mockExécuteur
 			->shouldReceive("exécuter_prog")
 			->with(
@@ -58,9 +62,10 @@ final class ExécuterProgIntTests extends TestCase
 						new Test("deuxième test", "ok\nok\n", "2"),
 					];
 				}),
+				null,
 			)
 			->andReturn([
-				"temps_exec" => 0.124,
+				"temps_exécution" => 0.124,
 				"résultats" => [
 					["output" => "ok\n", "errors" => "", "time" => 0.08],
 					["output" => "ok\nok\n", "errors" => "", "time" => 0.04],
@@ -76,17 +81,15 @@ final class ExécuterProgIntTests extends TestCase
 				Mockery::on(function ($param) {
 					return $param == [new Test("premier test", "ok\n", "1")];
 				}),
+				null,
 			)
 			->andReturn([
-				"temps_exec" => 0.567,
+				"temps_exécution" => 0.567,
 				"résultats" => [["output" => "", "errors" => "erreur", "time" => 0.04]],
 			]);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_exécuteur()
-			->andReturn($mockExécuteur);
+		$mockDAOFactory->allows()->get_exécuteur()->andReturn($mockExécuteur);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 
@@ -103,7 +106,10 @@ final class ExécuterProgIntTests extends TestCase
 
 		$résultat_observé = (new ExécuterProgInt())->exécuter($exécutable_valide, $test);
 
-		$résultat_attendu = ["temps_exécution" => 234, "résultats" => [new Résultat("ok\n", "", false, null, 600)]];
+		$résultat_attendu = [
+			"temps_exécution" => 234,
+			"résultats" => [new Résultat("ok\n", "", false, null, 600)],
+		];
 		$this->assertEquals($résultat_attendu, $résultat_observé);
 	}
 

@@ -18,14 +18,15 @@
 
 namespace progression\dao\tentative;
 
-use progression\dao\{DAOException, EntitéDAO, CommentaireDAO};
+use progression\dao\DAOException;
 use progression\domaine\entité\TentativeSys;
 use progression\dao\models\{TentativeSysMdl, AvancementMdl};
 use Illuminate\Database\QueryException;
+use progression\domaine\interacteur\IntégritéException;
 
 class TentativeSysDAO extends TentativeDAO
 {
-	public function get_toutes($username, $question_uri, mixed $includes = [])
+	public function get_toutes(string $username, string $question_uri, mixed $includes = []): array
 	{
 		try {
 			return $this->construire(
@@ -42,8 +43,12 @@ class TentativeSysDAO extends TentativeDAO
 		}
 	}
 
-	public function get_tentative($username, $question_uri, $date_soumission, mixed $includes = [])
-	{
+	public function get_tentative(
+		string $username,
+		string $question_uri,
+		int $date_soumission,
+		mixed $includes = [],
+	): TentativeSys|null {
 		try {
 			$tentative = TentativeSysMdl::select("reponse_sys.*")
 				->join("avancement", "reponse_sys.avancement_id", "=", "avancement.id")
@@ -53,13 +58,13 @@ class TentativeSysDAO extends TentativeDAO
 				->where("date_soumission", $date_soumission)
 				->first();
 
-			return $tentative ? $this->construire([$tentative], $includes)[$date_soumission] : null;
+			return self::premier_élément($this->construire([$tentative], $includes));
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}
 
-	public function get_dernière($username, $question_uri, mixed $includes = [])
+	public function get_dernière(string $username, string $question_uri, mixed $includes = []): TentativeSys|null
 	{
 		try {
 			$tentative = TentativeSysMdl::select("reponse_sys.*")
@@ -70,13 +75,16 @@ class TentativeSysDAO extends TentativeDAO
 				->orderBy("date_soumission", "desc")
 				->first();
 
-			return $tentative ? $this->construire([$tentative], $includes)[0] : null;
+			return $tentative ? $this->construire([$tentative], $includes)[$tentative["date_soumission"]] : null;
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}
 
-	public function save($username, $question_uri, $tentative)
+	/**
+	 * @return array<TentativeSys>
+	 */
+	public function save(string $username, string $question_uri, TentativeSys $tentative): array
 	{
 		try {
 			$avancement = AvancementMdl::select("avancement.id")
@@ -87,11 +95,11 @@ class TentativeSysDAO extends TentativeDAO
 				->first();
 
 			if (!$avancement) {
-				return null;
+				throw new IntégritéException("Impossible de sauvegarder la ressource; le parent n'existe pas.");
 			}
 
 			$objet = [
-				"conteneur" => $tentative->conteneur["id"],
+				"conteneur" => $tentative->conteneur_id,
 				"reponse" => $tentative->réponse,
 				"date_soumission" => $tentative->date_soumission,
 				"reussi" => $tentative->réussi,
@@ -101,10 +109,13 @@ class TentativeSysDAO extends TentativeDAO
 
 			return $this->construire([
 				TentativeSysMdl::updateOrCreate(
-					["avancement_id" => $avancement["id"], "date_soumission" => $tentative->date_soumission],
+					[
+						"avancement_id" => $avancement["id"],
+						"date_soumission" => $tentative->date_soumission,
+					],
 					$objet,
 				),
-			])[$tentative->date_soumission];
+			]);
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -112,14 +123,14 @@ class TentativeSysDAO extends TentativeDAO
 
 	public static function construire($data, $includes = [])
 	{
-		if ($data == null) {
-			return [];
-		}
-
 		$tentatives = [];
 		foreach ($data as $item) {
+			if ($item == null) {
+				continue;
+			}
 			$tentative = new TentativeSys(
-				conteneur: ["id" => $item["conteneur"], "ip" => null, "port" => null],
+				conteneur_id: $item["conteneur"],
+				url_terminal: null,
 				réponse: $item["reponse"],
 				date_soumission: $item["date_soumission"],
 				réussi: $item["reussi"],

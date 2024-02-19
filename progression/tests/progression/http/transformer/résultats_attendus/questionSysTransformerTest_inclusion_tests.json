@@ -1,30 +1,36 @@
 [
-	{
-		"nom": "Toutes Permissions",
-		"sortie_attendue": "-rwxrwxrwx",
-		"sortie_cachée": false,
-		"feedback_err": null,
-		"feedback_pos": null,
-		"feedback_neg": null,
-        "validation" : "laValidation",
-        "utilisateur" : "utilisateur",
-		"id": "0",
-		"links": {
-			"question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
-		}
-	},
-	{
-		"nom": "Read Write Permissions",
-		"sortie_attendue": "-rw-rw-rw-",
-		"sortie_cachée": false,
-		"feedback_err": null,
-		"feedback_pos": "positif",
-		"feedback_neg": "négatif",
-        "validation" : "laValidation2",
-        "utilisateur" : "utilisateur2",
-		"id": "1",
-		"links": {
-			"question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
-		}
-	}
+  {
+    "id": "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0",
+    "liens": {
+      "question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+      "self": "https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/0"
+    },
+    "objet": {
+      "feedback_err": null,
+      "feedback_neg": null,
+      "feedback_pos": null,
+      "nom": "Toutes Permissions",
+      "sortie_attendue": "-rwxrwxrwx",
+      "caché": false,
+      "utilisateur": "utilisateur",
+      "validation": "laValidation"
+    }
+  },
+  {
+    "id": "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1",
+    "liens": {
+      "question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
+      "self": "https://example.com/test/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1"
+    },
+    "objet": {
+      "feedback_err": null,
+      "feedback_neg": "négatif",
+      "feedback_pos": "positif",
+      "nom": "Read Write Permissions",
+      "sortie_attendue": "-rw-rw-rw-",
+      "caché": false,
+      "utilisateur": "utilisateur2",
+      "validation": "laValidation2"
+    }
+  }
 ]

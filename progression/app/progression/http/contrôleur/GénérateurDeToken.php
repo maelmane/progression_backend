@@ -18,7 +18,9 @@
 
 namespace progression\http\contrôleur;
 
+use \RuntimeException;
 use Firebase\JWT\JWT;
+use Carbon\Carbon;
 
 class GénérateurDeToken
 {
@@ -42,17 +44,35 @@ class GénérateurDeToken
 		GénérateurDeToken::$instance = $générateur;
 	}
 
-	function générer_token($username, $expiration = 0, $ressources = [["url" => ".*", "method" => ".*"]])
-	{
+	/**
+	 * @param array<mixed> $ressources
+	 * @param array<mixed> $data
+	 */
+	function générer_token(
+		string $username,
+		int $expiration = 0,
+		array $ressources = ["tout" => ["url" => ".*", "method" => ".*"]],
+		array $data = [],
+		string $fingerprint = null,
+	): string {
 		$payload = [
 			"username" => $username,
-			"current" => time(),
+			"current" => Carbon::now()->timestamp,
 			"expired" => $expiration,
+			"data" => $data,
 			"ressources" => $ressources,
-			"version" => 1,
+			"version" => getenv("APP_VERSION"),
 		];
 
-		$token = JWT::encode($payload, $_ENV["JWT_SECRET"], "HS256");
+		if ($fingerprint) {
+			$payload["fingerprint"] = $fingerprint;
+		}
+
+		$secret = getenv("JWT_SECRET");
+		if (!$secret) {
+			throw new RuntimeException("Le secret JWT ne doit pas être vide");
+		}
+		$token = JWT::encode($payload, $secret, "HS256");
 
 		return $token;
 	}

@@ -1,22 +1,49 @@
+
 [
   {
-    "message": "Message",
-    "créateur": "jdoe",
-    "date": 123456,
-    "numéro_ligne": 12,
-    "id": "0",
-    "links": {
-      "tentative": "https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760"
+    "id": "roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760/0/0",
+    "liens": {
+      "auteur": "https://example.com/user/jdoe",
+      "self": "https://example.com/commentaire/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760/0/0",
+      "tentative": "https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760/0"
+    },
+    "objet": {
+      "créateur": {
+        "avancements": [],
+        "clés": [],
+        "courriel": null,
+        "date_inscription": 0,
+        "préférences": "",
+        "rôle": "normal",
+        "username": "jdoe",
+        "état": "inactif"
+      },
+      "date": 123456,
+      "message": "Message",
+      "numéro_ligne": 12
     }
   },
   {
-    "message": "Message 2",
-    "créateur": "bob",
-    "date": 654321,
-    "numéro_ligne": 13,
-    "id": "1",
-    "links": {
-      "tentative": "https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760"
+    "id": "roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760/0/1",
+    "liens": {
+      "auteur": "https://example.com/user/bob",
+      "self": "https://example.com/commentaire/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760/0/1",
+      "tentative": "https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760/0"
+    },
+    "objet": {
+      "créateur": {
+        "avancements": [],
+        "clés": [],
+        "courriel": null,
+        "date_inscription": 0,
+        "préférences": "",
+        "rôle": "normal",
+        "username": "bob",
+        "état": "inactif"
+      },
+      "date": 654321,
+      "message": "Message 2",
+      "numéro_ligne": 13
     }
   }
 ]

@@ -19,18 +19,30 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Commentaire;
-use progression\dao\DAOFactory;
+use progression\dao\DAOException;
 
 class SauvegarderCommentaireInt extends Interacteur
 {
-	public function sauvegarder_commentaire($username, $question_uri, $date_soummision, $numéro, $commentaire)
-	{
-		if (!$commentaire->message || !$commentaire->créateur) {
-			return null;
+	/**
+	 * @return non-empty-array<Commentaire>
+	 */
+	public function sauvegarder_commentaire(
+		string $username,
+		string $question_uri,
+		int|null $numéro,
+		Commentaire $commentaire,
+	): array {
+		if (empty($commentaire->message)) {
+			throw new RessourceInvalideException("Message invalide");
 		}
+		try {
+			$commentaire_sauvegardé = $this->source_dao
+				->get_commentaire_dao()
+				->save($username, $question_uri, $numéro, $commentaire);
 
-		return $this->source_dao
-			->get_commentaire_dao()
-			->save($username, $question_uri, $date_soummision, $numéro, $commentaire);
+			return $commentaire_sauvegardé;
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e, 503);
+		}
 	}
 }

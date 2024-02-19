@@ -21,6 +21,7 @@ namespace progression\domaine\interacteur;
 use progression\domaine\entité\{TentativeProg, TentativeSys};
 use progression\domaine\entité\Commentaire;
 use progression\domaine\entité\Résultat;
+use progression\domaine\entité\user\User;
 use progression\dao\DAOFactory;
 use progression\dao\tentative\TentativeDAO;
 use PHPUnit\Framework\TestCase;
@@ -47,8 +48,18 @@ final class ObtenirTentativeIntTests extends TestCase
 					code: "System.out.println();",
 					date_soumission: 1614711760,
 					commentaires: [
-						new Commentaire(99, "le 99iem message", "mock", 1615696276, 14),
-						new Commentaire(100, "le 100ieme message", "mock", 1615696888, 17),
+						new Commentaire(
+							"le 99iem message",
+							new User(username: "mock", date_inscription: 0),
+							1615696276,
+							14,
+						),
+						new Commentaire(
+							"le 100ieme message",
+							new User(username: "mock", date_inscription: 0),
+							1615696888,
+							17,
+						),
 					],
 				),
 			);
@@ -62,27 +73,22 @@ final class ObtenirTentativeIntTests extends TestCase
 			->with("jdoe", "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions", [])
 			->andReturn(
 				new TentativeSys(
-					(object) ["id" => "conteneurTest2", "ip" => "192.168.0.2", "port" => 12345],
-					"reponseTest2",
-					3456,
-					true,
-					[],
-					2,
-					100,
-					"Bravo!",
-					[],
+					conteneur_id: "conteneurTest2",
+					url_terminal: "https://tty.com/abcde",
+					réponse: "reponseTest2",
+					date_soumission: 3456,
+					réussi: true,
+					résultats: [],
+					tests_réussis: 2,
+					temps_exécution: 100,
+					feedback: "Bravo!",
+					commentaires: [],
 				),
 			);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_tentative_dao()
-			->andReturn($mockTentativeDAO);
-		$mockDAOFactory
-			->allows()
-			->get_commentaire_dao()
-			->andReturn($mockCommentaireDAO);
+		$mockDAOFactory->allows()->get_tentative_dao()->andReturn($mockTentativeDAO);
+		$mockDAOFactory->allows()->get_commentaire_dao()->andReturn($mockCommentaireDAO);
 
 		DAOFactory::setInstance($mockDAOFactory);
 	}
@@ -105,19 +111,18 @@ final class ObtenirTentativeIntTests extends TestCase
 
 		$résultat_attendu = new TentativeProg("java", "System.out.println();", 1614711760);
 		$résultat_attendu->commentaires = [
-			new Commentaire(99, "le 99iem message", "mock", 1615696276, 14),
-			new Commentaire(100, "le 100ieme message", "mock", 1615696888, 17),
+			new Commentaire("le 99iem message", new User(username: "mock", date_inscription: 0), 1615696276, 14),
+			new Commentaire("le 100ieme message", new User(username: "mock", date_inscription: 0), 1615696888, 17),
 		];
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
-	public function test_étant_donné_une_tentative_inexistante_lorsque_cherchée_on_obtient_null()
+	public function test_étant_donné_une_tentative_inexistante_lorsque_cherchée_on_obtient_une_exception()
 	{
 		$interacteur = new ObtenirTentativeInt();
-		$résultat_obtenu = $interacteur->get_tentative("patate", "une_question_inexistante", 1614711760);
 
-		$this->assertNull($résultat_obtenu);
+		$this->assertNull($interacteur->get_tentative("patate", "une_question_inexistante", 1614711760));
 	}
 
 	public function test_étant_donné_un_numéro_de_conteneur_inexistant_on_récupère_lid_du_conteneur_de_la_dernière_tentative()
@@ -128,6 +133,6 @@ final class ObtenirTentativeIntTests extends TestCase
 			"https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions",
 		);
 
-		$this->assertEquals($résultat_obtenu->conteneur->id, "conteneurTest2");
+		$this->assertEquals($résultat_obtenu->conteneur_id, "conteneurTest2");
 	}
 }

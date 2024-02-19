@@ -3,10 +3,10 @@
 		"type": "tentative",
 		"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fcsOpdXNzaWU/1614374490",
 		"attributes": {
-			"date_soumission": "1614374490",
+			"date_soumission": 1614374490,
 			"feedback": "feedbackTest",
 			"réussi": true,
-			"sous-type": "tentativeProg",
+			"sous_type": "tentativeProg",
 			"langage": "réussi",
 			"code": "codeTest",
 			"tests_réussis": 2,

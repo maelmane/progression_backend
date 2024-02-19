@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
+
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -50,6 +51,21 @@ class Handler extends ExceptionHandler
 	 */
 	public function render($request, Throwable $exception)
 	{
-		return parent::render($request, $exception);
+		Log::error("Exception.", [
+			"exception" => $exception,
+			"code" => $exception->getCode(),
+		]);
+		$message = $exception->getMessage();
+		$objet = json_decode($exception->getMessage());
+
+		return response()->json(
+			["erreur" => $objet ?? $message],
+			$exception->getCode() > 0 ? $exception->getCode() : 500,
+			[
+				"Content-Type" => "application/vnd.api+json",
+				"Charset" => "utf-8",
+			],
+			JSON_UNESCAPED_UNICODE,
+		);
 	}
 }

@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\User;
+use progression\domaine\entité\user\User;
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -31,17 +31,22 @@ final class ObtenirUserIntTests extends TestCase
 
 		$mockUserDao = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDao
-			->allows()
-			->get_user("Bob", [])
-			->andReturn(new User("Bob"));
+			->shouldReceive("get_user")
+			->with("bob", [])
+			->andReturn(new User(username: "bob", date_inscription: 0));
+		$mockUserDao
+			->shouldReceive("trouver")
+			->with(null, "bob@progressionmail.com", [])
+			->andReturn(new User(username: "bob", date_inscription: 0));
+		$mockUserDao
+			->shouldReceive("trouver")
+			->with("bob", "bob@progressionmail.com", [])
+			->andReturn(new User(username: "bob", date_inscription: 0));
 
 		$mockUserDao->shouldReceive("get_user")->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_user_dao()
-			->andReturn($mockUserDao);
+		$mockDAOFactory->allows()->get_user_dao()->andReturn($mockUserDao);
 
 		DAOFactory::setInstance($mockDAOFactory);
 	}
@@ -52,20 +57,37 @@ final class ObtenirUserIntTests extends TestCase
 		DAOFactory::setInstance(null);
 	}
 
-	public function test_étant_donné_un_utilisateur_Bob_lorsquon_le_cherche_par_username_on_obtient_un_objet_user_nommé_Bob()
+	public function test_étant_donné_un_utilisateur_bob_existant_lorsquon_le_cherche_par_username_on_obtient_un_objet_user()
 	{
 		$interacteur = new ObtenirUserInt();
-		$résultat_obtenu = $interacteur->get_user("Bob");
+		$résultat_obtenu = $interacteur->get_user("bob");
 
-		$résultat_attendu = new User("Bob");
+		$résultat_attendu = new User(username: "bob", date_inscription: 0);
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 
-	public function test_étant_donné_un_utilisateur_Banane_inexistant_lorsquon_le_cherche_par_username_on_obtient_null()
+	public function test_étant_donné_un_utilisateur_bob_existant_lorsquon_le_cherche_par_courriel_on_obtient_un_objet_user()
 	{
 		$interacteur = new ObtenirUserInt();
-		$résultat_obtenu = $interacteur->get_user("Banane");
+		$résultat_obtenu = $interacteur->trouver(courriel: "bob@progressionmail.com");
 
-		$this->assertNull($résultat_obtenu);
+		$résultat_attendu = new User(username: "bob", date_inscription: 0);
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
+	public function test_étant_donné_un_utilisateur_bob_lorsquon_le_cherche_par_username_et_courriel_on_obtient_un_objet_user_nommé_bob()
+	{
+		$interacteur = new ObtenirUserInt();
+		$résultat_obtenu = $interacteur->trouver(username: "bob", courriel: "bob@progressionmail.com");
+
+		$résultat_attendu = new User(username: "bob", date_inscription: 0);
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+
+	public function test_étant_donné_un_utilisateur_Banane_inexistant_lorsquon_le_cherche_par_username_on_obtient_une_exception()
+	{
+		$interacteur = new ObtenirUserInt();
+
+		$this->assertNull($interacteur->get_user("Banane"));
 	}
 }

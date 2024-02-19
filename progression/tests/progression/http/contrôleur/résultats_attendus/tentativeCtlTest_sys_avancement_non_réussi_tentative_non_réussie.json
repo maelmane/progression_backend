@@ -6,12 +6,9 @@
 			"date_soumission": 1653690241,
 			"feedback": "Encore un effort!",
 			"réussi": false,
-			"sous-type": "tentativeSys",
-            "conteneur": {
-				"id": "leConteneurDeLaNouvelleTentative",
-				"ip": "172.45.2.2",
-				"port": 45667
-			},
+			"sous_type": "tentativeSys",
+            "conteneur_id": "leConteneurDeLaNouvelleTentative",
+			"url_terminal": "https://tty.com/abcde",
 			"réponse": "Mauvaise réponse",
 			"tests_réussis": 0,
 			"temps_exécution": 0

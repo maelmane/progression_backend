@@ -1,0 +1,76 @@
+{
+	"data": {
+		"attributes": {
+			"code": "#+TODO\nprint(\"Hello world!\")",
+			"date_soumission": 1653690241,
+			"feedback": "oups!",
+			"langage": "erreur",
+			"réussi": false,
+			"sous_type": "tentativeProg",
+			"temps_exécution": 440,
+			"tests_réussis": 0
+		},
+		"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241",
+		"links": {
+			"avancement": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll",
+			"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
+		},
+		"relationships": {
+			"commentaires": {
+				"links": {
+					"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/commentaires",
+					"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/relationships/commentaires"
+				}
+			},
+			"resultats": {
+				"data": [
+					{
+						"id": "bebe123",
+						"type": "resultat"
+					},
+					{
+						"id": "cafe456",
+						"type": "resultat"
+					}
+				],
+				"links": {
+					"related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/resultats",
+					"self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241/relationships/resultats"
+				}
+			}
+		},
+		"type": "tentative"
+	},
+	"included": [
+		{
+			"attributes": {
+				"feedback": "C'est pas ça :(",
+				"résultat": false,
+				"sortie_erreur": "",
+				"sortie_observée": "Allo\n",
+				"temps_exécution": 30
+			},
+			"id": "bebe123",
+			"links": {
+				"self": "https://example.com/resultat/bebe123",
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
+			},
+			"type": "resultat"
+		},
+		{
+			"attributes": {
+				"feedback": "arrrg!",
+				"résultat": false,
+				"sortie_erreur": "",
+				"sortie_observée": "",
+				"temps_exécution": 30
+			},
+			"id": "cafe456",
+			"links": {
+				"self": "https://example.com/resultat/cafe456",
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fbm9uX3LDqXVzc2ll/1653690241"
+			},
+			"type": "resultat"
+		}
+	]
+}

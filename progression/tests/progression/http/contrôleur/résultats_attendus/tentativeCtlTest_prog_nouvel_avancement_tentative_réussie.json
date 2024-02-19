@@ -6,7 +6,7 @@
 			"date_soumission": 1653690241,
 			"feedback": "Bon travail!",
 			"réussi": true,
-			"sous-type": "tentativeProg",
+			"sous_type": "tentativeProg",
 			"langage": "réussi",
 			"code": "#+TODO\nprint(\"Hello world!\")",
 			"tests_réussis": 2,
@@ -26,11 +26,11 @@
             "resultats": {
                 "data": [
                     {
-                        "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/1653690241/0",
+                        "id": "bebe123",
                         "type": "resultat"
                     },
                     {
-                        "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/1653690241/1",
+                        "id": "cafe456",
                         "type": "resultat"
                     }
                 ],
@@ -48,12 +48,12 @@
                 "résultat": true,
                 "sortie_erreur": "",
                 "sortie_observée": "Bonjour\n",
-                "temps_exec": 30
+                "temps_exécution": 30
             },
-            "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/1653690241/0",
+            "id": "bebe123",
             "links": {
-                "tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/1653690241",
-                "self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/1653690241/0"
+                "self": "https://example.com/resultat/bebe123",
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/1653690241"
             },
             "type": "resultat"
         },
@@ -62,13 +62,13 @@
                 "feedback": "C'est ça!",
                 "résultat": true,
                 "sortie_erreur": "",
-                "sortie_observée": "Bonjour\nBonjour\n",
-                "temps_exec": 30
+                "sortie_observée": "",
+                "temps_exécution": 30
             },
-            "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/1653690241/1",
+            "id": "cafe456",
             "links": {
-                "tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/1653690241",
-                "self": "https://example.com/resultat/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/1653690241/1"
+                "self": "https://example.com/resultat/cafe456",
+				"tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vbm91dmVsbGVfcXVlc3Rpb24/1653690241"
             },
             "type": "resultat"
         }

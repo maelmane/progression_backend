@@ -18,6 +18,7 @@
 
 namespace progression\dao\models;
 
+use progression\domaine\entité\question\État;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -27,6 +28,19 @@ class AvancementMdl extends Model
 	public $timestamps = false;
 
 	protected $guarded = [];
+
+	protected $appends = ["etat"];
+
+	public function getÉtatAttribute(): État
+	{
+		$états = array_column(État::cases(), "value");
+		return État::from($états[$this->attributes["etat"]]);
+	}
+	public function setÉtatAttribute(État $état): void
+	{
+		$états = array_column(État::cases(), "value");
+		$this->attributes["etat"] = array_search($état->value, $états);
+	}
 
 	public function tentatives_prog(): HasMany
 	{

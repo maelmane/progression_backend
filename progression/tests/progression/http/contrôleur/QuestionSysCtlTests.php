@@ -17,11 +17,12 @@
  */
 
 use progression\ContrôleurTestCase;
-
-use progression\domaine\entité\{Question, QuestionSys, User, TestSys};
+use progression\domaine\entité\question\{Question, QuestionSys, Type};
+use progression\domaine\entité\TestSys;
+use progression\domaine\entité\user\{User, Rôle, État};
 use progression\dao\DAOFactory;
 use progression\dao\question\ChargeurException;
-use Illuminate\Auth\GenericUser;
+use progression\UserAuthentifiable;
 
 final class QuestionSysCtlTests extends ContrôleurTestCase
 {
@@ -30,11 +31,16 @@ final class QuestionSysCtlTests extends ContrôleurTestCase
 	public function setUp(): void
 	{
 		parent::setUp();
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new UserAuthentifiable(
+			username: "jdoe",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
 
 		//QuestionSys avec solution sans pregmatch
 		$questionSys = new QuestionSys();
-		$questionSys->type = Question::TYPE_SYS;
+		$questionSys->type = Type::SYS;
 		$questionSys->nom = "toutes_les_permissions2";
 		$questionSys->solution = "laSolution";
 		$questionSys->uri = "https://depot.com/roger/questions_sys/permissions01/octroyer_toutes_les_permissions2";
@@ -77,7 +83,7 @@ final class QuestionSysCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_le_chemin_dune_question_lorsquon_appelle_get_on_obtient_la_question_et_ses_relations_sous_forme_json()
 	{
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 		$résultat_obtenu = $this->actingAs($this->user)->call(
 			"GET",
 			"/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3N5cy9wZXJtaXNzaW9uczAxL29jdHJveWVyX3RvdXRlc19sZXNfcGVybWlzc2lvbnMy?include=tests",

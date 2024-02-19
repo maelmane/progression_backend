@@ -18,54 +18,78 @@
 
 namespace progression\http\contrôleur;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\{Request, JsonResponse};
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use progression\domaine\entité\Commentaire;
-use progression\domaine\interacteur\SauvegarderCommentaireInt;
+use progression\domaine\interacteur\{SauvegarderCommentaireInt, IntéracteurException, ObtenirUserInt};
 use progression\http\transformer\CommentaireTransformer;
+use progression\http\transformer\dto\GénériqueDTO;
 use progression\util\Encodage;
 
 class CommentaireCtl extends Contrôleur
 {
-	public function post(Request $request, $username, $question_uri, $timestamp)
+	public function post(Request $request, $username, $question_uri, $timestamp): JsonResponse
 	{
 		Log::debug("CommentaireCtl.post. Params : ", [$request->all(), $username]);
 		$commentaire = null;
-		$réponse = null;
 
 		$question_uriDécodé = Encodage::base64_decode_url($question_uri);
 
+		$réponse = null;
 		$validateur = $this->valider_paramètres($request);
 		if ($validateur->fails()) {
-			Log::notice(
-				"({$request->ip()}) - {$request->method()} {$request->path()} (" . __CLASS__ . ") Paramètres invalides",
-			);
-			return $this->réponse_json(["erreur" => $validateur->errors()], 400);
+			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
+		} else {
+			if (isset($request->créateur) && !Gate::allows("créer-commentaire", $request->créateur)) {
+				$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 403);
+			} else {
+				$user = (new ObtenirUserInt())->get_user($request->créateur ?? $username);
+				if (!$user) {
+					$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
+				} else {
+					$commentaireInt = new SauvegarderCommentaireInt();
+					$commentaire = $commentaireInt->sauvegarder_commentaire(
+						$username,
+						$question_uriDécodé,
+						null,
+						new Commentaire(
+							$request->message,
+							$user,
+							(new \DateTime())->getTimestamp(),
+							$request->numéro_ligne,
+						),
+					);
+
+					$id = array_key_first($commentaire);
+					$réponse = $this->valider_et_préparer_réponse(
+						$commentaire[$id],
+						$username,
+						$question_uri,
+						$timestamp,
+						$id,
+					);
+				}
+			}
 		}
 
-		$commentaireInt = new SauvegarderCommentaireInt();
-		$commentaire = $commentaireInt->sauvegarder_commentaire(
-			$username,
-			$question_uriDécodé,
-			$timestamp,
-			null,
-			new Commentaire(
-				$request->message,
-				$request->créateur,
-				(new \DateTime())->getTimestamp(),
-				$request->numéro_ligne,
-			),
-		);
+		Log::debug("CommentaireCtl.post. Retour : ", [$réponse]);
+		return $réponse;
+	}
 
-		$numéro = array_key_first($commentaire);
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $id, int $numéro, Commentaire $commentaire): array
+	{
+		$urlBase = Contrôleur::$urlBase;
 
-		$commentaire[$numéro]->id = $numéro;
-		$réponse = $this->item(
-			$commentaire[$numéro],
-			new CommentaireTransformer("{$username}/{$question_uri}/{$timestamp}"),
-		);
-		return $this->préparer_réponse($réponse);
+		return [
+			"self" => "{$urlBase}/commentaire/{$id}/{$numéro}",
+			"auteur" => "{$urlBase}/user/{$commentaire->créateur->username}",
+			"tentative" => "{$urlBase}/tentative/{$id}",
+		];
 	}
 
 	private function valider_paramètres($request)
@@ -74,13 +98,42 @@ class CommentaireCtl extends Contrôleur
 			$request->all(),
 			[
 				"message" => "required",
-				"créateur" => "required",
+				"créateur" => "string",
 				"numéro_ligne" => ["required", "integer"],
 			],
 			[
-				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
-				"integer" => "Err: 1003. Le champ :attribute doit être un entier.",
+				"required" => "Le champ :attribute est obligatoire.",
+				"integer" => "Le champ :attribute doit être un entier.",
 			],
 		);
+	}
+
+	private function valider_et_préparer_réponse(
+		Commentaire $commentaire,
+		string $username,
+		string $question_uri,
+		int $timestamp,
+		int $numéro,
+	): JsonResponse {
+		Log::debug("CommentaireCtl.valider_et_préparer_réponse. Params : ", [
+			$commentaire,
+			$username,
+			$question_uri,
+			$timestamp,
+		]);
+
+		$dto = new GénériqueDTO(
+			id: "{$username}/{$question_uri}/{$timestamp}/{$numéro}",
+			objet: $commentaire,
+			liens: CommentaireCtl::get_liens("{$username}/{$question_uri}/{$timestamp}", $numéro, $commentaire),
+		);
+
+		$réponse = $this->item($dto, new CommentaireTransformer());
+
+		$réponse = $this->préparer_réponse($réponse);
+
+		Log::debug("CommentaireCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
+
+		return $réponse;
 	}
 }

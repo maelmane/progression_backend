@@ -51,14 +51,11 @@ final class TestProgTests extends TestCase
 		$this->assertEquals($feedback_err_attendu, $résultat_obtenu->feedback_err);
 	}
 
-	public function test_étant_donné_un_TestProg_instancié_avec_ses_paramètres_null_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_nulles()
+	public function test_étant_donné_un_TestProg_instancié_sans_paramètres_lorsquon_récupère_ses_attributs_on_obtient_des_valeurs_par_défaut()
 	{
-		$params_attendu = null;
-		$entrée_attendu = null;
+		$résultat_obtenu = new TestProg();
 
-		$résultat_obtenu = new TestProg("testNom", "testSortie");
-
-		$this->assertEquals($params_attendu, $résultat_obtenu->params);
-		$this->assertEquals($entrée_attendu, $résultat_obtenu->entrée);
+		$this->assertEquals("", $résultat_obtenu->params);
+		$this->assertEquals("", $résultat_obtenu->entrée);
 	}
 }

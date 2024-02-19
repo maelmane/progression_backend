@@ -18,7 +18,8 @@
 
 namespace progression\dao\question;
 
-use progression\domaine\entité\{QuestionSys, TestSys};
+use progression\domaine\entité\question\QuestionSys;
+use progression\domaine\entité\TestSys;
 use DomainException;
 
 class DécodeurQuestionSys extends DécodeurQuestion
@@ -36,9 +37,11 @@ class DécodeurQuestionSys extends DécodeurQuestion
 
 	protected static function load_infos_sys($question, $infos_question)
 	{
-		$question->utilisateur = $infos_question["utilisateur"];
+		$question->utilisateur = $infos_question["utilisateur"] ?? null;
 		$question->image = $infos_question["image"];
 		$question->solution = $infos_question["solution"] ?? null;
+		$question->init = $infos_question["init"] ?? null;
+		$question->commande = $infos_question["commande"] ?? null;
 
 		return $question;
 	}
@@ -46,14 +49,14 @@ class DécodeurQuestionSys extends DécodeurQuestion
 	protected static function load_tests($infos_question)
 	{
 		$tests = [];
-		foreach ($infos_question["tests"] as $i => $test) {
+		foreach ($infos_question["tests"] as $test) {
 			$tests[] = new TestSys(
-				$test["nom"] ?? "#" . ($i + 1),
-				$test["sortie"],
+				$test["nom"] ?? "",
+				$test["sortie"] ?? "",
 				$test["validation"],
 				$test["utilisateur"] ?? null,
-				$test["feedback_pos"] ?? null,
-				$test["feedback_neg"] ?? null,
+				$test["rétroactions"]["positive"] ?? null,
+				$test["rétroactions"]["négative"] ?? null,
 			);
 		}
 

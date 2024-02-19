@@ -1,0 +1,26 @@
+{
+  "data": {
+    "type": "token",
+    "id": "y6CiIfu_cC6y8evvzh4v8h3cxjwr2k1DjzXtRecrGOA",
+    "attributes": {
+      "username": "utilisateur_lambda",
+      "création": 990446400,
+      "expiration": 0,
+      "data": {
+        "données": "une donnée"
+      },
+      "ressources": {
+        "ressources": {
+          "url": "test",
+          "method": "POST"
+        }
+      },
+      "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InV0aWxpc2F0ZXVyX2xhbWJkYSIsImN1cnJlbnQiOjk5MDQ0NjQwMCwiZXhwaXJlZCI6MCwiZGF0YSI6eyJkb25uXHUwMGU5ZXMiOiJ1bmUgZG9ublx1MDBlOWUifSwicmVzc291cmNlcyI6eyJyZXNzb3VyY2VzIjp7InVybCI6InRlc3QiLCJtZXRob2QiOiJQT1NUIn19LCJ2ZXJzaW9uIjoiMS4yLjMifQ.y6CiIfu_cC6y8evvzh4v8h3cxjwr2k1DjzXtRecrGOA",
+      "version": "1.2.3"
+    },
+    "links": {
+      "self": "https://example.com/token/y6CiIfu_cC6y8evvzh4v8h3cxjwr2k1DjzXtRecrGOA",
+      "user": "https://example.com/user/utilisateur_lambda"
+    }
+  }
+}

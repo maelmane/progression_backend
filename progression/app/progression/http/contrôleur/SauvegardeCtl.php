@@ -21,9 +21,9 @@ namespace progression\http\contrôleur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
-use progression\domaine\interacteur\ObtenirSauvegardeInt;
-use progression\domaine\interacteur\EnregistrerSauvegardeInt;
+use progression\domaine\interacteur\{ObtenirSauvegardeInt, EnregistrerSauvegardeInt, IntéracteurException};
 use progression\http\transformer\SauvegardeTransformer;
+use progression\http\transformer\dto\GénériqueDTO;
 use progression\util\Encodage;
 use progression\domaine\entité\Sauvegarde;
 
@@ -32,6 +32,8 @@ class SauvegardeCtl extends Contrôleur
 	public function get(Request $request, $username, $question_uri, $langage)
 	{
 		Log::debug("SauvegardeCtl.get. Params : ", [$request->all(), $username, $question_uri, $langage]);
+
+		$réponse = null;
 
 		$sauvegarde = $this->obtenir_sauvegarde($username, $question_uri, $langage);
 		$réponse = $this->valider_et_préparer_réponse($sauvegarde, $username, $question_uri, $langage);
@@ -45,22 +47,30 @@ class SauvegardeCtl extends Contrôleur
 		Log::debug("SauvegardeCtl.post. Params : ", [$request->all(), $username, $question_uri]);
 
 		$réponse = null;
-
 		$validateur = $this->valider_paramètres($request);
 		if ($validateur->fails()) {
 			$réponse = $this->réponse_json(["erreur" => $validateur->errors()], 400);
 		} else {
 			$résultat_sauvegarde = $this->sauvegarder_sauvegarde($request, $username, $question_uri);
-			$réponse = $this->valider_et_préparer_réponse(
-				$résultat_sauvegarde,
-				$username,
-				$question_uri,
-				$request->langage,
-			);
+			$id = array_key_first($résultat_sauvegarde);
+			$réponse = $this->valider_et_préparer_réponse($résultat_sauvegarde[$id], $username, $question_uri, $id);
 		}
 
 		Log::debug("SauvegardeCtl.post. Retour : ", [$réponse]);
 		return $réponse;
+	}
+
+	/**
+	 * @return array<string>
+	 */
+	public static function get_liens(string $id, string $langage): array
+	{
+		$urlBase = Contrôleur::$urlBase;
+
+		return [
+			"self" => "{$urlBase}/sauvegarde/{$id}/{$langage}",
+			"avancement" => "{$urlBase}/avancement/{$id}",
+		];
 	}
 
 	private function obtenir_sauvegarde($username, $question_uri, $langage)
@@ -80,15 +90,19 @@ class SauvegardeCtl extends Contrôleur
 	{
 		Log::debug("SauvegardeCtl.valider_et_préparer_réponse. Params : ", [$username, $question_uri, $langage]);
 
-		$sauvegarde_array = null;
-
 		if ($sauvegarde != null) {
-			$sauvegarde->id = $langage;
-			$sauvegarde_array = $this->item($sauvegarde, new SauvegardeTransformer("$username/$question_uri"));
+			$dto = new GénériqueDTO(
+				id: "$username/$question_uri/$langage",
+				objet: $sauvegarde,
+				liens: SauvegardeCtl::get_liens("$username/$question_uri", $langage),
+			);
+
+			$réponse = $this->item($dto, new SauvegardeTransformer());
+		} else {
+			$réponse = null;
 		}
 
-		$réponse = $this->préparer_réponse($sauvegarde_array);
-
+		$réponse = $this->préparer_réponse($réponse);
 		Log::debug("SauvegardeCtl.valider_et_préparer_réponse. Retour : ", [$réponse]);
 		return $réponse;
 	}
@@ -116,7 +130,7 @@ class SauvegardeCtl extends Contrôleur
 				"code" => "required",
 			],
 			[
-				"required" => "Err: 1004. Le champ :attribute est obligatoire.",
+				"required" => "Le champ :attribute est obligatoire.",
 			],
 		);
 	}

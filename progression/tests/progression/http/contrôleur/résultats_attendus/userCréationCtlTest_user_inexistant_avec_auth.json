@@ -1,0 +1,34 @@
+{
+  "data": {
+    "type": "user",
+    "id": "Marcel2",
+    "attributes": {
+      "username": "Marcel2",
+      "date_inscription": 1610810612,
+      "courriel": "marcel2@gmail.com",
+      "état": "en_attente_de_validation",
+      "rôle": "normal",
+      "préférences": "{préférences par défaut}"
+    },
+    "links": {
+      "self": "https://example.com/user/Marcel2",
+      "tokens": "https://example.com/user/Marcel2/tokens",
+      "avancements": "https://example.com/user/Marcel2/avancements",
+      "clés": "https://example.com/user/Marcel2/cles"
+    },
+    "relationships": {
+      "avancements": {
+        "links": {
+          "self": "https://example.com/user/Marcel2/relationships/avancements",
+          "related": "https://example.com/user/Marcel2/avancements"
+        }
+      },
+      "cles": {
+        "links": {
+          "self": "https://example.com/user/Marcel2/relationships/cles",
+          "related": "https://example.com/user/Marcel2/cles"
+        }
+      }
+    }
+  }
+}

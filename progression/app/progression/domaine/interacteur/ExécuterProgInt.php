@@ -18,23 +18,25 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Résultat;
+use progression\domaine\entité\{Exécutable, TestProg, Résultat};
 
 class ExécuterProgInt extends Interacteur
 {
-	public function exécuter($exécutable, $tests)
+	/**
+	 * @param array<TestProg> $tests
+	 * @return array<mixed>
+	 */
+	public function exécuter(Exécutable $exécutable, array $tests, string $image = null): array
 	{
-		$comp_resp = $this->source_dao->get_exécuteur()->exécuter_prog($exécutable, $tests);
-		if (!$comp_resp) {
-			return null;
-		}
+		$comp_resp = $this->source_dao->get_exécuteur()->exécuter_prog($exécutable, $tests, $image);
+
 		$réponse = [];
-		$résultats = null;
+		$résultats = [];
 
-		$réponse["temps_exécution"] = intval($comp_resp["temps_exec"] * 1000);
+		$réponse["temps_exécution"] = intval($comp_resp["temps_exécution"] * 1000);
 
-		foreach ($comp_resp["résultats"] as $résultat) {
-			$résultats[] = new Résultat(
+		foreach ($comp_resp["résultats"] as $hash => $résultat) {
+			$résultats[$hash] = new Résultat(
 				$résultat["output"],
 				$résultat["errors"],
 				false,

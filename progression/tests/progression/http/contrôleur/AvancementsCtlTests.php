@@ -19,8 +19,9 @@
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{Avancement, User, TentativeProg, Sauvegarde, Commentaire};
-use Illuminate\Auth\GenericUser;
+use progression\domaine\entité\{Avancement, TentativeProg, Sauvegarde, Commentaire};
+use progression\domaine\entité\user\{User, Rôle, État};
+use progression\UserAuthentifiable;
 
 final class AvancementsCtlTests extends ContrôleurTestCase
 {
@@ -28,21 +29,21 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("jdoe")
-			->andReturn(new User("jdoe"));
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("bob")
-			->andReturn(new User("bob"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0));
+		$mockUserDAO->shouldReceive("get_user")->with("bob")->andReturn(new User(username: "bob", date_inscription: 0));
 
 		// Avancement
-		$avancements = ["uri_a" => new Avancement(), "uri_b" => new Avancement()];
+		$avancements = [
+			"uri_a" => new Avancement(),
+			"uri_b" => new Avancement(),
+		];
 
 		$avancements_et_tentatives = [
 			"uri_a" => new Avancement(
@@ -109,8 +110,18 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 						tests_réussis: 0,
 						feedback: "feedbackTest",
 						commentaires: [
-							new Commentaire("Ceci est un commentaire", new User("oteur"), 1614974921, 42),
-							new Commentaire("Ceci est un autre commentaire", new User("oteur"), 1614974922, 43),
+							new Commentaire(
+								"Ceci est un commentaire",
+								new User(username: "oteur", date_inscription: 0),
+								1614974921,
+								42,
+							),
+							new Commentaire(
+								"Ceci est un autre commentaire",
+								new User(username: "oteur", date_inscription: 0),
+								1614974922,
+								43,
+							),
 						],
 					),
 					1614965818 => new TentativeProg(
@@ -122,7 +133,12 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 						tests_réussis: 2,
 						feedback: "feedbackTest",
 						commentaires: [
-							new Commentaire("Ceci est encore un autre commentaire", new User("oteur"), 1614984921, 24),
+							new Commentaire(
+								"Ceci est encore un autre commentaire",
+								new User(username: "oteur", date_inscription: 0),
+								1614984921,
+								24,
+							),
 						],
 					),
 				],
@@ -132,10 +148,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 		];
 
 		$mockAvancementDAO = Mockery::mock("progression\\dao\\AvancementDAO");
-		$mockAvancementDAO
-			->shouldReceive("get_tous")
-			->with("jdoe", [])
-			->andReturn($avancements);
+		$mockAvancementDAO->shouldReceive("get_tous")->with("jdoe", [])->andReturn($avancements);
 		$mockAvancementDAO
 			->shouldReceive("get_tous")
 			->with("jdoe", ["tentatives"])
@@ -148,10 +161,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 			->shouldReceive("get_tous")
 			->with("jdoe", ["tentatives", "tentatives.commentaires", "sauvegardes"])
 			->andReturn($avancements_tentatives_commentaires_et_sauvegardes);
-		$mockAvancementDAO
-			->shouldReceive("get_tous")
-			->with("bob", [])
-			->andReturn([]);
+		$mockAvancementDAO->shouldReceive("get_tous")->with("bob", [])->andReturn([]);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -168,7 +178,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_ayant_des_avancements_lorsquon_appelle_get_on_obtient_tous_les_avancements_et_ses_relations_sous_forme_json()
 	{
-		$user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$user = new UserAuthentifiable(username: "jdoe", date_inscription: 0, rôle: Rôle::NORMAL, état: État::ACTIF);
 		$résultat_observé = $this->actingAs($user)->call("GET", "/user/jdoe/avancements");
 
 		$this->assertResponseStatus(200);
@@ -180,7 +190,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_ayant_des_avancements_lorsquon_appelle_get_en_incluant_les_tentatives_on_obtient_tous_les_avancements_et_ses_relations_sous_forme_json()
 	{
-		$user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$user = new UserAuthentifiable(username: "jdoe", date_inscription: 0, rôle: Rôle::NORMAL, état: État::ACTIF);
 		$résultat_observé = $this->actingAs($user)->call("GET", "/user/jdoe/avancements?include=tentatives");
 
 		$this->assertResponseStatus(200);
@@ -192,7 +202,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_ayant_des_avancements_lorsquon_appelle_get_en_incluant_les_tentatives_et_les_sauvegardes_on_obtient_tous_les_avancements_et_ses_relations_sous_forme_json()
 	{
-		$user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$user = new UserAuthentifiable(username: "jdoe", date_inscription: 0, rôle: Rôle::NORMAL, état: État::ACTIF);
 		$résultat_observé = $this->actingAs($user)->call(
 			"GET",
 			"/user/jdoe/avancements?include=tentatives,sauvegardes",
@@ -207,7 +217,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_ayant_des_avancements_lorsquon_appelle_get_en_incluant_les_tentatives_leur_commentaires_et_les_sauvegardes_on_obtient_tous_les_avancements_et_ses_relations_sous_forme_json()
 	{
-		$user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$user = new UserAuthentifiable(username: "jdoe", date_inscription: 0, rôle: Rôle::NORMAL, état: État::ACTIF);
 		$résultat_observé = $this->actingAs($user)->call(
 			"GET",
 			"/user/jdoe/avancements?include=tentatives.commentaires,sauvegardes",
@@ -223,7 +233,7 @@ final class AvancementsCtlTests extends ContrôleurTestCase
 
 	public function test_étant_donné_un_utilisateur_sans_avancement_lorsquon_appelle_get_on_obtient_un_tableau_vide()
 	{
-		$user = new GenericUser(["username" => "bob", "rôle" => User::ROLE_NORMAL]);
+		$user = new UserAuthentifiable(username: "bob", date_inscription: 0, rôle: Rôle::NORMAL, état: État::ACTIF);
 		$résultat_observé = $this->actingAs($user)->call("GET", "/user/bob/avancements");
 
 		$this->assertResponseStatus(200);

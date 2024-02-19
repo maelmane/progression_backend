@@ -17,50 +17,126 @@
  */
 
 use progression\ContrôleurTestCase;
+use progression\domaine\entité\user\{État, Rôle};
+use progression\UserAuthentifiable;
+use Illuminate\Support\Facades\Config;
 
 final class ConfigCtlTests extends ContrôleurTestCase
 {
+	public function setUp(): void
+	{
+		parent::setUp();
+
+		putenv("APP_URL=https://example.com");
+		Config::set("version.numéro", "3.0.0");
+	}
+
 	// GET
+	// Utilisateur sans authentification
 	public function test_config_simple_sans_authentification()
 	{
 		putenv("AUTH_LOCAL=false");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->call("GET", "/config/");
+		$résultat_observé = $this->call("GET", "/");
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertJsonStringEqualsJsonString(
-			'{"AUTH":{"LDAP":false,"LOCAL":false}}',
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/config_sans_auth_anonyme.json",
 			$résultat_observé->getContent(),
 		);
 	}
 
-	public function test_config_simple_sans_LDAP()
+	// Utilisateur avec authentification locale
+	public function test_config_simple_avec_authentification_locale_utilisateur_anonyme()
 	{
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=false");
 
-		$résultat_observé = $this->call("GET", "/config/");
+		$résultat_observé = $this->call("GET", "/");
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertJsonStringEqualsJsonString(
-			'{"AUTH":{"LDAP":false,"LOCAL":true}}',
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/config_locale_anonyme.json",
 			$résultat_observé->getContent(),
 		);
 	}
 
-	public function test_config_simple_avec_LDAP_et_domaine()
+	public function test_config_simple_avec_authentification_locale_utilisateur_authentifié()
+	{
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
+
+		$user = new UserAuthentifiable(username: "jdoe", date_inscription: 0, rôle: Rôle::NORMAL, état: État::ACTIF);
+
+		$résultat_observé = $this->actingAs($user)->call("GET", "/");
+
+		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/config_locale_authentifié.json",
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_config_simple_avec_authentification_locale_utilisateur_inactif()
+	{
+		putenv("AUTH_LOCAL=true");
+		putenv("AUTH_LDAP=false");
+
+		$user = new UserAuthentifiable(username: "jdoe", date_inscription: 0, rôle: Rôle::NORMAL, état: État::INACTIF);
+
+		$résultat_observé = $this->actingAs($user)->call("GET", "/");
+
+		$this->assertEquals(401, $résultat_observé->status());
+	}
+
+	# Utilisateur LDAP
+	public function test_config_simple_avec_LDAP_utilisateur_anonyme()
+	{
+		putenv("AUTH_LOCAL=false");
+		putenv("AUTH_LDAP=true");
+		putenv("LDAP_DOMAINE=exemple.com");
+		putenv("LDAP_URL_MDP_REINIT=http://portail.exemple.com");
+
+		$résultat_observé = $this->call("GET", "/");
+
+		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/config_ldap_anonyme.json",
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_config_simple_avec_authentification_locale_et_LDAP_utilisateur_anonyme()
 	{
 		putenv("AUTH_LOCAL=true");
 		putenv("AUTH_LDAP=true");
 		putenv("LDAP_DOMAINE=exemple.com");
 		putenv("LDAP_URL_MDP_REINIT=http://portail.exemple.com");
 
-		$résultat_observé = $this->call("GET", "/config/");
+		$résultat_observé = $this->call("GET", "/");
 
 		$this->assertEquals(200, $résultat_observé->status());
-		$this->assertJsonStringEqualsJsonString(
-			'{"AUTH":{"LDAP":true,"LOCAL":true},"LDAP":{"DOMAINE":"exemple.com", "URL_MDP_REINIT":"http://portail.exemple.com"}}',
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/config_locale_et_ldap_anonyme.json",
+			$résultat_observé->getContent(),
+		);
+	}
+
+	public function test_config_simple_avec_LDAP_utilisateur_authentifié()
+	{
+		putenv("AUTH_LOCAL=false");
+		putenv("AUTH_LDAP=true");
+		putenv("LDAP_DOMAINE=exemple.com");
+		putenv("LDAP_URL_MDP_REINIT=http://portail.exemple.com");
+
+		$user = new UserAuthentifiable(username: "jdoe", date_inscription: 0, rôle: Rôle::NORMAL, état: État::ACTIF);
+
+		$résultat_observé = $this->actingAs($user)->call("GET", "/");
+
+		$this->assertEquals(200, $résultat_observé->status());
+		$this->assertJsonStringEqualsJsonFile(
+			__DIR__ . "/résultats_attendus/config_ldap_authentifié.json",
 			$résultat_observé->getContent(),
 		);
 	}

@@ -1,0 +1,34 @@
+{
+    "data": {
+        "attributes": {
+            "auteur": "",
+            "description": "",
+            "licence": "",
+            "niveau": "",
+            "objectif": "",
+            "sous_type": "questionProg",
+            "titre": "",
+            "énoncé": ""
+        },
+        "id": "cXVlc3Rpb25fZGVfdGVzdA",
+        "links": {
+            "résultats": "https://example.com/question/cXVlc3Rpb25fZGVfdGVzdA/resultats",
+            "self": "https://example.com/question/cXVlc3Rpb25fZGVfdGVzdA"
+        },
+        "relationships": {
+            "ebauches": {
+                "links": {
+                    "related": "https://example.com/question/cXVlc3Rpb25fZGVfdGVzdA/ebauches",
+                    "self": "https://example.com/question/cXVlc3Rpb25fZGVfdGVzdA/relationships/ebauches"
+                }
+            },
+            "tests": {
+                "links": {
+                    "related": "https://example.com/question/cXVlc3Rpb25fZGVfdGVzdA/tests",
+                    "self": "https://example.com/question/cXVlc3Rpb25fZGVfdGVzdA/relationships/tests"
+                }
+            }
+        },
+        "type": "question"
+    }
+}

@@ -25,56 +25,39 @@ final class ChargeurQuestionFichierTests extends TestCase
 {
 	public function test_étant_donné_un_uri_de_fichier_lorsquon_charge_la_question_on_obtient_un_tableau_associatif_représentant_la_question()
 	{
-		$résultat_attendu["type"] = "prog";
-		$résultat_attendu["titre"] = "Affichage répété";
-		$résultat_attendu["objectif"] = "Exercice simple sur les itérations à nombre d'itérations fixe";
-		$résultat_attendu["énoncé"] =
-			"Saisissez un nombre sur l'entrée standard puis faites afficher la phrase «Bonjour le monde!» autant de fois.";
-		$résultat_attendu["auteur"] = "Albert Einstein";
-		$résultat_attendu["licence"] = "poétique";
-		$résultat_attendu["niveau"] = "débutant";
-		$résultat_attendu["rétroactions"] = [
-			"négative" => "Pour tout savoir sur les itérations énumérées : [clique ici](http://unlien.com)",
-			"positive" => "Bravo! tu es prêt à passer à un type de boucles plus complexe",
-		];
-
-		// Ébauches
-		$résultat_attendu["ébauches"] = [
-			"python" =>
-				"#+VISIBLE\nnb_répétitions = int( input() )\n\n#+TODO\n\nprint( \"Bonjour le monde\" )\n\n#-TODO\n\n#-VISIBLE\n",
-			"java" =>
-				"import java.util.Scanner;\n\npublic class exec {\n\n//+VISIBLE\n\npublic static void main(String[] args) {\n\n	Scanner input = new Scanner( System.in );\n		\n	nb_répétitions = input.nextInt();\n\n//+TODO\n\n	System.out.println( \"Bonjour le monde\" );\n\n//-TODO\n\n	}\n	\n//-VISIBLE\n\n}\n",
-		];
-
-		// Tests
-		$résultat_attendu["tests"] = [
-			[
-				"nom" => "10 fois",
-				"sortie" =>
-					"Bonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\nBonjour le monde\n",
-				"entrée" => "10",
+		$résultat_attendu = [
+			"type" => "prog",
+			"titre" => "Affichage répété",
+			"objectif" => "Exercice simple sur les itérations à nombre d'itérations fixe",
+			"énoncé" =>
+				"Saisissez un nombre sur l'entrée standard puis faites afficher la phrase «Bonjour le monde!» autant de fois.",
+			"auteur" => "Albert Einstein",
+			"licence" => "poétique",
+			"niveau" => "débutant",
+			"rétroactions" => [
+				"négative" => "Pour tout savoir sur les itérations énumérées : [clique ici](http://unlien.com)",
+				"positive" => "Bravo! tu es prêt à passer à un type de boucles plus complexe",
 			],
-			[
-				"nom" => "1 fois",
-				"sortie" => "Bonjour le monde",
-				"entrée" => "1",
+			// Ébauches
+			"ébauches" => [
+				"python" => "print(\"Bonjour le monde\")\n",
+				"java" => "System.out.println(\"Bonjour le monde\");\n",
 			],
-			[
-				"nom" => "0 fois",
-				"sortie" => "",
-				"entrée" => "0",
-				"rétroactions" => [
-					"positive" => "Bien joué! 0 est aussi une entrée valable.",
-					"négative" => "N'oublie pas les cas limites, 0 est aussi une entrée valable!",
+			// Tests
+			"tests" => [
+				[
+					"nom" => "1 fois",
+					"sortie" => "Bonjour le monde",
+					"entrée" => "1",
 				],
-			],
-			[
-				"nom" => "2 fois",
-				"sortie" => "Bonjour\nBonjour\n",
-				"entrée" => "2",
-				"rétroactions" => [
-					"positive" => "Bien joué!",
-					"négative" => "Rien à dire",
+				[
+					"nom" => "0 fois",
+					"sortie" => "",
+					"entrée" => "0",
+					"rétroactions" => [
+						"positive" => "Bien joué! 0 est aussi une entrée valable.",
+						"négative" => "N'oublie pas les cas limites, 0 est aussi une entrée valable!",
+					],
 				],
 			],
 		];
@@ -110,15 +93,10 @@ final class ChargeurQuestionFichierTests extends TestCase
 		}
 	}
 
-	public function test_étant_donné_un_uri_de_fichier_non_existant_lorsquon_charge_la_question_on_obtient_une_ChargeurException()
+	public function test_étant_donné_un_uri_de_fichier_non_existant_lorsquon_charge_la_question_on_obtient_null()
 	{
 		$uri = "file://" . __DIR__ . "/démo/inexistant/info.yml";
 
-		try {
-			$résultat_obtenu = (new ChargeurQuestionFichier())->récupérer_question($uri);
-			$this->fail();
-		} catch (ChargeurException $résultat_obtenu) {
-			$this->assertEquals("Le fichier {$uri} ne peut pas être chargé.", $résultat_obtenu->getMessage());
-		}
+		$this->assertNull((new ChargeurQuestionFichier())->récupérer_question($uri));
 	}
 }

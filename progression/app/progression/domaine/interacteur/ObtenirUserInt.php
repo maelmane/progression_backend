@@ -18,14 +18,36 @@
 
 namespace progression\domaine\interacteur;
 
+use progression\domaine\entité\user\User;
+use progression\dao\DAOException;
+
 class ObtenirUserInt extends Interacteur
 {
 	/**
 	 * @param mixed $includes
 	 * lliste de niveaux de sous-objets à inclure; true pour inclure tous les niveaux.
 	 */
-	function get_user($username, mixed $includes = [])
+	function get_user(string $username = null, mixed $includes = []): User|null
 	{
-		return $this->source_dao->get_user_dao()->get_user($username, $includes);
+		$dao = $this->source_dao->get_user_dao();
+		$user = $dao->get_user(username: $username, includes: $includes);
+
+		return $user;
+	}
+
+	/**
+	 * @param mixed $includes
+	 * lliste de niveaux de sous-objets à inclure; true pour inclure tous les niveaux.
+	 */
+	function trouver(string $username = null, string $courriel = null, mixed $includes = []): User|null
+	{
+		try {
+			$dao = $this->source_dao->get_user_dao();
+			$user = $dao->trouver(username: $username, courriel: $courriel, includes: $includes);
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e, 503);
+		}
+
+		return $user;
 	}
 }

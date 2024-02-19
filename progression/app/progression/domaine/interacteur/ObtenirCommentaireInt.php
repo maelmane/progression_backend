@@ -19,7 +19,7 @@
 namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\Commentaire;
-use progression\dao\DAOFactory;
+use progression\dao\DAOException;
 
 class ObtenirCommentaireInt extends Interacteur
 {
@@ -27,21 +27,31 @@ class ObtenirCommentaireInt extends Interacteur
 	 * @param mixed $includes
 	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
 	 */
-	public function get_commentaire_par_id($id, mixed $includes = [])
+	public function get_commentaire_par_id($id, mixed $includes = []): Commentaire|null
 	{
-		$commentaire = $this->source_dao->get_commentaire_dao()->get_commentaire($id, $includes);
+		try {
+			$commentaire = $this->source_dao->get_commentaire_dao()->get_commentaire($id, $includes);
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e, 503);
+		}
+
 		return $commentaire;
 	}
 
 	/**
 	 * @param mixed $includes
 	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
+	 * @return array<Commentaire>
 	 */
-	public function get_tous_par_tentative($username, $question_uri, $date, mixed $includes = [])
+	public function get_tous_par_tentative($username, $question_uri, $date, mixed $includes = []): array
 	{
-		$commentaires = $this->source_dao
-			->get_commentaire_dao()
-			->get_tous_par_tentative($username, $question_uri, $date, $includes);
+		try {
+			$commentaires = $this->source_dao
+				->get_commentaire_dao()
+				->get_tous_par_tentative($username, $question_uri, $date, $includes);
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e, 503);
+		}
 		return $commentaires;
 	}
 }

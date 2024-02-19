@@ -19,150 +19,176 @@
 namespace progression\domaine\interacteur;
 
 use LDAP\Result;
-use progression\domaine\entité\Clé;
-use progression\dao\{DAOFactory, UserDAO};
-
-class AuthException extends \Exception
-{
-}
+use Illuminate\Support\Facades\Log;
+use progression\domaine\entité\clé\Portée;
+use progression\domaine\entité\user\{User, Rôle};
+use progression\dao\{UserDAO, DAOException};
 
 class LoginInt extends Interacteur
 {
-	function effectuer_login_par_clé($username, $nom_clé, $secret)
+	public function effectuer_login_par_clé($username, $nom_clé, $secret): User|null
 	{
-		$dao = DAOFactory::getInstance()->get_clé_dao();
+		$dao = $this->source_dao->get_clé_dao();
 
-		$clé = $dao->get_clé($username, $nom_clé);
-		if (
-			$clé &&
-			$clé->est_valide() &&
-			$clé->portée == Clé::PORTEE_AUTH &&
-			$dao->vérifier($username, $nom_clé, $secret)
-		) {
-			$dao = DAOFactory::getInstance()->get_user_dao();
-			return $dao->get_user($username);
-		} else {
-			syslog(LOG_NOTICE, "Clé invalide pour $username");
-			return null;
+		try {
+			$clé = $dao->get_clé($username, $nom_clé);
+			if (
+				$clé &&
+				$clé->est_valide() &&
+				$clé->portée == Portée::AUTH &&
+				$dao->vérifier($username, $nom_clé, $secret)
+			) {
+				$dao = $this->source_dao->get_user_dao();
+				return $dao->get_user($username);
+			} else {
+				return null;
+			}
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e);
 		}
 	}
 
-	function effectuer_login_par_identifiant($username, $password = null, $domaine = null)
-	{
-		syslog(LOG_INFO, "Tentative de connexion : $username");
-
-		if (!$this->vérifier_champ_valide($username)) {
+	public function effectuer_login_par_identifiant(
+		string $identifiant,
+		string $password = null,
+		string $domaine = null,
+	): User|null {
+		if (!$this->vérifier_champ_valide($identifiant)) {
 			return null;
 		}
 
 		$user = null;
-
 		$auth_local = getenv("AUTH_LOCAL") === "true";
 		$auth_ldap = getenv("AUTH_LDAP") === "true";
 
 		if ($auth_ldap && $domaine) {
 			// LDAP
-			$user = $this->login_ldap($username, $password, $domaine);
+			$user = $this->login_ldap($identifiant, $password, $domaine);
 		} elseif ($auth_local) {
 			// Local
-			$user = $this->login_local($username, $password);
+			$user = $this->login_local($identifiant, $password);
 		} elseif (!$auth_ldap) {
 			// Sans authentification
-			$user = $this->login_sans_authentification($username);
-		}
-
-		if ($user != null) {
-			syslog(LOG_INFO, "Connexion réussie : $username");
+			$user = $this->login_sans_authentification($identifiant, null);
 		}
 
 		return $user;
 	}
 
-	function login_local($username, $password)
+	private function login_local(string $identifiant, string $password = null): User|null
 	{
-		if ($password === null) {
-			return null;
-		}
-
-		$user = (new ObtenirUserInt())->get_user($username);
-		if ($user && $this->source_dao->get_user_dao()->vérifier_password($user, $password)) {
-			return $user;
-		} else {
-			return null;
-		}
-	}
-
-	function login_ldap($username, $password, $domaine)
-	{
-		if ($password === null) {
-			return null;
-		}
-
 		$user = null;
-		if ($this->get_username_ldap($username, $password, $domaine)) {
-			$user = $this->login_sans_authentification($username);
+
+		$user_dao = $this->source_dao->get_user_dao();
+
+		$user =
+			strpos($identifiant, "@") === false
+				? $user_dao->get_user($identifiant)
+				: $user_dao->trouver(courriel: $identifiant);
+		try {
+			if (!$user || !$user_dao->vérifier_password($user, $password)) {
+				return null;
+			}
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e);
 		}
 
 		return $user;
 	}
 
-	function vérifier_champ_valide($champ)
+	private function login_ldap(string $identifiant, string|null $password, string $domaine): User|null
+	{
+		$user = null;
+		if ($password) {
+			$user_ldap = $this->get_user_ldap($identifiant, $password, $domaine);
+			if (!$user_ldap) {
+				return null;
+			}
+			$courriel = $this->get_courriel_ldap($user_ldap);
+			if (!$courriel) {
+				return null;
+			}
+
+			$user = $this->login_sans_authentification($identifiant, $courriel);
+		}
+		return $user;
+	}
+
+	private function vérifier_champ_valide($champ)
 	{
 		return $champ && !empty(trim($champ));
 	}
 
-	function get_username_ldap($username, $password, $domaine)
+	/**
+	 * @return array<mixed>|null
+	 */
+	private function get_user_ldap(string $identifiant, string $password, string $domaine): array|null
 	{
-		if ($domaine != $_ENV["LDAP_DOMAINE"]) {
-			throw new \Exception("Domaine multiple non implémenté");
+		if ($domaine != getenv("LDAP_DOMAINE")) {
+			throw new IntéracteurException("Domaine multiple non implémenté", 500);
 		}
 
 		// Connexion au serveur LDAP
-		$ldap = ldap_connect("ldap://" . $_ENV["LDAP_HOTE"], $_ENV["LDAP_PORT"]);
+		$ldap = @ldap_connect("ldap://" . getenv("LDAP_HOTE"), (int) getenv("LDAP_PORT"));
 		if (!$ldap) {
 			syslog(LOG_ERR, "Erreur de configuration LDAP");
-			throw new \Exception("Erreur de configuration LDAP");
+			throw new IntéracteurException("Erreur de configuration LDAP", 500);
 		}
 		ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
+		ldap_set_option($ldap, LDAP_OPT_NETWORK_TIMEOUT, (int) getenv("LDAP_TIMEOUT"));
 
 		// Bind l'utilisateur LDAP
-		if ($_ENV["LDAP_DN_BIND"] && $_ENV["LDAP_PW_BIND"]) {
-			$bind = ldap_bind($ldap, $_ENV["LDAP_DN_BIND"], $_ENV["LDAP_PW_BIND"]);
+		if (getenv("LDAP_DN_BIND") && getenv("LDAP_PW_BIND")) {
+			$bind = @ldap_bind($ldap, getenv("LDAP_DN_BIND"), getenv("LDAP_PW_BIND"));
 		} else {
-			$bind = ldap_bind($ldap, $username, $password);
+			$bind = @ldap_bind($ldap, $identifiant, $password);
 		}
 
 		if (!$bind) {
 			ldap_get_option($ldap, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
-			syslog(LOG_ERR, "Erreur de connexion à LDAP : $extended_error");
-			throw new AuthException(
-				"Impossible de se connecter au serveur d'authentification. Veuillez communiquer avec l'administrateur du site. Erreur : $extended_error",
-			);
+			Log::error("Erreur de connexion à LDAP : $extended_error");
+			throw new IntéracteurException("Impossible de se connecter au serveur d'authentification", 503);
 		}
 
 		//Recherche de l'utilisateur à authentifier
-		$result = ldap_search($ldap, $_ENV["LDAP_BASE"], "({$_ENV["LDAP_UID"]}=$username)", ["dn", "cn", 1]);
+		$result = @ldap_search(
+			$ldap,
+			base: getenv("LDAP_BASE") ?: "",
+			filter: "(" . getenv("LDAP_UID") . "=$identifiant)",
+			attributes: ["dn", "cn", "mail"],
+		);
+
 		if ($result instanceof Result) {
 			$user = ldap_get_entries($ldap, $result);
-			return $user &&
+
+			if (
+				$user &&
 				isset($user["count"]) &&
 				$user["count"] == 1 &&
 				isset($user[0]) &&
 				is_array($user[0]) &&
 				isset($user[0]["dn"]) &&
-				@ldap_bind($ldap, $user[0]["dn"], $password);
+				@ldap_bind($ldap, $user[0]["dn"], $password)
+			) {
+				return $user;
+			}
 		}
+
 		return null;
 	}
 
-	function login_sans_authentification($username)
+	/**
+	 * @param array<mixed> $user
+	 */
+	private function get_courriel_ldap(array $user): string|null
 	{
-		$user = (new ObtenirUserInt())->get_user($username);
-		if (!$user) {
-			$user = (new CréerUserInt())->créer_user($username);
-		}
+		return $user[0]["mail"][0] ?? null;
+	}
 
-		return $user;
+	private function login_sans_authentification(string $username, string $courriel = null): User
+	{
+		$user = (new InscriptionInt())->effectuer_inscription_sans_mdp($username, $courriel, Rôle::NORMAL);
+		return self::premier_élément($user);
 	}
 }

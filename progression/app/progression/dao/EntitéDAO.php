@@ -49,4 +49,15 @@ class EntitéDAO
 
 		return $sous_includes;
 	}
+
+	/**
+	 * @param array<mixed> $array
+	 */
+	public static function premier_élément(array $array): mixed
+	{
+		if (count($array) == 0) {
+			return null;
+		}
+		return array_values($array)[0];
+	}
 }

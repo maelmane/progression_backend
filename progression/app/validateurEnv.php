@@ -5,7 +5,7 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 if (file_exists(__DIR__ . ".env")) {
 	$dotenv->load();
 }
-$dotenv->required("APP_URL")->allowedRegexValues('(.*/$)');
+$dotenv->required("APP_URL")->allowedRegexValues('(.*$)');
 $dotenv->required("APP_NAME")->allowedRegexValues("(.*)");
 $dotenv->required("APP_TIMEZONE")->allowedValues(["UTC"]);
 
@@ -26,3 +26,6 @@ $dotenv->required("JWT_TTL")->isInteger();
 
 $dotenv->required("COMPILEBOX_URL")->allowedRegexValues("(.*)");
 $dotenv->required("COMPILEBOX_IMAGE_EXECUTEUR")->allowedRegexValues("(.*)");
+
+$dotenv->ifpresent("MAIL_MAILER")->allowedValues(["smtp", "log", "no"]);
+$dotenv->ifpresent("MAIL_PORT")->isInteger();

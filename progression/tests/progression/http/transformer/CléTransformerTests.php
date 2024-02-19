@@ -18,7 +18,8 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\{Clé, Portée};
+use progression\http\transformer\dto\GénériqueDTO;
 use PHPUnit\Framework\TestCase;
 
 final class CléTransformerTests extends TestCase
@@ -27,29 +28,37 @@ final class CléTransformerTests extends TestCase
 	{
 		parent::setUp();
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 	}
 
 	public function test_étant_donné_une_clé_d_authentification_lorsquon_la_transforme_on_obtient_un_array_identifque()
 	{
-		$clé = new Clé("1234", "2021-06-25 00:00:00", "2021-06-26 00:00:00", 1);
-		$clé->id = "clé%20de%20test";
+		$clé = new Clé("1234", "2021-06-25 00:00:00", "2021-06-26 00:00:00", Portée::AUTH);
 
 		$transformer = new CléTransformer("jdoe");
-		$résultat_obtenu = $transformer->transform($clé);
 
 		$résultat_attendu = [
 			"id" => "jdoe/clé%20de%20test",
 			"secret" => "1234",
 			"création" => "2021-06-25 00:00:00",
 			"expiration" => "2021-06-26 00:00:00",
-			"portée" => 1,
+			"portée" => "auth",
 			"links" => [
 				"self" => "https://example.com/cle/jdoe/clé%20de%20test",
 				"user" => "https://example.com/user/jdoe",
 			],
 		];
 
+		$résultat_obtenu = $transformer->transform(
+			new GénériqueDTO(
+				id: "jdoe/clé%20de%20test",
+				objet: $clé,
+				liens: [
+					"self" => "https://example.com/cle/jdoe/clé%20de%20test",
+					"user" => "https://example.com/user/jdoe",
+				],
+			),
+		);
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
 	}
 }

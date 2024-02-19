@@ -1,0 +1,59 @@
+{
+    "data": {
+        "attributes": {
+            "conteneur_id": "leConteneurDeLaNouvelleTentative",
+            "date_soumission": 1653690241,
+            "feedback": "Encore un effort!",
+            "réponse": null,
+            "réussi": false,
+            "sous_type": "tentativeSys",
+            "temps_exécution": 500,
+            "tests_réussis": 0,
+            "url_terminal": "https://tty.com/abcde"
+        },
+        "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fdmFsaWTDqWVfcsOpdXNzaWU/1653690241",
+        "links": {
+            "avancement": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fdmFsaWTDqWVfcsOpdXNzaWU",
+            "self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fdmFsaWTDqWVfcsOpdXNzaWU/1653690241"
+        },
+        "relationships": {
+            "commentaires": {
+                "links": {
+                    "related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fdmFsaWTDqWVfcsOpdXNzaWU/1653690241/commentaires",
+                    "self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fdmFsaWTDqWVfcsOpdXNzaWU/1653690241/relationships/commentaires"
+                }
+            },
+            "resultats": {
+                "data": [
+                    {
+                        "id": "0",
+                        "type": "resultat"
+                    }
+                ],
+                "links": {
+                    "related": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fdmFsaWTDqWVfcsOpdXNzaWU/1653690241/resultats",
+                    "self": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fdmFsaWTDqWVfcsOpdXNzaWU/1653690241/relationships/resultats"
+                }
+            }
+        },
+        "type": "tentative"
+    },
+    "included": [
+        {
+            "attributes": {
+                "feedback": "non!",
+                "résultat": false,
+                "sortie_erreur": "",
+                "sortie_observée": "",
+                "temps_exécution": 0
+            },
+            "id": "0",
+            "links": {
+                "self": "https://example.com/resultat/0",
+                "tentative": "https://example.com/tentative/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcXVlc3Rpb25fdmFsaWTDqWVfcsOpdXNzaWU/1653690241"
+            },
+            "type": "resultat"
+        }
+    ]
+}
+

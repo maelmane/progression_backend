@@ -18,7 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\{Exécutable, QuestionProg, TentativeProg};
+use progression\domaine\entité\question\QuestionProg;
+use progression\domaine\entité\{Exécutable, TentativeProg};
 use PHPUnit\Framework\TestCase;
 use Mockery;
 
@@ -348,6 +349,37 @@ final class PréparerProgIntTests extends TestCase
              # Ne devrait pas être ici
              #+TODO
              print(\"Test 123\")",
+		);
+
+		$interacteur = new PréparerProgInt();
+		$résultat_obtenu = $interacteur->préparer_exécutable($question, $tentative);
+
+		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+	}
+	public function test_étant_donné_une_questionprog_avec_un_todo_à_la_toute_fin_lorsque_préparé_on_obtient_objet_exécutable_comportant_le_seulement_code_utilisateur_après_le_todo()
+	{
+		$résultat_attendu = new Exécutable(
+			"
+            # Sortie. À faire
+            # 
+            sortie effectuée",
+
+			"python",
+		);
+
+		$question = new QuestionProg();
+		$question->exécutables["python"] = new Exécutable(
+			"
+            # Sortie. À faire
+            # +TODO\n",
+			"python",
+		);
+
+		$tentative = new TentativeProg(
+			"python",
+			" Sortie. À faire
+            # +TODO
+            sortie effectuée",
 		);
 
 		$interacteur = new PréparerProgInt();

@@ -21,10 +21,14 @@ namespace progression\dao;
 use Illuminate\Database\QueryException;
 use progression\domaine\entité\Sauvegarde;
 use progression\dao\models\{AvancementMdl, SauvegardeMdl};
+use progression\domaine\interacteur\IntégritéException;
 
 class SauvegardeDAO extends EntitéDAO
 {
-	public function get_toutes($username, $question_uri, $includes = [])
+	/**
+	 * @return array<Sauvegarde>
+	 */
+	public function get_toutes($username, $question_uri, $includes = []): array
 	{
 		try {
 			return $this->construire(
@@ -41,7 +45,7 @@ class SauvegardeDAO extends EntitéDAO
 		}
 	}
 
-	public function get_sauvegarde($username, $question_uri, $langage, $includes = [])
+	public function get_sauvegarde($username, $question_uri, $langage, $includes = []): Sauvegarde|null
 	{
 		try {
 			$sauvegarde = SauvegardeMdl::select("sauvegarde.*")
@@ -52,13 +56,16 @@ class SauvegardeDAO extends EntitéDAO
 				->where("langage", $langage)
 				->first();
 
-			return $sauvegarde ? $this->construire([$sauvegarde], $includes)[$langage] : null;
+			return self::premier_élément($this->construire([$sauvegarde], $includes));
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}
 
-	public function save($username, $question_uri, $langage, $sauvegarde)
+	/**
+	 * @return array<Sauvegarde>
+	 */
+	public function save($username, $question_uri, $langage, $sauvegarde): array
 	{
 		try {
 			$avancement = AvancementMdl::select("avancement.id")
@@ -69,7 +76,7 @@ class SauvegardeDAO extends EntitéDAO
 				->first();
 
 			if (!$avancement) {
-				return null;
+				throw new IntégritéException("Impossible de sauvegarder la ressource; le parent n'existe pas.");
 			}
 
 			$objet = [
@@ -79,8 +86,14 @@ class SauvegardeDAO extends EntitéDAO
 			];
 
 			return $this->construire([
-				SauvegardeMdl::updateOrCreate(["avancement_id" => $avancement["id"], "langage" => $langage], $objet),
-			])[$langage];
+				SauvegardeMdl::updateOrCreate(
+					[
+						"avancement_id" => $avancement["id"],
+						"langage" => $langage,
+					],
+					$objet,
+				),
+			]);
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -88,12 +101,11 @@ class SauvegardeDAO extends EntitéDAO
 
 	public static function construire($data, $includes = [])
 	{
-		if ($data == null) {
-			return [];
-		}
-
 		$sauvegardes = [];
-		foreach ($data as $i => $item) {
+		foreach ($data as $item) {
+			if ($item == null) {
+				continue;
+			}
 			$sauvegardes[$item["langage"]] = new Sauvegarde($item["date_sauvegarde"], $item["code"]);
 		}
 

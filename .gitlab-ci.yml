@@ -26,12 +26,12 @@ variables:
   BRANCHE: $CI_COMMIT_REF_NAME
 
 .preparer_contexte: &preparer_contexte
+    - DOCKER_HOST= 
     - apk add ca-certificates openssh
     - mkdir ~/.ssh && cp $ID_RSA ~/.ssh/id_rsa && chmod 400 ~/.ssh/id_rsa
     - echo -e "Host *\n  StrictHostKeyChecking no" > ~/.ssh/config
     - docker context create --docker host=ssh://$CD_USER@$CD_HOST:$CD_PORT --description="Production" prod
     - docker context use prod
-    - DOCKER_HOST= 
 
 .login: &login
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -200,13 +200,13 @@ stop_staging:
     manual
 
 # Déploiement sur progression.dti.crosemont.quebec
-deploy_dti:
+deploy_prod:
   stage: deploy_image
   needs: [tag_latest]
   environment:
-    name: dti_prod
+    name: prod
     url: https://progression.dti.crosemont.quebec/api/v1/
-    on_stop: stop_dti
+    on_stop: stop_prod
   before_script:
     - *preparer_contexte
     - *login
@@ -218,10 +218,10 @@ deploy_dti:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
 
-stop_dti:
+stop_prod:
   stage: deploy_image
   environment:
-    name: dti_prod
+    name: prod
     action: stop
   before_script:
     - *preparer_contexte
@@ -288,6 +288,8 @@ pages_dev:
   - "! grep -c nil public/dev/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
+  when:
+    manual
   artifacts:
     paths:
     - public
@@ -299,7 +301,7 @@ pages_master:
     - job: deploy_staging
       optional: true
   variables:
-    PROGRESSION_API_URL: $URL_STAGING
+    PROGRESSION_API_URL: $URL_DEMO
   script:
   - docker run -e PROGRESSION_API_URL=$PROGRESSION_API_URL -v "$PROGRESSION_DIR/:/tmp/" $CI_REGISTRY/$CI_PROJECT_NAMESPACE/dev:latest emacs --batch --load ~/.emacs.el --load /tmp/doc/publish.el --funcall org-publish-all
   - mkdir public && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/
@@ -307,6 +309,8 @@ pages_master:
   only:
     - dev
     - master
+  when:
+    manual
   artifacts:
     paths:
     - public
@@ -325,3 +329,6 @@ pages:
   only:
     - dev
     - master
+  when:
+    manual
+     

@@ -15,12 +15,15 @@
    You should have received a copy of the GNU General Public License
    along with Progression.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{Question, QuestionProg, Avancement, TentativeProg, Sauvegarde, User, Commentaire};
-use Illuminate\Auth\GenericUser;
+use progression\dao\question\ChargeurException;
+use progression\domaine\entité\question\{Question, QuestionProg, État};
+use progression\domaine\entité\{Avancement, TentativeProg, Sauvegarde, Commentaire};
+use progression\domaine\entité\user\{User, Rôle};
+use progression\domaine\entité\user\État as UserÉtat;
+use progression\UserAuthentifiable;
 
 final class AvancementCtlTests extends ContrôleurTestCase
 {
@@ -30,24 +33,26 @@ final class AvancementCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new UserAuthentifiable(
+			username: "jdoe",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: UserÉtat::ACTIF,
+		);
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
 		// UserDAO
 		$mockUserDAO = Mockery::mock("progression\\dao\\UserDAO");
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("jdoe")
-			->andReturn(new User("jdoe"));
+			->andReturn(new User(username: "jdoe", date_inscription: 0, rôle: Rôle::NORMAL, état: UserÉtat::ACTIF));
 		$mockUserDAO
 			->shouldReceive("get_user")
 			->with("roger")
-			->andReturn(new User("roger"));
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("Marcel")
-			->andReturn(null);
+			->andReturn(new User(username: "roger", date_inscription: 0, rôle: Rôle::NORMAL, état: UserÉtat::ACTIF));
+		$mockUserDAO->shouldReceive("get_user")->with("Marcel")->andReturn(null);
 
 		// Question Appeler une fonction
 		$question = new QuestionProg();
@@ -82,21 +87,25 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		$mockQuestionDAO
 			->shouldReceive("get_question")
 			->with("https://depot.com/roger/question_inexistante")
-			->andReturn(null);
+			->andThrow(
+				new ChargeurException(
+					"Le fichier https://depot.com/roger/question_inexistante ne peut pas être chargé.",
+				),
+			);
 
 		// Avancement
 		$avancement_réussi = new Avancement();
 		$avancement_réussi->date_modification = 1614965818;
 		$avancement_réussi->date_réussite = 1614965817;
-		$avancement_réussi->etat = 2;
+		$avancement_réussi->état = État::REUSSI;
 		$avancement_réussi->titre = "Avancement de test";
 		$avancement_réussi->niveau = "facile";
 		$avancement_réussi->extra = "Infos extra";
 
 		$avancement_réussi_avec_tentatives_et_sauvegardes = new Avancement(
 			tentatives: [
-				1614965817 => new TentativeProg("python", "codeTest 1", 1614965817, true, [], 2, "feedbackTest"),
-				1614965818 => new TentativeProg("python", "codeTest 2", 1614965818, true, [], 2, "feedbackTest"),
+				1614965817 => new TentativeProg("python", "codeTest 1", 1614965817, true, [], 2, 120, "feedbackTest"),
+				1614965818 => new TentativeProg("python", "codeTest 2", 1614965818, true, [], 2, 150, "feedbackTest"),
 			],
 			titre: "Titre",
 			niveau: "facile",
@@ -117,8 +126,18 @@ final class AvancementCtlTests extends ContrôleurTestCase
 					tests_réussis: 2,
 					feedback: "feedbackTest",
 					commentaires: [
-						new Commentaire("Ceci est un commentaire", new User("oteur"), 1614974921, 42),
-						new Commentaire("Ceci est un autre commentaire", new User("oteur"), 1614974922, 43),
+						new Commentaire(
+							"Ceci est un commentaire",
+							new User(username: "oteur", date_inscription: 0),
+							1614974921,
+							42,
+						),
+						new Commentaire(
+							"Ceci est un autre commentaire",
+							new User(username: "oteur", date_inscription: 0),
+							1614974922,
+							43,
+						),
 					],
 				),
 				1614965818 => new TentativeProg(
@@ -130,7 +149,12 @@ final class AvancementCtlTests extends ContrôleurTestCase
 					tests_réussis: 2,
 					feedback: "feedbackTest",
 					commentaires: [
-						new Commentaire("Ceci est encore un autre commentaire", new User("oteur"), 1614984921, 24),
+						new Commentaire(
+							"Ceci est encore un autre commentaire",
+							new User(username: "oteur", date_inscription: 0),
+							1614984921,
+							24,
+						),
 					],
 				),
 			],
@@ -240,12 +264,15 @@ final class AvancementCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_un_avancement_existant_lorsquon_appelle_post_sans_question_uri_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
-			"avancement" => ["titre" => "Question test", "niveau" => "niveau test"],
+			"avancement" => [
+				"titre" => "Question test",
+				"niveau" => "niveau test",
+			],
 		]);
 
 		$this->assertResponseStatus(400);
 		$this->assertEquals(
-			'{"erreur":{"question_uri":["Err: 1004. Le champ question uri est obligatoire."]}}',
+			'{"erreur":{"question_uri":["Le champ question uri est obligatoire."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
@@ -253,13 +280,16 @@ final class AvancementCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_un_avancement_existant_lorsquon_appelle_post_avec_un_question_uri_non_encodé_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
-			"avancement" => ["titre" => "Question test", "niveau" => "niveau test"],
+			"avancement" => [
+				"titre" => "Question test",
+				"niveau" => "niveau test",
+			],
 			"question_uri" => "http://test.exemple.com/info.yml",
 		]);
 
 		$this->assertResponseStatus(400);
 		$this->assertEquals(
-			'{"erreur":{"question_uri":["Err: 1003. Le champ question_uri doit être un URL encodé en base64."]}}',
+			'{"erreur":{"question_uri":["Le champ question_uri doit être un URL encodé en base64."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
@@ -267,13 +297,16 @@ final class AvancementCtlTests extends ContrôleurTestCase
 	public function test_étant_donné_un_avancement_existant_lorsquon_appelle_post_avec_un_question_uri_non_valide_on_obtient_une_erreur_400()
 	{
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
-			"avancement" => ["titre" => "Question test", "niveau" => "niveau test"],
+			"avancement" => [
+				"titre" => "Question test",
+				"niveau" => "niveau test",
+			],
 			"question_uri" => "Q2VjaSBuJ2VzdCBwdXMgdW4gVVJJ",
 		]);
 
 		$this->assertResponseStatus(400);
 		$this->assertEquals(
-			'{"erreur":{"question_uri":["Err: 1003. Le champ question_uri doit être un URL encodé en base64."]}}',
+			'{"erreur":{"question_uri":["Le champ question_uri doit être un URL encodé en base64."]}}',
 			$résultat_observé->getContent(),
 		);
 	}
@@ -286,12 +319,15 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		$mockAvancementDAO
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($user, $uri, $avancement) use ($nouvel_avancement) {
+			->withArgs(function ($user, $uri, $type, $avancement) use ($nouvel_avancement) {
 				return $user == "jdoe" &&
 					$uri == "https://depot.com/roger/questions_prog/nouvelle_question_defaut" &&
+					$type == "prog" &&
 					$avancement == $nouvel_avancement;
 			})
-			->andReturn($nouvel_avancement);
+			->andReturn([
+				"https://depot.com/roger/questions_prog/nouvelle_question_defaut" => $nouvel_avancement,
+			]);
 
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb25fZGVmYXV0",
@@ -312,12 +348,15 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		$mockAvancementDAO
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($user, $uri, $avancement) use ($nouvel_avancement) {
+			->withArgs(function ($user, $uri, $type, $avancement) use ($nouvel_avancement) {
 				return $user == "jdoe" &&
 					$uri == "https://depot.com/roger/questions_prog/nouvelle_question" &&
+					$type == "prog" &&
 					$avancement == $nouvel_avancement;
 			})
-			->andReturn($nouvel_avancement);
+			->andReturn([
+				"https://depot.com/roger/questions_prog/nouvelle_question" => $nouvel_avancement,
+			]);
 
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvbm91dmVsbGVfcXVlc3Rpb24",
@@ -364,18 +403,21 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		);
 		$avancement_sauvegardé->date_modification = 1614965818;
 		$avancement_sauvegardé->date_réussite = 1614965817;
-		$avancement_sauvegardé->etat = 2;
+		$avancement_sauvegardé->état = État::REUSSI;
 
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($user, $uri, $avancement) use ($avancement_sauvegardé) {
+			->withArgs(function ($user, $uri, $type, $avancement) use ($avancement_sauvegardé) {
 				return $user == "jdoe" &&
 					$uri == "https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" &&
+					$type == "prog" &&
 					$avancement == $avancement_sauvegardé;
 			})
-			->andReturn($avancement_sauvegardé);
+			->andReturn([
+				"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => $avancement_sauvegardé,
+			]);
 
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
 			"question_uri" =>
@@ -397,7 +439,7 @@ final class AvancementCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	public function test_étant_un_avancement_pour_une_question_inexistante_lorsquon_appelle_post_sans_avancement_on_obtient_ressource_non_trouvée()
+	public function test_étant_un_avancement_pour_une_question_inexistante_lorsquon_appelle_post_sans_avancement_on_obtient_une_erreur_422()
 	{
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO->shouldNotReceive("save");
@@ -406,21 +448,30 @@ final class AvancementCtlTests extends ContrôleurTestCase
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25faW5leGlzdGFudGU",
 		]);
 
-		$this->assertResponseStatus(404);
-		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
+		$this->assertResponseStatus(422);
+		$this->assertJsonStringEqualsJsonString(
+			'{"erreur":"Le fichier https://depot.com/roger/question_inexistante ne peut pas être chargé."}',
+			$résultat_observé->getContent(),
+		);
 	}
 
-	public function test_étant_un_avancement_pour_une_question_inexistante_lorsquon_appelle_post_avec_un_avancement_on_obtient_ressource_non_trouvée()
+	public function test_étant_un_avancement_pour_une_question_inexistante_lorsquon_appelle_post_avec_un_avancement_on_obtient_une_erreur_422()
 	{
 		$mockAvancementDAO = DAOFactory::getInstance()->get_avancement_dao();
 		$mockAvancementDAO->shouldNotReceive("save");
 
 		$résultat_observé = $this->actingAs($this->user)->call("POST", "/user/jdoe/avancements", [
-			"avancement" => ["titre" => "Question test", "niveau" => "niveau test"],
+			"avancement" => [
+				"titre" => "Question test",
+				"niveau" => "niveau test",
+			],
 			"question_uri" => "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25faW5leGlzdGFudGU",
 		]);
 
-		$this->assertResponseStatus(404);
-		$this->assertEquals('{"erreur":"Ressource non trouvée."}', $résultat_observé->getContent());
+		$this->assertResponseStatus(422);
+		$this->assertJsonStringEqualsJsonString(
+			'{"erreur":"Le fichier https://depot.com/roger/question_inexistante ne peut pas être chargé."}',
+			$résultat_observé->getContent(),
+		);
 	}
 }

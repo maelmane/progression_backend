@@ -18,7 +18,7 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\User;
+use progression\domaine\entité\user\User;
 use progression\dao\models\UserMdl;
 
 use DB;
@@ -26,32 +26,60 @@ use Illuminate\Database\QueryException;
 
 class UserDAO extends EntitéDAO
 {
-	public function get_user($username, $includes = [])
+	/**
+	 * @param array<string> $includes
+	 */
+	public function get_user(string $username, array $includes = []): User|null
 	{
-		$user = null;
-
 		try {
 			$user = UserMdl::query()
 				->where("username", $username)
 				->with(in_array("avancements", $includes) ? "avancements" : [])
 				->with(in_array("clés", $includes) ? "clés" : [])
 				->first();
-			return $user ? $this->construire([$user], $includes)[0] : null;
+			return self::premier_élément($this->construire([$user], $includes));
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}
 
-	public function save($user)
+	/**
+	 * @param array<string> $includes
+	 */
+	public function trouver(string $username = null, string $courriel = null, array $includes = []): User|null
+	{
+		if (!$username && !$courriel) {
+			return null;
+		}
+
+		try {
+			$user = UserMdl::query()
+				->where($username !== null ? "username" : [], $username)
+				->where($courriel !== null ? "courriel" : [], $courriel)
+				->with(in_array("avancements", $includes) ? "avancements" : [])
+				->with(in_array("clés", $includes) ? "clés" : [])
+				->first();
+			return $user ? $this->construire([$user], $includes)[$user["username"]] : null;
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+
+	/**
+	 * @return array<User>
+	 */
+	public function save(string $username, User $user): array
 	{
 		try {
 			$objet = [
 				"username" => $user->username,
-				"role" => $user->rôle,
+				"courriel" => $user->courriel,
+				"état" => $user->état,
+				"rôle" => $user->rôle,
 				"preferences" => $user->préférences,
+				"date_inscription" => $user->date_inscription,
 			];
-
-			return $this->construire([UserMdl::query()->updateOrCreate(["username" => $user->username], $objet)])[0];
+			return $this->construire([UserMdl::query()->updateOrCreate(["username" => $username], $objet)]);
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -79,22 +107,24 @@ class UserDAO extends EntitéDAO
 
 	public static function construire($data, $includes = [])
 	{
-		if ($data === null || count($data) == 0) {
-			return null;
-		}
-
 		$users = [];
-		foreach ($data as $user) {
-			$users[] = new User(
-				$user["username"],
-				$user["role"],
-				in_array("avancements", $includes)
-					? AvancementDAO::construire($user["avancements"], parent::filtrer_niveaux($includes, "avancements"))
+		foreach ($data as $item) {
+			if ($item == null) {
+				continue;
+			}
+			$users[$item->username] = new User(
+				username: $item["username"],
+				date_inscription: $item["date_inscription"],
+				courriel: $item["courriel"],
+				état: $item["état"],
+				rôle: $item["rôle"],
+				avancements: in_array("avancements", $includes)
+					? AvancementDAO::construire($item["avancements"], parent::filtrer_niveaux($includes, "avancements"))
 					: [],
-				in_array("clés", $includes)
-					? CléDAO::construire($user["clés"], parent::filtrer_niveaux($includes, "clés"))
+				clés: in_array("clés", $includes)
+					? CléDAO::construire($item["clés"], parent::filtrer_niveaux($includes, "clés"))
 					: [],
-				$user["preferences"] ?? "",
+				préférences: $item["preferences"] ?? "",
 			);
 		}
 		return $users;

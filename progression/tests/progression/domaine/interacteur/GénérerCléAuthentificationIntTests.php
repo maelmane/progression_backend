@@ -18,7 +18,7 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\{Clé, Portée};
 use progression\dao\DAOFactory;
 use PHPUnit\Framework\TestCase;
 use Mockery;
@@ -32,20 +32,12 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 			->allows("get_clé")
 			->with("jdoe", "clé existante")
 			->andReturn(
-				new Clé(
-					null,
-					(new \DateTime())->getTimestamp(),
-					(new \DateTime())->getTimestamp() + 1,
-					Clé::PORTEE_AUTH,
-				),
+				new Clé(null, (new \DateTime())->getTimestamp(), (new \DateTime())->getTimestamp() + 1, Portée::AUTH),
 			);
 		$mockCléDAO->allows("get_clé")->andReturn(null);
 
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
-		$mockDAOFactory
-			->allows()
-			->get_clé_dao()
-			->andReturn($mockCléDAO);
+		$mockDAOFactory->allows()->get_clé_dao()->andReturn($mockCléDAO);
 		DAOFactory::setInstance($mockDAOFactory);
 	}
 
@@ -59,17 +51,15 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 	{
 		$mockCléDAO = DAOFactory::getInstance()->get_clé_dao();
 
+		$clé_test = new Clé("", new \DateTime(), 0, Portée::AUTH);
+
 		$mockCléDAO
 			->shouldReceive("save")
 			->once()
-			->withArgs(function ($username, $nom, $clé) {
-				return $username == "jdoe" &&
-					$nom == "nouvelle clé" &&
-					$clé->création - (new \DateTime())->getTimestamp() < 1 &&
-					$clé->expiration == 0 &&
-					$clé->portée == Clé::PORTEE_AUTH;
+			->withArgs(function ($username, $nom, $clé) use ($clé_test) {
+				return $username == "jdoe" && $nom == "nouvelle clé" && ($clé = $clé_test);
 			})
-			->andReturnArg(2);
+			->andReturn(["nouvelle clé" => $clé_test]);
 
 		$résultat_obtenu = (new GénérerCléAuthentificationInt())->générer_clé("jdoe", "nouvelle clé");
 
@@ -82,30 +72,38 @@ final class GénérerCléAuthentificationIntTests extends TestCase
 
 		$mockCléDAO
 			->allows("save")
-			->with("jdoe", Mockery::Any(), Mockery::Any())
-			->andReturnArg(2);
+			->with("jdoe", "clé 1", Mockery::Any())
+			->andReturnUsing(function ($username, $nom, $clé) {
+				return ["clé 1" => $clé];
+			});
+		$mockCléDAO
+			->allows("save")
+			->with("jdoe", "clé 2", Mockery::Any())
+			->andReturnUsing(function ($username, $nom, $clé) {
+				return ["clé 2" => $clé];
+			});
 
-		$clé1 = (new GénérerCléAuthentificationInt())->générer_clé("jdoe", "clé 1");
-		$clé2 = (new GénérerCléAuthentificationInt())->générer_clé("jdoe", "clé 2");
+		$clé1 = (new GénérerCléAuthentificationInt())->générer_clé("jdoe", "clé 1")["clé 1"];
+		$clé2 = (new GénérerCléAuthentificationInt())->générer_clé("jdoe", "clé 2")["clé 2"];
 
 		$this->assertNotEquals($clé1->secret, $clé2->secret);
 	}
 
-	public function test_étant_donné_un_utilisateur_jdoe_lorsquon_génère_une_deuxième_clé_d_authentification_avec_le_même_nom_on_obtient_null()
+	public function test_étant_donné_un_utilisateur_jdoe_lorsquon_génère_une_deuxième_clé_d_authentification_avec_le_même_nom_on_obtient_une_exception()
 	{
 		$mockCléDAO = DAOFactory::getInstance()->get_clé_dao();
+
+		$this->expectException(DuplicatException::class);
 
 		$clé = (new GénérerCléAuthentificationInt())->générer_clé("jdoe", "clé existante");
-
-		$this->assertNull($clé);
 	}
 
-	public function test_étant_donné_un_utilisateur_jdoe_lorsquon_génère_une_clé_d_authentification_sans_nom_on_obtient_null()
+	public function test_étant_donné_un_utilisateur_jdoe_lorsquon_génère_une_clé_d_authentification_sans_nom_on_obtient_une_exception()
 	{
 		$mockCléDAO = DAOFactory::getInstance()->get_clé_dao();
 
-		$clé = (new GénérerCléAuthentificationInt())->générer_clé("jdoe", "");
+		$this->expectException(RessourceInvalideException::class);
 
-		$this->assertNull($clé);
+		$clé = (new GénérerCléAuthentificationInt())->générer_clé("jdoe", "");
 	}
 }

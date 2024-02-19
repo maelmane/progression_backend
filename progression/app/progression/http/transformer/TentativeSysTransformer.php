@@ -20,6 +20,7 @@ namespace progression\http\transformer;
 
 use League\Fractal\Resource\Collection;
 use progression\domaine\entité\{Tentative, TentativeSys};
+use progression\http\transformer\dto\TentativeDTO;
 
 class TentativeSysTransformer extends BaseTransformer
 {
@@ -29,25 +30,32 @@ class TentativeSysTransformer extends BaseTransformer
 	/**
 	 * @return array<mixed>
 	 */
-	public function transform(TentativeSys $tentative): array
+	public function transform(TentativeDTO $data_in): array
 	{
-		$data_out = (new TentativeTransformer($this->id))->transform($tentative);
+		$id = $data_in->id;
+		$tentative = $data_in->objet;
+		$liens = $data_in->liens;
+
+		$data_out = (new TentativeTransformer())->transform($data_in);
 		$data_out = array_merge($data_out, [
-			"sous-type" => "tentativeSys",
-			"conteneur" => $tentative->conteneur,
+			"sous_type" => "tentativeSys",
+			"conteneur_id" => $tentative->conteneur_id,
+			"url_terminal" => $tentative->url_terminal,
 			"réponse" => $tentative->réponse,
 			"tests_réussis" => $tentative->tests_réussis,
 		]);
 		return $data_out;
 	}
 
-	public function includeResultats(TentativeSys $tentative): Collection
+	public function includeResultats(TentativeDTO $data_in): Collection
 	{
-		return (new TentativeTransformer($this->id))->includeResultats($tentative);
+		$id = $data_in->id;
+		return (new TentativeTransformer())->includeResultats($data_in);
 	}
 
-	public function includeCommentaires(TentativeSys $tentative): Collection
+	public function includeCommentaires(TentativeDTO $data_in): Collection
 	{
-		return (new TentativeTransformer($this->id))->includeCommentaires($tentative);
+		$id = $data_in->id;
+		return (new TentativeTransformer())->includeCommentaires($data_in);
 	}
 }

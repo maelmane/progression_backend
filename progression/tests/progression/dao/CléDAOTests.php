@@ -18,24 +18,21 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\Clé;
+use progression\domaine\entité\clé\{Clé, Portée};
 use progression\TestCase;
+use progression\domaine\interacteur\IntégritéException;
 
 final class CléDAOTests extends TestCase
 {
 	public function setUp(): void
 	{
 		parent::setUp();
-		app("db")
-			->connection()
-			->beginTransaction();
+		app("db")->connection()->beginTransaction();
 	}
 
 	public function tearDown(): void
 	{
-		app("db")
-			->connection()
-			->rollBack();
+		app("db")->connection()->rollBack();
 		parent::tearDown();
 	}
 
@@ -44,7 +41,7 @@ final class CléDAOTests extends TestCase
 		$dao = new CléDAO();
 		$clé = $dao->get_clé("bob", "clé de test");
 
-		$résultat_attendu = new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH);
+		$résultat_attendu = new Clé(null, 1624593600, 1624680000, Portée::AUTH);
 		$this->assertEquals($résultat_attendu, $clé);
 	}
 
@@ -54,8 +51,8 @@ final class CléDAOTests extends TestCase
 		$clés = $dao->get_toutes("bob");
 
 		$résultat_attendu = [
-			"clé de test" => new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH),
-			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Clé::PORTEE_AUTH),
+			"clé de test" => new Clé(null, 1624593600, 1624680000, Portée::AUTH),
+			"clé de test 2" => new Clé(null, 1624593602, 1624680002, Portée::AUTH),
 		];
 		$this->assertEquals($résultat_attendu, $clés);
 	}
@@ -76,7 +73,7 @@ final class CléDAOTests extends TestCase
 
 		$dao = new CléDAO();
 		$résultat_obtenu = $dao->save("bob", "nouvelle clé", $clé);
-		$this->assertEquals($résultat_attendu, $résultat_obtenu);
+		$this->assertEquals(["nouvelle clé" => $résultat_attendu], $résultat_obtenu);
 	}
 
 	public function test_étant_donné_une_clé_inexistante_lorsquon_la_sauvegarde_on_la_retrouve_dans_la_bd_sans_son_secret()
@@ -86,7 +83,7 @@ final class CléDAOTests extends TestCase
 		$dao = new CléDAO();
 		$dao->save("bob", "nouvelle clé", $clé);
 
-		$résultat_attendu = new Clé(null, 1624593600, 1624680000, Clé::PORTEE_AUTH);
+		$résultat_attendu = new Clé(null, 1624593600, 1624680000, Portée::AUTH);
 		$résultat_obtenu = $dao->get_clé("bob", "nouvelle clé");
 
 		$this->assertEquals($résultat_attendu, $résultat_obtenu);
@@ -94,7 +91,7 @@ final class CléDAOTests extends TestCase
 
 	public function test_étant_donné_une_clé_existante_lorsquon_la_vérifie_en_donnant_le_bon_secret_on_obtient_vrai()
 	{
-		$clé = new Clé("secret", 1624593600, 1624680000, Clé::PORTEE_AUTH);
+		$clé = new Clé("secret", 1624593600, 1624680000, Portée::AUTH);
 
 		$dao = new CléDAO();
 		$dao->save("bob", "nouvelle clé", $clé);
@@ -104,7 +101,7 @@ final class CléDAOTests extends TestCase
 
 	public function test_étant_donné_une_clé_existante_lorsquon_la_vérifie_en_donnant_le_mauvais_secret_on_obtient_faux()
 	{
-		$clé = new Clé("secret", 1624593600, 1624680000, Clé::PORTEE_AUTH);
+		$clé = new Clé("secret", 1624593600, 1624680000, Portée::AUTH);
 
 		$dao = new CléDAO();
 		$dao->save("bob", "nouvelle clé", $clé);
@@ -114,7 +111,7 @@ final class CléDAOTests extends TestCase
 
 	public function test_étant_donné_une_clé_existante_lorsquon_la_sauvegarde_de_nouveau_on_obtient_une_exception()
 	{
-		$clé = new Clé(1234, 1624593600, 1624680000, Clé::PORTEE_AUTH);
+		$clé = new Clé(1234, 1624593600, 1624680000, Portée::AUTH);
 
 		$dao = new CléDAO();
 		try {

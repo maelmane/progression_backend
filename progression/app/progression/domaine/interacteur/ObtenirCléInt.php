@@ -18,8 +18,8 @@
 
 namespace progression\domaine\interacteur;
 
-use progression\domaine\entité\Clé;
-use progression\dao\DAOFactory;
+use progression\domaine\entité\clé\Clé;
+use progression\dao\DAOException;
 
 class ObtenirCléInt extends Interacteur
 {
@@ -27,13 +27,15 @@ class ObtenirCléInt extends Interacteur
 	 * @param mixed $includes
 	 * liste des sous-objets à inclure; true pour inclure tous les niveaux.
 	 */
-	public function get_clé($username, $numéro, mixed $includes = [])
+	public function get_clé($username, $numéro, mixed $includes = []): Clé|null
 	{
-		$dao = DAOFactory::getInstance()->get_clé_dao();
+		try {
+			$clé = $this->source_dao->get_clé_dao()->get_clé($username, $numéro, $includes);
+		} catch (DAOException $e) {
+			throw new IntéracteurException($e, 503);
+		}
 
-		$clé = $dao->get_clé($username, $numéro, $includes);
-
-		if ($clé) {
+		if ($clé != null) {
 			//Caviarde le secret
 			$clé->secret = null;
 		}

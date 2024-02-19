@@ -18,14 +18,18 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\{Avancement, Question};
+use progression\domaine\entité\Avancement;
 use progression\dao\models\{AvancementMdl, UserMdl};
-use progression\dao\tentative\{TentativeDAO, TentativeProgDAO, TentativeSysDAO};
+use progression\dao\tentative\{TentativeProgDAO, TentativeSysDAO};
 use Illuminate\Database\QueryException;
+use progression\domaine\interacteur\IntégritéException;
 
 class AvancementDAO extends EntitéDAO
 {
-	public function get_tous($username, $includes = [])
+	/**
+	 * @return array<Avancement>
+	 */
+	public function get_tous($username, $includes = []): array
 	{
 		try {
 			return $this->construire(
@@ -42,7 +46,7 @@ class AvancementDAO extends EntitéDAO
 		}
 	}
 
-	public function get_avancement($username, $question_uri, $includes = [])
+	public function get_avancement($username, $question_uri, $includes = []): Avancement|null
 	{
 		try {
 			$data = AvancementMdl::select("avancement.*")
@@ -52,35 +56,39 @@ class AvancementDAO extends EntitéDAO
 				->where("user.username", $username)
 				->where("avancement.question_uri", $question_uri)
 				->first();
-			return $data ? $this->construire([$data], $includes)[$question_uri] : null;
+
+			return self::premier_élément($this->construire([$data], $includes));
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
 	}
 
-	public function save($username, $question_uri, $avancement)
+	/**
+	 * @return array<Avancement>
+	 */
+	public function save(string $username, string $question_uri, string $type, Avancement $avancement): array
 	{
 		try {
-			$user = UserMdl::query()
-				->where("username", $username)
-				->first();
+			$user = UserMdl::query()->where("username", $username)->first();
 
 			if (!$user) {
-				return null;
+				throw new IntégritéException("Impossible de sauvegarder la ressource; le parent n'existe pas.");
 			}
 
-			$objet = [];
-			$objet["etat"] = $avancement->etat;
-			$objet["question_uri"] = $question_uri;
-			$objet["titre"] = $avancement->titre;
-			$objet["niveau"] = $avancement->niveau;
-			$objet["date_modification"] = $avancement->date_modification;
-			$objet["date_reussite"] = $avancement->date_réussite;
-			$objet["extra"] = $avancement->extra;
+			$objet = [
+				"question_uri" => $question_uri,
+				"état" => $avancement->état,
+				"type" => $type,
+				"titre" => $avancement->titre,
+				"niveau" => $avancement->niveau,
+				"date_modification" => $avancement->date_modification,
+				"date_reussite" => $avancement->date_réussite,
+				"extra" => $avancement->extra,
+			];
 
 			return $this->construire([
 				AvancementMdl::updateOrCreate(["user_id" => $user["id"], "question_uri" => $question_uri], $objet),
-			])[$question_uri];
+			]);
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -88,25 +96,25 @@ class AvancementDAO extends EntitéDAO
 
 	public static function construire($data, $includes = [])
 	{
-		if ($data == null) {
-			return [];
-		}
 		$avancements = [];
-		foreach ($data as $i => $item) {
+		foreach ($data as $item) {
 			$tentatives = [];
+			if ($item == null) {
+				continue;
+			}
 			if ($includes) {
 				if ($item["type"] == "prog") {
 					$tentatives = in_array("tentatives", $includes)
 						? TentativeProgDAO::construire(
 							$item["tentatives_prog"],
-							parent::filtrer_niveaux($includes, "tentatives"),
+							self::filtrer_niveaux($includes, "tentatives"),
 						)
 						: [];
 				} elseif ($item["type"] == "sys") {
 					$tentatives = in_array("tentatives", $includes)
 						? TentativeSysDAO::construire(
 							$item["tentatives_sys"],
-							parent::filtrer_niveaux($includes, "tentatives"),
+							self::filtrer_niveaux($includes, "tentatives"),
 						)
 						: [];
 				}
@@ -116,10 +124,10 @@ class AvancementDAO extends EntitéDAO
 				titre: $item["titre"],
 				niveau: $item["niveau"],
 				sauvegardes: in_array("sauvegardes", $includes)
-					? SauvegardeDAO::construire($item["sauvegardes"], parent::filtrer_niveaux($includes, "sauvegardes"))
+					? SauvegardeDAO::construire($item["sauvegardes"], self::filtrer_niveaux($includes, "sauvegardes"))
 					: [],
 			);
-			$avancement->etat = $item["etat"];
+			$avancement->état = $item["état"];
 			$avancement->date_modification = $item["date_modification"];
 			$avancement->date_réussite = $item["date_reussite"];
 			$avancement->extra = $item["extra"];

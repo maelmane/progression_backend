@@ -4,16 +4,16 @@ COPY docker/composer.json /var/www/
 
 RUN composer install -d /var/www/
 
-FROM php:apache as production
+FROM php:apache-bookworm as production
 
 # Mise a jour de la liste de package
 RUN apt update && apt upgrade -y && apt autoclean
-RUN apt update && apt install -y default-libmysqlclient-dev default-mysql-client python3-yaml libldap2-dev libyaml-dev libzip-dev python3 python3-pip && apt autoclean php7.4-dom
+RUN apt update && apt install -y default-libmysqlclient-dev default-mysql-client python3-yaml libldap2-dev libyaml-dev libzip-dev python3 python3-pip && apt autoclean php8-dom
 
 # Installation des beautifiers pour la standardisation du code soumis
 RUN apt install -y black
 RUN apt install -y clang-format
-RUN pip3 install beautysh
+RUN pip3 install --break-system-packages beautysh
 
 # beautifier JS et TS
 RUN apt install -y npm
@@ -21,11 +21,11 @@ RUN npm --global install prettier @prettier/plugin-php standard typescript ts-st
 RUN touch /tmp/tsconfig.eslint.json
 
 # ktlint beautifier kotlin
-RUN apt install -y openjdk-11-jre
+RUN apt install -y openjdk-17-jre
 RUN curl -sSL --output /usr/local/bin/ktlint https://github.com/pinterest/ktlint/releases/download/0.46.1/ktlint && chmod a+x /usr/local/bin/ktlint
 
 # Installation du validateur
-RUN pip3 install progression_qc==0.3.1
+RUN pip3 install --break-system-packages progression_qc==3.0.0
 
 # Ajout d'extensions PHP
 RUN docker-php-ext-install -j$(nproc) mysqli ldap zip pdo pdo_mysql
@@ -57,8 +57,12 @@ WORKDIR /var/www/
 COPY --chown=www-data:www-data progression progression/
 COPY --from=composer --chown=www-data:www-data /var/www/vendor/ progression/vendor/
 
-RUN mkdir -p progression/app/storage
+RUN mkdir -p progression/app/storage/framework/sessions
+RUN mkdir -p progression/app/storage/framework/views
+RUN mkdir -p progression/app/storage/framework/cache
+RUN chmod -R 775 progression/app/storage/
 RUN chown www-data:www-data progression/ progression/app/storage
+RUN chown www-data:www-data -R progression/app/storage
 
 RUN chmod +x progression/app/entrypoint.sh
 CMD [ "bash", "progression/app/entrypoint.sh" ]

@@ -19,8 +19,9 @@
 use progression\ContrôleurTestCase;
 
 use progression\dao\DAOFactory;
-use progression\domaine\entité\{Avancement, User};
-use Illuminate\Auth\GenericUser;
+use progression\domaine\entité\{Avancement, TentativeProg};
+use progression\domaine\entité\user\{User, État, Rôle};
+use progression\UserAuthentifiable;
 
 final class UserCtlTests extends ContrôleurTestCase
 {
@@ -29,15 +30,44 @@ final class UserCtlTests extends ContrôleurTestCase
 	{
 		parent::setUp();
 
-		$this->user = new GenericUser(["username" => "jdoe", "rôle" => User::ROLE_NORMAL]);
+		$this->user = new UserAuthentifiable(
+			username: "jdoe",
+			date_inscription: 0,
+			rôle: Rôle::NORMAL,
+			état: État::ACTIF,
+		);
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 
-		$user = new User("jdoe", préférences: '{"app": {"pref1": 1, "pref2": 2}}');
-		$user_et_avancements = new User("jdoe", préférences: '{"app": {"pref1": 1, "pref2": 2}}');
+		$user = new User(
+			username: "jdoe",
+			date_inscription: 1600828609,
+			préférences: '{"app": {"pref1": 1, "pref2": 2}}',
+			état: État::INACTIF,
+		);
+		$user_et_avancements = new User(
+			username: "jdoe",
+			date_inscription: 1600828609,
+			préférences: '{"app": {"pref1": 1, "pref2": 2}}',
+		);
 		$user_et_avancements->avancements = [
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement(),
 			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement(),
+		];
+		$user_et_avancements_et_tentatives = new User(username: "jdoe", date_inscription: 1600828609);
+		$user_et_avancements_et_tentatives->avancements = [
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_fonction" => new Avancement(
+				tentatives: [
+					new TentativeProg("python", "print('42')", 1600828610),
+					new TentativeProg("java", "System.out.print(\"42\")", 1600828612),
+				],
+			),
+			"https://depot.com/roger/questions_prog/fonctions01/appeler_une_autre_fonction" => new Avancement(
+				tentatives: [
+					new TentativeProg("python", "print('43')", 1600828614),
+					new TentativeProg("java", "System.out.print(\"43\")", 1600828616),
+				],
+			),
 		];
 
 		// UserDAO
@@ -48,12 +78,10 @@ final class UserCtlTests extends ContrôleurTestCase
 			->andReturn($user_et_avancements);
 		$mockUserDAO
 			->shouldReceive("get_user")
-			->with("jdoe", [])
-			->andReturn($user);
-		$mockUserDAO
-			->shouldReceive("get_user")
-			->with("roger", [])
-			->andReturn(null);
+			->with("jdoe", ["avancements", "avancements.tentatives"])
+			->andReturn($user_et_avancements_et_tentatives);
+		$mockUserDAO->shouldReceive("get_user")->with("jdoe", [])->andReturn($user);
+		$mockUserDAO->shouldReceive("get_user")->with("roger", [])->andReturn(null);
 
 		// DAOFactory
 		$mockDAOFactory = Mockery::mock("progression\\dao\\DAOFactory");
@@ -91,7 +119,7 @@ final class UserCtlTests extends ContrôleurTestCase
 			->get_user_dao()
 			->shouldReceive("get_user")
 			->with("monique", [])
-			->andReturn(new User("monique"));
+			->andReturn(new User(username: "monique", date_inscription: 1600828609));
 
 		$résultatObtenu = $this->actingAs($this->user)->call("GET", "/user/monique");
 
@@ -113,62 +141,14 @@ final class UserCtlTests extends ContrôleurTestCase
 		);
 	}
 
-	// POST
-	public function test_étant_donné_un_utilisateur_existant_lorsquon_post_des_préférences_elles_sont_sauvegardées_et_retournée()
+	public function test_étant_donné_le_nom_dun_utilisateur_lorsquon_appelle_get_en_incluant_les_avancements_et_tentatives_on_obtient_lutilisateur_et_ses_avancements_et_tentatives_sous_forme_json()
 	{
-		$préférences = '{"app": {"pref1": 3, "pref2": 4}}';
-		$user_modifié = new User("jdoe", 42, préférences: $préférences);
-		DAOFactory::getInstance()
-			->get_user_dao()
-			->shouldReceive("save")
-			->once()
-			->withArgs(function ($user) use ($user_modifié, $préférences) {
-				return $user->username == "jdoe" &&
-					$user->rôle == 0 &&
-					$user->préférences == '{"app": {"pref1": 3, "pref2": 4}}';
-			})
-			->andReturn(new User("jdoe", préférences: $préférences));
-
-		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/jdoe", [
-			"préférences" => '{"app": {"pref1": 3, "pref2": 4}}',
-		]);
+		$résultatObtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe?include=avancements.tentatives");
 
 		$this->assertResponseStatus(200);
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/userCtlTest_user_préférences_modifiées.json",
+			__DIR__ . "/résultats_attendus/userCtlTest_user_avec_avancements_et_tentatives.json",
 			$résultatObtenu->getContent(),
 		);
-
-		$résultatObtenu = $this->actingAs($this->user)->call("GET", "/user/jdoe");
-
-		$this->assertResponseStatus(200);
-		$this->assertJsonStringEqualsJsonFile(
-			__DIR__ . "/résultats_attendus/userCtlTest_user_préférences_modifiées.json",
-			$résultatObtenu->getContent(),
-		);
-	}
-
-	public function test_étant_donné_un_utilisateur_existant_lorsquon_post_des_préférences_invalides_elles_ne_sont_pas_sauvegardées_et_on_obtient_une_erreur_400()
-	{
-		DAOFactory::getInstance()
-			->get_user_dao()
-			->shouldNotReceive("save");
-
-		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/jdoe", ["préférences" => "test"]);
-
-		$this->assertResponseStatus(400);
-	}
-
-	public function test_étant_donné_un_utilisateur_inexistant_lorsquon_post_des_préférences_elles_ne_sont_pas_sauvegardées_et_on_obtient_une_erreur_404()
-	{
-		DAOFactory::getInstance()
-			->get_user_dao()
-			->shouldNotReceive("save");
-
-		$résultatObtenu = $this->actingAs($this->user)->call("POST", "/user/roger", [
-			"préférences" => "{\"test\": 42}",
-		]);
-
-		$this->assertResponseStatus(404);
 	}
 }

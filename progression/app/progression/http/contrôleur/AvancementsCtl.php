@@ -20,10 +20,14 @@ namespace progression\http\contrôleur;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use progression\domaine\interacteur\ObtenirAvancementsInt;
-use progression\domaine\interacteur\SauvegarderAvancementInt;
-use progression\domaine\interacteur\ObtenirQuestionInt;
+use progression\domaine\interacteur\{
+	ObtenirAvancementsInt,
+	SauvegarderAvancementInt,
+	ObtenirQuestionInt,
+	IntéracteurException,
+};
 use progression\http\transformer\AvancementTransformer;
+use progression\http\transformer\dto\AvancementDTO;
 use progression\util\Encodage;
 use progression\domaine\entité\Avancement;
 
@@ -33,8 +37,8 @@ class AvancementsCtl extends Contrôleur
 	{
 		Log::debug("AvancementsCtl.get. Params : ", [$request->all(), $username]);
 
+		$réponse = null;
 		$avancements = $this->obtenir_avancements($username);
-
 		$réponse = $this->valider_et_préparer_réponse($avancements, $username);
 
 		Log::debug("AvancementsCtl.get. Retour : ", [$réponse]);
@@ -48,11 +52,19 @@ class AvancementsCtl extends Contrôleur
 		if ($avancements === null) {
 			$réponse = null;
 		} else {
-			$réponse = [];
-			foreach ($avancements as $id => $avancement) {
-				$avancement->id = Encodage::base64_encode_url($id);
+			$dtos = [];
+			foreach ($avancements as $question_uri => $avancement) {
+				$uri_encodé = Encodage::base64_encode_url($question_uri);
+				array_push(
+					$dtos,
+					new AvancementDTO(
+						id: "{$username}/{$uri_encodé}",
+						objet: $avancement,
+						liens: AvancementCtl::get_liens($username, $uri_encodé),
+					),
+				);
 			}
-			$réponse = $this->collection($avancements, new AvancementTransformer($username));
+			$réponse = $this->collection($dtos, new AvancementTransformer());
 		}
 
 		$réponse = $this->préparer_réponse($réponse);

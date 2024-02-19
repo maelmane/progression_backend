@@ -1,0 +1,24 @@
+{
+  "data": {
+    "type": "config",
+    "id": "serveur",
+    "attributes": {
+      "config": {
+        "AUTH": {
+          "LDAP": true,
+          "LOCAL": false
+        },
+        "LDAP": {
+          "DOMAINE": "exemple.com",
+          "URL_MDP_REINIT": "http://portail.exemple.com"
+        }
+      },
+      "version": "Progression 3.0.0()"
+    },
+    "links": {
+      "self": "https://example.com/",
+      "user": "https://example.com/user/jdoe",
+      "tokens": "https://example.com/user/jdoe/tokens"
+    }
+  }
+}

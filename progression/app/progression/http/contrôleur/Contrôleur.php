@@ -18,19 +18,22 @@
 
 namespace progression\http\contrôleur;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use League\Fractal\Manager;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\JsonApiSerializer;
-use League\Fractal\TransformerAbstract;
+
+use Symfony\Component\HttpFoundation\Cookie;
+use Carbon\Carbon;
 
 class Contrôleur extends BaseController
 {
+	//JsonApiSerializer ajoute un slash à l'URL de base, on s'assure d'enlèver le slash ultime
+	public static string $urlBase = "";
+
 	protected Manager $manager;
 
 	protected function réponse_json($réponse, $code)
@@ -57,11 +60,7 @@ class Contrôleur extends BaseController
 		$this->manager = new Manager();
 
 		// On redéfinit le Serializer pour avoir des liens «relationship» personnalisés
-
-		//JsonApiSerializer ajoute un slash à l'URL de base, on s'assure d'enlèver le slash ultime
-		$urlBase = preg_replace("/\/+$/", "", $_ENV["APP_URL"]);
-		//$manager->setSerializer(new JsonApiSerializer($urlBase));
-		$this->manager->setSerializer(new JsonApiSerializer($urlBase));
+		$this->manager->setSerializer(new JsonApiSerializer(Contrôleur::$urlBase));
 		if (!empty($request->query("include"))) {
 			$this->manager->parseIncludes($request->query("include"));
 		}
@@ -99,6 +98,25 @@ class Contrôleur extends BaseController
 		return $item;
 	}
 
+	protected function créerCookieSécure(
+		string $nom,
+		string $valeur,
+		int $expiration = null,
+		int $âge_max = 3600,
+	): Cookie {
+		return Cookie::create(
+			$nom,
+			$valeur,
+			$expiration ?? Carbon::now()->getTimestamp() + $âge_max,
+			null,
+			null,
+			null,
+			true,
+			false,
+			"strict",
+		);
+	}
+
 	protected function préparer_réponse($réponse, $code = 200)
 	{
 		$request = app(Request::class);
@@ -111,3 +129,6 @@ class Contrôleur extends BaseController
 		}
 	}
 }
+
+//Initialise urlBase
+Contrôleur::$urlBase = preg_replace("/\/+$/", "", getenv("APP_URL") ?: "") ?? "";

@@ -2,7 +2,7 @@
 
 require_once __DIR__ . "/../../vendor/autoload.php";
 
-date_default_timezone_set(env("APP_TIMEZONE", "UTC"));
+date_default_timezone_set("UTC");
 
 /*
    |--------------------------------------------------------------------------
@@ -51,6 +51,7 @@ $app->configure("app");
 $app->configure("version");
 $app->configure("database");
 $app->configure("logging");
+$app->configure("mail");
 
 /*
    |--------------------------------------------------------------------------
@@ -72,12 +73,19 @@ $app->routeMiddleware([
 ]);
 
 $app->routeMiddleware([
-	//	"validationPermissions" =>
-	//		$_ENV["AUTH_TYPE"] == "no"
-	//			? progression\http\middleware\Bypass::class
-	//			: progression\http\middleware\ValidationPermissions::class,
+	"auth_optionnelle" => progression\http\middleware\AuthenticateOpt::class,
+]);
 
-	"validationPermissions" => progression\http\middleware\ValidationPermissions::class,
+$app->routeMiddleware([
+	"permissionsRessources" => progression\http\middleware\PermissionsRessources::class,
+]);
+
+$app->routeMiddleware([
+	"étatNonInactif" => progression\http\middleware\ÉtatNonInactif::class,
+]);
+
+$app->routeMiddleware([
+	"étatValidé" => progression\http\middleware\ÉtatValidé::class,
 ]);
 
 $app->routeMiddleware([
@@ -100,6 +108,7 @@ $app->middleware([progression\http\middleware\Cors::class]);
 // $app->register(App\Providers\AppServiceProvider::class);
 $app->register(progression\providers\AuthServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
 
 // $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);

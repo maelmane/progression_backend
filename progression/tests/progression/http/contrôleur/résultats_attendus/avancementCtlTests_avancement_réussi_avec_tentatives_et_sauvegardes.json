@@ -3,7 +3,7 @@
 	"type": "avancement",
 	"id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 	"attributes": {
-	    "état": 2,
+	    "état": "réussi",
 	    "titre": "Titre",
 	    "niveau": "facile",
 	    "date_modification": 1614965818,
@@ -11,9 +11,10 @@
         "extra": ""
 	},
 	"links": {
+	    "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 	    "question": "https://example.com/question/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
 	    "user": "https://example.com/user/jdoe",
-	    "self": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24"
+		"soumettre": "https://example.com/avancement/jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/tentatives"
 	},
 	"relationships": {
 	    "tentatives": {
@@ -58,8 +59,9 @@
                 "feedback": null,
                 "langage": "python",
                 "réussi": true,
-                "sous-type": "tentativeProg",
-                "temps_exécution": "feedbackTest",
+                "sous_type": "tentativeProg",
+                "temps_exécution": 120,
+				"feedback": "feedbackTest",				
                 "tests_réussis": 2
             },
             "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965817",
@@ -90,8 +92,9 @@
                 "feedback": null,
                 "langage": "python",
                 "réussi": true,
-                "sous-type": "tentativeProg",
-                "temps_exécution": "feedbackTest",
+                "sous_type": "tentativeProg",
+                "temps_exécution": 150,
+				"feedback": "feedbackTest",
                 "tests_réussis": 2
             },
             "id": "jdoe/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614965818",

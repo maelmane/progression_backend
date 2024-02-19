@@ -19,6 +19,7 @@
 namespace progression\http\transformer;
 
 use progression\domaine\entité\Exécutable;
+use progression\http\transformer\dto\GénériqueDTO;
 use PHPUnit\Framework\TestCase;
 
 final class ÉbaucheTransformerTests extends TestCase
@@ -27,20 +28,23 @@ final class ÉbaucheTransformerTests extends TestCase
 	{
 		parent::setUp();
 
-		$_ENV["APP_URL"] = "https://example.com/";
+		putenv("APP_URL=https://example.com");
 	}
 
 	public function test_étant_donné_une_ébauche_instanciée_avec_des_valeurs_lorsquon_récupère_son_transformer_on_obtient_un_objet_json_correspondant()
 	{
-		$ébaucheTransformer = new ÉbaucheTransformer(
-			"aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24",
-		);
+		$ébaucheTransformer = new ÉbaucheTransformer();
 
 		$ébauche = new Exécutable("return nb1 + nb2;", "python");
 		$ébauche->lang = "python";
-		$ébauche->id = "python";
 
-		$résultat_obtenu = $ébaucheTransformer->transform($ébauche);
+		$résultat_obtenu = $ébaucheTransformer->transform(
+			new GénériqueDTO(
+				id: "aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/python",
+				objet: $ébauche,
+				liens: [],
+			),
+		);
 
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . "/résultats_attendus/ébaucheTransformerTest_1.json",
