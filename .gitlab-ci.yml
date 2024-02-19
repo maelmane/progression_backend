@@ -64,8 +64,7 @@ linter:
       optional: true
   script:
     - echo $CI_PROJECT_DIR
-    - ls $CI_PROJECT_DIR
-    - cat $CI_PROJECT_DIR/.env
+    - ls -la $CI_PROJECT_DIR
     - docker-compose run -v $CI_PROJECT_DIR/env.exemple:$CI_PROJECT_DIR/.env lint
   except:
     - master
