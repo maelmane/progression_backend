@@ -46,7 +46,7 @@ test_unitaires:
       optional: true
   script:
     - docker-compose pull tests
-    - docker-compose run -v $PROGRESSION_DIR/reports/:/var/www/progression/reports -v env.exemple:/builds/$CI_PROJECT_PATH/.env $tests
+    - docker-compose run -v $PROGRESSION_DIR/reports/:/var/www/progression/reports -v env.exemple:$CI_PROJECT_DIR/.env $tests
 
   artifacts:
     reports:
@@ -63,7 +63,7 @@ linter:
     - job: const_image
       optional: true
   script:
-    - docker-compose run lint
+    - docker-compose run -v env.exemple:$CI_PROJECT_DIR/.env lint
   except:
     - master
 
@@ -72,7 +72,7 @@ linter:
 version_check:
   stage: verifications
   script:
-    - docker run -v $PWD:/progression_backend bitnami/git -v env.exemple:/builds/$CI_PROJECT_PATH/.env bash -c 'git config --global --add safe.directory /progression_backend && cd /progression_backend && VERSION_PREV=$(git show HEAD^:VERSION|cut -d "=" -f 2); VERSION_ACT=$(git show HEAD:VERSION|cut -d "=" -f 2); echo Version: $VERSION_PREV  → $VERSION_ACT; dpkg --compare-versions "$VERSION_ACT" "gt" "$VERSION_PREV" || ( echo ERREUR la version n’a pas avancé && exit 1 )'
+    - docker run -v $PWD:/progression_backend bitnami/git bash -c 'git config --global --add safe.directory /progression_backend && cd /progression_backend && VERSION_PREV=$(git show HEAD^:VERSION|cut -d "=" -f 2); VERSION_ACT=$(git show HEAD:VERSION|cut -d "=" -f 2); echo Version: $VERSION_PREV  → $VERSION_ACT; dpkg --compare-versions "$VERSION_ACT" "gt" "$VERSION_PREV" || ( echo ERREUR la version n’a pas avancé && exit 1 )'
   only:
   - master
 
