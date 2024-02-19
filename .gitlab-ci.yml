@@ -46,7 +46,7 @@ test_unitaires:
       optional: true
   script:
     - docker-compose pull tests
-    - docker-compose run -v $PROGRESSION_DIR/reports/:/var/www/progression/reports -v $CI_PROJECT_DIR/env.exemple:$CI_PROJECT_DIR/.env $tests
+    - ENV_FILE=${ENV_FILE:env.exemple} docker-compose run -v $PROGRESSION_DIR/reports/:/var/www/progression/reports $tests
 
   artifacts:
     reports:
@@ -63,9 +63,7 @@ linter:
     - job: const_image
       optional: true
   script:
-    - echo $CI_PROJECT_DIR
-    - ls -la $CI_PROJECT_DIR
-    - docker-compose run -v $CI_PROJECT_DIR/env.exemple:$CI_PROJECT_DIR/.env lint
+    - ENV_FILE=${ENV_FILE:env.exemple} docker-compose run lint
   except:
     - master
 
