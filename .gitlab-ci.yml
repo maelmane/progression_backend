@@ -26,7 +26,7 @@ variables:
   BRANCHE: $CI_COMMIT_REF_NAME
 
 .preparer_contexte: &preparer_contexte
-    - DOCKER_HOST= 
+    - DOCKER_HOST=
     - apk add ca-certificates openssh
     - mkdir ~/.ssh && cp $ID_RSA ~/.ssh/id_rsa && chmod 400 ~/.ssh/id_rsa
     - echo -e "Host *\n  StrictHostKeyChecking no" > ~/.ssh/config
@@ -41,12 +41,12 @@ variables:
 # Tests unitaires
 test_unitaires:
   stage: test
-  needs: 
+  needs:
     - job: const_image
       optional: true
   script:
     - docker-compose pull tests
-    - docker-compose run -v $PROGRESSION_DIR/reports/:/var/www/progression/reports tests
+    - docker-compose run -v $PROGRESSION_DIR/reports/:/var/www/progression/reports -v env.exemple:/builds/$CI_PROJECT_PATH/.env $tests
 
   artifacts:
     reports:
@@ -72,7 +72,7 @@ linter:
 version_check:
   stage: verifications
   script:
-    - docker run -v $PWD:/progression_backend bitnami/git bash -c 'git config --global --add safe.directory /progression_backend && cd /progression_backend && VERSION_PREV=$(git show HEAD^:VERSION|cut -d "=" -f 2); VERSION_ACT=$(git show HEAD:VERSION|cut -d "=" -f 2); echo Version: $VERSION_PREV  → $VERSION_ACT; dpkg --compare-versions "$VERSION_ACT" "gt" "$VERSION_PREV" || ( echo ERREUR la version n’a pas avancé && exit 1 )'
+    - docker run -v $PWD:/progression_backend bitnami/git -v env.exemple:/builds/$CI_PROJECT_PATH/.env bash -c 'git config --global --add safe.directory /progression_backend && cd /progression_backend && VERSION_PREV=$(git show HEAD^:VERSION|cut -d "=" -f 2); VERSION_ACT=$(git show HEAD:VERSION|cut -d "=" -f 2); echo Version: $VERSION_PREV  → $VERSION_ACT; dpkg --compare-versions "$VERSION_ACT" "gt" "$VERSION_PREV" || ( echo ERREUR la version n’a pas avancé && exit 1 )'
   only:
   - master
 
@@ -81,12 +81,12 @@ const_image:
   stage: build_image
   before_script: *login
   variables:
-    DOCKER_BUILDKIT: 1 
+    DOCKER_BUILDKIT: 1
   script:
     - docker build --target composer --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer -f docker/Dockerfile .
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer
     - docker build --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE -f docker/Dockerfile .
-    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE    
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE   
 
 
 # Stage tag
@@ -98,12 +98,12 @@ tag_latest:
     - *login
   script:
     - docker pull $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
-    - docker tag $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE $CI_REGISTRY/$CI_PROJECT_PATH:latest   
+    - docker tag $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE $CI_REGISTRY/$CI_PROJECT_PATH:latest  
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH:latest
   only:
     - master
 
-    
+   
 # Stage deploy_image
 
 # Déploiement sur /dev
@@ -136,7 +136,7 @@ stop_dev:
     - dev
   when:
     manual
-    
+   
 # Déploiement sur /demo
 deploy_demo:
   stage: deploy_image
@@ -152,7 +152,7 @@ deploy_demo:
     - TAG_DEPLOY=latest docker-compose pull api
     - TAG_DEPLOY=latest docker-compose -p demo up --force-recreate -d api
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
+    - if: '$CD_HOST/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH == git.dti.crosemont.quebec/progression/progression_backend:master"'
 
 stop_demo:
   stage: deploy_image
@@ -164,7 +164,7 @@ stop_demo:
   script:
     - docker-compose -p demo stop api
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
+    - if: '$CD_HOST/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH == git.dti.crosemont.quebec/progression/progression_backend:master"'
   when:
     manual
 
@@ -183,7 +183,7 @@ deploy_staging:
     - TAG_DEPLOY=latest docker-compose pull api
     - TAG_DEPLOY=latest docker-compose -p staging up --force-recreate -d api
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
+    - if: '$CD_HOST/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH == git.dti.crosemont.quebec/progression/progression_backend:master"'
 
 stop_staging:
   stage: deploy_image
@@ -195,7 +195,7 @@ stop_staging:
   script:
     - docker-compose -p staging stop api
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
+    - if: '$CD_HOST/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH == git.dti.crosemont.quebec/progression/progression_backend:master"'
   when:
     manual
 
@@ -216,7 +216,7 @@ deploy_prod:
   when:
     manual
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
+    - if: '$CD_HOST/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH == git.dti.crosemont.quebec/progression/progression_backend:master"'
 
 stop_prod:
   stage: deploy_image
@@ -228,7 +228,7 @@ stop_prod:
   script:
     - docker-compose -p prod stop api db redis
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
+    - if: '$CD_HOST/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH == git.dti.crosemont.quebec/progression/progression_backend:master"'
   when:
     manual
 
@@ -253,7 +253,7 @@ deploy_crosemont:
   when:
     manual
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
+    - if: '$CD_HOST/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH == git.dti.crosemont.quebec/progression/progression_backend:master"'
 
 stop_crosemont:
   stage: deploy_image
@@ -269,10 +269,10 @@ stop_crosemont:
   script:
     - docker-compose -p prod stop api db redis
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
+    - if: '$CD_HOST/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH == git.dti.crosemont.quebec/progression/progression_backend:master"'
   when:
     manual
-    
+   
 
 # Stage build_doc
 
@@ -287,7 +287,7 @@ pages_dev:
   - mkdir -p public/dev && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/dev/
   - "! grep -c nil public/dev/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
   rules:
-    - if: '$CI_COMMIT_BRANCH == "dev" && $CI_REGISTRY == "git.dti.crosemont.quebec:5050"'
+    - if: '$CD_HOST/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH == git.dti.crosemont.quebec/progression/progression_backend:dev"'
   when:
     manual
   artifacts:
@@ -331,4 +331,3 @@ pages:
     - master
   when:
     manual
-     
