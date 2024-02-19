@@ -63,6 +63,9 @@ linter:
     - job: const_image
       optional: true
   script:
+    - echo $CI_PROJECT_DIR
+    - ls $CI_PROJECT_DIR
+    - cat $CI_PROJECT_DIR/.env
     - docker-compose run -v env.exemple:$CI_PROJECT_DIR/.env lint
   except:
     - master
