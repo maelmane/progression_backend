@@ -30,6 +30,15 @@ class User
 	public $clés;
 	public string $préférences;
 	public int $date_inscription;
+	public string $nom;
+    public string $prénom;
+    public string $nom_complet;
+    public string $pseudo;
+    public string $biographie;
+    public Occupation $occupation = Occupation::ÉTUDIANT;
+    public string $avatar;
+
+
 
 	public function __construct(
 		string $username,
@@ -49,5 +58,12 @@ class User
 		$this->clés = $clés;
 		$this->préférences = $préférences;
 		$this->date_inscription = $date_inscription;
+		$this->nom = "";
+		$this->prénom = "";
+		$this->nom_complet = "";
+		$this->pseudo = "";
+		$this->biographie = "";
+		$this->occupation = Occupation::ÉTUDIANT;
+		$this->avatar = "";
 	}
 }
