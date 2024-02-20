@@ -4,7 +4,7 @@ namespace progression\domaine\entité\user;
 
 enum Occupation:string
 {
-    case ÉTUDIANT = "étudiant";
+    case ETUDIANT = "étudiant";
     case ENSEIGNANT = "enseignant";
     case TUTEUR = "tuteur";
 }

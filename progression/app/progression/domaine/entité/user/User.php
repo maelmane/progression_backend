@@ -35,7 +35,7 @@ class User
     public string $nom_complet;
     public string $pseudo;
     public string $biographie;
-    public Occupation $occupation = Occupation::ÉTUDIANT;
+    public Occupation $occupation = Occupation::ETUDIANT;
     public string $avatar;
 
 
@@ -63,7 +63,7 @@ class User
 		$this->nom_complet = "";
 		$this->pseudo = "";
 		$this->biographie = "";
-		$this->occupation = Occupation::ÉTUDIANT;
+		$this->occupation = Occupation::ETUDIANT;
 		$this->avatar = "";
 	}
 }
