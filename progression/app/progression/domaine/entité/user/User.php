@@ -49,6 +49,13 @@ class User
 		$avancements = [],
 		$clés = [],
 		string $préférences = "",
+		string $nom = "",
+		string $prénom = "",
+		string $nom_complet = "",
+		string $pseudo = "",
+		string $biographie = "",
+		Occupation $occupation = Occupation::AUTRE,
+		string $avatar = "",
 	) {
 		$this->username = $username;
 		$this->courriel = $courriel;
@@ -58,12 +65,12 @@ class User
 		$this->clés = $clés;
 		$this->préférences = $préférences;
 		$this->date_inscription = $date_inscription;
-		$this->nom = "";
-		$this->prénom = "";
-		$this->nom_complet = "";
-		$this->pseudo = "";
-		$this->biographie = "";
-		$this->occupation = Occupation::AUTRE;
-		$this->avatar = "";
+		$this->nom = $nom;
+		$this->prénom = $prénom;
+		$this->nom_complet = $nom_complet;
+		$this->pseudo = $pseudo;
+		$this->biographie = $biographie;
+		$this->occupation = $occupation;
+		$this->avatar = $avatar;
 	}
 }
