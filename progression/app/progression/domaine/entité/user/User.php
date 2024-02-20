@@ -63,7 +63,7 @@ class User
 		$this->nom_complet = "";
 		$this->pseudo = "";
 		$this->biographie = "";
-		$this->occupation = Occupation::ETUDIANT;
+		$this->occupation = Occupation::AUTRE;
 		$this->avatar = "";
 	}
 }
