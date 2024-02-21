@@ -156,7 +156,7 @@ deploy_demo:
     - TAG_DEPLOY=latest docker-compose pull api
     - TAG_DEPLOY=latest docker-compose -p demo up --force-recreate -d api
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $URL_DEMO'
+    - if: '$CI_COMMIT_BRANCH == "test_cicd" && $URL_DEMO'
 
 stop_demo:
   stage: deploy_image
@@ -187,7 +187,7 @@ deploy_staging:
     - TAG_DEPLOY=latest docker-compose pull api
     - TAG_DEPLOY=latest docker-compose -p staging up --force-recreate -d api
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $URL_STAGING'
+    - if: '$CI_COMMIT_BRANCH == "test_cicd" && $URL_STAGING'
 
 stop_staging:
   stage: deploy_image
