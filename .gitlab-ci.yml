@@ -45,7 +45,7 @@ test_unitaires:
     - job: const_image
       optional: true
   variables:
-    ENV_FILE: ${ENV_FILE:-env.exemple} 
+    ENV_FILE: env.exemple
   script:
     - docker-compose pull tests
     - docker-compose run -v $PROGRESSION_DIR/reports/:/var/www/progression/reports $tests
@@ -65,7 +65,7 @@ linter:
     - job: const_image
       optional: true
   variables:
-    ENV_FILE: ${ENV_FILE:-env.exemple} 
+    ENV_FILE: env.exemple
   script:
     - docker-compose run lint
   except:
