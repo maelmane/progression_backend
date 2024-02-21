@@ -86,10 +86,7 @@ const_image:
   before_script: *login
   variables:
     DOCKER_BUILDKIT: 1
-  rules:
-    - if: $CI_PROJECT_URL == "https://git.dti.crosemont.quebec/plafrance/progression_backend"
   script:
-    - echo $CI_PROJECT_URL
     - docker build --target composer --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer -f docker/Dockerfile .
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer
     - docker build --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE -f docker/Dockerfile .
@@ -159,7 +156,7 @@ deploy_demo:
     - TAG_DEPLOY=latest docker-compose pull api
     - TAG_DEPLOY=latest docker-compose -p demo up --force-recreate -d api
   rules:
-    - if: '"$CI_SERVER_URL/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH" == "https://git.dti.crosemont.quebec/progression/progression_backend:master"'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_DEMO != ""'
 
 stop_demo:
   stage: deploy_image
@@ -171,7 +168,7 @@ stop_demo:
   script:
     - docker-compose -p demo stop api
   rules:
-    - if: '"$CI_SERVER_URL/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH" == "https://git.dti.crosemont.quebec/progression/progression_backend:master"'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_DEMO != ""'
   when:
     manual
 
@@ -190,7 +187,7 @@ deploy_staging:
     - TAG_DEPLOY=latest docker-compose pull api
     - TAG_DEPLOY=latest docker-compose -p staging up --force-recreate -d api
   rules:
-    - if: '$SOURCE_URL == "https://git.dti.crosemont.quebec/plafrance/progression_backend:test_cicd"'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_STAGING != ""'
 
 stop_staging:
   stage: deploy_image
@@ -202,7 +199,7 @@ stop_staging:
   script:
     - docker-compose -p staging stop api
   rules:
-    - if: '"$CI_SERVER_URL/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH" == "https://git.dti.crosemont.quebec/progression/progression_backend:master"'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_STAGING != ""'
   when:
     manual
 
@@ -212,7 +209,7 @@ deploy_prod:
   needs: [tag_latest]
   environment:
     name: prod
-    url: https://progression.dti.crosemont.quebec/api/v1/
+    url: $URL_PROD
     on_stop: stop_prod
   before_script:
     - *preparer_contexte
@@ -223,7 +220,7 @@ deploy_prod:
   when:
     manual
   rules:
-    - if: '"$CI_SERVER_URL/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH" == "https://git.dti.crosemont.quebec/progression/progression_backend:master"'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_PROD != ""'
 
 stop_prod:
   stage: deploy_image
@@ -235,7 +232,7 @@ stop_prod:
   script:
     - docker-compose -p prod stop api db redis
   rules:
-    - if: '"$CI_SERVER_URL/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH" == "https://git.dti.crosemont.quebec/progression/progression_backend:master"'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_PROD != ""'
   when:
     manual
 
@@ -248,10 +245,10 @@ deploy_crosemont:
     - crosemont
   environment:
     name: crosemont
-    url: https://progression.crosemont.qc.ca/api/v1/
+    url: $URL_PROD_2
     on_stop: stop_crosemont
   before_script:
-    - export CD_HOST=progression.crosemont.qc.ca CD_PORT=22 CD_USER=updater
+    - export CD_HOST=$CD_HOST_2 CD_PORT=$CD_HOST_2 CD_USER=$CD_USER_2
     - *preparer_contexte
     - *login
   script:
@@ -260,7 +257,7 @@ deploy_crosemont:
   when:
     manual
   rules:
-    - if: '"$CI_SERVER_URL/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH" == "https://git.dti.crosemont.quebec/progression/progression_backend:master"'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_PROD_2 != ""'
 
 stop_crosemont:
   stage: deploy_image
@@ -271,12 +268,12 @@ stop_crosemont:
     name: crosemont
     action: stop
   before_script:
-    - export CD_HOST=progression.crosemont.qc.ca CD_PORT=22 CD_USER=updater
+    - export CD_HOST=$CD_HOST_2 CD_PORT=$CD_HOST_2 CD_USER=$CD_USER_2
     - *preparer_contexte
   script:
     - docker-compose -p prod stop api db redis
   rules:
-    - if: '"$CI_SERVER_URL/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH" == "https://git.dti.crosemont.quebec/progression/progression_backend:master"'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_PROD_2 != ""'
   when:
     manual
    
@@ -294,7 +291,7 @@ pages_dev:
   - mkdir -p public/dev && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/dev/
   - "! grep -c nil public/dev/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
   rules:
-    - if: '"$CI_SERVER_URL/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH" == "https://git.dti.crosemont.quebec/progression/progression_backend:dev"'
+    - if: '$CI_COMMIT_BRANCH == "dev" && $URL_DEV != ""'
   when:
     manual
   artifacts:
