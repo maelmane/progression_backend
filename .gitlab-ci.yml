@@ -156,7 +156,7 @@ deploy_demo:
     - TAG_DEPLOY=latest docker-compose pull api
     - TAG_DEPLOY=latest docker-compose -p demo up --force-recreate -d api
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $URL_DEMO != ""'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_DEMO'
 
 stop_demo:
   stage: deploy_image
@@ -168,7 +168,7 @@ stop_demo:
   script:
     - docker-compose -p demo stop api
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $URL_DEMO != ""'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_DEMO'
   when:
     manual
 
@@ -187,7 +187,7 @@ deploy_staging:
     - TAG_DEPLOY=latest docker-compose pull api
     - TAG_DEPLOY=latest docker-compose -p staging up --force-recreate -d api
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $URL_STAGING != ""'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_STAGING'
 
 stop_staging:
   stage: deploy_image
@@ -199,7 +199,7 @@ stop_staging:
   script:
     - docker-compose -p staging stop api
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $URL_STAGING != ""'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_STAGING'
   when:
     manual
 
@@ -220,7 +220,7 @@ deploy_prod:
   when:
     manual
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $URL_PROD != ""'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_PROD'
 
 stop_prod:
   stage: deploy_image
@@ -232,7 +232,7 @@ stop_prod:
   script:
     - docker-compose -p prod stop api db redis
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $URL_PROD != ""'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_PROD'
   when:
     manual
 
@@ -257,7 +257,7 @@ deploy_crosemont:
   when:
     manual
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $URL_PROD_2 != ""'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_PROD_2'
 
 stop_crosemont:
   stage: deploy_image
@@ -273,7 +273,7 @@ stop_crosemont:
   script:
     - docker-compose -p prod stop api db redis
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master" && $URL_PROD_2 != ""'
+    - if: '$CI_COMMIT_BRANCH == "master" && $URL_PROD_2'
   when:
     manual
    
@@ -291,7 +291,7 @@ pages_dev:
   - mkdir -p public/dev && cp -r $PROGRESSION_DIR/progression/app/html/doc/* public/dev/
   - "! grep -c nil public/dev/api.html # Vérifie que la production de l'API n'a pas produit d'erreur"
   rules:
-    - if: '$CI_COMMIT_BRANCH == "dev" && $URL_DEV != ""'
+    - if: '$CI_COMMIT_BRANCH == "dev" && $URL_DEV'
   when:
     manual
   artifacts:
