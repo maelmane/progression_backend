@@ -47,6 +47,7 @@ test_unitaires:
   variables:
     ENV_FILE: env.exemple
   script:
+    - echo $ENV_FILE
     - docker-compose pull tests
     - docker-compose run -v $PROGRESSION_DIR/reports/:/var/www/progression/reports $tests
 
