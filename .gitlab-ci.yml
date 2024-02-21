@@ -67,6 +67,7 @@ linter:
   variables:
     ENV_FILE: env.exemple
   script:
+    - echo "$CI_SERVER_URL/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH"
     - docker-compose run lint
   except:
     - master
