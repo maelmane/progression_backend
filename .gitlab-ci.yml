@@ -67,6 +67,7 @@ linter:
   variables:
     ENV_FILE: env.exemple
   script:
+    - echo "$CD_HOST/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH"
     - docker-compose run lint
   except:
     - master
@@ -153,7 +154,6 @@ deploy_demo:
     - *preparer_contexte
     - *login
   script:
-    - echo "$CD_HOST/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH"
     - TAG_DEPLOY=latest docker-compose pull api
     - TAG_DEPLOY=latest docker-compose -p demo up --force-recreate -d api
   rules:
