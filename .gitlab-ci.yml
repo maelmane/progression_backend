@@ -87,8 +87,6 @@ const_image:
   variables:
     DOCKER_BUILDKIT: 1
     SOURCE_URL: '$CI_SERVER_URL/$CI_PROJECT_PATH:$CI_COMMIT_BRANCH'
-  rules:
-    - if: '$SOURCE_URL == "https://git.dti.crosemont.quebec/plafrance/progression_backend:test_cicd"'
   script:
     - echo $SOURCE_URL
     - docker build --target composer --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer -f docker/Dockerfile .
