@@ -46,7 +46,9 @@ test_unitaires:
       optional: true
   variables:
     ENV_FILE: env.exemple
+    SOURCE_URL: '"$CI_SERVER_URL"/"$CI_PROJECT_PATH":"$CI_COMMIT_BRANCH"'
   script:
+    - echo $SOURCE_URL
     - docker-compose pull tests
     - docker-compose run -v $PROGRESSION_DIR/reports/:/var/www/progression/reports tests
 
@@ -186,8 +188,6 @@ deploy_staging:
   script:
     - TAG_DEPLOY=latest docker-compose pull api
     - TAG_DEPLOY=latest docker-compose -p staging up --force-recreate -d api
-  variables:
-    SOURCE_URL: '"$CI_SERVER_URL"/"$CI_PROJECT_PATH":"$CI_COMMIT_BRANCH"'
   rules:
     - if: '$SOURCE_URL == "https://git.dti.crosemont.quebec/plafrance/progression_backend:test_cicd"'
 
