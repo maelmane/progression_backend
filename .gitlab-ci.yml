@@ -187,7 +187,7 @@ deploy_staging:
     - TAG_DEPLOY=latest docker-compose pull api
     - TAG_DEPLOY=latest docker-compose -p staging up --force-recreate -d api
   rules:
-    - if: '$CI_SERVER_URL + "/" + $CI_PROJECT_PATH + ":" + $CI_COMMIT_BRANCH == "https://git.dti.crosemont.quebec/plafrance/progression_backend:test_cicd"'
+    - if: '$CI_COMMIT_BRANCH == "test_cicd"'
 
 stop_staging:
   stage: deploy_image
