@@ -67,7 +67,7 @@ linter:
   variables:
     ENV_FILE: env.exemple
   script:
-    - https://docker-compose run lint
+    - docker-compose run lint
   except:
     - master
 
