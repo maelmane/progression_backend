@@ -76,21 +76,43 @@ class User
 
 	public function setCourriel(string $courriel): void
 	{
+		// Vérifier si l'adresse email est vide
+		if (empty($courriel)) {
+			throw new InvalidArgumentException("L'adresse courriel ne peut pas être vide");
+		}
+		// Vérifier si l'adresse est valide
+		if (!filter_var($courriel, FILTER_VALIDATE_EMAIL)) {
+			throw new InvalidArgumentException("L'adresse courriel n'est pas valide");
+		}
+
+		// Si l'adresse e-mail est valide, mettre à jour l'attribut courriel
 		$this->courriel = $courriel;
 	}
 
 	public function setPseudo(string $pseudo): void
-    {
-        $this->pseudo = $pseudo;
-    }
+	{
+		if (empty($pseudo)) {
+			throw new InvalidArgumentException("Le pseudo ne peut pas être vide");
+		}
 
-    public function setBiographie(string $biographie): void
-    {
-        $this->biographie = $biographie;
-    }
+		$this->pseudo = $pseudo;
+	}
 
-    public function setAvatar(string $avatar): void
-    {
-        $this->avatar = $avatar;
-    }
+	public function setBiographie(string $biographie): void
+	{
+		if (strlen($biographie) > 1000) {
+			throw new InvalidArgumentException("La biographie ne peut pas dépasser 1000 caractères");
+		}
+
+		$this->biographie = $biographie;
+	}
+
+	public function setAvatar(string $avatar): void
+	{
+		if (!filter_var($avatar, FILTER_VALIDATE_URL)) {
+			throw new InvalidArgumentException("L'URL de l'avatar n'est pas valide");
+		}
+
+		$this->avatar = $avatar;
+	}
 }
