@@ -73,4 +73,24 @@ class User
 		$this->occupation = $occupation;
 		$this->avatar = $avatar;
 	}
+
+	public function setCourriel(string $courriel): void
+	{
+		$this->courriel = $courriel;
+	}
+
+	public function setPseudo(string $pseudo): void
+    {
+        $this->pseudo = $pseudo;
+    }
+
+    public function setBiographie(string $biographie): void
+    {
+        $this->biographie = $biographie;
+    }
+
+    public function setAvatar(string $avatar): void
+    {
+        $this->avatar = $avatar;
+    }
 }
