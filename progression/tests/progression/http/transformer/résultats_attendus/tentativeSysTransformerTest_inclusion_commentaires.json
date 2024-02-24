@@ -9,11 +9,18 @@
     },
     "objet": {
       "créateur": {
-        "avancements": [],
+          "avancements": [],
+          "avatar": "",
+          "biographie": "",
         "clés": [],
         "courriel": null,
-        "date_inscription": 0,
-        "préférences": "",
+          "date_inscription": 0,
+          "nom": "",
+          "nom_complet": "",
+          "occupation": "utilisateur autre",
+          "préférences": "",
+          "prénom": "",
+          "pseudo": "",
         "rôle": "normal",
         "username": "jdoe",
         "état": "inactif"
@@ -31,12 +38,19 @@
       "tentative": "https://example.com/tentative/roger/aHR0cHM6Ly9kZXBvdC5jb20vcm9nZXIvcXVlc3Rpb25zX3Byb2cvZm9uY3Rpb25zMDEvYXBwZWxlcl91bmVfZm9uY3Rpb24/1614711760/0"
     },
     "objet": {
-      "créateur": {
+        "créateur": {
+            "avatar": "",
+            "biographie": "",
         "avancements": [],
         "clés": [],
         "courriel": null,
-        "date_inscription": 0,
-        "préférences": "",
+            "date_inscription": 0,
+            "nom": "",
+            "nom_complet": "",
+            "occupation": "utilisateur autre",
+            "préférences": "",
+            "prénom": "",
+            "pseudo": "",
         "rôle": "normal",
         "username": "bob",
         "état": "inactif"
