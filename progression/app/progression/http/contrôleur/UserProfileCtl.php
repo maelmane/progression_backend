@@ -23,16 +23,51 @@ class UserProfileCtl extends Contrôleur
 {
     public function getProfile(string $username): String
     {
-        $resultat = [
-            "nom" => "Bouchard",
-            "prénom" => "Martine",
-            "nom_complet" => "Martine Bouchard",
-            "pseudo" => "Didine",
-            "biographie" => "Passionnée de la programmation bas-niveau, j'ai trouvé un réel intérêt pour les systèmes d'exploitation",
-            "occupation" => "enseignant",
-            "avatar" => "https://static.vecteezy.com/ti/vecteur-libre/p1/5878308-programmeur-travaillant-moderne-concept-plat-pour-la-conception-de-bannieres-web-femme-developpeur-travaille-sur-ordinateur-portable-et-programmes-en-php-et-autres-langages-de-programmation-illustrationle-avec-scene-de-personnes-isolees-vectoriel.jpg"
+        // Profils factices pour les tests Front-End
+        $profils = [
+            "martine" => [
+                "nom" => "Bouchard",
+                "prénom" => "Martine",
+                "nom_complet" => "Martine Bouchard",
+                "pseudo" => "Didine",
+                "biographie" => "Passionnée de la programmation bas-niveau, j'ai trouvé un réel intérêt pour les systèmes d'exploitation",
+                "occupation" => "enseignant",
+                "avatar" => "https://static.vecteezy.com/ti/vecteur-libre/p1/5878308-programmeur-travaillant-moderne-concept-plat-pour-la-conception-de-bannieres-web-femme-developpeur-travaille-sur-ordinateur-portable-et-programmes-en-php-et-autres-langages-de-programmation-illustrationle-avec-scene-de-personnes-isolees-vectoriel.jpg"
+            ],
+            "david" => [
+                "nom" => "Lefevre",
+                "prénom" => "David",
+                "nom_complet" => "David Lefevre",
+                "pseudo" => "DavLev",
+                "biographie" => "Développeur passionné par les nouvelles technologies et les applications web.",
+                "occupation" => "programmeur",
+                "avatar" => "lien_de_l_avatar_de_david.jpg"
+            ],
+            "simon" => [
+                "nom" => "Tremblay",
+                "prénom" => "Simon",
+                "nom_complet" => "Simon Tremblay",
+                "pseudo" => "SimTrem",
+                "biographie" => "Étudiant en informatique avec une passion pour l'intelligence artificielle.",
+                "occupation" => "étudiant",
+                "avatar" => "lien_de_l_avatar_de_simon.jpg"
+            ],
+            "judy" => [
+                "nom" => "Lavoie",
+                "prénom" => "Judy",
+                "nom_complet" => "Judy Lavoie",
+                "pseudo" => "JudLav",
+                "biographie" => "Étudiante dévouée à l'éducation des jeunes générations, spécialisée en sciences informatiques.",
+                "occupation" => "tuteur",
+                "avatar" => "lien_de_l_avatar_de_judy.jpg"
+            ]
         ];
 
-        return json_encode($resultat,JSON_UNESCAPED_UNICODE |  JSON_PRETTY_PRINT);
+        // Retour du bon profil, cette fonction changera pour être remplacée par l'appel à l'interacteur..
+        if (isset($profils[$username])) {
+            return json_encode($profils[$username], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        } else {
+            return json_encode(["erreur" => "Profil non trouvé"], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        }
     }
 }
