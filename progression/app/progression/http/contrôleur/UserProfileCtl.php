@@ -23,6 +23,16 @@ class UserProfileCtl extends Contrôleur
 {
     public function getProfile(string $username): String
     {
-        return "Hello World ! ";
+        $resultat = [
+            "nom" => "Bouchard",
+            "prénom" => "Martine",
+            "nom_complet" => "Martine Bouchard",
+            "pseudo" => "Didine",
+            "biographie" => "Passionnée de la programmation bas-niveau, j'ai trouvé un réel intérêt pour les systèmes d'exploitation",
+            "occupation" => "enseignant",
+            "avatar" => "https://static.vecteezy.com/ti/vecteur-libre/p1/5878308-programmeur-travaillant-moderne-concept-plat-pour-la-conception-de-bannieres-web-femme-developpeur-travaille-sur-ordinateur-portable-et-programmes-en-php-et-autres-langages-de-programmation-illustrationle-avec-scene-de-personnes-isolees-vectoriel.jpg"
+        ];
+
+        return json_encode($resultat, JSON_PRETTY_PRINT);
     }
 }
