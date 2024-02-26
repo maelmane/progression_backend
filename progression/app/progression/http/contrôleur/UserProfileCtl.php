@@ -33,6 +33,6 @@ class UserProfileCtl extends Contrôleur
             "avatar" => "https://static.vecteezy.com/ti/vecteur-libre/p1/5878308-programmeur-travaillant-moderne-concept-plat-pour-la-conception-de-bannieres-web-femme-developpeur-travaille-sur-ordinateur-portable-et-programmes-en-php-et-autres-langages-de-programmation-illustrationle-avec-scene-de-personnes-isolees-vectoriel.jpg"
         ];
 
-        return json_encode($resultat, JSON_PRETTY_PRINT);
+        return json_encode($resultat,JSON_UNESCAPED_UNICODE |  JSON_PRETTY_PRINT);
     }
 }
