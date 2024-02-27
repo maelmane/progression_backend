@@ -18,7 +18,7 @@
 
 namespace progression\http\contrôleur;
 
-
+//Contrôleur des profiles utilisateur
 class UserProfileCtl extends Contrôleur
 {
     public function getProfile(string $username): String
