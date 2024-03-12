@@ -98,4 +98,3 @@ $router->group(["middleware" => ["auth", "permissionsRessources"]], function () 
 	$router->patch("/user/{username}", "UserModificationCtl@patch");
 	$router->get("/user/{username}/relationships/avancements", "NotImplementedCtl@get");
 });
-    $router->get("/user/{username}/profile", "UserProfileCtl@getProfile");

@@ -9,17 +9,10 @@
         "objet": {
             "créateur": {
                 "avancements": [],
-                "avatar": "",
-                "biographie": "",
                 "clés": [],
                 "courriel": null,
                 "date_inscription": 0,
-                "nom": "",
-                "nom_complet": "",
-                "occupation": "utilisateur autre",
                 "préférences": "",
-                "prénom": "",
-                "pseudo": "",
                 "rôle": "normal",
                 "username": "jdoe",
                 "état": "inactif"
@@ -39,17 +32,10 @@
         "objet": {
             "créateur": {
                 "avancements": [],
-                "avatar": "",
-                "biographie": "",
                 "clés": [],
                 "courriel": null,
                 "date_inscription": 0,
-                "nom": "",
-                "nom_complet": "",
-                "occupation": "utilisateur autre",
                 "préférences": "",
-                "prénom": "",
-                "pseudo": "",
                 "rôle": "normal",
                 "username": "bob",
                 "état": "inactif"
