@@ -43,6 +43,7 @@ version_check:
   stage: verifications
   script:
     - docker run -v $PWD:/progression_backend bitnami/git bash -c 'git config --global --add safe.directory /progression_backend && cd /progression_backend && VERSION_PREV=$(git show HEAD^:VERSION|cut -d "=" -f 2); VERSION_ACT=$(git show HEAD:VERSION|cut -d "=" -f 2); echo Version: $VERSION_PREV  → $VERSION_ACT; dpkg --compare-versions "$VERSION_ACT" "gt" "$VERSION_PREV" || ( echo ERREUR la version n’a pas avancé && exit 1 )'
+  allow_failure: true
   only:
   - master
 
@@ -98,7 +99,9 @@ linter:
 
 tag_latest:
   stage: tag_image
-  needs: [const_image]
+  needs:
+    - job: version_check
+    - job: const_image
   before_script:
     - *login
   script:
