@@ -101,9 +101,7 @@ linter:
 
 tag_latest:
   stage: tag_image
-  needs:
-    - job: version_check
-    - job: const_image
+  needs: [ version_check, const_image, test_unitaires, linter ]
   before_script:
     - *login
   script:
