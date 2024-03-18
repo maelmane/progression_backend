@@ -36,6 +36,35 @@ variables:
 .login: &login
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
+
+# Stage verifications
+
+version_check:
+  stage: verifications
+  needs: []
+  script:
+    - docker run -v $PWD:/progression_backend bitnami/git bash -c 'git config --global --add safe.directory /progression_backend && cd /progression_backend && VERSION_PREV=$(git show HEAD^:VERSION|cut -d "=" -f 2); VERSION_ACT=$(git show HEAD:VERSION|cut -d "=" -f 2); echo Version: $VERSION_PREV  → $VERSION_ACT; dpkg --compare-versions "$VERSION_ACT" "gt" "$VERSION_PREV" || ( echo ERREUR la version n’a pas avancé && exit 1 )'
+  allow_failure: true
+  only:
+  - master
+
+
+# Stage build_image
+
+# Construction de l'image
+const_image:
+  stage: build_image
+  needs: []
+  before_script: *login
+  variables:
+    DOCKER_BUILDKIT: 1
+  script:
+    - docker build --target composer --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer -f docker/Dockerfile .
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer
+    - docker build --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE -f docker/Dockerfile .
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
+
+
 # Stage test
 
 # Tests unitaires
@@ -55,8 +84,6 @@ test_unitaires:
       coverage_report:
         coverage_format: cobertura
         path: $PROGRESSION_DIR/reports/coverage.xml
-  except:
-    - master
 
 # Linter
 linter:
@@ -68,46 +95,25 @@ linter:
     ENV_FILE: env.exemple
   script:
     - docker-compose run lint
-  except:
-    - master
-
-# Stage build_image
-
-version_check:
-  stage: verifications
-  script:
-    - docker run -v $PWD:/progression_backend bitnami/git bash -c 'git config --global --add safe.directory /progression_backend && cd /progression_backend && VERSION_PREV=$(git show HEAD^:VERSION|cut -d "=" -f 2); VERSION_ACT=$(git show HEAD:VERSION|cut -d "=" -f 2); echo Version: $VERSION_PREV  → $VERSION_ACT; dpkg --compare-versions "$VERSION_ACT" "gt" "$VERSION_PREV" || ( echo ERREUR la version n’a pas avancé && exit 1 )'
-  only:
-  - master
-
-# Construction de l'image
-const_image:
-  stage: build_image
-  before_script: *login
-  variables:
-    DOCKER_BUILDKIT: 1
-  script:
-    - docker build --target composer --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer -f docker/Dockerfile .
-    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:${BRANCHE}_composer
-    - docker build --cache-from $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE --build-arg BUILDKIT_INLINE_CACHE=1 -t $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE -f docker/Dockerfile .
-    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE   
 
 
 # Stage tag
 
 tag_latest:
   stage: tag_image
-  needs: [const_image]
+  needs:
+    - job: version_check
+    - job: const_image
   before_script:
     - *login
   script:
     - docker pull $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE
-    - docker tag $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE $CI_REGISTRY/$CI_PROJECT_PATH:latest  
+    - docker tag $CI_REGISTRY/$CI_PROJECT_PATH:$BRANCHE $CI_REGISTRY/$CI_PROJECT_PATH:latest
     - docker push $CI_REGISTRY/$CI_PROJECT_PATH:latest
   only:
     - master
 
-   
+
 # Stage deploy_image
 
 # Déploiement sur /dev
@@ -140,7 +146,7 @@ stop_dev:
     - dev
   when:
     manual
-   
+
 # Déploiement sur /demo
 deploy_demo:
   stage: deploy_image
@@ -276,7 +282,7 @@ stop_crosemont:
     - if: '$CI_COMMIT_BRANCH == "master" && $URL_PROD_2'
   when:
     manual
-   
+
 
 # Stage build_doc
 
