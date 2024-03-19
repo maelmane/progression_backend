@@ -21,6 +21,7 @@ namespace progression\dao\models;
 use progression\domaine\entité\user\{État, Rôle};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use progression\domaine\entité\user\Occupation;
 
 class UserMdl extends Model
 {
@@ -29,7 +30,7 @@ class UserMdl extends Model
 
 	protected $guarded = [];
 
-	protected $appends = ["etat", "role"];
+	protected $appends = ["etat", "role", "occupation"];
 
 	public function getÉtatAttribute(): État
 	{
@@ -51,6 +52,12 @@ class UserMdl extends Model
 	{
 		$rôles = array_column(Rôle::cases(), "value");
 		$this->attributes["role"] = array_search($rôle->value, $rôles);
+	}
+
+	public function getOccupationAttribute(): Occupation
+	{
+		$occupation = array_column(Occupation::cases(), "value");
+		return Occupation::from($occupation[$this->attributes["occupation"]]);
 	}
 
 	public function avancements(): HasMany

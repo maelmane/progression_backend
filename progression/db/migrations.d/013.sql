@@ -14,9 +14,9 @@ DELIMITER &&
 		  ADD COLUMN `nom` VARCHAR(255) DEFAULT '' NULL,
 		  ADD COLUMN `nom_complet` VARCHAR(255) DEFAULT '' NULL,
 		  ADD COLUMN `biographie` TEXT DEFAULT '' NULL,
-		  ADD COLUMN `pseudo` VARCHAR(255) DEFAULT '' NULL,
+		  ADD COLUMN `pseudo` VARCHAR(255) DEFAULT '' NOT NULL,
 		  ADD COLUMN `avatar` VARCHAR(255) DEFAULT '' NULL,
-		  ADD COLUMN `occupation` VARCHAR(255) DEFAULT '' NULL;
+		  ADD COLUMN `occupation` INT(11) DEFAULT '' NULL;
 		  
 		  UPDATE `version` SET `version` = 13;
 		  COMMIT;

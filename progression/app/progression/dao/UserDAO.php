@@ -18,6 +18,7 @@
 
 namespace progression\dao;
 
+use progression\domaine\entité\user\Occupation;
 use progression\domaine\entité\user\User;
 use progression\dao\models\UserMdl;
 
@@ -125,13 +126,13 @@ class UserDAO extends EntitéDAO
 					? CléDAO::construire($item["clés"], parent::filtrer_niveaux($includes, "clés"))
 					: [],
 				préférences: $item["preferences"] ?? "",
-				nom: $item["nom"],
-				prénom: $item["prenom"],
-				nom_complet: $item["nom_complet"],
-				pseudo: $item["pseudo"],
-				biographie: $item["biographie"],
-				occupation: $item["occupation"],
-				avatar: $item["avatar"],
+				nom: $item["nom"] ?? "",
+				prénom: $item["prenom"] ?? "",
+				nom_complet: $item["nom_complet"] ?? "",
+				pseudo: $item["pseudo"] ?? "",
+				biographie: $item["biographie"] ?? "",
+				occupation: Occupation::ETUDIANT,
+				avatar: $item["avatar"] ?? "bonjour",
 			);
 		}
 		return $users;

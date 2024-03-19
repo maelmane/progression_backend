@@ -18,7 +18,7 @@
 
 namespace progression\http\transformer;
 
-use progression\domaine\entité\user\{User, État, Rôle};
+use progression\domaine\entité\user\{User, État, Rôle, Occupation};
 use progression\util\Encodage;
 use League\Fractal\Resource\Collection;
 use progression\http\contrôleur\AvancementCtl;
@@ -55,7 +55,7 @@ class UserTransformer extends BaseTransformer
 			"préférences" => $user->préférences,
 			"links" => $liens,
 			"nom" => $user->nom,
-			"prenom" => $user->prenom,
+			"prenom" => $user->prénom,
 			"nom_complet" => $user->nom_complet,
 			"pseudo" => $user->pseudo,
 			"biographie" => $user->biographie,
