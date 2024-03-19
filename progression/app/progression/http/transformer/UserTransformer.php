@@ -54,6 +54,18 @@ class UserTransformer extends BaseTransformer
 			},
 			"préférences" => $user->préférences,
 			"links" => $liens,
+			"nom" => $user->nom,
+			"prenom" => $user->prenom,
+			"nom_complet" => $user->nom_complet,
+			"pseudo" => $user->pseudo,
+			"biographie" => $user->biographie,
+			"occupation" => match ($user->occupation) {
+				Occupation::ETUDIANT => "étudiant",
+				Occupation::ENSEIGNANT => "enseignant",
+				Occupation::TUTEUR => "tuteur",
+				default => "utilisateur autre",
+			},
+			"avatar" => $user->avatar,
 		];
 
 		return $data;

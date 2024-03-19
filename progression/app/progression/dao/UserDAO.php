@@ -125,6 +125,13 @@ class UserDAO extends EntitéDAO
 					? CléDAO::construire($item["clés"], parent::filtrer_niveaux($includes, "clés"))
 					: [],
 				préférences: $item["preferences"] ?? "",
+				nom: $item["nom"],
+				prénom: $item["prenom"],
+				nom_complet: $item["nom_complet"],
+				pseudo: $item["pseudo"],
+				biographie: $item["biographie"],
+				occupation: $item["occupation"],
+				avatar: $item["avatar"],
 			);
 		}
 		return $users;
