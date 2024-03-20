@@ -37,6 +37,7 @@ class User
     public string $biographie;
     public Occupation $occupation = Occupation::ETUDIANT;
     public string $avatar;
+	public string $connaissances;
 
 
 	public function __construct(
@@ -55,6 +56,7 @@ class User
 		string $biographie = "",
 		Occupation $occupation = Occupation::AUTRE,
 		string $avatar = "",
+		string $connaissances = "",
 	) {
 		$this->username = $username;
 		$this->courriel = $courriel;
@@ -71,6 +73,7 @@ class User
 		$this->biographie = $biographie;
 		$this->occupation = $occupation;
 		$this->avatar = $avatar;
+		$this->connaissances = $connaissances;
 	}
 
 }
