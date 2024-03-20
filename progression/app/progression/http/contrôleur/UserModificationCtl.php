@@ -100,7 +100,27 @@ class UserModificationCtl extends UserCtl
 		if (array_key_exists("courriel", $request->all())) {
 			$user = (new ModifierUserInt())->modifier_courriel($user, $request["courriel"]);
 		}
-
+		if (array_key_exists("nom", $request->all())) {
+			$user = (new ModifierUserInt())->modifier_courriel($user, $request["nom"]);
+		}
+		if (array_key_exists("prénom", $request->all())) {
+			$user = (new ModifierUserInt())->modifier_courriel($user, $request["prénom"]);
+		}
+		if (array_key_exists("nom_complet", $request->all())) {
+			$user = (new ModifierUserInt())->modifier_courriel($user, $request["nom_complet"]);
+		}
+		if (array_key_exists("biographie", $request->all())) {
+			$user = (new ModifierUserInt())->modifier_courriel($user, $request["biographie"]);
+		}
+		if (array_key_exists("pseudo", $request->all())) {
+			$user = (new ModifierUserInt())->modifier_courriel($user, $request["pseudo"]);
+		}
+		if (array_key_exists("avatar", $request->all())) {
+			$user = (new ModifierUserInt())->modifier_courriel($user, $request["avatar"]);
+		}
+		if (array_key_exists("occupation", $request->all())) {
+			$user = (new ModifierUserInt())->modifier_courriel($user, $request["occupation"]);
+		}
 		return $user;
 	}
 
