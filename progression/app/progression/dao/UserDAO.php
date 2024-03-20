@@ -79,6 +79,13 @@ class UserDAO extends EntitéDAO
 				"rôle" => $user->rôle,
 				"preferences" => $user->préférences,
 				"date_inscription" => $user->date_inscription,
+				"nom"=>$user->nom,
+                "prenom" =>$user->prénom,
+                "nom_complet" => $user->nom_complet,
+                "pseudo" => $user->pseudo,
+                "biographie" => $user->biographie,
+                "connaissances" => $user->connaissances,
+                "avatar" => $user->avatar,
 			];
 			return $this->construire([UserMdl::query()->updateOrCreate(["username" => $username], $objet)]);
 		} catch (QueryException $e) {
