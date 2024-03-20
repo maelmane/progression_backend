@@ -8,7 +8,14 @@
       "courriel": "marcel2@gmail.com",
       "état": "en_attente_de_validation",
       "rôle": "normal",
-      "préférences": "{préférences par défaut}"
+      "préférences": "{préférences par défaut}",
+      "prenom": "", 
+      "nom": "",
+      "nom_complet": "",
+      "pseudo": "",
+      "biographie": "",
+      "occupation": "étudiant",
+      "avatar": ""
     },
     "links": {
       "self": "https://example.com/user/Marcel2",

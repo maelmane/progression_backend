@@ -8,7 +8,14 @@
       "courriel": "jdoe@progressionmail.com",
       "état": "inactif",
       "rôle": "normal",
-      "préférences": "{\"app\": {\"pref1\": 1, \"pref2\": 2}}"
+      "préférences": "{\"app\": {\"pref1\": 1, \"pref2\": 2}}",
+      "prenom": "", 
+      "nom": "",
+      "nom_complet": "",
+      "pseudo": "",
+      "biographie": "",
+      "occupation": "étudiant",
+      "avatar": ""
     },
     "links": {
       "self": "https://example.com/user/jdoe",
