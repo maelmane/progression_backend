@@ -53,7 +53,7 @@ class User
 		string $nom_complet = "",
 		string $pseudo = "",
 		string $biographie = "",
-		Occupation $occupation = Occupation::AUTRE,
+		Occupation $occupation = Occupation::ETUDIANT,
 		string $avatar = "",
 	) {
 		$this->username = $username;
