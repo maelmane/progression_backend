@@ -71,7 +71,6 @@ class ModifierUserInt extends Interacteur
 	public function modifier_préférences(User $user, string $préférences): User
 	{
 		$user->préférences = $préférences;
-
 		return $user;
 	}
 
@@ -107,7 +106,6 @@ class ModifierUserInt extends Interacteur
 		return $user;
 	}
 
-	
 	public function modifier_connaissances(User $user, string $connaissances):User{
 		$dao = $this->source_dao->get_user_dao();
     	$dao->set_connaissances($user, $connaissances);

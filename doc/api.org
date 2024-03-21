@@ -413,6 +413,13 @@ username
 | état        | str  | "inactif", "actif", "en_attente_de_validation" |                                          |
 | rôle        | str  | "normal", "admin"                              |                                          |
 | préférences | str  |                                                | chaîne JSON décrivant les préférences UI |
+| prénom      | str  |                                                |                                          |
+| nom         | str  |                                                |                                          |
+| nom_complet | str  |                                                |                                          |
+| pseudo      | str  |                                                |                                          |
+| biographie  | str  |                                                |                                          |
+| occupation  | str  | "étudiant", "enseignant", "tuteur", "autre"    |                                          |
+| avatar      | str  |                                                |                                          |
 |-------------+------+------------------------------------------------+------------------------------------------|
 
 *** Relations :

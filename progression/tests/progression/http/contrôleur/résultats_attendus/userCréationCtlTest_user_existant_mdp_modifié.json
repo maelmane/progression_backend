@@ -9,12 +9,12 @@
       "état": "inactif",
       "rôle": "normal",
       "préférences": "{\"app\": {\"pref1\": 1, \"pref2\": 2}}",
-      "prenom": "", 
+      "prénom": "", 
       "nom": "",
       "nom_complet": "",
       "pseudo": "",
       "biographie": "",
-      "occupation": "étudiant",
+      "occupation": "utilisateur autre",
       "avatar": ""
     },
     "links": {

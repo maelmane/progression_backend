@@ -55,7 +55,7 @@ class UserTransformer extends BaseTransformer
 			"préférences" => $user->préférences,
 			"links" => $liens,
 			"nom" => $user->nom,
-			"prenom" => $user->prénom,
+			"prénom" => $user->prénom,
 			"nom_complet" => $user->nom_complet,
 			"pseudo" => $user->pseudo,
 			"biographie" => $user->biographie,

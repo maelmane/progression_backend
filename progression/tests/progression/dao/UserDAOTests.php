@@ -21,7 +21,7 @@ namespace progression\dao;
 use progression\domaine\entité\Avancement;
 use progression\domaine\entité\clé\{Clé, Portée};
 use progression\domaine\entité\question\{Question, État};
-use progression\domaine\entité\user\{User, Rôle};
+use progression\domaine\entité\user\{User, Rôle, Occupation};
 use progression\TestCase;
 
 final class UserDAOTests extends TestCase
@@ -195,8 +195,8 @@ final class UserDAOTests extends TestCase
 
 	public function test_étant_donné_un_utilisateur_inexistant_lorsquon_le_sauvegarde_il_est_créé_dans_la_BD_et_on_obtient_son_profil()
 	{
-		$réponse_attendue = new User(username: "gaston", date_inscription: 0);
-		$user_test = new User(username: "gaston", date_inscription: 0);
+		$réponse_attendue = new User(username: "gaston", date_inscription: 0, occupation: Occupation::AUTRE);
+		$user_test = new User(username: "gaston", date_inscription: 0, occupation: Occupation::AUTRE);
 
 		$réponse_observée = (new UserDAO())->save("gaston", $user_test);
 		$this->assertEquals(["gaston" => $réponse_attendue], $réponse_observée);

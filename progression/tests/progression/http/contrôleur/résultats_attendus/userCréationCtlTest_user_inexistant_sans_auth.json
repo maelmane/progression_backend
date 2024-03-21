@@ -9,12 +9,12 @@
       "état": "actif",
       "rôle": "normal",
       "préférences": "{préférences par défaut}",
-      "prenom": "", 
+      "prénom": "", 
       "nom": "",
       "nom_complet": "",
       "pseudo": "",
       "biographie": "",
-      "occupation": "étudiant",
+      "occupation": "utilisateur autre",
       "avatar": ""
     },
     "links": {

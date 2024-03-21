@@ -10,13 +10,13 @@ DELIMITER &&
 		  START TRANSACTION;
 
 		  ALTER TABLE user
-		  ADD COLUMN `prenom` VARCHAR(255) DEFAULT '' NULL,
+		  ADD COLUMN `prénom` VARCHAR(255) DEFAULT '' NULL,
 		  ADD COLUMN `nom` VARCHAR(255) DEFAULT '' NULL,
 		  ADD COLUMN `nom_complet` VARCHAR(255) DEFAULT '' NULL,
 		  ADD COLUMN `biographie` TEXT DEFAULT '' NULL,
 		  ADD COLUMN `pseudo` VARCHAR(255) DEFAULT '' NOT NULL,
 		  ADD COLUMN `avatar` VARCHAR(255) DEFAULT '' NULL,
-		  ADD COLUMN `connaissancea` VARCHAR(255) DEFAULT '' NULL,
+		  ADD COLUMN `connaissances` VARCHAR(255) DEFAULT '' NULL,
 		  ADD COLUMN `occupation` INT(11) DEFAULT 1 NULL;
 
 		  UPDATE `user` SET `pseudo` = `username` WHERE `pseudo` = '';
