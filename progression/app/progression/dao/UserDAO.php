@@ -103,6 +103,43 @@ class UserDAO extends EntitéDAO
 		}
 	}
 
+	//méthode de modification 
+	public function set_nom(User $user, string $nom)
+	{
+		try {
+			return DB::update("UPDATE user SET nom=? WHERE username=?", [$nom, $user->username]);
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+
+	public function set_prenom(User $user, string $prenom)
+	{
+		try {
+			return DB::update("UPDATE user SET prénom=? WHERE username=?", [$prenom, $user->username]);
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+	
+	public function set_nomComplet(User $user, string $nomComplet)
+	{
+		try {
+			return DB::update("UPDATE user SET nom_complet=? WHERE username=?", [$nomComplet, $user->username]);
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+
+	public function set_biographie(User $user, string $biographie)
+	{
+		try {
+			return DB::update("UPDATE user SET biographie=? WHERE username=?", [$biographie, $user->username]);
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+
 	public function vérifier_password(User $user, string $password)
 	{
 		try {
