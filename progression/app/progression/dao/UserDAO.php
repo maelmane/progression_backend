@@ -176,7 +176,7 @@ class UserDAO extends EntitéDAO
 				pseudo: $item["pseudo"] ?? "",
 				biographie: $item["biographie"] ?? "",
 				occupation: Occupation::ETUDIANT,
-				avatar: $item["avatar"] ?? "bonjour",
+				avatar: $item["avatar"] ?? "",
 			);
 		}
 		return $users;

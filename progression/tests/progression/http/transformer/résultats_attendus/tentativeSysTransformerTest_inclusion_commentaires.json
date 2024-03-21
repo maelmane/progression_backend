@@ -16,7 +16,14 @@
         "préférences": "",
         "rôle": "normal",
         "username": "jdoe",
-        "état": "inactif"
+        "état": "inactif",
+        "prénom": "", 
+			  "nom": "",
+			  "nom_complet": "",
+			  "pseudo": "",
+			  "biographie": "",
+			  "occupation": "étudiant",
+			  "avatar": ""
       },
       "date": 123456,
       "message": "Message",
@@ -39,7 +46,14 @@
         "préférences": "",
         "rôle": "normal",
         "username": "bob",
-        "état": "inactif"
+        "état": "inactif", 
+        "prénom": "", 
+        "nom": "",
+        "nom_complet": "",
+        "pseudo": "",
+        "biographie": "",
+        "occupation": "étudiant",
+        "avatar": ""
       },
       "date": 654321,
       "message": "Message 2",
