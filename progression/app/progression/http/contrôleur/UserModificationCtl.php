@@ -102,8 +102,8 @@ class UserModificationCtl extends UserCtl
 		if (array_key_exists("nom", $request->all())) {
 			$user = (new ModifierUserInt())->modifier_nom($user, $request["nom"]);
 		}
-		if (array_key_exists("prenom", $request->all())) {
-			$user = (new ModifierUserInt())->modifier_prenom($user, $request["prenom"]);
+		if (array_key_exists("prénom", $request->all())) {
+			$user = (new ModifierUserInt())->modifier_prenom($user, $request["prénom"]);
 		}
 		if (array_key_exists("nom_complet", $request->all())) {
 			$user = (new ModifierUserInt())->modifier_nomComplet($user, $request["nom_complet"]);
@@ -131,47 +131,6 @@ class UserModificationCtl extends UserCtl
 		(new ModifierUserInt())->modifier_password($user, $password);
 	}
 
-	private function modifier_nom_utilisateur(User $user, string $nom): void
-	{
-		(new ModifierUserInt())->modifier_nom($user, $nom);
-	}
-
-	private function modifier_prenom_utilisateur(User $user, string $prenom): void
-	{
-		(new ModifierUserInt())->modifier_prenom($user, $prenom);
-	}
-
-	private function modifier_nom_complet_utilisateur(User $user, string $nomComplet): void
-	{
-		(new ModifierUserInt())->modifier_nomComplet($user, $nomComplet);
-	}
-
-	private function modifier_biographie_utilisateur(User $user, string $biographie): void
-	{
-		(new ModifierUserInt())->modifier_biographie($user, $biographie);
-	}
-
-	private function modifier_pseudo_utilisateur(User $user, string $pseudo): void
-	{
-		(new ModifierUserInt())->modifier_pseudo($user, $pseudo);
-	}
-
-	private function modifier_avatar_utilisateur(User $user, string $avatar): void
-	{
-		(new ModifierUserInt())->modifier_avatar($user, $avatar);
-	}
-
-	private function modifier_occupation_utilisateur(User $user, int $occupation): void
-	{
-		(new ModifierUserInt())->modifier_occupation($user, $occupation);
-	}
-
-	private function modifier_connaissances_utilisateur(User $user, string $connaissances): void
-	{
-		(new ModifierUserInt())->modifier_occupation($user, $connaissances);
-	}
-
-
 	private function valider_paramètres(Request $request): ValidatorImpl
 	{
 		$validateur = Validator::make(
@@ -183,12 +142,14 @@ class UserModificationCtl extends UserCtl
 				"courriel" => "sometimes|email",
 				"password" => "sometimes|string|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/u",
 				"nom" => "sometimes|string|max:255",
-				"prenom" => "sometimes|string|max:255",
+				"prénom" => "sometimes|string|max:255",
 				"nom_complet" => "sometimes|string|max:255",
+				"biographie" => "sometimes|string|max:65535",
 				"pseudo" => "sometimes|string|max:255",
-				"connaissance" => "sometimes|string|max:255",
-				"occupation" => "sometimes|integer",
+				"connaissances" => "sometimes|string|max:255",
 				"avatar" => "sometimes|string|max:255",
+				"occupation" => "sometimes|integer",
+				
 			],
 			[
 				"json" => "Le champ :attribute doit être en format json.",

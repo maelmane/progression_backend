@@ -114,19 +114,19 @@ class ModifierUserInt extends Interacteur
 
 	public function modifier_pseudo(User $user, string $pseudo):User{
 		$dao = $this->source_dao->get_user_dao();
-    	$dao->set_biographie($user, $pseudo);
+    	$dao->set_pseudo($user, $pseudo);
 		return $user;
 	}
 
 	public function modifier_avatar(User $user, string $avatar):User{
 		$dao = $this->source_dao->get_user_dao();
-    	$dao->set_biographie($user, $avatar);
+    	$dao->set_avatar($user, $avatar);
 		return $user;
 	}
 
 	public function modifier_occupation(User $user, int $occupation):User{
 		$dao = $this->source_dao->get_user_dao();
-    	$dao->set_biographie($user, $occupation);
+    	$dao->set_occupation($user, $occupation);
 		return $user;
 	}
 
