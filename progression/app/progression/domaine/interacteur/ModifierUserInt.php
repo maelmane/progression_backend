@@ -107,6 +107,13 @@ class ModifierUserInt extends Interacteur
 		return $user;
 	}
 
+	
+	public function modifier_connaissances(User $user, string $connaissances):User{
+		$dao = $this->source_dao->get_user_dao();
+    	$dao->set_connaissances($user, $connaissances);
+		return $user;
+	}
+
 	public function modifier_pseudo(User $user, string $pseudo):User{
 		$dao = $this->source_dao->get_user_dao();
     	$dao->set_biographie($user, $pseudo);

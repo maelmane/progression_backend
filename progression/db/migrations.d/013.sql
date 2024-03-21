@@ -16,6 +16,7 @@ DELIMITER &&
 		  ADD COLUMN `biographie` TEXT DEFAULT '' NULL,
 		  ADD COLUMN `pseudo` VARCHAR(255) DEFAULT '' NOT NULL,
 		  ADD COLUMN `avatar` VARCHAR(255) DEFAULT '' NULL,
+		  ADD COLUMN `connaissancea` VARCHAR(255) DEFAULT '' NULL,
 		  ADD COLUMN `occupation` INT(11) DEFAULT 1 NULL;
 
 		  UPDATE `user` SET `pseudo` = `username` WHERE `pseudo` = '';

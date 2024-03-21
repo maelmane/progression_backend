@@ -21,7 +21,7 @@ namespace progression\dao;
 use progression\domaine\entité\user\Occupation;
 use progression\domaine\entité\user\User;
 use progression\dao\models\UserMdl;
-
+use Illuminate\Support\Facades\Log;
 use DB;
 use Illuminate\Database\QueryException;
 
@@ -89,6 +89,7 @@ class UserDAO extends EntitéDAO
 			];
 			return $this->construire([UserMdl::query()->updateOrCreate(["username" => $username], $objet)]);
 		} catch (QueryException $e) {
+			Log::debug($e);
 			throw new DAOException($e);
 		}
 	}
@@ -107,6 +108,15 @@ class UserDAO extends EntitéDAO
 	{
 		try {
 			return DB::update("UPDATE user SET nom=? WHERE username=?", [$nom, $user->username]);
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+
+	public function set_connaissances(User $user, string $connaissances)
+	{
+		try {
+			return DB::update("UPDATE user SET connaissances=? WHERE username=?", [$connaissances, $user->username]);
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -201,7 +211,7 @@ class UserDAO extends EntitéDAO
 				nom_complet: $item["nom_complet"] ?? "",
 				pseudo: $item["pseudo"] ?? "",
 				biographie: $item["biographie"] ?? "",
-				occupation: Occupation::ETUDIANT,
+				occupation: $item[1] ?? 1,
 				avatar: $item["avatar"] ?? "",
 			);
 		}

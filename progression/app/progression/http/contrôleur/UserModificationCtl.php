@@ -82,28 +82,6 @@ class UserModificationCtl extends UserCtl
 		if (array_key_exists("password", $request->all())) {
 			$this->modifier_mot_de_passe($user, $request["password"]);
 		}
-		if (array_key_exists("nom", $request->all())) {
-			$this->modifier_nom_utilisateur($user, $request["nom"]);
-		}
-		if (array_key_exists("prénom", $request->all())) {
-			$this->modifier_prenom_utilisateur($user, $request["prénom"]);
-		}
-		if (array_key_exists("nom_complet", $request->all())) {
-			$this->modifier_nom_complet_utilisateur($user, $request["nom_complet"]);
-		}
-		if (array_key_exists("biographie", $request->all())) {
-			$this->modifier_biographie_utilisateur($user, $request["biographie"]);
-		}
-		if (array_key_exists("pseudo", $request->all())) {
-			$this->modifier_pseudo_utilisateur($user, $request["pseudo"]);
-		}
-		if (array_key_exists("avatar", $request->all())) {
-			$this->modifier_avatar_utilisateur($user, $request["avatar"]);
-		}
-		if (array_key_exists("occupation", $request->all())) {
-			$this->modifier_occupation_utilisateur($user, $request["occupation"]);
-		}
-
 		return $user;
 	}
 
@@ -141,6 +119,9 @@ class UserModificationCtl extends UserCtl
 		}
 		if (array_key_exists("occupation", $request->all())) {
 			$user = (new ModifierUserInt())->modifier_occupation($user, $request["occupation"]);
+		}
+		if (array_key_exists("connaissances", $request->all())) {
+			$user = (new ModifierUserInt())->modifier_connaissances($user, $request["connaissances"]);
 		}
 		return $user;
 	}
@@ -185,6 +166,11 @@ class UserModificationCtl extends UserCtl
 		(new ModifierUserInt())->modifier_occupation($user, $occupation);
 	}
 
+	private function modifier_connaissances_utilisateur(User $user, string $connaissances): void
+	{
+		(new ModifierUserInt())->modifier_occupation($user, $connaissances);
+	}
+
 
 	private function valider_paramètres(Request $request): ValidatorImpl
 	{
@@ -199,7 +185,10 @@ class UserModificationCtl extends UserCtl
 				"nom" => "sometimes|string|max:255",
 				"prenom" => "sometimes|string|max:255",
 				"nom_complet" => "sometimes|string|max:255",
-				"biographie" => "sometimes|string|max:255",
+				"pseudo" => "sometimes|string|max:255",
+				"connaissance" => "sometimes|string|max:255",
+				"occupation" => "sometimes|integer",
+				"avatar" => "sometimes|string|max:255",
 			],
 			[
 				"json" => "Le champ :attribute doit être en format json.",
