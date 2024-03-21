@@ -102,8 +102,8 @@ class UserModificationCtl extends UserCtl
 		if (array_key_exists("nom", $request->all())) {
 			$user = (new ModifierUserInt())->modifier_nom($user, $request["nom"]);
 		}
-		if (array_key_exists("prénom", $request->all())) {
-			$user = (new ModifierUserInt())->modifier_prenom($user, $request["prénom"]);
+		if (array_key_exists("prenom", $request->all())) {
+			$user = (new ModifierUserInt())->modifier_prenom($user, $request["prenom"]);
 		}
 		if (array_key_exists("nom_complet", $request->all())) {
 			$user = (new ModifierUserInt())->modifier_nomComplet($user, $request["nom_complet"]);

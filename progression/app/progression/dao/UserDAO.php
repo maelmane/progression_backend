@@ -79,7 +79,7 @@ class UserDAO extends EntitéDAO
 				"preferences" => $user->préférences,
 				"date_inscription" => $user->date_inscription,
 				"nom"=>$user->nom,
-                "prenom" =>$user->prénom,
+                "prenom" =>$user->prenom,
                 "nom_complet" => $user->nom_complet,
                 "pseudo" => $user->pseudo,
                 "biographie" => $user->biographie,
@@ -124,7 +124,7 @@ class UserDAO extends EntitéDAO
 	public function set_prenom(User $user, string $prenom)
 	{
 		try {
-			return DB::update("UPDATE user SET prénom=? WHERE username=?", [$prenom, $user->username]);
+			return DB::update("UPDATE user SET prenom=? WHERE username=?", [$prenom, $user->username]);
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
@@ -206,7 +206,7 @@ class UserDAO extends EntitéDAO
 					: [],
 				préférences: $item["preferences"] ?? "",
 				nom: $item["nom"] ?? "",
-				prénom: $item["prenom"] ?? "",
+				prenom: $item["prenom"] ?? "",
 				nom_complet: $item["nom_complet"] ?? "",
 				pseudo: $item["pseudo"] ?? "",
 				biographie: $item["biographie"] ?? "",

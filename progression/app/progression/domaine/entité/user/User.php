@@ -31,7 +31,7 @@ class User
 	public string $préférences;
 	public int $date_inscription;
     public string $nom;
-    public string $prénom;
+    public string $prenom;
     public string $nom_complet;
     public string $pseudo;
     public string $biographie;
@@ -50,7 +50,7 @@ class User
 		$clés = [],
 		string $préférences = "",
 		string $nom = "",
-		string $prénom = "",
+		string $prenom = "",
 		string $nom_complet = "",
 		string $pseudo = "",
 		string $biographie = "",
@@ -67,7 +67,7 @@ class User
 		$this->préférences = $préférences;
 		$this->date_inscription = $date_inscription;
 		$this->nom = $nom;
-		$this->prénom = $prénom;
+		$this->prenom = $prenom;
 		$this->nom_complet = $nom_complet;
 		$this->pseudo = $pseudo;
 		$this->biographie = $biographie;
