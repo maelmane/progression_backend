@@ -20,7 +20,7 @@ namespace progression\domaine\interacteur;
 
 use progression\domaine\entité\user\{User, État, Rôle};
 use progression\dao\mail\EnvoiDeCourrielException;
-
+use progression\dao\UserDAO;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 
@@ -82,6 +82,33 @@ class ModifierUserInt extends Interacteur
 
 		return $user;
 	}
+
+	public function modifier_nom(User $user, string $nom):User{
+		$dao = $this->source_dao->get_user_dao();
+    	$dao->set_nom($user, $nom);
+		return $user;
+	}
+
+	//méthode de modification
+	public function modifier_prenom(User $user, string $prenom):User{
+		$dao = $this->source_dao->get_user_dao();
+    	$dao->set_prenom($user, $prenom);
+		return $user;
+	}
+
+	public function modifier_nomComplet(User $user, string $nomComplet):User{
+		$dao = $this->source_dao->get_user_dao();
+    	$dao->set_nomComplet($user, $nomComplet);
+		return $user;
+	}
+
+	public function modifier_biographie(User $user, string $biographie):User{
+		$dao = $this->source_dao->get_user_dao();
+    	$dao->set_biographie($user, $biographie);
+		return $user;
+	}
+
+
 
 	private function envoyer_courriel_de_validation(User $user): void
 	{

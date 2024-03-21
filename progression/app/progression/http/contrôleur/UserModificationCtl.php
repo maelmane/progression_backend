@@ -82,6 +82,18 @@ class UserModificationCtl extends UserCtl
 		if (array_key_exists("password", $request->all())) {
 			$this->modifier_mot_de_passe($user, $request["password"]);
 		}
+		if (array_key_exists("nom", $request->all())) {
+			$this->modifier_nom_utilisateur($user, $request["nom"]);
+		}
+		if (array_key_exists("prénom", $request->all())) {
+			$this->modifier_prenom_utilisateur($user, $request["prénom"]);
+		}
+		if (array_key_exists("nom_complet", $request->all())) {
+			$this->modifier_nom_complet_utilisateur($user, $request["nom_complet"]);
+		}
+		if (array_key_exists("biographie", $request->all())) {
+			$this->modifier_biographie_utilisateur($user, $request["biographie"]);
+		}
 
 		return $user;
 	}
@@ -101,25 +113,25 @@ class UserModificationCtl extends UserCtl
 			$user = (new ModifierUserInt())->modifier_courriel($user, $request["courriel"]);
 		}
 		if (array_key_exists("nom", $request->all())) {
-			$user = (new ModifierUserInt())->modifier_courriel($user, $request["nom"]);
+			$user = (new ModifierUserInt())->modifier_nom($user, $request["nom"]);
 		}
 		if (array_key_exists("prénom", $request->all())) {
-			$user = (new ModifierUserInt())->modifier_courriel($user, $request["prénom"]);
+			$user = (new ModifierUserInt())->modifier_prenom($user, $request["prénom"]);
 		}
 		if (array_key_exists("nom_complet", $request->all())) {
-			$user = (new ModifierUserInt())->modifier_courriel($user, $request["nom_complet"]);
+			$user = (new ModifierUserInt())->modifier_nomComplet($user, $request["nom_complet"]);
 		}
 		if (array_key_exists("biographie", $request->all())) {
-			$user = (new ModifierUserInt())->modifier_courriel($user, $request["biographie"]);
+			$user = (new ModifierUserInt())->modifier_biographie($user, $request["biographie"]);
 		}
 		if (array_key_exists("pseudo", $request->all())) {
-			$user = (new ModifierUserInt())->modifier_courriel($user, $request["pseudo"]);
+			$user = (new ModifierUserInt())->modifier_pseudo($user, $request["pseudo"]);
 		}
 		if (array_key_exists("avatar", $request->all())) {
-			$user = (new ModifierUserInt())->modifier_courriel($user, $request["avatar"]);
+			$user = (new ModifierUserInt())->modifier_avatar($user, $request["avatar"]);
 		}
 		if (array_key_exists("occupation", $request->all())) {
-			$user = (new ModifierUserInt())->modifier_courriel($user, $request["occupation"]);
+			$user = (new ModifierUserInt())->modifier_occupation($user, $request["occupation"]);
 		}
 		return $user;
 	}
@@ -128,6 +140,27 @@ class UserModificationCtl extends UserCtl
 	{
 		(new ModifierUserInt())->modifier_password($user, $password);
 	}
+
+	private function modifier_nom_utilisateur(User $user, string $nom): void
+	{
+		(new ModifierUserInt())->modifier_nom($user, $nom);
+	}
+
+	private function modifier_prenom_utilisateur(User $user, string $prenom): void
+	{
+		(new ModifierUserInt())->modifier_prenom($user, $prenom);
+	}
+
+	private function modifier_nom_complet_utilisateur(User $user, string $nomComplet): void
+	{
+		(new ModifierUserInt())->modifier_nomComplet($user, $nomComplet);
+	}
+
+	private function modifier_biographie_utilisateur(User $user, string $biographie): void
+	{
+		(new ModifierUserInt())->modifier_biographie($user, $biographie);
+	}
+
 
 	private function valider_paramètres(Request $request): ValidatorImpl
 	{
