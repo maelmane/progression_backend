@@ -47,7 +47,7 @@ final class UserTransformerTests extends TestCase
 			"rôle" => "normal",
 			"date_inscription" => 1590828610,
 			"préférences" => "les rouges",
-			"prenom"=> "",
+			"prénom"=> "",
 			"nom"=> "",
 			"nom_complet"=> "",
 			"pseudo"=> "",
