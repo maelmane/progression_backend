@@ -94,6 +94,15 @@ class UserModificationCtl extends UserCtl
 		if (array_key_exists("biographie", $request->all())) {
 			$this->modifier_biographie_utilisateur($user, $request["biographie"]);
 		}
+		if (array_key_exists("pseudo", $request->all())) {
+			$this->modifier_pseudo_utilisateur($user, $request["pseudo"]);
+		}
+		if (array_key_exists("avatar", $request->all())) {
+			$this->modifier_avatar_utilisateur($user, $request["avatar"]);
+		}
+		if (array_key_exists("occupation", $request->all())) {
+			$this->modifier_occupation_utilisateur($user, $request["occupation"]);
+		}
 
 		return $user;
 	}
@@ -159,6 +168,21 @@ class UserModificationCtl extends UserCtl
 	private function modifier_biographie_utilisateur(User $user, string $biographie): void
 	{
 		(new ModifierUserInt())->modifier_biographie($user, $biographie);
+	}
+
+	private function modifier_pseudo_utilisateur(User $user, string $pseudo): void
+	{
+		(new ModifierUserInt())->modifier_pseudo($user, $pseudo);
+	}
+
+	private function modifier_avatar_utilisateur(User $user, string $avatar): void
+	{
+		(new ModifierUserInt())->modifier_avatar($user, $avatar);
+	}
+
+	private function modifier_occupation_utilisateur(User $user, int $occupation): void
+	{
+		(new ModifierUserInt())->modifier_occupation($user, $occupation);
 	}
 
 

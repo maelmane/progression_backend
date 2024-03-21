@@ -89,7 +89,6 @@ class ModifierUserInt extends Interacteur
 		return $user;
 	}
 
-	//méthode de modification
 	public function modifier_prenom(User $user, string $prenom):User{
 		$dao = $this->source_dao->get_user_dao();
     	$dao->set_prenom($user, $prenom);
@@ -105,6 +104,24 @@ class ModifierUserInt extends Interacteur
 	public function modifier_biographie(User $user, string $biographie):User{
 		$dao = $this->source_dao->get_user_dao();
     	$dao->set_biographie($user, $biographie);
+		return $user;
+	}
+
+	public function modifier_pseudo(User $user, string $pseudo):User{
+		$dao = $this->source_dao->get_user_dao();
+    	$dao->set_biographie($user, $pseudo);
+		return $user;
+	}
+
+	public function modifier_avatar(User $user, string $avatar):User{
+		$dao = $this->source_dao->get_user_dao();
+    	$dao->set_biographie($user, $avatar);
+		return $user;
+	}
+
+	public function modifier_occupation(User $user, int $occupation):User{
+		$dao = $this->source_dao->get_user_dao();
+    	$dao->set_biographie($user, $occupation);
 		return $user;
 	}
 
