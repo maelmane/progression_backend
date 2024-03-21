@@ -36,6 +36,7 @@ final class UserTransformerTests extends TestCase
 			état: État::ACTIF,
 			rôle: Rôle::NORMAL,
 			préférences: "les rouges",
+			occupation: Occupation::AUTRE
 			
 		);
 
@@ -52,7 +53,7 @@ final class UserTransformerTests extends TestCase
 			"nom_complet"=> "",
 			"pseudo"=> "",
 			"biographie"=> "",
-			"occupation"=> "étudiant",
+			"occupation"=> "utilisateur autre",
 			"avatar"=> "",
 			"links" => [
 				"self" => "https://example.com/user/bob",

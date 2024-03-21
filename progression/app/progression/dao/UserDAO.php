@@ -18,7 +18,6 @@
 
 namespace progression\dao;
 
-use progression\domaine\entité\user\Occupation;
 use progression\domaine\entité\user\User;
 use progression\dao\models\UserMdl;
 

@@ -36,7 +36,7 @@ final class UserTests extends TestCase
 		$nom_complet_attendu = "Bob Paul";
 		$pseudo_attendu = "bobby";
 		$biographie_attendu = "biographie test";
-		$occupation_attendue = Occupation::ETUDIANT;
+		$occupation_attendue = Occupation::AUTRE;
 		$avatar_attendu = "https://example.com/image";
 
 		Carbon::setTestNow(Carbon::create(2021, 3, 11, 0, 0, 0));
@@ -51,7 +51,7 @@ final class UserTests extends TestCase
 			nom_complet: "Bob Paul",
 			pseudo: "bobby",
 			biographie: "biographie test",
-			occupation: Occupation::ETUDIANT,
+			occupation: Occupation::AUTRE,
 			avatar: "https://example.com/image",
 
 		);
