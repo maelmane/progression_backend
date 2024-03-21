@@ -131,7 +131,7 @@ class UserDAO extends EntitéDAO
 				nom_complet: $item["nom_complet"] ?? "",
 				pseudo: $item["pseudo"] ?? "",
 				biographie: $item["biographie"] ?? "",
-				occupation: Occupation::ETUDIANT,
+				occupation: $item["occupation"],
 				avatar: $item["avatar"] ?? "",
 			);
 		}
