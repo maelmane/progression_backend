@@ -31,7 +31,7 @@ final class UserTests extends TestCase
 		$état_attendu = État::ACTIF;
 		$rôle_attendu = Rôle::NORMAL;
 		$date_inscription_attendu = 1615420800;
-		$prénom_attendu = "Bob";
+		$prenom_attendu = "Bob";
 		$nom_attendu = "Paul";
 		$nom_complet_attendu = "Bob Paul";
 		$pseudo_attendu = "bobby";
@@ -46,7 +46,7 @@ final class UserTests extends TestCase
 			courriel: "bob@gmail.com",
 			état: État::ACTIF,
 			rôle: Rôle::NORMAL,
-			prénom: "Bob",
+			prenom: "Bob",
 			nom: "Paul",
 			nom_complet: "Bob Paul",
 			pseudo: "bobby",
@@ -62,7 +62,7 @@ final class UserTests extends TestCase
 		$this->assertEquals($état_attendu, $résultat_obtenu->état);
 		$this->assertEquals($rôle_attendu, $résultat_obtenu->rôle);
 		$this->assertEquals($date_inscription_attendu, $résultat_obtenu->date_inscription);
-		$this->assertEquals($prénom_attendu, $résultat_obtenu->prénom);
+		$this->assertEquals($prenom_attendu, $résultat_obtenu->prenom);
 		$this->assertEquals($nom_attendu, $résultat_obtenu->nom);
 		$this->assertEquals($nom_complet_attendu, $résultat_obtenu->nom_complet);
 		$this->assertEquals($pseudo_attendu, $résultat_obtenu->pseudo);
