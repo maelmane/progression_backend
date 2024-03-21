@@ -196,6 +196,10 @@ class UserModificationCtl extends UserCtl
 				"rôle" => ["sometimes", "string", new Enum(Rôle::class)],
 				"courriel" => "sometimes|email",
 				"password" => "sometimes|string|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/u",
+				"nom" => "sometimes|string|max:255",
+				"prenom" => "sometimes|string|max:255",
+				"nom_complet" => "sometimes|string|max:255",
+				"biographie" => "sometimes|string|max:255",
 			],
 			[
 				"json" => "Le champ :attribute doit être en format json.",
