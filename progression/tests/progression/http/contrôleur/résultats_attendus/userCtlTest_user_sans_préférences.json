@@ -8,7 +8,14 @@
       "courriel": null,
       "état": "inactif",
       "rôle": "normal",
-      "préférences": ""
+      "préférences": "",
+      "prenom": "", 
+      "nom": "",
+      "nom_complet": "",
+      "pseudo": "",
+      "biographie": "",
+      "occupation": "étudiant",
+      "avatar": ""
     },
     "links": {
       "self": "https://example.com/user/monique",

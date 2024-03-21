@@ -31,6 +31,13 @@ final class UserTests extends TestCase
 		$état_attendu = État::ACTIF;
 		$rôle_attendu = Rôle::NORMAL;
 		$date_inscription_attendu = 1615420800;
+		$prénom_attendu = "Bob";
+		$nom_attendu = "Paul";
+		$nom_complet_attendu = "Bob Paul";
+		$pseudo_attendu = "bobby";
+		$biographie_attendu = "biographie test";
+		$occupation_attendue = Occupation::ETUDIANT;
+		$avatar_attendu = "https://example.com/image";
 
 		Carbon::setTestNow(Carbon::create(2021, 3, 11, 0, 0, 0));
 		$résultat_obtenu = new User(
@@ -39,6 +46,14 @@ final class UserTests extends TestCase
 			courriel: "bob@gmail.com",
 			état: État::ACTIF,
 			rôle: Rôle::NORMAL,
+			prénom: "Bob",
+			nom: "Paul",
+			nom_complet: "Bob Paul",
+			pseudo: "bobby",
+			biographie: "biographie test",
+			occupation: Occupation::ETUDIANT,
+			avatar: "https://example.com/image",
+
 		);
 		Carbon::setTestNow();
 
@@ -47,5 +62,12 @@ final class UserTests extends TestCase
 		$this->assertEquals($état_attendu, $résultat_obtenu->état);
 		$this->assertEquals($rôle_attendu, $résultat_obtenu->rôle);
 		$this->assertEquals($date_inscription_attendu, $résultat_obtenu->date_inscription);
+		$this->assertEquals($prénom_attendu, $résultat_obtenu->prénom);
+		$this->assertEquals($nom_attendu, $résultat_obtenu->nom);
+		$this->assertEquals($nom_complet_attendu, $résultat_obtenu->nom_complet);
+		$this->assertEquals($pseudo_attendu, $résultat_obtenu->pseudo);
+		$this->assertEquals($biographie_attendu, $résultat_obtenu->biographie);
+		$this->assertEquals($occupation_attendue, $résultat_obtenu->occupation);
+		$this->assertEquals($avatar_attendu, $résultat_obtenu->avatar);
 	}
 }
