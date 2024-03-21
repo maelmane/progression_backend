@@ -103,7 +103,6 @@ class UserDAO extends EntitéDAO
 		}
 	}
 
-	//méthode de modification 
 	public function set_nom(User $user, string $nom)
 	{
 		try {
@@ -135,6 +134,33 @@ class UserDAO extends EntitéDAO
 	{
 		try {
 			return DB::update("UPDATE user SET biographie=? WHERE username=?", [$biographie, $user->username]);
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+
+	public function set_pseudo(User $user, string $pseudo)
+	{
+		try {
+			return DB::update("UPDATE user SET pseudo=? WHERE username=?", [$pseudo, $user->username]);
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+
+	public function set_avatar(User $user, string $avatar)
+	{
+		try {
+			return DB::update("UPDATE user SET avatar=? WHERE username=?", [$avatar, $user->username]);
+		} catch (QueryException $e) {
+			throw new DAOException($e);
+		}
+	}
+
+	public function set_occupation(User $user, int $occupation)
+	{
+		try {
+			return DB::update("UPDATE user SET occupation=? WHERE username=?", [$occupation, $user->username]);
 		} catch (QueryException $e) {
 			throw new DAOException($e);
 		}
