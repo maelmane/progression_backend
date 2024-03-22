@@ -32,8 +32,8 @@ class CléDAO extends EntitéDAO
 			$clé = CléMdl::select("cle.*")
 				->join("user", "user_id", "=", "user.id")
 				->where("user.username", $username)
-				->where("nom", $nom)
-				->first();
+				->where("cle.nom", $nom)
+				->get();
 
 			return self::premier_élément($this->construire([$clé], $includes));
 		} catch (QueryException $e) {
