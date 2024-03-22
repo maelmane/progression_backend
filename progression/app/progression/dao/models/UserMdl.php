@@ -60,11 +60,12 @@ class UserMdl extends Model
 		return Occupation::from($occupation[$this->attributes["occupation"]]);
 	}
 
-	public function setOccupationAttribute(Rôle $rôle): void
+	public function setOccupationAttribute(Occupation $occupation): void
 	{
-		$occupation = array_column(Rôle::cases(), "value");
-		$this->attributes["occupation"] = array_search($occupation->value, $occupation);
+		$occupations = array_column(Occupation::cases(), "value");
+		$this->attributes["occupation"] = array_search($occupation->value, $occupations);
 	}
+
 
 	public function avancements(): HasMany
 	{
