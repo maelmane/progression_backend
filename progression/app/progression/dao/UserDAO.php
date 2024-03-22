@@ -127,7 +127,7 @@ class UserDAO extends EntitéDAO
 					: [],
 				préférences: $item["preferences"] ?? "",
 				nom: $item["nom"] ?? "",
-				prénom: $item["prenom"] ?? "",
+				prénom: $item["prénom"] ?? "",
 				nom_complet: $item["nom_complet"] ?? "",
 				pseudo: $item["pseudo"] ?? "",
 				biographie: $item["biographie"] ?? "",
